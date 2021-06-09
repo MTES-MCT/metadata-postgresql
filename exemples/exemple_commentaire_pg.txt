@@ -1,0 +1,198 @@
+Commentaire saisi par le service.
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/accessRights": [
+      {
+        "@id": "_:Nd35a480c3efb4f7d8bc14a8938b18261"
+      }
+    ],
+    "http://purl.org/dc/terms/description": [
+      {
+        "@language": "fr",
+        "@value": "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence."
+      }
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2021-02-04"
+      }
+    ],
+    "http://purl.org/dc/terms/provenance": [
+      {
+        "@id": "_:Nca4314839d3b4a9bba6cbc67aa607994"
+      }
+    ],
+    "http://purl.org/dc/terms/publisher": [
+      {
+        "@id": "_:N5f0a1b687d2b4e0eb425412ce86f8f9b"
+      }
+    ],
+    "http://purl.org/dc/terms/temporal": [
+      {
+        "@id": "_:N678a2e51c6864720ab1343279e74e1db"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "fr",
+        "@value": "ADMIN EXPRESS - Départements de métropole"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#contactPoint": [
+      {
+        "@id": "_:Neae3737569764e39a497eb7691ff84d8"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#distribution": [
+      {
+        "@id": "_:N6160bfa39b134e369ceafd9e105c3c6c"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#keyword": [
+      {
+        "@language": "fr",
+        "@value": "ign"
+      },
+      {
+        "@language": "fr",
+        "@value": "donnée externe"
+      },
+      {
+        "@language": "fr",
+        "@value": "admin express"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#landingPage": [
+      {
+        "@id": "https://geoservices.ign.fr/ressources_documentaires/Espace_documentaire/BASES_VECTORIELLES/ADMIN_EXPRESS/IGNF_ADMIN_EXPRESS_2-4.html"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#theme": [
+      {
+        "@id": "http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO"
+      },
+      {
+        "@id": "http://publications.europa.eu/resource/authority/data-theme/REGI"
+      }
+    ],
+    "urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af": [
+      {
+        "@language": "fr",
+        "@value": "À mettre à jour !"
+      }
+    ]
+  },
+  {
+    "@id": "_:Nca4314839d3b4a9bba6cbc67aa607994",
+    "@type": [
+      "http://purl.org/dc/terms/ProvenanceStatement"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Donnée référentielle produite par l'IGN."
+      }
+    ]
+  },
+  {
+    "@id": "_:Neae3737569764e39a497eb7691ff84d8",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Organization"
+    ],
+    "http://www.w3.org/2006/vcard/ns#fn": [
+      {
+        "@language": "fr",
+        "@value": "Pôle IG"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:pig.servicex@developpement-durable.gouv.fr"
+      }
+    ]
+  },
+  {
+    "@id": "_:Nd35a480c3efb4f7d8bc14a8938b18261",
+    "@type": [
+      "http://purl.org/dc/terms/RightsStatement"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Aucune restriction d'accès ou d'usage."
+      }
+    ]
+  },
+  {
+    "@id": "_:N5f0a1b687d2b4e0eb425412ce86f8f9b",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Organization"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@language": "fr",
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
+      }
+    ]
+  },
+  {
+    "@id": "_:N6160bfa39b134e369ceafd9e105c3c6c",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Distribution"
+    ],
+    "http://purl.org/dc/terms/accessURL": [
+      {
+        "@id": "https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express"
+      }
+    ],
+    "http://purl.org/dc/terms/issued": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-19"
+      }
+    ],
+    "http://purl.org/dc/terms/licence": [
+      {
+        "@id": "_:N2c42eee2f6dd4651861a20feecdcf02d"
+      }
+    ]
+  },
+  {
+    "@id": "_:N2c42eee2f6dd4651861a20feecdcf02d",
+    "@type": [
+      "http://purl.org/dc/terms/LicenseDocument"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Base de données soumise aux conditions de la licence ouverte Etalab."
+      }
+    ]
+  },
+  {
+    "@id": "_:N678a2e51c6864720ab1343279e74e1db",
+    "@type": [
+      "http://purl.org/dc/terms/PeriodOfTime"
+    ],
+    "http://www.w3.org/ns/dcat#endDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#startDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ]
+  }
+]
+</METADATA>
