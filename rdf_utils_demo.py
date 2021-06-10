@@ -30,9 +30,10 @@ with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
 # constitution du dictionnaire
 #d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary)
-d = rdf_utils.buildDict(g, g_shape, g_vocabulary, translation=True)
+#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, translation=True)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, mode='read')
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template.copy())
+d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template)
+#d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary, template=d_template)
 
 
 def printDict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
@@ -187,7 +188,12 @@ def pseudoForm(widgetsDict: dict):
             print( '| ' * c + ' ' * 5 + '+'
                    + ' ' * ( 64 - l - c * 4 )
                    + ' |' * c )
+            
 
-    print( '|' + 68 * ' ' + '|' )
-    print( '|' + 68 * '_' + '|' )
+    for i in range( c ):
+        print( '| ' * ( c - i - 1 ) + '|____'
+               + '_' * ( 67 - ( c - i ) * 4 )
+               + '_|' + ' |' * ( c - i - 1) )
+
+
 
