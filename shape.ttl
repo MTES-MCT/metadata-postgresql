@@ -82,21 +82,43 @@ snum:DatasetShape
         snum:widget "QLineEdit" ;
 	] ;
     sh:property [ 
-		sh:path dct:language ;
-		sh:name "langue des données"@fr ;
-        sh:nodeKind sh:IRI ;
-        sh:class dct:LinguisticSystem ;
-        sh:defaultValue <http://publications.europa.eu/resource/authority/language/FRA> ;
+		sh:path dct:temporal ;
+		sh:name "couverture temporelle"@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class dct:PeriodOfTime ;
         sh:order 6 ;
-        snum:ontology <http://publications.europa.eu/resource/authority/language> ;
+	] ;   
+    sh:property [ 
+		sh:path dct:provenance ;
+		sh:name "généalogie"@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class dct:ProvenanceStatement ;
+        sh:order 7 ;
+	] ;
+    sh:property [ 
+		sh:path dct:accessRights ;
+		sh:name "conditions d'accès"@fr ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:class dct:RightsStatement ;
+        sh:maxCount 1 ;
+        sh:order 8 ;
+        snum:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
         snum:widget "QComboBox" ;
 	] ;
     sh:property [ 
 		sh:path dcat:contactPoint ;
 		sh:name "point de contact"@fr ;
         sh:nodeKind sh:BlankNode ;
-        sh:class vcard:Organization ;
+        sh:class vcard:Kind ;
         sh:order 10 ;
+	] ;
+    sh:property [ 
+		sh:path dct:publisher ;
+		sh:name "diffuseur"@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class foaf:Agent ;
+        sh:maxCount 1 ;
+        sh:order 11 ;
 	] ;    
 	sh:property [ 
 		sh:path dcat:distribution ;
@@ -106,13 +128,31 @@ snum:DatasetShape
         sh:order 20 ;
 	] ;
     sh:property [ 
+		sh:path dcat:landingPage ;
+		sh:name "page internet"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class foaf:Document ;
+        sh:order 30 ;
+        snum:widget "QLineEdit" ;
+	] ;
+    sh:property [ 
+		sh:path dct:language ;
+		sh:name "langue des données"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class dct:LinguisticSystem ;
+        sh:defaultValue <http://publications.europa.eu/resource/authority/language/FRA> ;
+        sh:order 40 ;
+        snum:ontology <http://publications.europa.eu/resource/authority/language> ;
+        snum:widget "QComboBox" ;
+	] ;
+    sh:property [ 
 		sh:path snum:relevanceScore ;
 		sh:name "score"@fr ;
         sh:description "plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche"@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:integer ;
         sh:maxCount 1 ;
-        sh:order 30 ;
+        sh:order 50 ;
         snum:widget "QLineEdit" ;
 	] .
     
@@ -142,7 +182,7 @@ snum:DistributionShape
 	] ;
     sh:property [ 
 		sh:path dct:rights ;
-		sh:name "droits"@fr ;
+		sh:name "propriété intellectuelle"@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:RightsStatement ;
         sh:maxCount 1 ;
@@ -167,10 +207,9 @@ snum:RightsStatementShape
     sh:property [ 
 		sh:path rdfs:label ;
 		sh:name "mention"@fr ;
-        sh:description "mention à faire apparaître en cas de réutilisation"@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
-        sh:maxCount 1 ;
+        sh:uniqueLang true ;
         sh:order 1 ;
         snum:widget "QTextEdit" ;
         snum:rowSpan 4 ;
@@ -195,14 +234,54 @@ snum:LicenseDocumentShape
 		sh:name "termes"@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
-        sh:maxCount 1 ;
+        sh:uniqueLang true ;
         sh:order 2 ;
         snum:widget "QTextEdit" ;
 	] .
     
-snum:KindOrganizationShape
+snum:ProvenanceStatementShape
     a sh:NodeShape ;
-    sh:targetClass vcard:Organization ;
+    sh:targetClass dct:ProvenanceStatement ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ 
+		sh:path rdfs:label ;
+		sh:name "texte"@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:string ;
+        sh:uniqueLang true ;
+        sh:order 0 ;
+        snum:widget "QTextEdit" ;
+        snum:rowSpan 20 ;
+	] .
+    
+snum:PeriodOfTimeShape
+    a sh:NodeShape ;
+    sh:targetClass dct:PeriodOfTime ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ 
+		sh:path dcat:startDate ;
+		sh:name "date de début"@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:date ;
+        sh:maxCount 1 ;
+        sh:order 0 ;
+        snum:widget "QDateEdit" ;
+	] ;
+    sh:property [ 
+		sh:path dcat:endDate ;
+		sh:name "date de fin"@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:date ;
+        sh:maxCount 1 ;
+        sh:order 0 ;
+        snum:widget "QDateEdit" ;
+	] .
+    
+snum:KindShape
+    a sh:NodeShape ;
+    sh:targetClass vcard:Kind ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ 
@@ -215,21 +294,12 @@ snum:KindOrganizationShape
         snum:widget "QLineEdit" ;
 	] ;
     sh:property [ 
-		sh:path vcard:hasURL ;
-		sh:name "site internet"@fr ;
-        sh:nodeKind sh:IRI ;
-        sh:class owl:Thing ;
-        sh:maxCount 1 ;
-        sh:order 2 ;
-        snum:widget "QLineEdit" ;
-	] ;
-    sh:property [ 
 		sh:path vcard:hasEmail ;
 		sh:name "mél"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
         sh:maxCount 1 ;
-        sh:order 3 ;
+        sh:order 2 ;
         snum:widget "QLineEdit" ;
         snum:transform "email" ;
 	] ;
@@ -239,20 +309,83 @@ snum:KindOrganizationShape
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
         sh:maxCount 1 ;
-        sh:order 4 ;
+        sh:order 3 ;
         snum:widget "QLineEdit" ;
         snum:transform "phone" ;
         snum:placeholder "+33-1-23-45-67-89" ;
 	] ;
     sh:property [ 
+		sh:path vcard:hasURL ;
+		sh:name "site internet"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class owl:Thing ;
+        sh:maxCount 1 ;
+        sh:order 4 ;
+        snum:widget "QLineEdit" ;
+	] ;
+    sh:property [ 
 		sh:path vcard:organization-name ;
-		sh:name "division de"@fr ;
+		sh:name "organisme"@fr ;
         sh:description "le cas échéant, organisation plus vaste dont le point de contact fait partie"@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
-        sh:order 6 ;
+        sh:order 5 ;
         snum:widget "QLineEdit" ;
 	] .
 
-
+snum:AgentShape
+    a sh:NodeShape ;
+    sh:targetClass foaf:Agent ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ 
+		sh:path foaf:name ;
+		sh:name "nom"@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+        sh:order 0 ;
+        snum:widget "QLineEdit" ;
+	] ;
+    sh:property [ 
+		sh:path dct:type ;
+		sh:name "type"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:maxCount 1 ;
+        sh:order 1 ;
+        snum:ontology <http://purl.org/adms/publishertype/1.0> ;
+        snum:widget "QComboBox" ;
+	] ;
+    sh:property [ 
+		sh:path foaf:mbox ;
+		sh:name "mél"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class owl:Thing ;
+        sh:maxCount 1 ;
+        sh:order 2 ;
+        snum:widget "QLineEdit" ;
+        snum:transform "email" ;
+	] ;
+    sh:property [
+		sh:path foaf:phone ;
+		sh:name "téléphone"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class owl:Thing ;
+        sh:maxCount 1 ;
+        sh:order 3 ;
+        snum:widget "QLineEdit" ;
+        snum:transform "phone" ;
+        snum:placeholder "+33-1-23-45-67-89" ;
+	] ;
+    sh:property [ 
+		sh:path foaf:workplaceHomepage ;
+		sh:name "site internet"@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class foaf:Document ;
+        sh:maxCount 1 ;
+        sh:order 4 ;
+        snum:widget "QLineEdit" ;
+	] .
+    

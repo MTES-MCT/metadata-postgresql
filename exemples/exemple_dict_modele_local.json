@@ -1,0 +1,19 @@
+{
+    "dct:description": {
+        "label": "résumé",
+        "row span": 40
+    },
+    "dct:title": {
+    },
+    "dcat:contactPoint": {
+    },
+    "dcat:contactPoint / vcard:fn": {
+        "default value": "Pôle SIG"
+    },
+    "dcat:contactPoint / vcard:hasEmail": {
+        "default value": "sig-contact@developpement-durable.gouv.fr"
+    },
+    "dcat:keyword": {
+    }
+}
+        

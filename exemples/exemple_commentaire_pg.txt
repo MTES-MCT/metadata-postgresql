@@ -9,7 +9,7 @@ Commentaire saisi par le service.
     ],
     "http://purl.org/dc/terms/accessRights": [
       {
-        "@id": "_:Nd35a480c3efb4f7d8bc14a8938b18261"
+        "@id": "_:ub6bL10C22"
       }
     ],
     "http://purl.org/dc/terms/description": [
@@ -21,22 +21,22 @@ Commentaire saisi par le service.
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2021-02-04"
+        "@value": "2021-02-04T00:00:00"
       }
     ],
     "http://purl.org/dc/terms/provenance": [
       {
-        "@id": "_:Nca4314839d3b4a9bba6cbc67aa607994"
+        "@id": "_:ub6bL14C20"
       }
     ],
     "http://purl.org/dc/terms/publisher": [
       {
-        "@id": "_:N5f0a1b687d2b4e0eb425412ce86f8f9b"
+        "@id": "_:ub6bL16C19"
       }
     ],
     "http://purl.org/dc/terms/temporal": [
       {
-        "@id": "_:N678a2e51c6864720ab1343279e74e1db"
+        "@id": "_:ub6bL18C18"
       }
     ],
     "http://purl.org/dc/terms/title": [
@@ -45,14 +45,22 @@ Commentaire saisi par le service.
         "@value": "ADMIN EXPRESS - Départements de métropole"
       }
     ],
+    "http://snum.scenari-community.org/Metadata/Vocabulaire/#isExternal": [
+      {
+        "@value": true
+      }
+    ],
     "http://www.w3.org/ns/dcat#contactPoint": [
       {
-        "@id": "_:Neae3737569764e39a497eb7691ff84d8"
+        "@id": "_:ub6bL25C23"
+      },
+      {
+        "@id": "_:ub6bL22C23"
       }
     ],
     "http://www.w3.org/ns/dcat#distribution": [
       {
-        "@id": "_:N6160bfa39b134e369ceafd9e105c3c6c"
+        "@id": "_:ub6bL28C23"
       }
     ],
     "http://www.w3.org/ns/dcat#keyword": [
@@ -62,11 +70,11 @@ Commentaire saisi par le service.
       },
       {
         "@language": "fr",
-        "@value": "donnée externe"
+        "@value": "admin express"
       },
       {
         "@language": "fr",
-        "@value": "admin express"
+        "@value": "donnée externe"
       }
     ],
     "http://www.w3.org/ns/dcat#landingPage": [
@@ -76,10 +84,10 @@ Commentaire saisi par le service.
     ],
     "http://www.w3.org/ns/dcat#theme": [
       {
-        "@id": "http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO"
+        "@id": "http://publications.europa.eu/resource/authority/data-theme/REGI"
       },
       {
-        "@id": "http://publications.europa.eu/resource/authority/data-theme/REGI"
+        "@id": "http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO"
       }
     ],
     "urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af": [
@@ -90,36 +98,19 @@ Commentaire saisi par le service.
     ]
   },
   {
-    "@id": "_:Nca4314839d3b4a9bba6cbc67aa607994",
+    "@id": "_:ub6bL16C19",
     "@type": [
-      "http://purl.org/dc/terms/ProvenanceStatement"
+      "http://xmlns.com/foaf/0.1/Agent"
     ],
-    "http://www.w3.org/2000/01/rdf-schema#label": [
+    "http://xmlns.com/foaf/0.1/name": [
       {
         "@language": "fr",
-        "@value": "Donnée référentielle produite par l'IGN."
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
       }
     ]
   },
   {
-    "@id": "_:Neae3737569764e39a497eb7691ff84d8",
-    "@type": [
-      "http://www.w3.org/2006/vcard/ns#Organization"
-    ],
-    "http://www.w3.org/2006/vcard/ns#fn": [
-      {
-        "@language": "fr",
-        "@value": "Pôle IG"
-      }
-    ],
-    "http://www.w3.org/2006/vcard/ns#hasEmail": [
-      {
-        "@id": "mailto:pig.servicex@developpement-durable.gouv.fr"
-      }
-    ]
-  },
-  {
-    "@id": "_:Nd35a480c3efb4f7d8bc14a8938b18261",
+    "@id": "_:ub6bL10C22",
     "@type": [
       "http://purl.org/dc/terms/RightsStatement"
     ],
@@ -131,19 +122,7 @@ Commentaire saisi par le service.
     ]
   },
   {
-    "@id": "_:N5f0a1b687d2b4e0eb425412ce86f8f9b",
-    "@type": [
-      "http://xmlns.com/foaf/0.1/Organization"
-    ],
-    "http://xmlns.com/foaf/0.1/name": [
-      {
-        "@language": "fr",
-        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
-      }
-    ]
-  },
-  {
-    "@id": "_:N6160bfa39b134e369ceafd9e105c3c6c",
+    "@id": "_:ub6bL28C23",
     "@type": [
       "http://www.w3.org/ns/dcat#Distribution"
     ],
@@ -160,12 +139,12 @@ Commentaire saisi par le service.
     ],
     "http://purl.org/dc/terms/licence": [
       {
-        "@id": "_:N2c42eee2f6dd4651861a20feecdcf02d"
+        "@id": "_:ub6bL31C25"
       }
     ]
   },
   {
-    "@id": "_:N2c42eee2f6dd4651861a20feecdcf02d",
+    "@id": "_:ub6bL31C25",
     "@type": [
       "http://purl.org/dc/terms/LicenseDocument"
     ],
@@ -177,7 +156,53 @@ Commentaire saisi par le service.
     ]
   },
   {
-    "@id": "_:N678a2e51c6864720ab1343279e74e1db",
+    "@id": "_:ub6bL14C20",
+    "@type": [
+      "http://purl.org/dc/terms/ProvenanceStatement"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Donnée référentielle produite par l'IGN."
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL25C23",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Kind"
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:contact.geoservices@ign.fr"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#organization-name": [
+      {
+        "@language": "fr",
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL22C23",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Kind"
+    ],
+    "http://www.w3.org/2006/vcard/ns#fn": [
+      {
+        "@language": "fr",
+        "@value": "Pôle IG"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:sig-contact@developpement-durable.gouv.fr"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL18C18",
     "@type": [
       "http://purl.org/dc/terms/PeriodOfTime"
     ],

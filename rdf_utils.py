@@ -31,23 +31,12 @@ On pourra utiliser l'exemple contenu dans le répertoire exemple :
 >>> with open('shape.ttl', encoding='UTF-8') as src:
 ...    shape = Graph().parse(data=src.read(), format='turtle')
 
-Ce n'est pas obligatoire - il s'agit d'un paramètre optionnel
-dans les fonctions suivantes - mais il peut être judicieux de
-stocker une bonne fois pour toute l'identifiant du modèle,
-pour éviter que chaque fonction retourne le chercher.
->>> id_template = fetchUUID(dataset_template)
-
-Dans la même logique, on améliorera légèrement la performance
-en récupérant en amont dans le modèle un dictionnaire des préfixes
-utilisés dans les chemins SPARQL (cf. plus loin) :
->>> prefixes = buildNSDict(dataset_template)
-
 2. import des vocabulaires contrôlés :
 >>> with open('ontologies.ttl', encoding='UTF-8') as src:
 ...    vocabulary = Graph().parse(data=src.read(), format='turtle')
 
 3. extraction et dé-sérialisation sous forme d'un graphe RDF :
->>> g_source = extractMetadata(c_source, dataset_template)
+>>> g_source = extractMetadata(c_source, shape)
 
 4. stockage de l'identifiant du jeu de données :
 >>> id_dataset = fetchUUID(g_source)
@@ -149,844 +138,39 @@ import re, uuid
 # à cette heure ne sont pas sous python 3.9.
 
 
-def buildNSDict(graph: Graph) -> Dict[str, Namespace]:
-    """Return a dictionary of all namespaces (as values) and matching prefixes (as keys) from given graph.
-
-    - graph est un graphe RDF.
-
-    Résultat : un dictionnaire dont les clés sont les préfixes
-    définis dans le graphe et les valeurs les espaces de nommage
-    correspondants.
-
-    >>> buildNSDict(Graph())
-    {'xml': Namespace('http://www.w3.org/XML/1998/namespace'),
-    'rdf': Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#'),
-    'rdfs': Namespace('http://www.w3.org/2000/01/rdf-schema#'),
-    'xsd': Namespace('http://www.w3.org/2001/XMLSchema#')}
-
-    >>> buildNSDict(dataset_template)
-    """
-
-    d = dict()
-
-    for p, u in graph.namespace_manager.namespaces():
-
-        d.update( { p : Namespace(str(u)) } )
-
-    return d
-
-
-def fetchUUID(graph: Graph, prefixDict: Dict[str, Namespace] = None) -> URIRef:
-    """Get dataset UUID from metadata graph of said dataset.
-
-    - graph est un graphe RDF.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage.
-    S'il n'est pas renseigné, seuls les préfixes déclarés dans le graphe
-    seront reconnus.
-
-    Résultat : un objet de type URIRef contenant l'identifiant
-    (sujet du triple "?uuid a dcat:Dataset"), présumé unique,
-    contenu dans le graphe.
-
-    Si le graphe contient plus d'un triple "?uuid a dcat:Dataset", la
-    fonction ne renvoie rien.
-
-    >>> fetchUUID(dataset_template)
-    rdflib.term.URIRef('urn:uuid:5c78c95d-d9ff-4f95-8e15-dd14cbc6cced')
-    """
-
-    try:
-        
-        q = graph.query(
-            """
-            SELECT
-                ?u
-            WHERE
-                { ?u a dcat:Dataset . }
-            """,
-            initNs = prefixDict
-            )
-    except:
-        return
-
-    if len(q) == 1:
-        for row in q:
-            return row.u
-
-      
-
-def testPath(graph: Graph, mPath: str, prefixDict: Dict[str, Namespace] = None,
-         datasetUUID: URIRef = None) -> bool:
-    """Check existence of path mPath in given graph object.
-
-    - graph est un graphe RDF.
-    - mPath est une chaîne de caractères présumée correspondre à un chemin SPARQL.
-    - datasetUUID est un objet de type URIRef correspondant à l'identifiant du jeux
-    de données considéré. S'il n'est pas renseigné, la fonction ira le récupérer
-    dans le graphe.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, seuls les préfixes déclarés dans le graphe seront reconnus.
-
-    Résultat : True si le chemin mPath est présent dans le graphe ou s'il s'agit
-    d'une chaîne de caractères vide (""). False dans tous les autres cas, y compris
-    si le chemin est invalide.
-
-    >>> testPath(dataset_template, "dcat:distribution / dct:licence / rdfs:label")
-    True
-
-    >>> testPath(dataset_template, "")
-    True
-
-    >>> testPath(dataset_template, "N'importe quoi")
-    False
-    """
-
-    if mPath == "":
-        return True
-
-    if datasetUUID is None:        
-        datasetUUID = fetchUUID(graph, prefixDict)
-
-    try:
-        
-        q = graph.query(
-            """
-            ASK
-                {{ ?u {} ?o }}
-            """.format(mPath),
-            initNs = prefixDict,
-            initBindings = { 'u' : datasetUUID }
-            )
-
-    except:
-        return False
-    else:
-        return bool(q)
-
-
-def fetchValue(graph: Graph, mPath: str, prefixDict: Dict[str, Namespace] = None,
-           datasetUUID: URIRef = None) -> List[Union[URIRef, Literal]]:
-    """Return a list of metadata values at path mPath in given graph if any.
-
-    - graph est un graphe RDF.
-    - mPath est une chaîne de caractères présumée correspondre à un chemin SPARQL.
-    - datasetUUID est l'identifiant du jeux de données considéré. S'il n'est
-    pas renseigné, la fonction ira le récupérer dans le graphe.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, seuls les préfixes déclarés dans le graphe seront reconnus.
-
-    Résultat : la liste des valeurs contenues dans le graphe pour la propriété
-    identifiée par le chemin, présumées toutes se rapporter au même sujet. Les
-    valeurs peuvent être de type Literal ou URIRef.
-
-    Si le chemin est invalide ou n'existe pas, la fonction ne renvoie rien.
-
-    >>> fetchValue(dataset_template, "dcat:distribution / dct:licence / rdfs:label")
-    rdflib.term.Literal('Licence ouverte Etalab.', lang='fr')
-    """
-
-    if mPath == "":
-         return
-
-    if datasetUUID is None:        
-        datasetUUID = fetchUUID(graph, prefixDict)
-
-    try:
-        q = graph.query(
-            """
-            SELECT
-                ?o
-            WHERE
-                {{ ?u {} ?o }}
-            """.format(mPath),
-            initNs = prefixDict,
-            initBindings = { 'u' : datasetUUID }
-            )
-
-    except:
-        return
-
-    if len(q) > 0:
-
-        l = [row.o for row in q]
-            
-        return l
     
-
-
-def fetchType(mPath: str, gTemplate: Graph, prefixDict: Dict[str, Namespace] = None,
-          templateUUID: URIRef = None) -> URIRef:
-    """Fetch the rdf:type object at path in given template graph if any.
-
-    - mPath est une chaîne de caractères présumée correspondre à un chemin SPARQL
-    identifiant la propriété considérée.
-    - gTemplate est un modèle de graphe qui explicite les classes (rdf:type)
-    des catégories de métadonnées. 
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, seuls les préfixes définis dans gTemplate seront reconnus.
-    - templateUUID est un objet de type URIRef correspondant à l'identifiant du jeu
-    de données type décrit dans gTemplate. S'il n'est pas renseigné, la fonction ira
-    le récupérer dans gTemplate.
-
-    Résultat : un objet de type URIRef correspondant à la classe RDF de l'objet.
-
-    Si le chemin est invalide, non reconnu ou a plus d'une occurence dans le
-    graphe, la fonction ne renvoie rien.
     
-    >>> fetchType("dcat:distribution / dct:licence", dataset_template)
-    rdflib.term.URIRef('http://purl.org/dc/terms/LicenseDocument')
-    """
+def buildGraph(widgetsDict: dict, vocabulary: Graph, language: str = "fr") -> Graph:
+    """Return a RDF graph build from given dictionary.
 
-    if mPath == "":
-         return
-
-    if templateUUID is None:        
-        templateUUID = fetchUUID(gTemplate, prefixDict)
-
-    try:
-        q = gTemplate.query(
-            """
-            SELECT
-                ?o
-            WHERE
-                {{ ?u {} [ a ?o ] }}
-            """.format(mPath),
-            initNs = prefixDict,
-            initBindings = { 'u' : templateUUID }
-            )
-    except:
-        return
-
-    if len(q) == 1:
-
-        for row in q:
-            
-            return row.o
-
-
-def fetchDataType(mPath: str, gTemplate: Graph, prefixDict: Dict[str, Namespace] = None,
-          templateUUID: URIRef = None) -> URIRef:
-    """Fetch the datatype of the Literal at path in given template graph if any.
-
-    - mPath est une chaîne de caractères présumée correspondre à un chemin SPARQL
-    identifiant la propriété considérée.
-    - gTemplate est un modèle de graphe qui explicite les types xsd attendues
-    pour les catégories de métadonnées de type rfds:Literal via des propriétés
-    sh:datatype.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, seuls les préfixes définis dans gTemplate seront reconnus.
-    - templateUUID est un objet de type URIRef correspondant à l'identifiant du jeu
-    de données type décrit dans gTemplate. S'il n'est pas renseigné, la fonction ira
-    le récupérer dans gTemplate.
-
-    Résultat : un objet de type URIRef correspondant au type de Literal
-    attendu pour la propriété.
-
-    La fonction ne renvoie rien pour les Literal de type xsd:string.
-
-    Si le chemin est invalide, non reconnu, a plus d'une occurence dans le
-    graphe, ou pointe sur une valeur qui n'est pas de type Literal, la
-    fonction ne renvoie rien.
-
-    >>> fetchDataType("dct:temporal / dcat:startDate", dataset_template)
-    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#date')
-    """
-
-    if mPath == "":
-         return
-
-    if templateUUID is None:        
-        templateUUID = fetchUUID(gTemplate, prefixDict)
-
-    try:
-        q = gTemplate.query(
-            """
-            SELECT
-                ?o
-            WHERE
-                {{ ?u {} [ sh:datatype ?o ] }}
-            """.format(mPath),
-            initNs = prefixDict,
-            initBindings = { 'u' : templateUUID }
-            )
-    except:
-        return
-
-    if len(q) == 1:
-
-        for row in q:
-            
-            return row.o
-
-
-
-def fetchVocabulary(mPath: str, gTemplate: Graph, vocabulary: Graph,
-            prefixDict: Dict[str, Namespace] = None,
-            templateUUID: URIRef = None, language:str = "fr") -> List[str]:
-    """Return a list of possible values for property mPath if bound by an ontology.
-
-    - mPath est une chaîne de caractères présumée correspondre à un chemin SPARQL
-    identifiant la propriété considérée.
-    - language est la langue attendue pour les valeurs listées, français par défaut.
-    - gTemplate est un modèle de graphe qui explicite les ontologies à utiliser via
-    des propriétés skos:inScheme.
+    Arguments :
+    - widgetsDict est un dictionnaire produit par la fonction buildDict (lancée
+    en mode 'edit') et modifié par les actions de l'utilisateur.
     - vocabulary est un graphe réunissant le vocabulaire de toutes les ontologies
     pertinentes.
-    - templateUUID est l'identifiant du jeu de données type décrit dans gTemplate.
-    S'il n'est pas renseigné, la fonction ira le récupérer dans gTemplate.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, il est déduit de gTemplate.
+    - language (paramètre utilisateur, en l'état où il se trouve à l'issue de la
+    saisie) est la langue principale de rédaction des métadonnées.
 
-    Résultat : liste contenant les valeurs (chaînes de caractères) admissibles pour
-    la propriété visée.
-
-    La fonction ne renvoie rien si le chemin mPath n'existe pas dans gTemplate ou 
-    si le vocabulaire de la propriété correspondante n'est pas contrôlé.
-
-    Les valeurs sont triées par ordre alphabétique selon la locale de l'utilisateur.
-
-    >>> fetchVocabulary("dcat:theme", dataset_template, vocabulary)
-    ['Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
-    'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement',
-    'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique',
-    'Population et société', 'Questions internationales', 'Régions et villes', 'Santé',
-    'Science et technologie', 'Transports']
+    Résultat : un graphe RDF de métadonnées.
     """
-
-    if mPath == "":
-         return
-
-    if templateUUID is None:        
-        templateUUID = fetchUUID(gTemplate, prefixDict)
-
-    if prefixDict == None:
-        prefixDict = buildNSDict(gTemplate)
-
-    try:
-        q1 = gTemplate.query(
-            """
-            SELECT
-                ?o
-            WHERE
-                {{ ?u {} [ skos:inScheme ?o ] }}
-            """.format(mPath),
-            initNs = prefixDict,
-            initBindings = { 'u' : templateUUID }
-            )
-    except:
-        return
-
-    if len(q1) == 1:
-
-        for r1 in q1:
-
-            q2 = vocabulary.query(
-                """
-                SELECT
-                    ?l
-                WHERE
-                    {{ ?s a skos:Concept ;
-                    skos:inScheme ?o ;
-                    skos:prefLabel ?l .
-                      FILTER ( lang(?l) = "{}" ) }}
-                """.format(language),
-                initNs = prefixDict,
-                initBindings = { 'o' : r1.o }
-                )
-
-            if len(q2) > 0:
-
-                setlocale(LC_COLLATE, "")
-
-                return sorted(
-                    [str(r2.l) for r2 in q2],
-                    key=lambda x: strxfrm(x)
-                    )
-
-
-def fetchConceptFromValue(mPath: str, litValue: Union[Literal, str], gTemplate: Graph,
-              vocabulary: Graph, prefixDict: Dict[str, Namespace] = None,
-              templateUUID: URIRef = None, language: str = "fr") -> Tuple[bool, URIRef]:
-    """Return the skos:Concept IRI matching given literral value for property mPath if any.
-
-    - mPath est une chaîne de caractères présumée correspondre à un chemin SPARQL
-    identifiant la propriété considérée.
-    - litValue est une chaîne de caractères ou un objet de type rdflib.term.Literal
-    correspondant à la transcription littérale de la valeur prise par la propriété
-    (skos:prefLabel). À noter litValue sera toujours considéré comme de type
-    xsd:string et la langue du Literal sera toujours ignorée (language fait foi).
-    - gTemplate est un modèle de graphe qui explicite les ontologies à utiliser via
-    des propriétés skos:inScheme.
-    - gVocabylary est un graphe réunissant le vocabulaire de toutes les ontologies
-    pertinentes.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, il est déduit de gTemplate.
-    - templateUUID est un objet de type URIRef correspondant à l'identifiant du jeu
-    de données type décrit dans gTemplate. S'il n'est pas renseigné, la fonction ira
-    le récupérer dans gTemplate.
-    - language est la langue de litValue, français par défaut.
-
-    Résultat : un tuple formé (0) d'un booléen indiquant si le vocabulaire est contrôlé
-    pour la propriété considérée et, si elle existe, (1) de l'IRI recherchée.
-
-    >>> fetchConceptFromValue("dcat:theme", "Transports", dataset_template, vocabulary)
-    (True, rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme/TRAN'))
-    
-    >>> fetchConceptFromValue("dcat:theme", Literal("Transports", lang="fr"), dataset_template, vocabulary)
-    (True, rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme/TRAN'))
-    
-    >>> fetchConceptFromValue("dcat:theme", "N'existe pas", dataset_template, vocabulary)
-    (True,)
-
-    >>> fetchConceptFromValue("dct:title", "Vocabulaire non contrôlé", dataset_template, vocabulary)
-    (False,)
-    """
-
-    if mPath == "" or str(litValue) == "":
-         return False, 
-
-    if templateUUID is None:        
-        templateUUID = fetchUUID(gTemplate, prefixDict)
-
-    if prefixDict == None:
-        prefixDict = buildNSDict(gTemplate)
-
-    try:
-        q1 = gTemplate.query(
-            """
-            SELECT
-                ?o
-            WHERE
-                {{ ?u {} [ skos:inScheme ?o ] }}
-            """.format(mPath),
-            initNs = prefixDict,
-            initBindings = { 'u' : templateUUID }
-            )
-    except:
-        return False,
-
-    if len(q1) == 1:
-
-        for r1 in q1:
-
-            q2 = vocabulary.query(
-                """
-                SELECT
-                    ?s
-                WHERE
-                    { ?s a skos:Concept ;
-                    skos:inScheme ?o ;
-                    skos:prefLabel ?l }
-                """,
-                initNs = prefixDict,
-                initBindings = { 'o' : r1.o, 'l' : Literal(litValue, lang=language) }
-                )
-
-            if len(q2) == 1:
-
-                for r2 in q2:
-                    return True, r2.s
-
-            else:
-                return True,
-
-    elif len(q1) > 1:
-        raise RuntimeError("More than one ontology referenced for path '{}'. This shouldn't happen.".format(mPath))
-
-    else:
-        return False,
-
-
-def fetchValueFromConcept(conceptIRI: URIRef, vocabulary, language: str = "fr") -> str:
-    """Return the skos:prefLabel strings matching given conceptIRI and its scheme.
-
-    - conceptIRI est un objet de type rdflib.term.URIRef supposément référencé
-    dans une ontologie.  
-    - vocabulary est un graphe réunissant le vocabulaire de toutes les ontologies
-    pertinentes.
-    - language est la langue attendue pour la valeur littérale résultante, français
-    par défaut.
-    
-    Si aucune valeur n'est disponible pour la langue spécifiée, la fonction retournera
-    la traduction française (si elle existe).
-
-    Résultat : une tuple contenant deux chaînes de caractères. [0] est le libellé
-    explicite défini pour la valeur. [1] est le nom de l'ontologie.
-    (None, None) si l'IRI n'est pas répertorié.
-    
-    Dans l'exemple ci-après, il existe une traduction française et anglaise pour le terme
-    recherché, mais pas de version espagnole.
-
-    >>> u = URIRef("http://publications.europa.eu/resource/authority/data-theme/TRAN")
-    
-    >>> fetchValueFromConcept(u, vocabulary)
-    ('Transports', 'Thèmes de données (UE)')
-    
-    >>> fetchValueFromConcept(u, vocabulary, 'en')
-    ('Transport', 'Data theme (EU)')
-    
-    >>> fetchValueFromConcept(u, vocabulary, 'es')
-    ('Transports', 'Thèmes de données (UE)')
-    """
-    
-    q_vc = vocabulary.query(
-        """
-        SELECT
-            ?label ?scheme
-        WHERE
-            {{ ?c a skos:Concept ;
-               skos:inScheme ?s ;
-               skos:prefLabel ?label .
-               ?s a skos:ConceptScheme ;
-               skos:prefLabel ?scheme .
-               FILTER (( lang(?label) = "{0}" ||
-                      ( ( lang(?label) != "{0}" )
-                      && ( lang(?label) = "fr" ) ) ) 
-                  && ( lang(?scheme) = "{0}" ||
-                      ( ( lang(?scheme) != "{0}" )
-                      && ( lang(?scheme) = "fr" ) ) )) }}
-        """.format(language),
-        initBindings = { 'c' : conceptIRI }
-        )
-     
-    for t in q_vc:
-        return str( t['label'] ), str( t['scheme'] )
-        
-    return (None, None)
-    
-    
-
-
-def emailFromOwlThing(thingIRI: URIRef) -> str:
-    """Return a string human-readable version of an owl:Thing IRI representing an email adress.
-
-    - thingIRI est un objet de type URIref supposé correspondre
-    à une adresse mél (classe RDF owl:Thing).
-
-    Résultat : une chaîne de caractères.
-
-    Cette fonction très basique se contente de retirer le préfixe
-    "mailto:" s'il était présent.
-
-    >>> emailFromOwlThing(URIRef("mailto:jon.snow@the-wall.we"))
-    'jon.snow@the-wall.we'
-    """
-
-    # à partir de la version 3.9
-    # str(thingIRI).removeprefix("mailto:") serait plus élégant
-    
-    return re.sub("^mailto[:]", "", str(thingIRI))
-
-
-def owlThingFromEmail(emailStr: str) -> URIRef:
-    """Return an IRI from a string representing an email adress.
-
-    - emailStr est une chaîne de caractère supposée correspondre à une
-    adresse mél.
-
-    Résultat : un objet de type URIRef respectant grosso modo le schéma
-    officiel des URI pour les adresses mél : mailto:<email>.
-    (réf : https://datatracker.ietf.org/doc/html/rfc6068)
-
-    La fonction ne fait aucun contrôle de validité sur l'adresse si ce
-    n'est vérifier qu'elle ne contient aucun caractère interdit pour
-    un IRI.
-
-    >>> owlThingFromEmail("jon.snow@the-wall.we")
-    rdflib.term.URIRef('mailto:jon.snow@the-wall.we')
-    """
-
-    emailStr = re.sub("^mailto[:]", "", emailStr)
-
-    l = [i for i in '<> "{}|\\^`' if i in emailStr]
-
-    if l and not l == []:          
-        raise ValueError("Invalid IRI. Forbiden character '{}' in email adress '{}'.".format("".join(l), emailStr))
-
-    if emailStr and not emailStr == "":
-        return URIRef("mailto:" + emailStr)
-
-
-def telFromOwlThing(thingIRI: URIRef) -> str:
-    """Return a string human-readable version of an owl:Thing IRI representing a phone number.
-
-    - thingIRI est un objet de type URIref supposé correspondre
-    à un numéro de téléphone (classe RDF owl:Thing).
-
-    Résultat : une chaîne de caractères.
-
-    Contrairement à owlThingFromTel, cette fonction très basique ne standardise
-    pas la forme du numéro de téléphone. Elle se contente de retirer le préfixe
-    "tel:" s'il était présent.
-
-    >>> telFromOwlThing(URIRef("tel:+33-1-23-45-67-89"))
-    '+33-1-23-45-67-89'
-    """
-    
-    return re.sub("^tel[:]", "", str(thingIRI))
-
-
-def owlThingFromTel(telStr: str, addPrefixFr: bool = True) -> URIRef:
-    """Return an IRI from a string representing a phone number.
-
-    - telStr est une chaîne de caractère supposée correspondre à un
-    numéro de téléphone.
-    - addPrefixFr est un booléen indiquant si la fonction doit tenter
-    de transformer les numéros de téléphone français locaux ou présumés
-    comme tels (un zéro suivi de neuf chiffres) en numéros globaux ("+33"
-    suivi des neuf chiffres).
-
-    Résultat : un objet de type URIRef respectant grosso modo le schéma
-    officiel des URI pour les numéros de téléphone : tel:<phonenumber>.
-    (réf : https://datatracker.ietf.org/doc/html/rfc3966)
-
-    Si le numéro semble être un numéro de téléphone français valide,
-    il est standardisé sous la forme <tel:+33-x-xx-xx-xx-xx>.
-
-    >>> owlThingFromTel("0123456789")
-    rdflib.term.URIRef('tel:+33-1-23-45-67-89')
-    """
-
-    telStr = re.sub("^tel[:]", "", telStr)
-    red = re.sub(r"[.\s-]", "", telStr)
-    tel = ""
-
-    if addPrefixFr:
-        a = re.match(r"0(\d{9})$", red)
-        # numéro français local
-        
-        if a:
-            red = "+33" + a[1]
-
-    if re.match(r"[+]33\d{9}$", red):
-    # numéro français global
-    
-        for i in range(len(red)):
-            if i == 3 or i > 2 and i%2 == 0:
-                tel = tel + "-" + red[i]
-            else:
-                tel = tel + red[i]
-
-    else:
-        tel = re.sub(r"(\d)\s(\d)", r"\1-\2", telStr).strip(" ")
-        # les espaces entre les chiffres sont remplacés par des tirets,
-        # ceux en début et fin de chaine sont supprimés
-
-        l = [i for i in '<> "{}|\\^`' if i in tel]
-
-        if l and not l == []:          
-            raise ValueError("Invalid IRI. Forbiden character '{}' in phone number '{}'.".format("".join(l), telStr))
-
-    if tel and not tel == "":
-        return URIRef("tel:" + tel)
-
-    
-    
-
-def buildGraph(metaDict: Dict[str, List[str]], gTemplate: Graph, vocabulary: Graph = None,
-           datasetUUID: URIRef = None, templateUUID: URIRef = None,
-           prefixDict: Dict[str, Namespace] = None, language: str = "fr") -> Graph:
-    """Return a graph object build from dictionary metaDict using paths as key and metada values as values.
-
-    - metaDict est un dictionnaire dont les clés sont des chemins identifiant des
-    catégories de métadonnées et les valeurs des listes de chaînes de caractères
-    correspondant aux valeurs saisies pour ces catégories.
-    - gTemplate est un modèle de graphe contenant l'arborescence des catégories de
-    métadonnées (hors catégories définies localement par le service) et les types de
-    valeurs attendus.
-    - gVocabylary est un graphe réunissant le vocabulaire de toutes les ontologies
-    pertinentes.
-    - datasetUUID est un objet de type URIRef correspondant à l'identifiant du jeux
-    de données considéré. S'il n'est pas spécifé, un nouvel identifiant est généré.
-    - templateUUID est un objet de type URIRef correspondant à l'identifiant du jeu
-    de données type décrit dans gTemplate. S'il n'est pas renseigné, la fonction ira
-    le récupérer dans gTemplate.
-    - prefixDict est un dictionnaire de préfixes d'espaces de nommage. S'il n'est
-    pas renseigné, les préfixes du modèle seront utilisés.
-    - language est la langue de rédaction des métadonnées, présumée homogène.
-
-    Résultat : un Graph RDF de métadonnées.
-
-    >>> h = buildGraph(d0, dataset_template, vocabulary)
-    >>> h = buildGraph(d0, dataset_template, vocabulary , URIRef("urn:uuid:a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"))
-    """
-
-    if prefixDict == None:
-        prefixDict = buildNSDict(gTemplate)
-        
-
-    if templateUUID is None:
-        templateUUID = fetchUUID(gTemplate, prefixDict)
-    else:
-        if not isinstance(templateUUID, URIRef):
-            raise TypeError("templateUUID should be an URIRef object.")
-        
-
-    if datasetUUID is None:
-        datasetUUID = URIRef("urn:uuid:" + str(uuid.uuid4()))
-    else:
-        if not isinstance(datasetUUID, URIRef):
-            raise TypeError("datasetUUID should be an URIRef object.")
-        
 
     graph = Graph()
-
-    for k, v in prefixDict.items():    
-        graph.namespace_manager.bind(k, v)
-        
-        graph.update(
-            """
-            INSERT
-                { ?u a dcat:Dataset }
-            WHERE
-                { }
-            """,
-            initNs = prefixDict,
-            initBindings = { 'u' : datasetUUID }
-            )                
-
-    for k, v in metaDict.items():
-
-        if all(y is None or y == "" for y in v or []) or k is None or k == "":
-            # on ignore les listes de valeurs ou clés vides
+    
+    for k, d in widgetsDict:
+    
+        mValue = None
+    
+        if d['value'] in [None, '']:
             continue
-
-        if not testPath(gTemplate, k):
-            if " / " in k:
-                raise KeyError("Invalid path '{}'. Path can't have more than one level if not referenced in template.".format(k))
-
-
-        l = list(reversed(re.split(r'\s*[/]\s*', k)))
-
-        p = l.pop()
-
-        c = ""
-
-        while not l == []:
-
-            if c == "":               
-                d = p              
-            else:   
-                d = c + " / " + p
-
-            if not testPath(graph, d, prefixDict, datasetUUID):
-
-                t = fetchType(d, gTemplate, prefixDict, templateUUID)
-
-                if c == "":
-                    
-                    graph.update(
-                        """
-                        INSERT
-                            {{ ?u {} [ a ?t ] }}
-                        WHERE
-                            {{ }}
-                        """.format(p),
-                        initNs = prefixDict,
-                        initBindings = { 't' : t, 'u' : datasetUUID }
-                        )
-                    
-                else:
-                    graph.update(
-                        """
-                        INSERT
-                            {{ ?o {} [ a ?t ] }}
-                        WHERE
-                            {{ ?u {} ?o }}
-                        """.format(p, c),
-                        initNs = prefixDict,
-                        initBindings = { 't' : t, 'u' : datasetUUID }
-                        )
-
-
-            c = d
-
-            p = l.pop()
-                    
-        for f in v:
-
-            e = None
-
-            if f and not f == "":
-
-                if not c == "":
-                    z = c + " / " + p
-                else:
-                    z = p
-                
-
-                t = fetchType(z, gTemplate, prefixDict, templateUUID)
-
-                if t is None: # cas d'une catégorie locale non référencée dans le modèle
-
-                    e = Literal(f, lang=language)
-
-                elif t == URIRef("http://www.w3.org/2000/01/rdf-schema#Literal") :
-                    # métadonnée de type rdf.Literal
-
-                    dt = fetchDataType(z, gTemplate, prefixDict, templateUUID)
-
-                    if dt or p == "dct:identifier":
-                        e = Literal(f, datatype=dt)
-                    else:
-                        e = Literal(f, lang=language)
-                        
-                else :
-
-                    if vocabulary:
-
-                        # vocabulaire contrôlé ?
-                        b = fetchConceptFromValue(z, f, gTemplate, vocabulary, prefixDict, templateUUID, language)
-
-                        if b[0] and len(b) == 2:
-                            e = b[1]
-                        elif b[0]:
-                            raise ValueError("Controlled vocabulary. '{}' isn't an authorized value for property '{}'.".format(f, str(k)))
-
-                    if p in ("vcard:hasTelephone", "foaf:phone"):
-                        e = owlThingFromTel(f)
-
-                    if p in ("vcard:hasEmail", "foaf:mbox"):
-                        e = owlThingFromEmail(f)
-
-                    if e is None:
-                    
-                        # toutes autres métadonnées sont présumées être des
-                        # IRI. On vérifie toutefois que la valeur ne contient aucun
-                        # caractère interdit qui ferait échouer la sérialisation.
-                        if not all(map(lambda x: not x in '<>" {}|\\^`', f)):
-                            raise ValueError("Invalid IRI. Forbiden character in value '{}' for key '{}'. Not allowed : <>\" {{}}|\\^`".format(f, str(k)))
-                            
-                        e = URIRef(f)
-
-                if c == "":
-
-                    graph.update(
-                        """
-                        INSERT
-                            {{ ?u {} ?e }}
-                        WHERE
-                            {{  }}
-                        """.format(p),
-                        initNs = prefixDict,
-                        initBindings = { 'e' : e, 'u' : datasetUUID }
-                        )                    
-                    
-                else:  
-                    graph.update(
-                        """
-                        INSERT
-                            {{ ?o {} ?e }}
-                        WHERE
-                            {{ ?u {} ?o }}
-                        """.format(p, c),
-                        initNs = prefixDict,
-                        initBindings = { 'e' : e, 'u' : datasetUUID }
-                        )
+    
+        ################
+        
 
     return graph
 
-             
+
+
+
 
 def buildDict(
     graph: Graph,
@@ -994,6 +178,7 @@ def buildDict(
     vocabulary: Graph,
     template: dict = dict(),
     mode: str = 'edit',
+    readHideBlank: bool = True,
     language: str = "fr",
     translation: bool = False,
     langList: List[str] = ['fr', 'en'],
@@ -1006,7 +191,8 @@ def buildDict(
     mParentNode: Union[URIRef, BNode] = None,
     mNSManager : NamespaceManager = None,
     mWidgetDictTemplate : dict = None,
-    mDict: dict = None
+    mDict: dict = None,
+    mGraphEmpty: bool = False
     ) -> dict:
     """Return a dictionary with relevant informations to build a metadata update form. 
 
@@ -1033,6 +219,7 @@ def buildDict(
     disparition des boutons, notamment les "boutons plus" qui faisaient l'objet d'un
     enregistrement à part dans le dictionnaire. [ATTENTION !!! le mode recherche n'est pas
     encore implémenté, il renvoie le même dictionnaire que le mode lecture]
+    - readHideBlank indique si les champs vides doivent être masqués en mode lecture.
     - language (paramètre utilisateur) est la langue principale de rédaction des métadonnées.
     Français ("fr") par défaut. La valeur de language doit être incluse dans langList ci-après.
     - translation (paramètre utilisateur) est un booléen qui indique si les widgets de
@@ -1179,23 +366,27 @@ def buildDict(
 
         mTargetClass = URIRef("http://www.w3.org/ns/dcat#Dataset")
         mPath = None
+        mParentNode = None
+        mGraphEmpty = ( len(graph) == 0 )
 
         # récupération de l'identifiant
         # du jeu de données dans le graphe, s'il existe
-        q_id = graph.query(
-            """
-            SELECT
-                ?id
-            WHERE
-                { ?id a dcat:Dataset . }
-            """
-            )
+        if not mGraphEmpty:
+        
+            q_id = graph.query(
+                """
+                SELECT
+                    ?id
+                WHERE
+                    { ?id a dcat:Dataset . }
+                """
+                )
 
-        if len(q_id) > 1:
-            raise ValueError("More than one dcat:Dataset object in graph.")
+            if len(q_id) > 1:
+                raise ValueError("More than one dcat:Dataset object in graph.")
 
-        for i in q_id:
-            mParentNode = i['id']
+            for i in q_id:
+                mParentNode = i['id']
 
         # si on n'a pas pu extraire d'identifiant, on en génère un nouveau
         # (et, in fine, le formulaire sera vierge)
@@ -1252,7 +443,8 @@ def buildDict(
         mDict = { mParentWidget : mWidgetDictTemplate.copy() }
         mDict[mParentWidget].update( {
             'object' : 'group of properties',
-            'main widget type' : 'QGroupBox'
+            'main widget type' : 'QGroupBox',
+            'node' : mParentNode
             } )
 
 
@@ -1306,65 +498,77 @@ def buildDict(
         mNPath = ( mPath + " / " if mPath else '') + mProperty.n3(nsm)
         mSources = None
         mDefaultTrad = None
+        mDefaultSource = None
         mLangList = None
+        values = None
 
         # on extrait la ou les valeurs éventuellement
         # renseignées dans le graphe pour cette catégorie
         # et le sujet considéré
-        q_gr = graph.query(
-            """
-            SELECT
-                ?value
-            WHERE
-                 { ?n ?p ?value . }
-            """,
-            initBindings = { 'n' : mParentNode, 'p' : mProperty }
-            )
-
-        # exclusion des catégories qui ne sont pas prévues par
-        # le modèle et n'ont pas de valeur renseignée
-        if len(q_gr) == 0 and not len(template) == 0 and ( not mPath in template ):
-            continue
-
-        # récupération de la liste des ontologies
-        q_on = shape.query(
-            """
-            SELECT
-                ?ontology
-            WHERE
-                { ?u sh:targetClass ?c .
-                  ?u sh:property ?x .
-                  ?x sh:path ?p .
-                  ?x snum:ontology ?ontology . }
-            """,
-            initBindings = { 'c' : mTargetClass, 'p' : mProperty }
-            )
-
-        for s in q_on:
-            
-            q_vc = vocabulary.query(
+        if not mGraphEmpty:
+        
+            q_gr = graph.query(
                 """
                 SELECT
-                    ?scheme
+                    ?value
                 WHERE
-                    {{ ?s a skos:ConceptScheme ;
-                     skos:prefLabel ?scheme .
-                      FILTER ( lang(?scheme) = "{}" ) }}
-                """.format(language),
-                initBindings = { 's' : s['ontology'] }
+                     { ?n ?p ?value . }
+                """,
+                initBindings = { 'n' : mParentNode, 'p' : mProperty }
+                )
+                
+            values = [ v['value'] for v in q_gr ]
+    
+        # exclusion des catégories qui ne sont pas prévues par
+        # le modèle et n'ont pas de valeur renseignée
+        if values is None and not len(template) == 0 and ( not mPath in template ):
+            continue
+        elif not ( readHideBlank and mode == 'read' ):
+            values = values or [ None ]
+            
+        t = template.pop(mPath, dict()) if template else dict()
+
+        # récupération de la liste des ontologies
+        if mKind in ("sh:BlankNodeOrIRI", "sh:IRI"):
+
+            q_on = shape.query(
+                """
+                SELECT
+                    ?ontology
+                WHERE
+                    { ?u sh:targetClass ?c .
+                      ?u sh:property ?x .
+                      ?x sh:path ?p .
+                      ?x snum:ontology ?ontology . }
+                """,
+                initBindings = { 'c' : mTargetClass, 'p' : mProperty }
                 )
 
-            mSources = ( mSources or [] ) + ( [ str(l['scheme']) for l in q_vc ] if len(q_vc) == 1 else [] )
+            for s in q_on:
                 
-        if mSources == []:
-            mSources = None
+                q_vc = vocabulary.query(
+                    """
+                    SELECT
+                        ?scheme
+                    WHERE
+                        {{ ?s a skos:ConceptScheme ;
+                         skos:prefLabel ?scheme .
+                          FILTER ( lang(?scheme) = "{}" ) }}
+                    """.format(language),
+                    initBindings = { 's' : s['ontology'] }
+                    )
 
-        if mSources and p['default']:
-            mDefaultTrad = fetchValueFromConcept(p['default'], vocabulary, language)[1]            
-        
-        t = template.pop(mPath, dict()) if template else dict()
-        
-        values = [ v['value'] for v in q_gr ] or [ None ]
+                mSources = ( mSources or [] ) + ( [ str(l['scheme']) for l in q_vc ] if len(q_vc) == 1 else [] )
+                    
+            if mSources == []:
+                mSources = None
+
+            if mSources and t.get('default value', None):
+                mDefaultSource = getConceptFromValue(t.get('default value', None), None, vocabulary, language)[1]
+            elif mSources and p['default']:
+                mDefaultTrad, mDefaultSource = getValueFromConcept(p['default'], vocabulary, language)   
+                
+                    
         multilingual = p['unilang'] and bool(p['unilang']) or False
         multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
         
@@ -1374,7 +578,8 @@ def buildDict(
             # aucune tranduction n'est disponible. On y ajoutera ensuite la langue de la valeur
             # courante pour obtenir la liste à afficher dans son widget de sélection de langue
         
-        if ( translation and multilingual ) or multiple or len(values) > 1 :
+        if len(values) > 1 or ( ( ( translation and multilingual ) or multiple )
+                and not ( mode == 'read' and readHideBlank ) ) :
             
             # si la catégorie admet plusieurs valeurs uniquement s'il
             # s'agit de traductions, on référence un widget de groupe
@@ -1392,7 +597,15 @@ def buildDict(
             mParent = mWidget
             # les widgets de saisie référencés juste après auront
             # ce widget de groupe pour parent
-
+            
+            
+        mLabel = ( t.get('name', None) or str(p['name']) ) if (
+                    ( mode == 'read' and len(values) <= 1 ) or not (
+                    multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
+                    
+        mHelp = ( t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ) ) if (
+                    ( mode == 'read' and len(values) <= 1 ) or not (
+                    multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
 
         # --- BOUCLE SUR LES VALEURS
         
@@ -1400,18 +613,19 @@ def buildDict(
             
             mValue = None
             mCurSource = None
-            mLabel = ( t.get('name', None) or str(p['name']) ) if not ( multiple or len(values) > 1
-                        or ( multilingual and translation ) ) else None
-            mHelp = ( t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ) ) if not (
-                        multiple or len(values) > 1 or ( multilingual and translation ) ) else None
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
                         mKind == 'sh:Literal' and p['type'].n3(nsm) == 'xsd:string' ) else None
             
             # cas d'un noeud vide :
             # on ajoute un groupe et on relance la fonction sur la classe du noeud
-            if mKind in ( 'sh:BlankNode', 'sh:BlankNodeOrIRI' ):
+            if mKind in ( 'sh:BlankNode', 'sh:BlankNodeOrIRI' ) and (
+                    not readHideBlank or not mode == 'read' or isinstance(mValueBrut, BNode) ):
 
-                mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
+                if isinstance(mValueBrut, BNode):
+                    mNode = mValueBrut
+                else:
+                    mNode = BNode()
+                    #mGraphEmpty = True
 
                 if mKind == 'sh:BlankNodeOrIRI':
                     mSources = ( mSources + [ "< manuel >" ] ) if mSources else [ "< URI >", "< manuel >" ]
@@ -1442,14 +656,15 @@ def buildDict(
                     
                 idx.update( { mWidget : 0 } )
 
-                buildDict(graph, shape, vocabulary, template, mode, language, translation, langList, labelLengthLimit, valueLengthLimit,
-                      textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager, mWidgetDictTemplate, mDict)
+                buildDict(graph, shape, vocabulary, template, mode, readHideBlank, language, translation, langList, labelLengthLimit,
+                      valueLengthLimit, textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager, mWidgetDictTemplate, mDict, mGraphEmpty)
 
 
             # pour tout ce qui n'est pas un pur noeud vide :
             # on ajoute un widget de saisie, en l'initialisant avec
             # une représentation lisible de la valeur
-            if not mKind == 'sh:BlankNode':
+            if not mKind == 'sh:BlankNode' and (
+                    not readHideBlank or not mode == 'read' or not isinstance(mValueBrut, BNode) ):
 
                 if isinstance(mValueBrut, BNode):
                     mValueBrut = None
@@ -1462,10 +677,12 @@ def buildDict(
                 # cas d'une catégorie qui tire ses valeurs d'une
                 # ontologie : on récupère le label à afficher
                 if isinstance(mValueBrut, URIRef) and mSources:             
-                    mValue, mCurSource = fetchValueFromConcept(mValueBrut, vocabulary, language)
-                    
+                    mValue, mCurSource = getValueFromConcept(mValueBrut, vocabulary, language)                   
                     if not mCurSource in mSources:
                         mCurSource = '< non répertorié >'
+                        
+                elif mSources and ( mValueBrut is None ):
+                    mCurSource = mDefaultSource
 
                 if mSources and ( mCurSource is None ):
                     # cas où la valeur n'était pas renseignée - ou n'est pas un IRI
@@ -1538,17 +755,17 @@ def buildDict(
                 
                 idx[mParent] += 1
 
-            # référencement d'un widget bouton pour ajouter une valeur
-            # si la catégorie en admet plusieurs
-            if mode == 'edit' and ( ( multilingual and translation and mLangList and len(mLangList) > 1 ) or multiple ):
+        # référencement d'un widget bouton pour ajouter une valeur
+        # si la catégorie en admet plusieurs
+        if mode == 'edit' and ( ( multilingual and translation and mLangList and len(mLangList) > 1 ) or multiple ):
+        
+            mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+            mDict[ ( idx[mParent], mParent ) ].update( {
+                'object' : 'translation button' if multilingual else 'plus button',
+                'main widget type' : 'QToolButton'
+                } )
             
-                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
-                mDict[ ( idx[mParent], mParent ) ].update( {
-                    'object' : 'translation button' if multilingual else 'plus button',
-                    'main widget type' : 'QToolButton'
-                    } )
-                
-                idx[mParent] += 1
+            idx[mParent] += 1
             
 
 
@@ -1588,11 +805,12 @@ def buildDict(
                 initBindings = { 'n' : mParentNode }
                 )
 
-            values = [ v['value'] for v in q_gr ] or [ t.get('default value', None) ]
+            values = [ v['value'] for v in q_gr ] if mode == 'read' and readHideBlank else (
+                        [ v['value'] for v in q_gr ] or [ t.get('default value', None) ] )
 
             multiple = t.get('multiple values', False)
 
-            if multiple or len(values) > 1:
+            if len(values) > 1 or ( multiple and not ( mode == 'read' and readHideBlank ) ):
  
                 mWidget = ( idx[mParent], mParent )
                 mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
@@ -1679,7 +897,8 @@ def buildDict(
             SELECT
                 ?property ?value
             WHERE
-                { ?n ?property ?value . }
+                { ?n ?property ?value . 
+                  FILTER ( ?property != rdf:type ) }
             """,
             initBindings = { 'n' : mParentNode }
             )
@@ -1758,10 +977,24 @@ def buildDict(
     return mDict
 
 
+def forbiddenChar(anyStr: str) -> bool:
+    """Return any character from given string that is not allowed in IRIs.
+    
+    - anyStr est la chaîne de caractères à tester.
+    
+    >>> forbiddenChar('avec des espaces')
+    ' '
+    """
+    
+    r = re.search(r'([<>"\s{}|\\^`])', anyStr)
+    
+    return r[1] if r else None
+
 
 def isValidMiniPath(path: str, mNSManager: NamespaceManager) -> bool:
     """Run basic validity test on SPARQL mono-element path.
 
+    Arguments :
     - path est un chemin SPARQL.
     - mNSManager est un gestionnaire d'espaces de nommage.
 
@@ -1789,14 +1022,15 @@ def isValidMiniPath(path: str, mNSManager: NamespaceManager) -> bool:
     
 
 
-def extractMetadata(description: str, gTemplate: Graph) -> Graph:
+def extractMetadata(description: str, shape: Graph) -> Graph:
     """Get JSON-LD metadata from description and parse them into a graph.
 
+    Arguments :
     - description est une chaîne de caractères supposée correspondre à la
     description (ou les commentaire) d'un objet PostgreSQL.
-    - gTemplate est un modèle de graphe contenant l'arborescence des catégories de
-    métadonnées (hors catégories définies localement par le service). Il fournit
-    ici les préfixes d'espaces de nommage à déclarer dans le graphe.
+    - shape est un schéma SHACL augmenté décrivant les catégories de métadonnées
+    communes. Il fournit ici les préfixes d'espaces de nommage à déclarer dans
+    le graphe.
 
     Résultat : un graphe RDF déduit par désérialisation du JSON-LD.
 
@@ -1809,7 +1043,11 @@ def extractMetadata(description: str, gTemplate: Graph) -> Graph:
     contenue entre les balises est un JSON et pas un JSON-LD, la fonction renvoie
     un graphe vide.
 
-    >>> extractMetadata(c, dataset_template)
+    >>> with open('shape.ttl', encoding='UTF-8') as src:
+    ...    shape = Graph().parse(data=src.read(), format='turtle')
+    >>> with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
+    ...    c_source = src.read()
+    >>> g_source = extractMetadata(c_source, shape)
     """
 
     j = re.search("^(?:.*)[<]METADATA[>](.*?)[<][/]METADATA[>]", description, re.DOTALL)
@@ -1828,9 +1066,9 @@ def extractMetadata(description: str, gTemplate: Graph) -> Graph:
 
     else:
         g = Graph()
-
-    for n, i in buildNSDict(gTemplate).items():
-        g.namespace_manager.bind(n, i)
+  
+    for n, u in shape.namespace_manager.namespaces():
+            g.namespace_manager.bind(n, u, override=True, replace=True)
 
     return g
 
@@ -1838,6 +1076,7 @@ def extractMetadata(description: str, gTemplate: Graph) -> Graph:
 def updateDescription(description: str, graph: Graph) -> str:
     """Return new description with metadata section updated from JSON-LD serialization of graph.
 
+    Arguments :
     - description est une chaîne de caractères supposée correspondre à la
     description (ou les commentaire) d'un objet PostgreSQL.
     - graph est un graphe RDF présumé contenir les métadonnées de l'objet.
@@ -1874,3 +1113,297 @@ def updateDescription(description: str, graph: Graph) -> str:
         return t[0]
         
 
+def fetchVocabulary(schemeStr: str, vocabulary, language: str = "fr") -> List[str]:
+    """List all concept labels from given scheme.
+
+    Arguments :
+    - schemeStr est le nom de l'ensemble dont on veut lister les concepts.
+    - vocabulary est un graphe réunissant le vocabulaire de tous les ensembles
+    à considérer.
+    - language est la langue attendue pour les libellés des concepts. schemeStr
+    doit être donné dans cette même langue.
+
+    Résultat : liste contenant les libellés, triés par ordre alphabétique selon
+    la locale de l'utilisateur.
+
+    >>> fetchVocabulary("Thèmes de données (UE)", vocabulary)
+    ['Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
+    'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement',
+    'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique',
+    'Population et société', 'Questions internationales', 'Régions et villes', 'Santé',
+    'Science et technologie', 'Transports']
+    """
+    
+    q_vc = vocabulary.query(
+        """
+        SELECT
+            ?label
+        WHERE
+            {{ ?c a skos:Concept ;
+            skos:inScheme ?s ;
+            skos:prefLabel ?label .
+            ?s a skos:ConceptScheme ;
+                skos:prefLabel ?l .
+              FILTER ( lang(?label) = "{}" ) }}
+        """.format(language),
+        initBindings = { 'l' : Literal(schemeStr, lang=language) }
+        )
+
+    if len(q_vc) > 0:
+
+        setlocale(LC_COLLATE, "")
+
+        return sorted(
+            [str(l['label']) for l in q_vc],
+            key=lambda x: strxfrm(x)
+            )
+
+
+def getConceptFromValue(conceptStr: str, schemeStr: str, vocabulary, language: str = 'fr') -> Tuple[URIRef, URIRef]:
+    """Return a skos:Concept IRI matching given label.
+
+    Arguments :
+    - conceptStr est une chaîne de caractères présumée correspondre au libellé d'un
+    concept.
+    - schemeStr est une chaîne de caractères présumée correspondre au libellé de
+    l'ensemble qui référence ce concept. Si schemeStr n'est pas spécifié, la fonction
+    effectuera la recherche dans tous les ensembles disponibles. En cas de
+    correspondance multiple, elle renvoie arbitrairement un des résultats.
+    - vocabulary est un graphe réunissant le vocabulaire de tous les ensembles
+    à considérer.
+    - language est la langue présumée de strValue et schemeStr. Français par défaut.
+
+    Résultat : un tuple formé [0] de l'IRI du terme et [1] de l'IRI de l'ensemble.
+
+    >>> getConceptFromValue("Domaine public", "Types de licences (UE)", vocabulary)
+    (rdflib.term.URIRef('http://purl.org/adms/licencetype/PublicDomain'), rdflib.term.URIRef('http://purl.org/adms/licencetype/1.1'))
+        
+    >>> getConceptFromValue("Transports", None, vocabulary)
+    (rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme/TRAN'), rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme'))
+    """
+
+    if schemeStr:
+        q_vc = vocabulary.query(
+            """
+            SELECT
+                ?concept ?scheme
+            WHERE
+                { ?concept a skos:Concept ;
+                   skos:inScheme ?scheme ;
+                   skos:prefLabel ?c .
+                   ?scheme a skos:ConceptScheme ;
+                   skos:prefLabel ?s . }
+            """,
+            initBindings = { 'c' : Literal(conceptStr, lang=language),
+                            's' : Literal(schemeStr, lang=language) }
+            )
+         
+        for t in q_vc:
+            return ( t['concept'], t['scheme'] )
+            
+    else:
+        q_vc = vocabulary.query(
+            """
+            SELECT
+                ?concept ?scheme
+            WHERE
+                { ?concept a skos:Concept ;
+                   skos:inScheme ?scheme ;
+                   skos:prefLabel ?c . }
+            """,
+            initBindings = { 'c' : Literal(conceptStr, lang=language) }
+            )
+         
+        for t in q_vc:
+            return t['concept'], t['scheme']
+        
+    return ( None, None )
+
+
+
+def getValueFromConcept(conceptIRI: URIRef, vocabulary, language: str = "fr") -> Tuple[str, str]:
+    """Return the skos:prefLabel strings matching given conceptIRI and its scheme.
+
+    Arguments :
+    - conceptIRI est un objet de type rdflib.term.URIRef présumé correspondre à un
+    concept d'ontologie.
+    - vocabulary est un graphe réunissant le vocabulaire de tous les ensembles à
+    considérer.
+    - language est la langue attendue pour le libellé résultant. Français par défaut.
+    
+    Si aucune valeur n'est disponible pour la langue spécifiée, la fonction retournera
+    la traduction française (si elle existe).
+
+    Résultat : une tuple contenant deux chaînes de caractères. [0] est le libellé
+    du concept. [1] est le nom de l'ensemble. (None, None) si l'IRI n'est pas répertorié.
+    
+    Dans l'exemple ci-après, il existe une traduction française et anglaise pour le terme
+    recherché, mais pas de version espagnole.
+
+    >>> u = URIRef("http://publications.europa.eu/resource/authority/data-theme/TRAN")
+    
+    >>> getValueFromConcept(u, vocabulary)
+    ('Transports', 'Thèmes de données (UE)')
+    
+    >>> getValueFromConcept(u, vocabulary, 'en')
+    ('Transport', 'Data theme (EU)')
+    
+    >>> getValueFromConcept(u, vocabulary, 'es')
+    ('Transports', 'Thèmes de données (UE)')
+    """
+    
+    q_vc = vocabulary.query(
+        """
+        SELECT
+            ?label ?scheme
+        WHERE
+            {{ ?c a skos:Concept ;
+               skos:inScheme ?s ;
+               skos:prefLabel ?label .
+               ?s a skos:ConceptScheme ;
+               skos:prefLabel ?scheme .
+               FILTER (( lang(?label) = "{0}" ||
+                      ( ( lang(?label) != "{0}" )
+                      && ( lang(?label) = "fr" ) ) ) 
+                  && ( lang(?scheme) = "{0}" ||
+                      ( ( lang(?scheme) != "{0}" )
+                      && ( lang(?scheme) = "fr" ) ) )) }}
+        """.format(language),
+        initBindings = { 'c' : conceptIRI }
+        )
+     
+    for t in q_vc:
+        return ( str( t['label'] ), str( t['scheme'] ) )
+        
+    return ( None, None )
+    
+
+
+def emailFromOwlThing(thingIRI: URIRef) -> str:
+    """Return a string human-readable version of an owl:Thing IRI representing an email adress.
+
+    Arguments :
+    - thingIRI est un objet de type URIref supposé correspondre
+    à une adresse mél (classe RDF owl:Thing).
+
+    Résultat : une chaîne de caractères.
+
+    Cette fonction très basique se contente de retirer le préfixe
+    "mailto:" s'il était présent.
+
+    >>> emailFromOwlThing(URIRef("mailto:jon.snow@the-wall.we"))
+    'jon.snow@the-wall.we'
+    """
+
+    # à partir de la version 3.9
+    # str(thingIRI).removeprefix("mailto:") serait plus élégant
+    
+    return re.sub("^mailto[:]", "", str(thingIRI))
+
+
+def owlThingFromEmail(emailStr: str) -> URIRef:
+    """Return an IRI from a string representing an email adress.
+
+    Arguments :
+    - emailStr est une chaîne de caractère supposée correspondre à une
+    adresse mél.
+
+    Résultat : un objet de type URIRef respectant grosso modo le schéma
+    officiel des URI pour les adresses mél : mailto:<email>.
+    (réf : https://datatracker.ietf.org/doc/html/rfc6068)
+
+    La fonction ne fait aucun contrôle de validité sur l'adresse si ce
+    n'est vérifier qu'elle ne contient aucun caractère interdit pour
+    un IRI.
+
+    >>> owlThingFromEmail("jon.snow@the-wall.we")
+    rdflib.term.URIRef('mailto:jon.snow@the-wall.we')
+    """
+
+    emailStr = re.sub("^mailto[:]", "", emailStr)
+
+    l = [i for i in '<> "{}|\\^`' if i in emailStr]
+
+    if l and not l == []:          
+        raise ValueError("Invalid IRI. Forbiden character '{}' in email adress '{}'.".format("".join(l), emailStr))
+
+    if emailStr and not emailStr == "":
+        return URIRef("mailto:" + emailStr)
+
+
+def telFromOwlThing(thingIRI: URIRef) -> str:
+    """Return a string human-readable version of an owl:Thing IRI representing a phone number.
+
+    Arguments :
+    - thingIRI est un objet de type URIref supposé correspondre
+    à un numéro de téléphone (classe RDF owl:Thing).
+
+    Résultat : une chaîne de caractères.
+
+    Contrairement à owlThingFromTel, cette fonction très basique ne standardise
+    pas la forme du numéro de téléphone. Elle se contente de retirer le préfixe
+    "tel:" s'il était présent.
+
+    >>> telFromOwlThing(URIRef("tel:+33-1-23-45-67-89"))
+    '+33-1-23-45-67-89'
+    """
+    
+    return re.sub("^tel[:]", "", str(thingIRI))
+
+
+def owlThingFromTel(telStr: str, addPrefixFr: bool = True) -> URIRef:
+    """Return an IRI from a string representing a phone number.
+
+    Arguments :
+    - telStr est une chaîne de caractère supposée correspondre à un
+    numéro de téléphone.
+    - addPrefixFr est un booléen indiquant si la fonction doit tenter
+    de transformer les numéros de téléphone français locaux ou présumés
+    comme tels (un zéro suivi de neuf chiffres) en numéros globaux ("+33"
+    suivi des neuf chiffres).
+
+    Résultat : un objet de type URIRef respectant grosso modo le schéma
+    officiel des URI pour les numéros de téléphone : tel:<phonenumber>.
+    (réf : https://datatracker.ietf.org/doc/html/rfc3966)
+
+    Si le numéro semble être un numéro de téléphone français valide,
+    il est standardisé sous la forme <tel:+33-x-xx-xx-xx-xx>.
+
+    >>> owlThingFromTel("0123456789")
+    rdflib.term.URIRef('tel:+33-1-23-45-67-89')
+    """
+
+    telStr = re.sub("^tel[:]", "", telStr)
+    red = re.sub(r"[.\s-]", "", telStr)
+    tel = ""
+
+    if addPrefixFr:
+        a = re.match(r"0(\d{9})$", red)
+        # numéro français local
+        
+        if a:
+            red = "+33" + a[1]
+
+    if re.match(r"[+]33\d{9}$", red):
+    # numéro français global
+    
+        for i in range(len(red)):
+            if i == 3 or i > 2 and i%2 == 0:
+                tel = tel + "-" + red[i]
+            else:
+                tel = tel + red[i]
+
+    else:
+        tel = re.sub(r"(\d)\s(\d)", r"\1-\2", telStr).strip(" ")
+        # les espaces entre les chiffres sont remplacés par des tirets,
+        # ceux en début et fin de chaine sont supprimés
+
+        l = [i for i in '<> "{}|\\^`' if i in tel]
+
+        if l and not l == []:          
+            raise ValueError("Invalid IRI. Forbiden character '{}' in phone number '{}'.".format("".join(l), telStr))
+
+    if tel and not tel == "":
+        return URIRef("tel:" + tel)
+        
+        

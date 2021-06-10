@@ -1,4 +1,4 @@
-# Spécifications du dictionnaire des widgets
+# Mode d'emploi du dictionnaire des widgets
 
 ## Création
 
