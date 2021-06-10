@@ -350,7 +350,7 @@ def buildDict(
     * ces clés apparaissent aussi dans le dictionnaire interne de template.
     ** le dictionnaire interne de template contient également une clé 'data type', mais dont les
     valeurs sont des chaînes de catactères parmi 'string', 'boolean', 'decimal', 'integer', 'date',
-    'time', 'dateTime', 'duration' (et non des objets de type URIRef).
+    'time', 'dateTime', 'duration', 'float', 'double' (et non des objets de type URIRef).
     *** le chemin est la clé principale de template.
            
     >>> buildDict(graph, shape, template, vocabulary)
@@ -735,7 +735,8 @@ def buildDict(
                     'label row' : mLabelRow,
                     'help text' : mHelp,
                     'value' : mValue,
-                    'placeholder text' : t.get('placeholder text', None) or ( str(p['placeholder']) if p['placeholder'] else None ),
+                    'placeholder text' : ( t.get('placeholder text', None) or ( str(p['placeholder']) if p['placeholder'] else None ) 
+                                ) if mWidgetType in ( 'QTextEdit', 'QLineEdit' ) else None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None) or ( int(p['min']) > 0 if p['min'] else False ),
                     'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
@@ -797,7 +798,9 @@ def buildDict(
             mType = URIRef( "http://www.w3.org/2001/XMLSchema#" +
                     ( ( t.get('data type', None) ) or "string" ) )
 
-            if not mType.n3(nsm) in ('xsd:string', 'xsd:integer', 'xsd:float', 'xsd:boolean'):
+            if not mType.n3(nsm) in ('xsd:string', 'xsd:integer', "xsd:decimal",
+                        "xsd:float", "xsd:double", 'xsd:boolean', 'xsd:date',
+                        'xsd:time', 'xsd:dateTime', 'xsd:duration'):
                 mType = URIRef("http://www.w3.org/2001/XMLSchema#string")
 
             # on extrait la ou les valeurs éventuellement
@@ -864,7 +867,7 @@ def buildDict(
                     'label row' : mLabelRow,
                     'help text' : t.get('help text', None) if not ( multiple or len(values) > 1 ) else None,
                     'value' : mValue,
-                    'placeholder text' : t.get('placeholder text', None),
+                    'placeholder text' : t.get('placeholder text', None) if mWidgetType in ( 'QTextEdit', 'QLineEdit' ) else None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None),
                     'multiple values' : multiple,
