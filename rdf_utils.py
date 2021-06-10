@@ -176,7 +176,7 @@ def buildDict(
     graph: Graph,
     shape: Graph,
     vocabulary: Graph,
-    template: dict = dict(),
+    template: dict = None,
     mode: str = 'edit',
     readHideBlank: bool = True,
     language: str = "fr",
@@ -192,7 +192,9 @@ def buildDict(
     mNSManager : NamespaceManager = None,
     mWidgetDictTemplate : dict = None,
     mDict: dict = None,
-    mGraphEmpty: bool = False
+    mGraphEmpty: bool = None,
+    mShallowTemplate: dict = None,
+    mTemplateEmpty: bool = None
     ) -> dict:
     """Return a dictionary with relevant informations to build a metadata update form. 
 
@@ -359,7 +361,7 @@ def buildDict(
     # ---------- INITIALISATION ----------
     # uniquement à la première itération de la fonction
     
-    if (mParentNode and mParentWidget and mTargetClass and mDict and mPath and mWidgetDictTemplate) is None:
+    if mParentNode is None:
 
         for n, u in nsm.namespaces():
             graph.namespace_manager.bind(n, u, override=True, replace=True)
@@ -368,6 +370,13 @@ def buildDict(
         mPath = None
         mParentNode = None
         mGraphEmpty = ( len(graph) == 0 )
+        mTemplateEmpty = ( template is None )
+        
+        # on travaille sur une copie du template pour pouvoir supprimer les catégories
+        # au fur et à mesure de leur traitement par la première itération (sur les
+        # catégories communes). À l'issue de celle-ci, ne resteront donc dans le
+        # dictionnaire que les catégories locales.
+        mShallowTemplate = template.copy() if template else dict()        
 
         # récupération de l'identifiant
         # du jeu de données dans le graphe, s'il existe
@@ -420,6 +429,7 @@ def buildDict(
             'multiple sources': None,
             'sources' : None,
             'current source' : None,
+            'authorized languages' : None,
             
             'default value' : None,
             'multiple values' : None,
@@ -433,8 +443,7 @@ def buildDict(
             'predicate' : None,
             'node' : None,
             'default widget type' : None,
-            'one per language' : None,
-            'authorized languages' : None
+            'one per language' : None
             }
 
         # on initialise le dictionnaire avec un groupe racine :
@@ -521,12 +530,12 @@ def buildDict(
     
         # exclusion des catégories qui ne sont pas prévues par
         # le modèle et n'ont pas de valeur renseignée
-        if values is None and not len(template) == 0 and ( not mPath in template ):
+        if ( values in ( None, [], [ None ] ) ) and not mTemplateEmpty and not ( mNPath in template ):
             continue
         elif not ( readHideBlank and mode == 'read' ):
             values = values or [ None ]
             
-        t = template.pop(mPath, dict()) if template else dict()
+        t = mShallowTemplate.pop(mNPath, dict())
 
         # récupération de la liste des ontologies
         if mKind in ("sh:BlankNodeOrIRI", "sh:IRI"):
@@ -588,7 +597,7 @@ def buildDict(
             mDict[mWidget].update( {
                 'object' : 'translation group' if ( multilingual and translation ) else 'group of values',
                 'main widget type' : 'QGroupBox',
-                'label' : t.get('name', None) or str(p['name']),
+                'label' : t.get('label', None) or str(p['name']),
                 'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None )
                 } )
 
@@ -599,7 +608,7 @@ def buildDict(
             # ce widget de groupe pour parent
             
             
-        mLabel = ( t.get('name', None) or str(p['name']) ) if (
+        mLabel = ( t.get('label', None) or str(p['name']) ) if (
                     ( mode == 'read' and len(values) <= 1 ) or not (
                     multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
                     
@@ -621,11 +630,8 @@ def buildDict(
             if mKind in ( 'sh:BlankNode', 'sh:BlankNodeOrIRI' ) and (
                     not readHideBlank or not mode == 'read' or isinstance(mValueBrut, BNode) ):
 
-                if isinstance(mValueBrut, BNode):
-                    mNode = mValueBrut
-                else:
-                    mNode = BNode()
-                    #mGraphEmpty = True
+                mGraphEmpy = mGraphEmpty or mValueBrut is None              
+                mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
 
                 if mKind == 'sh:BlankNodeOrIRI':
                     mSources = ( mSources + [ "< manuel >" ] ) if mSources else [ "< URI >", "< manuel >" ]
@@ -657,7 +663,8 @@ def buildDict(
                 idx.update( { mWidget : 0 } )
 
                 buildDict(graph, shape, vocabulary, template, mode, readHideBlank, language, translation, langList, labelLengthLimit,
-                      valueLengthLimit, textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager, mWidgetDictTemplate, mDict, mGraphEmpty)
+                      valueLengthLimit, textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager, mWidgetDictTemplate, mDict,
+                      mGraphEmpty, mShallowTemplate, mTemplateEmpty)
 
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -773,7 +780,7 @@ def buildDict(
     
     if mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
 
-        for meta, t in template.items():
+        for meta, t in mShallowTemplate.items():
 
             # à ce stade, ne restent dans le template que les
             # catégories locales / non communes
@@ -817,7 +824,7 @@ def buildDict(
                 mDict[mWidget].update( {
                     'object' : 'group of values',
                     'main widget type' : 'QGroupBox',
-                    'label' : t.get('name', None) or "???",
+                    'label' : t.get('label', None) or "???",
                     'help text' : t.get('help text', None)
                     } )
 
@@ -837,7 +844,7 @@ def buildDict(
 
                 mWidgetType = t.get('main widget type', None) or "QLineEdit"
                 mDefaultWidgetType = mWidgetType
-                mLabel = ( t.get('name', None) or "???" ) if not ( multiple or len(values) > 1 ) else None
+                mLabel = ( t.get('label', None) or "???" ) if not ( multiple or len(values) > 1 ) else None
                 mLabelRow = None
 
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
