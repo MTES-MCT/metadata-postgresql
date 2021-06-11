@@ -1,0 +1,2406 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/AGRI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Agriculture, fisheries, forestry and food"@en,
+        "Agriculture, pêche, sylviculture et alimentation"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/ECON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Economy and finance"@en,
+        "Économie et finances"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/EDUC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Education, culture and sport"@en,
+        "Éducation, culture et sport"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/ENER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Energy"@en,
+        "Énergie"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/ENVI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Environment"@en,
+        "Environnement"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/GOVE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Government and public sector"@en,
+        "Gouvernement et secteur public"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/HEAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Health"@en,
+        "Santé"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/INTR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "International issues"@en,
+        "Questions internationales"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/JUST> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Justice, legal system and public safety"@en,
+        "Justice, système juridique et sécurité publique"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Provisional data"@en,
+        "Données provisoires"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/REGI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Regions and cities"@en,
+        "Régions et villes"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/SOCI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Population and society"@en,
+        "Population et société"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en,
+        "Science et technologie"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/TRAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Transport"@en,
+        "Transports"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
+    skos:prefLabel "Data theme (EU)"@en,
+        "Thème de données (UE)"@fr .
+
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/access-right/CONFIDENTIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "confidential"@en,
+        "confidentiel"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/NON_PUBLIC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "non-public"@en,
+        "non public"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/OP_DATPRO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "Provisional data"@en,
+        "Données provisoires"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/PUBLIC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "public"@en,
+        "public"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/RESTRICTED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "restricted"@en,
+        "restreint"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/SENSITIVE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "sensitive"@en,
+        "sensible"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right> a skos:ConceptScheme ;
+    skos:prefLabel "Access right (EU)"@en,
+        "Droits d'accès (UE)"@fr .
+
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://purl.org/adms/licencetype/Attribution> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Attribution"@en,
+        "Attribution"@fr .
+
+<http://purl.org/adms/licencetype/GrantBack> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Grant back"@en,
+        "Rétrocéder"@fr .
+
+<http://purl.org/adms/licencetype/JurisdictionWithinTheEU> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Jurisdiction within the EU"@en,
+        "Compétence dans l'UE"@fr .
+
+<http://purl.org/adms/licencetype/KnownPatentEncumbrance> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Known patent encumbrance"@en,
+        "Charge de brevet connue"@fr .
+
+<http://purl.org/adms/licencetype/NoDerivativeWork> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "No derivative work"@en,
+        "Aucun travail dérivé"@fr .
+
+<http://purl.org/adms/licencetype/NominalCost> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Nominal cost"@en,
+        "Coût nominal"@fr .
+
+<http://purl.org/adms/licencetype/NonCommercialUseOnly> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Non-commercial use only"@en,
+        "A usage non commercial seulement"@fr .
+
+<http://purl.org/adms/licencetype/OtherRestrictiveClauses> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Other restrictive clauses"@en,
+        "Autres clauses restrictives"@fr .
+
+<http://purl.org/adms/licencetype/PublicDomain> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Public domain"@en,
+        "Domaine public"@fr .
+
+<http://purl.org/adms/licencetype/ReservedNames-Endorsement-OfficialStatus> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Reserved names / endorsement / official status"@en,
+        "Noms réservés / Approbation / Statut officiel"@fr .
+
+<http://purl.org/adms/licencetype/RoyaltiesRequired> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Royalties required"@en,
+        "Droits d'auteur requis"@fr .
+
+<http://purl.org/adms/licencetype/ShareAlike-Compatible> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Share-alike / copyleft on source code or with compatibility exceptions for larger work and interoperability"@en,
+        "Share Alike / copyleft sur le code source ou avec exceptions de compatibilité pour les grands travaux et l'interopérabilité"@fr .
+
+<http://purl.org/adms/licencetype/ShareAlike-NotCompatible> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Share-alike / copyleft - not compatible/interoperable with other copyleft licences"@en,
+        "Share-alike / copyleft - pas compatibles / Interopérabilité avec d'autres licences copyleft"@fr .
+
+<http://purl.org/adms/licencetype/UnknownIPR> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Unknown IPR"@en,
+        "Droits de propriété intellectuelle inconnus"@fr .
+
+<http://purl.org/adms/licencetype/1.1> a skos:ConceptScheme ;
+    skos:prefLabel "Licence type (EU)"@en,
+        "Types de licence (UE)"@fr .
+
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://purl.org/adms/publishertype/Academia-ScientificOrganisation> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Academia/Scientific organisation"@en,
+        "Université / Organisation scientifique"@fr .
+
+<http://purl.org/adms/publishertype/Company> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Company"@en,
+        "Entreprise"@fr .
+
+<http://purl.org/adms/publishertype/IndustryConsortium> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Industry consortium"@en,
+        "Consortium industriel"@fr .
+
+<http://purl.org/adms/publishertype/LocalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Local Authority"@en,
+        "Autorité locale"@fr .
+
+<http://purl.org/adms/publishertype/NationalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "National authority"@en,
+        "Autorité nationale"@fr .
+
+<http://purl.org/adms/publishertype/NonGovernmentalOrganisation> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Non-Governmental Organisation"@en,
+        "Organisation non-gouvernementale"@fr .
+
+<http://purl.org/adms/publishertype/NonProfitOrganisation> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Non-Profit Organisation"@en,
+        "Organisation à but non lucratif"@fr .
+
+<http://purl.org/adms/publishertype/PrivateIndividual(s)> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Private Individual(s)"@en,
+        "Particulier (s)"@fr .
+
+<http://purl.org/adms/publishertype/RegionalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Regional authority"@en,
+        "Autorité régionale"@fr .
+
+<http://purl.org/adms/publishertype/StandardisationBody> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Standardisation body"@en,
+        "Organisme de normalisation"@fr .
+
+<http://purl.org/adms/publishertype/SupraNationalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Supra-national authority"@en,
+        "Autorité supranationale"@fr .
+
+<http://purl.org/adms/publishertype/1.0> a skos:ConceptScheme ;
+    skos:prefLabel "Publisher type (EU)"@en,
+        "Types d'entité en charge de la publication (UE)"@fr .
+
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "annual"@en,
+        "annuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "semiannual"@en,
+        "semestriel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL_3> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "three times a year"@en,
+        "trois fois par an"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIDECENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "bidecennial"@en,
+        "tous les vingt ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "biennial"@en,
+        "biennal"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIHOURLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "bihourly"@en,
+        "toutes les deux heures"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIMONTHLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "bimonthly"@en,
+        "bimestriel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIWEEKLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "biweekly"@en,
+        "tous les quinze jours"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/CONT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "continuous"@en,
+        "continuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/DAILY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "daily"@en,
+        "quotidien"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/DAILY_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "twice a day"@en,
+        "deux fois par jour"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/DECENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "decennial"@en,
+        "tous les dix ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/HOURLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "hourly"@en,
+        "toutes les heures"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/IRREG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "irregular"@en,
+        "irrégulier"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "monthly"@en,
+        "mensuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "semimonthly"@en,
+        "bimensuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY_3> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "three times a month"@en,
+        "trois fois par mois"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/NEVER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "never"@en,
+        "jamais"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/OP_DATPRO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "Provisional data"@en,
+        "Données provisoires"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/OTHER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "other"@en,
+        "autre"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/QUADRENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "quadrennial"@en,
+        "tous les quatre ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/QUARTERLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "quarterly"@en,
+        "trimestriel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/QUINQUENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "quinquennial"@en,
+        "tous les cinq ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIDECENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "tridecennial"@en,
+        "tous les trente ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "triennial"@en,
+        "triennal"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIHOURLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "trihourly"@en,
+        "toutes les trois heures"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/UNKNOWN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "unknown"@en,
+        "inconnu"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/UPDATE_CONT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "continuously updated"@en,
+        "mise à jour continuelle"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "weekly"@en,
+        "hebdomadaire"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "semiweekly"@en,
+        "bihebdomadaire"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY_3> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "three times a week"@en,
+        "trois fois par semaine"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency> a skos:ConceptScheme ;
+    skos:prefLabel "Frequency (EU)"@en,
+        "Fréquences (UE)"@fr .
+
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/language/0D0> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Valencian"@en,
+        "valencien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/0E0> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Montenegrin"@en,
+        "monténégrin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ADS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Adamorobe Sign Language"@en,
+        "langue des signes d’Adamorobe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Argentine Sign Language"@en,
+        "langue des signes argentine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AEN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Armenian Sign Language"@en,
+        "langue des signes arménienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AFA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Afro-Asiatic languages"@en,
+        "langues afro-asiatiques"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AFG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Afghan Sign Language"@en,
+        "langue des signes afghane"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AFR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Afrikaans"@en,
+        "afrikaans"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ALG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Algonquian languages"@en,
+        "langues algonquiennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AMH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Amharic"@en,
+        "amharique"@fr .
+
+<http://publications.europa.eu/resource/authority/language/APA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Apache languages"@en,
+        "langues apaches"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ARA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Arabic"@en,
+        "arabe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ARO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Araona"@en,
+        "araona"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ART> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Artificial languages"@en,
+        "langues artificielles"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ASE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "American Sign Language"@en,
+        "langue des signes américaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ASF> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Australian Sign Language"@en,
+        "langue des signes australienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ASP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Algerian Sign Language"@en,
+        "langue des signes algérienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ASQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Austrian Sign Language"@en,
+        "langue des signes autrichienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ASW> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Australian Aborigines Sign Language"@en,
+        "langue des signes aborigène australienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ATH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Athapascan languages"@en,
+        "langues athapascanes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Australian languages"@en,
+        "langues australiennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AYM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Aymara"@en,
+        "aymara"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AYO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ayoreo"@en,
+        "ayoreo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/AZE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Azerbaijani"@en,
+        "azéri"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BAD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Banda languages"@en,
+        "langues banda"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BAI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bamileke languages"@en,
+        "langues bamilékées"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BAT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Baltic languages"@en,
+        "langues baltes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BEL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Belarusian"@en,
+        "biélorusse"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BEN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bengali"@en,
+        "bengalî"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Berber languages"@en,
+        "langues berbères"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BFI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "British Sign Language"@en,
+        "langue des signes britannique"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BFK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ban Khor Sign Language"@en,
+        "langue des signes de Ban Khor"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BIS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bislama"@en,
+        "bichelamar"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BNT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bantu languages"@en,
+        "langues bantoues"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BOD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tibetan"@en,
+        "tibétain"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BOG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bamako Sign Language"@en,
+        "langue des signes de Bamako"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BOS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bosnian"@en,
+        "bosnien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BQN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bulgarian Sign Language"@en,
+        "langue des signes bulgare"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BQY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bengkala Sign Language"@en,
+        "langue des signes de Bengkala"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BRE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Breton"@en,
+        "breton"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BRG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Baure"@en,
+        "baure"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BTK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Batak languages"@en,
+        "langues batak"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BUL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bulgarian"@en,
+        "bulgare"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BVL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Bolivian Sign Language"@en,
+        "langue des signes bolivienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/BZS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Brazilian Sign Language"@en,
+        "langue des signes brésilienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Central American Indian languages"@en,
+        "langues indiennes d'Amérique centrale"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Carolinian"@en,
+        "carolinien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chacobo"@en,
+        "chácobo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chimane"@en,
+        "chimane"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Catalan"@en,
+        "catalan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAU> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Caucasian languages"@en,
+        "langues caucasiennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Cavineña"@en,
+        "cavineña"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAW> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kallawaya"@en,
+        "kallawaya"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAX> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chiquitano"@en,
+        "chiquitano"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CAZ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Canichana"@en,
+        "canichana"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CDS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chadian Sign Language"@en,
+        "langue des signes tchadienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CEL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Celtic languages"@en,
+        "langues celtiques"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CES> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Czech"@en,
+        "tchèque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CHA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chamorro"@en,
+        "chamorro"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CHN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chinook jargon"@en,
+        "jargon chinook"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CKB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Central Kurdish"@en,
+        "sorani"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CMC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chamic languages"@en,
+        "langues chames"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CMN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mandarin Chinese"@en,
+        "mandarin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CNR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Montenegrin"@en,
+        "monténégrin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/COR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Cornish"@en,
+        "cornique"@fr .
+
+<http://publications.europa.eu/resource/authority/language/COS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Corsican"@en,
+        "corse"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CRS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Seselwa Creole French"@en,
+        "créole seychellois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kashubian"@en,
+        "kachoube"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Catalan Sign Language"@en,
+        "langue des signes catalane"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chiangmai Sign Language"@en,
+        "langue des signes de Chiangmai"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Czech Sign Language"@en,
+        "langue des signes tchèque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSF> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Cuban Sign Language"@en,
+        "langue des signes cubaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chilean Sign Language"@en,
+        "langue des signes chilienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chinese Sign Language"@en,
+        "langue des signes chinoise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Colombian Sign Language"@en,
+        "langue des signes colombienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Croatian Sign Language"@en,
+        "langue des signes croate"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CSR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Costa Rican Sign Language"@en,
+        "langue des signes costaricienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Cushitic languages"@en,
+        "langues couchitiques"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CYB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Cayubaba"@en,
+        "cayubaba"@fr .
+
+<http://publications.europa.eu/resource/authority/language/CYM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Welsh"@en,
+        "gallois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Danish"@en,
+        "danois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DAY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Land Dayak languages"@en,
+        "langues dayak des terres"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DEU> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "German"@en,
+        "allemand"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DIV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dhivehi"@en,
+        "divehi"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DOQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dominican Sign Language"@en,
+        "langue des signes dominicaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DRA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dravidian languages"@en,
+        "langues dravidiennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DSB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Lower Sorbian"@en,
+        "bas-sorabe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DSE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dutch Sign Language"@en,
+        "langue des signes néerlandaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Danish Sign Language"@en,
+        "langue des signes danoise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/DZO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dzongkha"@en,
+        "dzongkha"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ECS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ecuadorian Sign Language"@en,
+        "langue des signes équatorienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ELL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Greek"@en,
+        "grec"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ENG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "English"@en,
+        "anglais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/EPO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Esperanto"@en,
+        "espéranto"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ESE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ese Ejja"@en,
+        "ese ’ejja"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ESL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Egyptian Sign Language"@en,
+        "langue des signes égyptienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ESN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Salvadoran Sign Language"@en,
+        "langue des signes salvadorienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ESO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Estonian Sign Language"@en,
+        "langue des signes estonienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/EST> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Estonian"@en,
+        "estonien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ETH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ethiopian Sign Language"@en,
+        "langue des signes éthiopienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/EUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Basque"@en,
+        "basque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/EWE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ewe"@en,
+        "éwé"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FAO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Faroese"@en,
+        "féringien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FAS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Persian"@en,
+        "persan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FCS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Quebec Sign Language"@en,
+        "langue des signes québécoise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FIJ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Fijian"@en,
+        "fidjien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FIL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Filipino"@en,
+        "philippin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FIN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Finnish"@en,
+        "finnois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FIU> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Finno-Ugrian languages"@en,
+        "langues finno-ougriennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FRA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "French"@en,
+        "français"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FRY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Frisian"@en,
+        "frison"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FSE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Finnish Sign Language"@en,
+        "langue des signes finnoise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "French Sign Language"@en,
+        "langue des signes française"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FSS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Finland-Swedish Sign Language"@en,
+        "langue des signes finno-suédoise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/FUR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Friulan"@en,
+        "frioulan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GEM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Germanic languages"@en,
+        "langues germaniques"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GLA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Scottish Gaelic"@en,
+        "gaélique écossais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GLE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Irish"@en,
+        "irlandais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GLG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Galician"@en,
+        "galicien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GLV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Manx"@en,
+        "mannois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GRN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Guarani"@en,
+        "guarani"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GSE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ghanaian Sign Language"@en,
+        "langue des signes ghanéenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GSG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "German Sign Language"@en,
+        "langue des signes allemande"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GSM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Guatemalan Sign Language"@en,
+        "langue des signes guatémaltèque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GSS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Greek Sign Language"@en,
+        "langue des signes grecque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GUG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Paraguayan Guaraní"@en,
+        "guarani paraguayen"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Guinean Sign Language"@en,
+        "langue des signes guinéenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/GYR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Guarayu"@en,
+        "guarayo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HAB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hanoi Sign Language"@en,
+        "langue des signes de Hanoï"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HAF> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Haiphong Sign Language"@en,
+        "langue des signes de Haïphong"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HAT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Haitian"@en,
+        "créole haïtien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HBS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Serbo-Croatian"@en,
+        "serbo-croate"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HCA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Andaman Creole Hindi"@en,
+        "hindi créole des îles Andaman"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HDS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Honduran Sign Language"@en,
+        "langue des signes hondurienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HEB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hebrew"@en,
+        "hébreu"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HIF> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Fiji Hindi"@en,
+        "hindi des Fidji"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HIN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hindi"@en,
+        "hindi"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HKS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hong Kong Sign Language"@en,
+        "langue des signes de Hong Kong"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HMO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hiri Motu"@en,
+        "hiri motou"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HOS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ho Chi Minh City Sign Language"@en,
+        "langue des signes d'Hô-Chi-Minh-Ville"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HPS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hawai'i Pidgin Sign Language"@en,
+        "langue des signes hawaïenne pigdin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HRV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Croatian"@en,
+        "croate"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HSB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Upper Sorbian"@en,
+        "haut-sorabe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HSH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hungarian Sign Language"@en,
+        "langue des signes hongroise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hausa Sign Language"@en,
+        "langue des signes haoussa"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HUN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Hungarian"@en,
+        "hongrois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/HYE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Armenian"@en,
+        "arménien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/IBO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Igbo"@en,
+        "igbo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ICL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Icelandic Sign Language"@en,
+        "langue des signes islandaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/IGN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ignaciano"@en,
+        "ignaciano"@fr .
+
+<http://publications.europa.eu/resource/authority/language/IJO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ijo languages"@en,
+        "langues ijo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/INA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Interlingua"@en,
+        "interlingua"@fr .
+
+<http://publications.europa.eu/resource/authority/language/INC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Indic languages"@en,
+        "langues indo-aryennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/IND> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Indonesian"@en,
+        "indonésien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/INE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Indo-European languages"@en,
+        "langues indo-européennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/INL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Indonesian Sign Language"@en,
+        "langue des signes indonésienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/INS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Indian Sign Language"@en,
+        "langue des signes indienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/IRA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Iranian languages"@en,
+        "langues iraniennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/IRO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Iroquoian languages"@en,
+        "langues iroquoises"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ISE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Italian Sign Language"@en,
+        "langue des signes italienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ISG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Irish Sign Language"@en,
+        "langue des signes irlandaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ISL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Icelandic"@en,
+        "islandais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ISR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Israeli Sign Language"@en,
+        "langue des signes israélienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ITA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Italian"@en,
+        "italien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ITE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Itene"@en,
+        "moré"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ITO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Itonama"@en,
+        "itonama"@fr .
+
+<http://publications.europa.eu/resource/authority/language/JCS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Jamaican Country Sign Language"@en,
+        "langue des signes jamaïcaine rurale"@fr .
+
+<http://publications.europa.eu/resource/authority/language/JHS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Jhankot Sign Language"@en,
+        "langue des signes de Jhankot"@fr .
+
+<http://publications.europa.eu/resource/authority/language/JOS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Jordanian Sign Language"@en,
+        "langue des signes jordanienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/JPN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Japanese"@en,
+        "japonais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/JSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Japanese Sign Language"@en,
+        "langue des signes japonaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/JUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Jumla Sign Language"@en,
+        "langue des signes de Jumla"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Greenlandic"@en,
+        "groenlandais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KAR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Karen languages"@en,
+        "langues karens"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KAT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Georgian"@en,
+        "géorgien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KAZ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kazakh"@en,
+        "kazakh"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KGI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Selangor Sign Language"@en,
+        "langue des signes de Selangor"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KHI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Khoisan languages"@en,
+        "langues khoïsan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KHM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Khmer"@en,
+        "khmer"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KIN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kinyarwanda"@en,
+        "kinyarwanda"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KIR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kyrgyz"@en,
+        "kirghiz"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KMR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Northern Kurdish"@en,
+        "kurmandji"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kikongo"@en,
+        "kikongo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KOR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Korean"@en,
+        "coréen"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KRO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kru languages"@en,
+        "langues krou"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KUR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kurdish"@en,
+        "kurde"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KVK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Korean Sign Language"@en,
+        "langue des signes coréenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/KXD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Brunei Malay"@en,
+        "malais du Brunei"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LAO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Lao"@en,
+        "lao"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LAT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Latin"@en,
+        "latin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LAV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Latvian"@en,
+        "letton"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LBS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Libyan Sign Language"@en,
+        "langue des signes libyenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LEC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Leco"@en,
+        "leko"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LIN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Lingala"@en,
+        "lingala"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LIT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Lithuanian"@en,
+        "lituanien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LLS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Lithuanian Sign Language"@en,
+        "langue des signes lituanienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LSG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Lyons Sign Language"@en,
+        "langue des signes lyonnaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Latvian Sign Language"@en,
+        "langue des signes lettone"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LSO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Laotian Sign Language"@en,
+        "langue des signes laotienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LSP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Panamanian Sign Language"@en,
+        "langue des signes panaméenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LST> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Trinidad and Tobago Sign Language"@en,
+        "langue des signes trinidadienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LTZ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Luxembourgish"@en,
+        "luxembourgeois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/LUA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Luba-Lulua"@en,
+        "tshiluba"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MAH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Marshallese"@en,
+        "marshallais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Manding"@en,
+        "mandingue"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MAP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Austronesian languages"@en,
+        "langues austronésiennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MDL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Maltese Sign Language"@en,
+        "langue des signes maltaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MFS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mexican Sign Language"@en,
+        "langue des signes mexicaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MIN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Minangkabau"@en,
+        "minangkabau"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MIS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Uncoded languages"@en,
+        "langues non codées"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MKD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Macedonian"@en,
+        "macédonien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MKH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mon-Khmer languages"@en,
+        "langues môn-khmer"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MLG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Malagasy"@en,
+        "malgache"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MLT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Maltese"@en,
+        "maltais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MNK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mandinka"@en,
+        "mandinka"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MNO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Manobo languages"@en,
+        "langues manobo"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MOL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Moldavian"@en,
+        "moldave"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mongolian"@en,
+        "mongol"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MPD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Machinere"@en,
+        "yine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MRE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Martha's Vineyard Sign Language"@en,
+        "langue des signes de Martha's Vineyard"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MRI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Māori"@en,
+        "māori"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MSA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Malaysian"@en,
+        "malaisien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MSD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yucatec Maya Sign Language"@en,
+        "langue des signes maya yucatèque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MSR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mongolian Sign Language"@en,
+        "langue des signes mongole"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MTP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Wichí Lhamtés Nocten"@en,
+        "wichí"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MUL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Multiple languages"@en,
+        "langues multiples"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MUN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Munda languages"@en,
+        "langues mounda"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MYA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Burmese"@en,
+        "birman"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MYN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mayan languages"@en,
+        "langues mayas"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MZC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Madagascar Sign Language"@en,
+        "langue des signes malgache"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MZG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Monastic Sign Language"@en,
+        "langue des signes monastique"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MZP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Movima"@en,
+        "movima"@fr .
+
+<http://publications.europa.eu/resource/authority/language/MZY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Mozambican Sign Language"@en,
+        "langue des signes mozambicaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NAH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nahuatl languages"@en,
+        "langues nahuatl"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NAI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "North American Indian languages"@en,
+        "langues indiennes d'Amérique du Nord"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NAU> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nauruan"@en,
+        "nauri"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NBL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Southhern Ndebele"@en,
+        "ndébélé du Transvaal"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NBS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Namibian Sign Language"@en,
+        "langue des signes namibienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NCS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nicaraguan Sign Language"@en,
+        "langue des signes nicaraguayenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NEP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nepali"@en,
+        "népalais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NIC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Niger-Kordofanian languages"@en,
+        "langues nigéro-congolaises"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NIU> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Niuean"@en,
+        "niué"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NLD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dutch"@en,
+        "néerlandais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NNO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Norwegian Nynorsk"@en,
+        "norvégien nynorsk"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NOB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Norwegian Bokmål"@en,
+        "norvégien bokmål"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NOR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Norwegian"@en,
+        "norvégien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NSI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nigerian Sign Language"@en,
+        "langue des signes nigériane"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Norwegian Sign Language"@en,
+        "langue des signes norvégienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NSO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Northern Sotho"@en,
+        "sotho du Nord"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NSP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nepalese Sign Language"@en,
+        "langue des signes népalaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NSR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Maritime Sign Language"@en,
+        "langue des signes maritime"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NUB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nubian languages"@en,
+        "langues nubiennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NYA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chewa"@en,
+        "chewa"@fr .
+
+<http://publications.europa.eu/resource/authority/language/NZS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "New Zealand Sign Language"@en,
+        "langue des signes néo-zélandaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/OCI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Occitan"@en,
+        "occitan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/OSS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ossetic"@en,
+        "ossète"@fr .
+
+<http://publications.europa.eu/resource/authority/language/OTO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Otomian languages"@en,
+        "langues otomi"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PAA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Papuan languages"@en,
+        "langues papoues"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Punjabi"@en,
+        "pendjabi"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PAP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Papiamento"@en,
+        "papiamento"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PAU> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Palauan"@en,
+        "paluan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PCP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Pacahuara"@en,
+        "pacahuara"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PHI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Philippine languages"@en,
+        "langues philippines"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PIH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Pitcairn-Norfolk"@en,
+        "pitcairnais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PKS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Pakistan Sign Language"@en,
+        "langue des signes pakistanaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/POL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Polish"@en,
+        "polonais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/POR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Portuguese"@en,
+        "portugais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PRA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Prakrit languages"@en,
+        "langues prâkrit"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PRL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Peruvian Sign Language"@en,
+        "langue des signes péruvienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PRS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Dari"@en,
+        "dari"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PRZ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Providencia Sign Language"@en,
+        "langue des signes de Providencia"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Persian Sign Language"@en,
+        "langue des signes perse"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Plains Indian Sign Language"@en,
+        "langue des signes des Indiens des Plaines"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Penang Sign Language"@en,
+        "langue des signes de Penang"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Puerto Rican Sign Language"@en,
+        "langue des signes portoricaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Pauserna"@en,
+        "pauserna"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Polish Sign Language"@en,
+        "langue des signes polonaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Philippine Sign Language"@en,
+        "langue des signes philippine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PSR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Portuguese Sign Language"@en,
+        "langue des signes portugaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PUQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Puquina"@en,
+        "puquina"@fr .
+
+<http://publications.europa.eu/resource/authority/language/PUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Pashto"@en,
+        "pachto"@fr .
+
+<http://publications.europa.eu/resource/authority/language/QUE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Quechua"@en,
+        "quéchua"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RAR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Rarotongan"@en,
+        "maori des îles Cook"@fr .
+
+<http://publications.europa.eu/resource/authority/language/REY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Reyesano"@en,
+        "reyesano"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RMS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Romanian Sign Language"@en,
+        "langue des signes roumaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ROA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Romance languages"@en,
+        "langues romanes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ROH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Romansh"@en,
+        "romanche"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ROM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Romani"@en,
+        "romani"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Romanian"@en,
+        "roumain"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RSI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Rennellese Sign Language"@en,
+        "langue des signes de Rennellese"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Russian Sign Language"@en,
+        "langue des signes russe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RUN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kirundi"@en,
+        "rundi"@fr .
+
+<http://publications.europa.eu/resource/authority/language/RUS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Russian"@en,
+        "russe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SAG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sango"@en,
+        "sango"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SAI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "South American Indian languages"@en,
+        "langues indiennes d'Amérique du Sud"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Salishan languages"@en,
+        "langues salishennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SCO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Scots"@en,
+        "scots"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SDH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Southern Kurdish"@en,
+        "kurde du Sud"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SDL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Saudi Arabian Sign Language"@en,
+        "langue des signes saoudienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SEM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Semitic languages"@en,
+        "langues sémitiques"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SFS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "South African Sign Language"@en,
+        "langue des signes sud-africaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SGG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swiss-German Sign Language"@en,
+        "langue des signes suisse alémanique"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SGN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sign Languages"@en,
+        "langues des signes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SGX> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sierra Leonean Sign Language"@en,
+        "langue des signes sierra-léonaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SIN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sinhala"@en,
+        "cingalais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SIO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Siouan languages"@en,
+        "langues sioux"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SIP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sikkimese"@en,
+        "sikkimais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SIT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sino-Tibetan languages"@en,
+        "langues sino-tibétaines"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SJE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Pite Sami"@en,
+        "same de Pite"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SLA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Slavic languages"@en,
+        "langues slaves"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SLF> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swiss-Italian Sign Language"@en,
+        "langue des signes suisse italienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SLK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Slovak"@en,
+        "slovaque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SLS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Singapore Sign Language"@en,
+        "langue des signes de Singapour"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SLV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Slovenian"@en,
+        "slovène"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SME> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Northern Sami"@en,
+        "same du Nord"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SMI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sami languages"@en,
+        "langues sames"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SMO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Samoan"@en,
+        "samoan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SOM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Somali"@en,
+        "somali"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Songhai languages"@en,
+        "langues songhai"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SOT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Southern Sotho"@en,
+        "sotho du Sud"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SPA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Spanish"@en,
+        "espagnol"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SQI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Albanian"@en,
+        "albanais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SQS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sri Lankan Sign Language"@en,
+        "langue des signes sri-lankaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SRP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Serbian"@en,
+        "serbe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SRQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sirionó"@en,
+        "siriono"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SSA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Nilo-Saharan languages"@en,
+        "langues nilo-sahariennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SSP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Spanish Sign Language"@en,
+        "langue des signes espagnole"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SSR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swiss-French Sign Language"@en,
+        "langue des signes suisse romande"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SSW> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swazi"@en,
+        "swati"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SVK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Slovakian Sign Language"@en,
+        "langue des signes slovaque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SWA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swahili"@en,
+        "kiswahili"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SWB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Comorian"@en,
+        "comorien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SWE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swedish"@en,
+        "suédois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SWL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Swedish Sign Language"@en,
+        "langue des signes suédoise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/SYY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Al-Sayyid Bedouin Sign Language"@en,
+        "langue des signes bédouine d'Al-Sayyid"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TAI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tai languages"@en,
+        "langues tai"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TAM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tamil"@en,
+        "tamoul"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TET> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tetum"@en,
+        "tétoum"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TGK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tajik"@en,
+        "tadjik"@fr .
+
+<http://publications.europa.eu/resource/authority/language/THA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Thai"@en,
+        "thaï"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TIR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tigrinya"@en,
+        "tigrigna"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TKL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tokelauan"@en,
+        "tokelau"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TNA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tacana"@en,
+        "tacana"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TNO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Toromono"@en,
+        "toromona"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tongan"@en,
+        "tongien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TPI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tok Pisin"@en,
+        "tok pisin"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TPJ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tapieté"@en,
+        "tapieté"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TRN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Trinitario"@en,
+        "trinitario"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tunisian Sign Language"@en,
+        "langue des signes tunisienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Turkish Sign Language"@en,
+        "langue des signes turque"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tswana"@en,
+        "tswana"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tsonga"@en,
+        "tsonga"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Thai Sign Language"@en,
+        "langue des signes thaï"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Taiwanese Sign Language"@en,
+        "langue des signes taïwanaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TSY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tebul Sign Language"@en,
+        "langue des signes de Tebul"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TUK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Turkmen"@en,
+        "turkmène"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TUP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tupi languages"@en,
+        "langues tupi"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TUR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Turkish"@en,
+        "turc"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TUT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Altaic languages"@en,
+        "langues altaïques"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TVL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tuvaluan"@en,
+        "tuvaluan"@fr .
+
+<http://publications.europa.eu/resource/authority/language/TZA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Tanzanian Sign Language"@en,
+        "langue des signes tanzanienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UGN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ugandan Sign Language"@en,
+        "langue des signes ougandaise"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UGY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Uruguayan Sign Language"@en,
+        "langue des signes uruguayenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UKL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ukrainian Sign Language"@en,
+        "langue des signes ukrainienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UKR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Ukrainian"@en,
+        "ukrainien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UKS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Urubú-Kaapor Sign Language"@en,
+        "langue des signes urubú-ka'apór"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UND> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Undetermined"@en,
+        "indéterminé"@fr .
+
+<http://publications.europa.eu/resource/authority/language/URD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Urdu"@en,
+        "ourdou"@fr .
+
+<http://publications.europa.eu/resource/authority/language/URE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Uru"@en,
+        "uru"@fr .
+
+<http://publications.europa.eu/resource/authority/language/UZB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Uzbek"@en,
+        "ouzbek"@fr .
+
+<http://publications.europa.eu/resource/authority/language/VEN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Venda"@en,
+        "venda"@fr .
+
+<http://publications.europa.eu/resource/authority/language/VIE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Vietnamese"@en,
+        "vietnamien"@fr .
+
+<http://publications.europa.eu/resource/authority/language/VLS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Flemish"@en,
+        "flamand"@fr .
+
+<http://publications.europa.eu/resource/authority/language/VSI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Moldovan Sign Language"@en,
+        "langue des signes moldave"@fr .
+
+<http://publications.europa.eu/resource/authority/language/VSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Venezuelan Sign Language"@en,
+        "langue des signes vénézuélienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/VSV> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Valencian Sign Language"@en,
+        "langue des signes valencienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/WAK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Wakashan languages"@en,
+        "langues wakashennes"@fr .
+
+<http://publications.europa.eu/resource/authority/language/WEN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Sorbian languages"@en,
+        "langues sorabe"@fr .
+
+<http://publications.europa.eu/resource/authority/language/WLN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Walloon"@en,
+        "wallon"@fr .
+
+<http://publications.europa.eu/resource/authority/language/WOL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Wolof"@en,
+        "wolof"@fr .
+
+<http://publications.europa.eu/resource/authority/language/XHO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Xhosa"@en,
+        "xhosa"@fr .
+
+<http://publications.europa.eu/resource/authority/language/XKI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Kenyan Sign Language"@en,
+        "langue des signes kényane"@fr .
+
+<http://publications.europa.eu/resource/authority/language/XML> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Malaysian Sign Language"@en,
+        "langue des signes malaisienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/XMS> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Moroccan Sign Language"@en,
+        "langue des signes marocaine"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YAA> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yaminava"@en,
+        "yaminahua"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YID> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yiddish"@en,
+        "yiddish"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YPK> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yupik languages"@en,
+        "langues yupik"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yugoslavian Sign Language"@en,
+        "langue des signes yougoslave"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YUE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yue Chinese"@en,
+        "cantonais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YUQ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yuqui"@en,
+        "yuki"@fr .
+
+<http://publications.europa.eu/resource/authority/language/YUZ> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Yuracare"@en,
+        "yuracaré"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZHO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Chinese"@en,
+        "chinois"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZIB> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Zimbabwean Sign Language"@en,
+        "langue des signes zimbabwéenne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZLM> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Malay"@en,
+        "malais"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZND> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Zande languages"@en,
+        "langues zandé"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZSL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Zambian Sign Language"@en,
+        "langue des signes zambienne"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZUL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "Zulu"@en,
+        "zoulou"@fr .
+
+<http://publications.europa.eu/resource/authority/language/ZXX> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
+    skos:prefLabel "No linguistic content"@en,
+        "pas de contenu linguistique"@fr .
+
+<http://publications.europa.eu/resource/authority/language> a skos:ConceptScheme ;
+    skos:prefLabel "Language (EU)"@en,
+        "Langues (UE)"@fr .
+
