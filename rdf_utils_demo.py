@@ -41,6 +41,9 @@ def printDict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
     
     Arguments :
     - widgetsDict est un dictionnaire obtenu par exécution de la fonction buildDict.
+    - hideNone est un booléen indiquant si les clés vides doivent être imprimées
+    (par défaut non).
+    - limit est le nombre maximal de clés à imprimer. Par défaut 5.
     
     >>> printDict(d)
     >>> printDict(d, hideNone = False)
