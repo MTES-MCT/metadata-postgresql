@@ -16,7 +16,7 @@ with open('shape.ttl', encoding='UTF-8') as src:
     g_shape = Graph().parse(data=src.read(), format='turtle')
     
 # vocabulaire - ontologies utilisées par les métadonnées communes
-with open('ontologies.ttl', encoding='UTF-8') as src:
+with open('vocabulary.ttl', encoding='UTF-8') as src:
     g_vocabulary = Graph().parse(data=src.read(), format='turtle')
     
 # exemple de modèle de formulaire
