@@ -247,12 +247,11 @@ def buildDict(
     stockage des futurs widgets.
 
     La clé du dictionnaire externe est un tuple formé :
-    [0] d'un index, qui définit le placement vertical du widget dans la grille (QGridLayout) qui
-    organise tous les widgets rattachés au groupe parent (QGroupBox).
+    [0] d'un index, qui garantit l'unicité de la clé.
     [1] de la clé du groupe parent.
     [2] dans quelques cas, la lettre M, indiquant que le widget est la version "manuelle" d'un
     widget normalement abondé par un ou plusieurs thésaurus. Celui-ci a la même clé sans "M"
-    (même parent et même index, donc même placement dans la grille). Ces deux widgets sont
+    (même parent, même index, même placement dans la grille). Ces deux widgets sont
     supposés être substitués l'un à l'autre dans la grille lorque l'utilisateur active ou
     désactive le "mode manuel" (cf. 'switch source widget' ci-après)
     
@@ -296,6 +295,10 @@ def buildDict(
     au paramétrage des widgets.
     
     - 'main widget type'* : type du widget principal (QGroupBox, QLineEdit...).
+    - 'row' : placement vertical (= numéro de ligne) du widget dans la grille (QGridLayout) qui
+    organise tous les widgets rattachés au groupe parent (QGroupBox). Initialement, row est
+    toujours égal à l'index de la clé, mais il ne le sera plus si les boutons d'ajout/suppression
+    de valeurs ont été utilisés.
     - 'row span'* : hauteur du widget, en nombre de lignes de la grille. Spécifié uniquement pour
     certains QTextEdit (valeur par défaut à prévoir).
     - 'label'* : s'il y a lieu de mettre un label (pour les "group of values" et les "edit" ou "node
@@ -413,6 +416,7 @@ def buildDict(
             'switch source widget' : None,
             
             'main widget type' : None,
+            'row' : None,
             'row span' : None,              
             'label' : None,
             'label row' : None,
@@ -642,6 +646,7 @@ def buildDict(
                 mDict[mWidget].update( {
                     'object' : 'group of properties',
                     'main widget type' : 'QGroupBox',
+                    'row' : idx[mParent],
                     'label' : mLabel,
                     'help text' : mHelp,
                     'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
@@ -728,6 +733,7 @@ def buildDict(
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
+                    'row' : idx[mParent],
                     'row span' : ( t.get('row span', None) or ( int(p['rowspan']) if p['rowspan'] else textEditRowSpan )
                                ) if mWidgetType == 'QTextEdit' else None,
                     'input mask' : t.get('input mask', None) or ( str(p['mask']) if p['mask'] else None ),
@@ -861,6 +867,7 @@ def buildDict(
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
+                    'row' : idx[mParent],
                     'row span' : t.get('row span', textEditRowSpan) if mWidgetType == 'QTextEdit' else None,
                     'input mask' : t.get('input mask', None),
                     'label' : mLabel,
@@ -961,6 +968,7 @@ def buildDict(
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
+                    'row' : idx[mParent],
                     'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
                     'label' : "???" if len(dpv[p]) == 1 else None,
                     'label row' : mLabelRow,
