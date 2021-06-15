@@ -1,4 +1,4 @@
-### Création d'un nouveau widget
+# Création d'un nouveau widget
 
 *Soit :*
 - *`widgetsDict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage.*
@@ -9,7 +9,7 @@ Chaque enregistrement du dictionnaire des widgets contrôle un widget principal 
  
 ## Widget principal
 
-# Type
+### Type
 
 Le type de widget à créer (QGroupBox, QToolButton, QLineEdit...) est fourni par la clé `'main widget type'` du dictionnaire interne.
 
@@ -19,7 +19,7 @@ widgetsDict[key]['main widget type']
 
 ```
 
-# Stockage
+### Stockage
 
 Le nouveau widget a vocation à être stocké dans la clé `'main widget'` du dictionnaire interne.
 
@@ -29,7 +29,7 @@ widgetsDict[key]['main widget']
 
 ```
 
-# Paramètre *parent*
+### Paramètre *parent*
 
 Le widget *parent* est le `'main widget'` de l'enregistrement dont la clé est le second argument de `key`. Il s'agira toujours d'un QGroupBox.
 
@@ -41,7 +41,7 @@ widgetsDict[key[1]]['main widget']
 
 ```
 
-# Paramètres spécifiques aux widgets QGroupBox
+### Paramètres spécifiques aux widgets QGroupBox
 
 Le paramètre *title* du QGroupBox est fourni par la clé `'label'` du dictionnaire interne.
 
@@ -53,7 +53,7 @@ widgetsDict[key]['label']
 
 ```
 
-# Paramètres spécifiques aux widgets de saisie
+### Paramètres spécifiques aux widgets de saisie
 
 Lorsqu'elle existe, soit parce qu'elle était déjà renseignée dans la fiche de métadonnées, soit parce qu'une valeur par défaut est définie pour la catégorie considérée, la valeur à afficher dans le widget est fournie par la clé `'value'` du dictionnaire.
 
@@ -63,7 +63,7 @@ widgetsDict[key]['value']
 
 ```
 
-# Paramètres spécifiques aux widgets QLineEdit et QTextEdit
+### Paramètres spécifiques aux widgets QLineEdit et QTextEdit
 
 Pour les widgets d'édition de texte, le dictionnaire apporte divers paramètres complémentaires :
 
@@ -73,7 +73,7 @@ Pour les widgets d'édition de texte, le dictionnaire apporte divers paramètres
 Tous ces paramètres sont optionnels. Si la clé ne contient pas de valeur, c'est qu'il n'y a pas lieu d'utiliser le paramètre.
 
 
-# Placement dans la grille
+### Placement dans la grille
 
 Le nouveau widget doit être placé dans le QGridLayout associé à son parent.
 
@@ -112,7 +112,7 @@ widgetsDict[key]['object'] in ('group of values', 'group of properties', 'transl
 
 ```
 
-# Stockage
+### Stockage
 
 Le widget QGridLayout sera stocké dans la clé `'grid widget'` du dictionnaire interne.
 
@@ -122,7 +122,7 @@ widgetsDict[key]['grid widget']
 
 ```
 
-# Paramètre *parent*
+### Paramètre *parent*
 
 Le widget *parent* est le `'main widget'` de l'enregistrement.
 
@@ -142,7 +142,7 @@ widgetsDict[key]['label']
 
 ```
 
-# Stockage
+### Stockage
 
 Le widget QLabel sera stocké dans la clé `'label widget'` du dictionnaire interne.
 
@@ -152,7 +152,7 @@ widgetsDict[key]['label widget']
 
 ```
 
-# Paramètre *parent*
+### Paramètre *parent*
 
 Le widget *parent* est le même que pour le widget principal : il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`.
 
@@ -163,7 +163,7 @@ widgetsDict[key[1]]['main widget']
 
 ```
 
-# Placement dans la grille
+### Placement dans la grille
 
 Le QLabel doit être placé dans le QGridLayout associé à son parent.
 
