@@ -351,7 +351,7 @@ def buildDict(
     widget n'est pas utilisé. La liste des termes autorisés par la source n'est pas directement
     stockée dans le dictionnaire, mais peut être obtenue via la fonction getVocabulary.
     - 'read only' : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
-    l'utilisateur.
+    l'utilisateur. En mode lecture, 'read only' vaut toujours True.
 
     La dernière série de clés ne sert qu'aux fonctions de rdf_utils : 'default value'* (valeur par
     défaut), 'multiple values'* (la catégorie est-elle censée admettre plusieurs valeurs ?),
@@ -547,8 +547,12 @@ def buildDict(
             continue
         elif not ( readHideBlank and mode == 'read' ):
             values = values or [ None ]
-            
-        t = mShallowTemplate.pop(mNPath, dict())
+        
+        if mNPath in mShallowTemplate:
+            t = mShallowTemplate[mNPath]
+            mShallowTemplate[mNPath].update( { 'done' : True } )
+        else:
+            t = dict()
 
         # récupération de la liste des ontologies
         if mKind in ("sh:BlankNodeOrIRI", "sh:IRI"):
@@ -766,7 +770,7 @@ def buildDict(
                     'subject' : mParentNode,
                     'predicate' : mProperty,
                     'default widget type' : mDefaultWidgetType,
-                    'tranform' : str(p['transform']) if p['transform'] else None,
+                    'transform' : str(p['transform']) if p['transform'] else None,
                     'type validator' : 'QIntValidator' if p['type'] and p['type'].n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if p['type'] and p['type'].n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
                     'multiple sources' : len(mSources) > 1 if mSources and mode == 'edit' else False,
@@ -774,7 +778,7 @@ def buildDict(
                     'sources' : ( mSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mSources,
                     'one per language' : multilingual and translation,
                     'authorized languages' : mLangList if mode == 'edit' else None,
-                    'read only' : t.get('read only', False)
+                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False))
                     } )
                 
                 idx[mParent] += 1
@@ -799,8 +803,9 @@ def buildDict(
 
         for meta, t in mShallowTemplate.items():
 
-            # à ce stade, ne restent dans le template que les
-            # catégories locales / non communes
+            if t.get('done', False):
+                # on passe les catégories déjà traitées
+                continue
 
             if not isValidMiniPath(meta, nsm):
                 # on élimine d'office les catégories locales dont
@@ -899,7 +904,7 @@ def buildDict(
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
                     'authorized languages' : mLangList if mode == 'edit' else None,
-                    'read only' : t.get('read only', False)
+                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False))
                     } )
                         
                 idx[mParent] += 1
@@ -996,7 +1001,7 @@ def buildDict(
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
                     'authorized languages' : mLangList if mode == 'edit' else None,
-                    'read only' : False
+                    'read only' : ( mode == 'read' )
                     } )
                         
                 idx[mParent] += 1
