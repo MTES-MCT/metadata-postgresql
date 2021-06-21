@@ -35,8 +35,7 @@ with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, hideUnlisted=True)
 #d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary, template=d_template)
-d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template,
-                        hideUnlisted=True)
+d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True)
 
 
 
@@ -98,7 +97,7 @@ def pseudoForm(widgetsDict: dict):
 
         m = c
         c = str(k).count('(') - 1
-        l = len(v['label']) if v['label'] else 0
+        l = ( len(v['label']) if v['label'] else 0 ) + ( 1 if v['read only'] else 0 )
 
         if v['object'] in ('edit', 'plus button'):
 
@@ -156,9 +155,9 @@ def pseudoForm(widgetsDict: dict):
                 e =+ r - 3
 
             if v['label']:
-                o = v['label'] + ' : '  + o
+                o = v['label'] + ( '*' if v['read only'] else '' ) + ' : '  + o
             else:
-                o += ' ' * 3
+                o = ( '*' if v['read only'] else '' ) + o + ' ' * 3
 
             
 
