@@ -11,7 +11,8 @@
         "default value": "Pôle SIG"
     },
     "dcat:contactPoint / vcard:hasEmail": {
-        "default value": "sig-contact@developpement-durable.gouv.fr"
+        "default value": "sig-contact@developpement-durable.gouv.fr",
+        "read only": "True"
     },
     "dcat:keyword": {
     },
