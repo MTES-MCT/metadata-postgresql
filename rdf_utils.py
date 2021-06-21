@@ -179,6 +179,7 @@ def buildDict(
     template: dict = None,
     mode: str = 'edit',
     readHideBlank: bool = True,
+    hideUnlisted: bool = False,
     language: str = "fr",
     translation: bool = False,
     langList: List[str] = ['fr', 'en'],
@@ -221,7 +222,11 @@ def buildDict(
     disparition des boutons, notamment les "boutons plus" qui faisaient l'objet d'un
     enregistrement à part dans le dictionnaire. [ATTENTION !!! le mode recherche n'est pas
     encore implémenté, il renvoie le même dictionnaire que le mode lecture]
-    - readHideBlank indique si les champs vides doivent être masqués en mode lecture.
+    - readHideBlank (paramètre utilisateur) indique si les champs vides doivent être masqués
+    en mode lecture.
+    - hideUnlisted (paramètre utilisateur) indique si les catégories hors template doivent
+    être masquées. En l'absence de template, si hideUnlisted vaut True, seules les métadonnées
+    communes seront visibles.
     - language (paramètre utilisateur) est la langue principale de rédaction des métadonnées.
     Français ("fr") par défaut. La valeur de language doit être incluse dans langList ci-après.
     - translation (paramètre utilisateur) est un booléen qui indique si les widgets de
@@ -314,7 +319,8 @@ def buildDict(
     infobulle.
     - 'value' : pour un widget "edit", la valeur à afficher. Elle tient compte à la fois de ce qui
     était déjà renseigné dans la fiche de métadonnées et des éventuelles valeurs par défaut de shape
-    et template.
+    et template. Les valeurs par défaut sont utilisées uniquement dans les groupes de propriétés
+    vides.
     - 'placeholder text'* : pour un widget QLineEdit ou QTextEdit, éventuel texte à utiliser comme
     "placeholder".
     - 'input mask'* : éventuel masque de saisie.
@@ -344,6 +350,8 @@ def buildDict(
     antérieurement saisie n'apparaît dans aucune ontologie associée à la catégorie, None si le
     widget n'est pas utilisé. La liste des termes autorisés par la source n'est pas directement
     stockée dans le dictionnaire, mais peut être obtenue via la fonction getVocabulary.
+    - 'read only' : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
+    l'utilisateur.
 
     La dernière série de clés ne sert qu'aux fonctions de rdf_utils : 'default value'* (valeur par
     défaut), 'multiple values'* (la catégorie est-elle censée admettre plusieurs valeurs ?),
@@ -434,6 +442,7 @@ def buildDict(
             'sources' : None,
             'current source' : None,
             'authorized languages' : None,
+            'read only' : None,
             
             'default value' : None,
             'multiple values' : None,
@@ -534,7 +543,7 @@ def buildDict(
     
         # exclusion des catégories qui ne sont pas prévues par
         # le modèle et n'ont pas de valeur renseignée
-        if ( values in ( None, [], [ None ] ) ) and not mTemplateEmpty and not ( mNPath in template ):
+        if ( hideUnlisted or values in ( None, [], [ None ] ) ) and not mTemplateEmpty and not ( mNPath in template ):
             continue
         elif not ( readHideBlank and mode == 'read' ):
             values = values or [ None ]
@@ -634,7 +643,7 @@ def buildDict(
             if mKind in ( 'sh:BlankNode', 'sh:BlankNodeOrIRI' ) and (
                     not readHideBlank or not mode == 'read' or isinstance(mValueBrut, BNode) ):
 
-                mGraphEmpy = mGraphEmpty or mValueBrut is None              
+                mGraphEmpty = mGraphEmpty or mValueBrut is None              
                 mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
 
                 if mKind == 'sh:BlankNodeOrIRI':
@@ -667,7 +676,7 @@ def buildDict(
                     
                 idx.update( { mWidget : 0 } )
 
-                buildDict(graph, shape, vocabulary, template, mode, readHideBlank, language, translation, langList, labelLengthLimit,
+                buildDict(graph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted, language, translation, langList, labelLengthLimit,
                       valueLengthLimit, textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager, mWidgetDictTemplate, mDict,
                       mGraphEmpty, mShallowTemplate, mTemplateEmpty)
 
@@ -693,7 +702,7 @@ def buildDict(
                     if not mCurSource in mSources:
                         mCurSource = '< non répertorié >'
                         
-                elif mSources and ( mValueBrut is None ):
+                elif mSources and mGraphEmpty and ( mValueBrut is None ):
                     mCurSource = mDefaultSource
 
                 if mSources and ( mCurSource is None ):
@@ -715,7 +724,7 @@ def buildDict(
                     mValue = emailFromOwlThing(mValueBrut)
 
                 mDefault = t.get('default value', None) or mDefaultTrad or ( str(p['default']) if p['default'] else None )
-                mValue = mValue or ( str(mValueBrut) if mValueBrut else mDefault )
+                mValue = mValue or ( str(mValueBrut) if mValueBrut else ( mDefault if mGraphEmpty else None ) )
 
                 mWidgetType = t.get('main widget type', None) or str(p['widget']) or "QLineEdit"
                 mDefaultWidgetType = mWidgetType
@@ -764,7 +773,8 @@ def buildDict(
                     'current source' : mCurSource,
                     'sources' : ( mSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mSources,
                     'one per language' : multilingual and translation,
-                    'authorized languages' : mLangList if mode == 'edit' else None
+                    'authorized languages' : mLangList if mode == 'edit' else None,
+                    'read only' : t.get('read only', False)
                     } )
                 
                 idx[mParent] += 1
@@ -822,7 +832,7 @@ def buildDict(
                 )
 
             values = [ v['value'] for v in q_gr ] if mode == 'read' and readHideBlank else (
-                        [ v['value'] for v in q_gr ] or [ t.get('default value', None) ] )
+                        [ v['value'] for v in q_gr ] or [ t.get('default value', None) if mGraphEmpty else None ] )
 
             multiple = t.get('multiple values', False)
 
@@ -888,7 +898,8 @@ def buildDict(
                     'default widget type' : mDefaultWidgetType,
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
-                    'authorized languages' : mLangList if mode == 'edit' else None
+                    'authorized languages' : mLangList if mode == 'edit' else None,
+                    'read only' : t.get('read only', False)
                     } )
                         
                 idx[mParent] += 1
@@ -907,7 +918,7 @@ def buildDict(
     # ---------- METADONNEES NON DEFINIES ----------
     # métadonnées présentes dans le graphe mais ni dans shape ni dans template
     
-    if mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
+    if not hideUnlisted and mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
         
         q_gr = graph.query(
             """
@@ -984,7 +995,8 @@ def buildDict(
                     'default widget type' : "QLineEdit",
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
-                    'authorized languages' : mLangList if mode == 'edit' else None
+                    'authorized languages' : mLangList if mode == 'edit' else None,
+                    'read only' : False
                     } )
                         
                 idx[mParent] += 1
