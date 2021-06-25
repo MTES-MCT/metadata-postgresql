@@ -3,6 +3,8 @@
 Soit :
 - `widgetsDict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage.
 - `key` la clé de l'enregistrement en cours de traitement.
+- `vocabulary` le graphe RDF qui rassemble les valeurs des thésaurus.
+- `language` la langue principale de rédaction des métadonnées sélectionnée par l'utilisateur.
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes.
 
@@ -45,7 +47,7 @@ widgetsDict[key[1]]['main widget']
 
 ### Paramètres spécifiques aux widgets QGroupBox
 
-- Le paramètre `title` du QGroupBox est fourni par la clé `'label'` du dictionnaire interne.
+- L'**étiquette** - paramètre `title` du QGroupBox - est fournie par la clé `'label'` du dictionnaire interne.
 
 ```python
 
@@ -55,17 +57,32 @@ widgetsDict[key]['label']
 
 Cette clé ne sera renseignée que s'il y a lieu d'afficher un libellé sur le groupe.
 
-- Lorsqu'elle est renseignée, la clé `'help text'` fournit un descriptif de la catégorie de métadonnée, qui pourrait apparaître en infobulle.
+- Lorsqu'elle est renseignée, la clé `'help text'` fournit un **texte d'aide** (descriptif de la catégorie de métadonnée), qui pourrait alimenter un `toolTip` (voire un `whatsThis`).
 
 ```python
 
-widgetsDict[key]['help text']
+widgetsDict[key]['main widget'].setToolTip(widgetsDict[key]['help text'])
 
 ```
 
+### Paramètres spécifiques aux widgets QToolButton
+
+Le seul cas où le widget principal est un QToolButton est celui du "bouton plus", qui permet à l'utilisateur d'ajouter des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'`.
+
+L'action associée à ce QToolButton sera stockée dans la clé `'main action'` du dictionnaire.
+
+```python
+
+widgetsDict[key]['main action']
+
+```
+
+*Pour la définition de l'action, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-plus).*
+
+
 ### Paramètres spécifiques aux widgets de saisie
 
-Lorsqu'elle existe, soit parce qu'elle était déjà renseignée dans la fiche de métadonnées, soit parce qu'une valeur par défaut est définie pour la catégorie considérée, la valeur à afficher dans le widget est fournie par la clé `'value'` du dictionnaire.
+- Lorsqu'elle existe, soit parce qu'elle était déjà renseignée dans la fiche de métadonnées, soit parce qu'une valeur par défaut est définie pour la catégorie considérée, la **valeur à afficher** dans le widget est fournie par la clé `'value'` du dictionnaire.
 
 À noter que les valeurs par défaut ne sont utilisées que si le groupe de propriétés est vide.
 
@@ -75,7 +92,7 @@ widgetsDict[key]['value']
 
 ```
 
-Si la clé `'read only'` vaut `True`, le widget doit être visible mais désactivé, pour empêcher les modifications manuelles par l'utilisateur.
+- Si la clé `'read only'` vaut `True`, le widget doit être visible mais désactivé, pour empêcher les modifications manuelles par l'utilisateur.
 
 ```python
 
@@ -83,7 +100,7 @@ widgetsDict[key]['read only']
 
 ```
 
-La clé `'is mandatory'` contient un booléen indiquant s'il est obligatoire (valeur `True`) ou non (valeur `False` ou `None`) de saisir une valeur pour la catégorie.
+- La clé `'is mandatory'` contient un booléen indiquant s'il est obligatoire (valeur `True`) ou non (valeur `False` ou `None`) de saisir une valeur pour la catégorie.
 
 ```python
 
@@ -96,7 +113,7 @@ widgetsDict[key]['is mandatory']
 
 Pour les widgets d'édition de texte, le dictionnaire apporte divers paramètres complémentaires. Ils sont tous optionnels. Si la clé ne contient pas de valeur, c'est qu'il n'y a pas lieu d'utiliser le paramètre.
 
-- `'placeholder text'` donne la valeur fictive à afficher dans le widget :
+- `'placeholder text'` donne la **valeur fictive** à afficher dans le widget :
 
 ```python
 
@@ -104,7 +121,7 @@ widgetsDict[key]['main widget'].setPlaceholderText(widgetsDict[key]['placeholder
 
 ```
 
-- `'input mask'` donne le masque de saisie :
+- `'input mask'` donne le **masque de saisie** :
 
 ```python
 
@@ -112,7 +129,7 @@ widgetsDict[key]['main widget'].setInputMask(widgetsDict[key]['input mask'])
 
 ```
 
-- `'type validator'` indique si un validateur basé sur le type doit être défini et lequel :
+- `'type validator'` indique si un **validateur basé sur le type** doit être défini et lequel :
 
 ```python
 
@@ -127,7 +144,7 @@ elif mTypeValidator == 'QDoubleValidator':
 
 *Ces validateurs permettent également de définir des valeurs minimum et maximum autorisées. Comme le SHACL le permet également (avec `sh:minInclusive` et `sh:maxInclusive`, car les paramètres `bottom` et `top` de `QIntValidator()` et `QDoubleValidator()` sont inclusifs), cette possibilité pourrait être utilisée à l'avenir, mais aucune clé n'a été prévue en ce sens à ce stade.*
 
-- `'regex validator pattern'` donne l'expression rationnelle que doit respecter la valeur saisie et `'regex validator flags'` les options éventuelles :
+- `'regex validator pattern'` donne l'**expression rationnelle** que doit respecter la valeur saisie et `'regex validator flags'` les options éventuelles :
 
 ```python
 
@@ -154,6 +171,27 @@ widgetsDict[key]['main widget'].setValidator(
 
 *Seules les options `i`, `s`, `m` et `x` sont à la fois admises en SHACL et par QT, ce sont donc les seules à être gérées.*
 
+
+### Paramètres spécifiques aux widgets QComboBox
+
+- Pour obtenir la **liste des termes** à afficher dans le QComboBox, on utilisera la fonction `getVocabulary()`. La clé `'current source'` contient le nom du thésaurus à utiliser.
+
+```python
+
+getVocabulary(widgetsDict[key]['current source'], vocabulary, language)
+
+```
+
+- Comme les QTextEdit et QLineEdit, les widgets QComboBox peuvent afficher une **valeur fictive** fournie par la clé `'placeholder text'`. Celle-ci sera généralement renseignée car, si ni le schéma des métadonnées communes ni le modèle local ne fournissent de texte fictif, c'est le nom du thésaurus courant qui sera affiché.
+
+
+```python
+
+widgetsDict[key]['main widget'].setPlaceholderText(widgetsDict[key]['placeholder text'])
+
+```
+
+Autant que possible - considérant la quantité de termes dans certains thésaurus - les QComboBox devraient afficher une ligne de saisie avec **auto-complétion**. Il est par contre important qu'ils **ne permettent pas d'entrer d'autres valeurs que celles des thésaurus**.
 
 
 ### Placement dans la grille
@@ -287,13 +325,14 @@ column = 0
 
 *Le paramètre `column span` n'est pas défini par le dictionnaire à ce stade, mais pourrait l'être à l'avenir.*
 
+
 ### Texte d'aide
 
-Lorsqu'elle est renseignée, la clé `'help text'` fournit un descriptif de la catégorie de métadonnée, qui pourrait apparaître en infobulle.
+Lorsqu'elle est renseignée, la clé `'help text'` fournit un **texte d'aide** (descriptif de la catégorie de métadonnée), qui pourrait alimenter un `toolTip` (voire un `whatsThis`).
 
 ```python
 
-widgetsDict[key]['help text']
+widgetsDict[key]['label widget'].setToolTip(widgetsDict[key]['help text'])
 
 ```
 
@@ -315,7 +354,7 @@ widgetsDict[key]['multiple sources']
 
 ### Stockage
 
-Il est stocké dans la clé `'switch source widget'` du dictionnaire interne.
+Le widget de sélection de la source est stocké dans la clé `'switch source widget'` du dictionnaire interne.
 
 ```python
 
@@ -330,6 +369,44 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 ```python
 
 widgetsDict[key[1]]['main widget']
+
+```
+
+### Menu
+
+Le QMenu associé au QToolButton est stocké dans la clé `'switch source menu'` du dictionnaire.
+
+```python
+
+widgetsDict[key]['switch source menu']
+
+```
+
+Ce QMenu contient une QAction par thésaurus utilisable pour la métadonnée. Les QAction sont elles-mêmes stockées dans la clé `'switch source actions'` du dictionnaire, sous la forme d'une liste.
+
+```python
+
+widgetsDict[key]['switch source actions']
+
+```
+
+À noter que la clé `'switch source actions'` est initialisée par une liste vide (et non `None`) pour faciliter l'ajout des actions.
+
+Les libellés des QAction correspondent aux noms des thésaurus et sont fournis par la liste contenue dans la clé `'sources'` du dictionnaire :
+
+```python
+
+widgetsDict[key]['sources']
+
+```
+
+*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-selection-de-la-source).*
+
+Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du QComboBox - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Son nom est donné par la clé `'current source'`.
+
+```python
+
+widgetsDict[key]['current source']
 
 ```
 
@@ -385,6 +462,46 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 ```python
 
 widgetsDict[key[1]]['main widget']
+
+```
+
+### Menu
+
+Le QMenu associé au QToolButton est stocké dans la clé `'language menu'` du dictionnaire.
+
+```python
+
+widgetsDict[key]['language menu']
+
+```
+
+Ce QMenu contient une QAction par langue disponible. Les QAction sont elles-mêmes stockées dans la clé `'language actions'` du dictionnaire, sous la forme d'une liste.
+
+```python
+
+widgetsDict[key]['language actions']
+
+```
+
+À noter que la clé `'language actions'` est initialisée par une liste vide (et non `None`) pour faciliter l'ajout des actions.
+
+Les libellés des QAction correspondent aux noms abrégés des langues et sont fournis par la liste contenue dans la clé `'authorized languages'` du dictionnaire :
+
+```python
+
+widgetsDict[key]['authorized languages']
+
+```
+
+*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-selection-de-la-langue).*
+
+### Rendu
+
+Au lieu d'une icône, le QToolButton de sélection de la langue montre un texte correspondant au nom abrégé de la langue sélectionnée. Celui-ci est fourni par la clé `'language value'`.
+
+```python
+
+widgetsDict[key]['language value']
 
 ```
 
@@ -444,6 +561,18 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 widgetsDict[key[1]]['main widget']
 
 ```
+
+### Action
+
+L'action associée au QToolButton est stockée dans la clé `'minus action'` du dictionnaire.
+
+```python
+
+widgetsDict[key]['minus action']
+
+```
+
+*Pour la définition de l'action, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-moins).*
 
 ### Placement dans la grille
 
