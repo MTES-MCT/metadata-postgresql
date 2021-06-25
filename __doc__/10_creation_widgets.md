@@ -400,7 +400,7 @@ widgetsDict[key]['sources']
 
 ```
 
-*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-selection-de-la-source).*
+*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-sélection-de-la-source).*
 
 Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du QComboBox - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Son nom est donné par la clé `'current source'`.
 
@@ -493,7 +493,7 @@ widgetsDict[key]['authorized languages']
 
 ```
 
-*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-selection-de-la-langue).*
+*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-sélection-de-la-langue).*
 
 ### Rendu
 
