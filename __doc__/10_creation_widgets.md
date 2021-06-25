@@ -6,7 +6,7 @@ Soit :
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes.
 
-[Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Wdget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-selection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-selection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+[Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-selection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-selection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
  
 ## Widget principal
@@ -45,9 +45,7 @@ widgetsDict[key[1]]['main widget']
 
 ### Paramètres spécifiques aux widgets QGroupBox
 
-Le paramètre *title* du QGroupBox est fourni par la clé `'label'` du dictionnaire interne.
-
-Cette clé ne sera renseignée que s'il y a lieu d'afficher un libellé sur le groupe.
+- Le paramètre `title` du QGroupBox est fourni par la clé `'label'` du dictionnaire interne.
 
 ```python
 
@@ -55,7 +53,9 @@ widgetsDict[key]['label']
 
 ```
 
-Lorsqu'elle est renseignée, la clé `'help text'` fournit un descriptif de la catégorie de métadonnée, qui pourrait apparaître en infobulle.
+Cette clé ne sera renseignée que s'il y a lieu d'afficher un libellé sur le groupe.
+
+- Lorsqu'elle est renseignée, la clé `'help text'` fournit un descriptif de la catégorie de métadonnée, qui pourrait apparaître en infobulle.
 
 ```python
 
@@ -286,6 +286,17 @@ column = 0
 ```
 
 *Le paramètre `column span` n'est pas défini par le dictionnaire à ce stade, mais pourrait l'être à l'avenir.*
+
+### Texte d'aide
+
+Lorsqu'elle est renseignée, la clé `'help text'` fournit un descriptif de la catégorie de métadonnée, qui pourrait apparaître en infobulle.
+
+```python
+
+widgetsDict[key]['help text']
+
+```
+
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
