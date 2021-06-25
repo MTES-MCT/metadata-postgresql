@@ -360,7 +360,7 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 ## Widget annexe : bouton  de sélection de la langue
 
-Un widget QToolButton de sélection de source doit être créé dès lors que la condition suivante est vérifiée :
+Un widget QToolButton de sélection de langue doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira que si le mode traduction est actif) :
 
 ```python
 
@@ -370,7 +370,7 @@ widgetsDict[key]['authorized languages']
 
 ### Stockage
 
-Il est stocké dans la clé `'language widget'` du dictionnaire interne.
+Le bouton de sélection de la langue est stocké dans la clé `'language widget'` du dictionnaire interne.
 
 ```python
 
@@ -398,7 +398,7 @@ widgetsDict[key[1]]['grid widget']
 
 ```
 
-Le bouton de sélection de la source est toujours positionné immédiatement à droite de la zone de saisie.
+Le bouton de sélection de la langue est toujours positionné immédiatement à droite de la zone de saisie. Il n'y a pas de conflit possible avec les boutons de sélection de source, car ceux-là ne peuvent apparaître que sur des objets de type *IRI* ou *BlankNode*, alors que spécifier la langue n'est possible que pour les objets de type *Literal*.
 
 ```python
 
@@ -415,7 +415,7 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 ## Widget annexe : bouton "moins"
 
-Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs.
+Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs précédemment saisies.
 
 Un tel widget doit être créé dès lors que la condition suivante est vérifiée :
 
