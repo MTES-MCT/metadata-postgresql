@@ -111,14 +111,14 @@ français explicites qui figureront dans le dictionnaire.
 Pour la constitution du formulaire, il pourra être utile de
 connaître les propriétés dont le vocabulaire est contrôlé et,
 le cas échéant, de disposer de la liste des termes admis.
-Pour ce faire, on pourra utiliser la fonction fetchVocabulary qui
+Pour ce faire, on pourra utiliser la fonction getVocabulary qui
 prend en entrée le chemin SPARQL d'une propriété (= la clé du
 dictionnaire) et renvoie la liste des valeurs autorisées si le
 vocabulaire est contrôlé, None sinon. La liste est triée par
 ordre alphabétique selon la locale de l'utilisateur.
 
 Par exemple :
->>> l = fetchVocabulary("dcat:theme", dataset_template, vocabulary,
+>>> l = getVocabulary("dcat:theme", dataset_template, vocabulary,
 ...     templateUUID=id_template, prefixDict=prefixes)
 
 """
@@ -268,7 +268,7 @@ def buildDict(
     Les "translation group" et "translation button" ne peuvent exister que si l'argument
     "translation" vaut True.
 
-    Les clés 'widget X' ci-après ont vocation à accueillir les futurs widgets (qui ne sont pas
+    Les clés 'X widget' ci-après ont vocation à accueillir les futurs widgets (qui ne sont pas
     créés par la fonction). Il y a toujours un widget principal, le plus souvent de type
     QGroupBox ou QXEdit, et éventuellement des widgets secondaires. Tous ont le même parent et
     seraient à afficher sur la même ligne de la grille.
@@ -295,8 +295,16 @@ def buildDict(
     Parmi les trois derniers boutons seuls deux au maximum pourront être affichés simultanément,
     la combinaison 'language widget' et 'switch source widget' étant impossible.
     
+    En complément, des clés sont prévues pour les QMenu et QAction associés à certains widgets.
+    
+    - 'switch source menu' : pour le QMenu associé au 'switch source widget'.
+    - 'switch source actions' : liste des QAction associées au 'switch source menu'.
+    - 'language menu' : pour le QMenu associé au 'language widget'.
+    - 'language actions' : liste des QAction associées au 'language menu'.
+    - 'main action' : pour la QAction éventuellement associée au widget principal.
+    - 'minus action' : pour la QAction associée au 'minus widget'.    
 
-    Les clés suivantes sont elles remplies par la fonction, avec toutes les informations nécessaires
+    Les clés suivantes sont, elles, remplies par la fonction, avec toutes les informations nécessaires
     au paramétrage des widgets.
     
     - 'main widget type'* : type du widget principal (QGroupBox, QLineEdit...).
@@ -422,6 +430,13 @@ def buildDict(
             'minus widget' : None,
             'language widget' : None,
             'switch source widget' : None,
+
+            'main action' : None,
+            'minus action' : None,
+            'switch source menu' : None,
+            'switch source actions' : [],
+            'language menu' : None,
+            'language actions' : [],
             
             'main widget type' : None,
             'row' : None,
@@ -754,8 +769,8 @@ def buildDict(
                     'label row' : mLabelRow,
                     'help text' : mHelp,
                     'value' : mValue,
-                    'placeholder text' : ( t.get('placeholder text', None) or ( str(p['placeholder']) if p['placeholder'] else None ) 
-                                ) if mWidgetType in ( 'QTextEdit', 'QLineEdit' ) else None,
+                    'placeholder text' : ( t.get('placeholder text', None) or ( str(p['placeholder']) if p['placeholder'] else mCurSource ) 
+                                ) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None) or ( int(p['min']) > 0 if p['min'] else False ),
                     'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
@@ -889,7 +904,7 @@ def buildDict(
                     'label row' : mLabelRow,
                     'help text' : t.get('help text', None) if not ( multiple or len(values) > 1 ) else None,
                     'value' : mValue,
-                    'placeholder text' : t.get('placeholder text', None) if mWidgetType in ( 'QTextEdit', 'QLineEdit' ) else None,
+                    'placeholder text' : t.get('placeholder text', None) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None),
                     'multiple values' : multiple,
@@ -1148,7 +1163,7 @@ def updateDescription(description: str, graph: Graph) -> str:
         return t[0]
         
 
-def fetchVocabulary(schemeStr: str, vocabulary, language: str = "fr") -> List[str]:
+def getVocabulary(schemeStr: str, vocabulary, language: str = "fr") -> List[str]:
     """List all concept labels from given scheme.
 
     Arguments :
@@ -1161,7 +1176,7 @@ def fetchVocabulary(schemeStr: str, vocabulary, language: str = "fr") -> List[st
     Résultat : liste contenant les libellés, triés par ordre alphabétique selon
     la locale de l'utilisateur.
 
-    >>> fetchVocabulary("Thèmes de données (UE)", vocabulary)
+    >>> getVocabulary("Thèmes de données (UE)", vocabulary)
     ['Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
     'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement',
     'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique',
@@ -1441,4 +1456,5 @@ def owlThingFromTel(telStr: str, addPrefixFr: bool = True) -> URIRef:
     if tel and not tel == "":
         return URIRef("tel:" + tel)
         
-        
+
+    
