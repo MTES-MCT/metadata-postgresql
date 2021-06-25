@@ -6,6 +6,8 @@ Soit :
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes.
 
+[Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Wdget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-selection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-selection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+
  
 ## Widget principal
 
@@ -31,7 +33,7 @@ widgetsDict[key]['main widget']
 
 ### Parent
 
-Le widget *parent* est le `'main widget'` de l'enregistrement dont la clé est le second argument de `key`. Il s'agira toujours d'un QGroupBox.
+Le widget *parent* est le `'main widget'` de l'enregistrement dont la clé est le second argument du tuple `key`. Il s'agira toujours d'un QGroupBox.
 
 Par exemple, si `key` vaut `(2, (5, (0,)))`,  son parent est le widget principal de la clé `(5, (0,))`.
 
@@ -192,6 +194,9 @@ column = 1 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is Non
 
 *`column span` pourrait dépendre de la présence d'une étiquette et/ou de boutons "moins" ou de sélection de la source.*
 
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
 
 ## Widget annexe : grille
 
@@ -222,6 +227,10 @@ Le widget *parent* est le `'main widget'` de l'enregistrement.
 widgetsDict[key]['main widget']
 
 ```
+
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
 
 ## Widget annexe : étiquette
 
@@ -278,6 +287,10 @@ column = 0
 
 *Le paramètre `column span` n'est pas défini par le dictionnaire à ce stade, mais pourrait l'être à l'avenir.*
 
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
+
 
 ## Widget annexe : bouton de sélection de la source
 
@@ -330,6 +343,10 @@ column = 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is Non
 
 Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
+
 ## Widget annexe : bouton  de sélection de la langue
 
 Un widget QToolButton de sélection de source doit être créé dès lors que la condition suivante est vérifiée :
@@ -381,6 +398,9 @@ column = 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is Non
 
 Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
 
 ## Widget annexe : bouton "moins"
 
@@ -429,9 +449,12 @@ Le bouton "moins" est positionné sur la ligne de la zone de saisie, à droite d
 ```python
 
 row = widgetsDict[key]['row']
-column = ( 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is None else 1 ) + ( 1 if widgetsDict[key]['multiple sources'] else 0 ) + ( 1 if widgetsDict[key]['authorized languages'] else 0 )
+column = ( 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is None else 1 ) \
+    + ( 1 if widgetsDict[key]['multiple sources'] else 0 ) \
+    + ( 1 if widgetsDict[key]['authorized languages'] else 0 )
 
 ```
 
 Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
+[↑ haut de page](#création-dun-nouveau-widget)
