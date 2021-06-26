@@ -8,119 +8,11 @@ graphe ;
 - de traduire ce graphe en un dictionnaire de catégories
 de métadonnées qui pourra alimenter un formulaire ;
 - en retour, de reconstruire un graphe à partir d'un
-dictionnaire de métadonnées (et de l'identifiant du jeu de
-données) ;
+dictionnaire de métadonnées ;
 - de sérialiser ce graphe en JSON-LD et l'inclure dans
-une chaîne de caractères balisée ;
-- en complément, d'obtenir la liste de valeurs admissibles
-pour un champ dont le vocabulaire est contrôlé par une
-ontologie sous une forme lisible par un être humain.
+une chaîne de caractères balisée.
 
 Dépendances : rdflib, rdflib-jsonld et requests.
-
-Processus d'utilisation type :
-
-0. partant du principe que c_source contient le commentaire/la description
-d'un objet PostgreSQL.
-
-On pourra utiliser l'exemple contenu dans le répertoire exemple :
->>> with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
-...    c_source = src.read()
-
-1. chargement du modèle des métadonnées communes :
->>> with open('shape.ttl', encoding='UTF-8') as src:
-...    shape = Graph().parse(data=src.read(), format='turtle')
-
-2. import des vocabulaires contrôlés :
->>> with open('ontologies.ttl', encoding='UTF-8') as src:
-...    vocabulary = Graph().parse(data=src.read(), format='turtle')
-
-3. extraction et dé-sérialisation sous forme d'un graphe RDF :
->>> g_source = extractMetadata(c_source, shape)
-
-4. stockage de l'identifiant du jeu de données :
->>> id_dataset = fetchUUID(g_source)
-
-Si le commentaire était vierge de métadonnées strucurées, l'identifiant
-n'existera pas encore à ce stade (et sera automatiquement créé par
-la fonction buildGraph utilisée ensuite), mais None ou pas, il faut
-l'avoir récupéré.
-
-5. traduction du graphe en dictionnaire :
->>> d = buildDict(g_source, dataset_template, vocabulary,
-...     datasetUUID=id_dataset, templateUUID=id_template,
-...     prefixDict=prefixes)
-
-Le dictionnaire utilise comme clés des chemins SPARQL qui identifient
-les catégories de métadonnées. Par exemple, "dct:title" pour le nom du
-jeu de données, ou "dct:publisher / foaf:name" pour le nom de l'entité
-qui publie la donnée.
-
-Pour être valide, un chemin sur plusieurs niveaux doit être identifié
-dans le modèle (par ex "dct:publisher / dct:title" ne serait pas accepté).
-À ce stade, il est possible de définir librement des chemins à un seul
-niveau, sous réserve que les préfixes utilisés - "dct" pour "dct:title",
-par ex - soient connus du modèle (p in prefixes) ou, et c'est encore le
-plus simple, que les IRI ne soient pas abrégés.
-
-Ainsi, pour les métadonnées locales, il serait possible d'utiliser comme
-clés des UUID, sous la forme "<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>".
-
-Les valeurs du dictionnaire sont des listes de chaînes de caractères,
-correspondant aux valeurs prises par la propriété pour le jeu de données.
-Il peut bien entendu n'y en avoir qu'une, mais la valeur saisie dans
-le dictionnaire doit être une liste quoi qu'il arrive.
-
-Par exemple :
-{'dct:title': ['ADMIN EXPRESS - Départements de métropole'],
-'dcat:keyword': ['ign', 'donnée externe', 'admin express']}
-
-Une fois constitué, le dictionnaire peut alimenter un formulaire de
-saisie, qui le mettra à jour en retour.
-
-Les étapes suivantes décrivent l'encodage des informations mises
-à jour dans le commentaire.
-
-6. génération d'un graphe contenant les métadonnées actualisées :
->>> g_updated = buildGraph(d, dataset_template, vocabulary,
-...     datasetUUID=id_dataset, templateUUID=id_template,
-...     prefixDict=prefixes)
-
-Le typage des valeurs (toutes représentées par des chaînes de
-caractère dans le dictionnaire) est réalisé grâce au modèle.
-
-7. mise à jour du commentaire :
->>> c_updated = updateDescription(c_source, g_updated)
-
-NB : Les fonctions buildGraph et buildDict admettent un paramètre
-optionnel language, qui permet de spécifier la langue des
-métadonnées. Par défaut, elles sont considérées comme étant
-rédigées en français. Dans tous les cas la langue est, à ce
-stade, considérée comme homogène pour toutes les métadonnées.
-
-
-Vocabulaire contrôlé :
-
-Pour certaines catégories de métadonnées identifiées comme telles
-dans le modèle, seules les valeurs spécifiées dans une ontologie
-particulière peuvent être utilisées. En RDF, ce sont alors les IRI
-identifiant les termes qui sont stockés, toutefois - grâce au
-vocabulaire importé à l'étape 2 ci-avant - ce sont bien les labels
-français explicites qui figureront dans le dictionnaire.
-
-Pour la constitution du formulaire, il pourra être utile de
-connaître les propriétés dont le vocabulaire est contrôlé et,
-le cas échéant, de disposer de la liste des termes admis.
-Pour ce faire, on pourra utiliser la fonction getVocabulary qui
-prend en entrée le chemin SPARQL d'une propriété (= la clé du
-dictionnaire) et renvoie la liste des valeurs autorisées si le
-vocabulaire est contrôlé, None sinon. La liste est triée par
-ordre alphabétique selon la locale de l'utilisateur.
-
-Par exemple :
->>> l = getVocabulary("dcat:theme", dataset_template, vocabulary,
-...     templateUUID=id_template, prefixDict=prefixes)
-
 """
 
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
@@ -156,18 +48,74 @@ def buildGraph(widgetsDict: dict, vocabulary: Graph, language: str = "fr") -> Gr
 
     graph = Graph()
     
-    for k, d in widgetsDict:
+    for k, d in widgetsDict.items():
     
-        mValue = None
-    
-        if d['value'] in [None, '']:
-            continue
-    
-        ################
+        mObject = None
         
+        if d['node']:
+            
+            graph.update("""
+                INSERT
+                    { ?s ?p ?n .
+                      ?n a ?c }
+                WHERE
+                    { }
+            """,
+            initBindings = {
+                's' : d['subject'],
+                'p' : d['predicate'],
+                'n' : d['node'],
+                'c' : d['class']
+                }
+            )
+            
+        elif d['value'] in [None, '']:
+            continue
+                
+        else:
+        
+            if d['node kind'] == 'sh:Literal':
+        
+                mObject = Literal( d['value'], datatype = d['data type'] ) \
+                            if not d['data type'] == URIRef("http://www.w3.org/2001/XMLSchema#string") \
+                            else Literal( d['value'], lang = d['language value'] )
+                            
+            else:
+    
+                if d['transform'] == 'email':
+                    mObject = owlThingFromEmail(d['value'])
+                    
+                elif d['transform'] == 'phone':
+                    mObject = owlThingFromTel(d['value']) 
+                    
+                elif d['current source']:
+                    c = getConceptFromValue(d['value'], d['current source'], vocabulary, language)
+                    
+                    if c is None:
+                        raise ValueError( "'{}' isn't referenced as a label in scheme '{}' for language '{}'.".format(
+                            d['value'], d['current source'], language )
+                            ) 
+                    else:
+                        mObject = c[0]
+                        print(mObject)
+                    
+                else:
+                    f = forbiddenChar(d['value'])                
+                    if f:
+                        raise ValueError( "Character '{}' is not allowed in ressource identifiers.".format(f) )
+                        
+                    mObject = URIRef( d['value'] )
+            
+            graph.update("""
+                INSERT
+                    { ?s ?p ?o }
+                WHERE
+                    { }
+            """,
+            initBindings = { 's' : d['subject'], 'p' : d['predicate'], 'o' : mObject }
+            )  
 
     return graph
-
 
 
 
@@ -195,7 +143,8 @@ def buildDict(
     mDict: dict = None,
     mGraphEmpty: bool = None,
     mShallowTemplate: dict = None,
-    mTemplateEmpty: bool = None
+    mTemplateEmpty: bool = None,
+    mHidden: bool = None
     ) -> dict:
     """Return a dictionary with relevant informations to build a metadata update form. 
 
@@ -307,7 +256,10 @@ def buildDict(
     Les clés suivantes sont, elles, remplies par la fonction, avec toutes les informations nécessaires
     au paramétrage des widgets.
     
-    - 'main widget type'* : type du widget principal (QGroupBox, QLineEdit...).
+    - 'main widget type'* : type du widget principal (QGroupBox, QLineEdit...). Si cette clé est
+    vide, c'est qu'aucun widget ne doit être créé. Ce cas correspond aux catégories de métadonnées
+    hors template, dont les valeurs ne seront pas affichées, mais qu'il n'est pas question d'effacer
+    pour autant.
     - 'row' : placement vertical (= numéro de ligne) du widget dans la grille (QGridLayout) qui
     organise tous les widgets rattachés au groupe parent (QGroupBox). Initialement, row est
     toujours égal à l'index de la clé, mais il ne le sera plus si les boutons d'ajout/suppression
@@ -481,13 +433,16 @@ def buildDict(
         mDict[mParentWidget].update( {
             'object' : 'group of properties',
             'main widget type' : 'QGroupBox',
-            'node' : mParentNode
+            'row' : 0,
+            'node' : mParentNode,
+            'class' : URIRef('http://www.w3.org/ns/dcat#Dataset')
             } )
 
 
     # ---------- EXECUTION COURANTE ----------
 
     idx = dict( { mParentWidget : 0 } )
+    rowidx = dict( { mParentWidget : 0 } )
 
     # on extrait du modèle la liste des catégories de métadonnées qui
     # décrivent la classe cible, avec leurs caractéristiques
@@ -537,6 +492,7 @@ def buildDict(
         mDefaultTrad = None
         mDefaultSource = None
         mLangList = None
+        mNHidden = mHidden or False
         values = None
 
         # on extrait la ou les valeurs éventuellement
@@ -558,95 +514,123 @@ def buildDict(
     
         # exclusion des catégories qui ne sont pas prévues par
         # le modèle et n'ont pas de valeur renseignée
-        if ( hideUnlisted or values in ( None, [], [ None ] ) ) and not mTemplateEmpty and not ( mNPath in template ):
+        if values in ( None, [], [ None ] ) and not mTemplateEmpty and not ( mNPath in template ):
             continue
-        elif not ( readHideBlank and mode == 'read' ):
+        elif hideUnlisted and not mTemplateEmpty and not ( mNPath in template ):
+            mNHidden = True
+        
+        if not ( readHideBlank and mode == 'read' ):
             values = values or [ None ]
         
-        if mNPath in mShallowTemplate:
+        if not mNHidden and ( mNPath in mShallowTemplate ):
             t = mShallowTemplate[mNPath]
             mShallowTemplate[mNPath].update( { 'done' : True } )
         else:
             t = dict()
 
-        # récupération de la liste des ontologies
-        if mKind in ("sh:BlankNodeOrIRI", "sh:IRI"):
 
-            q_on = shape.query(
-                """
-                SELECT
-                    ?ontology
-                WHERE
-                    { ?u sh:targetClass ?c .
-                      ?u sh:property ?x .
-                      ?x sh:path ?p .
-                      ?x snum:ontology ?ontology . }
-                """,
-                initBindings = { 'c' : mTargetClass, 'p' : mProperty }
-                )
+        if mNHidden:
+            # cas d'une catégorie qui ne sera pas affichée à l'utilisateur, car
+            # absente du template, mais pour laquelle une valeur était renseignée
+            # et qu'il s'agit de ne pas perdre
+        
+            if len(values) > 1:               
+                # si plusieurs valeurs étaient renseignées, on référence un groupe
+                # de valeurs (dans certains cas un groupe de traduction aurait été plus
+                # adapté, mais ça n'a pas d'importance) sans aucune autre propriété
+                mWidget = ( idx[mParent], mParent )
+                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                mDict[mWidget].update( {
+                    'object' : 'group of values'
+                    } )
 
-            for s in q_on:
-                
-                q_vc = vocabulary.query(
+                idx[mParent] += 1
+                idx.update( { mWidget : 0 } )
+                mParent = mWidget        
+        
+        else:
+            # récupération de la liste des ontologies
+            if mKind in ("sh:BlankNodeOrIRI", "sh:IRI") :
+
+                q_on = shape.query(
                     """
                     SELECT
-                        ?scheme
+                        ?ontology
                     WHERE
-                        {{ ?s a skos:ConceptScheme ;
-                         skos:prefLabel ?scheme .
-                          FILTER ( lang(?scheme) = "{}" ) }}
-                    """.format(language),
-                    initBindings = { 's' : s['ontology'] }
+                        { ?u sh:targetClass ?c .
+                          ?u sh:property ?x .
+                          ?x sh:path ?p .
+                          ?x snum:ontology ?ontology . }
+                    """,
+                    initBindings = { 'c' : mTargetClass, 'p' : mProperty }
                     )
 
-                mSources = ( mSources or [] ) + ( [ str(l['scheme']) for l in q_vc ] if len(q_vc) == 1 else [] )
+                for s in q_on:
                     
-            if mSources == []:
-                mSources = None
+                    q_vc = vocabulary.query(
+                        """
+                        SELECT
+                            ?scheme
+                        WHERE
+                            {{ ?s a skos:ConceptScheme ;
+                             skos:prefLabel ?scheme .
+                              FILTER ( lang(?scheme) = "{}" ) }}
+                        """.format(language),
+                        initBindings = { 's' : s['ontology'] }
+                        )
 
-            if mSources and t.get('default value', None):
-                mDefaultSource = getConceptFromValue(t.get('default value', None), None, vocabulary, language)[1]
-            elif mSources and p['default']:
-                mDefaultTrad, mDefaultSource = getValueFromConcept(p['default'], vocabulary, language)   
+                    mSources = ( mSources or [] ) + ( [ str(l['scheme']) for l in q_vc ] if len(q_vc) == 1 else [] )
+                        
+                if mSources == []:
+                    mSources = None
+
+                if mSources and t.get('default value', None):
+                    mDefaultSource = getConceptFromValue(t.get('default value', None), None, vocabulary, language)[1]
+                elif mSources and p['default']:
+                    mDefaultTrad, mDefaultSource = getValueFromConcept(p['default'], vocabulary, language)   
+                    
+                        
+            multilingual = p['unilang'] and bool(p['unilang']) or False
+            multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
+            
+            if translation and multilingual:
+                mLangList = [ l for l in langList or [] if not l in [ v.language for v in values if isinstance(v, Literal) ] ]
+                # à ce stade, mLangList contient toutes les langues de langList pour lesquelles
+                # aucune tranduction n'est disponible. On y ajoutera ensuite la langue de la valeur
+                # courante pour obtenir la liste à afficher dans son widget de sélection de langue
+            
+            if len(values) > 1 or ( ( ( translation and multilingual ) or multiple )
+                    and not ( mode == 'read' and readHideBlank ) ):
                 
-                    
-        multilingual = p['unilang'] and bool(p['unilang']) or False
-        multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
-        
-        if translation and multilingual:
-            mLangList = [ l for l in langList or [] if not l in [ v.language for v in values if isinstance(v, Literal) ] ]
-            # à ce stade, mLangList contient toutes les langues de langList pour lesquelles
-            # aucune tranduction n'est disponible. On y ajoutera ensuite la langue de la valeur
-            # courante pour obtenir la liste à afficher dans son widget de sélection de langue
-        
-        if len(values) > 1 or ( ( ( translation and multilingual ) or multiple )
-                and not ( mode == 'read' and readHideBlank ) ) :
-            
-            # si la catégorie admet plusieurs valeurs uniquement s'il
-            # s'agit de traductions, on référence un widget de groupe
-            mWidget = ( idx[mParent], mParent )
-            mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
-            mDict[mWidget].update( {
-                'object' : 'translation group' if ( multilingual and translation ) else 'group of values',
-                'main widget type' : 'QGroupBox',
-                'label' : t.get('label', None) or str(p['name']),
-                'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None )
-                } )
+                # si la catégorie admet plusieurs valeurs uniquement s'il
+                # s'agit de traductions, on référence un widget de groupe
+                mWidget = ( idx[mParent], mParent )
+                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                mDict[mWidget].update( {
+                    'object' : 'translation group' if ( multilingual and translation ) else 'group of values',
+                    'main widget type' : 'QGroupBox',
+                    'row' : rowidx[mParent],
+                    'label' : t.get('label', None) or str(p['name']),
+                    'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None )
+                    } )
 
-            idx[mParent] += 1
-            idx.update( { mWidget : 0 } )
-            mParent = mWidget
-            # les widgets de saisie référencés juste après auront
-            # ce widget de groupe pour parent
-            
-            
-        mLabel = ( t.get('label', None) or str(p['name']) ) if (
-                    ( mode == 'read' and len(values) <= 1 ) or not (
-                    multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
-                    
-        mHelp = ( t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ) ) if (
-                    ( mode == 'read' and len(values) <= 1 ) or not (
-                    multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
+                idx[mParent] += 1
+                rowidx[mParent] += 1
+                idx.update( { mWidget : 0 } )
+                rowidx.update( { mWidget : 0 } )
+                mParent = mWidget
+                # les widgets de saisie référencés juste après auront
+                # ce widget de groupe pour parent
+                
+                
+            mLabel = ( t.get('label', None) or str(p['name']) ) if (
+                        ( mode == 'read' and len(values) <= 1 ) or not (
+                        multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
+                        
+            mHelp = ( t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ) ) if (
+                        ( mode == 'read' and len(values) <= 1 ) or not (
+                        multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
+
 
         # --- BOUCLE SUR LES VALEURS
         
@@ -662,50 +646,100 @@ def buildDict(
             if mKind in ( 'sh:BlankNode', 'sh:BlankNodeOrIRI' ) and (
                     not readHideBlank or not mode == 'read' or isinstance(mValueBrut, BNode) ):
 
-                mGraphEmpty = mGraphEmpty or mValueBrut is None              
-                mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
-
-                if mKind == 'sh:BlankNodeOrIRI':
-                    mSources = ( mSources + [ "< manuel >" ] ) if mSources else [ "< URI >", "< manuel >" ]
-                    mCurSource = "< manuel >" if isinstance(mValueBrut, BNode) else None
-
-                mWidget = ( idx[mParent], mParent, 'M' ) if mKind == 'sh:BlankNodeOrIRI' else ( idx[mParent], mParent )
-                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
-                mDict[mWidget].update( {
-                    'object' : 'group of properties',
-                    'main widget type' : 'QGroupBox',
-                    'row' : idx[mParent],
-                    'label' : mLabel,
-                    'help text' : mHelp,
-                    'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
-                    'multiple values' : multiple,
-                    'node kind' : mKind,
-                    'class' : p['class'],
-                    'path' : mNPath,
-                    'subject' : mParentNode,
-                    'predicate' : mProperty,
-                    'node' : mNode,
-                    'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
-                    'current source' : mCurSource,
-                    'sources' : mSources
-                    } )
-
-                if mKind == 'sh:BlankNode':
-                    idx[mParent] += 1
+                # cas d'une branche masquée
+                if mNHidden and isinstance(mValueBrut, BNode):
                     
-                idx.update( { mWidget : 0 } )
+                    mNode = mValueBrut
+                    mWidget = ( idx[mParent], mParent )
+                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict[mWidget].update( {
+                        'object' : 'group of properties',
+                        'node kind' : mKind,
+                        'class' : p['class'],
+                        'path' : mNPath,
+                        'subject' : mParentNode,
+                        'predicate' : mProperty,
+                        'node' : mNode
+                        } )
+                    idx[mParent] += 1                    
+                    idx.update( { mWidget : 0 } )
 
-                buildDict(graph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted, language, translation, langList, labelLengthLimit,
-                      valueLengthLimit, textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager, mWidgetDictTemplate, mDict,
-                      mGraphEmpty, mShallowTemplate, mTemplateEmpty)
+                # branche visible
+                elif not mNHidden:
+                
+                    mGraphEmpty = mGraphEmpty or mValueBrut is None              
+                    mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
 
+                    if mKind == 'sh:BlankNodeOrIRI':
+                        mSources = ( mSources + [ "< manuel >" ] ) if mSources else [ "< URI >", "< manuel >" ]
+                        mCurSource = "< manuel >" if isinstance(mValueBrut, BNode) else None
+
+                    mWidget = ( idx[mParent], mParent, 'M' ) if mKind == 'sh:BlankNodeOrIRI' else ( idx[mParent], mParent )
+                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict[mWidget].update( {
+                        'object' : 'group of properties',
+                        'main widget type' : 'QGroupBox',
+                        'row' : rowidx[mParent],
+                        'label' : mLabel,
+                        'help text' : mHelp,
+                        'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
+                        'multiple values' : multiple,
+                        'node kind' : mKind,
+                        'class' : p['class'],
+                        'path' : mNPath,
+                        'subject' : mParentNode,
+                        'predicate' : mProperty,
+                        'node' : mNode,
+                        'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
+                        'current source' : mCurSource,
+                        'sources' : mSources
+                        } )
+
+                    if mKind == 'sh:BlankNode':
+                        idx[mParent] += 1
+                        rowidx[mParent] += 1
+                        
+                    idx.update( { mWidget : 0 } )
+                    rowidx.update( { mWidget : 0 } )
+
+                if not mNHidden or isinstance(mValueBrut, BNode):              
+                    buildDict(
+                        graph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted,
+                        language, translation, langList, labelLengthLimit, valueLengthLimit,
+                        textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager,
+                        mWidgetDictTemplate, mDict, mGraphEmpty, mShallowTemplate, mTemplateEmpty,
+                        mNHidden
+                        )
 
             # pour tout ce qui n'est pas un pur noeud vide :
             # on ajoute un widget de saisie, en l'initialisant avec
             # une représentation lisible de la valeur
             if not mKind == 'sh:BlankNode' and (
                     not readHideBlank or not mode == 'read' or not isinstance(mValueBrut, BNode) ):
+                    
+                # cas d'une valeur masquée
+                if mNHidden:
+                
+                    if isinstance(mValueBrut, BNode):
+                        continue   
+                        
+                    mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                    mDict[ ( idx[mParent], mParent ) ].update( {
+                        'object' : 'edit',                      
+                        'value' : mValueBrut,                        
+                        'language value' : mLanguage,                        
+                        'node kind' : mKind,
+                        'data type' : p['type'],
+                        'class' : p['class'],
+                        'path' : mNPath,
+                        'subject' : mParentNode,
+                        'predicate' : mProperty                      
+                        } )
+                
+                    idx[mParent] += 1
+                    continue
 
+                
                 if isinstance(mValueBrut, BNode):
                     mValueBrut = None
                     
@@ -753,15 +787,15 @@ def buildDict(
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
 
-                if mWidgetType == 'QTextEdit' or ( mLabel and len(mLabel) > labelLengthLimit ):
-                    mLabelRow = idx[mParent]
-                    idx[mParent] += 1
+                if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
+                    mLabelRow = rowidx[mParent]
+                    rowidx[mParent] += 1
 
                 mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
-                    'row' : idx[mParent],
+                    'row' : rowidx[mParent],
                     'row span' : ( t.get('row span', None) or ( int(p['rowspan']) if p['rowspan'] else textEditRowSpan )
                                ) if mWidgetType == 'QTextEdit' else None,
                     'input mask' : t.get('input mask', None) or ( str(p['mask']) if p['mask'] else None ),
@@ -797,18 +831,21 @@ def buildDict(
                     } )
                 
                 idx[mParent] += 1
+                rowidx[mParent] += 1
 
         # référencement d'un widget bouton pour ajouter une valeur
         # si la catégorie en admet plusieurs
-        if mode == 'edit' and ( ( multilingual and translation and mLangList and len(mLangList) > 1 ) or multiple ):
+        if not mNHidden and mode == 'edit' and ( ( multilingual and translation and mLangList and len(mLangList) > 1 ) or multiple ):
         
             mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
             mDict[ ( idx[mParent], mParent ) ].update( {
                 'object' : 'translation button' if multilingual else 'plus button',
-                'main widget type' : 'QToolButton'
+                'main widget type' : 'QToolButton',
+                'row' : rowidx[mParent]
                 } )
             
             idx[mParent] += 1
+            rowidx[mParent] += 1
             
 
 
@@ -863,12 +900,15 @@ def buildDict(
                 mDict[mWidget].update( {
                     'object' : 'group of values',
                     'main widget type' : 'QGroupBox',
+                    'row' : rowidx[mParent],
                     'label' : t.get('label', None) or "???",
                     'help text' : t.get('help text', None)
                     } )
 
                 idx[mParent] += 1
+                rowidx[mParent] += 1
                 idx.update( { mWidget : 0 } )
+                rowidx.update( { mWidget : 0 } )
                 mParent = mWidget
 
             for mValueBrut in values:
@@ -889,15 +929,15 @@ def buildDict(
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
 
-                if mWidgetType == 'QTextEdit' or ( mLabel and len(mLabel) > labelLengthLimit ):
-                    mLabelRow = idx[mParent]
-                    idx[mParent] += 1                
+                if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
+                    mLabelRow = rowidx[mParent]
+                    rowidx[mParent] += 1                
 
                 mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
-                    'row' : idx[mParent],
+                    'row' : rowidx[mParent],
                     'row span' : t.get('row span', textEditRowSpan) if mWidgetType == 'QTextEdit' else None,
                     'input mask' : t.get('input mask', None),
                     'label' : mLabel,
@@ -923,16 +963,19 @@ def buildDict(
                     } )
                         
                 idx[mParent] += 1
+                rowidx[mParent] += 1
 
             if multiple and mode == 'edit':
 
                 mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'plus button',
-                    'main widget type' : 'QToolButton'
+                    'main widget type' : 'QToolButton',
+                    'row' : rowidx[mParent]
                     } )
                 
                 idx[mParent] += 1
+                rowidx[mParent] += 1
 
 
     # ---------- METADONNEES NON DEFINIES ----------
@@ -968,11 +1011,14 @@ def buildDict(
                 mDict[mWidget].update( {
                     'object' : 'group of values',
                     'main widget type' : 'QGroupBox',
+                    'row' : rowidx[mParent],
                     'label' : "???"
                     } )
 
                 idx[mParent] += 1
+                rowidx[mParent] += 1
                 idx.update( { mWidget : 0 } )
+                rowidx.update( { mWidget : 0 } )
                 mParent = mWidget
 
 
@@ -983,8 +1029,8 @@ def buildDict(
                 mLabelRow = None
 
                 if len(dpv[p]) == 1 and mWidgetType == 'QTextEdit':
-                    mLabelRow = idx[mParent]
-                    idx[mParent] += 1
+                    mLabelRow = rowidx[mParent]
+                    rowidx[mParent] += 1
 
                 mType = ( v.datatype if isinstance(v, Literal) else None ) or URIRef("http://www.w3.org/2001/XMLSchema#string")
                 # NB : pourrait ne pas être homogène pour toutes les valeurs d'une même catégorie
@@ -999,7 +1045,7 @@ def buildDict(
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
-                    'row' : idx[mParent],
+                    'row' : rowidx[mParent],
                     'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
                     'label' : "???" if len(dpv[p]) == 1 else None,
                     'label row' : mLabelRow,
@@ -1020,6 +1066,7 @@ def buildDict(
                     } )
                         
                 idx[mParent] += 1
+                rowidx[mParent] += 1
 
             # pas de bouton plus, faute de modèle indiquant si la catégorie
             # admet des valeurs multiples
@@ -1027,7 +1074,7 @@ def buildDict(
     return mDict
 
 
-def forbiddenChar(anyStr: str) -> bool:
+def forbiddenChar(anyStr: str) -> str:
     """Return any character from given string that is not allowed in IRIs.
     
     - anyStr est la chaîne de caractères à tester.
