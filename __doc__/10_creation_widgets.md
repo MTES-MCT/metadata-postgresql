@@ -23,6 +23,8 @@ widgetsDict[key]['main widget type']
 
 ```
 
+Si `'main widget type'` ne contient aucune valeur, il n'y a pas lieu de créer de widget. Il s'agit de catégories de métadonnées non répertoriées dans le modèle de formulaire (template), et qui ne doivent donc pas être affichées, mais qui contiennent des valeurs qu'il n'est pas question de perdre.
+
 ### Stockage
 
 Le nouveau widget a vocation à être stocké dans la clé `'main widget'` du dictionnaire interne.
