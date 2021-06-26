@@ -9,6 +9,7 @@ import re, uuid
 import json
 
 import rdf_utils
+import rdf_utils_debug
 
 
 # schéma SHACL qui décrit les métadonnées communes
@@ -28,16 +29,16 @@ with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
     g = rdf_utils.extractMetadata(src.read(), g_shape)
 
 # constitution du dictionnaire
-#d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
+d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, translation=True)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, mode='read')
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, hideUnlisted=True)
 #d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary, template=d_template)
-d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True)
+#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True, translation=True)
 
-
+g1 = rdf_utils.buildGraph(d, g_vocabulary)
 
 def printDict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
     """Show detailled contents from widgetDict.
@@ -94,6 +95,9 @@ def pseudoForm(widgetsDict: dict):
     print('  ' + str(widgetsDict[(0,)]['node']))
     
     for k, v in widgetsDict.items():
+
+        if v['row'] is None:
+            continue
 
         m = c
         c = str(k).count('(') - 1
