@@ -47,32 +47,46 @@ def buildGraph(widgetsDict: dict, vocabulary: Graph, language: str = "fr") -> Gr
     """
 
     graph = Graph()
+    mem = None
     
     for k, d in widgetsDict.items():
     
         mObject = None
         
+        # cas d'un nouveau noeud
         if d['node']:
+        
+            mem = (d['subject'], d['predicate'], d['node'], d['class'])
+            # on mémorise les informations utiles, mais le noeud
+            # n'est pas immédiatement créé, au cas où il n'y aurait
+            # pas de métadonnées associées
             
-            graph.update("""
-                INSERT
-                    { ?s ?p ?n .
-                      ?n a ?c }
-                WHERE
-                    { }
-            """,
-            initBindings = {
-                's' : d['subject'],
-                'p' : d['predicate'],
-                'n' : d['node'],
-                'c' : d['class']
-                }
-            )
             
         elif d['value'] in [None, '']:
             continue
                 
         else:
+        
+            if mem and mem[2] == d['subject']:
+            
+                # création effective du noeud vide à partir
+                # des informations mémorisées
+                graph.update("""
+                    INSERT
+                        { ?s ?p ?n .
+                          ?n a ?c }
+                    WHERE
+                        { }
+                """,
+                initBindings = {
+                    's' : mem[0],
+                    'p' : mem[1],
+                    'n' : mem[2],
+                    'c' : mem[3]
+                    }
+                )
+                
+                mem = None
         
             if d['node kind'] == 'sh:Literal':
         
@@ -97,7 +111,6 @@ def buildGraph(widgetsDict: dict, vocabulary: Graph, language: str = "fr") -> Gr
                             ) 
                     else:
                         mObject = c[0]
-                        print(mObject)
                     
                 else:
                     f = forbiddenChar(d['value'])                
@@ -667,7 +680,7 @@ def buildDict(
                 # branche visible
                 elif not mNHidden:
                 
-                    mGraphEmpty = mGraphEmpty or mValueBrut is None              
+                    mNGraphEmpty = mGraphEmpty or mValueBrut is None              
                     mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
 
                     if mKind == 'sh:BlankNodeOrIRI':
@@ -707,7 +720,7 @@ def buildDict(
                         graph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted,
                         language, translation, langList, labelLengthLimit, valueLengthLimit,
                         textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager,
-                        mWidgetDictTemplate, mDict, mGraphEmpty, mShallowTemplate, mTemplateEmpty,
+                        mWidgetDictTemplate, mDict, mNGraphEmpty, mShallowTemplate, mTemplateEmpty,
                         mNHidden
                         )
 
@@ -953,7 +966,7 @@ def buildDict(
                     'node kind' : "sh:Literal",
                     'data type' : mType,
                     'subject' : mParentNode,
-                    'predicate' : mProperty,
+                    'predicate' : URIRef(meta),
                     'path' : meta,
                     'default widget type' : mDefaultWidgetType,
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
@@ -1056,7 +1069,7 @@ def buildDict(
                     'multiple values' : False,
                     'has minus button' : ( len(dpv[p]) > 1 and mode == 'edit' ) or False,
                     'subject' : mParentNode,
-                    'predicate' : mProperty,
+                    'predicate' : p,
                     'path' : p.n3(nsm),
                     'default widget type' : "QLineEdit",
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
