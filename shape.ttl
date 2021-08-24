@@ -189,7 +189,7 @@ snum:DistributionShape
         sh:order 3 ;
 	] ;
     sh:property [ 
-		sh:path dct:licence ;
+		sh:path dct:license ;
 		sh:name "licence"@fr ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:LicenseDocument ;

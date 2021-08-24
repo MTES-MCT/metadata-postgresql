@@ -29,7 +29,7 @@
     dcat:distribution [ a dcat:Distribution ;
             dct:accessURL <https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express> ;
             dct:issued "2021-01-19"^^xsd:date ;
-            dct:licence [ a dct:LicenseDocument ;
+            dct:license [ a dct:LicenseDocument ;
                     rdfs:label "Base de données soumise aux conditions de la licence ouverte Etalab."@fr ] ] ;
     dcat:keyword "admin express"@fr,
         "donnée externe"@fr,

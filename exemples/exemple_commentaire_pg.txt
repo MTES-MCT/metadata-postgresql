@@ -137,7 +137,7 @@ Commentaire saisi par le service.
         "@value": "2021-01-19"
       }
     ],
-    "http://purl.org/dc/terms/licence": [
+    "http://purl.org/dc/terms/license": [
       {
         "@id": "_:ub6bL31C25"
       }
