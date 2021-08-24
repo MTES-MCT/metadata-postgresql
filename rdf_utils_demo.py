@@ -29,8 +29,8 @@ with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
     g = rdf_utils.extractMetadata(src.read(), g_shape)
 
 # constitution du dictionnaire
-d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary)
+#d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
+d = rdf_utils.buildDict(g, g_shape, g_vocabulary)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, translation=True)
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, mode='read')
 #d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template)
@@ -40,8 +40,17 @@ d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
 
 g1 = rdf_utils.buildGraph(d, g_vocabulary)
 
-def printDict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
-    """Show detailled contents from widgetDict.
+
+def print_graph(graph: Graph):
+    """
+    Show graph with turtle serialization.
+    """
+    print(graph.serialize(format="turtle").decode("utf-8"))
+    
+
+def print_dict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
+    """
+    Show detailled contents from widgetDict.
     
     Arguments :
     - widgetsDict est un dictionnaire obtenu par exécution de la fonction buildDict.
@@ -80,7 +89,7 @@ def printDict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
     print("}")
         
         
-def pseudoForm(widgetsDict: dict):
+def pseudo_form(widgetsDict: dict):
     """Show very basic representation of a form generated from widgetsDict.
     
     Arguments :
