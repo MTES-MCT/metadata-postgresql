@@ -18,6 +18,7 @@ Dépendances : rdflib, rdflib-jsonld et requests.
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
 from rdflib.namespace import NamespaceManager
 from rdflib.serializer import Serializer
+from rdflib.util import from_n3
 from locale import strxfrm, setlocale, LC_COLLATE
 from typing import Union, Dict, List, Tuple
 import re, uuid
@@ -966,7 +967,7 @@ def buildDict(
                     'node kind' : "sh:Literal",
                     'data type' : mType,
                     'subject' : mParentNode,
-                    'predicate' : URIRef(meta),
+                    'predicate' : from_n3(meta, nsm=nsm),
                     'path' : meta,
                     'default widget type' : mDefaultWidgetType,
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
