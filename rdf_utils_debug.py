@@ -1,4 +1,5 @@
-"""Utilitaires pour la recette de rdf_utils.
+"""
+Utilitaires pour la recette de rdf_utils.
 """
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
 from rdflib.compare import isomorphic
@@ -6,18 +7,39 @@ from rdflib.compare import isomorphic
 import rdf_utils
 
 
-def checkUnchanged(
-    graph: Graph,
-    shape: Graph,
-    vocabulary: Graph,
-    language: str = "fr",
-    *args
-    ) -> bool:
+def check_unchanged(graph, shape, vocabulary, language="fr", *args):
     """Check if given graph is preserved through widget dictionnary serialization.
+    
+    ARGUMENTS
+    ---------
+    - graph (rdflib.Graph) : graphe RDF contenant les métadonnées associées à
+    un jeu de données. Elles serviront à initialiser le formulaire de saisie.
+    - shape (rdflib.Graph) : schéma SHACL augmenté décrivant les catégories
+    de métadonnées communes.
+    - vocabulary (rdflib.Graph) : graphe réunissant le vocabulaire de toutes
+    les ontologies pertinentes.
+    - [optionnel] language (str) : langue principale de rédaction des métadonnées
+    (paramètre utilisateur). Français ("fr") par défaut.
+    - [optionnel] *args peut contenir tout autre paramètre à passer à build_dict().
+    
+    RESULTAT
+    --------
+    Un booléen :
+    - True si graph est reconstruit à l'identique (graphes isomorphes au sens de la
+    fonction rdflib.compare.isomorphic) après sérialisation en WidgetDict avec
+    build_dict, puis désérialisation avec build_graph ;
+    - False si les deux graphes ne sont pas isomorphes.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary)
+    
+    Avec un paramètre supplémentaire :
+    >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary, None, d_template)   
     """
     
-    d = rdf_utils.buildDict(graph, shape, vocabulary, language = language, *args)
-    g = rdf_utils.buildGraph(d, vocabulary, language)
+    d = rdf_utils.build_dict(graph, shape, vocabulary, language = language, *args)
+    g = rdf_utils.build_graph(d, vocabulary, language)
     
     for n, u in shape.namespace_manager.namespaces():
         g.namespace_manager.bind(n, u, override=True, replace=True)
@@ -26,12 +48,16 @@ def checkUnchanged(
     
     
 
-def checkRows(widgetsDict: dict) -> dict:
+def check_rows(widgetsDict):
     """Check if row keys of given widget dictionnary are consistent.
 
-    Arguments :
-    - widgetsDict est un dictionnaire obtenu par exécution de la fonction buildDict.
+    ARGUMENTS
+    ---------
+    - widgetsDict (dict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
     
+    RESULTAT
+    --------
     Si un problème est détecté, la fonction renvoie un dictionnaire recensant tous
     les problèmes rencontrés. La clé est un numéro d'ordre. La valeur est un tuple
     constitué de la clé de l'enregistrement concerné et d'une chaîne de caractère
@@ -48,7 +74,9 @@ def checkRows(widgetsDict: dict) -> dict:
     - 'label row but no label' (ligne pour l'étiquette alors qu'il n'y a pas
     d'étiquette).
     
-    >>> rdf_utils_debug.checkRows(d)
+    EXEMPLES
+    --------
+    >>> rdf_utils_debug.check_rows(d)
     """   
     idx = {}
     issues = {}
@@ -113,7 +141,8 @@ def checkRows(widgetsDict: dict) -> dict:
             
         idx[k[1]].append(c['row'])           
             
-    return issues
+    if issues:
+        return issues
             
         
         

@@ -1,5 +1,5 @@
 """
-Utilitary functions for parsing and serializing RDF metadata.
+Utilitary class and functions for parsing and serializing RDF metadata.
 
 Les fonctions suivantes permettent :
 - d'extraire des métadonnées en JSON-LD d'une chaîne de
@@ -20,153 +20,328 @@ from rdflib.namespace import NamespaceManager
 from rdflib.serializer import Serializer
 from rdflib.util import from_n3
 from locale import strxfrm, setlocale, LC_COLLATE
-from typing import Union, Dict, List, Tuple
 import re, uuid
 
-# NB : pour les annotations, à partir de python 3.9, on devrait écrire
-# dict[str, Namespace] au lieu de Dict[str, Namespace] et
-# idem pour list/List et tuple/Tuple, puisqu'il est désormais
-# possible de spécifier directement les types génériques. La forme
-# ancienne est conservée à ce stade, car les versions de QGIS déployées
-# à cette heure ne sont pas sous python 3.9.
 
-
-    
-    
-def buildGraph(widgetsDict: dict, vocabulary: Graph, language: str = "fr") -> Graph:
-    """Return a RDF graph build from given dictionary.
-
-    Arguments :
-    - widgetsDict est un dictionnaire produit par la fonction buildDict (lancée
-    en mode 'edit') et modifié par les actions de l'utilisateur.
-    - vocabulary est un graphe réunissant le vocabulaire de toutes les ontologies
-    pertinentes.
-    - language (paramètre utilisateur, en l'état où il se trouve à l'issue de la
-    saisie) est la langue principale de rédaction des métadonnées.
-
-    Résultat : un graphe RDF de métadonnées.
+class WidgetsDict(dict):
+    """Classe pour les dictionnaires de widgets.
     """
-
-    graph = Graph()
-    mem = None
     
-    for k, d in widgetsDict.items():
-    
-        mObject = None
+    def count_siblings(self, key, restrict=True):
+        """Renvoie le nombre de clés de même parent que key.
         
-        # cas d'un nouveau noeud
-        if d['node']:
+        ARGUMENTS
+        ---------
+        - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
+        - restrict (bool) : si True, les enregistrements "plus button"
+        et "translation button" ne sont pas comptabilisés. True par défaut.
         
-            mem = (d['subject'], d['predicate'], d['node'], d['class'])
-            # on mémorise les informations utiles, mais le noeud
-            # n'est pas immédiatement créé, au cas où il n'y aurait
-            # pas de métadonnées associées
-            
-            
-        elif d['value'] in [None, '']:
-            continue
+        RESULTAT
+        --------
+        Un entier qui devrait au moins valoir 1 si key est bien référencée
+        dans le dictionnaire (et n'est pas un bouton avec restrict actif).
+        
+        EXEMPLES
+        --------
+        >>> d.count_siblings((1, (0,)))    
+        """
+        if len(key) == 1:
+            return 0
+        
+        n = 0
+        
+        for k in self.keys():
+            if len(k) > 1 and k[1] == key[1] and (
+                    not self[k]['object'] in ('translation button', 'plus button') \
+                    or not restrict
+                    ) :
+                n += 1
                 
-        else:
+        return n
+
+
+    def parent_widget(self, key):
+        """Renvoie le widget parent de la clé key.
         
-            if mem and mem[2] == d['subject']:
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets.
+        
+        RESULTAT
+        --------
+        Un widget (QGroupBox) si la clé existe, que l'enregistrement a un
+        parent et que le widget principal de celui-ci a été créé. Sinon None.
+        """
+        if len(key) > 1 and key[1] in self:
+            if 'main widget' in self[key[1]]:
+                return self[key[1]]['main widget']
+
+
+    def parent_grid(self, key):
+        """Renvoie la grille dans laquelle doit être placé le widget de la clé key.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets.
+        
+        RESULTAT
+        --------
+        Un widget (QGridLayout) si la clé existe, que l'enregistrement a un
+        parent et que la grille de celui-ci a été créée. Sinon None.
+        """
+        if len(key) > 1 and key[1] in self:
+            if 'grid widget' in self[key[1]]:
+                return self[key[1]]['grid widget']
+
+
+    def drop(self, key):
+        """Supprime du dictionnaire un enregistrement et, en cascade, tous ses descendants.
+        
+        Cette fonction est à utiliser suite à l'activation par l'utilisateur
+        du "bouton moins" d'un groupe de valeurs. Par principe, il ne devrait
+        jamais y avoir de boutoin moins lorsque le groupe ne contient qu'une
+        valeur, et faire usage de la fonction dans ce cas produira une erreur.
+        
+        Pour la suppression d'une traduction, on utilisera drop_traduction, qui
+        est moins gourmande en temps de calcul.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets.
+        
+        RESULTAT
+        --------
+        Un dictionnaire ainsi constitué :
+        {
+        "widgets to delete" : [liste des widgets à détruire (QWidget)],
+        "actions to delete" : [liste des actions à détruire (QAction)],
+        "menus to delete" : [liste des menus à détruire (QMenu)],
+        "widgets to hide" : [liste des widgets à masquer (QWidget)],
+        "widgets to move" : [liste de tuples - cf. ci-après]
+        }
+        
+        Les tuples de la clé "widgets to move" sont formés comme suit :
+        [0] la grille (QGridLayout) où un widget doit être déplacé.
+        [1] le widget en question (QWidget).
+        [2] son nouveau numéro de ligne/valeur du paramètre row (int).
+        
+        NB : Les widgets à détruire ne sont plus répertoriés dans le
+        dictionnaire, au contraire des widgets à masquer.
+        
+        La fonction réalise par ailleurs les opérations suivantes :
+        - L'enregistrement visé, son double M éventuel et ses descendants
+        sont supprimés du dictionnaire.
+        - Les clés row des enregistrements de même parent qui étaient
+        placés en dessous dans la grille sont mises à jour en conséquence.
+        S'il ne reste qu'une valeur, la clé 'has minus button' de
+        l'enregistrement indiquera désormais False.
+        
+        EXEMPLES
+        --------
+        >>> d[(2,(0,))]['row']
+        3       
+        >>> d.drop((1,(0,)))
+        >>> d[(2,(0,))]['row']
+        2
+        """
+        d = { "delete": [], "hide": [], "move": [] }
+        l = []
+        n = self.count_siblings(key)
+        
+        if n < 2:
+            raise ForbiddenOperation("This is the last of its kind, you can't destroy it !")
+        
+        for k in self.keys():
             
-                # création effective du noeud vide à partir
-                # des informations mémorisées
+            # cas des descendants (+ l'enregistrement cible et,
+            # le cas échéant, son double M)
+            if is_ancestor(key, k) or (len(k) > 1 and k[0] == key[0]):
+            
+                l.append(k)
+                
+                for e in ['main widget', 'grid widget', 'label widget', 'minus widget'
+                          'language widget', 'switch source widget']:
+                    w = self[k][e]
+                    if w:
+                        d["widgets to delete"].append(w)
+                        
+                for e in ['main action', 'minus action']:
+                    a = self[k][e]
+                    if a:
+                        d["actions to delete"].append(a)
+                        
+                for e in ['switch source actions', 'language actions']:
+                    a = self[k][e]
+                    if a:
+                        d["actions to delete"] += a
+                        
+                for e in ['switch source menu', 'language menu']:
+                    m = self[k][e]
+                    if m:
+                        d["menus to delete"].append(m)
+
+            # cas des frères et soeurs
+            elif len(k) > 1 and k[1] == key[1]:
+            
+                if k[0] > key[0]:
+                
+                    # mise à jour de la clé 'row' des petits frères
+                    self[k]['row'] -= 1
+                    
+                    for e in ['main widget', 'minus widget', 'language widget', 'switch source widget']:
+                        w = self[k][e]
+                        if w:
+                            d["widgets to move"].append((
+                                self.parent_grid(k),
+                                w,
+                                self[k]['row']
+                                ))
+                 
+                if n == 2:
+                    # le bouton moins doit être masqué s'il ne
+                    # reste qu'une seule valeur
+                    self[k]['has minus button'] = False
+                    
+                    w = self[k]['minus widget']
+                    if w:
+                            d["widgets to hide"].append(w)
+        
+        for e in l:
+            del self[e]
+            
+        return d
+   
+
+    def add(self, key):
+        """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
+        
+        Cette fonction est à 
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets.
+        """
+
+
+    def build_graph(self, vocabulary, language="fr"):
+        """Return a RDF graph build from given widgets dictionary.
+
+        ARGUMENTS
+        ---------
+        - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de toutes
+        les ontologies pertinentes.
+        - [optionnel] language (str) : langue principale de rédaction des métadonnées
+        (paramètre utilisateur, en l'état où il se trouve à l'issue de la saisie).
+        Français ("fr") par défaut.
+
+        RESULTAT
+        --------
+        Un graphe RDF de métadonnées (rdflib.graph.Graph).
+        """
+
+        graph = Graph()
+        mem = None
+        
+        for k, d in self.items():
+        
+            mObject = None
+            
+            # cas d'un nouveau noeud
+            if d['node']:
+            
+                mem = (d['subject'], d['predicate'], d['node'], d['class'])
+                # on mémorise les informations utiles, mais le noeud
+                # n'est pas immédiatement créé, au cas où il n'y aurait
+                # pas de métadonnées associées
+                
+                
+            elif d['value'] in [None, '']:
+                continue
+                    
+            else:
+            
+                if mem and mem[2] == d['subject']:
+                
+                    # création effective du noeud vide à partir
+                    # des informations mémorisées
+                    graph.update("""
+                        INSERT
+                            { ?s ?p ?n .
+                              ?n a ?c }
+                        WHERE
+                            { }
+                    """,
+                    initBindings = {
+                        's' : mem[0],
+                        'p' : mem[1],
+                        'n' : mem[2],
+                        'c' : mem[3]
+                        }
+                    )
+                    
+                    mem = None
+            
+                if d['node kind'] == 'sh:Literal':
+            
+                    mObject = Literal( d['value'], datatype = d['data type'] ) \
+                                if not d['data type'] == URIRef("http://www.w3.org/2001/XMLSchema#string") \
+                                else Literal( d['value'], lang = d['language value'] )
+                                
+                else:
+        
+                    if d['transform'] == 'email':
+                        mObject = owlthing_from_email(d['value'])
+                        
+                    elif d['transform'] == 'phone':
+                        mObject = owlthing_from_tel(d['value']) 
+                        
+                    elif d['current source']:
+                        c = concept_from_value(d['value'], d['current source'], vocabulary, language)
+                        
+                        if c is None:
+                            raise ValueError( "'{}' isn't referenced as a label in scheme '{}' for language '{}'.".format(
+                                d['value'], d['current source'], language )
+                                ) 
+                        else:
+                            mObject = c[0]
+                        
+                    else:
+                        f = forbidden_char(d['value'])                
+                        if f:
+                            raise ValueError( "Character '{}' is not allowed in ressource identifiers.".format(f) )
+                            
+                        mObject = URIRef( d['value'] )
+                
                 graph.update("""
                     INSERT
-                        { ?s ?p ?n .
-                          ?n a ?c }
+                        { ?s ?p ?o }
                     WHERE
                         { }
                 """,
-                initBindings = {
-                    's' : mem[0],
-                    'p' : mem[1],
-                    'n' : mem[2],
-                    'c' : mem[3]
-                    }
-                )
-                
-                mem = None
-        
-            if d['node kind'] == 'sh:Literal':
-        
-                mObject = Literal( d['value'], datatype = d['data type'] ) \
-                            if not d['data type'] == URIRef("http://www.w3.org/2001/XMLSchema#string") \
-                            else Literal( d['value'], lang = d['language value'] )
-                            
-            else:
-    
-                if d['transform'] == 'email':
-                    mObject = owlThingFromEmail(d['value'])
-                    
-                elif d['transform'] == 'phone':
-                    mObject = owlThingFromTel(d['value']) 
-                    
-                elif d['current source']:
-                    c = getConceptFromValue(d['value'], d['current source'], vocabulary, language)
-                    
-                    if c is None:
-                        raise ValueError( "'{}' isn't referenced as a label in scheme '{}' for language '{}'.".format(
-                            d['value'], d['current source'], language )
-                            ) 
-                    else:
-                        mObject = c[0]
-                    
-                else:
-                    f = forbiddenChar(d['value'])                
-                    if f:
-                        raise ValueError( "Character '{}' is not allowed in ressource identifiers.".format(f) )
-                        
-                    mObject = URIRef( d['value'] )
-            
-            graph.update("""
-                INSERT
-                    { ?s ?p ?o }
-                WHERE
-                    { }
-            """,
-            initBindings = { 's' : d['subject'], 'p' : d['predicate'], 'o' : mObject }
-            )  
+                initBindings = { 's' : d['subject'], 'p' : d['predicate'], 'o' : mObject }
+                )  
 
-    return graph
+        return graph
 
 
 
-
-def buildDict(
-    graph: Graph,
-    shape: Graph,
-    vocabulary: Graph,
-    template: dict = None,
-    mode: str = 'edit',
-    readHideBlank: bool = True,
-    hideUnlisted: bool = False,
-    language: str = "fr",
-    translation: bool = False,
-    langList: List[str] = ['fr', 'en'],
-    labelLengthLimit: int = 25,
-    valueLengthLimit: int = 100,
-    textEditRowSpan: int = 6,
-    mPath: str = None,
-    mTargetClass: URIRef = None,
-    mParentWidget: tuple = None,
-    mParentNode: Union[URIRef, BNode] = None,
-    mNSManager : NamespaceManager = None,
-    mWidgetDictTemplate : dict = None,
-    mDict: dict = None,
-    mGraphEmpty: bool = None,
-    mShallowTemplate: dict = None,
-    mTemplateEmpty: bool = None,
-    mHidden: bool = None
-    ) -> dict:
+def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHideBlank=True,
+    hideUnlisted=False, language="fr", translation=False, langList=['fr', 'en'],
+    labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
+    mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
+    mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
+    mShallowTemplate=None, mTemplateEmpty=None, mHidden=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
-    Arguments :
-    - graph est un graphe RDF contenant les métadonnées associées à un jeu de données.
-    Elles serviront à initialiser le formulaire de saisie.
-    - shape est un schéma SHACL augmenté décrivant les catégories de métadonnées communes.
-    - template est un dictionnaire contenant les informations relatives au modèle
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées, extrait du commentaire
+    d'un objet PostgreSQL.
+    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant les catégories
+    de métadonnées communes.
+    - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de toutes
+    les ontologies pertinentes.
+    - [optionnel] template (dict) : dictionnaire contenant les informations relatives au modèle
     de formulaire à utiliser. Fournir un template permet : d'ajouter des métadonnées
     locales aux catégories communes définies dans shape ; de restreindre les catégories
     communes à afficher ; de substituer des paramètres locaux à ceux spécifiés par shape
@@ -178,38 +353,40 @@ def buildDict(
     caractéristiques ne peuvent être définies que pour les catégories de métadonnées
     locales : il n'est pas possible de changer 'data type' ni 'multiple values' pour une
     catégorie commune.
-    - vocabulary est un graphe réunissant le vocabulaire de toutes les ontologies
-    pertinentes.
-    - mode indique si le formulaire est ouvert pour édition ('edit'), en lecture ('read')
-    ou pour lancer une recherche ('search'). Le principal effet du mode lecture est la
-    disparition des boutons, notamment les "boutons plus" qui faisaient l'objet d'un
-    enregistrement à part dans le dictionnaire. [ATTENTION !!! le mode recherche n'est pas
-    encore implémenté, il renvoie le même dictionnaire que le mode lecture]
-    - readHideBlank (paramètre utilisateur) indique si les champs vides doivent être masqués
-    en mode lecture.
-    - hideUnlisted (paramètre utilisateur) indique si les catégories hors template doivent
-    être masquées. En l'absence de template, si hideUnlisted vaut True, seules les métadonnées
-    communes seront visibles.
-    - language (paramètre utilisateur) est la langue principale de rédaction des métadonnées.
-    Français ("fr") par défaut. La valeur de language doit être incluse dans langList ci-après.
-    - translation (paramètre utilisateur) est un booléen qui indique si les widgets de
+    - [optionnel] mode (str) : indique si le formulaire est ouvert pour édition ('edit',
+    valeur par défaut), en lecture ('read') ou pour lancer une recherche ('search').
+    Le principal effet du mode lecture est la disparition des boutons, notamment les
+    "boutons plus" qui faisaient l'objet d'un enregistrement à part dans le dictionnaire.
+    ATTENTION !!! le mode recherche n'est pas encore implémenté, il renvoie le même
+    dictionnaire que le mode lecture.
+    - [optionnel] readHideBlank (bool) : paramètre utilisateur qui indique si les champs
+    vides doivent être masqués en mode lecture. True par défaut.
+    - [optionnel] hideUnlisted (bool) : paramètre utilisateur qui indique si les catégories
+    hors template doivent être masquées. En l'absence de template, si hideUnlisted vaut True,
+    seules les métadonnées communes seront visibles. False par défaut.
+    - [optionnel] language (str) : langue principale de rédaction des métadonnées
+    (paramètre utilisateur). Français ("fr") par défaut. La valeur de language doit être
+    incluse dans langList ci-après.
+    - [optionnel] translation (bool) : paramètre utilisateur qui indique si les widgets de
     traduction doivent être affichés. False par défaut.
-    - langList est la liste des langues autorisées pour les traductions, par défaut
-    français et anglais.
-    - labelLengthLimit est le nombre de caractères au-delà duquel le label sera
+    - [optionnel] langList (list) : liste des langues autorisées pour les traductions (str),
+    par défaut français et anglais, soit ['fr', 'en'].
+    - [optionnel] labelLengthLimit (int) : nombre de caractères au-delà duquel le label sera
     toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que
-    pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive.
-    - valueLengthLimit est le nombre de caractères au-delà duquel une valeur qui aurait
+    pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive. 25 par défaut.
+    - [optionnel] valueLengthLimit (int) : nombre de caractères au-delà duquel une valeur qui aurait
     dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit.
     Indépendemment du nombre de catactères, la substitution sera aussi réalisée si la
-    valeur contient un retour à la ligne.
-    - textEditRowSpan est le nombre de lignes par défaut pour un widget QTextEdit. shape ou
-    template peuvent définir des valeurs différentes.
+    valeur contient un retour à la ligne. 100 par défaut.
+    - [optionnel] textEditRowSpan (int) : nombre de lignes par défaut pour un widget QTextEdit
+    (utilisé si non défini par shape ou template). 6 par défaut.
 
     Les autres arguments sont uniquement utilisés lors des appels récursifs de la fonction
     et ne doivent pas être renseignés manuellement.
 
-    Résultat : un dictionnaire avec autant de clés que de widgets à empiler verticalement
+    RESULTAT
+    --------
+    Un dictionnaire (WidgetsDict) avec autant de clés que de widgets à empiler verticalement
     (avec emboîtements). Les valeurs associées aux clés sont elles mêmes des dictionnaires,
     contenant les informations utiles à la création des widgets + des clés pour le
     stockage des futurs widgets.
@@ -323,7 +500,7 @@ def buildDict(
     non "M", il donne le nom littéral de l'ontologie ou "non répertorié" lorsque la valeur
     antérieurement saisie n'apparaît dans aucune ontologie associée à la catégorie, None si le
     widget n'est pas utilisé. La liste des termes autorisés par la source n'est pas directement
-    stockée dans le dictionnaire, mais peut être obtenue via la fonction getVocabulary.
+    stockée dans le dictionnaire, mais peut être obtenue via la fonction build_vocabulary.
     - 'read only' : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
     l'utilisateur. En mode lecture, 'read only' vaut toujours True.
 
@@ -337,8 +514,10 @@ def buildDict(
     valeurs sont des chaînes de catactères parmi 'string', 'boolean', 'decimal', 'integer', 'date',
     'time', 'dateTime', 'duration', 'float', 'double' (et non des objets de type URIRef).
     *** le chemin est la clé principale de template.
-           
-    >>> buildDict(graph, shape, template, vocabulary)
+    
+    EXEMPLES
+    --------
+    >>> g.build_dict(shape, template, vocabulary)
     """
 
     nsm = mNSManager or shape.namespace_manager
@@ -349,12 +528,12 @@ def buildDict(
     if mParentNode is None:
 
         for n, u in nsm.namespaces():
-            graph.namespace_manager.bind(n, u, override=True, replace=True)
+            metagraph.namespace_manager.bind(n, u, override=True, replace=True)
 
         mTargetClass = URIRef("http://www.w3.org/ns/dcat#Dataset")
         mPath = None
         mParentNode = None
-        mGraphEmpty = ( len(graph) == 0 )
+        mGraphEmpty = ( len(metagraph) == 0 )
         mTemplateEmpty = ( template is None )
         
         # on travaille sur une copie du template pour pouvoir supprimer les catégories
@@ -367,7 +546,7 @@ def buildDict(
         # du jeu de données dans le graphe, s'il existe
         if not mGraphEmpty:
         
-            q_id = graph.query(
+            q_id = metagraph.query(
                 """
                 SELECT
                     ?id
@@ -514,7 +693,7 @@ def buildDict(
         # et le sujet considéré
         if not mGraphEmpty:
         
-            q_gr = graph.query(
+            q_gr = metagraph.query(
                 """
                 SELECT
                     ?value
@@ -599,9 +778,9 @@ def buildDict(
                     mSources = None
 
                 if mSources and t.get('default value', None):
-                    mDefaultSource = getConceptFromValue(t.get('default value', None), None, vocabulary, language)[1]
+                    mDefaultSource = concept_from_value(t.get('default value', None), None, vocabulary, language)[1]
                 elif mSources and p['default']:
-                    mDefaultTrad, mDefaultSource = getValueFromConcept(p['default'], vocabulary, language)   
+                    mDefaultTrad, mDefaultSource = value_from_concept(p['default'], vocabulary, language)   
                     
                         
             multilingual = p['unilang'] and bool(p['unilang']) or False
@@ -717,8 +896,8 @@ def buildDict(
                     rowidx.update( { mWidget : 0 } )
 
                 if not mNHidden or isinstance(mValueBrut, BNode):              
-                    buildDict(
-                        graph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted,
+                    build_dict(
+                        metagraph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted,
                         language, translation, langList, labelLengthLimit, valueLengthLimit,
                         textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager,
                         mWidgetDictTemplate, mDict, mNGraphEmpty, mShallowTemplate, mTemplateEmpty,
@@ -765,7 +944,7 @@ def buildDict(
                 # cas d'une catégorie qui tire ses valeurs d'une
                 # ontologie : on récupère le label à afficher
                 if isinstance(mValueBrut, URIRef) and mSources:             
-                    mValue, mCurSource = getValueFromConcept(mValueBrut, vocabulary, language)                   
+                    mValue, mCurSource = value_from_concept(mValueBrut, vocabulary, language)                   
                     if not mCurSource in mSources:
                         mCurSource = '< non répertorié >'
                         
@@ -783,12 +962,12 @@ def buildDict(
                 # cas d'un numéro de téléphone. on transforme
                 # l'IRI en quelque chose d'un peu plus lisible
                 if mValueBrut and str(p['transform']) == 'phone':
-                    mValue = telFromOwlThing(mValueBrut)
+                    mValue = tel_from_owlthing(mValueBrut)
 
                 # cas d'une adresse mél. on transforme
                 # l'IRI en quelque chose d'un peu plus lisible
                 if mValueBrut and str(p['transform']) == 'email':
-                    mValue = emailFromOwlThing(mValueBrut)
+                    mValue = email_from_owlthing(mValueBrut)
 
                 mDefault = t.get('default value', None) or mDefaultTrad or ( str(p['default']) if p['default'] else None )
                 mValue = mValue or ( str(mValueBrut) if mValueBrut else ( mDefault if mGraphEmpty else None ) )
@@ -873,7 +1052,7 @@ def buildDict(
                 # on passe les catégories déjà traitées
                 continue
 
-            if not isValidMiniPath(meta, nsm):
+            if not is_valid_minipath(meta, nsm):
                 # on élimine d'office les catégories locales dont
                 # l'identifiant n'est pas un chemin SPARQL valide
                 # à un seul élément et dont le préfixe éventuel
@@ -892,7 +1071,7 @@ def buildDict(
 
             # on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
-            q_gr = graph.query(
+            q_gr = metagraph.query(
                 """
                 SELECT
                     ?value
@@ -997,7 +1176,7 @@ def buildDict(
     
     if not hideUnlisted and mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
         
-        q_gr = graph.query(
+        q_gr = metagraph.query(
             """
             SELECT
                 ?property ?value
@@ -1085,15 +1264,70 @@ def buildDict(
             # pas de bouton plus, faute de modèle indiquant si la catégorie
             # admet des valeurs multiples
 
-    return mDict
+    return WidgetsDict(mDict)
 
 
-def forbiddenChar(anyStr: str) -> str:
+def update_pg_description(description, metagraph):
+    """Return new description with metadata section updated from JSON-LD serialization of metadata graph.
+
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées mis à
+    jour suite aux actions effectuées par l'utilisateur.
+    - description (str) : chaîne de caractères supposée correspondre à la
+    description (ou le commentaire) d'un objet PostgreSQL.
+
+    RESULTAT
+    --------
+    Une chaîne de caractère (str) correspondant à la description mise à jour
+    d'après le contenu du graphe.
+
+    Les informations comprises entre les deux balises <METADATA> et </METADATA>
+    sont remplacées. Si les balises n'existaient pas, elles sont ajoutées à la
+    fin du texte.
+
+    EXEMPLES
+    --------
+    >>> c = update_pg_description(c, metagraph)
+    """
+
+    if len(metagraph) == 0:
+        return description
+    
+    s = metagraph.serialize(format="json-ld").decode("utf-8")
+    
+    t = re.subn(
+        "[<]METADATA[>].*[<][/]METADATA[>]",
+        "<METADATA>\n" + s + "\n</METADATA>",
+        description,
+        flags=re.DOTALL
+        )
+    # cette expression remplace tout de la première balise <METADATA> à
+    # la dernière balise </METADATA> (elle maximise la cible, au contraire
+    # de la fonction metagraph_from_pg_description)
+
+    if t[1] == 0:
+        return description + "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
+
+    else:
+        return t[0]
+
+
+def forbidden_char(anyStr):
     """Return any character from given string that is not allowed in IRIs.
     
-    - anyStr est la chaîne de caractères à tester.
+    ARGUMENTS
+    ---------
+    - anyStr (str) : chaîne de caractères à tester.
     
-    >>> forbiddenChar('avec des espaces')
+    RESULTAT
+    --------
+    Si la chaîne contient au moins un caractère interdit, l'un
+    de ces caractères.
+    
+    EXEMPLES
+    --------
+    >>> forbidden_char('avec des espaces')
     ' '
     """
     
@@ -1102,13 +1336,17 @@ def forbiddenChar(anyStr: str) -> str:
     return r[1] if r else None
 
 
-def isValidMiniPath(path: str, mNSManager: NamespaceManager) -> bool:
+def is_valid_minipath(path, mNSManager):
     """Run basic validity test on SPARQL mono-element path.
 
-    Arguments :
-    - path est un chemin SPARQL.
-    - mNSManager est un gestionnaire d'espaces de nommage.
+    ARGUMENTS
+    ---------
+    - path (str) : un chemin SPARQL.
+    - mNSManager (rdflib.namespace.NamespaceManager) : un
+    gestionnaire d'espaces de nommage.
 
+    RESULTAT
+    --------
     La fonction renvoie False si path est visiblement composé
     de plus d'un élément.
 
@@ -1117,7 +1355,9 @@ def isValidMiniPath(path: str, mNSManager: NamespaceManager) -> bool:
     soit abrégé avec un préfixe référencé dans le gestionnaire
     d'espaces de nommage fourni en argument.
 
-    >>> isValidMiniPath('<https://www.w3.org/TR/sparql11-query/>',
+    EXEMPLES
+    --------
+    >>> is_valid_minipath('<https://www.w3.org/TR/sparql11-query/>',
     ...     Graph().namespace_manager)
     True
     """
@@ -1132,18 +1372,20 @@ def isValidMiniPath(path: str, mNSManager: NamespaceManager) -> bool:
     return False
     
 
-
-def extractMetadata(description: str, shape: Graph) -> Graph:
+def metagraph_from_pg_description(description, shape):
     """Get JSON-LD metadata from description and parse them into a graph.
 
-    Arguments :
-    - description est une chaîne de caractères supposée correspondre à la
-    description (ou les commentaire) d'un objet PostgreSQL.
-    - shape est un schéma SHACL augmenté décrivant les catégories de métadonnées
-    communes. Il fournit ici les préfixes d'espaces de nommage à déclarer dans
-    le graphe.
+    ARGUMENTS
+    ---------
+    - description (str) :chaîne de caractères supposée correspondre à la
+    description (ou le commentaire) d'un objet PostgreSQL.
+    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant les catégories
+    de métadonnées communes. Il fournit ici les préfixes d'espaces de nommage
+    à déclarer dans le graphe.
 
-    Résultat : un graphe RDF déduit par désérialisation du JSON-LD.
+    RESULTAT
+    --------
+    Un graphe RDF de métadonnées (rdflib.graph.Graph) déduit par désérialisation du JSON-LD.
 
     Le JSON-LD est présumé se trouver entre deux balises <METADATA> et </METADATA>.
 
@@ -1154,11 +1396,13 @@ def extractMetadata(description: str, shape: Graph) -> Graph:
     contenue entre les balises est un JSON et pas un JSON-LD, la fonction renvoie
     un graphe vide.
 
+    EXEMPLES
+    --------
     >>> with open('shape.ttl', encoding='UTF-8') as src:
     ...    shape = Graph().parse(data=src.read(), format='turtle')
     >>> with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
     ...    c_source = src.read()
-    >>> g_source = extractMetadata(c_source, shape)
+    >>> g_source = metagraph_from_pg_description(c_source, shape)
     """
 
     j = re.search("^(?:.*)[<]METADATA[>](.*?)[<][/]METADATA[>]", description, re.DOTALL)
@@ -1184,60 +1428,25 @@ def extractMetadata(description: str, shape: Graph) -> Graph:
     return g
 
 
-def updateDescription(description: str, graph: Graph) -> str:
-    """Return new description with metadata section updated from JSON-LD serialization of graph.
-
-    Arguments :
-    - description est une chaîne de caractères supposée correspondre à la
-    description (ou les commentaire) d'un objet PostgreSQL.
-    - graph est un graphe RDF présumé contenir les métadonnées de l'objet.
-
-    Résultat : une chaîne de caractère correspondant à la description mise à jour
-    d'après le contenu du graphe.
-
-    Les informations comprises entre les deux balises <METADATA> et </METADATA>
-    sont remplacées. Si les balises n'existaient pas, elles sont ajoutées à la
-    fin du texte.
-
-    >>> updateDescription(c, g)
-    """
-
-    if len(graph) == 0:
-        return description
-    
-    s = graph.serialize(format="json-ld").decode("utf-8")
-    
-    t = re.subn(
-        "[<]METADATA[>].*[<][/]METADATA[>]",
-        "<METADATA>\n" + s + "\n</METADATA>",
-        description,
-        flags=re.DOTALL
-        )
-    # cette expression remplace tout de la première balise <METADATA> à
-    # la dernière balise </METADATA> (elle maximise la cible, au contraire
-    # de la fonction extractMetadata)
-
-    if t[1] == 0:
-        return description + "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
-
-    else:
-        return t[0]
-        
-
-def getVocabulary(schemeStr: str, vocabulary, language: str = "fr") -> List[str]:
+def build_vocabulary(schemeStr, vocabulary, language="fr"):
     """List all concept labels from given scheme.
 
-    Arguments :
-    - schemeStr est le nom de l'ensemble dont on veut lister les concepts.
-    - vocabulary est un graphe réunissant le vocabulaire de tous les ensembles
-    à considérer.
-    - language est la langue attendue pour les libellés des concepts. schemeStr
-    doit être donné dans cette même langue.
+    ARGUMENTS
+    ---------
+    - schemeStr (str) : nom de l'ensemble dont on veut lister les concepts.
+    - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de tous
+    les ensembles à considérer.
+    - [optionnel] language (str) : langue attendue pour les libellés des concepts.
+    schemeStr doit être donné dans cette même langue. Français par défaut.
 
-    Résultat : liste contenant les libellés, triés par ordre alphabétique selon
+    RESULTAT
+    --------
+    Liste (list) contenant les libellés (str), triés par ordre alphabétique selon
     la locale de l'utilisateur.
 
-    >>> getVocabulary("Thèmes de données (UE)", vocabulary)
+    EXEMPLES
+    --------
+    >>> build_vocabulary("Thèmes de données (UE)", vocabulary)
     ['Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
     'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement',
     'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique',
@@ -1270,26 +1479,34 @@ def getVocabulary(schemeStr: str, vocabulary, language: str = "fr") -> List[str]
             )
 
 
-def getConceptFromValue(conceptStr: str, schemeStr: str, vocabulary, language: str = 'fr') -> Tuple[URIRef, URIRef]:
+def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
     """Return a skos:Concept IRI matching given label.
 
-    Arguments :
-    - conceptStr est une chaîne de caractères présumée correspondre au libellé d'un
+    ARGUMENTS
+    ---------
+    - conceptStr (str) : chaîne de caractères présumée correspondre au libellé d'un
     concept.
-    - schemeStr est une chaîne de caractères présumée correspondre au libellé de
+    - schemeStr (str) : chaîne de caractères présumée correspondre au libellé de
     l'ensemble qui référence ce concept. Si schemeStr n'est pas spécifié, la fonction
     effectuera la recherche dans tous les ensembles disponibles. En cas de
     correspondance multiple, elle renvoie arbitrairement un des résultats.
-    - vocabulary est un graphe réunissant le vocabulaire de tous les ensembles
-    à considérer.
-    - language est la langue présumée de strValue et schemeStr. Français par défaut.
+    - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de tous les
+    ensembles à considérer.
+    - [optionnel] language (str) : langue présumée de strValue et schemeStr.
+    Français par défaut.
 
-    Résultat : un tuple formé [0] de l'IRI du terme et [1] de l'IRI de l'ensemble.
+    RESULTAT
+    --------
+    Un tuple formé comme suit :
+    [0] est l'IRI du terme (rdflib.term.URIRef).
+    [1] est l'IRI de l'ensemble (rdflib.term.URIRef).
 
-    >>> getConceptFromValue("Domaine public", "Types de licences (UE)", vocabulary)
+    EXEMPLES
+    --------
+    >>> concept_from_value("Domaine public", "Types de licences (UE)", vocabulary)
     (rdflib.term.URIRef('http://purl.org/adms/licencetype/PublicDomain'), rdflib.term.URIRef('http://purl.org/adms/licencetype/1.1'))
         
-    >>> getConceptFromValue("Transports", None, vocabulary)
+    >>> concept_from_value("Transports", None, vocabulary)
     (rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme/TRAN'), rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme'))
     """
 
@@ -1332,34 +1549,43 @@ def getConceptFromValue(conceptStr: str, schemeStr: str, vocabulary, language: s
 
 
 
-def getValueFromConcept(conceptIRI: URIRef, vocabulary, language: str = "fr") -> Tuple[str, str]:
+def value_from_concept(conceptIRI, vocabulary, language="fr"):
     """Return the skos:prefLabel strings matching given conceptIRI and its scheme.
 
-    Arguments :
-    - conceptIRI est un objet de type rdflib.term.URIRef présumé correspondre à un
+    ARGUMENTS
+    ---------
+    - conceptIRI (rdflib.term.URIRef) : objet URIRef présumé correspondre à un
     concept d'ontologie.
-    - vocabulary est un graphe réunissant le vocabulaire de tous les ensembles à
-    considérer.
-    - language est la langue attendue pour le libellé résultant. Français par défaut.
+    - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de tous
+    les ensembles à considérer.
+    - [optionnel] language (str) : langue attendue pour le libellé résultant.
+    Français par défaut.
+
+    RESULTAT
+    --------
+    Un tuple contenant deux chaînes de caractères :
+    [0] est le libellé du concept (str).
+    [1] est le nom de l'ensemble (str).
+    
+    (None, None) si l'IRI n'est pas répertorié.
     
     Si aucune valeur n'est disponible pour la langue spécifiée, la fonction retournera
     la traduction française (si elle existe).
-
-    Résultat : une tuple contenant deux chaînes de caractères. [0] est le libellé
-    du concept. [1] est le nom de l'ensemble. (None, None) si l'IRI n'est pas répertorié.
     
+    EXEMPLES
+    --------
     Dans l'exemple ci-après, il existe une traduction française et anglaise pour le terme
     recherché, mais pas de version espagnole.
 
     >>> u = URIRef("http://publications.europa.eu/resource/authority/data-theme/TRAN")
     
-    >>> getValueFromConcept(u, vocabulary)
+    >>> value_from_concept(u, vocabulary)
     ('Transports', 'Thèmes de données (UE)')
     
-    >>> getValueFromConcept(u, vocabulary, 'en')
+    >>> value_from_concept(u, vocabulary, 'en')
     ('Transport', 'Data theme (EU)')
     
-    >>> getValueFromConcept(u, vocabulary, 'es')
+    >>> value_from_concept(u, vocabulary, 'es')
     ('Transports', 'Thèmes de données (UE)')
     """
     
@@ -1390,19 +1616,25 @@ def getValueFromConcept(conceptIRI: URIRef, vocabulary, language: str = "fr") ->
     
 
 
-def emailFromOwlThing(thingIRI: URIRef) -> str:
+def email_from_owlthing(thingIRI):
     """Return a string human-readable version of an owl:Thing IRI representing an email adress.
 
-    Arguments :
-    - thingIRI est un objet de type URIref supposé correspondre
-    à une adresse mél (classe RDF owl:Thing).
+    ARGUMENTS
+    ---------
+    - thingIRI (rdflib.term.URIRef) : objet de type URIref supposé
+    correspondre à une adresse mél (classe RDF owl:Thing).
 
-    Résultat : une chaîne de caractères.
+    RESULTAT
+    --------
+    Une chaîne de caractères (str), correspondant à une forme
+    plus lisible par un être humain de l'adresse mél.
 
     Cette fonction très basique se contente de retirer le préfixe
     "mailto:" s'il était présent.
 
-    >>> emailFromOwlThing(URIRef("mailto:jon.snow@the-wall.we"))
+    EXEMPLES
+    --------
+    >>> email_from_owlthing(URIRef("mailto:jon.snow@the-wall.we"))
     'jon.snow@the-wall.we'
     """
 
@@ -1412,22 +1644,29 @@ def emailFromOwlThing(thingIRI: URIRef) -> str:
     return re.sub("^mailto[:]", "", str(thingIRI))
 
 
-def owlThingFromEmail(emailStr: str) -> URIRef:
+
+def owlthing_from_email(emailStr):
     """Return an IRI from a string representing an email adress.
 
-    Arguments :
-    - emailStr est une chaîne de caractère supposée correspondre à une
-    adresse mél.
+    ARGUMENTS
+    ---------
+    - emailStr (str) : est une chaîne de caractère supposée
+    correspondre à une adresse mél.
 
-    Résultat : un objet de type URIRef respectant grosso modo le schéma
-    officiel des URI pour les adresses mél : mailto:<email>.
+    RESULTAT
+    --------
+    Un objet de type URIRef (rdflib.term.URIRef) respectant grosso
+    modo le schéma officiel des URI pour les adresses mél :
+    mailto:<email>.
     (réf : https://datatracker.ietf.org/doc/html/rfc6068)
 
     La fonction ne fait aucun contrôle de validité sur l'adresse si ce
     n'est vérifier qu'elle ne contient aucun caractère interdit pour
     un IRI.
 
-    >>> owlThingFromEmail("jon.snow@the-wall.we")
+    EXEMPLES
+    --------
+    >>> owlthing_from_email("jon.snow@the-wall.we")
     rdflib.term.URIRef('mailto:jon.snow@the-wall.we')
     """
 
@@ -1442,45 +1681,56 @@ def owlThingFromEmail(emailStr: str) -> URIRef:
         return URIRef("mailto:" + emailStr)
 
 
-def telFromOwlThing(thingIRI: URIRef) -> str:
+def tel_from_owlthing(thingIRI):
     """Return a string human-readable version of an owl:Thing IRI representing a phone number.
 
-    Arguments :
-    - thingIRI est un objet de type URIref supposé correspondre
-    à un numéro de téléphone (classe RDF owl:Thing).
+    ARGUMENTS
+    ---------
+    - thingIRI (rdflib.term.URIRef) : objet de type URIref supposé
+    correspondre à un numéro de téléphone (classe RDF owl:Thing).
 
-    Résultat : une chaîne de caractères.
+    RESULTAT
+    --------
+    Une chaîne de caractères (str), correspondant à une forme
+    plus lisible par un être humain du numéro de téléphone.
 
-    Contrairement à owlThingFromTel, cette fonction très basique ne standardise
-    pas la forme du numéro de téléphone. Elle se contente de retirer le préfixe
-    "tel:" s'il était présent.
+    Contrairement à owlthing_from_tel, cette fonction très basique
+    ne standardise pas la forme du numéro de téléphone. Elle se contente
+    de retirer le préfixe "tel:" s'il était présent.
 
-    >>> telFromOwlThing(URIRef("tel:+33-1-23-45-67-89"))
+    EXEMPLES
+    --------
+    >>> tel_from_owlthing(URIRef("tel:+33-1-23-45-67-89"))
     '+33-1-23-45-67-89'
     """
     
     return re.sub("^tel[:]", "", str(thingIRI))
 
 
-def owlThingFromTel(telStr: str, addPrefixFr: bool = True) -> URIRef:
+def owlthing_from_tel(telStr, addPrefixFr=True):
     """Return an IRI from a string representing a phone number.
 
-    Arguments :
-    - telStr est une chaîne de caractère supposée correspondre à un
+    ARGUMENTS
+    ---------
+    - telStr (str) : chaîne de caractère supposée correspondre à un
     numéro de téléphone.
-    - addPrefixFr est un booléen indiquant si la fonction doit tenter
+    - addPrefixFr (bool) : True si la fonction doit tenter
     de transformer les numéros de téléphone français locaux ou présumés
     comme tels (un zéro suivi de neuf chiffres) en numéros globaux ("+33"
-    suivi des neuf chiffres).
+    suivi des neuf chiffres). True par défaut.
 
-    Résultat : un objet de type URIRef respectant grosso modo le schéma
+    RESULTAT
+    --------
+    Un objet de type URIRef respectant grosso modo le schéma
     officiel des URI pour les numéros de téléphone : tel:<phonenumber>.
     (réf : https://datatracker.ietf.org/doc/html/rfc3966)
 
     Si le numéro semble être un numéro de téléphone français valide,
     il est standardisé sous la forme <tel:+33-x-xx-xx-xx-xx>.
 
-    >>> owlThingFromTel("0123456789")
+    EXEMPLES
+    --------
+    >>> owlthing_from_tel("0123456789")
     rdflib.term.URIRef('tel:+33-1-23-45-67-89')
     """
 
@@ -1516,6 +1766,73 @@ def owlThingFromTel(telStr: str, addPrefixFr: bool = True) -> URIRef:
 
     if tel and not tel == "":
         return URIRef("tel:" + tel)
-        
 
+
+def is_older(key1, key2):
+    """La clé key1 est-elle plus proche de la racine que key2 ?
     
+    ARGUMENTS
+    ---------
+    - key1 (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    - key2 (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    
+    RESULTAT
+    --------
+    True si key1 est plus proche de la racine que key2.
+    False si les deux clés sont au même niveau de l'arbre, ou que
+    key2 est plus proche de la racine.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils.is_older((0, (0,)), (1, (0,)))
+    False
+    
+    >>> rdf_utils.is_older((0, (0,)), (0, (1, (0,))))
+    True
+    
+    >>> rdf_utils.is_older((0, (1, (0,))), (0, (0,)))
+    False
+    """    
+    return str(key1).count("(") < str(key2).count("(")
+
+
+def is_ancestor(key1, key2):
+    """La clé key1 est-elle un ancêtre de la clé key2 ?
+    
+    ARGUMENTS
+    ---------
+    - key1 (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    - key2 (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    
+    RESULTAT
+    --------
+    True si key1 est un ancêtre direct ou indirect de key2.
+    
+    Une clé n'est pas sa propre ancêtre, ni celui de son
+    éventuel double M.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils.is_ancestor((2, (0,)), (8, (1, (2, (0,)))))
+    True
+    
+    >>> rdf_utils.is_ancestor((2, (0,)), (8, (1, (3, (0,)))))
+    False
+    
+    >>> rdf_utils.is_ancestor((8, (1, (2, (0,)))), (2, (0,)))
+    False
+    """
+    
+    if len(key2) <= 1 or is_older(key2, key1):
+        return False
+    
+    if key2[1] == key1:
+        return True
+    else:
+        return is_ancestor(key1, key2[1])
+
+
+class ForbiddenOperation(Exception):
+    pass
+    
+

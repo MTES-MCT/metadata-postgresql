@@ -13,51 +13,63 @@ import rdf_utils_debug
 
 
 # schéma SHACL qui décrit les métadonnées communes
-with open('shape.ttl', encoding='UTF-8') as src:
+with open(r'modeles\shape.ttl', encoding='UTF-8') as src:
     g_shape = Graph().parse(data=src.read(), format='turtle')
     
 # vocabulaire - ontologies utilisées par les métadonnées communes
-with open('vocabulary.ttl', encoding='UTF-8') as src:
+with open(r'modeles\vocabulary.ttl', encoding='UTF-8') as src:
     g_vocabulary = Graph().parse(data=src.read(), format='turtle')
     
 # exemple de modèle de formulaire
-with open('exemples\\exemple_dict_modele_local.json', encoding='UTF-8') as src:
+with open(r'exemples\exemple_dict_modele_local.json', encoding='UTF-8') as src:
     d_template = json.loads(src.read())
 
 # exemple de fiche de métadonnée
-with open('exemples\\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
-    g = rdf_utils.extractMetadata(src.read(), g_shape)
+with open(r'exemples\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
+    g = rdf_utils.metagraph_from_pg_description(src.read(), g_shape)
 
 # constitution du dictionnaire
-#d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary)
-d = rdf_utils.buildDict(g, g_shape, g_vocabulary)
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, translation=True)
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, mode='read')
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template)
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, hideUnlisted=True)
-#d = rdf_utils.buildDict(Graph(), g_shape, g_vocabulary, template=d_template)
-#d = rdf_utils.buildDict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True, translation=True)
+#d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, mode='read')
+d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, hideUnlisted=True)
+#d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary, template=d_template)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True, translation=True)
 
-g1 = rdf_utils.buildGraph(d, g_vocabulary)
+g1 = d.build_graph(g_vocabulary)
 
 
-def print_graph(graph: Graph):
-    """
-    Show graph with turtle serialization.
+
+def print_graph(graph):
+    """Show graph with turtle serialization.
+    
+    ARGUMENTS
+    ---------
+    - graph (rdflib.Graph) : graphe RDF quelconque.
+    
+    EXEMPLES
+    --------
+    >>> print_graph(g1)
     """
     print(graph.serialize(format="turtle").decode("utf-8"))
-    
 
-def print_dict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
-    """
-    Show detailled contents from widgetDict.
+
+
+def print_dict(widgetsDict, hideNone=True, limit=5):
+    """Show detailled contents from widgetDict.
     
-    Arguments :
-    - widgetsDict est un dictionnaire obtenu par exécution de la fonction buildDict.
-    - hideNone est un booléen indiquant si les clés vides doivent être imprimées
-    (par défaut non).
-    - limit est le nombre maximal de clés à imprimer. Par défaut 5.
+    ARGUMENTS
+    ---------
+    - widgetsDict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - [optionne] hideNone (bool) : True si les clés vides doivent être imprimées
+    (par défaut False).
+    - [optionnel] limit (int) : nombre maximal de clés à imprimer. Par défaut 5.
     
+    EXEMPLES
+    --------
     >>> printDict(d)
     >>> printDict(d, hideNone = False)
     """
@@ -87,14 +99,19 @@ def print_dict(widgetsDict: dict, hideNone: bool = True, limit: int = 5):
             break
 
     print("}")
-        
-        
-def pseudo_form(widgetsDict: dict):
+
+
+   
+def pseudo_form(widgetsDict):
     """Show very basic representation of a form generated from widgetsDict.
     
-    Arguments :
-    - widgetsDict est un dictionnaire obtenu par exécution de la fonction buildDict.
+    ARGUMENTS
+    ---------
+    - widgetsDict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
     
+    EXEMPLES
+    --------
     >>> pseudoForm(d)
     """
     

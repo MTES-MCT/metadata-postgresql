@@ -7,20 +7,20 @@ En supposant que la source se trouve dans un sous-répertoire "ontologies".
 >>> s = 'http://publications.europa.eu/resource/authority/data-theme'
 
 1. Dé-sérialisation du contenu de la source :
->>> v = importVocabulary('ontologies', s)
+>>> v = import_vocabulary('ontologies', s)
 
 2. Contrôle et ajout des traductions manquantes :
->>> addTranslation(v)
+>>> add_translation(v)
 
 3. Contrôle et correction du nom du thésaurus (il faut valider sans saisir
 de nouvelle valeur pour ne pas modifier le libellé) :
->>> replaceSchemeLabel(v, s)
+>>> replace_scheme_label(v, s)
 
 4. Vérification du visuelle du résultat :
 >>> print(v.serialize(format="turtle").decode("utf-8"))
 
 5. Ajout à vocabulary.ttl :
->>> exportVocabulary(v)
+>>> export_vocabulary(v)
 """
 
 from pathlib import Path
@@ -29,23 +29,28 @@ from rdflib.util import guess_format
 from rdflib.serializer import Serializer
 
 
-def importVocabulary( directory: str, scheme: str, languages: list = [ "fr", "en" ] ) -> Graph:
+def import_vocabulary(directory, scheme, languages=["fr","en"]):
     """Parse RDF SKOS ontologies into a graph.
 
-    Arguments :
-    - directory est le chemin du répertoire où sont stockés les fichiers contenant
+    ARGUMENTS
+    ---------
+    - directory (str) : chemin du répertoire où sont stockés les fichiers contenant
     les ontologies. Ne seront considérés que les fichiers .rdf et .ttl.
-    - scheme est l'IRI de l'ensemble dont on souhaite récupérer les concepts (chaînes
-    de caractères ou URIRef).
-    - languages est la liste des langues pour laquelle le vocabulaire sera importé.
-    Français et anglais par défaut.
+    - scheme (str ou rdflib.term.URIRef) : IRI de l'ensemble dont on souhaite
+    récupérer les concepts (chaînes de caractères ou URIRef).
+    - [optionnel] languages (list) : liste des langues (str) pour lesquelles le
+    vocabulaire sera importé. Français et anglais par défaut.
 
-    Résultat : un graphe contenant une version allégée des ontologies, avec
+    RESULTAT
+    --------
+    Un graphe contenant une version allégée des ontologies, avec
     le label de l'ensemble et les labels des concepts traduits dans les langues
     choisies.
 
+    EXEMPLES
+    --------
     En supposant que la source se trouve dans un sous-répertoire "ontologies" :
-    >>> v = importVocabulary('ontologies', 'http://publications.europa.eu/resource/authority/data-theme')
+    >>> v = import_vocabulary('ontologies', 'http://publications.europa.eu/resource/authority/data-theme')
     """
 
     if not isinstance(languages, list):
@@ -125,14 +130,20 @@ def importVocabulary( directory: str, scheme: str, languages: list = [ "fr", "en
 
 
 
-def addTranslation( graph: Graph, languages: list = [ "fr", "en" ] ):
+def add_translation(graph, languages=["fr", "en"]):
     """Basic interface to add missing translations of concepts and schemes labels in given graph.
     
-    Arguments :
-    - graph est un graphe contenant les labels associés à un ensemble de
-    concepts.
+    ARGUMENTS
+    ---------
+    - graph (rdflib.graph.Graph) : graphe contenant les labels associés à un
+    ensemble de concepts.
+    - [optionnel] languages (list) : liste des langues (str) pour lesquelles on
+    souhaite contrôler et compléter les traductions manquantes. Français et
+    anglais par défaut.
     
-    >>> addTranslation(v)
+    EXEMPLES
+    --------
+    >>> add_translation(v)
     """
     
     for l in languages:
@@ -166,16 +177,17 @@ def addTranslation( graph: Graph, languages: list = [ "fr", "en" ] ):
                 )
 
 
-def replaceSchemeLabel( graph: Graph, scheme: str = None ):
+def replace_scheme_label(graph, scheme=None):
     """Basic interface to replace schemes labels in given graph.
     
-    Arguments :
-    - graph est un graphe contenant les labels associés à un ensemble de
-    concepts.
-    - scheme est l'IRI de l'ensemble de concepts dont le label serait
-    à remplacer. S'il n'est pas renseigné, la fonction balaie tous
-    les ensembles du graphe, mais ne sera alors pas en mesure de repérer
-    les ensembles sans libellé.
+    ARGUMENTS
+    ---------
+    - graph (rdflib.graph.Graph) : graphe contenant les labels associés à un
+    ensemble de concepts.
+    - [optionnel] scheme (str ou rdflib.term.URIRef) : IRI de l'ensemble de
+    concepts dont le label serait à remplacer. S'il n'est pas renseigné,
+    la fonction balaie tous les ensembles du graphe, mais ne sera alors pas
+    en mesure de repérer les ensembles sans libellé.
     
     Il sera systématiquement proposé de remplacer chaque traduction du
     label.
@@ -183,7 +195,9 @@ def replaceSchemeLabel( graph: Graph, scheme: str = None ):
     Pour ne pas remplacer un label, il suffit de valider sans saisir de
     nouvelle valeur.
     
-    >>> replaceSchemeLabel(v, s)
+    EXEMPLES
+    --------
+    >>> replace_scheme_label(v, s)
     """  
     if scheme:
     
@@ -204,7 +218,7 @@ def replaceSchemeLabel( graph: Graph, scheme: str = None ):
             print( 'Scheme : "{}".'.format( URIRef(scheme) ) )
             print( 'No label !' )
             n = input( 'New FR label : ' )
-            print('Please add other translations with addTranslation.')
+            print('Please add other translations with add_translation.')
             
             if n != '':
                 graph.update(
@@ -250,20 +264,23 @@ def replaceSchemeLabel( graph: Graph, scheme: str = None ):
                 )
            
 
-def exportVocabulary( graph: Graph, mode: str = 'a' ):
+def export_vocabulary(graph, mode = 'a'):
     """Append content of given graph to vocabulary.ttl.
     
-    Arguments :
-    - graph est un graphe contenant les labels associés à un ensemble de
-    concepts.
-    - mode indique si les nouvelles valeurs doivent être ajoutées
-    à la suite du contenu actuel du fichier ("a"), ou si celui-ci
-    doit être intégralement remplacé ("w").
+    ARGUMENTS
+    ---------
+    - graph (rdflib.graph.Graph) : graphe contenant les labels associés
+    à un ensemble de concepts.
+    - [optionnel] mode (str) : indique si les nouvelles valeurs doivent
+    être ajoutées à la suite du contenu actuel du fichier ("a", valeur par
+    défaut), ou si celui-ci doit être intégralement remplacé ("w").
 
-    >>> exportVocabulary(v)
+    EXEMPLES
+    --------
+    >>> export_vocabulary(v)
     """
     s = v.serialize(format="turtle").decode('utf-8')
     
-    with open('vocabulary.ttl', encoding='UTF-8', mode=mode) as dest:
+    with open(r'modeles\vocabulary.ttl', encoding='UTF-8', mode=mode) as dest:
         dest.write(s)
         
