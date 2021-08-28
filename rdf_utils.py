@@ -60,6 +60,92 @@ class WidgetsDict(dict):
         return n
 
 
+    def child(self, key):
+        """Renvoie la clé d'un enfant de la clé key (hors boutons).
+        
+        Cette fonction est supposée être lancée sur un groupe de valeurs
+        ou groupe de traduction, où tous les enfants sont de même nature.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
+        
+        RESULTAT
+        --------
+        La clé (tuple) d'un enfant de l'enregistrement de clé key, en
+        excluant les 'plus button' et 'translation button'.
+
+        NB : le plus souvent, l'enregistrement renvoyé sera (0, key),
+        mais il est possible que celui-ci ait été supprimé par
+        activation de son bouton moins.
+        """
+        c = None
+        
+        for k in self.keys():
+        
+            if len(k) > 1 and k[1] == key \
+                    and not self[k]['object'] in ('plus button', 'translation button'):
+                    
+                c = k
+                break
+                
+        return c 
+
+
+    def clean_copy(self, key, language='fr', langList=['fr', 'en']):
+        """Renvoie une copie nettoyée du dictionnaire interne de la clé key.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
+        - [optionnel] language (str) : langue de la nouvelle valeur.
+        Français ("fr") par défaut.
+        La valeur de language doit être incluse dans langList ci-après.
+        - [optionnel] langList (list) : liste des langues autorisées pour
+        les traductions (str). Par défaut français et anglais, soit
+        ['fr', 'en'].
+
+        RESULTAT
+        --------
+        Un dictionnaire, qui pourra être utilisé comme valeur pour une autre
+        clé du dictionnaire de widgets.
+        
+        Le contenu du dictionnaire est identique à celui de la source, si
+        ce n'est que :
+        - les clés supposées contenir des widgets, actions et menus sont
+        vides ;
+        - la clé "value" est remise à la valeur par défaut ;
+        - la clé "language value" vaudra language et "authorized languages"
+        vaudra langList (s'il y avait lieu de spécifier une langue).
+        """
+        
+        d = self[key].copy()
+        
+        d.update({
+            'main widget' : None,
+            'grid widget' : None,
+            'label widget' : None,
+            'minus widget' : None,
+            'language widget' : None,
+            'switch source widget' : None,
+
+            'main action' : None,
+            'minus action' : None,
+            'switch source menu' : None,
+            'switch source actions' : None,
+            'language menu' : None,
+            'language actions' : None,
+            
+            'value' : d['default value'],
+            'language value' : language if d['language value'] else None,
+            'authorized languages' : langList.copy() if d['authorized languages'] \
+                                     and langList is not None else None,
+            'sources' : d['sources'].copy() if d['sources'] is not None else None   
+            })
+        
+        return d
+ 
+
     def parent_widget(self, key):
         """Renvoie le widget parent de la clé key.
         
@@ -94,20 +180,21 @@ class WidgetsDict(dict):
                 return self[key[1]]['grid widget']
 
 
-    def drop(self, key):
+    def drop(self, key, langList=['fr', 'en']):
         """Supprime du dictionnaire un enregistrement et, en cascade, tous ses descendants.
         
         Cette fonction est à utiliser suite à l'activation par l'utilisateur
-        du "bouton moins" d'un groupe de valeurs. Par principe, il ne devrait
-        jamais y avoir de boutoin moins lorsque le groupe ne contient qu'une
-        valeur, et faire usage de la fonction dans ce cas produira une erreur.
-        
-        Pour la suppression d'une traduction, on utilisera drop_traduction, qui
-        est moins gourmande en temps de calcul.
+        du "bouton moins" d'un groupe de valeurs ou d'un groupe de traduction.
+        Par principe, il ne devrait jamais y avoir de boutoin moins lorsque le
+        groupe ne contient qu'une valeur, et faire usage de la fonction dans ce
+        cas produirait une erreur.
         
         ARGUMENTS
         ---------
         - key (tuple) : une clé du dictionnaire de widgets.
+        - [optionnel] langList (list) : paramètre utilisateur, liste des
+        langues autorisées pour les traductions (str). Par défaut
+        français et anglais, soit ['fr', 'en'].
         
         RESULTAT
         --------
@@ -116,7 +203,10 @@ class WidgetsDict(dict):
         "widgets to delete" : [liste des widgets à détruire (QWidget)],
         "actions to delete" : [liste des actions à détruire (QAction)],
         "menus to delete" : [liste des menus à détruire (QMenu)],
-        "widgets to hide" : [liste des widgets à masquer (QWidget)],
+        "widgets to show" : [liste des widgets masqués à afficher (QWidget)],
+        "widgets to hide' : [liste de widgets à masquer (QWidget)],
+        "language menu to update" : [liste de clés (tuples) pour lesquelles
+        le menu des langues devra être régénéré],
         "widgets to move" : [liste de tuples - cf. ci-après]
         }
         
@@ -144,9 +234,27 @@ class WidgetsDict(dict):
         >>> d[(2,(0,))]['row']
         2
         """
-        d = { "delete": [], "hide": [], "move": [] }
+        
+        if len(key) < 2:
+            raise ForbiddenOperation("This is the tree root, you can't cut it !")
+            
+        g = self[key[1]]['object']
+        if not g in ('translation group', 'group of values'):
+            raise ForbiddenOperation("You can't delete a record outside of a group of values or translation group.")
+        
+        d = {
+            "widgets to delete": [],
+            "actions to delete": [],
+            "menus to delete": [],
+            "widgets to show": [],
+            "widgets to hide": [],
+            "language menu to update" : [],
+            "widgets to move": []
+            }
         l = []
         n = self.count_siblings(key)
+        
+        language = self[key]['language value']
         
         if n < 2:
             raise ForbiddenOperation("This is the last of its kind, you can't destroy it !")
@@ -155,12 +263,15 @@ class WidgetsDict(dict):
             
             # cas des descendants (+ l'enregistrement cible et,
             # le cas échéant, son double M)
-            if is_ancestor(key, k) or (len(k) > 1 and k[0] == key[0]):
+            # NB : on ne cherche pas les descendants dans un groupe de
+            # traduction puisqu'il ne peut pas y en avoir
+            if (g == 'group of values' and is_ancestor(key, k)) \
+                    or (len(k) > 1 and k[0] == key[0] and k[1] == key[1]):
             
                 l.append(k)
                 
-                for e in ['main widget', 'grid widget', 'label widget', 'minus widget'
-                          'language widget', 'switch source widget']:
+                for e in ('main widget', 'grid widget', 'label widget', 'minus widget',
+                          'language widget', 'switch source widget'):
                     w = self[k][e]
                     if w:
                         d["widgets to delete"].append(w)
@@ -170,12 +281,12 @@ class WidgetsDict(dict):
                     if a:
                         d["actions to delete"].append(a)
                         
-                for e in ['switch source actions', 'language actions']:
+                for e in ('switch source actions', 'language actions'):
                     a = self[k][e]
                     if a:
                         d["actions to delete"] += a
                         
-                for e in ['switch source menu', 'language menu']:
+                for e in ('switch source menu', 'language menu'):
                     m = self[k][e]
                     if m:
                         d["menus to delete"].append(m)
@@ -183,28 +294,52 @@ class WidgetsDict(dict):
             # cas des frères et soeurs
             elif len(k) > 1 and k[1] == key[1]:
             
-                if k[0] > key[0]:
-                
-                    # mise à jour de la clé 'row' des petits frères
-                    self[k]['row'] -= 1
+                # mise à jour du numéro de ligne à utiliser pour un
+                # nouvel enfant
+                if self[k]['object'] in ('plus button', 'translation button'):
+                    self[k]['next child row'] -= 1
                     
-                    for e in ['main widget', 'minus widget', 'language widget', 'switch source widget']:
-                        w = self[k][e]
+                    # si le bouton (de traduction) était masqué et que
+                    # la langue de l'enregistrement à supprimer est bien
+                    # dans la liste des langues autorisées, on le "démasque"
+                    if g == 'translation group' and self[k]['hidden'] and language in langList:
+                        self[k]['hidden'] = False
+                        w = self[k]['main widget']
                         if w:
-                            d["widgets to move"].append((
-                                self.parent_grid(k),
-                                w,
-                                self[k]['row']
-                                ))
-                 
-                if n == 2:
-                    # le bouton moins doit être masqué s'il ne
-                    # reste qu'une seule valeur
-                    self[k]['has minus button'] = False
+                            d["widgets to show"].append(w)
                     
-                    w = self[k]['minus widget']
-                    if w:
-                            d["widgets to hide"].append(w)
+                elif self[k]['object'] in ('group of properties', 'translation group', 'edit') :
+            
+                    if k[0] > key[0]:
+                    
+                        # mise à jour de la clé 'row' des petits frères
+                        self[k]['row'] -= 1
+                        
+                        for e in ('main widget', 'minus widget', 'language widget', 'switch source widget'):
+                            w = self[k][e]
+                            if w:
+                                d["widgets to move"].append((
+                                    self.parent_grid(k),
+                                    w,
+                                    self[k]['row']
+                                    ))
+                    
+                    if n == 2:
+                        # le bouton moins doit être masqué s'il ne
+                        # reste qu'une seule valeur
+                        self[k]['has minus button'] = False
+                        
+                        w = self[k]['minus widget']
+                        if w:
+                                d["widgets to hide"].append(w)
+                     
+                    if g == 'translation group' and language in langList:
+                        # on ajoute language aux listes de langues
+                        # disponibles des frères et soeurs
+                        if not language in self[k]['authorized languages']:
+                            self[k]['authorized languages'].append(language)
+                            self[k]['authorized languages'].sort()
+                            d["language menu to update"].append(k)
         
         for e in l:
             del self[e]
@@ -212,15 +347,168 @@ class WidgetsDict(dict):
         return d
    
 
-    def add(self, key):
+    def add(self, key, language='fr', langList=['fr', 'en']):
         """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
         
-        Cette fonction est à 
+        Cette fonction est à utiliser après activation d'un bouton plus
+        (plus button) ou bouton de traduction (translation button) par
+        l'utilisateur.
         
         ARGUMENTS
         ---------
-        - key (tuple) : une clé du dictionnaire de widgets.
+        - key (tuple) : une clé du dictionnaire de widgets, et plus
+        précisément la clé du bouton qui vient d'être activé par
+        l'utilisateur.
+        - [optionnel] language (str) : langue principale de rédaction des
+        métadonnées (paramètre utilisateur). Français ("fr") par défaut.
+        La valeur de language doit être incluse dans langList ci-après.
+        - [optionnel] langList (list) : paramètre utilisateur, liste des
+        langues autorisées pour les traductions (str). Par défaut
+        français et anglais, soit ['fr', 'en'].
+        
+        RESULTAT
+        --------
+        Un dictionnaire ainsi constitué :
+        {
+        "widgets to show" : [liste des widgets masqués à afficher (QWidget)],
+        "widgets to hide' : [liste de widgets à masquer (QWidget)],
+        "language menu to update" : [liste de clés (tuples) pour lesquelles
+        le menu des langues devra être régénéré],
+        "new keys" : [liste des nouvelles clés du dictionnaire (tuple)]
+        }
+        
+        Pour toutes les clés listées sous "new keys", il sera nécessaire de
+        générer les widgets, actions et menus, comme à la création initiale
+        du dictionnaire.
+        
+        EXEMPLES
+        --------
+        >>> d.add((1, (0, (0,))))
         """
+        
+        d = {
+            "widgets to show": [],
+            "widgets to hide": [],
+            "language menu to update" : [],
+            "new keys": []
+            }
+        
+        if len(key) < 2:
+            raise ForbiddenOperation("This is the tree root, you can't add anything here !")
+            
+        if not self[key]['object'] in ('plus button', 'translation button'):
+            raise ValueError("{} isn't a 'plus button' nor a 'translation button'.".format(key))
+        
+        if self[key]['hidden']:
+            raise ForbiddenOperation("Don't even try to add anything with an hidden button !")
+        
+        c = self.child(key[1])       
+        if c is None:
+            raise RuntimeError("Could not find a record to copy from.")
+            
+        n = self[key]['next child']      
+        r = self[key]['next child row']
+        
+        # mise à jour des indices mémorisés dans le bouton
+        # pour le prochain enregistrement à ajouter
+        self[key]['next child'] += 1
+        self[key]['next child row'] += 1
+        
+        # dans le cas d'un groupe de traduction, on écrase
+        # les paramètres langList et language
+        if self[key]['object'] == 'translation button':
+        
+            langList = self[c]['authorized languages'].copy()
+            
+            if self[c]['language value'] in langList:
+                langList.remove(self[c]['language value'])
+                # on retire cette langue puisqu'elle est déjà utilisée
+                
+            if len(langList) == 0:
+                raise RuntimeError('No more available language for translation.')
+            
+            # arbitrairement, on considère que la langue
+            # initialement affichée pour la nouvelle
+            # valeur sera la première de la liste des
+            # langues disponibles
+            language = langList[0]
+            
+            # cas où la langue que l'on utilise était la
+            # dernière disponible - dans ce cas on masque
+            # le bouton de traduction pour empêcher d'autres
+            # ajouts
+            if len(langList) == 1:
+                self[key]['hidden'] = True
+                w = self[key]['main widget']
+                if w:
+                    d["widgets to hide"].append(w)
+        
+        k1 = (n, key[1]) if len(c) == 2 else (n, key[1], 'M')
+        k2 = (n, key[1], 'M') if len(c) == 2 else (n, key[1])
+        cm = (c[0], c[1], 'M') if len(c) == 2 else (c[0], c[1])
+        
+        self.update( { k1: self.clean_copy(c, language, langList) } )   
+        self[k1]['row'] = r
+        d['new keys'].append(k1)
+        
+        # cas d'un enregistrement avec un double M               
+        if cm in self:
+            self.update( { k2: self.clean_copy(cm, language, langList) } )   
+            self[k2]['row'] = r
+            d['new keys'].append(k2)
+        
+        for k in self.keys():
+ 
+            # cas des frères et soeurs :
+            if len(k) > 1 and k[1] == key[1] and self[k]['object'] in (
+                        'group of properties', 'translation group', 'edit'):
+                
+                # on vient d'ajouter un enregistrement au groupe,
+                # donc il y a lieu d'ajouter des boutons moins
+                # s'ils n'étaient pas déjà là
+                if self[k]['has minus button']:
+                    continue
+                else:
+                    self[k]['has minus button'] = True                     
+                    w = self[k]['minus widget']
+                    if w:
+                        d["widgets to show"].append(w)
+                
+                # dans le cas d'un groupe de traduction,
+                # on supprime language des listes de langues
+                # autorisées des frères et soeurs
+                if self[key]['object'] == 'translation button' and not k in (k1, k2) :
+                    if language in self[k]['authorized languages']:
+                        self[k]['authorized languages'].remove(language)
+                        d["language menu to update"].append(k)
+        
+        
+            # cas des descendants de la clé c :
+            # uniquement pour les boutons plus, puisque les
+            # groupes de traduction sont toujours en bout de
+            # chaîne
+            if self[key]['object'] == 'plus button' and is_ancestor(c, k):
+            
+                if self[k[1]]['object'] == 'group of properties' \
+                        or self[k]['object'] in ('plus button', 'translation button') \
+                        or self[k]['row'] == 0:
+                        # dans les groupes de propriétés, tout est dupliqué ;
+                        # dans les autres groupes, on ne garde que les boutons
+                        # et le groupe ou widget placé sur la première ligne
+                        # de la grille
+                    newkey = replace_ancestor(k, c, (n, key[1]))
+                    self.update( { newkey: self.clean_copy(c) } )
+                    d['new keys'].append(newkey)
+                    
+        return d
+
+
+    def change_language(self, language):
+        pass  
+    
+    
+    def change_source(self, source):
+        pass
 
 
     def build_graph(self, vocabulary, language="fr"):
@@ -421,7 +709,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
     le label), le widget QLabel associé.
     - 'minus widget' : pour les propriétés qui admettent plusieurs valeurs ou qui, de fait, en ont,
     (concrètement celles pour lesquelles la clé "has minus button" vaut True), widget QButtonTool [-]
-    permettant de supprimer les widgets.
+    permettant de supprimer les widgets. Un tel widget doit être créé pour tout élément appartenant
+    à un groupe de traduction ou un groupe de valeurs, mais ne sera affiché que si "has minus button"
+    vaut True.
     - 'language widget' : pour certains widgets "edit" (concrètement, ceux dont 'authorized languages'
     n'est pas vide), widget pour afficher/sélectionner la langue de la métadonnée. Les 'languages
     widget' n'auront vocation à être affiché que si le mode "traduction" est actif, soit un 
@@ -482,7 +772,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
     lieu (cf. 'language widget').
     - 'is mandatory'* : booléen indiquant si la métadonnée doit obligatoirement être renseignée.
     - 'has minus button' : booléen indiquant si un bouton de suppression du widget doit être
-    implémenté (cf. minus widget). Sur le principe, on prévoit des boutons de suppression dès qu'il
+    affiché (cf. minus widget). Sur le principe, un bouton de suppression doit apparaître dès qu'il
     y a effectivement plusieurs valeurs saisies ou en cours de saisie pour une catégorie (un pour
     chacune).
     - 'regex validator pattern' : pour un widget "edit", une éventuelle expression régulière que la
@@ -503,11 +793,15 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
     stockée dans le dictionnaire, mais peut être obtenue via la fonction build_vocabulary.
     - 'read only' : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
     l'utilisateur. En mode lecture, 'read only' vaut toujours True.
+    - 'hidden' : booléen valant True si le widget principal doit être masqué. Concerne uniquement
+    les boutons de traduction, lorsque toutes les langues disponibles (cf. langList) ont été
+    utilisées.
 
     La dernière série de clés ne sert qu'aux fonctions de rdf_utils : 'default value'* (valeur par
-    défaut), 'multiple values'* (la catégorie est-elle censée admettre plusieurs valeurs ?),
-    'node kind', 'data type'**, 'class', 'path'***, 'subject', 'predicate', 'node', 'transform',
-    'default widget type', 'one per language'.
+    défaut), 'node kind', 'data type'**, 'class', 'path'***, 'subject', 'predicate', 'node',
+    'transform', 'default widget type', 'one per language', 'next child' (indice à utiliser si un
+    enregistrement est ajouté au groupe), 'next child row', 'multiple values'* (la catégorie est-elle
+    censée admettre plusieurs valeurs ?).
 
     * ces clés apparaissent aussi dans le dictionnaire interne de template.
     ** le dictionnaire interne de template contient également une clé 'data type', mais dont les
@@ -579,9 +873,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             'main action' : None,
             'minus action' : None,
             'switch source menu' : None,
-            'switch source actions' : [],
+            'switch source actions' : None,
             'language menu' : None,
-            'language actions' : [],
+            'language actions' : None,
             
             'main widget type' : None,
             'row' : None,
@@ -603,6 +897,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             'current source' : None,
             'authorized languages' : None,
             'read only' : None,
+            'hidden' : None,
             
             'default value' : None,
             'multiple values' : None,
@@ -616,7 +911,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             'predicate' : None,
             'node' : None,
             'default widget type' : None,
-            'one per language' : None
+            'one per language' : None,
+            'next child' : None,
+            'next child row' : None
             }
 
         # on initialise le dictionnaire avec un groupe racine :
@@ -831,6 +1128,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             
             mValue = None
             mCurSource = None
+            mVSources = mSources.copy() if mSources is not None else None
+            mVLangList = mLangList.copy() if mLangList is not None else None
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
                         mKind == 'sh:Literal' and p['type'].n3(nsm) == 'xsd:string' ) else None
             
@@ -864,7 +1163,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
 
                     if mKind == 'sh:BlankNodeOrIRI':
-                        mSources = ( mSources + [ "< manuel >" ] ) if mSources else [ "< URI >", "< manuel >" ]
+                        mVSources = ( mVSources + [ "< manuel >" ] ) if mVSources else [ "< URI >", "< manuel >" ]
                         mCurSource = "< manuel >" if isinstance(mValueBrut, BNode) else None
 
                     mWidget = ( idx[mParent], mParent, 'M' ) if mKind == 'sh:BlankNodeOrIRI' else ( idx[mParent], mParent )
@@ -885,7 +1184,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                         'node' : mNode,
                         'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
                         'current source' : mCurSource,
-                        'sources' : mSources
+                        'sources' : mVSources
                         } )
 
                     if mKind == 'sh:BlankNode':
@@ -937,23 +1236,23 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     mValueBrut = None
                     
                 if  multilingual and translation and mLanguage:
-                    mLangList = mLangList + [ mLanguage ] if not mLanguage in mLangList else mLangList
+                    mVLangList = mVLangList + [ mLanguage ] if not mLanguage in mVLangList else mVLangList
                 elif translation and mLanguage:
-                    mLangList = [ mLanguage ] + ( langList or [] ) if not mLanguage in ( langList or [] ) else langList
+                    mVLangList = [ mLanguage ] + ( langList or [] ) if not mLanguage in ( langList or [] ) else langList
                 
                 # cas d'une catégorie qui tire ses valeurs d'une
                 # ontologie : on récupère le label à afficher
-                if isinstance(mValueBrut, URIRef) and mSources:             
+                if isinstance(mValueBrut, URIRef) and mVSources:             
                     mValue, mCurSource = value_from_concept(mValueBrut, vocabulary, language)                   
-                    if not mCurSource in mSources:
+                    if not mCurSource in mVSources:
                         mCurSource = '< non répertorié >'
                         
-                elif mSources and mGraphEmpty and ( mValueBrut is None ):
+                elif mVSources and mGraphEmpty and ( mValueBrut is None ):
                     mCurSource = mDefaultSource
 
-                if mSources and ( mCurSource is None ):
+                if mVSources and ( mCurSource is None ):
                     # cas où la valeur n'était pas renseignée - ou n'est pas un IRI
-                    mCurSource = '< non répertorié >' if mValueBrut else mSources[0]
+                    mCurSource = '< non répertorié >' if mValueBrut else mVSources[0]
 
                 elif mCurSource == "< manuel >":
                     mCurSource = None               
@@ -1015,11 +1314,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     'transform' : str(p['transform']) if p['transform'] else None,
                     'type validator' : 'QIntValidator' if p['type'] and p['type'].n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if p['type'] and p['type'].n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
-                    'multiple sources' : len(mSources) > 1 if mSources and mode == 'edit' else False,
+                    'multiple sources' : len(mVSources) > 1 if mVSources and mode == 'edit' else False,
                     'current source' : mCurSource,
-                    'sources' : ( mSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mSources,
+                    'sources' : ( mVSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mVSources,
                     'one per language' : multilingual and translation,
-                    'authorized languages' : mLangList if mode == 'edit' else None,
+                    'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False))
                     } )
                 
@@ -1028,13 +1327,16 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
 
         # référencement d'un widget bouton pour ajouter une valeur
         # si la catégorie en admet plusieurs
-        if not mNHidden and mode == 'edit' and ( ( multilingual and translation and mLangList and len(mLangList) > 1 ) or multiple ):
+        if not mNHidden and mode == 'edit' and ( ( multilingual and translation and mVLangList and len(mVLangList) > 1 ) or multiple ):
         
             mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
             mDict[ ( idx[mParent], mParent ) ].update( {
                 'object' : 'translation button' if multilingual else 'plus button',
                 'main widget type' : 'QToolButton',
-                'row' : rowidx[mParent]
+                'row' : rowidx[mParent],
+                'next child' : idx[mParent] + 1,
+                'next child row' : rowidx[mParent] + 1,
+                'hidden' : len(mVLangList) == 1 if multilingual else None
                 } )
             
             idx[mParent] += 1
@@ -1111,8 +1413,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                 mLanguage = ( ( mValueBrut.language if mValueBrut and isinstance(mValueBrut, Literal) else None ) or language
                                  ) if mType.n3(nsm) == 'xsd:string' else None
                                  
-                mLangList = ( [ mLanguage ] + ( langList or [] ) if not mLanguage in ( langList or [] ) else langList 
-                            ) if mLanguage and translation else None
+                mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) if not mLanguage in ( langList or [] ) \
+                            else langList.copy()) if mLanguage and translation else None
 
                 mWidgetType = t.get('main widget type', None) or "QLineEdit"
                 mDefaultWidgetType = mWidgetType
@@ -1151,7 +1453,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     'default widget type' : mDefaultWidgetType,
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
-                    'authorized languages' : mLangList if mode == 'edit' else None,
+                    'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False))
                     } )
                         
@@ -1164,7 +1466,10 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'plus button',
                     'main widget type' : 'QToolButton',
-                    'row' : rowidx[mParent]
+                    'row' : rowidx[mParent],
+                    'next child' : idx[mParent] + 1,
+                    'next child row' : rowidx[mParent] + 1,
+                    'hidden' : len(mVLangList) == 1 if multilingual else None
                     } )
                 
                 idx[mParent] += 1
@@ -1231,7 +1536,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                 mLanguage = ( ( v.language if isinstance(v, Literal) else None ) or language 
                             ) if mType.n3(nsm) == 'xsd:string' else None
                             
-                mLangList = ( [ mLanguage ] + ( langList or [] ) if not mLanguage in ( langList or [] ) else langList 
+                mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) if not mLanguage in ( langList or [] ) else langList.copy() 
                             ) if mLanguage and translation else None
 
                 mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
@@ -1254,7 +1559,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     'default widget type' : "QLineEdit",
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
-                    'authorized languages' : mLangList if mode == 'edit' else None,
+                    'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' )
                     } )
                         
@@ -1599,16 +1904,29 @@ def value_from_concept(conceptIRI, vocabulary, language="fr"):
                skos:prefLabel ?label .
                ?s a skos:ConceptScheme ;
                skos:prefLabel ?scheme .
-               FILTER (( lang(?label) = "{0}" ||
-                      ( ( lang(?label) != "{0}" )
-                      && ( lang(?label) = "fr" ) ) ) 
-                  && ( lang(?scheme) = "{0}" ||
-                      ( ( lang(?scheme) != "{0}" )
-                      && ( lang(?scheme) = "fr" ) ) )) }}
+               FILTER ((lang(?label) = "{0}") 
+                  && (lang(?scheme) = "{0}")) }}
         """.format(language),
         initBindings = { 'c' : conceptIRI }
         )
-     
+    
+    if len(q_vc) == 0:
+        q_vc = vocabulary.query(
+        """
+        SELECT
+            ?label ?scheme
+        WHERE
+            { ?c a skos:Concept ;
+               skos:inScheme ?s ;
+               skos:prefLabel ?label .
+               ?s a skos:ConceptScheme ;
+               skos:prefLabel ?scheme .
+               FILTER ((lang(?label) = "fr") 
+                  && (lang(?scheme) = "fr")) }
+        """,
+        initBindings = { 'c' : conceptIRI }
+        )
+    
     for t in q_vc:
         return ( str( t['label'] ), str( t['scheme'] ) )
         
@@ -1779,8 +2097,8 @@ def is_older(key1, key2):
     RESULTAT
     --------
     True si key1 est plus proche de la racine que key2.
-    False si les deux clés sont au même niveau de l'arbre, ou que
-    key2 est plus proche de la racine.
+    False si les deux clés appartiennent à la même génération,
+    ou que key2 est plus proche de la racine.
     
     EXEMPLES
     --------
@@ -1831,6 +2149,49 @@ def is_ancestor(key1, key2):
     else:
         return is_ancestor(key1, key2[1])
 
+
+def replace_ancestor(key, old_ancestor, new_ancestor):
+    """Réécrit la clé key, en remplaçant un de ses ancêtres.
+    
+    ARGUMENTS
+    ---------
+    - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    - old_ancestor (tuple) : clé d'un dictionnaire de widgets
+    (WidgetsDict), présumée être une clé ancêtre de key.
+    - new_ancestor (tuple) : clé d'un dictionnaire de widgets
+    (WidgetsDict) à substituer à old_ancestor.
+    
+    old_ancestor et new_ancestor doivent appartenir à la
+    même génération.
+    
+    RESULTAT
+    --------
+    La clé (tuple) résultant de la substitution.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils.replace_ancestor((1, (2, (3, (0, )))), (3, (0, )), (4, (0, )))
+    (1, (2, (4, (0,))))
+    >>> rdf_utils.replace_ancestor((2, (3, (0, )), 'M'), (3, (0, )), (4, (0, )))
+    (2, (4, (0,)), 'M')
+    """
+    
+    if not is_ancestor(old_ancestor, key):
+        raise ValueError("Key {} is not {}'s ancestor.".format(old_ancestor, key))
+        
+    if is_older(old_ancestor, new_ancestor) or is_older(new_ancestor, old_ancestor):
+        raise ValueError("Keys {} and {} don't belong to the same generation.".format(
+                old_ancestor, new_ancestor))
+
+    if len(new_ancestor) == 3:
+        raise ValueError("M keys aren't allowed as ancestor.")
+
+    t = re.sub(re.escape(str(old_ancestor)) + r"([)]*(:?[,]\s[']M['][)])?)$", str(new_ancestor) + '\g<1>', str(key))
+
+    return eval(t)
+    
+    
+    
 
 class ForbiddenOperation(Exception):
     pass

@@ -10,7 +10,7 @@ from inspect import signature
 import re, uuid, unittest, json
 import rdf_utils, rdf_utils_debug
 
-class TestRDFUtilsMethods(unittest.TestCase):
+class TestRDFUtils(unittest.TestCase):
     
     def setUp(self):
     
@@ -30,20 +30,147 @@ class TestRDFUtilsMethods(unittest.TestCase):
         with open(r'exemples\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
             self.metagraph = rdf_utils.metagraph_from_pg_description(src.read(), self.shape)
 
-        # sérialisation de l'exemple sous forme de dictionnaire de widget
-        self.widgetsdict = rdf_utils.build_dict(self.metagraph, self.shape, self.vocabulary, template=self.template)
-        
-        # création de pseudo-widgets
-        self.widgetsdict[(0,)]['main widget'] = 'widget QGroupBox racine'
-        self.widgetsdict[(0,)]['grid widget'] = 'widget QGridLayout racine'
-        
-        # clé de l'enregistrement contenant le QGroupBox pour la couverture
-        # temporelle
+        # construction d'un dictionnaire de widgets à partir d'un graphe vierge
+        self.widgetsdict = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary)
+
+        # récupération de quelques clés
         for k, v in self.widgetsdict.items():
             if v['path'] == 'dct:temporal':
-                tck = k[1]
-                break
+                # clé du groupe de propriétés de la couverture temporelle
+                self.tck = k
+            elif v['path'] == 'dct:language':
+                # clé de la langue
+                self.lgk = k
+            elif v['path'] == 'dct:title':
+                # clé du libellé
+                self.ttk = k
+
+        # création de pseudo-widgets
+        rdf_utils_debug.populate_widgets(self.widgetsdict) 
+       
+
+
+    ### FONCTION WidgetsDict.child
+    ### -----------------------------------
+
+    def test_wd_child_1(self):
+        self.assertEqual(self.widgetsdict.child((0,))[1], (0,))
+
+    def test_wd_child_2(self):
+        self.assertEqual(self.widgetsdict.child(self.tck), (0, self.tck))
+
+
+    ### FONCTION WidgetsDict.count_siblings
+    ### -----------------------------------
+
+    def test_wd_count_siblings_1(self):
+        self.assertEqual(self.widgetsdict.count_siblings((0,)), 0)
+
+    def test_wd_count_siblings_2(self):
+        self.assertEqual(self.widgetsdict.count_siblings(self.tck), 1)
+        # groupe de propriétés
+
+    def test_wd_count_siblings_3(self):
+        self.assertEqual(self.widgetsdict.count_siblings(self.tck, restrict=False), 2)
+        # groupe de propriétés + bouton plus
+
+    def test_wd_count_siblings_4(self):
+        self.assertEqual(self.widgetsdict.count_siblings((0, self.tck)), 2)
+        # widgets de saisie pour dcat:endDate et dcat:startDate
+
+
+    ### FONCTION WidgetsDict.clean_copy
+    ### -------------------------------
+
+    # les clés widgets, actions et menus de la copie sont-elles bien vides ?
+    def test_wd_clean_copy_1(self):
+        c = self.widgetsdict.clean_copy(self.lgk)
+        for k in c.keys():
+            with self.subTest(key=k):
+                if k.endswith(('widget', 'actions', 'menu')):
+                    self.assertIsNone(c[k])
+
+    # la valeur est-elle bien réinitialisée ?
+    def test_wd_clean_copy_2(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d[self.lgk]['value'] = 'italien'
+        c = d.clean_copy(self.lgk)
+        self.assertEqual(c['value'], 'français')
+
+    # la langue est-elle bien réinitialisée ?
+    def test_wd_clean_copy_3(self):
+        c = self.widgetsdict.clean_copy(self.ttk, language='en')
+        self.assertEqual(c['language value'], 'en')
+
+    # ... mais pas pour les IRI ?
+    def test_wd_clean_copy_4(self):
+        c = self.widgetsdict.clean_copy(self.lgk, language='en')
+        self.assertIsNone(c['language value'])
+    
+
+    ### FONCTION is_older
+    ### ----------------
+    
+    def test_is_older_1(self):
+        self.assertTrue(rdf_utils.is_older((0, (0,)), (0, (1, (0,)))))
   
+    def test_is_older_2(self):
+        self.assertFalse(rdf_utils.is_older((0, (0,)), (1, (0,))))
+    
+    def test_is_older_3(self):
+        self.assertFalse(rdf_utils.is_older((0, (1, (0,))), (0, (0,))))
+    
+
+    ### FONCTION is_ancestor
+    ### -------------------
+    
+    def test_is_ancestor_1(self):
+        self.assertTrue(rdf_utils.is_ancestor((1, (2, (0,))), (8, (1, (2, (0,))))))
+    
+    def test_is_ancestor_2(self):
+        self.assertTrue(rdf_utils.is_ancestor((2, (0,)), (8, (1, (2, (0,))))))
+
+    def test_is_ancestor_3(self):
+        self.assertFalse(rdf_utils.is_ancestor((2, (0,)), (8, (1, (3, (0,))))))
+
+    def test_is_ancestor_4(self):
+        self.assertFalse(rdf_utils.is_ancestor((8, (1, (2, (0,)))), (2, (0,))))
+
+
+    ### FONCTION replace_ancestor
+    ### -------------------------
+    
+    def test_replace_ancestor_1(self):
+        with self.assertRaisesRegex(ValueError, 'ancestor'):
+            rdf_utils.replace_ancestor((1, (0,)), (2, (0,)), (3, (0,)))
+
+    def test_replace_ancestor_2(self):
+        with self.assertRaisesRegex(ValueError, 'generation'):
+            rdf_utils.replace_ancestor((2, (1, (0,))), (1, (0,)), (1, (1, (0,))))
+   
+    def test_replace_ancestor_3(self):
+        self.assertEqual(
+            rdf_utils.replace_ancestor((1, (2, (3, (0, )))), (3, (0, )), (4, (0, ))),
+            (1, (2, (4, (0,))))
+            )
+    
+    def test_replace_ancestor_4(self):
+        self.assertEqual(
+            rdf_utils.replace_ancestor((1, (2, (3, (0, )))), (2, (3, (0, ))), (3, (3, (0, )))),
+            (1, (3, (3, (0,))))
+            )
+    
+    # cas d'une clé M
+    def test_replace_ancestor_5(self):
+        self.assertEqual(
+            rdf_utils.replace_ancestor((2, (3, (0, )), 'M'), (3, (0, )), (4, (0, ))),
+            (2, (4, (0,)), 'M')
+            )
+
+    def test_replace_ancestor_7(self):
+        with self.assertRaisesRegex(ValueError, r'^M\s'):
+            rdf_utils.replace_ancestor((2, (1, (0,))), (1, (0,)), (3, (0, ), 'M'))
+    
     
     ### FONCTION WidgetsDict.parent_widget
     ### ----------------------------------
@@ -57,7 +184,7 @@ class TestRDFUtilsMethods(unittest.TestCase):
     def test_wd_parent_widget_2(self):
         self.assertEqual(
             self.widgetsdict.parent_widget((0,(0,))),
-            'widget QGroupBox racine'
+            '< (0,) main widget (QGroupBox) >'
             )
 
 
@@ -73,25 +200,22 @@ class TestRDFUtilsMethods(unittest.TestCase):
     def test_wd_parent_2(self):
         self.assertEqual(
             self.widgetsdict.parent_grid((0,(0,))),
-            'widget QGridLayout racine'
+            '< (0,) grid widget (QGridLayout) >'
             )
 
 
     ### FONCTION WidgetDict.drop
     ### ---------------------------
 
-    def test_wd_drop_1(self):
-        d = self.widgetsdict.copy()
-        d.drop(tck)
-        self.assertTrue(d.get(tck) is None)
+    # def test_wd_drop_1(self):
+        # d = self.widgetsdict.copy()
+        # d.drop(tck)
+        # self.assertTrue(d.get(tck) is None)
 
-    def test_wd_drop_2(self):
-        d = self.widgetsdict.copy()
-        d.drop(tck)
-        self.assertTrue([e for e in d.keys() if is_ancestor(tck, key)] == [])
-   
-    def test_wd_drop_3(self):
-        d = self.widgetsdict.copy()
+    # def test_wd_drop_2(self):
+        # d = self.widgetsdict.copy()
+        # d.drop(tck)
+        # self.assertTrue([e for e in d.keys() if is_ancestor(tck, key)] == [])
 
 
     ### FONCTION concept_from_value

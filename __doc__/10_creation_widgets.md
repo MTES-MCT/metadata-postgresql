@@ -69,7 +69,7 @@ widgetsDict[key]['main widget'].setToolTip(widgetsDict[key]['help text'])
 
 ### Paramètres spécifiques aux widgets QToolButton
 
-Le seul cas où le widget principal est un QToolButton est celui du "bouton plus", qui permet à l'utilisateur d'ajouter des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'`.
+Les seuls cas où le widget principal est un QToolButton sont ceux des "boutons plus" et "boutons de traduction", qui permettent à l'utilisateur d'ajouter réciproquement des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'` ou `'translation button'`.
 
 L'action associée à ce QToolButton sera stockée dans la clé `'main action'` du dictionnaire.
 
@@ -81,6 +81,13 @@ widgetsDict[key]['main action']
 
 *Pour la définition de l'action, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-plus).*
 
+Il arrive que les boutons de traduction doivent être masqués, parce qu'une traduction a déjà été saisie pour chacune des langues autorisées. Dans ce cas, la clé `'hidden'` vaut `True`.
+
+```python
+
+widgetsDict[key]['hidden']
+
+```
 
 ### Paramètres spécifiques aux widgets de saisie
 
@@ -392,8 +399,6 @@ widgetsDict[key]['switch source actions']
 
 ```
 
-À noter que la clé `'switch source actions'` est initialisée par une liste vide (et non `None`) pour faciliter l'ajout des actions.
-
 Les libellés des QAction correspondent aux noms des thésaurus et sont fournis par la liste contenue dans la clé `'sources'` du dictionnaire :
 
 ```python
@@ -485,8 +490,6 @@ widgetsDict[key]['language actions']
 
 ```
 
-À noter que la clé `'language actions'` est initialisée par une liste vide (et non `None`) pour faciliter l'ajout des actions.
-
 Les libellés des QAction correspondent aux noms abrégés des langues et sont fournis par la liste contenue dans la clé `'authorized languages'` du dictionnaire :
 
 ```python
@@ -536,7 +539,15 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs précédemment saisies.
 
-Un tel widget doit être créé dès lors que la condition suivante est vérifiée :
+Un tel widget doit être créé dès lors que le widget appartient à un groupe de valeurs ou groupe de traduction, soit quand :
+
+```python
+
+len(key) > 1 and widgetsDict[key[1]]['object'] in ('translation group', 'group of values')
+
+```
+
+Il ne devra cependant être affiché que si la condition suivante est vérifiée :
 
 ```python
 

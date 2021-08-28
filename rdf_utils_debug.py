@@ -48,12 +48,12 @@ def check_unchanged(graph, shape, vocabulary, language="fr", *args):
     
     
 
-def check_rows(widgetsDict):
+def check_rows(widgetsdict):
     """Check if row keys of given widget dictionnary are consistent.
 
     ARGUMENTS
     ---------
-    - widgetsDict (dict) : dictionnaire obtenu par exécution de la
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
     fonction build_dict.
     
     RESULTAT
@@ -82,7 +82,7 @@ def check_rows(widgetsDict):
     issues = {}
     n = 0
     
-    for k, c in widgetsDict.items():
+    for k, c in widgetsdict.items():
     
         if 'group' in c['object'] and not k in idx:
             idx.update( { k : [] } )
@@ -106,7 +106,7 @@ def check_rows(widgetsDict):
             continue
             
         if len(k) == 3:
-            if not widgetsDict.get( (k[0], k[1]), { 'row' : None } )['row'] == c['row']:
+            if not widgetsdict.get( (k[0], k[1]), { 'row' : None } )['row'] == c['row']:
                 issues.update( { n : (k, 'misplaced M widget') } )
                 n += 1
             continue
@@ -143,6 +143,41 @@ def check_rows(widgetsDict):
             
     if issues:
         return issues
+   
+
+def populate_widgets(widgetsdict):
+    """Populate a WidgetsDict with false widgets.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    
+    RESULTAT
+    --------
+    Pas de valeur renvoyée.
+    """
+    for k, v in widgetsdict.items():
+    
+        widgetsdict[k]['main widget'] = '< {} main widget ({}) >'.format(k, widgetsdict[k]['main widget type'])
+        
+        if len(k) > 1 and widgetsdict[k[1]]['object'] in ('translation group', 'group of values'):
+            widgetsdict[k]['minus widget'] = '< {} minus widget (QToolButton) >'.format(k)
+        
+        if widgetsdict[k]['authorized languages']:
+            widgetsdict[k]['language widget'] = '< {} language widget (QToolButton) >'.format(k)
+            widgetsdict[k]['language menu'] = '< {} language menu (QMenu) >'.format(k)
+            widgetsdict[k]['language actions'] = ['< {} language actions (QAction) >'.format(k)]
             
-        
-        
+        if widgetsdict[k]['label'] and widgetsdict[k]['object']=='edit':
+            widgetsdict[k]['label widget'] = '< {} label widget (QLabel) >'.format(k)
+
+        if 'group' in widgetsdict[k]['object']:
+            widgetsdict[k]['grid widget'] = '< {} grid widget (QGridLayout) >'.format(k)
+
+        if widgetsdict[k]['multiple sources']:
+            widgetsdict[k]['switch source widget'] = '< {} switch source widget (QToolButton) >'.format(k)
+            widgetsdict[k]['switch source menu'] = '< {} switch source menu (QMenu) >'.format(k)
+            widgetsdict[k]['switch source actions'] = ['< {} switch source actions (QAction) >'.format(k)]
+            
+

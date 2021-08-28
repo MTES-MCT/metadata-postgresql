@@ -31,12 +31,15 @@ with open(r'exemples\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
 # constitution du dictionnaire
 #d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary)
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary)
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True)
+d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True, langList=['fr'])
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary, mode='read')
-d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template)
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary, hideUnlisted=True)
 #d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary, template=d_template)
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True, translation=True)
+
+rdf_utils_debug.populate_widgets(d)
 
 g1 = d.build_graph(g_vocabulary)
 
@@ -57,7 +60,7 @@ def print_graph(graph):
 
 
 
-def print_dict(widgetsDict, hideNone=True, limit=5):
+def print_dict(widgetsDict, hideNone=True, limit=5, branch=None):
     """Show detailled contents from widgetDict.
     
     ARGUMENTS
@@ -67,36 +70,38 @@ def print_dict(widgetsDict, hideNone=True, limit=5):
     - [optionne] hideNone (bool) : True si les clés vides doivent être imprimées
     (par défaut False).
     - [optionnel] limit (int) : nombre maximal de clés à imprimer. Par défaut 5.
+    - [optionnel] branch (tuple) : clé dont ne souhaite afficher qu'elle et
+    ses descendants éventuels.
     
     EXEMPLES
     --------
     >>> printDict(d)
     >>> printDict(d, hideNone = False)
+    >>> print_dict(d, branch=(0, (0,)))
     """
     n = limit
 
     print("{")
 
     for k, v in widgetsDict.items():
+
+        if branch is None or k == branch or rdf_utils.is_ancestor(branch, k):
             
-        print(" " * 4 + "{} : {{".format(k))
-        
-        l = len([ e for e, s in v.items() if s ]) if hideNone else len(v)
+            print(" " * 4 + "{} : {{".format(k))
             
-        for k1, v1 in v.items():
-            if v1:
-                print(" " * 8 + "{!r} : {!r}{}".format(k1, v1, ',' if l > 1 else ''))
-                l -= 1
-            elif not hideNone:
-                print(" " * 8 + "{!r} : {!r}{}".format(k1, v1, ',' if l > 1 else ''))
-                l -= 1            
+            l = len([ e for e, s in v.items() if s ]) if hideNone else len(v)
+                
+            for k1, v1 in v.items():
+                if v1 is not None or not hideNone:
+                    print(" " * 8 + "{!r} : {!r}{}".format(k1, v1, ',' if l > 1 else ''))
+                    l -= 1           
 
-        print(" " * 4 + "}}{}".format(',' if n > 1 else ''))
+            print(" " * 4 + "}}{}".format(',' if n > 1 else ''))
 
-        n -= 1
+            n -= 1
 
-        if n == 0:
-            break
+            if n == 0:
+                break
 
     print("}")
 
@@ -122,7 +127,7 @@ def pseudo_form(widgetsDict):
     
     for k, v in widgetsDict.items():
 
-        if v['row'] is None:
+        if v['row'] is None or v['hidden']:
             continue
 
         m = c
