@@ -181,3 +181,5 @@ def populate_widgets(widgetsdict):
             widgetsdict[k]['switch source actions'] = ['< {} switch source actions (QAction) >'.format(k)]
             
 
+
+

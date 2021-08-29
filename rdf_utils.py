@@ -138,8 +138,8 @@ class WidgetsDict(dict):
             
             'value' : d['default value'],
             'language value' : language if d['language value'] else None,
-            'authorized languages' : langList.copy() if d['authorized languages'] \
-                                     and langList is not None else None,
+            'authorized languages' : langList.copy() if ( d['authorized languages'] \
+                                     and langList is not None ) else None,
             'sources' : d['sources'].copy() if d['sources'] is not None else None   
             })
         
@@ -371,7 +371,7 @@ class WidgetsDict(dict):
         Un dictionnaire ainsi constitué :
         {
         "widgets to show" : [liste des widgets masqués à afficher (QWidget)],
-        "widgets to hide' : [liste de widgets à masquer (QWidget)],
+        "widgets to hide" : [liste de widgets à masquer (QWidget)],
         "language menu to update" : [liste de clés (tuples) pour lesquelles
         le menu des langues devra être régénéré],
         "new keys" : [liste des nouvelles clés du dictionnaire (tuple)]
@@ -415,45 +415,48 @@ class WidgetsDict(dict):
         self[key]['next child row'] += 1
         
         # dans le cas d'un groupe de traduction, on écrase
-        # les paramètres langList et language
+        # les paramètres mLangList et language
         if self[key]['object'] == 'translation button':
         
-            langList = self[c]['authorized languages'].copy()
+            mLangList = self[c]['authorized languages'].copy()
             
-            if self[c]['language value'] in langList:
-                langList.remove(self[c]['language value'])
+            if self[c]['language value'] in mLangList:
+                mLangList.remove(self[c]['language value'])
                 # on retire cette langue puisqu'elle est déjà utilisée
                 
-            if len(langList) == 0:
+            if len(mLangList) == 0:
                 raise RuntimeError('No more available language for translation.')
             
             # arbitrairement, on considère que la langue
             # initialement affichée pour la nouvelle
             # valeur sera la première de la liste des
             # langues disponibles
-            language = langList[0]
+            language = mLangList[0]
             
             # cas où la langue que l'on utilise était la
             # dernière disponible - dans ce cas on masque
             # le bouton de traduction pour empêcher d'autres
             # ajouts
-            if len(langList) == 1:
+            if len(mLangList) == 1:
                 self[key]['hidden'] = True
                 w = self[key]['main widget']
                 if w:
                     d["widgets to hide"].append(w)
+                    
+        else:
+            mLangList = langList.copy()
         
         k1 = (n, key[1]) if len(c) == 2 else (n, key[1], 'M')
         k2 = (n, key[1], 'M') if len(c) == 2 else (n, key[1])
         cm = (c[0], c[1], 'M') if len(c) == 2 else (c[0], c[1])
         
-        self.update( { k1: self.clean_copy(c, language, langList) } )   
+        self.update( { k1: self.clean_copy(c, language, mLangList) } )   
         self[k1]['row'] = r
         d['new keys'].append(k1)
         
         # cas d'un enregistrement avec un double M               
         if cm in self:
-            self.update( { k2: self.clean_copy(cm, language, langList) } )   
+            self.update( { k2: self.clean_copy(cm, language, mLangList) } )   
             self[k2]['row'] = r
             d['new keys'].append(k2)
         
@@ -466,15 +469,13 @@ class WidgetsDict(dict):
                 # on vient d'ajouter un enregistrement au groupe,
                 # donc il y a lieu d'ajouter des boutons moins
                 # s'ils n'étaient pas déjà là
-                if self[k]['has minus button']:
-                    continue
-                else:
+                if not self[k]['has minus button']:
                     self[k]['has minus button'] = True                     
                     w = self[k]['minus widget']
                     if w:
                         d["widgets to show"].append(w)
                 
-                # dans le cas d'un groupe de traduction,
+                # dans le cas d'un ajout de traduction,
                 # on supprime language des listes de langues
                 # autorisées des frères et soeurs
                 if self[key]['object'] == 'translation button' and not k in (k1, k2) :
@@ -503,11 +504,262 @@ class WidgetsDict(dict):
         return d
 
 
-    def change_language(self, language):
-        pass  
+    def change_language(self, key, language, langList=['fr', 'en']):
+        """Change la langue sélectionnée pour une clé.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets, et plus
+        précisément la clé pour laquelle l'utilisateur vient de
+        choisir une nouvelle langue.
+        - language (str) : la nouvelle langue.
+        - [optionnel] langList (list) : paramètre utilisateur, liste des
+        langues autorisées pour les traductions (str). Par défaut
+        français et anglais, soit ['fr', 'en'].
+        
+        RESULTAT
+        --------
+        Un dictionnaire ainsi constitué :
+        {
+        "language menu to update" : [liste de clés (tuples) pour lesquelles
+        le menu des langues devra être régénéré],
+        "widgets to hide" : [liste de widgets à masquer (QWidget)]       
+        }
+        
+        EXEMPLES
+        --------
+        Pour déclarer que le libellée de la donnée est en anglais :
+        >>> d.change_language((0, (0, (0,))), 'en')
+        """
+        
+        if not self[key]['object'] == 'edit' \
+            or not self[key]['data type'] == URIRef('http://www.w3.org/2001/XMLSchema#string'):
+            raise ForbiddenOperation("You can't put a language tag on anything but a string !")
+            
+        if not self[key]['authorized languages'] \
+            or not language in self[key]['authorized languages']:
+            raise ForbiddenOperation("{} isn't an authorized language for key {}.".format(language, key))
+        
+        d = {
+            "language menu to update": [],
+            "widgets to hide" : []
+            }
+        
+        # ancienne langue
+        old_language = self[key]['language value']
+        
+        if language == old_language:
+            return d
+        
+        b = old_language and old_language in langList
+        if ( not b ) and old_language in self[key]['authorized languages']:
+            self[key]['authorized languages'].remove(old_language)
+            # si la langue de fait n'était pas autorisée,
+            # on la supprime du menu maintenant qu'elle n'est
+            # plus utilisée  
+        
+        # mise à jour de la langue courante pour key
+        self[key]['language value'] = language
+        d["language menu to update"].append(key)
+                
+        # dans le cas d'un groupe de traduction,
+        # mise à jour des menus des frères et soeurs
+        if len(key) > 1 and self[key[1]]['object'] == 'translation group':
+            for k in self.keys():
+                if len(k) > 1 and key[1] == k[1] and not key == k:
+                
+                    if self[k]['object'] == 'edit':
+                
+                        if language in self[k]['authorized languages']:
+                            self[k]['authorized languages'].remove(language)
+                            d["language menu to update"].append(k)
+                            
+                        if b and not old_language in self[k]['authorized languages']:
+                            self[k]['authorized languages'].append(old_language)
+                            self[k]['authorized languages'].sort()
+                            if not k in d["language menu to update"]:
+                                d["language menu to update"].append(k)
+                                
+                    elif self[k]['object'] == 'translation button' \
+                        and len(self[key]['authorized languages']) == 1:
+                        # s'il ne reste aucune langue non utilisée (peut
+                        # arriver si l'ancienne langue n'était pas autorisée
+                        # et n'a donc pas été remise en jeu), on masque
+                        # le bouton de traduction
+                        self[k]['hidden'] = True
+                        w = self[k]['main widget']
+                        if w:
+                            d["widgets to hide"].append(w)
+                        
+        return d  
+
     
-    
-    def change_source(self, source):
+    def change_source(self, key, source):
+        """Change le thésaurus sélectionné pour une clé.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets, et plus
+        précisément la clé pour laquelle l'utilisateur vient de
+        choisir une nouvelle langue.
+        - source (str) : nom de la nouvelle source, qui pourra être soit
+        un nom de thésaurus soit "< URI >" pour un URI sans thésaurus
+        associé, soit "< manuel >" pour basculer en saisie manuelle.
+        
+        RESULTAT
+        --------
+        Un dictionnaire ainsi constitué :
+        {
+        "sources list to update" : [liste de clés (tuples) pour lesquelles
+        la liste des sources devra être régénérée],
+        "switch source menu to update" : [liste de clés (tuples) pour
+        lesquelles le menu de gestion de la source est à actualiser],
+        "widgets to hide" : [liste de widgets à masquer (QWidget)],
+        "widgets to show" : [liste de widgets masqués à afficher (QWidget)] 
+        }
+        
+        EXEMPLES
+        --------
+        Pour définir manuellement la licence :
+        >>> d.change_source((3, (0, (11, (0,)))), "< manuel >")
+        """
+        
+        d = {
+            "sources list to update" : [],
+            "switch source menu to update" : [],
+            "widgets to hide" : [],
+            "widgets to show" : []
+            }
+            
+        khide = None
+        kshow = None
+        
+        old_source = self[key]['current source']
+        
+        # la nouvelle source est identique à l'ancienne :
+        if source == old_source:
+            return d
+        
+        if not self[key]['multiple sources']:
+            raise ForbiddenOperation("Key {} doesn't provide multiple sources.".format(key))
+            
+        if not self[key]['sources'] \
+            or not source in self[key]['sources']:
+            raise ValueError('Unknown source "{}" for key {}.'.format(source, key))
+            
+        if old_source == '< non répertorié >':
+            # on se hâte de faire disparaître cette option
+            # du menu
+            if old_source in self[key]['sources']:
+                self[key]['sources'].remove(old_source)
+                d["switch source menu to update"].append(key)
+            
+        if source == '< manuel >':
+        
+            mkey = (key[0], key[1], 'M')
+        
+            if not len(key) == 2 or not mkey in self:
+                raise RuntimeError("Manuel mode doesn't seem implemented for key {} (M key not found).".format(key))
+            
+            self[key]['current source'] = None
+            self[mkey]['current source'] = source
+            
+            self[key]['value'] = None
+            
+            self[key]['hidden M'] = True
+            self[mkey]['hidden M'] = False
+            
+            for e in ('main widget', 'grid widget', 'label widget', 'minus widget',
+                      'language widget', 'switch source widget'):
+                      
+                w = self[key][e]
+                if w:
+                    d["widgets to hide"].append(w)
+                
+                w = self[mkey][e]
+                if w:
+                    d["widgets to show"].append(w)
+
+            kshow = mkey
+            
+            
+        elif old_source == '< manuel >':
+            
+            ukey = (key[0], key[1])
+        
+            if not len(key) == 3 or not ukey in self:
+                raise RuntimeError("URI mode doesn't seem implemented for key {} (no-M key not found).".format(key))
+            
+            self[key]['current source'] = None
+            self[ukey]['current source'] = source
+            
+            # NB : on ne supprime pas les valeurs des branches M masquées, pour
+            # éviter à l'utilisateur d'avoir à les resaisir s'il change d'avis.
+            # Elles ne seront évidemment pas sauvegardées par build_graph.
+            
+            self[key]['hidden M'] = True
+            self[ukey]['hidden M'] = False
+            
+            for e in ('main widget', 'grid widget', 'label widget', 'minus widget',
+                      'language widget', 'switch source widget'):
+                      
+                w = self[key][e]
+                if w:
+                    d["widgets to hide"].append(w)
+                
+                w = self[ukey][e]
+                if w:
+                    d["widgets to show"].append(w)
+
+            khide = key
+            
+            if not source == '< URI >':
+                d["sources list to update"].append(ukey)
+            
+        else:
+            # cas d'un simple changement de thésaurus
+            self[key]['current source'] = source
+            self[key]['value'] = None
+            d["sources list to update"].append(key)   
+        
+        if kshow or khide:
+            for k in self.keys():
+            # le cas échéant, on boucle sur les descendants pour
+            # masquer/afficher le reste de la branche M
+            
+                if kshow and is_ancestor(kshow, k) and not (
+                    self[key]['object'] == 'translation button'
+                    and self[key]['hidden']
+                    ):
+                    # ATTENTION ! Ne fonctionnerait pas si
+                    # on commençait à avoir des branches M non
+                    # affichées dans une branche M affichée...
+                    # Mais ça ne peut pas arriver avec GeoDCAT
+                    # dans sa forme actuelle.
+                    self[k]['hidden M'] = False
+
+                    for e in ('main widget', 'grid widget', 'label widget', 'minus widget',
+                      'language widget', 'switch source widget'):                
+                        w = self[k][e]
+                        if w and (e != 'minus widget' or self[k]['has minus button']):
+                            d["widgets to show"].append(w)
+                            
+                     
+                if khide and is_ancestor(khide, k):
+                    self[k]['hidden M'] = True
+                    
+                    for e in ('main widget', 'grid widget', 'label widget', 'minus widget',
+                      'language widget', 'switch source widget'):                
+                        w = self[k][e]
+                        if w:
+                            d["widgets to hide"].append(w)
+                        
+
+        
+        return d
+
+
+    def update_value(self, value):
         pass
 
 
@@ -530,7 +782,16 @@ class WidgetsDict(dict):
         graph = Graph()
         mem = None
         
-        for k, d in self.items():
+        l = sorted(self.keys(), key=key_alias)
+        # liste des clés du graphe, ordonnée de telle
+        # façon que les enfants apparaissent immédiatement
+        # après leur parent (ce qui est l'ordre naturel
+        # du dictionnaire, mais les ajouts et suppressions
+        # de clés remettent ça en cause)
+        
+        for k in l:
+        
+            d = self[k]
         
             mObject = None
             
@@ -542,8 +803,23 @@ class WidgetsDict(dict):
                 # n'est pas immédiatement créé, au cas où il n'y aurait
                 # pas de métadonnées associées
                 
+                # ... sauf dans le cas du noeud racine, qui est porteur
+                # de l'identifiant, donc créé quoi qu'il arrive
+                if k == (0,):
+                    graph.update("""
+                        INSERT
+                            { ?n a ?c }
+                        WHERE
+                            { }
+                    """,
+                    initBindings = {
+                        'n' : mem[2],
+                        'c' : mem[3]
+                        }
+                    )
+                    mem = None
                 
-            elif d['value'] in [None, '']:
+            elif d['value'] in [None, ''] or d['hidden M']:
                 continue
                     
             else:
@@ -612,13 +888,37 @@ class WidgetsDict(dict):
         return graph
 
 
+    def replace_uuid(self, new_uuid):
+        """Replace widgets dictionnary identifier by a new UUID.
+        
+        ARGUMENTS
+        ---------
+        - new_uuid (str ou URIRef) : nouvel UUID pour substitution.
+        
+        RESULTAT
+        --------
+        Pas de valeur renvoyée.
+        
+        EXEMPLES
+        --------
+        >>> d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        """
+        n = URIRef(new_uuid)
+        o = self[(0,)]['node']
+        self[(0,)]['node'] = n
+
+        for k, v in self.items():
+            if v['subject'] == o:
+                v['subject'] = n
+
+
 
 def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHideBlank=True,
     hideUnlisted=False, language="fr", translation=False, langList=['fr', 'en'],
     labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
-    mShallowTemplate=None, mTemplateEmpty=None, mHidden=None):
+    mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
     ARGUMENTS
@@ -793,9 +1093,12 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
     stockée dans le dictionnaire, mais peut être obtenue via la fonction build_vocabulary.
     - 'read only' : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
     l'utilisateur. En mode lecture, 'read only' vaut toujours True.
-    - 'hidden' : booléen valant True si le widget principal doit être masqué. Concerne uniquement
+    - 'hidden' : booléen. Si True, le widget principal doit être masqué. Concerne
     les boutons de traduction, lorsque toutes les langues disponibles (cf. langList) ont été
     utilisées.
+    - 'hidden M' : booléen. Si True, le widget principal doit être masqué. Concerne les branches
+    M/non M (qui permettent de saisir une métadonnées soit sous forme d'IRI soit sous forme d'un
+    ensemble de propriétés littérales) lorsque l'autre forme est utilisée.
 
     La dernière série de clés ne sert qu'aux fonctions de rdf_utils : 'default value'* (valeur par
     défaut), 'node kind', 'data type'**, 'class', 'path'***, 'subject', 'predicate', 'node',
@@ -898,6 +1201,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             'authorized languages' : None,
             'read only' : None,
             'hidden' : None,
+            'hidden M' : None,
             
             'default value' : None,
             'multiple values' : None,
@@ -1101,7 +1405,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     'main widget type' : 'QGroupBox',
                     'row' : rowidx[mParent],
                     'label' : t.get('label', None) or str(p['name']),
-                    'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None )
+                    'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ),
+                    'hidden M' : mHideM
                     } )
 
                 idx[mParent] += 1
@@ -1129,6 +1434,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             mValue = None
             mCurSource = None
             mVSources = mSources.copy() if mSources is not None else None
+            mVHideM = None
             mVLangList = mLangList.copy() if mLangList is not None else None
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
                         mKind == 'sh:Literal' and p['type'].n3(nsm) == 'xsd:string' ) else None
@@ -1165,6 +1471,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     if mKind == 'sh:BlankNodeOrIRI':
                         mVSources = ( mVSources + [ "< manuel >" ] ) if mVSources else [ "< URI >", "< manuel >" ]
                         mCurSource = "< manuel >" if isinstance(mValueBrut, BNode) else None
+                    
+                    # cas d'un double M quand la source "< manuel >" n'est pas sélectionnée
+                    # on voudra créer les widgets, mais ils ne seront affichés que si
+                    # l'utilisateur bascule sur "< manuel >".
+                    mVHideM = mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None )
 
                     mWidget = ( idx[mParent], mParent, 'M' ) if mKind == 'sh:BlankNodeOrIRI' else ( idx[mParent], mParent )
                     mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
@@ -1184,7 +1495,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                         'node' : mNode,
                         'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
                         'current source' : mCurSource,
-                        'sources' : mVSources
+                        'sources' : mVSources,
+                        'hidden M' : mVHideM
                         } )
 
                     if mKind == 'sh:BlankNode':
@@ -1200,7 +1512,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                         language, translation, langList, labelLengthLimit, valueLengthLimit,
                         textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager,
                         mWidgetDictTemplate, mDict, mNGraphEmpty, mShallowTemplate, mTemplateEmpty,
-                        mNHidden
+                        mNHidden, mVHideM
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -1238,7 +1550,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                 if  multilingual and translation and mLanguage:
                     mVLangList = mVLangList + [ mLanguage ] if not mLanguage in mVLangList else mVLangList
                 elif translation and mLanguage:
-                    mVLangList = [ mLanguage ] + ( langList or [] ) if not mLanguage in ( langList or [] ) else langList
+                    mVLangList = [ mLanguage ] + ( langList or [] ) if not mLanguage in ( langList or [] ) else langList.copy()
                 
                 # cas d'une catégorie qui tire ses valeurs d'une
                 # ontologie : on récupère le label à afficher
@@ -1251,8 +1563,13 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     mCurSource = mDefaultSource
 
                 if mVSources and ( mCurSource is None ):
-                    # cas où la valeur n'était pas renseignée - ou n'est pas un IRI
-                    mCurSource = '< non répertorié >' if mValueBrut else mVSources[0]
+                # cas où la valeur n'était pas renseignée - ou n'est pas un IRI
+                    if "< URI >" in mVSources:
+                        # cas où l'utilisateur a le choix entre le mode manuel
+                        # et des URI en saisie libre
+                        mCurSource = "< URI >"
+                    else:
+                        mCurSource = '< non répertorié >' if mValueBrut else mVSources[0]
 
                 elif mCurSource == "< manuel >":
                     mCurSource = None               
@@ -1278,7 +1595,13 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
 
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
-
+                
+                if mWidgetType == "QComboBox" and mCurSource == '< URI >':
+                    mWidgetType = "QLineEdit"
+                    # le schéma SHACL prévoira généralement un QComboBox
+                    # pour les URI, mais on est dans un cas où, pour on ne sait quelle
+                    # raison, aucun thésaurus n'est disponible
+                
                 if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
                     mLabelRow = rowidx[mParent]
                     rowidx[mParent] += 1
@@ -1319,7 +1642,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                     'sources' : ( mVSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mVSources,
                     'one per language' : multilingual and translation,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
-                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False))
+                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
+                    'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None )
                     } )
                 
                 idx[mParent] += 1
@@ -1336,7 +1660,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                 'row' : rowidx[mParent],
                 'next child' : idx[mParent] + 1,
                 'next child row' : rowidx[mParent] + 1,
-                'hidden' : len(mVLangList) == 1 if multilingual else None
+                'hidden M' : mHideM,
+                'hidden' :  len(mVLangList) == 1 if multilingual else None
                 } )
             
             idx[mParent] += 1
@@ -1751,13 +2076,19 @@ def build_vocabulary(schemeStr, vocabulary, language="fr"):
 
     EXEMPLES
     --------
-    >>> build_vocabulary("Thèmes de données (UE)", vocabulary)
+    >>> build_vocabulary("Thème de données (UE)", vocabulary)
     ['Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
     'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement',
     'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique',
     'Population et société', 'Questions internationales', 'Régions et villes', 'Santé',
     'Science et technologie', 'Transports']
     """
+    
+    vocabulary.namespace_manager.bind(
+        'skos',
+        URIRef('http://www.w3.org/2004/02/skos/core#'),
+        override=True, replace=True
+        )
     
     q_vc = vocabulary.query(
         """
@@ -1853,7 +2184,6 @@ def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
     return ( None, None )
 
 
-
 def value_from_concept(conceptIRI, vocabulary, language="fr"):
     """Return the skos:prefLabel strings matching given conceptIRI and its scheme.
 
@@ -1933,7 +2263,6 @@ def value_from_concept(conceptIRI, vocabulary, language="fr"):
     return ( None, None )
     
 
-
 def email_from_owlthing(thingIRI):
     """Return a string human-readable version of an owl:Thing IRI representing an email adress.
 
@@ -1960,7 +2289,6 @@ def email_from_owlthing(thingIRI):
     # str(thingIRI).removeprefix("mailto:") serait plus élégant
     
     return re.sub("^mailto[:]", "", str(thingIRI))
-
 
 
 def owlthing_from_email(emailStr):
@@ -2191,7 +2519,25 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
     return eval(t)
     
     
+def key_alias(key):
+    """Forme alternative de key où les ancêtres apparaissent au début.
     
+    ARGUMENTS
+    ---------
+    - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    
+    RESULTAT
+    --------
+    Une chaîne de caractères (str) correspondant à la clé "retournée".
+    
+    NB : Les clés M ont le même alias que leurs équivalents non M, ce
+    qui est sans importance pour build_graph, puisqu'il n'y a jamais
+    lieu de considérer les deux en même temps.
+    """
+    l = re.findall(r'[0-9]+', str(key))
+    l.reverse()
+    return [int(x) for x in l]
+
 
 class ForbiddenOperation(Exception):
     pass

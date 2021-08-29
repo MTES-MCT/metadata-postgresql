@@ -23,7 +23,7 @@ widgetsDict[key]['main widget type']
 
 ```
 
-Si `'main widget type'` ne contient aucune valeur, il n'y a pas lieu de créer de widget. Il s'agit de catégories de métadonnées non répertoriées dans le modèle de formulaire (template), et qui ne doivent donc pas être affichées, mais qui contiennent des valeurs qu'il n'est pas question de perdre.
+**Si `'main widget type'` ne contient aucune valeur, il n'y a pas lieu de créer de widget.** Il s'agit de catégories de métadonnées non répertoriées dans le modèle de formulaire (template), et qui ne doivent donc pas être affichées, mais qui contiennent des valeurs qu'il n'est pas question de perdre.
 
 ### Stockage
 
@@ -44,6 +44,18 @@ Par exemple, si `key` vaut `(2, (5, (0,)))`,  son parent est le widget principal
 ```python
 
 widgetsDict[key[1]]['main widget']
+
+```
+
+### Widget masqué ?
+
+Certains widgets seront à masquer ou afficher selon les actions de l'utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu'une métadonnée peut être saisie au choix sous la forme d'un URI ou d'un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l'utilisateur ne décide pas de changer de forme.
+
+Concrètement, le widget principal et tous les widgets annexes d'un enregistrement devront être masqués dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+
+```python
+
+widgetsDict[key]['hidden'] or widgetsDict[key]['hidden M']
 
 ```
 
@@ -80,14 +92,6 @@ widgetsDict[key]['main action']
 ```
 
 *Pour la définition de l'action, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-plus).*
-
-Il arrive que les boutons de traduction doivent être masqués, parce qu'une traduction a déjà été saisie pour chacune des langues autorisées. Dans ce cas, la clé `'hidden'` vaut `True`.
-
-```python
-
-widgetsDict[key]['hidden']
-
-```
 
 ### Paramètres spécifiques aux widgets de saisie
 
@@ -183,11 +187,11 @@ widgetsDict[key]['main widget'].setValidator(
 
 ### Paramètres spécifiques aux widgets QComboBox
 
-- Pour obtenir la **liste des termes** à afficher dans le QComboBox, on utilisera la fonction `getVocabulary()`. La clé `'current source'` contient le nom du thésaurus à utiliser.
+- Pour obtenir la **liste des termes** à afficher dans le QComboBox, on utilisera la fonction `build_vocabulary()`. La clé `'current source'` contient le nom du thésaurus à utiliser.
 
 ```python
 
-getVocabulary(widgetsDict[key]['current source'], vocabulary, language)
+thesaurus = build_vocabulary(widgetsDict[key]['current source'], vocabulary, language)
 
 ```
 

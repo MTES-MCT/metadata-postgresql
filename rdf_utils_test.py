@@ -17,6 +17,7 @@ class TestRDFUtils(unittest.TestCase):
         # import du schéma SHACL qui décrit les métadonnées communes
         with open(r'modeles\shape.ttl', encoding='UTF-8') as src:
             self.shape = Graph().parse(data=src.read(), format='turtle')
+        self.nsm = self.shape.namespace_manager
         
         # vocabulaire - ontologies utilisées par les métadonnées communes
         with open(r'modeles\vocabulary.ttl', encoding='UTF-8') as src:
@@ -31,27 +32,219 @@ class TestRDFUtils(unittest.TestCase):
             self.metagraph = rdf_utils.metagraph_from_pg_description(src.read(), self.shape)
 
         # construction d'un dictionnaire de widgets à partir d'un graphe vierge
-        self.widgetsdict = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary)
+        self.widgetsdict = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            translation=True, langList=['fr', 'en', 'it']
+            )
 
         # récupération de quelques clés
+        self.ttk = None
+        self.tck = None
         for k, v in self.widgetsdict.items():
             if v['path'] == 'dct:temporal':
                 # clé du groupe de propriétés de la couverture temporelle
                 self.tck = k
+            elif self.tck and len(k) > 1 and k[1]==self.tck[1] \
+                    and v['object'] == 'plus button':
+                # bouton plus pour la couverture temporelle
+                self.tck_plus = k
             elif v['path'] == 'dct:language':
                 # clé de la langue
                 self.lgk = k
             elif v['path'] == 'dct:title':
                 # clé du libellé
                 self.ttk = k
+            elif self.ttk and len(k) > 1 and k[1]==self.ttk[1] \
+                    and v['object'] == 'translation button':
+                # bouton de traduction du libellé
+                self.ttk_plus = k
+            elif v['path'] == 'dct:modified':
+                # clé de la date de création
+                self.mdk = k
 
         # création de pseudo-widgets
         rdf_utils_debug.populate_widgets(self.widgetsdict) 
        
 
+    ### FONCTION forbidden_char
+    ### -----------------------
+
+    def test_forbidden_char_1(self):
+        for c in r'<>" {}|\^`':
+            with self.subTest(char=c):
+                self.assertEqual(rdf_utils.forbidden_char(c), c)
+
+    def test_forbidden_char_2(self):
+        for c in "abcdefghijklmnopqrstuvwxyz" \
+                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
+                 "1234567890/#%":
+            with self.subTest(char=c):
+                self.assertIsNone(rdf_utils.forbidden_char(c))
+
+
+    ### FONCTION WidgetsDict.replace_uuid
+    ### ---------------------------------
+
+    def test_replace_uuid_1(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        g = d.build_graph(self.vocabulary)
+        q_id = g.query(
+            """
+            SELECT
+                ?id
+            WHERE
+                { ?id a dcat:Dataset . }
+            """,
+            initNs = {'dcat': URIRef('http://www.w3.org/ns/dcat#')}
+            )
+        self.assertEqual(len(q_id), 1)
+
+    def test_replace_uuid_2(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        g = d.build_graph(self.vocabulary)
+        q_id = g.query(
+            """
+            SELECT
+                ?id
+            WHERE
+                { ?id a dcat:Dataset . }
+            """,
+            initNs = {'dcat': URIRef('http://www.w3.org/ns/dcat#')}
+            )
+        for i in q_id:
+            with self.subTest(uuid=i):
+                self.assertEqual(
+                    i['id'],
+                    URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+                    )
+    
+
+    ### FONCTIONS WidgetsDict.add et WidgetsDict.drop
+    ### ---------------------------------------------
+
+    def test_wd_drop_1(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'outside.of.a.group'):
+            d.drop(self.mdk)        
+
+    def test_wd_drop_2(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'last.of.its.kind'):
+            d.drop(self.tck)
+
+    def test_wd_drop_3(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'root'):
+            d.drop((0,))
+
+    def test_wd_add_1(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'root'):
+            d.add((0,))
+
+    def test_wd_add_2(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(ValueError, 'plus.button'):
+            d.add(self.lgk)
+
+    def test_wd_add_3(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.add(self.ttk_plus)
+        d.add(self.ttk_plus)
+        # trois langues, donc trois traductions max et
+        # le bouton de traduction disparaît
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'hidden.button'):
+            d.add(self.ttk_plus)
+          
+    # def test_wd_drop_2(self):
+        # d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        # d.drop(tck)
+        # self.assertTrue([e for e in d.keys() if is_ancestor(tck, key)] == [])
+        #self.assertTrue(d.get(tck) is None)
+
+
+    ### FONCTION WidgetsDict.change_language
+    ### ------------------------------------
+
+    def test_wd_change_language_1(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        rdf_utils_debug.populate_widgets(d)
+        
+        a = d.add(self.ttk_plus)
+        rdf_utils_debug.populate_widgets(d)
+        self.assertEqual(d[self.ttk]['language value'], 'fr')
+        self.assertEqual(d[a["new keys"][0]]['language value'], 'en')
+        self.assertEqual(d[self.ttk]['authorized languages'], ['fr', 'it'])
+        self.assertEqual(d[a["new keys"][0]]['authorized languages'], ['en', 'it'])
+        
+        c = d.change_language(a["new keys"][0], 'it')
+        self.assertEqual(
+            sorted(c["language menu to update"]),
+            [self.ttk, a["new keys"][0]]
+            )
+        self.assertEqual(c["widgets to hide"], [])
+        self.assertEqual(d[self.ttk]['language value'], 'fr')
+        self.assertEqual(d[a["new keys"][0]]['language value'], 'it')
+        self.assertEqual(d[self.ttk]['authorized languages'], ['en', 'fr'])
+        self.assertEqual(d[a["new keys"][0]]['authorized languages'], ['en', 'it'])
+
+    def test_wd_change_language_2(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'authorized.language'):
+            d.change_language(self.ttk, 'es')
+
+    def test_wd_change_language_3(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'but.a.string'):
+            d.change_language(self.mdk, 'en')
+
+    # la nouvelle langue est identique à l'ancienne :
+    def test_wd_change_language_4(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        rdf_utils_debug.populate_widgets(d)
+        c = d.change_language(self.ttk, 'fr')
+        self.assertEqual(c["language menu to update"], [])
+        self.assertEqual(c["widgets to hide"], [])
+        
+    # cas d'une langue de fait non autorisée :
+    def test_wd_change_language_5(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        rdf_utils_debug.populate_widgets(d)
+        # modification manuelle de la langue
+        d[self.ttk]['language value'] = 'es'
+        d[self.ttk]['authorized languages'].append('es')
+        d[self.ttk]['authorized languages'].sort()
+        
+        a1 = d.add(self.ttk_plus)
+        rdf_utils_debug.populate_widgets(d)
+        self.assertEqual(d[a1["new keys"][0]]['language value'], 'en')
+        self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'fr', 'it'])
+        self.assertEqual(d[self.ttk]['authorized languages'], ['es', 'fr', 'it'])
+        a2 = d.add(self.ttk_plus)
+        rdf_utils_debug.populate_widgets(d)
+        self.assertEqual(d[a2["new keys"][0]]['language value'], 'fr')
+        self.assertEqual(d[a2["new keys"][0]]['authorized languages'], ['fr', 'it'])
+        self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'it'])
+        self.assertEqual(d[self.ttk]['authorized languages'], ['es', 'it'])
+        
+        c = d.change_language(self.ttk, 'it', langList=['en', 'fr', 'it'])
+        self.assertEqual(d[self.ttk]['language value'], 'it')
+        self.assertEqual(d[a1["new keys"][0]]['language value'], 'en')
+        self.assertEqual(d[a2["new keys"][0]]['language value'], 'fr')
+        self.assertEqual(d[self.ttk]['authorized languages'], ['it'])
+        self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en'])
+        self.assertEqual(d[a2["new keys"][0]]['authorized languages'], ['fr'])
+        self.assertEqual(
+            sorted(c["language menu to update"]),
+            [self.ttk, a1["new keys"][0], a2["new keys"][0]]
+            )
+        self.assertEqual(c["widgets to hide"], [d[self.ttk_plus]['main widget']])
+
 
     ### FONCTION WidgetsDict.child
-    ### -----------------------------------
+    ### --------------------------
 
     def test_wd_child_1(self):
         self.assertEqual(self.widgetsdict.child((0,))[1], (0,))
@@ -136,6 +329,15 @@ class TestRDFUtils(unittest.TestCase):
     def test_is_ancestor_4(self):
         self.assertFalse(rdf_utils.is_ancestor((8, (1, (2, (0,)))), (2, (0,))))
 
+    def test_is_ancestor_5(self):
+        self.assertTrue(rdf_utils.is_ancestor((2, (0,)), (8, (1, (2, (0,))), 'M')))
+
+    def test_is_ancestor_6(self):
+        self.assertTrue(rdf_utils.is_ancestor(
+            (3, (0, (11, (0,))), 'M'),
+            (0, (0, (3, (0, (11, (0,))), 'M')))
+            ))
+    
 
     ### FONCTION replace_ancestor
     ### -------------------------
@@ -202,20 +404,6 @@ class TestRDFUtils(unittest.TestCase):
             self.widgetsdict.parent_grid((0,(0,))),
             '< (0,) grid widget (QGridLayout) >'
             )
-
-
-    ### FONCTION WidgetDict.drop
-    ### ---------------------------
-
-    # def test_wd_drop_1(self):
-        # d = self.widgetsdict.copy()
-        # d.drop(tck)
-        # self.assertTrue(d.get(tck) is None)
-
-    # def test_wd_drop_2(self):
-        # d = self.widgetsdict.copy()
-        # d.drop(tck)
-        # self.assertTrue([e for e in d.keys() if is_ancestor(tck, key)] == [])
 
 
     ### FONCTION concept_from_value
@@ -449,5 +637,534 @@ class TestRDFUtils(unittest.TestCase):
             URIRef("tel:+33-1-23-45-67-89")
             )
 
+
+    ### FONCTION metagraph_from_pg_description
+    ### --------------------------------------
+
+    def test_metagraph_from_pg_description_1(self):
+        c = ""
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                Graph()
+                )
+            )
+
+    def test_metagraph_from_pg_description_2(self):
+        c = "Commentaire sans métadonnées."
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                Graph()
+                )
+            )
+
+    def test_metagraph_from_pg_description_3(self):
+        c = "Commentaire avec métadonnées vides.<METADATA></METADATA>"
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                Graph()
+                )
+            )
+
+    def test_metagraph_from_pg_description_4(self):
+        c = "Commentaire avec métadonnées invalides.<METADATA>Ceci n'est pas un JSON !</METADATA>"
+        self.assertRaises(
+            JSONDecodeError,
+            rdf_utils.metagraph_from_pg_description,
+            c,
+            self.shape
+            )
+
+    def test_metagraph_from_pg_description_5(self):
+        c = 'Commentaire avec métadonnées mal structurées.<METADATA>{"name": "Pas un JSON-LD !"}</METADATA>'
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                Graph()
+                )
+            )
+
+    def test_metagraph_from_pg_description_6(self):
+        c = """Commentaire avec métadonnées bien structurées.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                g
+                )
+            )
+
+
+    # les tests 7 à 10 contrôlent la résilience de la fonction face aux
+    # anomalies de balisage
+    
+    def test_metagraph_from_pg_description_7(self):
+        c = """<METADATA><METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                g
+                )
+            )
+
+    def test_metagraph_from_pg_description_8(self):
+        c = """<METADATA><METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA></METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                g
+                )
+            )
+
+    def test_metagraph_from_pg_description_9(self):
+        c = """<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA></METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                g
+                )
+            )
+        
+
+    def test_metagraph_from_pg_description_10(self):
+        c = """<METADATA>
+[
+  {
+    "@id": "urn:uuid:d41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ]
+  }
+]
+</METADATA><METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertTrue(
+            isomorphic(
+                rdf_utils.metagraph_from_pg_description(c, self.shape),
+                g
+                )
+            )
+
+
+    ### FONCTION update_pg_description
+    ### ------------------------------
+
+    def test_update_pg_description_1(self):
+        c1 = ""
+        c2 = """
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>
+"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_2(self):
+        c1 = "Commentaire."
+        c2 = """Commentaire.
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>
+"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_3(self):
+        c1 = "Commentaire."
+        self.assertEqual(rdf_utils.update_pg_description(c1, Graph()), c1)
+
+    def test_update_pg_description_4(self):
+        c1 = "Commentaire.<METADATA></METADATA>"
+        c2 = """Commentaire.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_5(self):
+        c1 = "Commentaire.<METADATA>N'importe quoi !!</METADATA>"
+        c2 = """Commentaire.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_6(self):
+        c1 = "Commentaire.<METADATA><METADATA>N'importe quoi !!</METADATA>"
+        c2 = """Commentaire.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_7(self):
+        c1 = "Commentaire.<METADATA><METADATA>N'importe quoi !!</METADATA></METADATA>Suite."
+        c2 = """Commentaire.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>Suite."""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_8(self):
+        c1 = "Commentaire.<METADATA>N'importe quoi !!</METADATA></METADATA>Suite."
+        c2 = """Commentaire.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>Suite."""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+    def test_update_pg_description_9(self):
+        c1 = """Commentaire.<METADATA>N'importe quoi 1!!</METADATA>
+             <METADATA>N'importe quoi 2!!</METADATA>Suite."""
+        c2 = """Commentaire.<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-08-03 00:00:00"
+      }
+    ]
+  }
+]
+</METADATA>Suite."""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.lgk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+
+    ### FONCTION build_vocabulary
+    ### -------------------------
+
+    # pas de vocabulaire :
+    def test_build_vocabulary_1(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("Thème de données (UE)", Graph()),
+            None
+            )
+
+    # ensemble non renseigné :
+    def test_build_vocabulary_2(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("", self.vocabulary),
+            None
+            )
+
+    # cas normal :
+    def test_build_vocabulary_3(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("Thème de données (UE)", self.vocabulary),
+            ['Agriculture, pêche, sylviculture et alimentation',
+            'Données provisoires', 'Économie et finances',
+            'Éducation, culture et sport', 'Énergie', 'Environnement',
+            'Gouvernement et secteur public',
+            'Justice, système juridique et sécurité publique',
+            'Population et société', 'Questions internationales',
+            'Régions et villes', 'Santé', 'Science et technologie',
+            'Transports']
+            )
+
+    # ensemble inconnu :
+    def test_build_vocabulary_4(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("Ensemble inconnu", self.vocabulary),
+            None
+            )
+
+    # autre langue (connue et utilisée pour le nom de l'ensemble) :
+    def test_build_vocabulary_5(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='en'),
+            ['Agriculture, fisheries, forestry and food', 'Economy and finance',
+            'Education, culture and sport', 'Energy', 'Environment',
+            'Government and public sector', 'Health', 'International issues',
+            'Justice, legal system and public safety', 'Population and society',
+            'Provisional data', 'Regions and cities', 'Science and technology',
+            'Transport']
+            )
+
+    # autre langue (inconnue) :
+    def test_build_vocabulary_6(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='it'),
+            None
+            )
+
+    # le nom de l'ensemble n'est pas dans la langue indiquée :
+    def test_build_vocabulary_6(self):
+        self.assertEqual(
+            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='fr'),
+            None
+            )
+
+
+    ### F0NCTION is_valid_minipath
+    ### --------------------------
+        
+    def test_is_valid_minipath_1(self):
+        self.assertFalse(
+            rdf_utils.is_valid_minipath("dct:title", Graph().namespace_manager)
+            )
+
+    def test_is_valid_minipath_2(self):
+        self.assertFalse(
+            rdf_utils.is_valid_minipath("", Graph().namespace_manager)
+            )
+
+    def test_is_valid_minipath_3(self):
+        self.assertFalse(
+            rdf_utils.is_valid_minipath("", self.nsm)
+            )
+
+    def test_is_valid_minipath_4(self):
+        self.assertTrue(
+            rdf_utils.is_valid_minipath("dct:title", self.nsm)
+            )
+
+    # les chemins composés ne sont pas des MINI chemins :
+    def test_is_valid_minipath_5(self):
+        self.assertFalse(
+            rdf_utils.is_valid_minipath(
+                "dcat:distribution / dct:licence / rdfs:label",
+                self.nsm
+                )
+            )
+
+    # sous forme d'URI brute :
+    def test_is_valid_minipath_6(self):
+        self.assertTrue(
+            rdf_utils.is_valid_minipath(
+                '<https://www.w3.org/TR/sparql11-query/>',
+                self.nsm
+                )
+            )
 
 unittest.main()

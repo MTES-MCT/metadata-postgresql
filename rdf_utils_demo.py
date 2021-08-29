@@ -31,7 +31,8 @@ with open(r'exemples\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
 # constitution du dictionnaire
 #d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary)
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary)
-d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True)
+#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True)
+d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary, translation=True)
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True, langList=['fr'])
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary, mode='read')
 #d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template)
