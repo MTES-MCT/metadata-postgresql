@@ -782,16 +782,28 @@ class WidgetsDict(dict):
         graph = Graph()
         mem = None
         
-        l = sorted(self.keys(), key=key_alias)
+        l = sorted(self.keys(), key=self.order_keys)
         # liste des clés du graphe, ordonnée de telle
-        # façon que les enfants apparaissent immédiatement
+        # façon que :
+        # - les enfants apparaissent immédiatement
         # après leur parent (ce qui est l'ordre naturel
         # du dictionnaire, mais les ajouts et suppressions
-        # de clés remettent ça en cause)
+        # de clés remettent ça en cause) ;
+        # - les clés qui ne servent qu'au formulaire
+        # (boutons, groupes de valeurs et de traductions)
+        # sont à la fin ;
+        # - les widgets de saisie vides ou masqués
+        # sont à la fin.
         
         for k in l:
         
             d = self[k]
+        
+            if d['node'] is None and \
+                (d['value'] in (None, '') or d['hidden M']):
+                break
+                # on a atteint la partie de la liste qui ne
+                # contient plus aucune information
         
             mObject = None
             
@@ -818,9 +830,6 @@ class WidgetsDict(dict):
                         }
                     )
                     mem = None
-                
-            elif d['value'] in [None, ''] or d['hidden M']:
-                continue
                     
             else:
             
@@ -911,6 +920,32 @@ class WidgetsDict(dict):
             if v['subject'] == o:
                 v['subject'] = n
 
+    
+    def order_keys(self, key):
+        """Fonction de tri des clés du dictionnaire de widgets, à l'usage de build_graph().
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+        
+        RESULTAT
+        --------
+        Cette fonction a vocation à être utilisée comme valeur du paramètre
+        "key" de la fonction sorted().
+
+        """
+        if self[key]['node'] is None and \
+            (self[key]['value'] is None or self[key]['hidden M']):
+            return [1]
+            # tout ce qui n'est pas un groupe de propriétés ou
+            # un widget de saisie non masqué contenant une
+            # valeur vide sera mis en vrac à la fin (puisque toutes
+            # les autres clés auront une valeur de tri commençant
+            # par l'indice de la racine, c'est-à-dire 0.
+            
+        l = re.findall(r'[0-9]+', str(key))
+        l.reverse()
+        return [int(x) for x in l]
 
 
 def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHideBlank=True,
@@ -2518,25 +2553,7 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
 
     return eval(t)
     
-    
-def key_alias(key):
-    """Forme alternative de key où les ancêtres apparaissent au début.
-    
-    ARGUMENTS
-    ---------
-    - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
-    
-    RESULTAT
-    --------
-    Une chaîne de caractères (str) correspondant à la clé "retournée".
-    
-    NB : Les clés M ont le même alias que leurs équivalents non M, ce
-    qui est sans importance pour build_graph, puisqu'il n'y a jamais
-    lieu de considérer les deux en même temps.
-    """
-    l = re.findall(r'[0-9]+', str(key))
-    l.reverse()
-    return [int(x) for x in l]
+
 
 
 class ForbiddenOperation(Exception):
