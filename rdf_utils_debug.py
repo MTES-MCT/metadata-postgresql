@@ -39,7 +39,7 @@ def check_unchanged(graph, shape, vocabulary, language="fr", *args):
     """
     
     d = rdf_utils.build_dict(graph, shape, vocabulary, language = language, *args)
-    g = rdf_utils.build_graph(d, vocabulary, language)
+    g = d.build_graph(vocabulary, language)
     
     for n, u in shape.namespace_manager.namespaces():
         g.namespace_manager.bind(n, u, override=True, replace=True)
