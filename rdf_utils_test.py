@@ -8,7 +8,9 @@ from rdflib.compare import isomorphic
 from json.decoder import JSONDecodeError
 from inspect import signature
 import re, uuid, unittest, json
-import rdf_utils, rdf_utils_debug
+import rdf_utils
+from rdf_utils_debug import check_unchanged, populate_widgets
+
 
 class TestRDFUtils(unittest.TestCase):
     
@@ -61,10 +63,163 @@ class TestRDFUtils(unittest.TestCase):
             elif v['path'] == 'dct:modified':
                 # clé de la date de création
                 self.mdk = k
+            elif v['path'] == 'dcat:distribution / dct:license':
+                if v['object'] == 'edit':
+                    # clé de la licence (IRI)
+                    self.lck = k
+                else:
+                    # clé de la licence (manuel)
+                    self.lck_m = k
+            elif v['path'] == 'dcat:distribution / dct:license / rdfs:label':
+                # cle du texte de la licence
+                self.lck_m_txt = k
 
         # création de pseudo-widgets
-        rdf_utils_debug.populate_widgets(self.widgetsdict) 
+        populate_widgets(self.widgetsdict) 
        
+
+    ### FONCTION WidgetsDict.change_source
+    ### ----------------------------------
+
+    # passage en mode manuel
+    def test_wd_change_source_1(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        s = [x for x in d[self.lck]['sources'] if x != '< manuel >'][0]
+        
+        d.update_value(self.lck, "https://ma_licence")
+        self.assertTrue(d[self.lck_m]['hidden M'])
+        self.assertTrue(d[self.lck_m_txt]['hidden M'])
+        self.assertFalse(d[self.lck]['hidden M'])
+        self.assertEqual(d[self.lck]['current source'], s)
+        self.assertIsNone(d[self.lck_m]['current source'])
+        
+        c = d.change_source(self.lck, '< manuel >')
+        self.assertEqual(
+            sorted(c["widgets to hide"]),
+            [
+                d[self.lck]['label widget'],
+                d[self.lck]['main widget'],
+                d[self.lck]['switch source widget']
+            ]
+            )
+        self.assertTrue(
+            d[self.lck_m]['main widget'] in c["widgets to show"]
+            )
+        self.assertTrue(
+            d[self.lck_m]['switch source widget'] in c["widgets to show"]
+            )
+        self.assertTrue(
+            d[self.lck_m_txt]['main widget'] in c["widgets to show"]
+            )
+        self.assertEqual(c["switch source menu to update"], [])
+        self.assertEqual(c["sources list to update"], [])
+        
+        self.assertFalse(d[self.lck_m]['hidden M'])
+        self.assertFalse(d[self.lck_m_txt]['hidden M'])
+        self.assertTrue(d[self.lck]['hidden M'])
+        self.assertIsNone(d[self.lck]['value'])
+        self.assertEqual(d[self.lck_m]['current source'], '< manuel >')
+        self.assertIsNone(d[self.lck]['current source'])
+        
+        d.update_value(self.lck_m_txt, "Non vide")
+        c = d.change_source(self.lck_m, s)
+        self.assertEqual(
+            sorted(c["widgets to show"]),
+            [
+                d[self.lck]['label widget'],
+                d[self.lck]['main widget'],
+                d[self.lck]['switch source widget']
+            ]
+            )
+        self.assertTrue(
+            d[self.lck_m]['main widget'] in c["widgets to hide"]
+            )
+        self.assertTrue(
+            d[self.lck_m]['switch source widget'] in c["widgets to hide"]
+            )
+        self.assertTrue(
+            d[self.lck_m_txt]['main widget'] in c["widgets to hide"]
+            )
+        self.assertEqual(c["switch source menu to update"], [])
+        if d[self.lck]['current source'] == '< URI >':
+            self.assertEqual(c["sources list to update"], [])
+        else:
+            self.assertEqual(c["sources list to update"], self.lck)
+        self.assertTrue(d[self.lck_m]['hidden M'])
+        self.assertTrue(d[self.lck_m_txt]['hidden M'])
+        self.assertEqual(d[self.lck_m_txt]['value'], "Non vide")
+        self.assertFalse(d[self.lck]['hidden M'])
+        self.assertIsNone(d[self.lck]['value'])
+        self.assertEqual(d[self.lck]['current source'], s)
+        self.assertIsNone(d[self.lck_m]['current source'])
+
+    # changement de thésaurus
+
+    # ancienne source non référencée
+
+    # source inconnue
+
+    # une seule source
+
+    # la source ne change pas
+
+
+    ### FONCTION WidgetsDict.order_keys
+    ### -------------------------------
+    
+    # groupe de valeurs
+    def test_wd_order_keys_1(self):
+        self.assertEqual(self.widgetsdict.order_keys(self.tck[1]), [1])
+   
+    # bouton plus
+    def test_wd_order_keys_2(self):
+        self.assertEqual(self.widgetsdict.order_keys(self.tck_plus), [1])
+    
+    # groupe de traduction
+    def test_wd_order_keys_3(self):
+        self.assertEqual(self.widgetsdict.order_keys(self.ttk[1]), [1])
+
+    # bouton de traduction
+    def test_wd_order_keys_4(self):
+        self.assertEqual(self.widgetsdict.order_keys(self.ttk_plus), [1])
+    
+    # groupe de propriétés masqué
+    def test_wd_order_keys_5(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.change_source(self.lck, '< manuel >')
+        d.update_value(self.lck_m_txt, "Non vide")
+        d.change_source(self.lck_m, '< URI >')
+        self.assertEqual(self.widgetsdict.order_keys(self.lck_m_txt), [1])
+    
+    # groupe de propriétés non masqué
+    def test_wd_order_keys_6(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.change_source(self.lck, '< manuel >')
+        d.update_value(self.lck_m_txt, "Non vide")
+        self.assertEqual(
+            self.widgetsdict.order_keys(self.lck_m_txt)[0], 0)
+   
+    # widget de saisie non vide, non masqué
+    
+    # widget de saisie ''
+    
+    # widget de saisie None
+    
+    # widget de saisie masqué
+
+
+    ### FONCTION WidgetsDict.build_graph
+    ### --------------------------------
+
+    def test_wd_build_graph_1(self):
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary
+                )
+            )
+
+    # à compléter !
+
 
     ### FONCTION forbidden_char
     ### -----------------------
@@ -85,7 +240,7 @@ class TestRDFUtils(unittest.TestCase):
     ### FONCTION WidgetsDict.replace_uuid
     ### ---------------------------------
 
-    def test_replace_uuid_1(self):
+    def test_wd_replace_uuid_1(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         g = d.build_graph(self.vocabulary)
@@ -100,7 +255,7 @@ class TestRDFUtils(unittest.TestCase):
             )
         self.assertEqual(len(q_id), 1)
 
-    def test_replace_uuid_2(self):
+    def test_wd_replace_uuid_2(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         g = d.build_graph(self.vocabulary)
@@ -157,7 +312,9 @@ class TestRDFUtils(unittest.TestCase):
         # le bouton de traduction disparaît
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'hidden.button'):
             d.add(self.ttk_plus)
-          
+
+    # à compléter !
+    
     # def test_wd_drop_2(self):
         # d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         # d.drop(tck)
@@ -170,10 +327,10 @@ class TestRDFUtils(unittest.TestCase):
 
     def test_wd_change_language_1(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        rdf_utils_debug.populate_widgets(d)
+        populate_widgets(d)
         
         a = d.add(self.ttk_plus)
-        rdf_utils_debug.populate_widgets(d)
+        populate_widgets(d)
         self.assertEqual(d[self.ttk]['language value'], 'fr')
         self.assertEqual(d[a["new keys"][0]]['language value'], 'en')
         self.assertEqual(d[self.ttk]['authorized languages'], ['fr', 'it'])
@@ -203,7 +360,7 @@ class TestRDFUtils(unittest.TestCase):
     # la nouvelle langue est identique à l'ancienne :
     def test_wd_change_language_4(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        rdf_utils_debug.populate_widgets(d)
+        populate_widgets(d)
         c = d.change_language(self.ttk, 'fr')
         self.assertEqual(c["language menu to update"], [])
         self.assertEqual(c["widgets to hide"], [])
@@ -211,19 +368,19 @@ class TestRDFUtils(unittest.TestCase):
     # cas d'une langue de fait non autorisée :
     def test_wd_change_language_5(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        rdf_utils_debug.populate_widgets(d)
+        populate_widgets(d)
         # modification manuelle de la langue
         d[self.ttk]['language value'] = 'es'
         d[self.ttk]['authorized languages'].append('es')
         d[self.ttk]['authorized languages'].sort()
         
         a1 = d.add(self.ttk_plus)
-        rdf_utils_debug.populate_widgets(d)
+        populate_widgets(d)
         self.assertEqual(d[a1["new keys"][0]]['language value'], 'en')
         self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'fr', 'it'])
         self.assertEqual(d[self.ttk]['authorized languages'], ['es', 'fr', 'it'])
         a2 = d.add(self.ttk_plus)
-        rdf_utils_debug.populate_widgets(d)
+        populate_widgets(d)
         self.assertEqual(d[a2["new keys"][0]]['language value'], 'fr')
         self.assertEqual(d[a2["new keys"][0]]['authorized languages'], ['fr', 'it'])
         self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'it'])
