@@ -759,8 +759,31 @@ class WidgetsDict(dict):
         return d
 
 
-    def update_value(self, value):
-        pass
+    def update_value(self, key, value):
+        """Mise à jour de la valeur d'un widget de saisie.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets, et plus
+        précisément la clé pour laquelle l'utilisateur vient de
+        saisir une nouvelle valeur.
+        - value (str) : nouvelle valeur.
+        
+        RESULTAT
+        --------
+        Néant.
+        
+        Le contenu de la clé 'value' du dictionnaire interne de
+        la clé key est mise à jour.
+        """
+        if not self[key]['object'] == 'edit':
+            raise ForbiddenOperation("{} is a {}, you can't store a value here.".format(
+                key, self[key]['object']))
+
+        if self[key]['hidden M']:
+            raise ForbiddenOperation("Widget {} is hidden, you can't update its value.".format(key))
+
+        self[key]['value'] = value
 
 
     def build_graph(self, vocabulary, language="fr"):
@@ -934,18 +957,19 @@ class WidgetsDict(dict):
         "key" de la fonction sorted().
 
         """
-        if self[key]['node'] is None and \
-            (self[key]['value'] is None or self[key]['hidden M']):
+        if ( self[key]['node'] is None and self[key]['value'] in (None, '') ) \
+            or self[key]['hidden M']:
             return [1]
             # tout ce qui n'est pas un groupe de propriétés ou
             # un widget de saisie non masqué contenant une
-            # valeur vide sera mis en vrac à la fin (puisque toutes
+            # valeur sera mis en vrac à la fin (puisque toutes
             # les autres clés auront une valeur de tri commençant
             # par l'indice de la racine, c'est-à-dire 0.
             
         l = re.findall(r'[0-9]+', str(key))
         l.reverse()
         return [int(x) for x in l]
+
 
 
 def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHideBlank=True,
