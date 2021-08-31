@@ -78,6 +78,110 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict) 
        
 
+    ### FONCTION build_dict
+    ### ----------------------------------
+
+    # informations mises à jour depuis une source externe :
+    def test_build_dict_1(self):
+        q = self.metagraph.query(
+            """
+            SELECT
+                ?d
+            WHERE
+                { ?s dct:modified ?d ;
+                  a dcat:Dataset . }
+            """,
+            initNs = {
+                'dcat': URIRef('http://www.w3.org/ns/dcat#'),
+                'dct': URIRef('http://purl.org/dc/terms/')
+                }
+            )
+        self.assertEqual(len(q), 1)
+        for r in q:
+            self.assertNotEqual(
+                r['d'],
+                Literal(
+                    '2021-08-31T17:32:00',
+                    datatype='http://www.w3.org/2001/XMLSchema#dateTime'
+                    )
+                )
+        d = rdf_utils.build_dict(
+            self.metagraph, self.shape, self.vocabulary,
+            data = { 'dct:modified' : ['2021-08-31T17:32:00'] }
+            )
+        b = False
+        for k, v in d.items():
+            if v['path'] == 'dct:modified':
+                self.assertEqual(v['value'], '2021-08-31T17:32:00')
+                b = True
+        self.assertTrue(b)
+        g = d.build_graph(self.vocabulary)
+        q = g.query(
+            """
+            SELECT
+                ?d
+            WHERE
+                { ?s dct:modified ?d ;
+                  a dcat:Dataset . }
+            """,
+            initNs = {
+                'dcat': URIRef('http://www.w3.org/ns/dcat#'),
+                'dct': URIRef('http://purl.org/dc/terms/')
+                }
+            )
+        self.assertEqual(len(q), 1)
+        for r in q:
+            self.assertEqual(
+                r['d'],
+                Literal(
+                    '2021-08-31T17:32:00',
+                    datatype='http://www.w3.org/2001/XMLSchema#dateTime'
+                    )
+                )
+    
+    # informations mises à jour depuis une source externe 
+    # + catégorie absente du modèle et hideUnlisted valant True :
+    def test_build_dict_2(self):
+        self.assertTrue(not 'dct:modified' in self.template)
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            template = self.template, hideUnlisted=True,
+            data = { 'dct:modified' : ['2021-08-31T17:32:00'] }
+            )
+        b = False
+        for k, v in d.items():
+            if v['path'] == 'dct:modified':
+                self.assertEqual(v['value'], '2021-08-31T17:32:00')
+                self.assertIsNone(v['main widget type']) # pas de widget
+                b = True
+        self.assertTrue(b)
+        g = d.build_graph(self.vocabulary)
+        q = g.query(
+            """
+            SELECT
+                ?d
+            WHERE
+                { ?s dct:modified ?d ;
+                  a dcat:Dataset . }
+            """,
+            initNs = {
+                'dcat': URIRef('http://www.w3.org/ns/dcat#'),
+                'dct': URIRef('http://purl.org/dc/terms/')
+                }
+            )
+        self.assertEqual(len(q), 1)
+        for r in q:
+            self.assertEqual(
+                r['d'],
+                Literal(
+                    '2021-08-31T17:32:00',
+                    datatype='http://www.w3.org/2001/XMLSchema#dateTime'
+                    )
+                )
+    
+    # à compléter !
+
+
     ### FONCTION WidgetsDict.change_source
     ### ----------------------------------
 

@@ -972,8 +972,9 @@ class WidgetsDict(dict):
 
 
 
-def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHideBlank=True,
-    hideUnlisted=False, language="fr", translation=False, langList=['fr', 'en'],
+def build_dict(metagraph, shape, vocabulary, template=None, data=None,
+    mode='edit', readHideBlank=True, hideUnlisted=False,
+    language="fr", translation=False, langList=['fr', 'en'],
     labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
@@ -1000,6 +1001,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
     caractéristiques ne peuvent être définies que pour les catégories de métadonnées
     locales : il n'est pas possible de changer 'data type' ni 'multiple values' pour une
     catégorie commune.
+    - [optionnel] data (dict) : un dictionnaire contenant des informations actualisées
+    à partir de sources externes (par exemple déduites des données) qui devront écraser
+    les valeurs présentes dans metagraph. Les clés du dictionnaire sont des chemins
+    SPARQL identifiant des catégories de métadonnées, ses valeurs sont des listes
+    contenant la ou les valeurs (str) à faire apparaître pour les catégories en question.
     - [optionnel] mode (str) : indique si le formulaire est ouvert pour édition ('edit',
     valeur par défaut), en lecture ('read') ou pour lancer une recherche ('search').
     Le principal effet du mode lecture est la disparition des boutons, notamment les
@@ -1348,10 +1354,15 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
         mNHidden = mHidden or False
         values = None
 
-        # on extrait la ou les valeurs éventuellement
+        # cas d'une propriété dont les valeurs sont mises à
+        # jour à partir d'informations disponibles côté serveur
+        if data and mNPath in data:
+            values = data[mNPath]
+
+        # sinon, on extrait la ou les valeurs éventuellement
         # renseignées dans le graphe pour cette catégorie
         # et le sujet considéré
-        if not mGraphEmpty:
+        if not values and not mGraphEmpty:
         
             q_gr = metagraph.query(
                 """
@@ -1369,6 +1380,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
         # le modèle et n'ont pas de valeur renseignée
         if values in ( None, [], [ None ] ) and not mTemplateEmpty and not ( mNPath in template ):
             continue
+        # s'il y a une valeur, mais que
+        # hideUnlisted vaut True et que la catégorie n'est
+        # pas prévue par le modèle, on poursuit le traitement
+        # pour ne pas perdre la valeur, mais on ne créera
+        # pas de widget
         elif hideUnlisted and not mTemplateEmpty and not ( mNPath in template ):
             mNHidden = True
         
@@ -1402,7 +1418,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
                 mParent = mWidget        
         
         else:
-            # récupération de la liste des ontologies
+            # récupération de la liste des thésaurus
             if mKind in ("sh:BlankNodeOrIRI", "sh:IRI") :
 
                 q_on = shape.query(
@@ -1455,8 +1471,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
             if len(values) > 1 or ( ( ( translation and multilingual ) or multiple )
                     and not ( mode == 'read' and readHideBlank ) ):
                 
-                # si la catégorie admet plusieurs valeurs uniquement s'il
-                # s'agit de traductions, on référence un widget de groupe
+                # si la catégorie admet plusieurs valeurs ou traductions,
+                # on référence un widget de groupe
                 mWidget = ( idx[mParent], mParent )
                 mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
                 mDict[mWidget].update( {
@@ -1567,11 +1583,15 @@ def build_dict(metagraph, shape, vocabulary, template=None, mode='edit', readHid
 
                 if not mNHidden or isinstance(mValueBrut, BNode):              
                     build_dict(
-                        metagraph, shape, vocabulary, template, mode, readHideBlank, hideUnlisted,
-                        language, translation, langList, labelLengthLimit, valueLengthLimit,
-                        textEditRowSpan, mNPath, p['class'], mWidget, mNode, mNSManager,
-                        mWidgetDictTemplate, mDict, mNGraphEmpty, mShallowTemplate, mTemplateEmpty,
-                        mNHidden, mVHideM
+                        metagraph, shape, vocabulary, template=template, data=data,
+                        mode=mode, readHideBlank=readHideBlank, hideUnlisted=hideUnlisted,
+                        language=language, translation=translation, langList=langList,
+                        labelLengthLimit=labelLengthLimit, valueLengthLimit=valueLengthLimit,
+                        textEditRowSpan=textEditRowSpan, mPath=mNPath, mTargetClass=p['class'],
+                        mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
+                        mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
+                        mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
+                        mHidden=mNHidden, mHideM=mVHideM
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
