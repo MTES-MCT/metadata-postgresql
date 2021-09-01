@@ -11,11 +11,11 @@ Toutes ces actions impliquent en premier lieu de mettre à jour le dictionnaire 
 
 Un bouton "plus" est un widget QToolButton qui, lorsqu'il est activé par l'utilisateur, permet d'ajouter une valeur dans un groupe de valeurs.
 
-![gv_bouton_plus](/__doc__/gv_bouton_plus.png)
+![gv_bouton_plus](/__doc__/schemas/gv_bouton_plus.png)
 
 Un bouton de traduction est un QToolButton qui permet d'ajouter une traduction dans un groupe de traductions.
 
-![gt_bouton_de_traduction](/__doc__/gt_bouton_de_traduction.png)
+![gt_bouton_de_traduction](/__doc__/schemas/gt_bouton_de_traduction.png)
 
 Ces deux types de boutons sont considérés ensemble, car le traitement à prévoir est le même (les méthodes utilisées n'auront pas exactement le même effet, mais c'est transparent).
 
@@ -58,9 +58,9 @@ Les boutons "moins" existent à la fois dans les groupes de valeurs et dans les 
 
 NB : une telle opération a pour seul intérêt le confort visuel de l'utilisateur et, lorsqu'il s'agit de retirer une branche complète et pas juste un widget de saisie, de lui éviter de devoir supprimer à la main un potentiellement grand nombre de valeurs. Du point de vue des fonctions de RDF Utils, la présence de widgets vides n'a aucune espèce d'importance.
 
-![gv_bouton_moins](/__doc__/gv_bouton_moins.png)
+![gv_bouton_moins](/__doc__/schemas/gv_bouton_moins.png)
 
-![gt_bouton_moins](/__doc__/gt_bouton_moins.png)
+![gt_bouton_moins](/__doc__/schemas/gt_bouton_moins.png)
 
 Soit `key` la clé du bouton "moins" considéré dans le dictionnaire de widgets `widgetsdict`.
 
