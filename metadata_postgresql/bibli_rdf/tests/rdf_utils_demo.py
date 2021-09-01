@@ -14,35 +14,35 @@ from metadata_postgresql.bibli_rdf.tests import rdf_utils_debug
 
 # schéma SHACL qui décrit les métadonnées communes
 with Path(__path__[0] + r'\modeles\shape.ttl').open(encoding='UTF-8') as src:
-    g_shape = Graph().parse(data=src.read(), format='turtle')
+    shape = Graph().parse(data=src.read(), format='turtle')
     
 # vocabulaire - ontologies utilisées par les métadonnées communes
 with Path(__path__[0] + r'\modeles\vocabulary.ttl').open(encoding='UTF-8') as src:
-    g_vocabulary = Graph().parse(data=src.read(), format='turtle')
+    vocabulary = Graph().parse(data=src.read(), format='turtle')
     
 # exemple de modèle de formulaire
 with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encoding='UTF-8') as src:
-    d_template = json.loads(src.read())
+    template = json.loads(src.read())
 
 # exemple de fiche de métadonnée
 with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
-    g = rdf_utils.metagraph_from_pg_description(src.read(), g_shape)
+    g = rdf_utils.metagraph_from_pg_description(src.read(), shape)
 
 # constitution du dictionnaire
-#d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary)
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary)
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True)
-d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary, translation=True)
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, translation=True, langList=['fr'])
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, mode='read')
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template)
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, hideUnlisted=True)
-#d = rdf_utils.build_dict(Graph(), g_shape, g_vocabulary, template=d_template)
-#d = rdf_utils.build_dict(g, g_shape, g_vocabulary, template=d_template, hideUnlisted=True, translation=True)
+#d = rdf_utils.build_dict(Graph(), shape, vocabulary)
+#d = rdf_utils.build_dict(g, shape, vocabulary)
+#d = rdf_utils.build_dict(g, shape, vocabulary, translation=True)
+d = rdf_utils.build_dict(Graph(), shape, vocabulary, translation=True)
+#d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, langList=['fr'])
+#d = rdf_utils.build_dict(g, shape, vocabulary, mode='read')
+#d = rdf_utils.build_dict(g, shape, vocabulary, template=template)
+#d = rdf_utils.build_dict(g, shape, vocabulary, hideUnlisted=True)
+#d = rdf_utils.build_dict(Graph(), shape, vocabulary, template=template)
+#d = rdf_utils.build_dict(g, shape, vocabulary, template=template, hideUnlisted=True, translation=True)
 
 rdf_utils_debug.populate_widgets(d)
 
-g1 = d.build_graph(g_vocabulary)
+g1 = d.build_graph(vocabulary)
 
 
 
