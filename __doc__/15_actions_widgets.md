@@ -58,9 +58,7 @@ Les boutons "moins" existent à la fois dans les groupes de valeurs et dans les 
 
 NB : une telle opération a pour seul intérêt le confort visuel de l'utilisateur et, lorsqu'il s'agit de retirer une branche complète et pas juste un widget de saisie, de lui éviter de devoir supprimer à la main un potentiellement grand nombre de valeurs. Du point de vue des fonctions de RDF Utils, la présence de widgets vides n'a aucune espèce d'importance.
 
-![gv_bouton_moins](/__doc__/schemas/gv_bouton_moins.png)
-
-![gt_bouton_moins](/__doc__/schemas/gt_bouton_moins.png)
+![gv_bouton_moins](/__doc__/schemas/gv_bouton_moins.png) ![gt_bouton_moins](/__doc__/schemas/gt_bouton_moins.png)
 
 Soit `key` la clé du bouton "moins" considéré dans le dictionnaire de widgets `widgetsdict`.
 
