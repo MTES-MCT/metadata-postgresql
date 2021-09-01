@@ -17,11 +17,26 @@
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="formulaire.svg"
-   inkscape:export-filename="C:\Users\leslie.lemaire\Documents\05_GIT\metadata-postgresql\doc\formulaire_04_divers.png"
-   inkscape:export-xdpi="299.99997"
-   inkscape:export-ydpi="299.99997">
+   inkscape:export-filename="C:\Users\leslie.lemaire\Documents\05_GIT\metadata-postgresql\__doc__\schemas\gv_bouton_plus.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
   <defs
      id="defs2">
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3401"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3399"
+         inkscape:connector-curvature="0" />
+    </marker>
     <marker
        inkscape:isstock="true"
        style="overflow:visible"
@@ -1002,6 +1017,68 @@
          d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
          transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
     </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-83"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-92"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-83-8"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-92-6"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3401-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3399-4"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3401-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3399-6"
+         inkscape:connector-curvature="0" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1011,14 +1088,14 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="619.42677"
-     inkscape:cy="451.14766"
+     inkscape:cx="670.61721"
+     inkscape:cy="400.88902"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer21"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="1358"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:snap-global="false"
@@ -1042,7 +1119,7 @@
      inkscape:groupmode="layer"
      id="layer12"
      inkscape:label="Divers"
-     style="display:inline"
+     style="display:none"
      transform="translate(9.6943213,-33.469762)"
      sodipodi:insensitive="true">
     <g
@@ -1452,13 +1529,13 @@
      id="layer9"
      inkscape:label="Groupe de traduction"
      style="display:inline"
-     transform="translate(9.6943213,-33.469762)"
-     sodipodi:insensitive="true">
+     transform="translate(9.6943213,-33.469762)">
     <g
        inkscape:groupmode="layer"
        id="layer10"
        inkscape:label="GT - Fond"
-       sodipodi:insensitive="true">
+       sodipodi:insensitive="true"
+       style="display:none">
       <rect
          transform="translate(287.90776,88.23937)"
          style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
@@ -1467,6 +1544,41 @@
          height="190.5"
          x="-287.60208"
          y="155.2554" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer19"
+       inkscape:label="GT - Mini Fond"
+       sodipodi:insensitive="true">
+      <rect
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.92765415;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect4636-9"
+         width="114.9661"
+         height="116.81819"
+         x="102.94971"
+         y="257.65967" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path3391-5"
+         d="M 47.461509,37.364738 2.4615083,79.364701"
+         style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:1.88976383;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3401-8)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+         x="53.284161"
+         y="11.2"
+         id="text3395-9"><tspan
+           sodipodi:role="line"
+           id="tspan3393-2"
+           x="53.284161"
+           y="11.2"
+           style="font-size:15.99999905px;fill:#e1000f;stroke-width:0.99999994">Bouton</tspan><tspan
+           sodipodi:role="line"
+           x="53.284161"
+           y="31.199999"
+           style="font-size:15.99999905px;fill:#e1000f;stroke-width:0.99999994"
+           id="tspan4291-7">« moins » </tspan></text>
     </g>
     <g
        inkscape:groupmode="layer"
@@ -1632,8 +1744,16 @@
                style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">EN</tspan></text>
         </g>
       </g>
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer17"
+       inkscape:label="GT - Descriptions"
+       sodipodi:insensitive="true"
+       style="display:none">
       <g
-         transform="translate(410.47702,320.89815)"
+         style="display:inline"
+         transform="translate(410.47703,320.89815)"
          id="g2304-3-27-2">
         <g
            id="g4911">
@@ -1763,8 +1883,9 @@
         </g>
       </g>
       <g
+         style="display:inline"
          id="g4781"
-         transform="translate(494.54734,201.55812)">
+         transform="translate(494.54735,201.55812)">
         <g
            id="g2304-3-2-3"
            transform="translate(-164.59891,247.15078)">
@@ -1879,8 +2000,9 @@
         </g>
       </g>
       <g
+         style="display:inline"
          id="g4868"
-         transform="translate(301.66609,266.91021)">
+         transform="translate(301.6661,266.91021)">
         <g
            id="g2304-3-7"
            transform="translate(-182.40775,186.35885)">
@@ -2034,7 +2156,8 @@
         </g>
       </g>
       <g
-         transform="translate(119.23611,374.26919)"
+         style="display:inline"
+         transform="translate(119.23611,374.26918)"
          id="g2304-3-8-1">
         <text
            id="text6554-2-8-1"
@@ -2171,12 +2294,71 @@
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cc" />
     </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer18"
+       inkscape:label="GT - Identification">
+      <g
+         inkscape:groupmode="layer"
+         id="layer20"
+         inkscape:label="GT - Bouton de traduction">
+        <path
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83-8)"
+           d="M 173.19183,361.18036 149.64392,349.00952"
+           id="path6615-9-08-7"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+        <text
+           id="text6554-2-3-5"
+           y="364.31177"
+           x="175.79076"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="364.31177"
+             x="175.79076"
+             id="tspan6552-1-6-7"
+             sodipodi:role="line">Bouton de</tspan><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="369.60342"
+             x="175.79076"
+             sodipodi:role="line"
+             id="tspan5782">traduction </tspan></text>
+      </g>
+      <g
+         inkscape:groupmode="layer"
+         id="layer21"
+         inkscape:label="GT - Bouton moins">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path3391-6"
+           d="m 193.30494,326.12007 -11.90625,11.11249"
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3401-2)" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="194.84552"
+           y="319.19733"
+           id="text3395-8"><tspan
+             sodipodi:role="line"
+             id="tspan3393-9"
+             x="194.84552"
+             y="319.19733"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332">Bouton</tspan><tspan
+             sodipodi:role="line"
+             x="194.84552"
+             y="324.48898"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             id="tspan4291-5">« moins » </tspan></text>
+      </g>
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer6"
      inkscape:label="Groupe de propriétés"
-     style="display:inline"
+     style="display:none"
      transform="translate(9.6943213,-33.469762)"
      sodipodi:insensitive="true">
     <g
@@ -2732,13 +2914,13 @@
      id="layer4"
      inkscape:label="Groupe de valeurs"
      style="display:inline"
-     sodipodi:insensitive="true"
      transform="translate(9.6943213,-33.469762)">
     <g
        inkscape:groupmode="layer"
        id="layer5"
        inkscape:label="GV - Fond"
-       sodipodi:insensitive="true">
+       sodipodi:insensitive="true"
+       style="display:none">
       <rect
          transform="translate(287.90776,88.23937)"
          style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
@@ -2750,93 +2932,21 @@
     </g>
     <g
        inkscape:groupmode="layer"
+       id="layer16"
+       inkscape:label="GV - Mini Fond">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.83665675;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect4636"
+         width="115.05709"
+         height="94.948761"
+         x="109.91567"
+         y="90.529778" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
        id="layer3"
        inkscape:label="GV - Elements"
        style="display:inline">
-      <g
-         transform="translate(318.37831,266.52633)"
-         id="g2304-3">
-        <text
-           id="text6554-2"
-           y="-109.1986"
-           x="-95.610069"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             style="font-size:4.23333311px;fill:#4e65ab;stroke-width:0.26458332"
-             y="-109.1986"
-             x="-95.610069"
-             id="tspan6552-1"
-             sodipodi:role="line">Bouton « plus » </tspan></text>
-        <text
-           id="text8250-7"
-           y="-104.34513"
-           x="-95.623825"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             id="tspan2293-0"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
-             y="-104.34513"
-             x="-95.623825"
-             sodipodi:role="line">pour ajouter une valeur</tspan><tspan
-             id="tspan2297-8"
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-100.37638"
-             x="-95.623825"
-             sodipodi:role="line">→ widget QToolButton</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-96.407631"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2336" /><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-92.438881"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2344">L'action crée un widget supplémentaire et l'ajoute</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-88.470131"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4152">au groupe et à sa grille.</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-84.501381"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4142" /><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-80.532631"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4146">Le bouton n'est pas affiché lorsque la propriété a</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-76.563881"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4148">de fait plusieurs valeurs, mais ce n'est théoriquement</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-72.595131"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4160">pas autorisé (inclut le cas où seules les traductions</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-68.626381"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4162">sont possibles, et le « mode traduction » n'est pas</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-64.657631"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4164">activé).</tspan></text>
-        <use
-           height="100%"
-           width="100%"
-           id="use2880-5"
-           xlink:href="#text2193-8"
-           y="0"
-           x="0"
-           transform="translate(6.9698858,-65.837086)" />
-      </g>
       <g
          id="g5185"
          transform="translate(219.11608,204.46853)">
@@ -2950,47 +3060,17 @@
              y="-86.518234" />
         </g>
       </g>
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer13"
+       inkscape:label="GV - Descriptions"
+       style="display:none"
+       sodipodi:insensitive="true">
       <g
-         transform="translate(134.45435,187.81282)"
-         id="g2304-3-8">
-        <text
-           id="text6554-2-8"
-           y="-96.498627"
-           x="-95.610069"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#009b7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             style="font-size:4.23333311px;fill:#009b7e;stroke-width:0.26458332"
-             y="-96.498627"
-             x="-95.610069"
-             id="tspan6552-1-4"
-             sodipodi:role="line">Libellé de la propriété </tspan></text>
-        <text
-           id="text8250-7-0"
-           y="-91.645111"
-           x="-95.623825"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-91.645111"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2344-2">Intégré au QGroupBox du</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-87.676361"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2633">groupe de valeurs</tspan></text>
-        <rect
-           style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307006, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
-           id="rect2570-8-8"
-           width="16.933332"
-           height="5.8208332"
-           x="-95.477776"
-           y="-84.943741" />
-      </g>
-      <g
+         style="display:inline"
          id="g5205"
-         transform="translate(469.08744,94.93104)">
+         transform="translate(469.08745,94.931039)">
         <g
            id="g2304-3-2"
            transform="translate(-150.80756,72.77345)">
@@ -3094,7 +3174,138 @@
           </g>
         </g>
       </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-8)"
+         d="M 220.80559,72.445643 184.55768,128.27272"
+         id="path6615-9-0"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
       <g
+         style="display:inline"
+         transform="translate(318.37832,266.52633)"
+         id="g2304-3">
+        <text
+           id="text6554-2"
+           y="-109.1986"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#4e65ab;stroke-width:0.26458332"
+             y="-109.1986"
+             x="-95.610069"
+             id="tspan6552-1"
+             sodipodi:role="line">Bouton « plus » </tspan></text>
+        <text
+           id="text8250-7"
+           y="-104.34513"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2293-0"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-104.34513"
+             x="-95.623825"
+             sodipodi:role="line">pour ajouter une valeur</tspan><tspan
+             id="tspan2297-8"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-100.37638"
+             x="-95.623825"
+             sodipodi:role="line">→ widget QToolButton</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-96.407631"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2336" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-92.438881"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2344">L'action crée un widget supplémentaire et l'ajoute</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-88.470131"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4152">au groupe et à sa grille.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-84.501381"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4142" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-80.532631"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4146">Le bouton n'est pas affiché lorsque la propriété a</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-76.563881"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4148">de fait plusieurs valeurs, mais ce n'est théoriquement</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-72.595131"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4160">pas autorisé (inclut le cas où seules les traductions</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-68.626381"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4162">sont possibles, et le « mode traduction » n'est pas</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-64.657631"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4164">activé).</tspan></text>
+        <use
+           height="100%"
+           width="100%"
+           id="use2880-5"
+           xlink:href="#text2193-8"
+           y="0"
+           x="0"
+           transform="translate(6.9698858,-65.837086)" />
+      </g>
+      <g
+         style="display:inline"
+         transform="translate(134.45435,187.81282)"
+         id="g2304-3-8">
+        <text
+           id="text6554-2-8"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#009b7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#009b7e;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-4"
+             sodipodi:role="line">Libellé de la propriété </tspan></text>
+        <text
+           id="text8250-7-0"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2344-2">Intégré au QGroupBox du</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2633">groupe de valeurs</tspan></text>
+        <rect
+           style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307006, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect2570-8-8"
+           width="16.933332"
+           height="5.8208332"
+           x="-95.477776"
+           y="-84.943741" />
+      </g>
+      <g
+         style="display:inline"
          transform="translate(134.47657,268.7986)"
          id="g2304-3-2-0">
         <text
@@ -3158,7 +3369,7 @@
            style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
       </g>
       <path
-         style="fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
          d="M 70.114582,170.02483 133.08542,152.82691"
          id="path6615"
          inkscape:connector-curvature="0"
@@ -3168,19 +3379,69 @@
          inkscape:connector-curvature="0"
          id="use8954"
          d="M 85.195832,91.972743 126.20625,118.16649"
-         style="fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker8960)" />
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker8960)" />
       <path
-         style="fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3)"
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3)"
          d="m 220.10216,155.50383 -61.91249,4.49791"
          id="path6615-9"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cc" />
-      <path
-         style="fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-8)"
-         d="M 220.80559,72.445643 184.55768,128.27272"
-         id="path6615-9-0"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer15"
+       inkscape:label="GV - Identification">
+      <g
+         inkscape:groupmode="layer"
+         id="layer14"
+         inkscape:label="GV - Bouton plus"
+         style="display:none">
+        <path
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83)"
+           d="M 181.21335,174.17187 157.66544,162.00103"
+           id="path6615-9-08"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+        <text
+           id="text6554-2-3"
+           y="177.30325"
+           x="183.81227"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="177.30325"
+             x="183.81227"
+             id="tspan6552-1-6"
+             sodipodi:role="line">Bouton « plus » </tspan></text>
+      </g>
+      <g
+         inkscape:label="GV - Bouton moins"
+         id="g3397"
+         inkscape:groupmode="layer"
+         style="display:inline">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path3391"
+           d="m 197.61752,128.39895 -11.90625,11.11249"
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3401)" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="199.1581"
+           y="121.4762"
+           id="text3395"><tspan
+             sodipodi:role="line"
+             id="tspan3393"
+             x="199.1581"
+             y="121.4762"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332">Bouton</tspan><tspan
+             sodipodi:role="line"
+             x="199.1581"
+             y="126.76786"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             id="tspan4291">« moins » </tspan></text>
+      </g>
     </g>
   </g>
 </svg>
