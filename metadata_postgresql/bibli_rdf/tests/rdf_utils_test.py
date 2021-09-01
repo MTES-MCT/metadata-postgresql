@@ -8,8 +8,10 @@ from rdflib.compare import isomorphic
 from json.decoder import JSONDecodeError
 from inspect import signature
 import re, uuid, unittest, json
-import rdf_utils
-from rdf_utils_debug import check_unchanged, populate_widgets
+from pathlib import Path
+
+from metadata_postgresql.bibli_rdf import rdf_utils, __path__
+from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, populate_widgets
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -17,20 +19,20 @@ class TestRDFUtils(unittest.TestCase):
     def setUp(self):
     
         # import du schéma SHACL qui décrit les métadonnées communes
-        with open(r'modeles\shape.ttl', encoding='UTF-8') as src:
+        with Path(__path__[0] + r'\modeles\shape.ttl').open(encoding='UTF-8') as src:
             self.shape = Graph().parse(data=src.read(), format='turtle')
         self.nsm = self.shape.namespace_manager
         
-        # vocabulaire - ontologies utilisées par les métadonnées communes
-        with open(r'modeles\vocabulary.ttl', encoding='UTF-8') as src:
+        # vocabulaire - ontologies utilisées par les métadonnées 
+        with Path(__path__[0] + r'\modeles\vocabulary.ttl').open(encoding='UTF-8') as src:
             self.vocabulary = Graph().parse(data=src.read(), format='turtle')
             
         # import d'un exemple de modèle local de formulaire
-        with open(r'exemples\exemple_dict_modele_local.json', encoding='UTF-8') as src:
+        with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encoding='UTF-8') as src:
             self.template = json.loads(src.read())
 
         # import d'un exemple de fiche de métadonnée
-        with open(r'exemples\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
+        with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
             self.metagraph = rdf_utils.metagraph_from_pg_description(src.read(), self.shape)
 
         # construction d'un dictionnaire de widgets à partir d'un graphe vierge

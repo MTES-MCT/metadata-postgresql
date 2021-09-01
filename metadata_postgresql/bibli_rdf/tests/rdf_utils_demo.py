@@ -7,25 +7,25 @@ from rdflib.serializer import Serializer
 from locale import strxfrm, setlocale, LC_COLLATE
 import re, uuid
 import json
+from pathlib import Path
 
-import rdf_utils
-import rdf_utils_debug
-
+from metadata_postgresql.bibli_rdf import rdf_utils, __path__
+from metadata_postgresql.bibli_rdf.tests import rdf_utils_debug
 
 # schéma SHACL qui décrit les métadonnées communes
-with open(r'modeles\shape.ttl', encoding='UTF-8') as src:
+with Path(__path__[0] + r'\modeles\shape.ttl').open(encoding='UTF-8') as src:
     g_shape = Graph().parse(data=src.read(), format='turtle')
     
 # vocabulaire - ontologies utilisées par les métadonnées communes
-with open(r'modeles\vocabulary.ttl', encoding='UTF-8') as src:
+with Path(__path__[0] + r'\modeles\vocabulary.ttl').open(encoding='UTF-8') as src:
     g_vocabulary = Graph().parse(data=src.read(), format='turtle')
     
 # exemple de modèle de formulaire
-with open(r'exemples\exemple_dict_modele_local.json', encoding='UTF-8') as src:
+with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encoding='UTF-8') as src:
     d_template = json.loads(src.read())
 
 # exemple de fiche de métadonnée
-with open(r'exemples\exemple_commentaire_pg.txt', encoding='UTF-8') as src:
+with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
     g = rdf_utils.metagraph_from_pg_description(src.read(), g_shape)
 
 # constitution du dictionnaire
