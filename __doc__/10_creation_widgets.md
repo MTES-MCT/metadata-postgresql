@@ -1,7 +1,7 @@
 # Création d'un nouveau widget
 
 Soit :
-- `widgetsDict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage.
+- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage.
 - `key` la clé de l'enregistrement en cours de traitement.
 - `vocabulary` le graphe RDF qui rassemble les valeurs des thésaurus.
 - `language` la langue principale de rédaction des métadonnées sélectionnée par l'utilisateur.
@@ -19,7 +19,7 @@ Le type du widget principal (QGroupBox, QToolButton, QLineEdit...) est fourni pa
 
 ```python
 
-widgetsDict[key]['main widget type']
+widgetsdict[key]['main widget type']
 
 ```
 
@@ -31,7 +31,7 @@ Le nouveau widget a vocation à être stocké dans la clé `'main widget'` du di
 
 ```python
 
-widgetsDict[key]['main widget']
+widgetsdict[key]['main widget']
 
 ```
 
@@ -43,7 +43,7 @@ Par exemple, si `key` vaut `(2, (5, (0,)))`,  son parent est le widget principal
 
 ```python
 
-widgetsDict[key[1]]['main widget']
+widgetsdict[key[1]]['main widget']
 
 ```
 
@@ -55,7 +55,7 @@ Concrètement, le widget principal et tous les widgets annexes d'un enregistreme
 
 ```python
 
-widgetsDict[key]['hidden'] or widgetsDict[key]['hidden M']
+widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
 
 ```
 
@@ -65,7 +65,7 @@ widgetsDict[key]['hidden'] or widgetsDict[key]['hidden M']
 
 ```python
 
-widgetsDict[key]['label']
+widgetsdict[key]['label']
 
 ```
 
@@ -75,7 +75,7 @@ Cette clé ne sera renseignée que s'il y a lieu d'afficher un libellé sur le g
 
 ```python
 
-widgetsDict[key]['main widget'].setToolTip(widgetsDict[key]['help text'])
+widgetsdict[key]['main widget'].setToolTip(widgetsdict[key]['help text'])
 
 ```
 
@@ -87,7 +87,7 @@ L'action associée à ce QToolButton sera stockée dans la clé `'main action'` 
 
 ```python
 
-widgetsDict[key]['main action']
+widgetsdict[key]['main action']
 
 ```
 
@@ -101,7 +101,7 @@ widgetsDict[key]['main action']
 
 ```python
 
-widgetsDict[key]['value']
+widgetsdict[key]['value']
 
 ```
 
@@ -109,7 +109,7 @@ widgetsDict[key]['value']
 
 ```python
 
-widgetsDict[key]['read only']
+widgetsdict[key]['read only']
 
 ```
 
@@ -117,7 +117,7 @@ widgetsDict[key]['read only']
 
 ```python
 
-widgetsDict[key]['is mandatory']
+widgetsdict[key]['is mandatory']
 
 ```
  
@@ -130,7 +130,7 @@ Pour les widgets d'édition de texte, le dictionnaire apporte divers paramètres
 
 ```python
 
-widgetsDict[key]['main widget'].setPlaceholderText(widgetsDict[key]['placeholder text'])
+widgetsdict[key]['main widget'].setPlaceholderText(widgetsdict[key]['placeholder text'])
 
 ```
 
@@ -138,7 +138,7 @@ widgetsDict[key]['main widget'].setPlaceholderText(widgetsDict[key]['placeholder
 
 ```python
 
-widgetsDict[key]['main widget'].setInputMask(widgetsDict[key]['input mask'])
+widgetsdict[key]['main widget'].setInputMask(widgetsdict[key]['input mask'])
 
 ```
 
@@ -146,12 +146,12 @@ widgetsDict[key]['main widget'].setInputMask(widgetsDict[key]['input mask'])
 
 ```python
 
-widgetsDict[key]['type validator'] = mTypeValidator
+widgetsdict[key]['type validator'] = mTypeValidator
 
 if mTypeValidator == 'QIntValidator':
-    widgetsDict[key]['main widget'].setValidator(QIntValidator(widgetsDict[key]['main widget']))
+    widgetsdict[key]['main widget'].setValidator(QIntValidator(widgetsdict[key]['main widget']))
 elif mTypeValidator == 'QDoubleValidator':
-    widgetsDict[key]['main widget'].setValidator(QDoubleValidator(widgetsDict[key]['main widget']))
+    widgetsdict[key]['main widget'].setValidator(QDoubleValidator(widgetsdict[key]['main widget']))
 
 ```
 
@@ -161,23 +161,23 @@ elif mTypeValidator == 'QDoubleValidator':
 
 ```python
 
-re = QRegularExpression(widgetsDict[key]['regex validator pattern'])
+re = QRegularExpression(widgetsdict[key]['regex validator pattern'])
 
-if "i" in widgetsDict[key]['regex validator flags']:
+if "i" in widgetsdict[key]['regex validator flags']:
     re.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
     
-if "s" in widgetsDict[key]['regex validator flags']:
+if "s" in widgetsdict[key]['regex validator flags']:
     re.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
 
-if "m" in widgetsDict[key]['regex validator flags']:
+if "m" in widgetsdict[key]['regex validator flags']:
     re.setPatternOptions(QRegularExpression.MultilineOption)
     
-if "x" in widgetsDict[key]['regex validator flags']:
+if "x" in widgetsdict[key]['regex validator flags']:
     re.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
 
-widgetsDict[key]['main widget'].setValidator(
+widgetsdict[key]['main widget'].setValidator(
     QRegularExpressionValidator(re),
-    widgetsDict[key]['main widget'])
+    widgetsdict[key]['main widget'])
     )
 
 ```
@@ -191,7 +191,7 @@ widgetsDict[key]['main widget'].setValidator(
 
 ```python
 
-thesaurus = build_vocabulary(widgetsDict[key]['current source'], vocabulary, language)
+thesaurus = build_vocabulary(widgetsdict[key]['current source'], vocabulary, language)
 
 ```
 
@@ -200,7 +200,7 @@ thesaurus = build_vocabulary(widgetsDict[key]['current source'], vocabulary, lan
 
 ```python
 
-widgetsDict[key]['main widget'].setPlaceholderText(widgetsDict[key]['placeholder text'])
+widgetsdict[key]['main widget'].setPlaceholderText(widgetsdict[key]['placeholder text'])
 
 ```
 
@@ -213,7 +213,7 @@ Le nouveau widget doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsDict[key[1]]['grid widget']
+widgetsdict[key[1]]['grid widget']
 
 ```
 
@@ -221,7 +221,7 @@ Son placement vertical (paramètre *row* de la méthode addWidget) est donné pa
 
 ```python
 
-widgetsDict[key]['row']
+widgetsdict[key]['row']
 
 ```
 
@@ -229,7 +229,7 @@ widgetsDict[key]['row']
 
 ```python
 
-widgetsDict[key]['row span']
+widgetsdict[key]['row span']
 
 ```
 
@@ -239,7 +239,7 @@ D'une manière générale, `column` vaudra `0`, sauf pour un widget de saisie te
 
 ```python
 
-column = 1 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is None else 0
+column = 1 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 0
 
 ```
 
@@ -255,7 +255,7 @@ Pour les groupes de valeurs, groupes de propriétés et groupes de traduction, u
 
 ```python
 
-widgetsDict[key]['object'] in ('group of values', 'group of properties', 'translation group')
+widgetsdict[key]['object'] in ('group of values', 'group of properties', 'translation group')
 
 ```
 
@@ -265,7 +265,7 @@ Le widget QGridLayout sera stocké dans la clé `'grid widget'` du dictionnaire 
 
 ```python
 
-widgetsDict[key]['grid widget']
+widgetsdict[key]['grid widget']
 
 ```
 
@@ -275,7 +275,7 @@ Le widget *parent* est le `'main widget'` de l'enregistrement.
 
 ```python
 
-widgetsDict[key]['main widget']
+widgetsdict[key]['main widget']
 
 ```
 
@@ -289,7 +289,7 @@ widgetsDict[key]['main widget']
 
 ```python
 
-widgetsDict[key]['label']
+widgetsdict[key]['label']
 
 ```
 
@@ -299,7 +299,7 @@ Le widget QLabel sera stocké dans la clé `'label widget'` du dictionnaire inte
 
 ```python
 
-widgetsDict[key]['label widget']
+widgetsdict[key]['label widget']
 
 ```
 
@@ -309,7 +309,7 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 
 ```python
 
-widgetsDict[key[1]]['main widget']
+widgetsdict[key[1]]['main widget']
 
 ```
 
@@ -319,7 +319,7 @@ Le QLabel doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsDict[key[1]]['grid widget']
+widgetsdict[key[1]]['grid widget']
 
 ```
 
@@ -331,7 +331,7 @@ Le paramètre `column` vaut toujours 0.
 
 ```python
 
-row = widgetsDict[key]['label row'] or widgetsDict[key]['row']
+row = widgetsdict[key]['label row'] or widgetsdict[key]['row']
 column = 0
 
 ```
@@ -345,7 +345,7 @@ Lorsqu'elle est renseignée, la clé `'help text'` fournit un **texte d'aide** (
 
 ```python
 
-widgetsDict[key]['label widget'].setToolTip(widgetsDict[key]['help text'])
+widgetsdict[key]['label widget'].setToolTip(widgetsdict[key]['help text'])
 
 ```
 
@@ -361,7 +361,7 @@ Un widget QToolButton de sélection de source doit être créé dès lors que la
 
 ```python
 
-widgetsDict[key]['multiple sources']
+widgetsdict[key]['multiple sources']
 
 ```
 
@@ -371,7 +371,7 @@ Le widget de sélection de la source est stocké dans la clé `'switch source wi
 
 ```python
 
-widgetsDict[key]['switch source widget']
+widgetsdict[key]['switch source widget']
 
 ```
 
@@ -381,7 +381,7 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 
 ```python
 
-widgetsDict[key[1]]['main widget']
+widgetsdict[key[1]]['main widget']
 
 ```
 
@@ -391,7 +391,7 @@ Le QMenu associé au QToolButton est stocké dans la clé `'switch source menu'`
 
 ```python
 
-widgetsDict[key]['switch source menu']
+widgetsdict[key]['switch source menu']
 
 ```
 
@@ -399,7 +399,7 @@ Ce QMenu contient une QAction par thésaurus utilisable pour la métadonnée. Le
 
 ```python
 
-widgetsDict[key]['switch source actions']
+widgetsdict[key]['switch source actions']
 
 ```
 
@@ -407,7 +407,7 @@ Les libellés des QAction correspondent aux noms des thésaurus et sont fournis 
 
 ```python
 
-widgetsDict[key]['sources']
+widgetsdict[key]['sources']
 
 ```
 
@@ -417,7 +417,7 @@ Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui f
 
 ```python
 
-widgetsDict[key]['current source']
+widgetsdict[key]['current source']
 
 ```
 
@@ -427,7 +427,7 @@ Le QToolButton doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsDict[key[1]]['grid widget']
+widgetsdict[key[1]]['grid widget']
 
 ```
 
@@ -435,8 +435,8 @@ Le bouton de sélection de la source est toujours positionné immédiatement à 
 
 ```python
 
-row = widgetsDict[key]['row']
-column = 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is None else 1
+row = widgetsdict[key]['row']
+column = 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 1
 
 ```
 
@@ -452,7 +452,7 @@ Un widget QToolButton de sélection de langue doit être créé dès lors que la
 
 ```python
 
-widgetsDict[key]['authorized languages']
+widgetsdict[key]['authorized languages']
 
 ```
 
@@ -462,7 +462,7 @@ Le bouton de sélection de la langue est stocké dans la clé `'language widget'
 
 ```python
 
-widgetsDict[key]['language widget']
+widgetsdict[key]['language widget']
 
 ```
 
@@ -472,7 +472,7 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 
 ```python
 
-widgetsDict[key[1]]['main widget']
+widgetsdict[key[1]]['main widget']
 
 ```
 
@@ -482,7 +482,7 @@ Le QMenu associé au QToolButton est stocké dans la clé `'language menu'` du d
 
 ```python
 
-widgetsDict[key]['language menu']
+widgetsdict[key]['language menu']
 
 ```
 
@@ -490,7 +490,7 @@ Ce QMenu contient une QAction par langue disponible. Les QAction sont elles-mêm
 
 ```python
 
-widgetsDict[key]['language actions']
+widgetsdict[key]['language actions']
 
 ```
 
@@ -498,7 +498,7 @@ Les libellés des QAction correspondent aux noms abrégés des langues et sont f
 
 ```python
 
-widgetsDict[key]['authorized languages']
+widgetsdict[key]['authorized languages']
 
 ```
 
@@ -510,7 +510,7 @@ Au lieu d'une icône, le QToolButton de sélection de la langue montre un texte 
 
 ```python
 
-widgetsDict[key]['language value']
+widgetsdict[key]['language value']
 
 ```
 
@@ -520,7 +520,7 @@ Le QToolButton doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsDict[key[1]]['grid widget']
+widgetsdict[key[1]]['grid widget']
 
 ```
 
@@ -528,8 +528,8 @@ Le bouton de sélection de la langue est toujours positionné immédiatement à 
 
 ```python
 
-row = widgetsDict[key]['row']
-column = 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is None else 1
+row = widgetsdict[key]['row']
+column = 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 1
 
 ```
 
@@ -547,7 +547,7 @@ Un tel widget doit être créé dès lors que le widget appartient à un groupe 
 
 ```python
 
-len(key) > 1 and widgetsDict[key[1]]['object'] in ('translation group', 'group of values')
+len(key) > 1 and widgetsdict[key[1]]['object'] in ('translation group', 'group of values')
 
 ```
 
@@ -555,7 +555,7 @@ Il ne devra cependant être affiché que si la condition suivante est vérifiée
 
 ```python
 
-widgetsDict[key]['has minus button']
+widgetsdict[key]['has minus button']
 
 ```
 
@@ -565,7 +565,7 @@ Il est stocké dans la clé `'minus widget'` du dictionnaire interne.
 
 ```python
 
-widgetsDict[key]['minus widget']
+widgetsdict[key]['minus widget']
 
 ```
 
@@ -575,7 +575,7 @@ Le widget *parent* est le même que pour le widget principal : il s'agit du `'ma
 
 ```python
 
-widgetsDict[key[1]]['main widget']
+widgetsdict[key[1]]['main widget']
 
 ```
 
@@ -585,7 +585,7 @@ L'action associée au QToolButton est stockée dans la clé `'minus action'` du 
 
 ```python
 
-widgetsDict[key]['minus action']
+widgetsdict[key]['minus action']
 
 ```
 
@@ -597,7 +597,7 @@ Le QToolButton doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsDict[key[1]]['grid widget']
+widgetsdict[key[1]]['grid widget']
 
 ```
 
@@ -605,10 +605,10 @@ Le bouton "moins" est positionné sur la ligne de la zone de saisie, à droite d
 
 ```python
 
-row = widgetsDict[key]['row']
-column = ( 2 if widgetsDict[key]['label'] and widgetsDict[key]['label row'] is None else 1 ) \
-    + ( 1 if widgetsDict[key]['multiple sources'] else 0 ) \
-    + ( 1 if widgetsDict[key]['authorized languages'] else 0 )
+row = widgetsdict[key]['row']
+column = ( 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 1 ) \
+    + ( 1 if widgetsdict[key]['multiple sources'] else 0 ) \
+    + ( 1 if widgetsdict[key]['authorized languages'] else 0 )
 
 ```
 
