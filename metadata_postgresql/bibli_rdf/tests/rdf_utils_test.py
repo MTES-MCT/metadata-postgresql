@@ -78,10 +78,23 @@ class TestRDFUtils(unittest.TestCase):
 
         # création de pseudo-widgets
         populate_widgets(self.widgetsdict) 
-       
+
+
+    ### FONCTION metagraph_from_file
+    ### ----------------------------
+    
+    # prise en charge de différents formats
+    def test_metagraph_from_file_1(self):
+        p = Path(__path__[0] + r'\tests\samples')
+        for f in p.iterdir():
+            with self.subTest(file=f.name):
+                if f.is_file():
+                    g = rdf_utils.metagraph_from_file(f)
+                    self.assertTrue(len(g) > 0)
+  
 
     ### FONCTION build_dict
-    ### ----------------------------------
+    ### -------------------
 
     # informations mises à jour depuis une source externe :
     def test_build_dict_1(self):

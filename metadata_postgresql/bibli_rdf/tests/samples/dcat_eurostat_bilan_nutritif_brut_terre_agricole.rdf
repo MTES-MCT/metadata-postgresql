@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:odrl="https://www.w3.org/TR/odrl-vocab/#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.0="http://data.europa.eu/88u/ontology/dcatapop#"
+    xmlns:dcatap="http://data.europa.eu/r5r/"
+    xmlns:locn="http://www.w3.org/ns/locn#"
+    xmlns:schema="http://schema.org/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:spdx="https://spdx.org/rdf/terms/#"
+    xmlns:gmd="http://www.isotc211.org/2005/gmd#"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:j.1="https://europeandataportal.eu/voc#"
+    xmlns:time="http://www.w3.org/2006/time#"
+    xmlns:adms="http://www.w3.org/ns/adms#"
+    xmlns:j.2="http://www.w3.org/ns/dqv#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:prov="http://www.w3.org/ns/prov#"
+    xmlns:v="http://www.w3.org/2006/vcard/ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:gsp="http://www.opengis.net/ont/geosparql#"
+    xmlns:dcat="http://www.w3.org/ns/dcat#"
+    xmlns:org="http://www.w3.org/ns/org#"
+    xmlns:hydra="http://www.w3.org/ns/hydra/core#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <dcat:CatalogRecord rdf:about="http://data.europa.eu/88u/record/39f9327a-3798-4b2e-872c-de1f8a35da8e">
+    <foaf:primaryTopic>
+      <dcat:Dataset rdf:about="https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq">
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date"
+        >2021-08-31</dct:modified>
+        <dct:title xml:lang="en">Gross nutrient balance on agricultural land</dct:title>
+        <dcat:theme>
+          <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/data-theme/AGRI"/>
+        </dcat:theme>
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="https://europeandataportal.eu/set/distribution/156e239e-0792-4b61-97ee-ba8343d52751">
+            <dct:identifier>http://data.europa.eu/88u/distribution/c4774bcd-d4d0-49b9-aa28-bbc6504d61ec</dct:identifier>
+            <dct:license>
+              <dct:LicenseDocument rdf:about="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            </dct:license>
+            <dct:description xml:lang="en">Download dataset in TSV format (unzipped)</dct:description>
+            <dct:title xml:lang="fr">Bilan nutritif brut de la terre agricole</dct:title>
+            <dct:title xml:lang="de">Bruttonährstoffbilanz der Agrarflächen</dct:title>
+            <dct:format>
+              <dct:MediaTypeOrExtent rdf:about="http://publications.europa.eu/resource/authority/file-type/TSV"/>
+            </dct:format>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE"/>
+            <dct:title xml:lang="en">Gross nutrient balance on agricultural land</dct:title>
+            <dcat:accessURL rdf:resource="http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.tsv.gz&amp;unzip=true"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="https://europeandataportal.eu/set/distribution/64a9ab6f-df0e-49c3-b51b-5b3aaaa590b0">
+            <dct:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            <dct:title xml:lang="de">[VISUALISATION] Karte</dct:title>
+            <dct:identifier>http://data.europa.eu/88u/distribution/824846e5-c5e4-4e0b-85b4-3d50b063802c</dct:identifier>
+            <dct:format>
+              <dct:MediaTypeOrExtent rdf:about="http://publications.europa.eu/resource/authority/file-type/OP_DATPRO"/>
+            </dct:format>
+            <dcat:accessURL rdf:resource="http://ec.europa.eu/eurostat/tgm/mapToolClosed.do?tab=map&amp;init=1&amp;plugin=1&amp;language=en&amp;pcode=t2020_rn310"/>
+            <dct:title xml:lang="fr">[VISUALISATION] Carte</dct:title>
+            <dct:title xml:lang="en">[VISUALISATION] Map</dct:title>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+        <dct:description xml:lang="de">Der Indikator gibt die potenzielle Gesamtgefährdung für die Umwelt durch Stickstoff- und Phosphorüberschuss- bzw. -mangel in den Agrarflächen an. Ein Mangel an Stickstoff oder Phosphor mindert die Bodenfruchtbarkeit und Erosion, während ein Übermaß dieser Stoffe zur Verschmutzung des Oberflächen- und Grundwassers (einschliesslich des Trinkwassers) und zur Eutrophierung führt. Durch Mist und Düngemittel kommt es im Boden zu Stickstoff- und Phosphoreinträgen, während das Ernten von Nutzpflanzen, die Beseitigung von Rückständen und der Wasserabfluss dem Boden Stickstoff und Phosphor entziehen. Bilanzüberschüsse an Stickstoff und Phosphor werden im Zuge der Wasserrahmenrichtlinie überwacht, der Stickstoff im Zusammenhang mit der Nitrat-Richtlinie Die Daten stammen aus mehreren Quellen, darunter Düngemittelverbrauch, Tierbestände, Pflanzenproduktion und Anbauflächen verschiedener Nutzpflanzen. Zu den erfassten Flächenarten gehören Ackerland, Dauerkulturen und Dauergrünland. Die Maßeinheit ist Kilogramm Nährstoff pro Hektar Fläche.</dct:description>
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="https://europeandataportal.eu/set/distribution/2b1d2991-852a-4685-bbf8-f06ffe3a9bb0">
+            <dct:title xml:lang="en">[VISUALISATION] Table</dct:title>
+            <dct:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            <dct:title xml:lang="de">[VISUALISATION] Tabelle</dct:title>
+            <dct:title xml:lang="fr">[VISUALISATION] Tableau</dct:title>
+            <dct:identifier>http://data.europa.eu/88u/distribution/e5e56f1e-9628-4484-8d43-8039cc46bda6</dct:identifier>
+            <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/OP_DATPRO"/>
+            <dcat:accessURL rdf:resource="http://ec.europa.eu/eurostat/tgm/table.do?tab=table&amp;plugin=1&amp;language=en&amp;pcode=t2020_rn310"/>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+        <dct:subject rdf:resource="http://eurovoc.europa.eu/4257"/>
+        <dct:accessRights>
+          <dct:RightsStatement rdf:about="http://publications.europa.eu/resource/authority/access-right/PUBLIC"/>
+        </dct:accessRights>
+        <dct:type>
+          <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/dataset-type/STATISTICAL"/>
+        </dct:type>
+        <dct:description xml:lang="fr">Cet indicateur exprime la menace potentielle totale pour l'environnement que représentent les excédents ou les déficits d'azote et de phosphore dans les sols agricoles. Un déficit d'azote ou de phosphore peut réduire la fertilité des sols et provoquer l’érosion des sols, tandis qu'un excédent peut générer la pollution des eaux souterraines et de surface (dont l’eau potable) et une eutrophisation. Le fumier et l'engrais introduisent de l'azote et du phosphore dans les sols, alors que les récoltes, l'enlèvement des résidus et le ruissellement retirent ces éléments des sols. Les excédents en azote et en phosphore font l'objet d'un suivi aux fins de la directive cadre sur l'eau; l'azote fait, en outre, l'objet d'un suivi aux fins de la directive sur les nitrates. Les données proviennent de différentes sources (consommation d'engrais, cheptel vif, production végétale, superficies des divers types de cultures, etc.). Les types de sols pris en compte sont les terres arables, les cultures permanentes et les prairies permanentes. L'unité de mesure utilisée est le kg de nutriment par hectare de ces sols.</dct:description>
+        <dct:title xml:lang="fr">Bilan nutritif brut de la terre agricole</dct:title>
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="https://europeandataportal.eu/set/distribution/bf080191-2625-4e7e-ae90-df1955f5d166">
+            <dct:title xml:lang="fr">Bilan nutritif brut de la terre agricole</dct:title>
+            <dct:format>
+              <dct:MediaTypeOrExtent rdf:about="http://publications.europa.eu/resource/authority/file-type/ZIP"/>
+            </dct:format>
+            <dct:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            <dcat:accessURL rdf:resource="http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.tsv.gz"/>
+            <dct:identifier>http://data.europa.eu/88u/distribution/4d9716c5-b858-4a52-8114-6d431a42c40f</dct:identifier>
+            <dct:title xml:lang="en">Gross nutrient balance on agricultural land</dct:title>
+            <dct:description xml:lang="en">Download dataset in TSV format</dct:description>
+            <dct:title xml:lang="de">Bruttonährstoffbilanz der Agrarflächen</dct:title>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+        <dcat:contactPoint>
+          <v:Kind rdf:about="http://www.w3.org/2006/vcard/ns#Kind/b816bd6a-5985-4126-b089-4464ed90036c">
+            <v:hasTelephone>
+              <v:Voice rdf:about="http://data.europa.eu/88u/voice/+352430136789">
+                <v:hasValue rdf:resource="tel:+352430136789"/>
+              </v:Voice>
+            </v:hasTelephone>
+            <v:hasAddress>
+              <v:Address rdf:about="http://www.w3.org/2006/vcard/ns#Address/ffb26c2b-e054-4e8c-baf8-148713fd1ce8">
+                <v:street-address>Joseph Bech building, 5 Rue Alphonse Weicker, L-2721 Luxembourg</v:street-address>
+              </v:Address>
+            </v:hasAddress>
+            <v:organisation-name>Eurostat, the statistical office of the European Union</v:organisation-name>
+            <foaf:homePage>
+              <foaf:Document rdf:about="http://ec.europa.eu/eurostat/help/support">
+                <foaf:topic rdf:resource="file:///usr/verticles/"/>
+                <schema:url>http://ec.europa.eu/eurostat/help/support</schema:url>
+              </foaf:Document>
+            </foaf:homePage>
+          </v:Kind>
+        </dcat:contactPoint>
+        <dct:subject rdf:resource="http://eurovoc.europa.eu/4260"/>
+        <foaf:page>
+          <foaf:Document rdf:about="http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=metadata/t2020_rn310_esmsip2.sdmx.zip">
+            <schema:url xml:lang="en">http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=metadata/t2020_rn310_esmsip2.sdmx.zip</schema:url>
+            <dct:type>
+              <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/documentation-type/WEBPAGE_RELATED"/>
+            </dct:type>
+            <dct:title xml:lang="en">ESMS metadata (Euro-SDMX Metadata structure) SDMX</dct:title>
+            <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/OP_DATPRO"/>
+            <foaf:topic rdf:resource="https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"/>
+          </foaf:Document>
+        </foaf:page>
+        <dct:subject rdf:resource="http://eurovoc.europa.eu/6331"/>
+        <dct:identifier>t2020_rn310</dct:identifier>
+        <dct:publisher>
+          <foaf:Agent rdf:about="http://publications.europa.eu/resource/authority/corporate-body/ESTAT"/>
+        </dct:publisher>
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="https://europeandataportal.eu/set/distribution/e712b98a-52b5-4e91-a418-130f2e123988">
+            <dcat:accessURL rdf:resource="http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.sdmx.zip"/>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE"/>
+            <dct:title xml:lang="en">Gross nutrient balance on agricultural land</dct:title>
+            <dct:description xml:lang="en">Download dataset in SDMX-ML format</dct:description>
+            <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/ZIP"/>
+            <dct:title xml:lang="fr">Bilan nutritif brut de la terre agricole</dct:title>
+            <dct:title xml:lang="de">Bruttonährstoffbilanz der Agrarflächen</dct:title>
+            <dct:identifier>http://data.europa.eu/88u/distribution/b8863d24-6e61-48b5-9b42-a785a1e1cd5a</dct:identifier>
+            <dct:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+        <dct:temporal>
+          <dct:PeriodOfTime rdf:about="http://purl.org/dc/terms/PeriodOfTime/88dd71ac-e7f5-48d5-b2dd-d56d5e32cdc3">
+            <schema:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date"
+            >1990-01-01</schema:startDate>
+            <schema:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date"
+            >2019-01-01</schema:endDate>
+          </dct:PeriodOfTime>
+        </dct:temporal>
+        <dct:subject rdf:resource="http://eurovoc.europa.eu/6402"/>
+        <foaf:page>
+          <foaf:Document rdf:about="http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310">
+            <schema:url xml:lang="en">http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310</schema:url>
+            <dct:title xml:lang="en">More information on Eurostat Website</dct:title>
+            <schema:url>http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310</schema:url>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/documentation-type/WEBPAGE_RELATED"/>
+            <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/OP_DATPRO"/>
+            <foaf:topic rdf:resource="https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"/>
+          </foaf:Document>
+        </foaf:page>
+        <dcat:keyword xml:lang="en">ESTAT</dcat:keyword>
+        <dcat:landingPage rdf:resource="http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310"/>
+        <dct:identifier>http://data.europa.eu/88u/dataset/Bm13sogjiWMI1eyXRLQ</dct:identifier>
+        <dcat:theme>
+          <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/data-theme/ENVI"/>
+        </dcat:theme>
+        <dct:description xml:lang="en">The indicator balance represents the total potential threat to the environment of nitrogen and phosphorous surplus or deficit in agricultural soils. A lack of nitrogen or phosphorous may cause degradation in soil fertility and erosion, while an excess may cause surface and groundwater (including drinking water) pollution and eutrophication. Manure and fertiliser introduce nitrogen and phosphorous to the soil while harvesting of crops, removal of residues and runoff remove nitrogen and phosphorous from the soil. Nitrogen and phosphorous balance surpluses are monitored for the purposes of the Water Framework Directive and nitrogen for the Nitrates Directive. The data comes from multiple sources including the consumption of fertilisers, livestock population, crop production and areas of various types of crops. The land types included are arable land, permanent crops and permanent grassland. The unit of measure used is kg of nutrient per hectare of this land.</dct:description>
+        <foaf:page>
+          <foaf:Document rdf:about="http://ec.europa.eu/eurostat/cache/metadata/en/t2020_rn310_esmsip2.htm">
+            <dct:title xml:lang="en">[DOCUMENTATION] ESMS metadata (Euro-SDMX Metadata structure) HTML</dct:title>
+            <foaf:topic rdf:resource="https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"/>
+            <dct:type>
+              <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/documentation-type/DOCUMENTATION_MAIN"/>
+            </dct:type>
+            <schema:url xml:lang="en">http://ec.europa.eu/eurostat/cache/metadata/en/t2020_rn310_esmsip2.htm</schema:url>
+            <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/OP_DATPRO"/>
+          </foaf:Document>
+        </foaf:page>
+        <dct:title xml:lang="de">Bruttonährstoffbilanz der Agrarflächen</dct:title>
+        <j.0:debugInfo>EUODP-&gt;DEU xslt, version:20210804</j.0:debugInfo>
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="https://europeandataportal.eu/set/distribution/64ecf6ea-3fc9-48d6-bff1-3397b28e3099">
+            <dct:identifier>http://data.europa.eu/88u/distribution/21dd92ed-2d99-41c3-af53-c90f4558f9d1</dct:identifier>
+            <dct:title xml:lang="de">[VISUALISATION] Graph</dct:title>
+            <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/OP_DATPRO"/>
+            <dct:title xml:lang="fr">[VISUALISATION] Graphique</dct:title>
+            <dct:title xml:lang="en">[VISUALISATION] Graph</dct:title>
+            <dcat:accessURL rdf:resource="http://ec.europa.eu/eurostat/tgm/graph.do?tab=graph&amp;plugin=1&amp;language=en&amp;pcode=t2020_rn310"/>
+            <dct:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            <dct:type rdf:resource="http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+      </dcat:Dataset>
+    </foaf:primaryTopic>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2015-10-16T12:46:08.400806+02:00</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2021-09-01T07:13:27+02:00</dct:modified>
+  </dcat:CatalogRecord>
+  <dcat:CatalogRecord rdf:about="https://europeandataportal.eu/set/record/bm13sogjiwmi1eyxrlq">
+    <spdx:checksum>
+      <spdx:Checksum>
+        <spdx:checksumValue>41fc910192a1f8d617606ef3e4b74ec8</spdx:checksumValue>
+        <spdx:algorithm rdf:resource="https://spdx.org/rdf/terms/#checksumAlgorithm_md5"/>
+      </spdx:Checksum>
+    </spdx:checksum>
+    <dct:identifier>Bm13sogjiWMI1eyXRLQ</dct:identifier>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2021-09-01T14:21:43Z</dct:modified>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2021-07-15T09:49:30Z</dct:issued>
+    <j.1:transStatus rdf:resource="https://europeandataportal.eu/voc#TransInProcess"/>
+    <j.1:transIssued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2021-09-01T14:21:43Z</j.1:transIssued>
+    <foaf:primaryTopic rdf:resource="https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"/>
+    <j.2:hasQualityMetadata rdf:resource="https://europeandataportal.eu/id/metrics/bm13sogjiwmi1eyxrlq"/>
+  </dcat:CatalogRecord>
+</rdf:RDF>

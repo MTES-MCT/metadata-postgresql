@@ -16,10 +16,11 @@ Dépendances : rdflib, rdflib-jsonld et requests.
 """
 
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
-from rdflib.namespace import NamespaceManager
+from rdflib.namespace import NamespaceManager, split_uri
 from rdflib.serializer import Serializer
 from rdflib.util import from_n3
 from locale import strxfrm, setlocale, LC_COLLATE
+from pathlib import Path
 import re, uuid
 
 
@@ -2045,13 +2046,13 @@ def forbidden_char(anyStr):
     return r[1] if r else None
 
 
-def is_valid_minipath(path, mNSManager):
+def is_valid_minipath(path, nsm):
     """Run basic validity test on SPARQL mono-element path.
 
     ARGUMENTS
     ---------
     - path (str) : un chemin SPARQL.
-    - mNSManager (rdflib.namespace.NamespaceManager) : un
+    - nsm (rdflib.namespace.NamespaceManager) : un
     gestionnaire d'espaces de nommage.
 
     RESULTAT
@@ -2075,7 +2076,7 @@ def is_valid_minipath(path, mNSManager):
         return True
 
     r = re.match('^([a-z]{1,10})[:][a-z0-9-]{1,25}$', path)
-    if r and r[1] in [ k for k,v in mNSManager.namespaces() ]:
+    if r and r[1] in [ k for k,v in nsm.namespaces() ]:
         return True
 
     return False
@@ -2598,9 +2599,141 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
     return eval(t)
     
 
+def export_metagraph(metagraph, shape, filepath, format="turtle"):
+    """Serialize metagraph into a file.
+    
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées.
+    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant
+    les catégories de métadonnées communes. Il fournit ici les préfixes
+    d'espaces de nommage à déclarer dans le graphe.
+    - filepath (str) : chemin complet du fichier cible.
+    - format (str) : format d'export, parmi les valeurs autorisées
+    pour le paramètre format de la fonction serialize de rdflib
+    ("turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig").
+    "trix" et "nquads" sont exclus d'office, car non adaptés pour
+    un stockage sous forme de fichier.
+    
+    À noter que les formats "xml" et "pretty-xml" ne sont pas
+    compatibles avec les métadonnées locales. Plus généralement,
+    on pourra utiliser la fonction available_formats()
+    pour connaître à l'avance tous les formats autorisés pour
+    un graphe donné.
+    
+    RESULTAT
+    --------
+    Pas de valeur renvoyée.
+    
+    Le fichier sera toujours encodé en UTF-8.
+    """
 
+    if format and not format in (
+        "turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"
+        ):
+        raise ValueError("Format '{}' is not supported.".format(format))
+
+    for n, u in shape.namespace_manager.namespaces():
+            metagraph.namespace_manager.bind(n, u, override=True, replace=True)
+    
+    s = g.serialize(format=format).decode("utf-8")
+    
+    with open(filepath, 'w', encoding='UTF-8') as dest:
+        dest.write(s)
+    
+   
+def available_formats(metagraph, shape):
+    """List valid export formats for given metagraph.
+    
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées.
+    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant
+    les catégories de métadonnées communes. Il fournit ici les préfixes
+    d'espaces de nommage à déclarer dans le graphe.
+    
+    RESULTAT
+    --------
+    Une liste de formats (str) pouvant être utilisés pour
+    sérialiser le graphe.
+    """
+    
+    for n, u in shape.namespace_manager.namespaces():
+            metagraph.namespace_manager.bind(n, u, override=True, replace=True)
+
+    l = ["turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"]
+
+    # Une méthode plus gourmande pourrait consister à purement et simplement
+    # tester toutes les sérialisations possibles et retourner celles qui
+    # ne produisent pas d'erreur. À ce stade, il semble cependant que
+    # la seule incompatibilité prévisible et admissible soit la
+    # combinaison XML + usage d'UUID pour les métadonnées locales. C'est
+    # donc uniquement ce cas qui est testé ici.
+
+    for p in metagraph.predicates():
+        try:
+            split_uri(p)
+        except:
+            for f in ("xml", "pretty-xml"):
+                l.remove(f)            
+            break
+            
+    return l
+   
+
+def metagraph_from_file(filepath, format=None):
+    """Parse file content as metagraph.
+    
+    ARGUMENTS
+    ---------
+    - filepath (str) : chemin complet du fichier source,
+    supposé contenir des métadonnées dans un format RDF,
+    sans quoi l'import échouera.
+    - format (str) : le format des métadonnées. Si non
+    renseigné, RDFLib déduira le format de l'extension du fichier,
+    qui devra donc être cohérente avec son contenu.
+    Valeurs acceptées : "turtle", "json-ld", "xml", "n3", "nt".
+    
+    Le fichier sera présumé être encodé en UTF-8 et mieux
+    vaudrait qu'il le soit.
+    
+    RESULTAT
+    --------
+    Un graphe de métadonnées (rdflib.graph.Graph).
+    """
+    pfile = Path(filepath)
+    
+    if not pfile.exists():
+        raise FileNotFoundError("Can't find file {}.".format(filepath))
+        
+    if not pfile.is_file():
+        raise TypeError("{} is not a file.".format(filepath))
+    
+    # extensions possibles et formats correspondants :
+    d = {".ttl": "turtle", ".n3": "n3", ".json": "json-ld",
+         ".jsonld": "json-ld", ".xml": "xml", ".nt": "nt",
+         ".rdf": "xml"}
+    
+    if format and not format in ("turtle", "json-ld", "xml", "n3", "nt"):
+        raise ValueError("Format '{}' is not supported.".format(format))
+    
+    if not format:
+    
+        if not pfile.suffix in d:
+            raise TypeError("Couldn't guess RDF format from file extension."\
+                            "Please use format to declare it manually.")
+                            
+        else:
+            format = d[pfile.suffix]
+            # NB : en théorie, la fonction parse de RDFLib est censée
+            # pouvoir reconnaître le format d'après l'extension, mais à
+            # ce jour elle n'identifie même pas toute la liste ci-avant.
+    
+    with pfile.open(encoding='UTF-8') as src:
+        g = Graph().parse(data=src.read(), format=format)
+
+    return g
+    
 
 class ForbiddenOperation(Exception):
     pass
-    
-

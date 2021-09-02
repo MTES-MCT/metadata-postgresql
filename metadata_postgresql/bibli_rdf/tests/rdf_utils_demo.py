@@ -13,12 +13,10 @@ from metadata_postgresql.bibli_rdf import rdf_utils, __path__
 from metadata_postgresql.bibli_rdf.tests import rdf_utils_debug
 
 # schéma SHACL qui décrit les métadonnées communes
-with Path(__path__[0] + r'\modeles\shape.ttl').open(encoding='UTF-8') as src:
-    shape = Graph().parse(data=src.read(), format='turtle')
+shape = rdf_utils.metagraph_from_file(__path__[0] + r'\modeles\shape.ttl')
     
 # vocabulaire - ontologies utilisées par les métadonnées communes
-with Path(__path__[0] + r'\modeles\vocabulary.ttl').open(encoding='UTF-8') as src:
-    vocabulary = Graph().parse(data=src.read(), format='turtle')
+vocabulary = rdf_utils.metagraph_from_file(__path__[0] + r'\modeles\vocabulary.ttl')
     
 # exemple de modèle de formulaire
 with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encoding='UTF-8') as src:
