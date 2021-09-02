@@ -17,9 +17,9 @@
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="formulaire.svg"
-   inkscape:export-filename="C:\Users\leslie.lemaire\Documents\05_GIT\metadata-postgresql\__doc__\schemas\gv_bouton_plus.png"
-   inkscape:export-xdpi="300"
-   inkscape:export-ydpi="300">
+   inkscape:export-filename="C:\Users\leslie.lemaire\Documents\05_GIT\metadata-postgresql\__doc__\schemas\div_bouton_selection_source.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs2">
     <marker
@@ -1079,6 +1079,22 @@
          id="path3399-6"
          inkscape:connector-curvature="0" />
     </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-83-8-3"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-92-6-6"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1088,10 +1104,10 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="670.61721"
-     inkscape:cy="400.88902"
+     inkscape:cx="1679.1041"
+     inkscape:cy="409.71034"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer21"
+     inkscape:current-layer="layer24"
      showgrid="false"
      inkscape:window-width="1366"
      inkscape:window-height="705"
@@ -1119,15 +1135,14 @@
      inkscape:groupmode="layer"
      id="layer12"
      inkscape:label="Divers"
-     style="display:none"
-     transform="translate(9.6943213,-33.469762)"
-     sodipodi:insensitive="true">
+     style="display:inline"
+     transform="translate(9.6943213,-33.469762)">
     <g
        inkscape:groupmode="layer"
        id="layer2"
        inkscape:label="DIV - Fond"
        transform="translate(287.90775,88.239369)"
-       style="display:inline"
+       style="display:none"
        sodipodi:insensitive="true">
       <rect
          style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
@@ -1138,178 +1153,24 @@
          y="155.2554" />
     </g>
     <g
-       inkscape:label="DIV - Elements"
+       inkscape:groupmode="layer"
+       id="layer24"
+       inkscape:label="DIV - Mini Fond"
+       sodipodi:insensitive="true">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.80000001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect8763"
+         width="109.5375"
+         height="132.55624"
+         x="402.79108"
+         y="271.48645" />
+    </g>
+    <g
+       inkscape:label="DIV - Sélection source"
        inkscape:groupmode="layer"
        id="layer1"
-       transform="translate(287.90775,191.23937)">
-      <g
-         id="g2304-33-9"
-         transform="translate(354.02842,190.98887)">
-        <text
-           id="text6554-27-3"
-           y="-99.67363"
-           x="-95.610069"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#e67f71;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             style="font-size:4.23333311px;fill:#000000;stroke-width:0.26458332"
-             y="-99.67363"
-             x="-95.610069"
-             id="tspan6552-7-4"
-             sodipodi:role="line">Paramètres utilisateur généraux</tspan></text>
-        <text
-           id="text8250-0-0"
-           y="-92.703445"
-           x="-95.623825"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             id="tspan2297-0-7"
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-92.703445"
-             x="-95.623825"
-             sodipodi:role="line">→ lecture seule / édition / recherche</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-88.734695"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2180" /><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-84.765945"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2182">→ affichage des champs non renseignés en</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-80.797195"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2184">lecture seule</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
-             y="-76.828445"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2186">masqués par défaut</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
-             y="-72.859695"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2218" /><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-68.890945"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2220">La recherche n'est pas encore prise en charge.</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-64.922195"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2222">En lecture seule, les boutons « plus », « moins », de</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-60.953445"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2224">sélection de source et de langue disparaissent. Les</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-56.984695"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2226">champs vides ne sont pas affichés, sauf si l'utilisateur</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-53.015945"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2228">spécifie le contraire.</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-49.047195"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2178" /><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-45.078445"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2176">→ « mode traduction » actif/inactif </tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
-             y="-41.109695"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4282">inactif par défaut</tspan><tspan
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
-             y="-37.140945"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4308" /><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
-             y="-33.172195"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4280">→ langue principale des métadonnées</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-29.203445"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2198"><tspan
-   id="tspan2216"
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332">français par défaut</tspan> </tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-25.234697"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2188" /><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-21.265947"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2190">En « mode traduction », la langue principale apparaît</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-17.297197"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4362">par défaut dans les boutons de sélection de langue.</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-13.328446"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4366">Hors « mode traduction », toutes les valeurs saisies</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-9.3596964"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4368">sont présumées être dans cette langue.</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-5.3909469"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4372">Elle détermine la langue d'affichage des termes issus</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="-1.4221969"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4472">de thésaurus.</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="2.5465531"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan2230" /><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="6.5153031"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4336" /><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="10.484053"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4338">Si l'un de ces quatre paramètres est modifié, tout le</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="14.452803"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4342">dictionnaire de configuration des widgets devra être</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
-             y="18.421553"
-             x="-95.623825"
-             sodipodi:role="line"
-             id="tspan4346">recalculé.</tspan></text>
-      </g>
+       transform="translate(287.90775,191.23937)"
+       sodipodi:insensitive="true">
       <g
          id="g5165"
          transform="translate(134.9375,269.34574)">
@@ -1523,13 +1384,190 @@
                id="tspan2174">→ groupe de propriétés</tspan></tspan></text>
       </g>
     </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer23"
+       inkscape:label="DIV - Paramètres utilisateur"
+       sodipodi:insensitive="true"
+       style="display:none">
+      <g
+         style="display:inline"
+         id="g2304-33-9"
+         transform="translate(641.93617,382.22825)">
+        <text
+           id="text6554-27-3"
+           y="-99.67363"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#e67f71;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#000000;stroke-width:0.26458332"
+             y="-99.67363"
+             x="-95.610069"
+             id="tspan6552-7-4"
+             sodipodi:role="line">Paramètres utilisateur généraux</tspan></text>
+        <text
+           id="text8250-0-0"
+           y="-92.703445"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2297-0-7"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-92.703445"
+             x="-95.623825"
+             sodipodi:role="line">→ lecture seule / édition / recherche</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-88.734695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2180" /><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-84.765945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2182">→ affichage des champs non renseignés en</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-80.797195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2184">lecture seule</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-76.828445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2186">masqués par défaut</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-72.859695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2218" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-68.890945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2220">La recherche n'est pas encore prise en charge.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-64.922195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2222">En lecture seule, les boutons « plus », « moins », de</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-60.953445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2224">sélection de source et de langue disparaissent. Les</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-56.984695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2226">champs vides ne sont pas affichés, sauf si l'utilisateur</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-53.015945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2228">spécifie le contraire.</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-49.047195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2178" /><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-45.078445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2176">→ « mode traduction » actif/inactif </tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-41.109695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4282">inactif par défaut</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-37.140945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4308" /><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-33.172195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4280">→ langue principale des métadonnées</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-29.203445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2198"><tspan
+   id="tspan2216"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332">français par défaut</tspan> </tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-25.234697"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2188" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-21.265947"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2190">En « mode traduction », la langue principale apparaît</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-17.297197"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4362">par défaut dans les boutons de sélection de langue.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-13.328446"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4366">Hors « mode traduction », toutes les valeurs saisies</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-9.3596964"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4368">sont présumées être dans cette langue.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-5.3909469"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4372">Elle détermine la langue d'affichage des termes issus</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-1.4221969"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4472">de thésaurus.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="2.5465531"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2230" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="6.5153031"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4336" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="10.484053"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4338">Si l'un de ces quatre paramètres est modifié, tout le</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="14.452803"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4342">dictionnaire de configuration des widgets devra être</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="18.421553"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4346">recalculé.</tspan></text>
+      </g>
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer9"
      inkscape:label="Groupe de traduction"
-     style="display:inline"
-     transform="translate(9.6943213,-33.469762)">
+     style="display:none"
+     transform="translate(9.6943213,-33.469762)"
+     sodipodi:insensitive="true">
     <g
        inkscape:groupmode="layer"
        id="layer10"
@@ -1557,33 +1595,12 @@
          height="116.81819"
          x="102.94971"
          y="257.65967" />
-      <path
-         sodipodi:nodetypes="cc"
-         inkscape:connector-curvature="0"
-         id="path3391-5"
-         d="M 47.461509,37.364738 2.4615083,79.364701"
-         style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:1.88976383;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3401-8)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.99999994"
-         x="53.284161"
-         y="11.2"
-         id="text3395-9"><tspan
-           sodipodi:role="line"
-           id="tspan3393-2"
-           x="53.284161"
-           y="11.2"
-           style="font-size:15.99999905px;fill:#e1000f;stroke-width:0.99999994">Bouton</tspan><tspan
-           sodipodi:role="line"
-           x="53.284161"
-           y="31.199999"
-           style="font-size:15.99999905px;fill:#e1000f;stroke-width:0.99999994"
-           id="tspan4291-7">« moins » </tspan></text>
     </g>
     <g
        inkscape:groupmode="layer"
        id="layer11"
-       inkscape:label="GT - Elements">
+       inkscape:label="GT - Elements"
+       sodipodi:insensitive="true">
       <g
          id="g5235"
          transform="translate(306.95776,210.55395)">
@@ -1749,8 +1766,8 @@
        inkscape:groupmode="layer"
        id="layer17"
        inkscape:label="GT - Descriptions"
-       sodipodi:insensitive="true"
-       style="display:none">
+       style="display:none"
+       sodipodi:insensitive="true">
       <g
          style="display:inline"
          transform="translate(410.47703,320.89815)"
@@ -2301,7 +2318,9 @@
       <g
          inkscape:groupmode="layer"
          id="layer20"
-         inkscape:label="GT - Bouton de traduction">
+         inkscape:label="GT - Bouton de traduction"
+         style="display:none"
+         sodipodi:insensitive="true">
         <path
            style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83-8)"
            d="M 173.19183,361.18036 149.64392,349.00952"
@@ -2328,7 +2347,8 @@
       <g
          inkscape:groupmode="layer"
          id="layer21"
-         inkscape:label="GT - Bouton moins">
+         inkscape:label="GT - Bouton moins"
+         style="display:none">
         <path
            sodipodi:nodetypes="cc"
            inkscape:connector-curvature="0"
@@ -2351,6 +2371,38 @@
              y="324.48898"
              style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
              id="tspan4291-5">« moins » </tspan></text>
+      </g>
+      <g
+         inkscape:groupmode="layer"
+         id="layer22"
+         inkscape:label="GT - Bouton de sélection de la langue">
+        <path
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83-8-3)"
+           d="m 185.00713,311.12331 -10.05416,13.75832"
+           id="path6615-9-08-7-2"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+        <text
+           id="text6554-2-3-5-3"
+           y="311.60886"
+           x="186.54773"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="311.60886"
+             x="186.54773"
+             id="tspan6552-1-6-7-9"
+             sodipodi:role="line">Bouton de</tspan><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="316.90051"
+             x="186.54773"
+             sodipodi:role="line"
+             id="tspan5782-5">sélection de</tspan><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="322.1922"
+             x="186.54773"
+             sodipodi:role="line"
+             id="tspan7977">la langue </tspan></text>
       </g>
     </g>
   </g>
@@ -2913,8 +2965,9 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Groupe de valeurs"
-     style="display:inline"
-     transform="translate(9.6943213,-33.469762)">
+     style="display:none"
+     transform="translate(9.6943213,-33.469762)"
+     sodipodi:insensitive="true">
     <g
        inkscape:groupmode="layer"
        id="layer5"
@@ -3065,8 +3118,7 @@
        inkscape:groupmode="layer"
        id="layer13"
        inkscape:label="GV - Descriptions"
-       style="display:none"
-       sodipodi:insensitive="true">
+       style="display:none">
       <g
          style="display:inline"
          id="g5205"
@@ -3395,7 +3447,7 @@
          inkscape:groupmode="layer"
          id="layer14"
          inkscape:label="GV - Bouton plus"
-         style="display:none">
+         style="display:inline">
         <path
            style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83)"
            d="M 181.21335,174.17187 157.66544,162.00103"
@@ -3418,7 +3470,7 @@
          inkscape:label="GV - Bouton moins"
          id="g3397"
          inkscape:groupmode="layer"
-         style="display:inline">
+         style="display:none">
         <path
            sodipodi:nodetypes="cc"
            inkscape:connector-curvature="0"
