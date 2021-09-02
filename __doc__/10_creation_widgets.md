@@ -8,7 +8,7 @@ Soit :
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes.
 
-[Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-selection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-selection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+[Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
  
 ## Widget principal
@@ -91,7 +91,7 @@ widgetsdict[key]['main action']
 
 ```
 
-*Pour la définition de l'action, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-plus).*
+*Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md#boutons-plus-et-boutons-de-traduction).*
 
 ### Paramètres spécifiques aux widgets de saisie
 
@@ -502,7 +502,7 @@ widgetsdict[key]['authorized languages']
 
 ```
 
-*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-sélection-de-la-langue).*
+*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md#boutons-de-sélection-de-la-langue).*
 
 ### Rendu
 
@@ -589,7 +589,7 @@ widgetsdict[key]['minus action']
 
 ```
 
-*Pour la définition de l'action, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-moins).*
+*Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md#boutons-moins).*
 
 ### Placement dans la grille
 
