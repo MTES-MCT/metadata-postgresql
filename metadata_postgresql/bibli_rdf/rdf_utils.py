@@ -611,8 +611,10 @@ class WidgetsDict(dict):
         --------
         Un dictionnaire ainsi constitué :
         {
-        "sources list to update" : [liste de clés (tuples) pour lesquelles
-        la liste des sources devra être régénérée],
+        "concepts list to update" : [liste de clés (tuples) correspondant à des
+        QComboBox dont la liste de valeurs devra être régénérée],
+        "widgets to empty" : [liste de widget de saisie (QWidget) qui ne doivent
+        plus afficher de valeur]
         "switch source menu to update" : [liste de clés (tuples) pour
         lesquelles le menu de gestion de la source est à actualiser],
         "widgets to hide" : [liste de widgets à masquer (QWidget)],
@@ -626,7 +628,8 @@ class WidgetsDict(dict):
         """
         
         d = {
-            "sources list to update" : [],
+            "concepts list to update" : [],
+            "widgets to empty" : [],
             "switch source menu to update" : [],
             "widgets to hide" : [],
             "widgets to show" : []
@@ -647,7 +650,7 @@ class WidgetsDict(dict):
         if not self[key]['sources'] \
             or not source in self[key]['sources']:
             raise ValueError('Unknown source "{}" for key {}.'.format(source, key))
-            
+        
         if old_source == '< non répertorié >':
             # on se hâte de faire disparaître cette option
             # du menu
@@ -664,8 +667,12 @@ class WidgetsDict(dict):
             
             self[key]['current source'] = None
             self[mkey]['current source'] = source
+            d["switch source menu to update"].append(mkey)
             
             self[key]['value'] = None
+            w = self[key]['main widget']
+            if w:
+                d["widgets to empty"].append(w)
             
             self[key]['hidden M'] = True
             self[mkey]['hidden M'] = False
@@ -693,6 +700,7 @@ class WidgetsDict(dict):
             
             self[key]['current source'] = None
             self[ukey]['current source'] = source
+            d["switch source menu to update"].append(ukey)
             
             # NB : on ne supprime pas les valeurs des branches M masquées, pour
             # éviter à l'utilisateur d'avoir à les resaisir s'il change d'avis.
@@ -715,13 +723,20 @@ class WidgetsDict(dict):
             khide = key
             
             if not source == '< URI >':
-                d["sources list to update"].append(ukey)
+                d["concepts list to update"].append(ukey)
             
         else:
             # cas d'un simple changement de thésaurus
             self[key]['current source'] = source
+            if not key in d["switch source menu to update"]:
+                d["switch source menu to update"].append(key)
+            
+            d["concepts list to update"].append(key)
+            
             self[key]['value'] = None
-            d["sources list to update"].append(key)   
+            w = self[key]['main widget']
+            if w:
+                d["widgets to empty"].append(w)
         
         if kshow or khide:
             for k in self.keys():

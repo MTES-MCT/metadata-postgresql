@@ -230,8 +230,9 @@ class TestRDFUtils(unittest.TestCase):
         self.assertTrue(
             d[self.lck_m_txt]['main widget'] in c["widgets to show"]
             )
-        self.assertEqual(c["switch source menu to update"], [])
-        self.assertEqual(c["sources list to update"], [])
+        self.assertEqual(c["switch source menu to update"], [self.lck_m])
+        self.assertEqual(c["widgets to empty"], [d[self.lck]['main widget']])
+        self.assertEqual(c["concepts list to update"], [])
         
         self.assertFalse(d[self.lck_m]['hidden M'])
         self.assertFalse(d[self.lck_m_txt]['hidden M'])
@@ -259,11 +260,12 @@ class TestRDFUtils(unittest.TestCase):
         self.assertTrue(
             d[self.lck_m_txt]['main widget'] in c["widgets to hide"]
             )
-        self.assertEqual(c["switch source menu to update"], [])
+        self.assertEqual(c["switch source menu to update"], [self.lck])
+        self.assertEqual(c["widgets to empty"], [])
         if d[self.lck]['current source'] == '< URI >':
-            self.assertEqual(c["sources list to update"], [])
+            self.assertEqual(c["concepts list to update"], [])
         else:
-            self.assertEqual(c["sources list to update"], self.lck)
+            self.assertEqual(c["concepts list to update"], [self.lck])
         self.assertTrue(d[self.lck_m]['hidden M'])
         self.assertTrue(d[self.lck_m_txt]['hidden M'])
         self.assertEqual(d[self.lck_m_txt]['value'], "Non vide")
