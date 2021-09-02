@@ -33,7 +33,7 @@ r = widgetsdict.add(key, language, langList)
 
 ```
 
-`language` et `langList` sont les paramètres utilisateur qui spécifient réciproquement la langue principale de saisie et la liste des langues autorisées pour les traductions. Ils prennent des valeurs identiques pour tous les boutons "plus" et celles-ci peuvent être considérées comme fixes pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.
+*`language` et `langList` sont les paramètres utilisateur qui spécifient réciproquement la langue principale de saisie et la liste des langues autorisées pour les traductions. Ils prennent des valeurs identiques pour tous les boutons "plus" et celles-ci peuvent être considérées comme fixes pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.*
 
 ### ... puis du formulaire
 
@@ -45,7 +45,7 @@ Le résultat, ici `r`, est un dictionnaire à quatre clés :
 
     *Concrètement, cette liste, si elle n'est pas vide, contiendra des widgets QToolButton correspondant à des boutons "moins" (lorsqu'il ne reste qu'un objet dans un groupe, son bouton "moins" disparaît pour empêcher sa suppression, il doit être ré-affiché si un nouvel objet est ajouté).*
     
-- inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
+- Inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
 
     *La liste sera toujours vide pour un bouton "plus". Pour un bouton de traduction, elle pourra contenir le QToolButton du bouton "plus" lui-même si toutes les langues disponibles pour les traductions sont maintenant utilisées, et qu'il n'y a donc plus lieu d'ajouter des traductions supplémentaires.*
     
@@ -60,7 +60,7 @@ Le résultat, ici `r`, est un dictionnaire à quatre clés :
 
 Les boutons "moins" existent à la fois dans les groupes de valeurs et dans les groupes de traduction. Dans les deux cas, ce sont des QToolButton dont l'activation permet à l'utilisateur de faire disparaître des zones de saisie excédentaires.
 
-NB : une telle opération a pour seul intérêt le confort visuel de l'utilisateur et, lorsqu'il s'agit de retirer une branche complète et pas juste un widget de saisie, de lui éviter de devoir supprimer à la main un potentiellement grand nombre de valeurs. Du point de vue des fonctions de RDF Utils, la présence de widgets vides n'a aucune espèce d'importance.
+*NB : une telle opération a pour seul intérêt le confort visuel de l'utilisateur et, lorsqu'il s'agit de retirer une branche complète et pas juste un widget de saisie, de lui éviter de devoir supprimer à la main un potentiellement grand nombre de valeurs. Du point de vue des fonctions de RDF Utils, la présence de widgets vides n'a aucune espèce d'importance.*
 
 ![gv_bouton_moins](/__doc__/schemas/gv_bouton_moins.png) ![gt_bouton_moins](/__doc__/schemas/gt_bouton_moins.png)
 
@@ -76,7 +76,7 @@ r = widgetsdict.drop(key, langList)
 
 ```
 
-`langList` est le paramètre utilisateur qui spécifie la liste des langues autorisées pour les traductions. Il prend une valeur identique pour tous les boutons "moins" et celle-ci peut être considérée comme fixe pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.
+*`langList` est le paramètre utilisateur qui spécifie la liste des langues autorisées pour les traductions. Il prend une valeur identique pour tous les boutons "moins" et celle-ci peut être considérée comme fixe pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.*
 
 ### ... puis du formulaire
 
@@ -86,17 +86,17 @@ Le résultat, ici `r`, est un dictionnaire à sept clés :
 
 - `"widgets to delete"` contient une liste de widgets (QWidget) à détruire.
     
-    *Ces widgets ne sont plus référencés dans le dictionnaire, il ne sera donc plus jamais possible d'interragir avec eux. Les supprimer paraît la meilleure chose à faire.*
+    *Ces widgets ne sont plus référencés dans le dictionnaire, il ne sera donc plus jamais possible d'interagir avec eux. Les supprimer paraît la meilleure chose à faire.*
 
-- dans la même veine, `"actions to delete"` contient la liste des objets QAction à détruire.
+- Dans la même veine, `"actions to delete"` contient la liste des objets QAction à détruire.
 
-- et `"menus to delete"` celle des objets QMenu à détruire.
+- `"menus to delete"` contient la liste des objets QMenu à détruire.
 
 - `"widgets to show"` contient une liste de widgets (QWidget) jusque-là masqués qu'il s'agit maintenant d'afficher (`show()`).
 
     *Cette liste sera toujours vide pour un bouton "moins" dans un groupe de valeur. Dans un groupe de traduction, elle pourra contenir le QToolButton du bouton "plus" du groupe si retirer une traduction fait que toutes les langues ne sont désormais plus utilisées, et qu'il est donc de nouveau possible d'ajouter des traductions supplémentaires.*
     
-- inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
+- Inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
 
    *Concrètement, cette liste, si elle n'est pas vide, contiendra des widgets QToolButton correspondant à des boutons "moins" qui doivent être masqués parce qu'il ne reste plus qu'un élément dans le groupe de valeurs ou de traductions (et qu'il n'est pas permis à l'utilisateur de supprimer le dernier élément d'un groupe).*
     
@@ -104,10 +104,10 @@ Le résultat, ici `r`, est un dictionnaire à sept clés :
 
     *En pratique, cette liste sera toujours vide pour un bouton "moins" dans un groupe de valeur. Dans un groupe de traduction, supprimer une traduction implique que la langue de celle-ci (sous réserve qu'elle ait été autorisée au départ) est de nouveau disponible et doit donc être rajoutée aux menus des boutons de sélection de la langue qui accompagnent tous les widgets de saisie du groupe. Cf. [Création d'un nouveau widget](/10_creation_widgets.md#widget-annexe--bouton--de-sélection-de-la-langue) pour plus de détails sur la génération des menus de langues.*
 
-- `"widgets to move"` fournit une liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a supprimé un widget antérieurement positionné au-dessus d'eux - il faut modifier la position dans la grille :
-    - `[0]` est la grille (QGridLayout) du widget.
+- `"widgets to move"` fournit une liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a supprimé un widget antérieurement positionné au-dessus d'eux dans la grille - il faut à présent modifier la position :
+    - `[0]` est la grille concernée (QGridLayout).
     - `[1]` est le widget lui-même (QWidget).
-    - `[2]` est le nouveau numéro de ligne/valeur du paramètre `row` pour le widget.
+    - `[2]` est le nouveau numéro de ligne/valeur du paramètre `row` pour le widget dans la grille.
 
 
 ## Boutons de sélection de la source
@@ -124,7 +124,7 @@ Soit :
 
 ### Mise à jour du dictionnaire des widgets
 
-Quand l'utilisateur sélectionne une nouvelle langue dans le menu, il faudra commencer par exécuter la commande de mise à jour du dictionnaire (méthode `change_source()`) :
+Quand l'utilisateur sélectionne une nouvelle source dans le menu, il faudra commencer par exécuter la commande de mise à jour du dictionnaire (méthode `change_source()`) :
 
 ```python
 
@@ -148,13 +148,13 @@ Le résultat, ici `r`, est un dictionnaire à cinq clés :
 
 - `"switch source menu to update"` est une liste de clés du dictionnaire de widgets pour lesquelles le menu des sources doit être régénéré.
 
-    *Concrètement, cette liste, si elle n'est pas vide, contiendra soit la clé de l'enregistrement courant et/ou celle du widget qui sera désormais affiché à la place.*
+    *Concrètement, cette liste, si elle n'est pas vide, contiendra soit la clé de l'enregistrement courant et/ou celle du widget qui sera désormais affiché à la place. Dans la grande majorité des cas, les items du menu ne changent pas, seulement la source identifiée comme sélectionnée, mais on préférera régénérer intégralement tous les objets QMenu et QAction par précaution.*
 
 - `"widgets to show"` contient une liste de widgets (QWidget) jusque-là masqués qu'il s'agit maintenant d'afficher (`show()`).
 
     *Lors d'une bascule en mode manuel, il faudra afficher le groupe de propriétés dans lequel se fera la saisie manuelle, ainsi que tous les widgets qu'il contient. En cas de sortie du mode manuel, il s'agira d'afficher le widget de saisie QComboBox (si thésaurus) ou QLineEdit (si saisie libre d'URI) que l'utilisateur devra désormais utiliser pour la catégorie de métadonnées concernée.*
 
-- inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
+- Inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
 
     *Lors d'une bascule en mode manuel ou sortie du mode manuel, les widgets utilisés pour l'ancien mode doivent être masqués.*
 
@@ -184,7 +184,7 @@ r = widgetsdict.change_language(key, language, langList)
 
 ```
 
-`langList` est le paramètre utilisateur qui spécifie la liste des langues autorisées pour les traductions. Il prend une valeur identique pour tous les boutons de sélection de la langue et celle-ci peut être considérée comme fixe pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.
+*`langList` est le paramètre utilisateur qui spécifie la liste des langues autorisées pour les traductions. Il prend une valeur identique pour tous les boutons de sélection de la langue et celle-ci peut être considérée comme fixe pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.*
 
 
 ### ... puis du formulaire
