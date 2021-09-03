@@ -155,7 +155,7 @@ widgetsdict[key]['main widget'].setInputMask(widgetsdict[key]['input mask'])
 
 ```python
 
-widgetsdict[key]['type validator'] = mTypeValidator
+mTypeValidator = widgetsdict[key]['type validator']
 
 if mTypeValidator == 'QIntValidator':
     widgetsdict[key]['main widget'].setValidator(QIntValidator(widgetsdict[key]['main widget']))
