@@ -47,6 +47,15 @@ widgetsdict[key[1]]['main widget']
 
 ```
 
+Mais on utilisera plutôt la méthode `parent_widget()`, qui renvoie directement le widget principal (QGroupBox) de l'enregistrement parent :
+
+```python
+
+widgetsdict.parent_widget(key)
+
+```
+
+
 ### Widget masqué ?
 
 Certains widgets seront à masquer ou afficher selon les actions de l'utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu'une métadonnée peut être saisie au choix sous la forme d'un URI ou d'un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l'utilisateur ne décide pas de changer de forme.
@@ -214,6 +223,14 @@ Le nouveau widget doit être placé dans le QGridLayout associé à son parent.
 ```python
 
 widgetsdict[key[1]]['grid widget']
+
+```
+
+Ou, de préférence, en utilisant la méthode dédiée `parent_grid()`, qui renvoie directement la grille (QGridLayout) de l'enregistrement parent :
+
+```python
+
+widgetsdict.parent_grid(key)
 
 ```
 
