@@ -1044,9 +1044,15 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     - [optionnel] readOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
     en mode lecture et lorsque le mode traduction est inactif, seules les métadonnées
     saisies dans la langue principale (paramètre language) sont affichées. True par défaut.
+    À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
+    d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
+    existe, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
     - [optionnel] editOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
     en mode édition et lorsque le mode traduction est inactif, seules les métadonnées
     saisies dans la langue principale (paramètre language) sont affichées. False par défaut.
+    À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
+    d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
+    existe, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
     - [optionnel] labelLengthLimit (int) : nombre de caractères au-delà duquel le label sera
     toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que
     pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive. 25 par défaut.
@@ -1375,6 +1381,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
         mDefaultSource = None
         mLangList = None
         mNHidden = mHidden or False
+        mOneLanguage = None
         values = None
 
         # cas d'une propriété dont les valeurs sont mises à
@@ -1398,14 +1405,6 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 )
                 
             values = [ v['value'] for v in q_gr ]
-            
-            if ( mode == 'read' and readOnlyCurrentLanguage and not translation ) \
-                or ( mode == 'edit' and editOnlyCurrentLanguage and not translation ):
-                values = [ v['value'] for v in q_gr \
-                           if not isinstance(v['value'], Literal) \
-                           or v['value'].language in (None, language) ]
-            else:
-                values = [ v['value'] for v in q_gr ]
     
         # exclusion des catégories qui ne sont pas prévues par
         # le modèle et n'ont pas de valeur renseignée
@@ -1493,6 +1492,20 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             multilingual = p['unilang'] and bool(p['unilang']) or False
             multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
             
+            # si seules les métadonnées dans la langue
+            # principale doivent être affichées et qu'aucune valeur n'est
+            # disponible dans cette langue, on prendra le parti d'afficher
+            # arbitrairement les valeurs de la première langue venue
+            if ( ( mode == 'read' and readOnlyCurrentLanguage ) or
+                   ( mode == 'edit' and editOnlyCurrentLanguage ) ) \
+                and not translation \
+                and not any([ not isinstance(v, Literal) or v.language in (None, language) \
+                              for v in values ]):
+                    for v in values:
+                        if isinstance(v, Literal) and v.language:
+                            mOneLanguage = v.language
+                            break
+            
             if translation and multilingual:
                 mLangList = [ l for l in langList or [] if not l in [ v.language for v in values if isinstance(v, Literal) ] ]
                 # à ce stade, mLangList contient toutes les langues de langList pour lesquelles
@@ -1512,7 +1525,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'row' : rowidx[mParent],
                     'label' : t.get('label', None) or str(p['name']),
                     'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ),
-                    'hidden M' : mHideM
+                    'hidden M' : mHideM,
+                    'path' : mNPath
                     } )
 
                 idx[mParent] += 1
@@ -1632,9 +1646,17 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             # une représentation lisible de la valeur
             if not mKind == 'sh:BlankNode' and (
                     not readHideBlank or not mode == 'read' or not isinstance(mValueBrut, BNode) ):
-                    
-                # cas d'une valeur masquée
-                if mNHidden:
+                      
+                # cas d'une valeur appartenant à une branche masquée
+                # ou d'une traduction dans une langue qui n'est pas
+                # supposée être affichée (c'est à dire toute autre
+                # langue que celle qui a été demandée ou la langue
+                # de substitution fournie par mOneLanguage)
+                if mNHidden or ( not translation \
+                    and ( ( mode == 'read' and readOnlyCurrentLanguage ) \
+                        or ( mode == 'edit' and editOnlyCurrentLanguage ) ) \
+                    and isinstance(mValueBrut, Literal) \
+                    and not mValueBrut.language in (None, language, mOneLanguage) ):
                 
                     if isinstance(mValueBrut, BNode):
                         continue   
@@ -1654,7 +1676,6 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 
                     idx[mParent] += 1
                     continue
-
                 
                 if isinstance(mValueBrut, BNode):
                     mValueBrut = None
@@ -1773,7 +1794,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 'next child' : idx[mParent] + 1,
                 'next child row' : rowidx[mParent] + 1,
                 'hidden M' : mHideM,
-                'hidden' :  len(mVLangList) == 1 if multilingual else None
+                'hidden' :  len(mVLangList) == 1 if multilingual else None,
+                'path' : mNPath
                 } )
             
             idx[mParent] += 1
@@ -1834,7 +1856,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'main widget type' : 'QGroupBox',
                     'row' : rowidx[mParent],
                     'label' : t.get('label', None) or "???",
-                    'help text' : t.get('help text', None)
+                    'help text' : t.get('help text', None),
+                    'path' : meta
                     } )
 
                 idx[mParent] += 1
@@ -1906,7 +1929,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'row' : rowidx[mParent],
                     'next child' : idx[mParent] + 1,
                     'next child row' : rowidx[mParent] + 1,
-                    'hidden' : len(mVLangList) == 1 if multilingual else None
+                    'hidden' : len(mVLangList) == 1 if multilingual else None,
+                    'path' : meta
                     } )
                 
                 idx[mParent] += 1
@@ -1947,7 +1971,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'object' : 'group of values',
                     'main widget type' : 'QGroupBox',
                     'row' : rowidx[mParent],
-                    'label' : "???"
+                    'label' : "???",
+                    'path' : p.n3(nsm)
                     } )
 
                 idx[mParent] += 1
