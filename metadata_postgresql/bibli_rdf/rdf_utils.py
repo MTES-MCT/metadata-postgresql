@@ -991,6 +991,7 @@ class WidgetsDict(dict):
 def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     mode='edit', readHideBlank=True, hideUnlisted=False,
     language="fr", translation=False, langList=['fr', 'en'],
+    readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
     labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
@@ -1038,8 +1039,14 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     incluse dans langList ci-après.
     - [optionnel] translation (bool) : paramètre utilisateur qui indique si les widgets de
     traduction doivent être affichés. False par défaut.
-    - [optionnel] langList (list) : liste des langues autorisées pour les traductions (str),
-    par défaut français et anglais, soit ['fr', 'en'].
+    - [optionnel] langList (list) : paramètre utilisateur spécifiant la liste des langues
+    autorisées pour les traductions (str), par défaut français et anglais, soit ['fr', 'en'].
+    - [optionnel] readOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
+    en mode lecture et lorsque le mode traduction est inactif, seules les métadonnées
+    saisies dans la langue principale (paramètre language) sont affichées. True par défaut.
+    - [optionnel] editOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
+    en mode édition et lorsque le mode traduction est inactif, seules les métadonnées
+    saisies dans la langue principale (paramètre language) sont affichées. False par défaut.
     - [optionnel] labelLengthLimit (int) : nombre de caractères au-delà duquel le label sera
     toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que
     pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive. 25 par défaut.
@@ -1391,6 +1398,14 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 )
                 
             values = [ v['value'] for v in q_gr ]
+            
+            if ( mode == 'read' and readOnlyCurrentLanguage and not translation ) \
+                or ( mode == 'edit' and editOnlyCurrentLanguage and not translation ):
+                values = [ v['value'] for v in q_gr \
+                           if not isinstance(v['value'], Literal) \
+                           or v['value'].language in (None, language) ]
+            else:
+                values = [ v['value'] for v in q_gr ]
     
         # exclusion des catégories qui ne sont pas prévues par
         # le modèle et n'ont pas de valeur renseignée
@@ -1602,6 +1617,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                         metagraph, shape, vocabulary, template=template, data=data,
                         mode=mode, readHideBlank=readHideBlank, hideUnlisted=hideUnlisted,
                         language=language, translation=translation, langList=langList,
+                        readOnlyCurrentLanguage=readOnlyCurrentLanguage,
+                        editOnlyCurrentLanguage=editOnlyCurrentLanguage,
                         labelLengthLimit=labelLengthLimit, valueLengthLimit=valueLengthLimit,
                         textEditRowSpan=textEditRowSpan, mPath=mNPath, mTargetClass=p['class'],
                         mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
