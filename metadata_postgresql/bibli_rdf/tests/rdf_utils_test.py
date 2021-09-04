@@ -11,7 +11,7 @@ import re, uuid, unittest, json
 from pathlib import Path
 
 from metadata_postgresql.bibli_rdf import rdf_utils, __path__
-from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, populate_widgets
+from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, populate_widgets, search_keys
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -42,39 +42,15 @@ class TestRDFUtils(unittest.TestCase):
             )
 
         # récupération de quelques clés
-        self.ttk = None
-        self.tck = None
-        for k, v in self.widgetsdict.items():
-            if v['path'] == 'dct:temporal':
-                # clé du groupe de propriétés de la couverture temporelle
-                self.tck = k
-            elif self.tck and len(k) > 1 and k[1]==self.tck[1] \
-                    and v['object'] == 'plus button':
-                # bouton plus pour la couverture temporelle
-                self.tck_plus = k
-            elif v['path'] == 'dct:language':
-                # clé de la langue
-                self.lgk = k
-            elif v['path'] == 'dct:title':
-                # clé du libellé
-                self.ttk = k
-            elif self.ttk and len(k) > 1 and k[1]==self.ttk[1] \
-                    and v['object'] == 'translation button':
-                # bouton de traduction du libellé
-                self.ttk_plus = k
-            elif v['path'] == 'dct:modified':
-                # clé de la date de création
-                self.mdk = k
-            elif v['path'] == 'dcat:distribution / dct:license':
-                if v['object'] == 'edit':
-                    # clé de la licence (IRI)
-                    self.lck = k
-                else:
-                    # clé de la licence (manuel)
-                    self.lck_m = k
-            elif v['path'] == 'dcat:distribution / dct:license / rdfs:label':
-                # cle du texte de la licence
-                self.lck_m_txt = k
+        self.lgk = search_keys(self.widgetsdict, 'dct:language', 'edit')[0]
+        self.mdk = search_keys(self.widgetsdict, 'dct:modified', 'edit')[0]
+        self.lck = search_keys(self.widgetsdict, 'dcat:distribution / dct:license', 'edit')[0]
+        self.lck_m = search_keys(self.widgetsdict, 'dcat:distribution / dct:license', 'group of properties')[0]
+        self.lck_m_txt = search_keys(self.widgetsdict, 'dcat:distribution / dct:license / rdfs:label', 'edit')[0]
+        self.ttk = search_keys(self.widgetsdict, 'dct:title', 'edit')[0]
+        self.ttk_plus = search_keys(self.widgetsdict, 'dct:title', 'translation button')[0]
+        self.tck = search_keys(self.widgetsdict, 'dct:temporal', 'group of properties')[0]
+        self.tck_plus = search_keys(self.widgetsdict, 'dct:temporal', 'plus button')[0]
 
         # création de pseudo-widgets
         populate_widgets(self.widgetsdict) 
@@ -193,6 +169,75 @@ class TestRDFUtils(unittest.TestCase):
                     datatype='http://www.w3.org/2001/XMLSchema#dateTime'
                     )
                 )
+
+    # affichage des traductions selon readOnlyCurrentLanguage
+    def test_build_dict_3(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            translation=True,
+            langList=['fr', 'en'],
+            language='fr'
+            )
+        d.add(search_keys(d, 'dct:title', 'translation button')[0])
+        l = search_keys(d, 'dct:title', 'edit')
+        self.assertEqual(len(l), 2)
+        d.update_value(l[0], 'Mon titre')
+        self.assertEqual(d[l[0]]['language value'], 'fr')
+        d.update_value(l[1], 'My title')
+        self.assertEqual(d[l[1]]['language value'], 'en')
+        g = d.build_graph(self.vocabulary)
+        
+        d1 = rdf_utils.build_dict(
+            metagraph=g,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            language='en',
+            langList=['fr', 'en'],
+            readOnlyCurrentLanguage=True
+            )
+        l = search_keys(d1, 'dct:title', 'edit')
+        self.assertEqual(len(l), 2)
+        for k in l:
+            self.assertTrue(
+                d1[k]['language value']=='en' or \
+                d1[k]['main widget type'] is None
+                )
+
+        d2 = rdf_utils.build_dict(
+            metagraph=g,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            language='it',
+            langList=['fr', 'en', 'it'],
+            readOnlyCurrentLanguage=True
+            )
+        l = search_keys(d2, 'dct:title', 'edit')
+        self.assertEqual(len(l), 2)
+        self.assertEqual(
+            sum([d2[k]['main widget type'] is not None for k in l]),
+            1
+            )
+
+        d3 = rdf_utils.build_dict(
+            metagraph=g,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            language='fr',
+            langList=['fr', 'en'],
+            readOnlyCurrentLanguage=False
+            )
+        l = search_keys(d3, 'dct:title', 'edit')
+        self.assertEqual(len(l), 2)
+        for k in l:
+            self.assertIsNotNone(
+                d3[k]['main widget type']
+                )
+        
     
     # à compléter !
 
@@ -336,6 +381,21 @@ class TestRDFUtils(unittest.TestCase):
         self.assertTrue(
             check_unchanged(
                 self.metagraph, self.shape, self.vocabulary
+                )
+            )
+            
+    def test_wd_build_graph_2(self):
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, mode='read'
+                )
+            )
+            
+    def test_wd_build_graph_3(self):
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, language='en',
+                readOnlyCurrentLanguage=True, mode='read'
                 )
             )
 
