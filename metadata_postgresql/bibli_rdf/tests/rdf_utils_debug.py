@@ -7,12 +7,42 @@ from rdflib.compare import isomorphic
 from metadata_postgresql.bibli_rdf import rdf_utils
 
 
-def check_unchanged(graph, shape, vocabulary, language="fr", *args):
+def search_keys(widgetsdict, path, object):
+    """Look up for WidgetsDict keys matching given object and path.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - path (str) : un chemin SPARQL présumé connu (sinon la fonction
+    renverra à coup sûr une liste vide).
+    - object (str) : le type d'objet recherché, parmi "edit" (widget de
+    saisie), "group of values" (groupe de valeurs), "group of properties"
+    (groupe de propriétés), "translation group" (groupe de traduction),
+    "plus button" (bouton plus) et "translation button" (bouton de traduction).
+    
+    RESULAT
+    -------
+    Une liste des clés du dictionnaire de widgets pointant sur des objets
+    du type demandé pour le chemin considéré.
+    """
+    l = []
+    
+    for k, v in widgetsdict.items():
+        if v['path'] == path:
+            if v['object'] == object:
+                l.append(k)
+                
+    return l
+    
+
+
+def check_unchanged(metagraph, shape, vocabulary, language="fr", **args):
     """Check if given graph is preserved through widget dictionnary serialization.
     
     ARGUMENTS
     ---------
-    - graph (rdflib.Graph) : graphe RDF contenant les métadonnées associées à
+    - metagraph (rdflib.Graph) : graphe RDF contenant les métadonnées associées à
     un jeu de données. Elles serviront à initialiser le formulaire de saisie.
     - shape (rdflib.Graph) : schéma SHACL augmenté décrivant les catégories
     de métadonnées communes.
@@ -20,7 +50,8 @@ def check_unchanged(graph, shape, vocabulary, language="fr", *args):
     les ontologies pertinentes.
     - [optionnel] language (str) : langue principale de rédaction des métadonnées
     (paramètre utilisateur). Français ("fr") par défaut.
-    - [optionnel] *args peut contenir tout autre paramètre à passer à build_dict().
+    - [optionnel] args (dict) peut contenir tout autre paramètre à passer à build_dict()
+    sous forme clé/valeur.
     
     RESULTAT
     --------
@@ -35,16 +66,27 @@ def check_unchanged(graph, shape, vocabulary, language="fr", *args):
     >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary)
     
     Avec un paramètre supplémentaire :
-    >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary, None, d_template)   
+    >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary,
+    ...     args={"template": d_template})   
     """
     
-    d = rdf_utils.build_dict(graph, shape, vocabulary, language = language, *args)
+    kw = {
+        "metagraph": metagraph,
+        "shape": shape,
+        "vocabulary": vocabulary,
+        "language": language
+        }
+        
+    for a in args:
+        kw.update({ a: args[a] })
+    
+    d = rdf_utils.build_dict(**kw)
     g = d.build_graph(vocabulary, language)
     
     for n, u in shape.namespace_manager.namespaces():
         g.namespace_manager.bind(n, u, override=True, replace=True)
     
-    return isomorphic(graph, g)
+    return isomorphic(metagraph, g)
     
     
 
