@@ -126,7 +126,7 @@ def pseudo_form(widgetsDict):
     
     for k, v in widgetsDict.items():
 
-        if v['row'] is None or v['hidden']:
+        if v['main widget type'] is None or v['hidden'] or v['hidden M']:
             continue
 
         m = c
