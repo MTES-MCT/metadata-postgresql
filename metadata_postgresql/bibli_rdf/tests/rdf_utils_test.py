@@ -11,7 +11,7 @@ import re, uuid, unittest, json
 from pathlib import Path
 
 from metadata_postgresql.bibli_rdf import rdf_utils, __path__
-from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, populate_widgets, search_keys
+from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, populate_widgets, search_keys, check_rows
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -237,7 +237,80 @@ class TestRDFUtils(unittest.TestCase):
             self.assertIsNotNone(
                 d3[k]['main widget type']
                 )
-        
+
+    # consistance de "row" sans template
+    def test_build_dict_4(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+
+    # consistance de "row" avec template
+    def test_build_dict_5(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=self.template
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+
+    # consistance de "row" avec template
+    # et hideUnlisted
+    def test_build_dict_6(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=self.template,
+            hideUnlisted=True
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+
+    # modification de l'ordre des catégories
+    # grâce au template
+    def test_build_dict_7(self):
+        tck_gv = search_keys(
+            self.widgetsdict,
+            'dct:temporal',
+            'group of values'
+            )[0]
+        self.assertNotEqual(self.widgetsdict[tck_gv]['row'], 0)
+        tck_end = search_keys(
+            self.widgetsdict,
+            'dct:temporal / dcat:endDate',
+            'edit'
+            )[0]
+        self.assertNotEqual(self.widgetsdict[tck_end]['row'], 0)
+        t={
+            "dct:temporal": {"order": 1},
+            "dct:temporal / dcat:endDate" : {"order": 1}
+            }
+        d = rdf_utils.build_dict(
+            metagraph=Graph(),
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=t
+            )
+        tck2 = search_keys(
+            d,
+            'dct:temporal',
+            'group of values'
+            )[0]
+        self.assertEqual(d[tck2]['row'], 0)
+        tck2_end = search_keys(
+            d,
+            'dct:temporal / dcat:endDate',
+            'edit'
+            )[0]
+        self.assertEqual(d[tck2_end]['row'], 0)
+        e = check_rows(d)
+        self.assertIsNone(e)
     
     # à compléter !
 
@@ -494,13 +567,41 @@ class TestRDFUtils(unittest.TestCase):
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'hidden.button'):
             d.add(self.ttk_plus)
 
+    # ajout/suppression d'une traduction
+    # contrôle du résultat dans le dictionnaire de widgets
+    def test_wd_add_drop_1(self):
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            translation=True, langList=['fr', 'en']
+            )
+        d.add(self.ttk_plus)
+        e = check_rows(d)
+        self.assertIsNone(e)
+        lttk2 = search_keys(d, 'dct:title', 'edit')
+        self.assertEqual(len(lttk2), 2)
+        self.assertNotEqual(
+            d[lttk2[0]]['language value'],
+            d[lttk2[1]]['language value']
+            )
+        self.assertEqual(
+            d[lttk2[0]]['authorized languages'],
+            [ d[lttk2[0]]['language value'] ]
+            )
+        self.assertEqual(
+            d[lttk2[1]]['authorized languages'],
+            [ d[lttk2[1]]['language value'] ]
+            )       
+        d.drop(lttk2[1])
+        e = check_rows(d)
+        self.assertIsNone(e)
+        lttk2 = search_keys(d, 'dct:title', 'edit')
+        self.assertEqual(len(lttk2), 1)
+        self.assertEqual(
+            len(d[lttk2[0]]['authorized languages']),
+            2
+            )
+        
     # à compléter !
-    
-    # def test_wd_drop_2(self):
-        # d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        # d.drop(tck)
-        # self.assertTrue([e for e in d.keys() if is_ancestor(tck, key)] == [])
-        #self.assertTrue(d.get(tck) is None)
 
 
     ### FONCTION WidgetsDict.change_language
