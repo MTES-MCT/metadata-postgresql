@@ -275,7 +275,7 @@ snum:PeriodOfTimeShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
-        sh:order 0 ;
+        sh:order 1 ;
         snum:widget "QDateEdit" ;
 	] .
     
