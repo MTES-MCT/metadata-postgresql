@@ -1198,7 +1198,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     défaut), 'node kind', 'data type'**, 'class', 'path'***, 'subject', 'predicate', 'node',
     'transform', 'default widget type', 'one per language', 'next child' (indice à utiliser si un
     enregistrement est ajouté au groupe), 'next child row', 'multiple values'* (la catégorie est-elle
-    censée admettre plusieurs valeurs ?).
+    censée admettre plusieurs valeurs ?), 'order shape', 'order template'* (ordre des catégories, cette
+    clé s'appelle simplement "order" dans le template).
 
     * ces clés apparaissent aussi dans le dictionnaire interne de template.
     ** le dictionnaire interne de template contient également une clé 'data type', mais dont les
@@ -1311,7 +1312,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             'default widget type' : None,
             'one per language' : None,
             'next child' : None,
-            'next child row' : None
+            'next child row' : None,
+            'shape order' : None,
+            'template order' : None
             }
 
         # on initialise le dictionnaire avec un groupe racine :
@@ -1323,7 +1326,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             'main widget type' : 'QGroupBox',
             'row' : 0,
             'node' : mParentNode,
-            'class' : URIRef('http://www.w3.org/ns/dcat#Dataset')
+            'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
+            'shape order' : 0
             } )
 
 
@@ -1526,7 +1530,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'label' : t.get('label', None) or str(p['name']),
                     'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ),
                     'hidden M' : mHideM,
-                    'path' : mNPath
+                    'path' : mNPath,
+                    'shape order' : int(p['order']) if p['order'] else None,
+                    'template order' : t.get('order', None)
                     } )
 
                 idx[mParent] += 1
@@ -1558,6 +1564,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             mVLangList = mLangList.copy() if mLangList is not None else None
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
                         mKind == 'sh:Literal' and p['type'].n3(nsm) == 'xsd:string' ) else None
+            mNGraphEmpty = mGraphEmpty
             
             # cas d'un noeud vide :
             # on ajoute un groupe et on relance la fonction sur la classe du noeud
@@ -1616,7 +1623,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                         'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
                         'current source' : mCurSource,
                         'sources' : mVSources,
-                        'hidden M' : mVHideM
+                        'hidden M' : mVHideM,
+                        'shape order' : int(p['order']) if p['order'] else None,
+                        'template order' : t.get('order', None)
                         } )
 
                     if mKind == 'sh:BlankNode':
@@ -1776,7 +1785,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'one per language' : multilingual and translation,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
-                    'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None )
+                    'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None ),
+                    'shape order' : int(p['order']) if p['order'] else None,
+                    'template order' : t.get('order', None)
                     } )
                 
                 idx[mParent] += 1
@@ -1857,7 +1868,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'row' : rowidx[mParent],
                     'label' : t.get('label', None) or "???",
                     'help text' : t.get('help text', None),
-                    'path' : meta
+                    'path' : meta,
+                    'template order' : t.get('order', None)
                     } )
 
                 idx[mParent] += 1
@@ -1914,7 +1926,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
-                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False))
+                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
+                    'template order' : t.get('order', None)
                     } )
                         
                 idx[mParent] += 1
@@ -1935,6 +1948,38 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 
                 idx[mParent] += 1
                 rowidx[mParent] += 1
+
+
+    # ---------- RENUMEROTATION ----------
+    # le cas échéant, on réordonne les catégories en fonction
+    # paramètre "order" du template (stocké dans la clé
+    # 'template order'). Les métadonnées non définies
+    # traitées plus loin iront naturellement à la fin.
+    if template:
+    
+        n = 0
+        l = [k for k in iter_children_keys(mDict, mParentWidget)]
+        l.sort(key= lambda k: (mDict[k]["template order"] or 999, mDict[k]["shape order"] or 999))
+        
+        for k in l:       
+            if mDict[k]['row'] is not None:
+        
+                # on ne traite pas les doubles M
+                # indépendemment, mais en même temps
+                # que leurs jumeaux non M
+                if len(k) == 3 and (k[0], k[1]) in mDict:
+                    continue
+                elif len(k) == 2 and (k[0], k[1], 'M') in mDict:                    
+                    mDict[(k[0], k[1], 'M')]['row'] = n
+                    # la question du label ne se pose
+                    # pas puisqu'on est sur un groupe
+                
+                if mDict[k]['label row'] is not None:
+                    mDict[k]['label row'] = n
+                    n += 1
+                
+                mDict[k]['row'] = n
+                n += 1
 
 
     # ---------- METADONNEES NON DEFINIES ----------
@@ -2791,6 +2836,62 @@ def metagraph_from_file(filepath, format=None):
 
     return g
     
+
+def iter_children_keys(widgetdict, key):
+    """Generator on keys of given record children.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    
+    RESULTAT
+    --------
+    Un générateur sur les clés des enregistrements du dictionnaire dont
+    key est la clé parente, qui pourra être appelé ainsi :
+    >>> for k in iter_children_keys(widgetdict, key):
+    ...     [do whatever]
+    
+    EXEMPLES
+    --------
+    >>> for k in rdf_utils.iter_children_keys(d, (0,)):
+    ...     print(k)
+    """
+    for k in widgetdict.keys():
+        if len(k) > 1 and k[1] == key:
+            yield k
+
+
+def iter_siblings_keys(widgetdict, key, include=False):
+    """Generator on keys of given record siblings.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    - [optionnel] include (bool) : indique si key doit être incluse
+    dans le générateur. False par défaut.
+    
+    RESULTAT
+    --------
+    Un générateur sur les enregistrements du dictionnaire de même
+    parent que key, qui pourra être appelé ainsi :
+    >>> for k in iter_siblings_keys(widgetdict, key):
+    ...     [do whatever]
+    
+    EXEMPLES
+    --------
+    >>> for k in rdf_utils.iter_siblings_keys(d, (0, (0,))):
+    ...     print(k)
+    """
+    if len(key) > 1:
+        for k in widgetdict.keys():
+            if len(k) > 1 and k[1] == key[1] \
+                and (include or not k == key):
+                yield k
+
 
 class ForbiddenOperation(Exception):
     pass
