@@ -164,11 +164,6 @@ def check_rows(widgetsdict):
                 issues.update( { n : (k, 'already affected (label row)') } )
                 n += 1
                 
-            elif ( idx[k[1]] == [] and not c['label row'] == 0 )  or (
-                    not idx[k[1]] == [] and not c['label row'] == ( max(idx[k[1]]) + 1 ) ):
-                issues.update( { n : (k, 'gap (label row)') } )
-                n += 1
-                
             idx[k[1]].append(c['label row'])
             
             
@@ -176,12 +171,13 @@ def check_rows(widgetsdict):
             issues.update( { n : (k, 'already affected') } )
             n += 1
             
-        elif ( idx[k[1]] == [] and not c['row'] == 0 ) \
-                or ( not idx[k[1]] == [] and not c['row'] == ( max(idx[k[1]]) + 1 ) ):
+        idx[k[1]].append(c['row'])
+
+    for k, l in idx.items():
+        l.sort()
+        if not l == list(range(len(l))):
             issues.update( { n : (k, 'gap') } )
             n += 1
-            
-        idx[k[1]].append(c['row'])           
             
     if issues:
         return issues
