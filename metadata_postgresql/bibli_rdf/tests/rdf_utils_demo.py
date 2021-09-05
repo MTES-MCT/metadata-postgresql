@@ -109,6 +109,11 @@ def print_dict(widgetsDict, hideNone=True, limit=5, branch=None):
 def pseudo_form(widgetsDict):
     """Show very basic representation of a form generated from widgetsDict.
     
+    ATTENTION ! Cette fonction affiche les éléments dans l'ordre du
+    dictionnaire, ce qui est très simplificateur. Elle ne donnera pas le 
+    résultat escompté si des éléments ont été ajoutés avec add ou si
+    l'ordre des catégories a été modifié via un template.
+    
     ARGUMENTS
     ---------
     - widgetsDict (WidgetsDict) : dictionnaire obtenu par exécution de la
