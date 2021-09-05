@@ -1,9 +1,11 @@
 {
     "dct:description": {
         "label": "résumé",
-        "row span": 15
+        "row span": 15,
+        "order": 2
     },
     "dct:title": {
+        "order": 1
     },
     "dcat:contactPoint": {
     },
@@ -19,7 +21,8 @@
     "<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>" : {
         "label": "notes ADL",
         "data type": "string",
-        "main widget type": "QTextEdit"        
+        "main widget type": "QTextEdit",
+        "order": 3
     }
 }
         
