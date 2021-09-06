@@ -88,11 +88,26 @@ widgetsdict[key]['main widget'].setToolTip(widgetsdict[key]['help text'])
 
 ```
 
+- La couleur du cadre du QGroupBox dépendra de la nature du groupe, soit de la valeur de la clé `'object'` ou plus simplement la valeur renvoyée par :
+
+```python
+
+widgetsdict.group_kind(key)
+
+```
+
+On pourra utiliser les valeurs par défaut suivantes :
+
+| Groupe de propriétés | `'group of properties'` | `'#958B62'` |
+| Groupe de valeurs | `'group of values'` | `'#5770BE'` |
+| Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
+
+
 ### Paramètres spécifiques aux widgets QToolButton
 
 Les seuls cas où le widget principal est un QToolButton sont ceux des "boutons plus" et "boutons de traduction", qui permettent à l'utilisateur d'ajouter réciproquement des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'` ou `'translation button'`.
 
-L'action associée à ce QToolButton sera stockée dans la clé `'main action'` du dictionnaire.
+- L'action associée à ce QToolButton sera stockée dans la clé `'main action'` du dictionnaire.
 
 ```python
 
@@ -101,6 +116,30 @@ widgetsdict[key]['main action']
 ```
 
 *Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md#boutons-plus-et-boutons-de-traduction).*
+
+- L'image à utiliser est toujours [plus_button.svg](/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+
+```python
+
+widgetsdict.group_kind(key)
+
+```
+
+Comme pour les QGroupBox, on pourra utiliser les valeurs par défaut suivantes :
+
+| Groupe de propriétés | `'group of properties'` | `'#958B62'` |
+| Groupe de valeurs | `'group of values'` | `'#5770BE'` |
+| Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
+
+*NB. En pratique, il n'y a pas de bouton plus dans les groupes de propriétés, donc la couleur associée ne sera jamais utilisée dans ce contexte.*
+
+Soit `color` la couleur souhaitée pour le bouton et `raw_svg` le contenu du fichier *plus_button.svg*, on pourra appliquer la couleur avec :
+
+```python
+
+colored_svg = raw_svg.format(fill=color)
+
+```
 
 ### Paramètres spécifiques aux widgets de saisie
 
@@ -459,8 +498,12 @@ column = 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is Non
 
 Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
-[↑ haut de page](#création-dun-nouveau-widget)
 
+### Icône
+
+L'icône à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
+
+[↑ haut de page](#création-dun-nouveau-widget)
 
 
 ## Widget annexe : bouton  de sélection de la langue
@@ -630,5 +673,32 @@ column = ( 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is N
 ```
 
 Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
+
+### Icône
+
+L'image à utiliser pour un bouton moins est toujours [minus_button.svg](/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+
+```python
+
+widgetsdict.group_kind(key)
+
+```
+
+Comme pour les QGroupBox et les boutons plus/boutons de traduction, on pourra utiliser les valeurs par défaut suivantes :
+
+| Groupe de propriétés | `'group of properties'` | `'#958B62'` |
+| Groupe de valeurs | `'group of values'` | `'#5770BE'` |
+| Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
+
+*NB. En pratique, il n'y a pas de bouton moins dans les groupes de propriétés, donc la couleur associée ne sera jamais utilisée dans ce contexte.*
+
+Soit `color` la couleur souhaitée pour le bouton et `raw_svg` le contenu du fichier *minus_button.svg*, on pourra appliquer la couleur avec :
+
+```python
+
+colored_svg = raw_svg.format(fill=color)
+
+```
+
 
 [↑ haut de page](#création-dun-nouveau-widget)
