@@ -56,6 +56,18 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict) 
 
 
+    ### FONCTION WidgetsDict.group_kind
+    ### -------------------------------
+    
+    def test_wd_group_kind_1(self):
+        for k in self.widgetsdict.keys():
+            self.assertTrue(self.widgetsdict.group_kind(k) in (
+                'group of values', 'group of properties',
+                'translation group'
+                )
+            )
+    
+
     ### FONCTION metagraph_from_file
     ### ----------------------------
     
