@@ -987,6 +987,42 @@ class WidgetsDict(dict):
         return [int(x) for x in l]
 
 
+    def group_kind(self, key):
+        """Renvoie la nature du groupe auquel appartient l'enregistrement de clé key.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : une clé du dictionnaire de widgets (WidgetsDict).
+        
+        RESULTAT
+        --------
+        "group of values" si l'enregistrement est un groupe de valeurs ou, s'il
+        s'agit d'un widget d'édition ou d'un bouton, si son parent est un groupe
+        de valeurs.
+        "group of properties" si l'enregistrement est un groupe de propriétés ou,
+        s'il s'agit d'un widget d'édition ou d'un bouton, si son parent est un
+        groupe de propriétés.
+        "translation group" si l'enregistrement est un groupe de traduction ou,
+        s'il s'agit d'un widget d'édition ou d'un bouton, si son parent est un
+        groupe de traduction.
+        
+        """
+        if self[key]['object'] in (
+            'group of values', 'group of properties',
+            'translation group'
+            ):
+            return self[key]['object']
+        
+        obj = self[key[1]]['object']
+        
+        if obj in (
+            'group of values', 'group of properties',
+            'translation group'
+            ):
+            return obj
+            
+        raise RuntimeError("Unknown group kind for key {}.".format(key))
+
 
 def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     mode='edit', readHideBlank=True, hideUnlisted=False,
