@@ -295,10 +295,23 @@ class WidgetsDict(dict):
             # cas des frères et soeurs
             elif len(k) > 1 and k[1] == key[1]:
             
-                # mise à jour du numéro de ligne à utiliser pour un
-                # nouvel enfant
+                if self[k]['row'] > self[key]['row']:
+                    
+                    # mise à jour de la clé 'row' des petits frères
+                    self[k]['row'] -= ( self[key]['row span'] or 1 )
+                    
+                    for e in ('main widget', 'minus widget', 'language widget', 'switch source widget'):
+                        # pas de label widget, l'étiquette est sur le groupe
+                        w = self[k][e]
+                        if w:
+                            d["widgets to move"].append((
+                                self.parent_grid(k),
+                                w,
+                                self[k]['row']
+                                ))
+            
+            
                 if self[k]['object'] in ('plus button', 'translation button'):
-                    self[k]['next child row'] -= 1
                     
                     # si le bouton (de traduction) était masqué et que
                     # la langue de l'enregistrement à supprimer est bien
@@ -308,22 +321,9 @@ class WidgetsDict(dict):
                         w = self[k]['main widget']
                         if w:
                             d["widgets to show"].append(w)
+
                     
                 elif self[k]['object'] in ('group of properties', 'translation group', 'edit') :
-            
-                    if k[0] > key[0]:
-                    
-                        # mise à jour de la clé 'row' des petits frères
-                        self[k]['row'] -= 1
-                        
-                        for e in ('main widget', 'minus widget', 'language widget', 'switch source widget'):
-                            w = self[k][e]
-                            if w:
-                                d["widgets to move"].append((
-                                    self.parent_grid(k),
-                                    w,
-                                    self[k]['row']
-                                    ))
                     
                     if n == 2:
                         # le bouton moins doit être masqué s'il ne
@@ -373,6 +373,7 @@ class WidgetsDict(dict):
         {
         "widgets to show" : [liste des widgets masqués à afficher (QWidget)],
         "widgets to hide" : [liste de widgets à masquer (QWidget)],
+        "widgets to move" : [liste de tuples - cf. ci-après],
         "language menu to update" : [liste de clés (tuples) pour lesquelles
         le menu des langues devra être régénéré],
         "new keys" : [liste des nouvelles clés du dictionnaire (tuple)]
@@ -382,6 +383,11 @@ class WidgetsDict(dict):
         générer les widgets, actions et menus, comme à la création initiale
         du dictionnaire.
         
+        Les tuples de la clé "widgets to move" sont formés comme suit :
+        [0] la grille (QGridLayout) où un widget doit être déplacé.
+        [1] le widget en question (QWidget).
+        [2] son nouveau numéro de ligne/valeur du paramètre row (int).
+        
         EXEMPLES
         --------
         >>> d.add((1, (0, (0,))))
@@ -390,6 +396,7 @@ class WidgetsDict(dict):
         d = {
             "widgets to show": [],
             "widgets to hide": [],
+            "widgets to move": [],
             "language menu to update" : [],
             "new keys": []
             }
@@ -408,12 +415,7 @@ class WidgetsDict(dict):
             raise RuntimeError("Could not find a record to copy from.")
             
         n = self[key]['next child']      
-        r = self[key]['next child row']
-        
-        # mise à jour des indices mémorisés dans le bouton
-        # pour le prochain enregistrement à ajouter
-        self[key]['next child'] += 1
-        self[key]['next child row'] += 1
+        r = self[key]['row']
         
         # dans le cas d'un groupe de traduction, on écrase
         # les paramètres mLangList et language
@@ -460,6 +462,25 @@ class WidgetsDict(dict):
             self.update( { k2: self.clean_copy(cm, language, mLangList) } )   
             self[k2]['row'] = r
             d['new keys'].append(k2)
+    
+        # mise à jour de l'indice mémorisé dans le bouton
+        # pour le prochain enregistrement à ajouter
+        self[key]['next child'] += 1
+        
+        # on décale le bouton pour qu'il apparaisse après
+        # le nouvel enregistrement
+        # NB. ne fonctionnerait pas si on avait des
+        # QTextEdit "URI" (ou quoi que ce soit avec un row span
+        # différent de la valeur par défaut) doublés par un
+        # groupe M, mais ça n'aurait aucun sens.
+        self[key]['row'] += ( self[k1]['row span'] or 1 )
+        w = self[key]['main widget']
+        if w:
+            d["widgets to move"].append((
+                self.parent_grid(key),
+                w,
+                self[key]['row']
+                ))
         
         for k in self.keys():
  
@@ -1233,7 +1254,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     La dernière série de clés ne sert qu'aux fonctions de rdf_utils : 'default value'* (valeur par
     défaut), 'node kind', 'data type'**, 'class', 'path'***, 'subject', 'predicate', 'node',
     'transform', 'default widget type', 'one per language', 'next child' (indice à utiliser si un
-    enregistrement est ajouté au groupe), 'next child row', 'multiple values'* (la catégorie est-elle
+    enregistrement est ajouté au groupe), 'multiple values'* (la catégorie est-elle
     censée admettre plusieurs valeurs ?), 'order shape', 'order template'* (ordre des catégories, cette
     clé s'appelle simplement "order" dans le template).
 
@@ -1348,7 +1369,6 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             'default widget type' : None,
             'one per language' : None,
             'next child' : None,
-            'next child row' : None,
             'shape order' : None,
             'template order' : None
             }
@@ -1841,7 +1861,6 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 'main widget type' : 'QToolButton',
                 'row' : rowidx[mParent],
                 'next child' : idx[mParent] + 1,
-                'next child row' : rowidx[mParent] + 1,
                 'hidden M' : mHideM,
                 'hidden' :  len(mVLangList) == 1 if multilingual else None,
                 'path' : mNPath
@@ -1981,7 +2000,6 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'main widget type' : 'QToolButton',
                     'row' : rowidx[mParent],
                     'next child' : idx[mParent] + 1,
-                    'next child row' : rowidx[mParent] + 1,
                     'hidden' : len(mVLangList) == 1 if multilingual else None,
                     'path' : meta
                     } )
