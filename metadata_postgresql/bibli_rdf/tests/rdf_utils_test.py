@@ -612,6 +612,49 @@ class TestRDFUtils(unittest.TestCase):
             len(d[lttk2[0]]['authorized languages']),
             2
             )
+
+    # ajout/suppression d'un widget de saisie
+    # occupant plusieurs lignes
+    def test_wd_add_drop_2(self):
+        d = self.widgetsdict
+        dsk_plus = search_keys(d, 'dct:description', 'translation button')[0]
+        d.add(dsk_plus)
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ldsk = search_keys(d, 'dct:description', 'edit')
+        self.assertEqual(len(ldsk), 2)
+        self.assertEqual(d[ldsk[0]]['row'], 0)
+        self.assertEqual(d[ldsk[1]]['row'], d[ldsk[0]]['row span'])
+        self.assertEqual(d[ldsk[1]]['row span'], d[ldsk[0]]['row span'])
+        self.assertEqual(d[dsk_plus]['row'], 2 * d[ldsk[0]]['row span'])
+              
+        d.drop(ldsk[0])
+        e = check_rows(d)
+        self.assertIsNone(e)
+        self.assertEqual(d[ldsk[1]]['row'], 0)
+        self.assertEqual(d[dsk_plus]['row'], d[ldsk[1]]['row span'])
+
+    # ajout/suppression de widgets dans
+    # un groupe de valeurs
+    def test_wd_add_drop_3(self):
+        d = self.widgetsdict
+        kwk_plus = search_keys(d, 'dcat:keyword', 'plus button')[0]
+        d.add(kwk_plus)
+        d.add(kwk_plus)
+        e = check_rows(d)
+        self.assertIsNone(e)
+        lkwk = search_keys(d, 'dcat:keyword', 'edit')
+        self.assertEqual(len(lkwk), 3)
+        self.assertEqual(sorted([d[lkwk[0]]['row'], d[lkwk[1]]['row'], d[lkwk[2]]['row']]), [0, 1, 2])
+        self.assertEqual(d[kwk_plus]['row'], 3)
+
+        d.drop(lkwk[1])
+        e = check_rows(d)
+        self.assertIsNone(e)
+        lkwk = search_keys(d, 'dcat:keyword', 'edit')
+        self.assertEqual(len(lkwk), 2)
+        self.assertEqual(sorted([d[lkwk[0]]['row'], d[lkwk[1]]['row']]), [0, 1])
+        self.assertEqual(d[kwk_plus]['row'], 2)
         
     # à compléter !
 
