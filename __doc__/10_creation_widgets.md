@@ -277,15 +277,15 @@ Son placement vertical (paramètre *row* de la méthode addWidget) est donné pa
 
 ```python
 
-widgetsdict[key]['row']
+row = widgetsdict[key]['row']
 
 ```
 
-**Pour les widgets QTextEdit uniquement**, La hauteur du widget (paramètre `row span`) est fournie par la clé `'row span'` du dictionnaire interne.
+La hauteur du widget (paramètre `row span`) est fournie par la clé `'row span'` du dictionnaire interne. Cette clé n'étant renseignée que pour les widgets QTextEdit, on pourra utiliser une valeur par défaut de `1` pour tous les autres.
 
 ```python
 
-widgetsdict[key]['row span']
+rowSpan = widgetsdict[key]['row span'] or 1
 
 ```
 
@@ -299,7 +299,13 @@ column = 1 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is Non
 
 ```
 
-*`column span` pourrait dépendre de la présence d'une étiquette et/ou de boutons "moins" ou de sélection de la source.*
+`columnSpan` est ajusté de manière à ce que le widget principal (groupe ou widget de saisie) et l'éventuelle étiquette occupent toujours deux colonnes.
+
+```python
+
+columnSpan = 1 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 2
+
+```
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
