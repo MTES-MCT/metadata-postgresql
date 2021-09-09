@@ -1783,14 +1783,16 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
                     mLabelRow = rowidx[mParent]
                     rowidx[mParent] += 1
+                    
+                mRowSpan = ( t.get('row span', None) or ( int(p['rowspan']) if p['rowspan'] else textEditRowSpan ) ) \
+                           if mWidgetType == 'QTextEdit' else None
 
                 mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
                     'row' : rowidx[mParent],
-                    'row span' : ( t.get('row span', None) or ( int(p['rowspan']) if p['rowspan'] else textEditRowSpan )
-                               ) if mWidgetType == 'QTextEdit' else None,
+                    'row span' : mRowSpan,
                     'input mask' : t.get('input mask', None) or ( str(p['mask']) if p['mask'] else None ),
                     'label' : mLabel,
                     'label row' : mLabelRow,
@@ -1827,7 +1829,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     } )
                 
                 idx[mParent] += 1
-                rowidx[mParent] += 1
+                rowidx[mParent] += ( mRowSpan or 1 )
 
         # référencement d'un widget bouton pour ajouter une valeur
         # si la catégorie en admet plusieurs
@@ -1936,12 +1938,14 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     mLabelRow = rowidx[mParent]
                     rowidx[mParent] += 1                
 
+                mRowSpan = t.get('row span', textEditRowSpan) if mWidgetType == 'QTextEdit' else None
+
                 mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
                     'row' : rowidx[mParent],
-                    'row span' : t.get('row span', textEditRowSpan) if mWidgetType == 'QTextEdit' else None,
+                    'row span' : mRowSpan,
                     'input mask' : t.get('input mask', None),
                     'label' : mLabel,
                     'label row' : mLabelRow,
@@ -1967,7 +1971,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     } )
                         
                 idx[mParent] += 1
-                rowidx[mParent] += 1
+                rowidx[mParent] += ( mRowSpan or 1 )
 
             if multiple and mode == 'edit':
 
@@ -2015,7 +2019,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     n += 1
                 
                 mDict[k]['row'] = n
-                n += 1
+                n += ( mDict[k]['row span'] or 1 )
 
 
     # ---------- METADONNEES NON DEFINIES ----------
