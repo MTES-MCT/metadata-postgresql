@@ -171,7 +171,8 @@ def check_rows(widgetsdict):
             issues.update( { n : (k, 'already affected') } )
             n += 1
             
-        idx[k[1]].append(c['row'])
+        for x in range(c['row span'] or 1):
+            idx[k[1]].append(c['row'] + x)
 
     for k, l in idx.items():
         l.sort()
