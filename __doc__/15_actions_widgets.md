@@ -39,7 +39,7 @@ r = widgetsdict.add(key, language, langList)
 
 Les informations renvoyées par `add()` permettent de réaliser les opérations subséquentes sur les widgets.
 
-Le résultat, ici `r`, est un dictionnaire à quatre clés :
+Le résultat, ici `r`, est un dictionnaire à cinq clés :
 
 - `"widgets to show"` contient une liste de widgets (QWidget) jusque-là masqués qu'il s'agit maintenant d'afficher (`show()`).
 
@@ -48,6 +48,13 @@ Le résultat, ici `r`, est un dictionnaire à quatre clés :
 - Inversement, `"widgets to hide"` contient une liste de widgets (QWidget) qui devront être masqués (`hide()`).
 
     *La liste sera toujours vide pour un bouton "plus". Pour un bouton de traduction, elle pourra contenir le QToolButton du bouton "plus" lui-même si toutes les langues disponibles pour les traductions sont maintenant utilisées, et qu'il n'y a donc plus lieu d'ajouter des traductions supplémentaires.*
+    
+- `"widgets to move"` fournit une liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a ajouté un widget au-dessus d'eux dans la grille - il faut à présent modifier la position :
+    - `[0]` est la grille concernée (QGridLayout).
+    - `[1]` est le widget lui-même (QWidget).
+    - `[2]` est le nouveau numéro de ligne/valeur du paramètre `row` pour le widget dans la grille.
+    
+    *Concrètement, cela concerne systématiquement et exclusivement le bouton plus ou bouton de traduction lui-même.*
     
 - `"language menu to update"` contient une liste de clés du dictionnaire de widgets (et non directement des widgets, cette fois), pour lesquelles le menu des langues doit être régénéré. Comme lors de la création initiale du formulaire, la liste (mise à jour) des langues à faire apparaître dans ce menu est contenue dans la clé `"authorized languages"` du dictionnaire interne pour la clé fournie.
 
