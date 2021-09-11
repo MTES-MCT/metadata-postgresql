@@ -28,6 +28,8 @@ from rdflib import Graph, URIRef, Literal
 from rdflib.util import guess_format
 from rdflib.serializer import Serializer
 
+from metadata_postgresql.bibli_rdf import __path__
+
 
 def import_vocabulary(directory, scheme, languages=["fr","en"]):
     """Parse RDF SKOS ontologies into a graph.
@@ -281,6 +283,6 @@ def export_vocabulary(graph, mode = 'a'):
     """
     s = v.serialize(format="turtle").decode('utf-8')
     
-    with open(r'modeles\vocabulary.ttl', encoding='UTF-8', mode=mode) as dest:
+    with open(__path__[0] + r'\modeles\vocabulary.ttl', encoding='UTF-8', mode=mode) as dest:
         dest.write(s)
         
