@@ -23,6 +23,8 @@ from locale import strxfrm, setlocale, LC_COLLATE
 from pathlib import Path
 import re, uuid
 
+from metadata_postgresql.bibli_rdf import __path__
+
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -1242,7 +1244,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     antérieurement saisie n'apparaît dans aucune ontologie associée à la catégorie, None si le
     widget n'est pas utilisé. La liste des termes autorisés par la source n'est pas directement
     stockée dans le dictionnaire, mais peut être obtenue via la fonction build_vocabulary.
-    - 'read only' : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
+    - 'read only'* : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
     l'utilisateur. En mode lecture, 'read only' vaut toujours True.
     - 'hidden' : booléen. Si True, le widget principal doit être masqué. Concerne
     les boutons de traduction, lorsque toutes les langues disponibles (cf. langList) ont été
@@ -2951,5 +2953,36 @@ def iter_siblings_keys(widgetdict, key, include=False):
                 yield k
 
 
+def load_shape():
+    """Renvoie le graphe RDF contenant le schéma SHACL des catégories communes (shape).
+    
+    ARGUMENTS
+    ---------
+    Néant.
+    
+    RESULTAT
+    --------
+    Le graphe RDF (rdflib.graph.Graph) auquel fait référence
+    l'argument "shape" des fonctions du présent script.
+    """
+    return metagraph_from_file(__path__[0] + r'\modeles\shape.ttl')
+    
+    
+def load_vocabulary():
+    """Renvoie le graphe RDF contenant la compilation des thésaurus (vocabulary).
+    
+    ARGUMENTS
+    ---------
+    Néant.
+    
+    RESULTAT
+    --------
+    Le graphe RDF (rdflib.graph.Graph) auquel fait référence
+    l'argument "vocabulary" des fonctions du présent script.
+    """
+    return metagraph_from_file(__path__[0] + r'\modeles\vocabulary.ttl')
+
+
 class ForbiddenOperation(Exception):
     pass
+
