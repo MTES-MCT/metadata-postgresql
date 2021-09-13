@@ -1589,8 +1589,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ),
                     'hidden M' : mHideM,
                     'path' : mNPath,
-                    'shape order' : int(p['order']) if p['order'] else None,
-                    'template order' : t.get('order', None)
+                    'shape order' : int(p['order']) if p['order'] is not None else None,
+                    'template order' : int(t.get('order')) if t.get('order') is not None else None
                     } )
 
                 idx[mParent] += 1
@@ -1682,8 +1682,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                         'current source' : mCurSource,
                         'sources' : mVSources,
                         'hidden M' : mVHideM,
-                        'shape order' : int(p['order']) if p['order'] else None,
-                        'template order' : t.get('order', None)
+                        'shape order' : int(p['order']) if p['order'] is not None else None,
+                        'template order' : int(t.get('order')) if t.get('order') is not None else None
                         } )
 
                     if mKind == 'sh:BlankNode':
@@ -1821,7 +1821,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'help text' : mHelp,
                     'value' : mValue,
                     'placeholder text' : ( t.get('placeholder text', None) or ( str(p['placeholder']) if p['placeholder'] else mCurSource ) 
-                                ) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
+                        ) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None) or ( int(p['min']) > 0 if p['min'] else False ),
                     'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
@@ -1846,8 +1846,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
                     'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None ),
-                    'shape order' : int(p['order']) if p['order'] else None,
-                    'template order' : t.get('order', None)
+                    'shape order' : int(p['order']) if p['order'] is not None else None,
+                    'template order' : int(t.get('order')) if t.get('order') is not None else None
                     } )
                 
                 idx[mParent] += 1
@@ -1928,7 +1928,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                     'label' : t.get('label', None) or "???",
                     'help text' : t.get('help text', None),
                     'path' : meta,
-                    'template order' : t.get('order', None)
+                    'template order' : int(t.get('order')) if t.get('order') is not None else None
                     } )
 
                 idx[mParent] += 1
@@ -1988,7 +1988,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
-                    'template order' : t.get('order', None)
+                    'template order' : int(t.get('order')) if t.get('order') is not None else None
                     } )
                         
                 idx[mParent] += 1
@@ -2019,7 +2019,10 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     
         n = 0
         l = [k for k in iter_children_keys(mDict, mParentWidget)]
-        l.sort(key= lambda k: (mDict[k]["template order"] or 999, mDict[k]["shape order"] or 999))
+        l.sort(key= lambda k: (
+            mDict[k]["template order"] if mDict[k]["template order"] is not None else 9999,
+            mDict[k]["shape order"] if mDict[k]["shape order"] is not None else 9999
+            ))
         
         for k in l:       
             if mDict[k]['row'] is not None:

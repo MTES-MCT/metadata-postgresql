@@ -77,9 +77,9 @@ def table_from_shape(
             str(p['default']) if p['default'] else None,
             str(p['placeholder']) if p['placeholder'] else None,
             str(p['mask']) if p['mask'] else None,
-            int(p['max']) > 1 if p['max'] else True,
-            int(p['min']) >= 1 if p['min'] else False,
-            int(p['order']) if p['order'] else None
+            int(p['max']) > 1 if p['max'] is not None else True,
+            int(p['min']) >= 1 if p['min'] is not None else False,
+            int(p['order']) if p['order'] is not None else None
             ))
         
         if mKind in ('sh:BlankNode', 'sh:BlankNodeOrIRI'):

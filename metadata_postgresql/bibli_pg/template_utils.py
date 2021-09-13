@@ -5,9 +5,11 @@ Fonctions pour l'import et la préparation du modèle de formulaire (template).
 
 import re
 from rdflib import Graph
+from rdflib.util import from_n3
 
 
-def search_template(schema_name, table_name, metagraph, templates):
+def search_template(schema_name, table_name, metagraph,
+    templates):
     """Recherche le modèle de formulaire à utiliser.
     
     ARGUMENTS
@@ -78,28 +80,36 @@ def search_template(schema_name, table_name, metagraph, templates):
                 break
         
         # conditions
-        for e in t[6].values():
-            for k, v in e.items():
-                q_gr = metagraph.query(
-                        """
-                        SELECT
-                            ?value
-                        WHERE
-                             { ?u a dcat:Dataset ;
-                                  ?u ?path ?value. }
-                        """,
-                        initBindings = {
-                            'path': from_n3(k, nsm=metagraph.namespace_manager)
-                            }
-                        )
-                 
-                if len(q_gr) > 0 \
-                    and all([str(o['value']).lower() == str(v).lower() for o in q_gr]):
-                    # comparaison avec conversion, qui ne tient
-                    # pas compte du type ni de la langue ni de la casse
-                    r = t[1]
-                    p = t[7]
-                    break
+        if isinstance(t[6], dict):
+            for e in t[6].values():
+            
+                if isinstance(e, dict) and len(e) > 0:
+                    b = True
+                    
+                    for k, v in e.items():
+                        q_gr = metagraph.query(
+                                """
+                                SELECT
+                                    ?value
+                                WHERE
+                                     { ?u a dcat:Dataset ;
+                                          ?path ?value. }
+                                """,
+                                initBindings = {
+                                    'path': from_n3(k, nsm=metagraph.namespace_manager)
+                                    }
+                                )
+                         
+                        if len(q_gr) < 1 \
+                            or not any([str(o['value']).lower() == str(v).lower() for o in q_gr]):
+                            # comparaison avec conversion, qui ne tient
+                            # pas compte du type ni de la langue ni de la casse
+                            b = False
+                            
+                    if b:
+                        r = t[1]
+                        p = t[7]
+                        break
                 
     return r
 
@@ -121,8 +131,27 @@ def build_template(categories):
     
     RESULTAT
     --------
-    Le modèles de formulaire (template) qui sera à donner en argument à la
+    Le modèle de formulaire (template) qui sera à donner en argument à la
     fonction rdf_utils.build_dict().
     """
-    pass
+    d = {}
+    
+    for c in categories:
+        d.update({
+                c[1] : {
+                    'label' : c[2],
+                    'main widget type' : c[3],
+                    'row span' : c[4],
+                    'help text' : c[5],
+                    'default value' : c[6],
+                    'placeholder text' : c[7],
+                    'input mask' : c[8],
+                    'multiple values' : c[9],
+                    'is mandatory' : c[10],
+                    'order' : c[11],
+                    'read only' : c[12]
+                    }
+            })
+  
+    return d
     

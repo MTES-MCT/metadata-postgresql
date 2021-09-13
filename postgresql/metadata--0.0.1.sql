@@ -206,8 +206,8 @@ COMMENT ON COLUMN z_metadata.meta_shared_categorie.help_text IS 'Description de 
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.multiple_values IS 'True si la catégorie admet plusieurs valeurs.' ;
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.multiple_values IS 'True si la catégorie admet plusieurs valeurs. ATTENTION : toute modification sur ce champ sera ignorée par le plugin QGIS.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
 -- cette table n'est pas une table de configuration de l'extension
@@ -218,18 +218,18 @@ INSERT INTO z_metadata.meta_categorie (
     help_text, default_value, placeholder_text, input_mask,
     multiple_values, is_mandatory, order_key
     ) VALUES
-    ('shared', 'dct:title', 'libellé', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, True, NULL),
+    ('shared', 'dct:title', 'libellé', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, True, 0),
     ('shared', 'dct:description', 'description', 'QTextEdit', 15, NULL, NULL, NULL, NULL, True, True, 1),
     ('shared', 'dct:modified', 'dernière modification', 'QDateTimeEdit', NULL, NULL, NULL, NULL, NULL, False, False, 2),
     ('shared', 'snum:isExternal', 'donnée externe', 'QCheckBox', NULL, NULL, NULL, NULL, NULL, False, False, 3),
     ('shared', 'dcat:theme', 'thème', 'QComboBox', NULL, NULL, NULL, NULL, NULL, True, False, 4),
     ('shared', 'dcat:keyword', 'mots-clé libres', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, False, 5),
     ('shared', 'dct:temporal', 'couverture temporelle', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 6),
-    ('shared', 'dct:temporal / dcat:startDate', 'date de début', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, NULL),
+    ('shared', 'dct:temporal / dcat:startDate', 'date de début', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, 0),
     ('shared', 'dct:temporal / dcat:endDate', 'date de fin', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, 1),
     ('shared', 'dct:provenance', 'généalogie', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 7),
-    ('shared', 'dct:provenance / rdfs:label', 'texte', 'QTextEdit', 20, NULL, NULL, NULL, NULL, True, False, NULL),
-    ('shared', 'dct:accessRights', 'conditions d''accès', 'QComboBox', NULL, NULL, NULL, NULL, NULL, False, False, 8),
+    ('shared', 'dct:provenance / rdfs:label', 'texte', 'QTextEdit', 20, NULL, NULL, NULL, NULL, True, False, 0),
+    ('shared', 'dct:accessRights', "conditions d'accès", 'QComboBox', NULL, NULL, NULL, NULL, NULL, False, False, 8),
     ('shared', 'dct:accessRights / rdfs:label', 'mention', 'QTextEdit', 4, NULL, NULL, NULL, NULL, True, False, 1),
     ('shared', 'dcat:contactPoint', 'point de contact', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 10),
     ('shared', 'dcat:contactPoint / vcard:fn', 'nom', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 1),
@@ -238,13 +238,13 @@ INSERT INTO z_metadata.meta_categorie (
     ('shared', 'dcat:contactPoint / vcard:hasURL', 'site internet', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 4),
     ('shared', 'dcat:contactPoint / vcard:organization-name', 'organisme', 'QLineEdit', NULL, 'le cas échéant, organisation plus vaste dont le point de contact fait partie', NULL, NULL, NULL, False, False, 5),
     ('shared', 'dct:publisher', 'diffuseur', NULL, NULL, NULL, NULL, NULL, NULL, False, False, 11),
-    ('shared', 'dct:publisher / foaf:name', 'nom', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, NULL),
+    ('shared', 'dct:publisher / foaf:name', 'nom', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 0),
     ('shared', 'dct:publisher / dct:type', 'type', 'QComboBox', NULL, NULL, NULL, NULL, NULL, False, False, 1),
     ('shared', 'dct:publisher / foaf:mbox', 'mél', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 2),
     ('shared', 'dct:publisher / foaf:phone', 'téléphone', 'QLineEdit', NULL, NULL, NULL, '+33-1-23-45-67-89', NULL, False, False, 3),
     ('shared', 'dct:publisher / foaf:workplaceHomepage', 'site internet', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 4),
     ('shared', 'dcat:distribution', 'distribution', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 20),
-    ('shared', 'dcat:distribution / dct:accessURL', 'URL d''accès', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, False, 1),
+    ('shared', 'dcat:distribution / dct:accessURL', "URL d'accès", 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, False, 1),
     ('shared', 'dcat:distribution / dct:issued', 'date de publication', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, 2),
     ('shared', 'dcat:distribution / dct:rights', 'propriété intellectuelle', NULL, NULL, NULL, NULL, NULL, NULL, False, False, 3),
     ('shared', 'dcat:distribution / dct:rights / rdfs:label', 'mention', 'QTextEdit', 4, NULL, NULL, NULL, NULL, True, False, 1),
@@ -315,7 +315,7 @@ COMMENT ON COLUMN z_metadata.meta_template.conditions IS 'Ensemble de conditions
 Dans l''exemple suivant, le modèle sera retenu pour une donnée externe avec le mot-clé "IGN" (ensemble de conditions 1) ou pour une donnée publiée par l''IGN (ensemble de conditions 2) :
 {
     "ensemble de conditions 1": {
-        "snum:isExternal": true,
+        "snum:isExternal": True,
         "dcat:keyword": "IGN"
         },
     "ensemble de conditions 2": {
@@ -389,9 +389,9 @@ Si présente, cette valeur se substitue pour le modèle considéré à la valeur
 COMMENT ON COLUMN z_metadata.meta_template_categories.input_mask IS 'Masque de saisie, s''il y a lieu.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.multiple_values IS 'True si la catégorie admet plusieurs valeurs.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+ATTENTION : pour les catégories communes, les modifications apportées sur ce champs ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.read_only IS 'True si la catégorie est en lecture seule' ;
@@ -452,9 +452,9 @@ Le cas échéant, cette valeur se substituera pour le modèle considéré à la 
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.input_mask IS 'Masque de saisie, s''il y a lieu.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.multiple_values IS 'True si la catégorie admet plusieurs valeurs.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+ATTENTION : pour les catégories communes, les modifications apportées sur ce champs ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.read_only IS 'True si la catégorie est en lecture seule.' ;
