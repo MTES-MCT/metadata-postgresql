@@ -17,6 +17,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+@prefix uuid: <urn:uuid:> .
 
 snum:DatasetShape
 	a sh:NodeShape ;
