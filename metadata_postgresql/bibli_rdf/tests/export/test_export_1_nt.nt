@@ -1,0 +1,41 @@
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/description> "D\u00E9limitation simplifi\u00E9e des d\u00E9partements de France m\u00E9tropolitaine pour repr\u00E9sentation \u00E0 petite \u00E9chelle, conforme au code officiel g\u00E9ographique (COG) de l'INSEE au 1er janvier de l'ann\u00E9e de r\u00E9f\u00E9rence."@fr .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#theme> <http://publications.europa.eu/resource/authority/data-theme/REGI> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#contactPoint> _:ub6bL22C23 .
+_:ub6bL18C18 <http://www.w3.org/ns/dcat#endDate> "2021-01-15"^^<http://www.w3.org/2001/XMLSchema#date> .
+_:ub6bL31C25 <http://www.w3.org/2000/01/rdf-schema#label> "Base de donn\u00E9es soumise aux conditions de la licence ouverte Etalab."@fr .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/provenance> _:ub6bL14C20 .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#keyword> "ign"@fr .
+_:ub6bL22C23 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2006/vcard/ns#Kind> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#contactPoint> _:ub6bL25C23 .
+_:ub6bL18C18 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/PeriodOfTime> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://snum.scenari-community.org/Metadata/Vocabulaire/#isExternal> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+_:ub6bL22C23 <http://www.w3.org/2006/vcard/ns#hasEmail> <mailto:sig-contact@developpement-durable.gouv.fr> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#keyword> "admin express"@fr .
+_:ub6bL28C23 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/dcat#Distribution> .
+_:ub6bL16C19 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#theme> <http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO> .
+_:ub6bL22C23 <http://www.w3.org/2006/vcard/ns#fn> "P\u00F4le IG"@fr .
+_:ub6bL31C25 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/LicenseDocument> .
+_:ub6bL28C23 <http://purl.org/dc/terms/accessURL> <https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/temporal> _:ub6bL18C18 .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/dcat#Dataset> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/modified> "2021-02-04T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:ub6bL25C23 <http://www.w3.org/2006/vcard/ns#hasEmail> <mailto:contact.geoservices@ign.fr> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#keyword> "donn\u00E9e externe"@fr .
+_:ub6bL14C20 <http://www.w3.org/2000/01/rdf-schema#label> "Donn\u00E9e r\u00E9f\u00E9rentielle produite par l'IGN."@fr .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/title> "ADMIN EXPRESS - D\u00E9partements de m\u00E9tropole"@fr .
+_:ub6bL18C18 <http://www.w3.org/ns/dcat#startDate> "2021-01-15"^^<http://www.w3.org/2001/XMLSchema#date> .
+_:ub6bL28C23 <http://purl.org/dc/terms/issued> "2021-01-19"^^<http://www.w3.org/2001/XMLSchema#date> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#landingPage> <https://geoservices.ign.fr/ressources_documentaires/Espace_documentaire/BASES_VECTORIELLES/ADMIN_EXPRESS/IGNF_ADMIN_EXPRESS_2-4.html> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af> "\u00C0 mettre \u00E0 jour !"@fr .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/accessRights> _:ub6bL10C22 .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://purl.org/dc/terms/publisher> _:ub6bL16C19 .
+_:ub6bL25C23 <http://www.w3.org/2006/vcard/ns#organization-name> "Institut national de l'information g\u00E9ographique et foresti\u00E8re (IGN-F)"@fr .
+_:ub6bL16C19 <http://xmlns.com/foaf/0.1/name> "Institut national de l'information g\u00E9ographique et foresti\u00E8re (IGN-F)"@fr .
+_:ub6bL10C22 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/RightsStatement> .
+_:ub6bL14C20 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/ProvenanceStatement> .
+<urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046> <http://www.w3.org/ns/dcat#distribution> _:ub6bL28C23 .
+_:ub6bL28C23 <http://purl.org/dc/terms/license> _:ub6bL31C25 .
+_:ub6bL10C22 <http://www.w3.org/2000/01/rdf-schema#label> "Aucune restriction d'acc\u00E8s ou d'usage."@fr .
+_:ub6bL25C23 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2006/vcard/ns#Kind> .
+

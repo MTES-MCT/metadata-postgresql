@@ -1,0 +1,44 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+@prefix uuid: <urn:uuid:> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:N660b79877a124d82989858ab623d1765 {
+    uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+        dct:accessRights [ a dct:RightsStatement ;
+                rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+        dct:description "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence."@fr ;
+        dct:modified "2021-02-04T00:00:00"^^xsd:dateTime ;
+        dct:provenance [ a dct:ProvenanceStatement ;
+                rdfs:label "Donnée référentielle produite par l'IGN."@fr ] ;
+        dct:publisher [ a foaf:Agent ;
+                foaf:name "Institut national de l'information géographique et forestière (IGN-F)"@fr ] ;
+        dct:temporal [ a dct:PeriodOfTime ;
+                dcat:endDate "2021-01-15"^^xsd:date ;
+                dcat:startDate "2021-01-15"^^xsd:date ] ;
+        dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+        snum:isExternal true ;
+        dcat:contactPoint [ a vcard:Kind ;
+                vcard:fn "Pôle IG"@fr ;
+                vcard:hasEmail <mailto:sig-contact@developpement-durable.gouv.fr> ],
+            [ a vcard:Kind ;
+                vcard:hasEmail <mailto:contact.geoservices@ign.fr> ;
+                vcard:organization-name "Institut national de l'information géographique et forestière (IGN-F)"@fr ] ;
+        dcat:distribution [ a dcat:Distribution ;
+                dct:accessURL <https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express> ;
+                dct:issued "2021-01-19"^^xsd:date ;
+                dct:license [ a dct:LicenseDocument ;
+                        rdfs:label "Base de données soumise aux conditions de la licence ouverte Etalab."@fr ] ] ;
+        dcat:keyword "admin express"@fr,
+            "donnée externe"@fr,
+            "ign"@fr ;
+        dcat:landingPage <https://geoservices.ign.fr/ressources_documentaires/Espace_documentaire/BASES_VECTORIELLES/ADMIN_EXPRESS/IGNF_ADMIN_EXPRESS_2-4.html> ;
+        dcat:theme <http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO>,
+            <http://publications.europa.eu/resource/authority/data-theme/REGI> ;
+        uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+}
+

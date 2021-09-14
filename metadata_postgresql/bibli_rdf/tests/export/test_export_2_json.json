@@ -1,0 +1,219 @@
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/accessRights": [
+      {
+        "@id": "_:ub6bL10C22"
+      }
+    ],
+    "http://purl.org/dc/terms/description": [
+      {
+        "@language": "fr",
+        "@value": "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence."
+      }
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2021-02-04T00:00:00"
+      }
+    ],
+    "http://purl.org/dc/terms/provenance": [
+      {
+        "@id": "_:ub6bL14C20"
+      }
+    ],
+    "http://purl.org/dc/terms/publisher": [
+      {
+        "@id": "_:ub6bL16C19"
+      }
+    ],
+    "http://purl.org/dc/terms/temporal": [
+      {
+        "@id": "_:ub6bL18C18"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "fr",
+        "@value": "ADMIN EXPRESS - Départements de métropole"
+      }
+    ],
+    "http://snum.scenari-community.org/Metadata/Vocabulaire/#isExternal": [
+      {
+        "@value": true
+      }
+    ],
+    "http://www.w3.org/ns/dcat#contactPoint": [
+      {
+        "@id": "_:ub6bL25C23"
+      },
+      {
+        "@id": "_:ub6bL22C23"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#distribution": [
+      {
+        "@id": "_:ub6bL28C23"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#keyword": [
+      {
+        "@language": "fr",
+        "@value": "ign"
+      },
+      {
+        "@language": "fr",
+        "@value": "admin express"
+      },
+      {
+        "@language": "fr",
+        "@value": "donnée externe"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#landingPage": [
+      {
+        "@id": "https://geoservices.ign.fr/ressources_documentaires/Espace_documentaire/BASES_VECTORIELLES/ADMIN_EXPRESS/IGNF_ADMIN_EXPRESS_2-4.html"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#theme": [
+      {
+        "@id": "http://publications.europa.eu/resource/authority/data-theme/REGI"
+      },
+      {
+        "@id": "http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO"
+      }
+    ],
+    "urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af": [
+      {
+        "@language": "fr",
+        "@value": "À mettre à jour !"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL10C22",
+    "@type": [
+      "http://purl.org/dc/terms/RightsStatement"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Aucune restriction d'accès ou d'usage."
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL14C20",
+    "@type": [
+      "http://purl.org/dc/terms/ProvenanceStatement"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Donnée référentielle produite par l'IGN."
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL16C19",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Agent"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@language": "fr",
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL18C18",
+    "@type": [
+      "http://purl.org/dc/terms/PeriodOfTime"
+    ],
+    "http://www.w3.org/ns/dcat#endDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#startDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL25C23",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Kind"
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:contact.geoservices@ign.fr"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#organization-name": [
+      {
+        "@language": "fr",
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL22C23",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Kind"
+    ],
+    "http://www.w3.org/2006/vcard/ns#fn": [
+      {
+        "@language": "fr",
+        "@value": "Pôle IG"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:sig-contact@developpement-durable.gouv.fr"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL28C23",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Distribution"
+    ],
+    "http://purl.org/dc/terms/accessURL": [
+      {
+        "@id": "https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express"
+      }
+    ],
+    "http://purl.org/dc/terms/issued": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-19"
+      }
+    ],
+    "http://purl.org/dc/terms/license": [
+      {
+        "@id": "_:ub6bL31C25"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL31C25",
+    "@type": [
+      "http://purl.org/dc/terms/LicenseDocument"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "fr",
+        "@value": "Base de données soumise aux conditions de la licence ouverte Etalab."
+      }
+    ]
+  }
+]
