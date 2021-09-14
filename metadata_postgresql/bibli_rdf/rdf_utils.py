@@ -1405,12 +1405,12 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             ?pattern ?flags ?transform
             ?placeholder ?rowspan ?mask
         WHERE
-            { ?u sh:targetClass ?c .
-              ?u sh:property ?x .
-              ?x sh:path ?property .
-              ?x sh:name ?name .
-              ?x sh:nodeKind ?kind .
-              ?x sh:order ?order .
+            { ?u sh:targetClass ?c ;
+                sh:property ?x .
+              ?x sh:path ?property ;
+                sh:name ?name ;
+                sh:nodeKind ?kind ;
+                sh:order ?order .
               OPTIONAL { ?x snum:widget ?widget } .
               OPTIONAL { ?x sh:datatype ?type } .
               OPTIONAL { ?x sh:class ?class } .
@@ -2169,7 +2169,8 @@ def update_pg_description(description, metagraph):
     if len(metagraph) == 0:
         return description
     
-    s = metagraph.serialize(format="json-ld").decode("utf-8")
+    s = metagraph.serialize(format="json-ld")
+    # s = metagraph.serialize(format="json-ld").decode("utf-8")
     
     t = re.subn(
         "[<]METADATA[>].*[<][/]METADATA[>]",
@@ -2764,7 +2765,7 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
     return eval(t)
     
 
-def export_metagraph(metagraph, shape, filepath, format="turtle"):
+def export_metagraph(metagraph, shape, filepath, format=None):
     """Serialize metagraph into a file.
     
     ARGUMENTS
@@ -2786,12 +2787,18 @@ def export_metagraph(metagraph, shape, filepath, format="turtle"):
     pour connaître à l'avance tous les formats autorisés pour
     un graphe donné.
     
+    Si aucun format n'est fourni et qu'il ne peut pas être
+    déduit de l'extension du fichier cible, l'export sera fait en
+    turtle.
+    
     RESULTAT
     --------
     Pas de valeur renvoyée.
     
-    Le fichier sera toujours encodé en UTF-8.
+    Le fichier sera toujours encodé en UTF-8 sauf pour le format
+    NTriples (encodage ASCII).
     """
+    pfile = Path(filepath)
 
     if format and not format in (
         "turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"
@@ -2801,9 +2808,32 @@ def export_metagraph(metagraph, shape, filepath, format="turtle"):
     for n, u in shape.namespace_manager.namespaces():
             metagraph.namespace_manager.bind(n, u, override=True, replace=True)
     
-    s = g.serialize(format=format).decode("utf-8")
+    # extensions possibles et formats correspondants :
+    d = {".ttl": "turtle", ".n3": "n3", ".json": "json-ld",
+         ".jsonld": "json-ld", ".xml": "pretty-xml", ".nt": "nt",
+         ".rdf": "pretty-xml", ".trig": "trig"}
+    dbis = {'turtle': '.ttl', 'n3': '.n3', 'json-ld': '.jsonld',
+        'xml': '.rdf', "pretty-xml" : '.rdf', 'nt': '.nt',
+       "trig": ".trig"}
     
-    with open(filepath, 'w', encoding='UTF-8') as dest:
+    # en l'absence de format, si le chemin comporte un
+    # suffixe, on tente d'en déduire le format
+    if not format and pfile.suffix:
+        format = d.get(pfile.suffix)
+    if not format:
+        format = 'turtle'
+    
+    # réciproquement, si le nom de fichier n'a pas
+    # de suffixe, on en ajoute un d'après le format
+    if not pfile.suffix:
+        pfile = pfile.with_suffix(dbis.get(format, ''))
+    
+    s = metagraph.serialize(
+        format=format,
+        encoding='ascii' if format=='nt' else 'utf-8'
+        )
+    
+    with open(pfile, 'wb') as dest:
         dest.write(s)
     
    
@@ -2836,12 +2866,18 @@ def available_formats(metagraph, shape):
     # donc uniquement ce cas qui est testé ici.
 
     for p in metagraph.predicates():
-        try:
-            split_uri(p)
-        except:
+    
+        if str(p).startswith('urn:uuid:'):
             for f in ("xml", "pretty-xml"):
                 l.remove(f)            
             break
+            
+        # try:
+            # split_uri(p)
+        # except:
+            # for f in ("xml", "pretty-xml"):
+                # l.remove(f)            
+            # break
             
     return l
    
@@ -2857,7 +2893,8 @@ def metagraph_from_file(filepath, format=None):
     - format (str) : le format des métadonnées. Si non
     renseigné, RDFLib déduira le format de l'extension du fichier,
     qui devra donc être cohérente avec son contenu.
-    Valeurs acceptées : "turtle", "json-ld", "xml", "n3", "nt".
+    Valeurs acceptées : "turtle", "json-ld", "xml", "n3", "nt",
+    "trig".
     
     Le fichier sera présumé être encodé en UTF-8 et mieux
     vaudrait qu'il le soit.
@@ -2877,9 +2914,10 @@ def metagraph_from_file(filepath, format=None):
     # extensions possibles et formats correspondants :
     d = {".ttl": "turtle", ".n3": "n3", ".json": "json-ld",
          ".jsonld": "json-ld", ".xml": "xml", ".nt": "nt",
-         ".rdf": "xml"}
+         ".rdf": "xml", ".trig": "trig"}
     
-    if format and not format in ("turtle", "json-ld", "xml", "n3", "nt"):
+    if format and not format in ("turtle", "json-ld", "xml",
+        "n3", "nt", "trig"):
         raise ValueError("Format '{}' is not supported.".format(format))
     
     if not format:
