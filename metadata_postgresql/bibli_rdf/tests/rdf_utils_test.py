@@ -66,7 +66,115 @@ class TestRDFUtils(unittest.TestCase):
                 'translation group'
                 )
             )
+
+
+    ### FONCTION export_metagraph
+    ### -------------------------
+
+    # on vérifie juste qu'il n'y a pas d'erreur
+    # et que la fonction déduit correctement
+    # le format et l'extension du fichier, il
+    # ne s'agit pas de faire la recette de
+    # serialize.
     
+    def test_export_metagraph_1(self):
+        d = Path(__path__[0] + r'\tests\export')
+        for form in (
+            "turtle", "json-ld", "xml", "n3", "nt",
+            "pretty-xml", "trig"
+            ):
+            rdf_utils.export_metagraph(
+                self.metagraph if not form in ('xml', 'pretty-xml') else Graph(),
+                self.shape,
+                d / 'test_export_1_{}'.format(form),
+                form
+                )
+        for f in d.iterdir():
+            if "export_1" in f.name:
+                with self.subTest(file=f.name):
+                    self.assertTrue(f.suffix)
+                    self.assertIsInstance(
+                        rdf_utils.metagraph_from_file(f),
+                        Graph
+                        )
+                # si l'import fonctionne, c'est que le format
+                # est probablement cohérent avec l'extension
+
+    def test_export_metagraph_2(self):
+        d = Path(__path__[0] + r'\tests\export')
+        for ext in (
+            "ttl", "n3", "json", "jsonld", "xml",
+            "nt", "rdf", "trig"
+            ):
+            rdf_utils.export_metagraph(
+                self.metagraph if not ext in ('xml', 'rdf') else Graph(),
+                self.shape,
+                d / 'test_export_2_{0}.{0}'.format(ext)
+                )
+        for f in d.iterdir():
+            if "export_2" in f.name:
+                with self.subTest(file=f.name):
+                    self.assertIsInstance(
+                        rdf_utils.metagraph_from_file(f),
+                        Graph
+                        )
+                # si l'import fonctionne, c'est que le format
+                # est probablement cohérent avec l'extension
+
+    def test_export_metagraph_3(self):
+        d = Path(__path__[0] + r'\tests\export')
+        rdf_utils.export_metagraph(
+            self.metagraph,
+            self.shape,
+            d / 'test_export_3_none'
+            )
+        for f in d.iterdir():
+            if "export_3" in f.name:
+                self.assertEqual(f.suffix, ".ttl")
+                self.assertIsInstance(
+                        rdf_utils.metagraph_from_file(f),
+                        Graph
+                        )
+        
+        
+
+    ### FONCTION available_formats
+    ### -------------------------
+
+    # pas de catégories locales dans un graphe
+    # vide, donc xml et pretty-xml devraient
+    # être autorisés
+    def test_available_format_1(self):
+        self.assertTrue(
+            'xml' in rdf_utils.available_formats(
+                Graph(),
+                self.shape
+                )
+            )
+        self.assertTrue(
+            'pretty-xml' in rdf_utils.available_formats(
+                Graph(),
+                self.shape
+                )
+            )
+
+    # l'exemple contient une catégorie locale, donc
+    # la fonction ne doit pas renvoyer xml et
+    # pretty-xml
+    def test_available_format_2(self):
+        self.assertTrue(
+            not 'xml' in rdf_utils.available_formats(
+                self.metagraph,
+                self.shape
+                )
+            )
+        self.assertTrue(
+            not 'pretty-xml' in rdf_utils.available_formats(
+                self.metagraph,
+                self.shape
+                )
+            )
+
 
     ### FONCTION metagraph_from_file
     ### ----------------------------
@@ -79,6 +187,9 @@ class TestRDFUtils(unittest.TestCase):
                 if f.is_file():
                     g = rdf_utils.metagraph_from_file(f)
                     self.assertTrue(len(g) > 0)
+
+    # NB. trig n'est pas testé à ce stade, l'import
+    # semble donner un graphe vide
   
 
     ### FONCTION build_dict
