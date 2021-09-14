@@ -5,7 +5,6 @@ Fonctions pour l'import et la préparation du modèle de formulaire (template).
 
 import re
 from rdflib import Graph
-from rdflib.util import from_n3
 
 
 def search_template(schema_name, table_name, metagraph,
@@ -48,36 +47,40 @@ def search_template(schema_name, table_name, metagraph,
             continue
         
         # table_prefix
-        for e in t[2]:
-            s = re.escape(e)
-            if re.search('^' + s, table_name):
-                r = t[1]
-                p = t[7]
-                break
+        if isinstance(t[2], list) and len(t[2]) > 0:
+            for e in t[2]:
+                s = re.escape(e)
+                if re.search('^' + s, schema_name):
+                    r = t[1]
+                    p = t[7]
+                    break
         
         # table_suffix
-        for e in t[3]:
-            s = re.escape(e)
-            if re.search(s + '$', table_name):
-                r = t[1]
-                p = t[7]
-                break
+        if isinstance(t[3], list) and len(t[3]) > 0:
+            for e in t[3]:
+                s = re.escape(e)
+                if re.search(s + '$', schema_name):
+                    r = t[1]
+                    p = t[7]
+                    break
         
         # schema_prefix
-        for e in t[4]:
-            s = re.escape(e)
-            if re.search('^' + s, schema_name):
-                r = t[1]
-                p = t[7]
-                break
+        if isinstance(t[4], list) and len(t[4]) > 0:
+            for e in t[4]:
+                s = re.escape(e)
+                if re.search('^' + s, table_name):
+                    r = t[1]
+                    p = t[7]
+                    break
         
         # schema_suffix
-        for e in t[5]:
-            s = re.escape(e)
-            if re.search(s + '$', schema_name):
-                r = t[1]
-                p = t[7]
-                break
+        if isinstance(t[5], list) and len(t[5]) > 0:
+            for e in t[5]:
+                s = re.escape(e)
+                if re.search(s + '$', table_name):
+                    r = t[1]
+                    p = t[7]
+                    break
         
         # conditions
         if isinstance(t[6], dict):
@@ -87,21 +90,21 @@ def search_template(schema_name, table_name, metagraph,
                     b = True
                     
                     for k, v in e.items():
+                    
                         q_gr = metagraph.query(
                                 """
                                 SELECT
                                     ?value
                                 WHERE
-                                     { ?u a dcat:Dataset ;
-                                          ?path ?value. }
-                                """,
-                                initBindings = {
-                                    'path': from_n3(k, nsm=metagraph.namespace_manager)
-                                    }
+                                     {{ ?u a dcat:Dataset ;
+                                          {} ?value. }}
+                                """.format(k)
                                 )
                          
-                        if len(q_gr) < 1 \
-                            or not any([str(o['value']).lower() == str(v).lower() for o in q_gr]):
+                        if v is not None and (
+                            len(q_gr) < 1
+                            or not any([str(o['value']).lower() == str(v).lower() for o in q_gr])
+                            ) or v is None and not len(q_gr) == 0:
                             # comparaison avec conversion, qui ne tient
                             # pas compte du type ni de la langue ni de la casse
                             b = False
