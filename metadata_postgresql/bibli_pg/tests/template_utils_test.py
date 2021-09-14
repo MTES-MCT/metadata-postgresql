@@ -26,20 +26,31 @@ class TestTemplateUtils(unittest.TestCase):
         self.metagraph_empty = metagraph_from_pg_description("", self.shape)
         
         # quelques pseudo-modèles avec conditions d'emploi
-        self.template1 = (0, 'template 1', 'd1_', '_f1', 'd1_', '_f1', None, 10)
-        self.template2 = (1, 'template 2', 'd2 ', ' f2', 'd2 ', ' f2', {
+        self.template1 = (
+            0, 'template 1',
+            ['d1_'], ['_f1'], ['d1_'], ['_f1'],
+            None, 10
+            )
+        self.template2 = (
+            1, 'template 2',
+            ['d2_', 'd2 '], ['_f2', ' f2'],
+            ['d2_', 'd2 '], ['_f2', ' f2'],
+            {
                 "ensemble de conditions 1": {
                     "snum:isExternal": True,
                     "dcat:keyword": "IGN"
                 }
             }, 20)
-        self.template3 = (2, 'template 3', 'd3_', '_f3', 'd3_', '_f3', {
+        self.template3 = (
+            2, 'template 3',
+            None, [], None, None,
+            {
                 "ensemble de conditions 1": {
                     "snum:isExternal": True,
                     "dcat:keyword": "IGN-F"
-                    },
+                },
                 "ensemble de conditions 2": {
-                    "dct:publisher / foaf:name": "Institut national de l''information géographique et forestière (IGN-F)"
+                    "dct:publisher / foaf:name": "Institut national de l'information géographique et forestière (IGN-F)"
                 }
             }, 15)
         
@@ -130,19 +141,19 @@ class TestTemplateUtils(unittest.TestCase):
         templates = [self.template1, self.template2, self.template3]
         self.assertEqual(
             template_utils.search_template(
-                'd3_schema',
+                'schema',
                 'table_f1',
                 self.metagraph,
-                templates
+                [self.template1, self.template3]
                 ),
             'template 3'
             )
         self.assertEqual(
             template_utils.search_template(
-                'd3_schema',
+                'schema',
                 'table f2',
                 self.metagraph,
-                templates
+                [self.template2, self.template3]
                 ),
             'template 2'
             )
