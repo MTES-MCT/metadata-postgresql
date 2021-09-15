@@ -43,48 +43,18 @@ def search_template(schema_name, table_name, metagraph,
     
     for t in templates:
     
-        if t[7] <= p:
+        if t[4] <= p:
             continue
         
-        # table_prefix
-        if isinstance(t[2], list) and len(t[2]) > 0:
-            for e in t[2]:
-                s = re.escape(e)
-                if re.search('^' + s, schema_name):
-                    r = t[1]
-                    p = t[7]
-                    break
+        # filtre SQL (dont on a d'ores-et-déjà le résultat
+        # dans t[2], calculé côté serveur)
+        if t[2]:
+            r = t[1]
+            p = t[4]
         
-        # table_suffix
-        if isinstance(t[3], list) and len(t[3]) > 0:
-            for e in t[3]:
-                s = re.escape(e)
-                if re.search(s + '$', schema_name):
-                    r = t[1]
-                    p = t[7]
-                    break
-        
-        # schema_prefix
-        if isinstance(t[4], list) and len(t[4]) > 0:
-            for e in t[4]:
-                s = re.escape(e)
-                if re.search('^' + s, table_name):
-                    r = t[1]
-                    p = t[7]
-                    break
-        
-        # schema_suffix
-        if isinstance(t[5], list) and len(t[5]) > 0:
-            for e in t[5]:
-                s = re.escape(e)
-                if re.search(s + '$', table_name):
-                    r = t[1]
-                    p = t[7]
-                    break
-        
-        # conditions
-        if isinstance(t[6], dict):
-            for e in t[6].values():
+        # conditions sur les métadonnées
+        if isinstance(t[3], dict):
+            for e in t[3].values():
             
                 if isinstance(e, dict) and len(e) > 0:
                     b = True
@@ -111,7 +81,7 @@ def search_template(schema_name, table_name, metagraph,
                             
                     if b:
                         r = t[1]
-                        p = t[7]
+                        p = t[4]
                         break
                 
     return r
