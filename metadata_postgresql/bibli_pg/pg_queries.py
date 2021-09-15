@@ -52,17 +52,18 @@ def query_list_templates():
     RESULTAT
     --------
     Une requête prête à l'emploi, à utiliser comme suit :
-    >>> cur.execute(query_list_templates())
+    >>> cur.execute(query_list_templates(), (schema_name, table_name))
+    
+    On notera qu'au lieu d'importer le filtre sql_filter, la
+    commande l'exécute et renvoie un booléen indiquant s'il est
+    vérifié.
     """
     return """
         SELECT
             tpl_id,
             tpl_label,
-            schema_prefix,
-            schema_suffix,
-            table_prefix,
-            table_suffix,
-            conditions,
+            z_metadata.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
+            md_conditions,
             priority
             FROM z_metadata.meta_template
             ORDER BY tpl_id
