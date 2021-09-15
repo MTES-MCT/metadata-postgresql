@@ -244,7 +244,7 @@ thesaurus = build_vocabulary(widgetsdict[key]['current source'], vocabulary, lan
 ```
 
 *`language` est le paramètre utilisateur qui spécifie la langue principale de saisie des métadonnées, qui est également la langue dans laquelle seront affichés les termes des QComboBox. Cf. [Paramètres utilisateur](/__doc__/20_parametres_utilisateurs.md).*
-*`vocabulary` est le graphe qui répertorie les termes de tous les thésaurus, importé via la fonction `rdf_utils.load_vocabulary()`. Cf. [Génération du dictionnaire de widgets](/__doc__/05_generation_dictionnaire_widgets) pour plus de détails.*
+*`vocabulary` est le graphe qui répertorie les termes de tous les thésaurus, importé via la fonction `rdf_utils.load_vocabulary()`. Cf. [Génération du dictionnaire de widgets](/__doc__/05_generation_dictionnaire_widgets.md) pour plus de détails.*
 
 - Comme les QTextEdit et QLineEdit, les widgets QComboBox peuvent afficher une **valeur fictive** fournie par la clé `'placeholder text'`. Celle-ci sera généralement renseignée car, si ni le schéma des métadonnées communes ni le modèle local ne fournissent de texte fictif, c'est le nom du thésaurus courant qui sera affiché.
 
