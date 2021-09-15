@@ -67,9 +67,12 @@
 -- - Type: z_metadata.meta_widget_type
 -- - Table: z_metadata.meta_categorie
 -- - Table: z_metadata.meta_shared_categorie
+-- - Function: z_metadata.meta_shared_categorie_before_insert()
+-- - Trigger: meta_shared_categorie_before_insert
 -- - Table: z_metadata.meta_local_categorie
 -- - Table: z_metadata.meta_template
 -- - Table: z_metadata.meta_template_categories
+-- - Function: z_metadata.meta_execute_sql_filter(text, text, text)
 -- - View: z_metadata.meta_template_categories_full
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,6 +137,12 @@ $$ ;
 ------ 1 - MODELES DE FORMULAIRES ------
 ----------------------------------------
 
+/* 1.1 - TABLE DE CATEGORIES
+   1.2 - TABLE DES MODELES
+   1.3 - ASSOCIATION DES CATEGORIES AUX MODELES */
+
+
+------ 1.1 - TABLE DE CATEGORIES ------
 
 -- Type: z_metadata.meta_widget_type
 
@@ -147,10 +156,9 @@ COMMENT ON TYPE z_metadata.meta_widget_type IS 'Métadonnées. Types de widgets 
 --Table: z_metadata.meta_categorie
 
 CREATE TABLE z_metadata.meta_categorie (
-    cat_id serial NOT NULL,
-    origin text NOT NULL DEFAULT 'local',
     path text NOT NULL DEFAULT format('<urn:uuid:%s>', gen_random_uuid()),
-    cat_label text,
+	origin text NOT NULL DEFAULT 'local',
+    cat_label text NOT NULL,
     widget_type z_metadata.meta_widget_type,
     row_span int,
     help_text text,
@@ -167,9 +175,8 @@ CREATE TABLE z_metadata.meta_categorie (
 
 COMMENT ON TABLE z_metadata.meta_categorie IS 'Métadonnées. Catégories de métadonnées disponibles pour les modèles de formulaires.' ;
 
-COMMENT ON COLUMN z_metadata.meta_categorie.cat_id IS 'Identifiant unique de la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire.' ;
-COMMENT ON COLUMN z_metadata.meta_categorie.path IS 'Chemin SPARQL de la catégorie. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.cat_label IS 'Libellé de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
@@ -181,24 +188,19 @@ COMMENT ON COLUMN z_metadata.meta_categorie.multiple_values IS 'True si la caté
 COMMENT ON COLUMN z_metadata.meta_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
--- la séquence est marquée comme "table" de configuration de l'extension
-SELECT pg_extension_config_dump('z_metadata.meta_categorie_cat_id_seq'::regclass, '') ;
-
 
 -- Table: z_metadata.meta_shared_categorie
 
 CREATE TABLE z_metadata.meta_shared_categorie 
     PARTITION OF z_metadata.meta_categorie (
-        CONSTRAINT meta_shared_categorie_pkey PRIMARY KEY (cat_id),
-        CONSTRAINT meta_shared_categorie_path_uni UNIQUE (path)
+        CONSTRAINT meta_shared_categorie_pkey PRIMARY KEY (path)
     )
     FOR VALUES IN ('shared') ;
     
 COMMENT ON TABLE z_metadata.meta_shared_categorie IS 'Métadonnées. Catégories de métadonnées communes.' ;
 
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.cat_id IS 'Identifiant unique de la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique).' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.origin IS 'Origine de la catégorie. Toujours ''shared''.' ;
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.path IS 'Chemin SPARQL de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.cat_label IS 'Libellé de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
@@ -210,7 +212,8 @@ COMMENT ON COLUMN z_metadata.meta_shared_categorie.multiple_values IS 'True si l
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
--- cette table n'est pas une table de configuration de l'extension
+-- la table est marquée comme table de configuration de l'extension
+SELECT pg_extension_config_dump('z_metadata.meta_shared_categorie'::regclass, '') ;
 
 -- extraction du schéma SHACL
 INSERT INTO z_metadata.meta_categorie (
@@ -256,13 +259,56 @@ INSERT INTO z_metadata.meta_categorie (
     ('shared', 'snum:relevanceScore', 'score', 'QLineEdit', NULL, 'plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche', NULL, NULL, NULL, False, False, 50) ;
 
 
+-- Function: z_metadata.meta_shared_categorie_before_insert()
+
+CREATE OR REPLACE FUNCTION z_metadata.meta_shared_categorie_before_insert()
+	RETURNS trigger
+    LANGUAGE plpgsql
+    AS $BODY$
+/* OBJET : Fonction exécutée par le trigger meta_shared_categorie_before_insert,
+qui supprime les lignes pré-existantes (même valeur de "path") faisant l'objet
+de commandes INSERT. Autrement dit, elle permet d'utiliser des commandes INSERT
+pour réaliser des UPDATE.
+
+Ne vaut que pour les catégories des métadonnées communes (les seules stockées
+dans z_metadata.meta_shared_categorie).
+
+Cette fonction est nécessaire pour que l'extension metadata puisse initialiser
+la table avec les catégories partagées, et que les modifications faites par
+l'administrateur sur ces enregistrements puissent ensuite être préservées en cas
+de sauvegarde/restauration (table marquée comme table de configuration de
+l'extension).
+
+CIBLE : z_metadata.meta_shared_categorie.
+PORTEE : FOR EACH ROW.
+DECLENCHEMENT : BEFORE INSERT.*/
+BEGIN
+	
+	DELETE FROM z_metadata.meta_shared_categorie
+		WHERE meta_shared_categorie.path = NEW.path ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_metadata.meta_shared_categorie_before_insert() IS 'Fonction exécutée par le trigger meta_shared_categorie_before_insert, qui supprime les lignes pré-existantes (même valeur de "path") faisant l''objet de commandes INSERT.' ;
+
+
+-- Trigger: meta_shared_categorie_before_insert
+
+CREATE TRIGGER meta_shared_categorie_before_insert
+    BEFORE INSERT
+    ON z_metadata.meta_shared_categorie
+    FOR EACH ROW
+    EXECUTE PROCEDURE z_metadata.meta_shared_categorie_before_insert() ;
+	
+COMMENT ON TRIGGER meta_shared_categorie_before_insert ON z_metadata.meta_shared_categorie IS 'Supprime les lignes pré-existantes (même valeur de "path") faisant l''objet de commandes INSERT.' ;
+
 
 -- Table: z_metadata.meta_local_categorie
 
 CREATE TABLE z_metadata.meta_local_categorie 
     PARTITION OF z_metadata.meta_categorie (
-        CONSTRAINT meta_local_categorie_pkey PRIMARY KEY (cat_id),
-        CONSTRAINT meta_local_categorie_path_uni UNIQUE (path),
+        CONSTRAINT meta_local_categorie_pkey PRIMARY KEY (path),
         CONSTRAINT meta_local_categorie_path_check CHECK (path ~ '^[<]urn[:]uuid[:][0-9a-z-]{36}[>]$'),
         CONSTRAINT meta_local_categorie_widget_check CHECK (NOT widget_type = 'QComboBox')
     )
@@ -270,9 +316,8 @@ CREATE TABLE z_metadata.meta_local_categorie
     
 COMMENT ON TABLE z_metadata.meta_local_categorie IS 'Métadonnées. Catégories de métadonnées supplémentaires (ajouts locaux).' ;
 
-COMMENT ON COLUMN z_metadata.meta_local_categorie.cat_id IS 'Identifiant unique de la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_local_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.origin IS 'Origine de la catégorie. Toujours ''local''.' ;
-COMMENT ON COLUMN z_metadata.meta_local_categorie.path IS 'Chemin SPARQL de la catégorie. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.cat_label IS 'Libellé de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
@@ -288,16 +333,15 @@ COMMENT ON COLUMN z_metadata.meta_local_categorie.order_key IS 'Ordre d''apparen
 SELECT pg_extension_config_dump('z_metadata.meta_local_categorie'::regclass, '') ;
 
 
+------ 1.2 - TABLE DES MODELES ------
+
 -- Table: z_metadata.meta_template
 
 CREATE TABLE z_metadata.meta_template (
     tpl_id serial PRIMARY KEY,
     tpl_label text NOT NULL,
-    schema_prefix text[],
-    schema_suffix text[],
-    table_prefix text[],
-    table_suffix text[],
-    conditions jsonb,
+	sql_filter text,
+    md_conditions jsonb,
     priority int,
     CONSTRAINT meta_template_tpl_label_uni UNIQUE (tpl_label)
     ) ;
@@ -306,11 +350,11 @@ COMMENT ON TABLE z_metadata.meta_template IS 'Métadonnées. Modèles de formula
 
 COMMENT ON COLUMN z_metadata.meta_template.tpl_id IS 'Identifiant unique du modèle.' ;
 COMMENT ON COLUMN z_metadata.meta_template.tpl_label IS 'Nom du modèle.' ;
-COMMENT ON COLUMN z_metadata.meta_template.schema_prefix IS 'Liste de préfixes. Si l''un d''eux apparaît au début du nom du schéma, le modèle sera utilisé par défaut.' ;
-COMMENT ON COLUMN z_metadata.meta_template.schema_suffix IS 'Liste de suffixes. Si l''un d''eux apparaît à la fin du nom du schéma, le modèle sera utilisé par défaut.' ;
-COMMENT ON COLUMN z_metadata.meta_template.table_prefix IS 'Liste de préfixes. Si l''un d''eux apparaît au début du nom de la table/vue, le modèle sera utilisé par défaut.' ;
-COMMENT ON COLUMN z_metadata.meta_template.table_suffix IS 'Liste de suffixes. Si l''un d''eux apparaît à la fin du nom de la table/vue, le modèle sera utilisé par défaut.' ;
-COMMENT ON COLUMN z_metadata.meta_template.conditions IS 'Ensemble de conditions sur les métadonnées appelant l''usage de ce modèle.
+COMMENT ON COLUMN z_metadata.meta_template.sql_filter IS 'Condition à remplir pour que ce modèle soit appliqué par défaut à une fiche de métadonnées, sous la forme d''un filtre SQL. On pourra utiliser $1 pour représenter le nom du schéma et $2 le nom de la table.
+Par exemple :
+- ''$1 ~ ANY(ARRAY[''''^r_'''', ''''^e_'''']'' appliquera le modèle aux tables des schémas des blocs "données référentielles" (préfixe ''r_'') et "données externes" (préfixe ''e_'') de la nomenclature nationale ;
+- ''pg_has_role(''''g_admin'''', ''''USAGE'''')'' appliquera le modèle pour toutes les fiches de métadonnées dès lors que l''utilisateur est membre du rôle g_admin.' ;
+COMMENT ON COLUMN z_metadata.meta_template.md_conditions IS 'Ensemble de conditions sur les métadonnées appelant l''usage de ce modèle.
 À présenter sous une forme clé/valeur, où la clé est le chemin de la catégorie et la valeur l''une des valeur prises par la catégorie.
 Dans l''exemple suivant, le modèle sera retenu pour une donnée externe avec le mot-clé "IGN" (ensemble de conditions 1) ou pour une donnée publiée par l''IGN (ensemble de conditions 2) :
 {
@@ -332,13 +376,63 @@ SELECT pg_extension_config_dump('z_metadata.meta_template'::regclass, '') ;
 SELECT pg_extension_config_dump('z_metadata.meta_template_tpl_id_seq'::regclass, '') ;
 
 
+-- Function: z_metadata.meta_execute_sql_filter(text, text, text)
+
+CREATE OR REPLACE FUNCTION z_metadata.meta_execute_sql_filter(
+		sql_filter text, schema_name text, table_name text
+		)
+	RETURNS boolean
+    LANGUAGE plpgsql
+    AS $BODY$
+/* OBJET : Détermine si un filtre SQL est vérifié.
+
+Le filtre peut faire référence au nom du schéma avec $1
+et au nom de la table avec $2.
+
+Si le filtre n'est pas valide, la fonction renvoie NULL,
+avec un message d'alerte.
+
+S'il n'y a pas de filtre, la fonction renvoie NULL.
+
+ARGUMENTS :
+- sql_filter : un filtre SQL exprimé sous la forme d'une
+chaîne de caractères ;
+- schema_name : le nom du schéma considéré ;
+- table_name : le nom de la table ou vue considérée.
+*/
+DECLARE
+    b boolean ;
+BEGIN
+
+	IF nullif(sql_filter, '') IS NULL
+	THEN
+		RETURN NULL ;
+	END IF ;
+
+	EXECUTE 'SELECT ' || sql_filter
+		INTO b
+		USING schema_name, coalesce(table_name, '') ;
+	RETURN b ;
+
+EXCEPTION WHEN OTHERS
+THEN
+	RAISE NOTICE 'Filtre invalide : %', sql_filter ;
+	RETURN NULL ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_metadata.meta_execute_sql_filter(text, text, text) IS 'Détermine si un filtre SQL est vérifié.' ;
+
+
+---- 1.3 - ASSOCIATION DES CATEGORIES AUX MODELES ------
+
 -- Table z_metadata.meta_template_categories
 
 CREATE TABLE z_metadata.meta_template_categories (
     tplcat_id serial PRIMARY KEY,
     tpl_id integer NOT NULL,
-    shrcat_id integer,
-    loccat_id integer,
+    shrcat_path text,
+    loccat_path text,
     cat_label text,
     widget_type z_metadata.meta_widget_type,
     row_span int,
@@ -350,19 +444,19 @@ CREATE TABLE z_metadata.meta_template_categories (
     is_mandatory boolean,
     order_key int,
     read_only boolean,
-    CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_id, shrcat_id, loccat_id),
+    CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_id, shrcat_path, loccat_path),
     CONSTRAINT meta_template_categories_tpl_id_fkey FOREIGN KEY (tpl_id)
         REFERENCES z_metadata.meta_template (tpl_id)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT meta_template_categories_shrcat_id_fkey FOREIGN KEY (shrcat_id)
-        REFERENCES z_metadata.meta_shared_categorie (cat_id)
+    CONSTRAINT meta_template_categories_shrcat_path_fkey FOREIGN KEY (shrcat_path)
+        REFERENCES z_metadata.meta_shared_categorie (path)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT meta_template_categories_loccat_id_fkey FOREIGN KEY (loccat_id)
-        REFERENCES z_metadata.meta_local_categorie (cat_id)
+    CONSTRAINT meta_template_categories_loccat_path_fkey FOREIGN KEY (loccat_path)
+        REFERENCES z_metadata.meta_local_categorie (path)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT meta_template_categories_idcat_check CHECK (
-        shrcat_id IS NULL OR loccat_id IS NULL
-        AND shrcat_id IS NOT NULL OR loccat_id IS NOT NULL
+    CONSTRAINT meta_template_categories_path_check CHECK (
+        shrcat_path IS NULL OR loccat_path IS NULL
+        AND shrcat_path IS NOT NULL OR loccat_path IS NOT NULL
         ),
     CONSTRAINT meta_template_categories_row_span_check CHECK (row_span BETWEEN 1 AND 99)
     ) ;
@@ -372,8 +466,8 @@ Les autres champs permettent de personnaliser la présentation des catégories p
 
 COMMENT ON COLUMN z_metadata.meta_template_categories.tplcat_id IS 'Identifiant unique.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.tpl_id IS 'Identifiant du modèle de formulaire.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.shrcat_id IS 'Identifiant de la catégorie de métadonnées (si catégorie commune).' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.loccat_id IS 'Identifiant de la catégorie de métadonnées (si catégorie supplémentaire locale).' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.shrcat_path IS 'Chemin SPARQL / identifiant de la catégorie de métadonnées (si catégorie commune).' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.loccat_path IS 'Chemin SPARQL / identifiant de la catégorie de métadonnées (si catégorie supplémentaire locale).' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.cat_label IS 'Libellé de la catégorie de métadonnées.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.widget_type IS 'Type de widget de saisie à utiliser.
@@ -408,9 +502,8 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
         tc.tplcat_id,
         tc.tpl_id,
         t.tpl_label,
-        coalesce(tc.shrcat_id, tc.loccat_id) AS cat_id,
+        coalesce(tc.shrcat_path, tc.loccat_path) AS path,
         c.origin,
-        c.path,
         coalesce(tc.cat_label, c.cat_label) AS cat_label,
         coalesce(tc.widget_type, c.widget_type) AS widget_type,
         coalesce(tc.row_span, c.row_span) AS row_span,
@@ -424,7 +517,7 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
         tc.read_only AS read_only
         FROM z_metadata.meta_template_categories AS tc
             LEFT JOIN z_metadata.meta_categorie AS c
-                ON coalesce(tc.shrcat_id, tc.loccat_id) = c.cat_id
+                ON coalesce(tc.shrcat_path, tc.loccat_path) = c.cat_path
             LEFT JOIN z_metadata.meta_template AS t
                 ON tc.tpl_id = t.tpl_id
     ) ;
@@ -434,9 +527,8 @@ COMMENT ON VIEW z_metadata.meta_template_categories_full IS 'Métadonnées. Desc
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.tplcat_id IS 'Identifiant unique.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.tpl_id IS 'Identifiant du modèle de formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.tpl_label IS 'Nom du modèle.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.cat_id IS 'Identifiant unique de la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.path IS 'Chemin SPARQL / identifiant de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.path IS 'Chemin SPARQL de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.cat_label IS 'Libellé de la catégorie de métadonnées.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.widget_type IS 'Type de widget de saisie à utiliser.
