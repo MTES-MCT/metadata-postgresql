@@ -12,7 +12,7 @@ dictionnaire de métadonnées ;
 - de sérialiser ce graphe en JSON-LD et l'inclure dans
 une chaîne de caractères balisée.
 
-Dépendances : rdflib, rdflib-jsonld et requests.
+Dépendances : rdflib 6.0.0 ou supérieur.
 """
 
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
