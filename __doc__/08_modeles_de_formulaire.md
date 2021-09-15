@@ -38,14 +38,23 @@ Tous les objets de l'extension sont créés dans le schéma `z_metadata`. Si cel
 
 ### Principe
 
-Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l'utilisateur avec leurs modalités d'affichage. L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées.
+Par défaut, les formulaires du plugin QGIS présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes (en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire).
+
+Souvent, c'est trop : selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne sont pas les mêmes, et il est peu probable que toutes le soient.
+
+Parfois, c'est insuffisant : toujours selon l'organisation du service, la table considérée et le profil de l'utilisateur, il peut être très utile voire indispensable de disposer d'informations qui ne sont pas prévue dans les catégories communes. 
+
+Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l'utilisateur avec leurs modalités d'affichage. Il restreint ainsi les catégories communes par un système de liste blanche et permet d'ajouter des catégories locales supplémentaires.
+
+L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées.
 
 
 ### Création d'un modèle de formulaire
 
 La table `meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ `tpl_label`. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle.
 
-Les champs suivants servent à définir les conditions d'usage du modèle :
+Les champs `sql_filter` et `md_conditions` servent à définir des conditions selon lesquelles le modèle sera appliqué automatiquement à la fiche de métadonnées considérée. Les remplir est bien évidemment optionnel.
+
 - `sql_filter` est un filtre SQL, qui peut se référer au nom du schéma avec $1 et/ou de la table / vue avec $2. Il est évalué côté serveur au moment de l'import des modèles par le plugin, par la fonction `meta_execute_sql_filter(text, text, text)`.
 
 Par exemple, le filtre suivant appliquera le modèle aux tables des schémas des blocs "données référentielles" (préfixe `'r_'`) et "données externes" (préfixe `'e_'`) de la nomenclature nationale :
@@ -88,9 +97,9 @@ Dans l'exemple ci-avant, une table validera les conditions du modèle si :
 
 La comparaison des valeurs ne tient pas compte de la casse.
 
-Il faudra soit que toutes les conditions de l'un des ensembles de conditions du JSON soient vérifiées, soit que le filtre SQL ait renvoyé True pour que le modèle soit considéré comme potentiellement applicable. Si un jeu de données remplit les conditions de plusieurs modèles, c'est celui dont le niveau de priorité, (champ `priority`) est le plus élevé qui sera retenu.
+Il faudra soit que toutes les conditions de l'un des ensembles du JSON soient vérifiées, soit que le filtre SQL ait renvoyé True pour que le modèle soit considéré comme applicable. Si un jeu de données remplit les conditions de plusieurs modèles, c'est celui dont le niveau de priorité, (champ `priority`) est le plus élevé qui sera retenu.
 
-À noter que l'utilisateur du plugin pourra a posteriori choisir un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d'application automatiques ne sont pas vérifiées.
+À noter que les conditions ne valent qu'à l'ouverture de la fiche. L'utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d'application automatique ne sont pas vérifiées.
 
 
 ### Catégories de métadonnées
