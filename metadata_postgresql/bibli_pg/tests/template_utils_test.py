@@ -1,8 +1,8 @@
 """
-Recette de template_utils.
+Recette de template_utils et pg_queries.
 """
 
-import re, uuid, unittest, json
+import re, uuid, unittest, json, psycopg2
 from pathlib import Path
 from rdflib import Graph
 
@@ -24,6 +24,18 @@ class TestTemplateUtils(unittest.TestCase):
             
         # fiche de métadonnées vide
         self.metagraph_empty = metagraph_from_pg_description("", self.shape)
+        
+        # connexion à utiliser pour les tests
+        # -> l'extension metadata doit être installée sur la base
+        # -> il est préférable d'utiliser un super-utilisateur (commandes de
+        # création et suppression de table dans le schéma z_metadata)
+        self.connection_string = "host={} port={} dbname={} user={} password={}".format(
+            input('host (localhost): ') or 'localhost',
+            input('port (5432): ') or '5432',
+            input('dbname (metadata_dev): ') or 'metadata_dev',
+            input('user (postgres): ') or 'postgres',
+            input('password : ')
+            )
         
         # quelques pseudo-modèles avec conditions d'emploi
         self.template1 = (
@@ -53,6 +65,75 @@ class TestTemplateUtils(unittest.TestCase):
             }, 15)
         
 
+    ### FONCTION query_update_table_comment
+    ### -----------------------------------
+    
+    def test_query_update_table_comment_1(self):
+        conn = psycopg2.connect(self.connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute('CREATE TABLE z_metadata.table_test (num int)')
+                # création d'une table de test
+                
+                query = query_update_table_comment('z_metadata', 'table_test')
+                cur.execute(query, ('Nouvelle description',))
+                cur.execute("SELECT obj_description('z_metadata.table_test'::regclass, 'pg_class')")
+                descr = cur.fetchone()
+                
+                cur.execute('DROP TABLE z_metadata.table_test')
+                # suppression de la table de test
+        
+        conn.close()
+        
+        self.assertEqual(descr[0], 'Nouvelle description')
+
+
+    ### FONCTION query_list_templates
+    ### -----------------------------
+    
+    def test_query_list_templates_1(self):
+        conn = psycopg2.connect(self.connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
+                # import des modèles pré-configurés
+                
+                cur.execute(query_list_templates(), ('r_schema', 'table'))
+                templates = cur.fetchall()
+                
+                cur.execute('DELETE FROM z_metadata.meta_template')
+                # suppression des modèles pré-configurés
+        
+        conn.close()
+        
+        self.assertEqual(len(templates), 2)
+
+
+    ### FONCTION query_get_categories
+    ### -----------------------------
+    
+    def test_query_get_categories_1(self):
+        conn = psycopg2.connect(self.connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
+                # import des modèles pré-configurés
+        
+                cur.execute(query_get_categories(), ('Basique',))
+                categories = cur.fetchall()
+                
+                cur.execute('DELETE FROM z_metadata.meta_template')
+                # suppression des modèles pré-configurés
+        
+        conn.close()
+        
+        self.assertTrue(len(categories) > 2)
+    
 
     ### FONCTION build_template
     ### -----------------------
