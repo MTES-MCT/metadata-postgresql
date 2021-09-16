@@ -646,7 +646,7 @@ BEGIN
 				('Donnée externe', 'dcat:landingPage', NULL),
 				('Donnée externe', 'dcat:theme', NULL)	
 			) AS t (tpl_label, shrcat_path, default_value)
-			WHERE meta_import_sample_template.tpl_label = tpl.tpl_label
+			WHERE t.tpl_label = tpl.tpl_label
 		LOOP
 		
 			INSERT INTO z_metadata.meta_template_categories
