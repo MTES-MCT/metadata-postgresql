@@ -21,7 +21,7 @@ def search_template(schema_name, table_name, metagraph,
     - templates (list) : la liste de tous les modèles disponibles
     avec leurs conditions d'usage (tuples). Concrètement il est 
     obtenu ainsi :
-    >>> cur.execute(query_list_templates())
+    >>> cur.execute(query_list_templates(), (schema_name, table_name))
     >>> templates = cur.fetchall()
     
     RESULTAT
