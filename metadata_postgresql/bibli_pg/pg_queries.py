@@ -86,7 +86,7 @@ def query_get_categories():
     """
     return """
         SELECT 
-            tplcat_id,
+            origin,
             path,
             cat_label,
             widget_type,
@@ -98,7 +98,8 @@ def query_get_categories():
             multiple_values,
             is_mandatory,
             order_key,
-            read_only
+            read_only,
+            is_node
             FROM z_metadata.meta_template_categories_full
             WHERE tpl_label = %s
         """
