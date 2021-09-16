@@ -213,10 +213,15 @@ class TestTemplateUtils(unittest.TestCase):
     
     def test_build_template_1(self):
         categories = [
-            (0, 'dct:title', 'libellé', 'QLineEdit', None, None, None, None, None, True, True, 0, True),
-            (1, 'dct:description', 'description', 'QTextEdit', 99, None, None, None, None, False, False, 50, False),
-            (2, 'dct:modified', 'dernière modification', 'QDateEdit', None, None, '2021-09-01', None, None, False, False, 90, False),
-            (3, '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>', 'code ADL', None, 30, 'code maison', None, '230-FG', '000-XX', True, False, 8, False)
+            ('shared', 'dct:title', 'libellé', 'QLineEdit', None, None, None,
+                None, None, True, True, 0, True, False),
+            ('shared', 'dct:description', 'description', 'QTextEdit', 99, None,
+                None, None, None, False, False, 50, False, False),
+            ('shared', 'dct:modified', 'dernière modification', 'QDateEdit', None,
+                None, '2021-09-01', None, None, False, False, 90, False, False),
+            ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>', 'code ADL',
+                None, 30, 'code maison', None, '230-FG', '000-XX', True, False, 8,
+                False, False)
             ]
         template = template_utils.build_template(categories)
         d = build_dict(Graph(), self.shape, self.vocabulary, template)
@@ -278,6 +283,30 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(d[lck]['input mask'], '000-XX')
         self.assertTrue(d[lck]['multiple values'])
 
+    # ajout automatique des ancêtres manquants
+    def test_build_template_2(self):
+        categories = [
+            ('shared', 'dcat:distribution /dct:license/ rdfs:label',
+                None, None, None, None, None, None, None, None, None,
+                None, None, False)
+            ]
+        template = template_utils.build_template(categories)
+        self.assertTrue('dcat:distribution' in template)
+        self.assertTrue('dcat:distribution / dct:license' in template)
+        self.assertTrue('dcat:distribution / dct:license / rdfs:label' in template)
+        self.assertEqual(len(template), 3)
+
+    # suppression automatique des branches présumées vides
+    def test_build_template_3(self):
+        categories = [
+            ('shared', 'dcat:distribution /dct:license',
+                None, None, None, None, None, None, None, None,
+                None, None, None, True)
+            ]
+        template = template_utils.build_template(categories)
+        self.assertFalse('dcat:distribution' in template)
+        self.assertFalse('dcat:distribution / dct:license' in template)
+        self.assertEqual(len(template), 0)
 
 unittest.main()
 
