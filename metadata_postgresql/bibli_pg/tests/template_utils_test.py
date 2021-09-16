@@ -38,11 +38,11 @@ class TestTemplateUtils(unittest.TestCase):
         
         # quelques pseudo-modèles avec conditions d'emploi
         self.template1 = (
-            0, 'template 1',
+            'template 1',
             True, None, 10
             )
         self.template2 = (
-            1, 'template 2',
+            'template 2',
             False,
             {
                 "ensemble de conditions 1": {
@@ -51,7 +51,7 @@ class TestTemplateUtils(unittest.TestCase):
                 }
             }, 20)
         self.template3 = (
-            2, 'template 3',
+            'template 3',
             False,
             {
                 "ensemble de conditions 1": {
