@@ -28,13 +28,11 @@ class TestTemplateUtils(unittest.TestCase):
         # quelques pseudo-modèles avec conditions d'emploi
         self.template1 = (
             0, 'template 1',
-            ['d1_'], ['_f1'], ['d1_'], ['_f1'],
-            None, 10
+            True, None, 10
             )
         self.template2 = (
             1, 'template 2',
-            ['d2_', 'd2 '], ['_f2', ' f2'],
-            ['d2_', 'd2 '], ['_f2', ' f2'],
+            False,
             {
                 "ensemble de conditions 1": {
                     "snum:isExternal": True,
@@ -43,7 +41,7 @@ class TestTemplateUtils(unittest.TestCase):
             }, 20)
         self.template3 = (
             2, 'template 3',
-            None, [], None, None,
+            False,
             {
                 "ensemble de conditions 1": {
                     "snum:isExternal": True,
@@ -61,88 +59,46 @@ class TestTemplateUtils(unittest.TestCase):
 
     # graphe vide, sélection sur les préfixes et suffixes
     def test_search_template_1(self):
-        templates = [self.template1, self.template2, self.template3]
-        self.assertEqual(
-            template_utils.search_template(
-                'd1_schema',
-                'table',
-                self.metagraph_empty,
-                templates
-                ),
-            'template 1'
-            )
-        self.assertEqual(
-            template_utils.search_template(
-                'd2 schema',
-                'table',
-                self.metagraph_empty,
-                templates
-                ),
-            'template 2'
-            )
-        self.assertEqual(
-            template_utils.search_template(
-                'schema_f1',
-                'table',
-                self.metagraph_empty,
-                templates
-                ),
-            'template 1'
-            )
-        self.assertEqual(
-            template_utils.search_template(
-                'schema f2',
-                'table',
-                self.metagraph_empty,
-                templates
-                ),
-            'template 2'
-            )
         self.assertEqual(
             template_utils.search_template(
                 'schema',
-                'd1_table',
+                'table',
                 self.metagraph_empty,
-                templates
+                [self.template1]
                 ),
             'template 1'
             )
         self.assertEqual(
             template_utils.search_template(
                 'schema',
-                'd2 table',
+                'table',
                 self.metagraph_empty,
-                templates
-                ),
-            'template 2'
-            )
-        self.assertEqual(
-            template_utils.search_template(
-                'schema',
-                'table_f1',
-                self.metagraph_empty,
-                templates
+                [self.template1, self.template2, self.template3]
                 ),
             'template 1'
             )
         self.assertEqual(
             template_utils.search_template(
                 'schema',
-                'table f2',
+                'table',
                 self.metagraph_empty,
-                templates
+                [self.template2, self.template3, self.template1]
                 ),
-            'template 2'
+            'template 1'
             )
-   
-    # graphe vide, sélection sur les préfixes et suffixes
-    # + respect de la priorité des modèles
-    def test_search_template_2(self):
-        templates = [self.template1, self.template2, self.template3]
         self.assertEqual(
             template_utils.search_template(
                 'schema',
-                'table_f1',
+                'table',
+                self.metagraph,
+                [self.template1, self.template2, self.template3]
+                ),
+            'template 2'
+            )
+        self.assertEqual(
+            template_utils.search_template(
+                'schema',
+                'table',
                 self.metagraph,
                 [self.template1, self.template3]
                 ),
@@ -151,11 +107,11 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(
             template_utils.search_template(
                 'schema',
-                'table f2',
+                'table',
                 self.metagraph,
-                [self.template2, self.template3]
+                [self.template3]
                 ),
-            'template 2'
+            'template 3'
             )
 
 
