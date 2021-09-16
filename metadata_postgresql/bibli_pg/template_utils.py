@@ -110,6 +110,7 @@ def build_template(categories):
     d = {}
     
     for c in sorted(categories, reverse=True):
+        p = c[1]
     
         if c[0] == 'shared':
         
@@ -136,7 +137,7 @@ def build_template(categories):
             # ancêtres manquants :
             t = re.split(r'\s*[/]\s*', c[1])
             
-            c[1] = ' / '.join(t)
+            p = ' / '.join(t)
             # avec espacement propre, à toute fin utile
             
             if len(t) > 1:
@@ -155,7 +156,7 @@ def build_template(categories):
                         # par l'un des prochains update.
     
         d.update({
-                c[1] : {
+                p : {
                     'label' : c[2],
                     'main widget type' : c[3],
                     'row span' : c[4],
