@@ -43,7 +43,7 @@ def search_template(schema_name, table_name, metagraph,
     
     for t in templates:
     
-        if t[4] <= p:
+        if t[4] is None or t[4] <= p:
             continue
         
         # filtre SQL (dont on a d'ores-et-déjà le résultat
