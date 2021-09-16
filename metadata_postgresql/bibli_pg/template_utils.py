@@ -109,7 +109,48 @@ def build_template(categories):
     """
     d = {}
     
-    for c in categories:
+    for c in sorted(categories, reverse=True):
+    
+        if c[0] == 'shared':
+        
+            # cas d'une branche vide qui n'a pas
+            # de raison d'être :
+            if not c[1] in d and c[13]:
+                continue
+                # si le noeud avait eu un prolongement,
+                # le tri inversé sur categories fait
+                # qu'il aurait été traité avant, et
+                # le présent chemin aurait alors été
+                # pré-enregistré dans le dictionnaire
+                # (cf. opérations suivantes)
+                # NB : on distingue les noeuds vides
+                # au fait que is_node vaut True. Ce
+                # n'est pas une méthode parfaite,
+                # considérant que des modifications
+                # manuelles restent possibles. Les
+                # conséquences ne seraient pas
+                # dramatique cependant (juste un groupe
+                # sans rien dedans).       
+        
+            # gestion préventive des hypothétiques
+            # ancêtres manquants :
+            t = re.split(r'\s*[/]\s*', c[1])
+            
+            if len(t) > 1:
+                tbis = [ ' / '.join(t[:i + 1] ) \
+                        for i in range(len(t) - 1) ]
+            
+            for e in tbis:
+                if not e in d:
+                    d.update({ e : {} })
+                    # insertion des chemins des
+                    # catégories ancêtres
+                    # s'ils étaient dans la table PG,
+                    # le tri inversé sur categories fait
+                    # qu'ils ne sont pas encore passés ;
+                    # les bonnes valeurs seront renseignées
+                    # par l'un des prochains update.
+    
         d.update({
                 c[1] : {
                     'label' : c[2],
