@@ -654,7 +654,7 @@ BEGIN
 				(tpl_id, shrcat_path)
 				VALUES (tpl.tpl_id, tplcat.shrcat_path) ;
 		
-		END LOOP
+		END LOOP ;
 	
 	END LOOP ;
 
