@@ -358,21 +358,21 @@ BEGIN
 	-- mime une commande INSERT produite par un
 	-- script de restauration.
 	-- en changeant le label
-	INSERT INTO z_metadata.metada_shared_categorie (
+	INSERT INTO z_metadata.meta_shared_categorie (
 	    origin, path, cat_label, widget_type, row_span,
 		help_text, default_value, placeholder_text, input_mask,
 		multiple_values, is_mandatory, order_key
 		)
-		VALUES ('shared', 'dct:description', 'résumé', 'QTextEdit', 15, NULL, NULL, NULL, NULL, True, True, 1)
+		VALUES ('shared', 'dct:description', 'résumé', 'QTextEdit', 15, NULL, NULL, NULL, NULL, True, True, 1) ;
 		
 	ASSERT (
 		SELECT cat_label = 'résumé'
-			FROM z_metadata.metada_categorie
+			FROM z_metadata.meta_categorie
 			WHERE path = 'dct:description'
 		) ;
 
 	-- on remet le label initial
-	UPDATE z_metadata.metada_categorie
+	UPDATE z_metadata.meta_categorie
 		SET cat_label = 'description'
 		WHERE path = 'dct:description' ;
 
@@ -423,7 +423,7 @@ BEGIN
 	-- avec schéma :
 	ASSERT (
 		SELECT z_metadata.meta_execute_sql_filter(
-			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']',
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
 			'r_ign_bdtopo',
 			'table'
 			)
@@ -431,7 +431,7 @@ BEGIN
 		
 	ASSERT (
 		SELECT NOT z_metadata.meta_execute_sql_filter(
-			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']',
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
 			'schema',
 			'table'
 			)
@@ -440,7 +440,7 @@ BEGIN
 	-- avec schéma et table :
 	ASSERT (
 		SELECT z_metadata.meta_execute_sql_filter(
-			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''] AND $2 ~ ''_fr$''',
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']) AND $2 ~ ''_fr$''',
 			'r_ign_admin_express',
 			'region_fr'
 			)
@@ -448,7 +448,7 @@ BEGIN
 		
 	ASSERT (
 		SELECT NOT z_metadata.meta_execute_sql_filter(
-			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''] AND $2 ~ ''_fr$''',
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']) AND $2 ~ ''_fr$''',
 			'r_ign_admin_express',
 			NULL
 			)
@@ -458,28 +458,28 @@ BEGIN
 	
 	-- pas de filtre :
 	ASSERT (
-		SELECT NOT z_metadata.meta_execute_sql_filter(
+		SELECT z_metadata.meta_execute_sql_filter(
 			NULL,
 			'schema',
 			'table'
-			)
+			) IS NULL
 		), 'échec assertion #7' ;
 		
 	ASSERT (
-		SELECT NOT z_metadata.meta_execute_sql_filter(
+		SELECT z_metadata.meta_execute_sql_filter(
 			'',
 			'schema',
 			'table'
-			)
+			) IS NULL
 		), 'échec assertion #8' ;
 	
 	-- avec un filtre invalide :
 	ASSERT (
-		SELECT NOT z_metadata.meta_execute_sql_filter(
+		SELECT z_metadata.meta_execute_sql_filter(
 			'n''importe quoi',
 			'schema',
 			'table'
-			)
+			) IS NULL
 		), 'échec assertion #9' ;
 
 
@@ -507,12 +507,18 @@ CREATE OR REPLACE FUNCTION z_metadata_recette.t008()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
+   res record ;
    e_mssg text ;
    e_detl text ;
 BEGIN
 
 	-- import d'un modèle
-	SELECT meta_import_sample_template('Basique') ;
+	SELECT *
+        INTO res
+        FROM z_metadata.meta_import_sample_template('Basique') ;
+        
+    ASSERT res.label = 'Basique' AND res.summary = 'created',
+        'échec assertion #0' ;
 	
 	ASSERT (
 		SELECT count(*)
@@ -524,7 +530,7 @@ BEGIN
 		WHERE tpl_label = 'Basique' ;
 		
 	-- import de tous les modèles
-	SELECT meta_import_sample_template() ;
+	PERFORM z_metadata.meta_import_sample_template() ;
 	
 	ASSERT (
 		SELECT count(*)
@@ -542,13 +548,18 @@ BEGIN
 	    SET sql_filter = 'True'
 		WHERE tpl_label = 'Basique' ;
 		
-	SELECT meta_import_sample_template('Basique') ;
+	SELECT *
+        INTO res
+        FROM z_metadata.meta_import_sample_template('Basique') ;
+        
+    ASSERT res.label = 'Basique' AND res.summary = 'updated',
+        'échec assertion #4' ;
 	
 	ASSERT (
 		SELECT sql_filter IS NULL
 			FROM z_metadata.meta_template
 			WHERE tpl_label = 'Basique'
-		), 'échec assertion #4' ;
+		), 'échec assertion #5' ;
 		
 	DROP EXTENSION metadata ;
 	CREATE EXTENSION metadata ;
