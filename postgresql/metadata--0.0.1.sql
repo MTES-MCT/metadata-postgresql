@@ -595,7 +595,7 @@ BEGIN
 	-- boucle sur les modèles :
 	FOR tpl IN SELECT * FROM (
 	    VALUES
-			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Donnée externe', '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])', '{"c1": {"snum:isExternal": True}}', 10),
+			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Donnée externe', '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])', '{"c1": {"snum:isExternal": "True"}}'::jsonb, 10),
 			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Basique', NULL, NULL, 0)
 	    ) AS t (tpl_id, tpl_label, sql_filter, md_conditions, priority)
 		WHERE meta_import_sample_template.tpl_label IS NULL
