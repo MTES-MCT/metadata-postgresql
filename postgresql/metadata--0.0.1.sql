@@ -74,6 +74,7 @@
 -- - Table: z_metadata.meta_template_categories
 -- - Function: z_metadata.meta_execute_sql_filter(text, text, text)
 -- - View: z_metadata.meta_template_categories_full
+-- - Function: z_metadata.meta_import_sample_template(text)
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -139,7 +140,8 @@ $$ ;
 
 /* 1.1 - TABLE DE CATEGORIES
    1.2 - TABLE DES MODELES
-   1.3 - ASSOCIATION DES CATEGORIES AUX MODELES */
+   1.3 - ASSOCIATION DES CATEGORIES AUX MODELES
+   1.4 - IMPORT DE MODELES PRE-CONFIGURES */
 
 
 ------ 1.1 - TABLE DE CATEGORIES ------
@@ -389,16 +391,17 @@ CREATE OR REPLACE FUNCTION z_metadata.meta_execute_sql_filter(
 Le filtre peut faire référence au nom du schéma avec $1
 et au nom de la table avec $2.
 
-Si le filtre n'est pas valide, la fonction renvoie NULL,
-avec un message d'alerte.
-
-S'il n'y a pas de filtre, la fonction renvoie NULL.
-
 ARGUMENTS :
 - sql_filter : un filtre SQL exprimé sous la forme d'une
 chaîne de caractères ;
 - schema_name : le nom du schéma considéré ;
 - table_name : le nom de la table ou vue considérée.
+
+RESULTAT : True si la condition du filtre est vérifiée.
+Si le filtre n'est pas valide, la fonction renvoie NULL,
+avec un message d'alerte. S'il n'y a pas de filtre, la
+fonction renvoie NULL. Si le filtre est valide mais non
+vérifié, la fonction renvoie False.
 */
 DECLARE
     b boolean ;
@@ -550,6 +553,114 @@ ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie co
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.read_only IS 'True si la catégorie est en lecture seule.' ;
+
+
+------ 1.4 - IMPORT DE MODELES PRE-CONFIGURES -------
+
+-- Function: z_metadata.meta_import_sample_template(text)
+
+CREATE OR REPLACE FUNCTION z_metadata.meta_import_sample_template(
+		tpl_label text default NULL::text
+		)
+	RETURNS TABLE (tpl_label text, summary text)
+    LANGUAGE plpgsql
+    AS $BODY$
+/* OBJET : Importe l'un des modèles de formulaires pré-
+configurés (ou tous si l'argument n'est pas renseigné).
+
+Réexécuter la fonction sur un modèle déjà répertorié aura
+pour effet de le réinitialiser (par suppression / création,
+donc l'identifiant numérique sera modifié).
+
+ARGUMENTS :
+- [optionnel] tpl_label : nom du modèle à importer.
+
+RESULTAT :
+La fonction renvoie une table listant les modèles importés.
+- tpl_label : nom du modèle effectivement importé ;
+- summary : résumé des opérations réalisées. À ce stade,
+vaudra 'created' pour un modèle qui n'était pas encore
+répertorié et 'updated' pour un modèle déjà répertorié.
+
+Si le nom de modèle fourni en argument est inconnu, la
+fonction n'a aucun effet et renverra une table vide.
+*/
+DECLARE
+    tpl record
+    tplcat record ;
+BEGIN
+
+	-- boucle sur les modèles :
+	FOR tpl IN SELECT * FROM (
+	    VALUES
+			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Donnée externe', '$1 ~ ANY(ARRAY[''^r_'', ''^e_'']', '{"c1": {"snum:isExternal": True}}', 10),
+			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Basique', NULL, NULL, 0)
+	    ) AS t (tpl_id, tpl_label, sql_filter, md_conditions, priority)
+		WHERE meta_import_sample_template.tpl_label IS NULL
+			OR meta_import_sample_template.tpl_label = t.tpl_label
+	LOOP
+	
+		DELETE FROM z_metadata.meta_template
+			WHERE meta_template.tpl_label = tpl.tpl_label ;
+			
+		IF FOUND
+			RETURN QUERY SELECT tpl.tpl_label, 'updated' ;
+		ELSE
+			RETURN QUERY SELECT tpl.tpl_label, 'created' ;
+		END IF ;
+		
+		INSERT INTO z_metadata.meta_template
+			(tpl_id, tpl_label, sql_filter, md_conditions, priority)
+			VALUES (tpl.tpl_id, tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority) ;
+		
+		-- boucle sur les associations modèles-catégories :
+		FOR tplcat IN SELECT * FROM (
+			VALUES
+				('Basique', 'dct:title', NULL),
+				('Basique', 'dct:description', NULL),
+				('Basique', 'dct:modified', NULL),
+				('Basique', 'dct:temporal', NULL),
+				('Basique', 'dct:temporal / dcat:startDate', NULL),
+				('Basique', 'dct:temporal / dcat:endDate', NULL),
+				('Donnée externe', 'dct:accessRights', NULL),
+				('Donnée externe', 'dct:accessRights / rdfs:label', NULL),
+				('Donnée externe', 'dct:description', NULL),
+				('Donnée externe', 'dct:modified', NULL),
+				('Donnée externe', 'dct:provenance', NULL),
+				('Donnée externe', 'dct:provenance / rdfs:label', NULL),
+				('Donnée externe', 'dct:publisher', NULL),
+				('Donnée externe', 'dct:publisher / foaf:name', NULL),
+				('Donnée externe', 'dct:temporal', NULL),
+				('Donnée externe', 'dct:temporal / dcat:startDate', NULL),
+				('Donnée externe', 'dct:temporal / dcat:endDate', NULL),
+				('Donnée externe', 'dct:title', NULL),
+				('Donnée externe', 'snum:isExternal', True),
+				('Donnée externe', 'dcat:distribution', NULL),
+				('Donnée externe', 'dcat:distribution / dct:accessURL', NULL),
+				('Donnée externe', 'dcat:distribution / dct:issued', NULL),
+				('Donnée externe', 'dcat:distribution / dct:license', NULL),
+				('Donnée externe', 'dcat:distribution / dct:license / rdfs:label', NULL),
+				('Donnée externe', 'dcat:keyword', NULL),
+				('Donnée externe', 'dcat:landingPage', NULL),
+				('Donnée externe', 'dcat:theme', NULL)	
+			) AS t (tpl_label, shrcat_path, default_value)
+			WHERE meta_import_sample_template.tpl_label = tpl.tpl_label
+		LOOP
+		
+			INSERT INTO z_metadata.meta_template_categories
+				(tpl_id, shrcat_path)
+				VALUES (tpl.tpl_id, tplcat.shrcat_path) ;
+		
+		END LOOP
+	
+	END LOOP ;
+
+	RETURN ;
+	
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_metadata.meta_import_sample_template(text) IS 'Importe l''un des modèles de formulaires pré-configurés (ou tous si l''argument n''est pas renseigné).' ;
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
