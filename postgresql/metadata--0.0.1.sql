@@ -160,6 +160,7 @@ COMMENT ON TYPE z_metadata.meta_widget_type IS 'Métadonnées. Types de widgets 
 CREATE TABLE z_metadata.meta_categorie (
     path text NOT NULL DEFAULT format('<urn:uuid:%s>', gen_random_uuid()),
 	origin text NOT NULL DEFAULT 'local',
+	is_node boolean NOT NULL DEFAULT False,
     cat_label text NOT NULL,
     widget_type z_metadata.meta_widget_type,
     row_span int,
@@ -178,11 +179,12 @@ CREATE TABLE z_metadata.meta_categorie (
 COMMENT ON TABLE z_metadata.meta_categorie IS 'Métadonnées. Catégories de métadonnées disponibles pour les modèles de formulaires.' ;
 
 COMMENT ON COLUMN z_metadata.meta_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
-COMMENT ON COLUMN z_metadata.meta_categorie.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.cat_label IS 'Libellé de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
-COMMENT ON COLUMN z_metadata.meta_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire).' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
@@ -201,12 +203,13 @@ CREATE TABLE z_metadata.meta_shared_categorie
     
 COMMENT ON TABLE z_metadata.meta_shared_categorie IS 'Métadonnées. Catégories de métadonnées communes.' ;
 
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique).' ;
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.origin IS 'Origine de la catégorie. Toujours ''shared''.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.origin IS 'Origine de la catégorie. Toujours ''shared''. NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn). NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.cat_label IS 'Libellé de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire).' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
@@ -219,46 +222,46 @@ SELECT pg_extension_config_dump('z_metadata.meta_shared_categorie'::regclass, ''
 
 -- extraction du schéma SHACL
 INSERT INTO z_metadata.meta_categorie (
-    origin, path, cat_label, widget_type, row_span,
+    origin, path, is_node, cat_label, widget_type, row_span,
     help_text, default_value, placeholder_text, input_mask,
     multiple_values, is_mandatory, order_key
     ) VALUES
-    ('shared', 'dct:title', 'libellé', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, True, 0),
-    ('shared', 'dct:description', 'description', 'QTextEdit', 15, NULL, NULL, NULL, NULL, True, True, 1),
-    ('shared', 'dct:modified', 'dernière modification', 'QDateTimeEdit', NULL, NULL, NULL, NULL, NULL, False, False, 2),
-    ('shared', 'snum:isExternal', 'donnée externe', 'QCheckBox', NULL, NULL, NULL, NULL, NULL, False, False, 3),
-    ('shared', 'dcat:theme', 'thème', 'QComboBox', NULL, NULL, NULL, NULL, NULL, True, False, 4),
-    ('shared', 'dcat:keyword', 'mots-clé libres', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, False, 5),
-    ('shared', 'dct:temporal', 'couverture temporelle', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 6),
-    ('shared', 'dct:temporal / dcat:startDate', 'date de début', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, 0),
-    ('shared', 'dct:temporal / dcat:endDate', 'date de fin', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, 1),
-    ('shared', 'dct:provenance', 'généalogie', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 7),
-    ('shared', 'dct:provenance / rdfs:label', 'texte', 'QTextEdit', 20, NULL, NULL, NULL, NULL, True, False, 0),
-    ('shared', 'dct:accessRights', 'conditions d''accès', 'QComboBox', NULL, NULL, NULL, NULL, NULL, False, False, 8),
-    ('shared', 'dct:accessRights / rdfs:label', 'mention', 'QTextEdit', 4, NULL, NULL, NULL, NULL, True, False, 1),
-    ('shared', 'dcat:contactPoint', 'point de contact', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 10),
-    ('shared', 'dcat:contactPoint / vcard:fn', 'nom', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 1),
-    ('shared', 'dcat:contactPoint / vcard:hasEmail', 'mél', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 2),
-    ('shared', 'dcat:contactPoint / vcard:hasTelephone', 'téléphone', 'QLineEdit', NULL, NULL, NULL, '+33-1-23-45-67-89', NULL, False, False, 3),
-    ('shared', 'dcat:contactPoint / vcard:hasURL', 'site internet', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 4),
-    ('shared', 'dcat:contactPoint / vcard:organization-name', 'organisme', 'QLineEdit', NULL, 'le cas échéant, organisation plus vaste dont le point de contact fait partie', NULL, NULL, NULL, False, False, 5),
-    ('shared', 'dct:publisher', 'diffuseur', NULL, NULL, NULL, NULL, NULL, NULL, False, False, 11),
-    ('shared', 'dct:publisher / foaf:name', 'nom', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 0),
-    ('shared', 'dct:publisher / dct:type', 'type', 'QComboBox', NULL, NULL, NULL, NULL, NULL, False, False, 1),
-    ('shared', 'dct:publisher / foaf:mbox', 'mél', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 2),
-    ('shared', 'dct:publisher / foaf:phone', 'téléphone', 'QLineEdit', NULL, NULL, NULL, '+33-1-23-45-67-89', NULL, False, False, 3),
-    ('shared', 'dct:publisher / foaf:workplaceHomepage', 'site internet', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, False, False, 4),
-    ('shared', 'dcat:distribution', 'distribution', NULL, NULL, NULL, NULL, NULL, NULL, True, False, 20),
-    ('shared', 'dcat:distribution / dct:accessURL', 'URL d''accès', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, False, 1),
-    ('shared', 'dcat:distribution / dct:issued', 'date de publication', 'QDateEdit', NULL, NULL, NULL, NULL, '0000-00-00', False, False, 2),
-    ('shared', 'dcat:distribution / dct:rights', 'propriété intellectuelle', NULL, NULL, NULL, NULL, NULL, NULL, False, False, 3),
-    ('shared', 'dcat:distribution / dct:rights / rdfs:label', 'mention', 'QTextEdit', 4, NULL, NULL, NULL, NULL, True, False, 1),
-    ('shared', 'dcat:distribution / dct:license', 'licence', 'QComboBox', NULL, NULL, NULL, NULL, NULL, False, False, 4),
-    ('shared', 'dcat:distribution / dct:license / dct:type', 'type', 'QComboBox', NULL, NULL, NULL, NULL, NULL, True, False, 1),
-    ('shared', 'dcat:distribution / dct:license / rdfs:label', 'termes', 'QTextEdit', NULL, NULL, NULL, NULL, NULL, True, False, 2),
-    ('shared', 'dcat:landingPage', 'page internet', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, True, False, 30),
-    ('shared', 'dct:language', 'langue des données', 'QComboBox', NULL, NULL, 'http://publications.europa.eu/resource/authority/language/FRA', NULL, NULL, True, False, 40),
-    ('shared', 'snum:relevanceScore', 'score', 'QLineEdit', NULL, 'plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche', NULL, NULL, NULL, False, False, 50) ;
+    ('shared', 'dct:title', False, 'libellé', 'QLineEdit', None, None, None, None, None, True, True, 0),
+	('shared', 'dct:description', False, 'description', 'QTextEdit', 15, None, None, None, None, True, True, 1),
+	('shared', 'dct:modified', False, 'dernière modification', 'QDateTimeEdit', None, None, None, None, None, False, False, 2),
+	('shared', 'snum:isExternal', False, 'donnée externe', 'QCheckBox', None, None, None, None, None, False, False, 3),
+	('shared', 'dcat:theme', False, 'thème', 'QComboBox', None, None, None, None, None, True, False, 4),
+	('shared', 'dcat:keyword', False, 'mots-clé libres', 'QLineEdit', None, None, None, None, None, True, False, 5),
+	('shared', 'dct:temporal', True, 'couverture temporelle', None, None, None, None, None, None, True, False, 6),
+	('shared', 'dct:temporal / dcat:startDate', False, 'date de début', 'QDateEdit', None, None, None, None, '0000-00-00', False, False, 0),
+	('shared', 'dct:temporal / dcat:endDate', False, 'date de fin', 'QDateEdit', None, None, None, None, '0000-00-00', False, False, 1),
+	('shared', 'dct:provenance', True, 'généalogie', None, None, None, None, None, None, True, False, 7),
+	('shared', 'dct:provenance / rdfs:label', False, 'texte', 'QTextEdit', 20, None, None, None, None, True, False, 0),
+	('shared', 'dct:accessRights', False, 'conditions d''accès', 'QComboBox', None, None, None, None, None, False, False, 8),
+	('shared', 'dct:accessRights / rdfs:label', False, 'mention', 'QTextEdit', 4, None, None, None, None, True, False, 1),
+	('shared', 'dcat:contactPoint', True, 'point de contact', None, None, None, None, None, None, True, False, 10),
+	('shared', 'dcat:contactPoint / vcard:fn', False, 'nom', 'QLineEdit', None, None, None, None, None, False, False, 1),
+	('shared', 'dcat:contactPoint / vcard:hasEmail', False, 'mél', 'QLineEdit', None, None, None, None, None, False, False, 2),
+	('shared', 'dcat:contactPoint / vcard:hasTelephone', False, 'téléphone', 'QLineEdit', None, None, None, '+33-1-23-45-67-89', None, False, False, 3),
+	('shared', 'dcat:contactPoint / vcard:hasURL', False, 'site internet', 'QLineEdit', None, None, None, None, None, False, False, 4),
+	('shared', 'dcat:contactPoint / vcard:organization-name', False, 'organisme', 'QLineEdit', None, 'le cas échéant, organisation plus vaste dont le point de contact fait partie', None, None, None, False, False, 5),
+	('shared', 'dct:publisher', True, 'diffuseur', None, None, None, None, None, None, False, False, 11),
+	('shared', 'dct:publisher / foaf:name', False, 'nom', 'QLineEdit', None, None, None, None, None, False, False, 0),
+	('shared', 'dct:publisher / dct:type', False, 'type', 'QComboBox', None, None, None, None, None, False, False, 1),
+	('shared', 'dct:publisher / foaf:mbox', False, 'mél', 'QLineEdit', None, None, None, None, None, False, False, 2),
+	('shared', 'dct:publisher / foaf:phone', False, 'téléphone', 'QLineEdit', None, None, None, '+33-1-23-45-67-89', None, False, False, 3),
+	('shared', 'dct:publisher / foaf:workplaceHomepage', False, 'site internet', 'QLineEdit', None, None, None, None, None, False, False, 4),
+	('shared', 'dcat:distribution', True, 'distribution', None, None, None, None, None, None, True, False, 20),
+	('shared', 'dcat:distribution / dct:accessURL', False, 'URL d''accès', 'QLineEdit', None, None, None, None, None, True, False, 1),
+	('shared', 'dcat:distribution / dct:issued', False, 'date de publication', 'QDateEdit', None, None, None, None, '0000-00-00', False, False, 2),
+	('shared', 'dcat:distribution / dct:rights', True, 'propriété intellectuelle', None, None, None, None, None, None, False, False, 3),
+	('shared', 'dcat:distribution / dct:rights / rdfs:label', False, 'mention', 'QTextEdit', 4, None, None, None, None, True, False, 1),
+	('shared', 'dcat:distribution / dct:license', False, 'licence', 'QComboBox', None, None, None, None, None, False, False, 4),
+	('shared', 'dcat:distribution / dct:license / dct:type', False, 'type', 'QComboBox', None, None, None, None, None, True, False, 1),
+	('shared', 'dcat:distribution / dct:license / rdfs:label', False, 'termes', 'QTextEdit', None, None, None, None, None, True, False, 2),
+	('shared', 'dcat:landingPage', False, 'page internet', 'QLineEdit', None, None, None, None, None, True, False, 30),
+	('shared', 'dct:language', False, 'langue des données', 'QComboBox', None, None, 'http://publications.europa.eu/resource/authority/language/FRA', None, None, True, False, 40),
+	('shared', 'snum:relevanceScore', False, 'score', 'QLineEdit', None, 'plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche', None, None, None, False, False, 50) ;
 
 
 -- Function: z_metadata.meta_shared_categorie_before_insert()
@@ -314,18 +317,20 @@ CREATE TABLE z_metadata.meta_local_categorie
     PARTITION OF z_metadata.meta_categorie (
         CONSTRAINT meta_local_categorie_pkey PRIMARY KEY (path),
         CONSTRAINT meta_local_categorie_path_check CHECK (path ~ '^[<]urn[:]uuid[:][0-9a-z-]{36}[>]$'),
-        CONSTRAINT meta_local_categorie_widget_check CHECK (NOT widget_type = 'QComboBox')
+        CONSTRAINT meta_local_categorie_widget_check CHECK (NOT widget_type = 'QComboBox'),
+		CONSTRAINT meta_local_categorie_is_node_check CHECK (NOT is_node)
     )
     FOR VALUES IN ('local') ;
     
 COMMENT ON TABLE z_metadata.meta_local_categorie IS 'Métadonnées. Catégories de métadonnées supplémentaires (ajouts locaux).' ;
 
 COMMENT ON COLUMN z_metadata.meta_local_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
-COMMENT ON COLUMN z_metadata.meta_local_categorie.origin IS 'Origine de la catégorie. Toujours ''local''.' ;
+COMMENT ON COLUMN z_metadata.meta_local_categorie.origin IS 'Origine de la catégorie. Toujours ''local''. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Toujours False pour une catégorie locale. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.cat_label IS 'Libellé de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
-COMMENT ON COLUMN z_metadata.meta_local_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire).' ;
+COMMENT ON COLUMN z_metadata.meta_local_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
@@ -477,7 +482,7 @@ COMMENT ON COLUMN z_metadata.meta_template_categories.widget_type IS 'Type de wi
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire).
+COMMENT ON COLUMN z_metadata.meta_template_categories.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.default_value IS 'Valeur par défaut, le cas échéant.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
@@ -486,7 +491,7 @@ Si présente, cette valeur se substitue pour le modèle considéré à la valeur
 COMMENT ON COLUMN z_metadata.meta_template_categories.input_mask IS 'Masque de saisie, s''il y a lieu.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.multiple_values IS 'True si la catégorie admet plusieurs valeurs.
-ATTENTION : pour les catégories communes, les modifications apportées sur ce champs ne seront pas prises en compte.' ;
+ATTENTION : pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.
 ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.
@@ -506,6 +511,7 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
         t.tpl_label,
         coalesce(tc.shrcat_path, tc.loccat_path) AS path,
         c.origin,
+		c.is_node,
         coalesce(tc.cat_label, c.cat_label) AS cat_label,
         coalesce(tc.widget_type, c.widget_type) AS widget_type,
         coalesce(tc.row_span, c.row_span) AS row_span,
@@ -530,13 +536,14 @@ COMMENT ON COLUMN z_metadata.meta_template_categories_full.tplcat_id IS 'Identif
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.tpl_label IS 'Nom du modèle.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.path IS 'Chemin SPARQL / identifiant de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn).' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.cat_label IS 'Libellé de la catégorie de métadonnées.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.widget_type IS 'Type de widget de saisie à utiliser.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire).
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.default_value IS 'Valeur par défaut, le cas échéant.
 Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
