@@ -7,7 +7,21 @@ Leur usage est totalement optionnel.
 
 ## Gestion dans PostgreSQL
 
-### Installation de l'extension
+### Principe
+
+Par défaut, les formulaires du plugin QGIS présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes (en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire).
+
+Souvent, c'est trop : selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne sont pas les mêmes, et il est peu probable que toutes le soient.
+
+Parfois, c'est insuffisant : toujours selon l'organisation du service, la table considérée et le profil de l'utilisateur, il peut être très utile voire indispensable de disposer d'informations qui ne sont pas prévue dans les catégories communes.
+
+L'extension PostgreSQL *metadata* y remédie en permettant à l'administrateur de définir des modèles de formulaire adaptés à son service.
+
+Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l'utilisateur avec leurs modalités d'affichage. Il restreint ainsi les catégories communes par un système de liste blanche, tout en autorisant l'ajout de catégories locales supplémentaires.
+
+L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées (si cela se justifie).
+
+### Installation de l'extension metadata
 
 L'extension PostgreSQL *metadata* crée une structure de données adaptée au stockage des modèles.
 
@@ -34,19 +48,6 @@ CREATE EXTENSION metadata CASCADE ;
 L'installation est à réaliser par l'ADL. A priori, il ne paraît pas judicieux d'imaginer que celle-ci puisse se faire par l'intermédiaire du plugin QGIS, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL...
 
 Tous les objets de l'extension sont créés dans le schéma `z_metadata`. Si celui-ci existait avant l'installation de l'extension, il ne sera pas marqué comme dépendant de l'extension et ne sera donc pas supprimé en cas de désinstallation.
-
-
-### Principe
-
-Par défaut, les formulaires du plugin QGIS présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes (en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire).
-
-Souvent, c'est trop : selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne sont pas les mêmes, et il est peu probable que toutes le soient.
-
-Parfois, c'est insuffisant : toujours selon l'organisation du service, la table considérée et le profil de l'utilisateur, il peut être très utile voire indispensable de disposer d'informations qui ne sont pas prévue dans les catégories communes. 
-
-Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l'utilisateur avec leurs modalités d'affichage. Il restreint ainsi les catégories communes par un système de liste blanche et permet d'ajouter des catégories locales supplémentaires.
-
-L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées.
 
 
 ### Création d'un modèle de formulaire
@@ -99,7 +100,7 @@ La comparaison des valeurs ne tient pas compte de la casse.
 
 Il faudra soit que toutes les conditions de l'un des ensembles du JSON soient vérifiées, soit que le filtre SQL ait renvoyé True pour que le modèle soit considéré comme applicable. Si un jeu de données remplit les conditions de plusieurs modèles, c'est celui dont le niveau de priorité, (champ `priority`) est le plus élevé qui sera retenu.
 
-À noter que les conditions ne valent qu'à l'ouverture de la fiche. L'utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d'application automatique ne sont pas vérifiées.
+À noter que les conditions ne valent qu'à l'ouverture de la fiche. L'utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d'application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n'appliquer aucun modèle, auquel cas le schéma des métadonnées communes s'appliquera tel quel.
 
 
 ### Catégories de métadonnées
@@ -130,6 +131,27 @@ Les champs sur lesquels l'ADL peut intervenir sont :
 Les champs `cat_id` (identifiant unique numérique), `path` (chemin SPARQL identifiant la catégorie) et `origin` sont calculés automatiquement.
 
 Les caractéristiques spécifiées dans cette table seront utilisées pour tous les modèles, sauf -- cette possibilité sera détaillée par la suite -- à avoir prévu des valeurs spécifiques au modèle. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma SHACL et repris pour information dans `meta_categorie` lors de l'initialisation de l'extension.
+
+
+### Association de catégories à un modèle
+
+### Modèles pré-configurés
+
+L'extension propose des modèles pré-configurés - deux à ce stade - qui peuvent être importés via la commande suivante :
+
+```sql
+
+SELECT z_metadata.meta_import_sample_template(%tpl_label) ;
+
+```
+
+*`%tpl_label` est à remplacer par une chaîne de caractères correspondant au nom du modèle à importer. Il est aussi possible de ne donner aucun argument à la fonction, dans ce cas tous les modèles pré-configurés sont importés.*
+
+Modèles pré-configurés disponibles :
+
+| `'Basique'` | Modèle limité à quelques catégories de métadonnées essentielles. |
+| `'Donnée externe'` | Modèle assez complet adapté à des données externes. |
+
 
 ## Import par le plugin
 
