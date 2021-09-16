@@ -47,7 +47,7 @@ widgetsdict[key[1]]['main widget']
 
 ```
 
-Mais on utilisera plutôt la méthode `parent_widget()`, qui renvoie directement le widget principal (QGroupBox) de l'enregistrement parent :
+**Mais on utilisera plutôt la méthode `parent_widget()`**, qui renvoie directement le widget principal (QGroupBox) de l'enregistrement parent :
 
 ```python
 
@@ -268,7 +268,7 @@ widgetsdict[key[1]]['grid widget']
 
 ```
 
-Ou, de préférence, en utilisant la méthode dédiée `parent_grid()`, qui renvoie directement la grille (QGridLayout) de l'enregistrement parent :
+**Mais on utilisera plutôt la méthode dédiée `parent_grid()`**, qui renvoie directement la grille (QGridLayout) de l'enregistrement parent :
 
 ```python
 
@@ -370,11 +370,11 @@ widgetsdict[key]['label widget']
 
 ### Parent
 
-Le widget *parent* est le même que pour le widget principal : il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`.
+Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`, qu'on obtiendra plutôt avec :
 
 ```python
 
-widgetsdict[key[1]]['main widget']
+widgetsdict.parent_widget(key)
 
 ```
 
@@ -384,7 +384,7 @@ Le QLabel doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsdict[key[1]]['grid widget']
+widgetsdict.parent_grid(key)
 
 ```
 
@@ -442,11 +442,11 @@ widgetsdict[key]['switch source widget']
 
 ### Parent
 
-Le widget *parent* est le même que pour le widget principal : il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`.
+Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`, qu'on obtiendra plutôt avec :
 
 ```python
 
-widgetsdict[key[1]]['main widget']
+widgetsdict.parent_widget(key)
 
 ```
 
@@ -492,7 +492,7 @@ Le QToolButton doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsdict[key[1]]['grid widget']
+widgetsdict.parent_grid(key)
 
 ```
 
@@ -537,11 +537,11 @@ widgetsdict[key]['language widget']
 
 ### Parent
 
-Le widget *parent* est le même que pour le widget principal : il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`.
+Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`, qu'on obtiendra plutôt avec :
 
 ```python
 
-widgetsdict[key[1]]['main widget']
+widgetsdict.parent_widget(key)
 
 ```
 
@@ -589,7 +589,7 @@ Le QToolButton doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsdict[key[1]]['grid widget']
+widgetsdict.parent_grid(key)
 
 ```
 
@@ -612,7 +612,7 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs précédemment saisies.
 
-Un tel widget doit être créé dès lors que le widget appartient à un groupe de valeurs ou groupe de traduction, soit quand :
+Un tel widget doit être créé dès lors que le widget appartient à un groupe de valeurs ou groupe de traduction, soit (pour information) quand :
 
 ```python
 
@@ -640,11 +640,11 @@ widgetsdict[key]['minus widget']
 
 ### Parent
 
-Le widget *parent* est le même que pour le widget principal : il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`.
+Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `key`, qu'on obtiendra plutôt avec :
 
 ```python
 
-widgetsdict[key[1]]['main widget']
+widgetsdict.parent_widget(key)
 
 ```
 
@@ -666,7 +666,7 @@ Le QToolButton doit être placé dans le QGridLayout associé à son parent.
 
 ```python
 
-widgetsdict[key[1]]['grid widget']
+widgetsdict.parent_grid(key)
 
 ```
 
