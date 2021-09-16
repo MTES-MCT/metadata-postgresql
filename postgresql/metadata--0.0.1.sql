@@ -288,6 +288,8 @@ BEGIN
 	
 	DELETE FROM z_metadata.meta_shared_categorie
 		WHERE meta_shared_categorie.path = NEW.path ;
+		
+	RETURN ;
 
 END
 $BODY$ ;
