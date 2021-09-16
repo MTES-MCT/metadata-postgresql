@@ -596,11 +596,19 @@ BEGIN
 				'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
 				'{"c1": {"snum:isExternal": "True"}}'::jsonb,
 				10,
-				format('Modèle pré-configuré importé via z_metadata.meta_import_sample_template le %.', now()::date)
+				format(
+					'Modèle pré-configuré importé via z_metadata.meta_import_sample_template() le %s à %s.',
+					now()::date,
+					left(now()::time::text, 8)
+					)
 			),
 			(
 				'Basique', NULL, NULL, 0,
-				format('Modèle pré-configuré importé via z_metadata.meta_import_sample_template le %.', now()::date)
+				format(
+					'Modèle pré-configuré importé via z_metadata.meta_import_sample_template() le %s à %s.',
+					now()::date,
+					left(now()::time::text, 8)
+					)
 			)
 	    ) AS t (tpl_label, sql_filter, md_conditions, priority, comment)
 		WHERE meta_import_sample_template.tpl_label IS NULL
