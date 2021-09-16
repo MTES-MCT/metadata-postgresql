@@ -60,13 +60,12 @@ def query_list_templates():
     """
     return """
         SELECT
-            tpl_id,
             tpl_label,
             z_metadata.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
             md_conditions,
             priority
             FROM z_metadata.meta_template
-            ORDER BY tpl_id
+            ORDER BY tpl_label
         """
 
 
