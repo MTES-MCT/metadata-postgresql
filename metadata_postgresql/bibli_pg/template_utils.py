@@ -136,20 +136,23 @@ def build_template(categories):
             # ancêtres manquants :
             t = re.split(r'\s*[/]\s*', c[1])
             
+            c[1] = ' / '.join(t)
+            # avec espacement propre, à toute fin utile
+            
             if len(t) > 1:
                 tbis = [ ' / '.join(t[:i + 1] ) \
                         for i in range(len(t) - 1) ]
             
-            for e in tbis:
-                if not e in d:
-                    d.update({ e : {} })
-                    # insertion des chemins des
-                    # catégories ancêtres
-                    # s'ils étaient dans la table PG,
-                    # le tri inversé sur categories fait
-                    # qu'ils ne sont pas encore passés ;
-                    # les bonnes valeurs seront renseignées
-                    # par l'un des prochains update.
+                for e in tbis:
+                    if not e in d:
+                        d.update({ e : {} })
+                        # insertion des chemins des
+                        # catégories ancêtres
+                        # s'ils étaient dans la table PG,
+                        # le tri inversé sur categories fait
+                        # qu'ils ne sont pas encore passés ;
+                        # les bonnes valeurs seront renseignées
+                        # par l'un des prochains update.
     
         d.update({
                 c[1] : {
