@@ -52,7 +52,7 @@ Tous les objets de l'extension sont créés dans le schéma `z_metadata`. Si cel
 
 ### Création d'un modèle de formulaire
 
-La table `meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ `tpl_label`. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle.
+La table `meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ `tpl_label`, qui lui tiendra lieu d'identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.
 
 Les champs `sql_filter` et `md_conditions` servent à définir des conditions selon lesquelles le modèle sera appliqué automatiquement à la fiche de métadonnées considérée. Les remplir est bien évidemment optionnel.
 
@@ -80,7 +80,7 @@ D'une manière générale, toute commande renvoyant un booléen peut être utili
 
 {
     "ensemble de conditions 1": {
-        "snum:isExternal": True,
+        "snum:isExternal": "True",
         "dcat:keyword": "IGN"
         },
     "ensemble de conditions 2": {
@@ -90,7 +90,7 @@ D'une manière générale, toute commande renvoyant un booléen peut être utili
 
 ```
 
-Les noms donnés aux ensembles n'ont pas d''incidence. Dans un ensemble, les clés sont les chemins des catégories de métadonnées (champ `path` de la table `meta_categorie` évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.
+Les noms donnés aux ensembles n'ont pas d''incidence. Dans un ensemble, les clés sont les chemins de catégories de métadonnées (champ `path` de la table `meta_categorie` évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.
 
 Dans l'exemple ci-avant, une table validera les conditions du modèle si :
 - il s'agit d'une donnée externe (valeur `True` pour la catégorie `snum:isExternal`) **ET** l'un de ses mots-clés (`dcat:keyword`) est IGN ;
@@ -105,7 +105,9 @@ Il faudra soit que toutes les conditions de l'un des ensembles du JSON soient v�
 
 ### Catégories de métadonnées
 
-La table `meta_categorie` répertorie toutes les catégories de métadonnées, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/metadata_postgresql_bibi_rdf/modeles/shape.ttl), correspond au paramètre `shape` des fonctions de RDF Utils) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service. Il s'agit en fait d'une table partitionnée avec deux tables filles :
+La table `meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/metadata_postgresql_bibi_rdf/modeles/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
+
+Il s'agit en fait d'une table partitionnée avec deux tables filles :
 - `meta_shared_categorie` pour les catégories communes (`origin` vaut `shared`) ;
 - `meta_local_categorie` pour les catégories supplémentaires locales (`origin` vaut `local`).
 
@@ -119,21 +121,50 @@ Les champs sur lesquels l'ADL peut intervenir sont :
 
 | `cat_label` | Libellé de la catégorie. | 
 | `widget_type` | Type de widget de saisie à utiliser. | 
-| `row_span` | Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit. | 
-| `help_text` | Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire). | 
-| `default_value` | Valeur par défaut, le cas échéant. | 
-| `placeholder_text` | Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu. | 
-| `input_mask` | Masque de saisie, s''il y a lieu. | 
-| `multiple_values` | True si la catégorie admet plusieurs valeurs. | 
-| `is_mandatory` | True si une valeur doit obligatoirement être saisie pour cette catégorie. | 
-| `order_key` | Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. | 
+| `row_span` | Nombre de lignes occupées par le widget de saisie, s'il y a lieu. La valeur ne sera considérée que pour un widget de type `'QTextEdit'`. | 
+| `help_text` | Description de la catégorie. Sera affiché sous la forme d'un texte d'aide dans le formulaire. | 
+| `default_value` | Valeur par défaut pour la catégorie, le cas échéant. *NB : les valeurs par défaut ne sont appliquées que sur les fiches de métadonnées vierges.* | 
+| `placeholder_text` | Valeur fictive pré-affichée en tant qu'exemple dans le widget de saisie, s'il y a lieu. | 
+| `input_mask` | Masque de saisie, s'il y a lieu. | 
+| `multiple_values` | `True` si la catégorie admet plusieurs valeurs. *NB : pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.*| 
+| `is_mandatory` | `True` si une valeur doit obligatoirement être saisie pour cette catégorie. *NB : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.*| 
+| `order_key` | Ordre d'apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier, il n'est pas nécessaire que les numéros se suivent. Dans le cas des catégories communes, qui ont une structure arborescente, il s'agit de l'ordre parmi les catégories de même niveau dans la branche. | 
 
-Les champs `cat_id` (identifiant unique numérique), `path` (chemin SPARQL identifiant la catégorie) et `origin` sont calculés automatiquement.
+Les champs `path` (chemin SPARQL identifiant la catégorie), `origin` et `is_node` sont calculés automatiquement. Il est fortement recommandé de ne pas les modifier à la main.
 
-Les caractéristiques spécifiées dans cette table seront utilisées pour tous les modèles, sauf -- cette possibilité sera détaillée par la suite -- à avoir prévu des valeurs spécifiques au modèle. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma SHACL et repris pour information dans `meta_categorie` lors de l'initialisation de l'extension.
+Les valeurs autorisées pour `widget_type` sont définies par le type énuméré, `meta_widget_type`.
+
+Concrètement :
+
+| `'QLineEdit'` | saisie de texte libre sur une seule ligne |
+| `'QTextEdit'` | saisie multiligne de texte libre |
+| `'QDateEdit'` | date avec aide à la saisie |
+| `'QDateTimeEdit'` | date et heure avec aide à la saisie |
+| `'QCheckBox'` | case à cocher |
+| `'QComboBox'` | sélection d'un terme dans une liste |
+
+À noter que `'QComboBox'` n'est pas disponible pour les catégories supplémentaires locales.
+
+Les caractéristiques spécifiées dans la table `meta_categorie` seront utilisées pour tous les modèles, sauf -- cette possibilité sera détaillée par la suite -- à avoir prévu des valeurs spécifiques au modèle via la table `meta_template_categories`. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma SHACL, qui est repris dans `meta_categorie` lors de l'initialisation de l'extension.
 
 
 ### Association de catégories à un modèle
+
+La définition des catégories associées à chaque modèle (relation n-n) se fait par l'intermédiaire de la table de correspondance `meta_template_categories`.
+
+Le modèle est identifié par son nom (champ `tpl_label`), la catégorie par son chemin (champ `path` de `meta_categorie`, repris dans `loccat_path` pour une catégorie locale et dans `shrcat_path` pour une catégorie commune).
+
+Hormis ces champs de clés étrangères et la clé primaire séquentielle `tplcat_id`, tous les champs de la table `meta_template_categories` servent au paramétrage du modèle. Les valeurs qui y sont saisies remplaceront (pour le modèle considéré) celles qui avaient éventuellement été renseignées dans `meta_categorie` et le paramétrage du schéma SHACL des catégories communes.
+
+Soit un modèle M, une catégorie de métadonnées C et une propriété P.
+- Si une valeur est renseignée pour la propriété P, la catégorie C et le modèle M dans `meta_template_categories`, alors elle s'applique au modèle M pour la catégorie C et la propriété P.
+- Sinon, si une valeur est renseignée pour la propriété P et la catégorie C dans `meta_categorie`, alors elle s'applique au modèle M pour la catégorie C et la propriété P.
+- Sinon, pour une catégorie commune, la valeur éventuellement prévue par le schéma SHACL s'appliquera au modèle M pour la catégorie C et la propriété P. Pour les catégories locales, des valeurs par défaut sont prévues sur les propriétés essentielles - par exemple des widgets `'QLineEdit'` seront utilisés si le type n'est spécifié ni dans `meta_template_categories` ni dans `meta_categorie`.
+
+Aux champs de paramétrage qui apparaissaient déjà dans `meta_categorie`, la table `meta_template_categories` ajoute un champ booléen `read_only` qui pourra valoir `True` si la catégorie doit être en lecture seule pour le modèle considéré. Il peut notamment être mis à profit lorsque des fiches de métadonnées sont co-rédigées par un service métier référent et l'administrateur de données, pour permettre à chacun de voir les informations saisies par l'autre, sans qu'il risque de les modifier involontairement (sauf à ce qu'il change de modèle, bien sûr, ce n'est pas un dispositif de verrouillage, seulement de l'aide à la saisie).
+
+*NB. Pour les catégories de métadonnées communes imbriquées, il serait théoriquement attendu qu'un modèle fasse systématiquement apparaître tous les chemins intermédiaires (par exemple `'dcat:distribution'` et `'dcat:distribution / dct:license'` pour `'dcat:distribution / dct:license / rdfs:label'`) puisqu'ils devront figurer également dans le formulaire pour que la catégorie finale puisse être présentée à l'utilisateur. En pratique, toutefois, le plugin saura ajouter lui-même les chemins intermédiaires manquants, de même qu'il enlèvera d'ailleurs les chemins intermédiaires sans catégorie finale. Ainsi, l'administrateur pourra se contenter d'associer `'dcat:distribution / dct:license / rdfs:label'` à son modèle, sauf à avoir envie de renommer les catégories `'dcat:distribution'` et/ou `'dcat:distribution / dct:license'`, de leur ajouter un texte d'aide, etc.* 
+
 
 ### Modèles pré-configurés
 
@@ -141,11 +172,19 @@ L'extension propose des modèles pré-configurés - deux à ce stade - qui peuve
 
 ```sql
 
-SELECT z_metadata.meta_import_sample_template(%tpl_label) ;
+SELECT * FROM z_metadata.meta_import_sample_template(%tpl_label) ;
 
 ```
 
 *`%tpl_label` est à remplacer par une chaîne de caractères correspondant au nom du modèle à importer. Il est aussi possible de ne donner aucun argument à la fonction, dans ce cas tous les modèles pré-configurés sont importés.*
+
+```sql
+
+SELECT * FROM z_metadata.meta_import_sample_template() ;
+
+```
+
+La fonction renvoie une table dont la première colonne contient les noms des modèles traités et la seconde indique si le modèle a été créé (`'created'`) ou, dans le cas d'un modèle déjà répertorié, mis à jour / réinitialisé (`'updated'`).
 
 Modèles pré-configurés disponibles :
 
@@ -154,6 +193,11 @@ Modèles pré-configurés disponibles :
 
 
 ## Import par le plugin
+
+La gestion des modèles par le plugin fait intervenir :
+- [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py) pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
+- [template_utils.py](/metadata_postgresql/bibli_pg/template_utils.py) pour tout les outils permettant de traiter le résultat des requêtes.
+
 
 
 
