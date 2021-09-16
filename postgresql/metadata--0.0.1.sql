@@ -606,6 +606,7 @@ BEGIN
 			WHERE meta_template.tpl_label = tpl.tpl_label ;
 			
 		IF FOUND
+		THEN
 			RETURN QUERY SELECT tpl.tpl_label, 'updated' ;
 		ELSE
 			RETURN QUERY SELECT tpl.tpl_label, 'created' ;
