@@ -42,12 +42,12 @@ def table_from_shape(
             ?default ?min ?max
             ?placeholder ?rowspan ?mask
         WHERE
-            { ?u sh:targetClass ?c .
-              ?u sh:property ?x .
-              ?x sh:path ?property .
-              ?x sh:name ?name .
-              ?x sh:nodeKind ?kind .
-              ?x sh:order ?order .
+            { ?u sh:targetClass ?c ;
+                 sh:property ?x .
+              ?x sh:path ?property ;
+                 sh:name ?name ;
+                 sh:nodeKind ?kind ;
+                 sh:order ?order .
               OPTIONAL { ?x snum:widget ?widget } .
               OPTIONAL { ?x sh:class ?class } .
               OPTIONAL { ?x sh:description ?descr } .
@@ -70,6 +70,7 @@ def table_from_shape(
         mList.append((
             'shared',
             mNPath,
+            mKind == 'sh:BlankNode',
             str(p['name']) if p['name'] else None,
             str(p['widget']) if p['widget'] else None,
             int(p['rowspan']) if p['rowspan'] else None,
