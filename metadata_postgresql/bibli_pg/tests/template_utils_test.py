@@ -6,7 +6,7 @@ import re, uuid, unittest, json, psycopg2
 from pathlib import Path
 from rdflib import Graph
 
-from metadata_postgresql.bibli_pg import template_utils
+from metadata_postgresql.bibli_pg import template_utils, pg_queries
 from metadata_postgresql.bibli_rdf import __path__
 from metadata_postgresql.bibli_rdf.rdf_utils import build_dict, load_vocabulary, load_shape, metagraph_from_pg_description
 from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import search_keys
@@ -76,9 +76,16 @@ class TestTemplateUtils(unittest.TestCase):
                 cur.execute('CREATE TABLE z_metadata.table_test (num int)')
                 # création d'une table de test
                 
-                query = query_update_table_comment('z_metadata', 'table_test')
-                cur.execute(query, ('Nouvelle description',))
-                cur.execute("SELECT obj_description('z_metadata.table_test'::regclass, 'pg_class')")
+                query = pg_queries.query_update_table_comment(
+                    'z_metadata', 'table_test'
+                    )
+                cur.execute(
+                    query,
+                    ('Nouvelle description',)
+                    )
+                cur.execute(
+                    "SELECT obj_description('z_metadata.table_test'::regclass, 'pg_class')"
+                    )
                 descr = cur.fetchone()
                 
                 cur.execute('DROP TABLE z_metadata.table_test')
@@ -101,7 +108,10 @@ class TestTemplateUtils(unittest.TestCase):
                 cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
                 # import des modèles pré-configurés
                 
-                cur.execute(query_list_templates(), ('r_schema', 'table'))
+                cur.execute(
+                    pg_queries.query_list_templates(),
+                    ('r_schema', 'table')
+                    )
                 templates = cur.fetchall()
                 
                 cur.execute('DELETE FROM z_metadata.meta_template')
@@ -123,7 +133,10 @@ class TestTemplateUtils(unittest.TestCase):
                 cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
                 # import des modèles pré-configurés
         
-                cur.execute(query_get_categories(), ('Basique',))
+                cur.execute(
+                    pg_queries.query_get_categories(),
+                    ('Basique',)
+                    )
                 categories = cur.fetchall()
                 
                 cur.execute('DELETE FROM z_metadata.meta_template')
