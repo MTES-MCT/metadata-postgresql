@@ -564,7 +564,7 @@ COMMENT ON COLUMN z_metadata.meta_template_categories_full.read_only IS 'True si
 CREATE OR REPLACE FUNCTION z_metadata.meta_import_sample_template(
 		tpl_label text default NULL::text
 		)
-	RETURNS TABLE (tpl_label text, summary text)
+	RETURNS TABLE (label text, summary text)
     LANGUAGE plpgsql
     AS $BODY$
 /* OBJET : Importe l'un des modèles de formulaires pré-
@@ -579,7 +579,7 @@ ARGUMENTS :
 
 RESULTAT :
 La fonction renvoie une table listant les modèles importés.
-- tpl_label : nom du modèle effectivement importé ;
+- label : nom du modèle effectivement importé ;
 - summary : résumé des opérations réalisées. À ce stade,
 vaudra 'created' pour un modèle qui n'était pas encore
 répertorié et 'updated' pour un modèle déjà répertorié.
