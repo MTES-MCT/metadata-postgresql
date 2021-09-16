@@ -345,7 +345,8 @@ CREATE TABLE z_metadata.meta_template (
     tpl_label varchar(48) PRIMARY KEY,
 	sql_filter text,
     md_conditions jsonb,
-    priority int
+    priority int,
+	comment text
     ) ;
     
 COMMENT ON TABLE z_metadata.meta_template IS 'Métadonnées. Modèles de formulaires définis pour le plugin QGIS.' ;
@@ -371,6 +372,7 @@ Les noms des ensembles n''ont pas d''incidence.
 ' ;
 COMMENT ON COLUMN z_metadata.meta_template.priority IS 'Niveau de priorité du modèle.
 Si un jeu de données remplit les conditions de plusieurs modèles, celui dont la priorité est la plus élevée sera retenu comme modèle par défaut.' ;
+COMMENT ON COLUMN z_metadata.meta_template.comment IS 'Commentaire libre.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_metadata.meta_template'::regclass, '') ;
@@ -589,9 +591,18 @@ BEGIN
 	-- boucle sur les modèles :
 	FOR tpl IN SELECT * FROM (
 	    VALUES
-			('Donnée externe', '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])', '{"c1": {"snum:isExternal": "True"}}'::jsonb, 10),
-			('Basique', NULL, NULL, 0)
-	    ) AS t (tpl_label, sql_filter, md_conditions, priority)
+			(
+				'Donnée externe',
+				'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
+				'{"c1": {"snum:isExternal": "True"}}'::jsonb,
+				10,
+				format('Modèle pré-configuré importé via z_metadata.meta_import_sample_template le %.', now()::date)
+			),
+			(
+				'Basique', NULL, NULL, 0,
+				format('Modèle pré-configuré importé via z_metadata.meta_import_sample_template le %.', now()::date)
+			)
+	    ) AS t (tpl_label, sql_filter, md_conditions, priority, comment)
 		WHERE meta_import_sample_template.tpl_label IS NULL
 			OR meta_import_sample_template.tpl_label = t.tpl_label
 	LOOP
@@ -607,8 +618,8 @@ BEGIN
 		END IF ;
 		
 		INSERT INTO z_metadata.meta_template
-			(tpl_label, sql_filter, md_conditions, priority)
-			VALUES (tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority) ;
+			(tpl_label, sql_filter, md_conditions, priority, comment)
+			VALUES (tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority, tpl.comment) ;
 		
 		-- boucle sur les associations modèles-catégories :
 		FOR tplcat IN SELECT * FROM (
