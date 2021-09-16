@@ -342,18 +342,15 @@ SELECT pg_extension_config_dump('z_metadata.meta_local_categorie'::regclass, '')
 -- Table: z_metadata.meta_template
 
 CREATE TABLE z_metadata.meta_template (
-    tpl_id serial PRIMARY KEY,
-    tpl_label text NOT NULL,
+    tpl_label varchar(48) PRIMARY KEY,
 	sql_filter text,
     md_conditions jsonb,
-    priority int,
-    CONSTRAINT meta_template_tpl_label_uni UNIQUE (tpl_label)
+    priority int
     ) ;
     
 COMMENT ON TABLE z_metadata.meta_template IS 'Métadonnées. Modèles de formulaires définis pour le plugin QGIS.' ;
 
-COMMENT ON COLUMN z_metadata.meta_template.tpl_id IS 'Identifiant unique du modèle.' ;
-COMMENT ON COLUMN z_metadata.meta_template.tpl_label IS 'Nom du modèle.' ;
+COMMENT ON COLUMN z_metadata.meta_template.tpl_label IS 'Nom du modèle (limité à 48 caractères).' ;
 COMMENT ON COLUMN z_metadata.meta_template.sql_filter IS 'Condition à remplir pour que ce modèle soit appliqué par défaut à une fiche de métadonnées, sous la forme d''un filtre SQL. On pourra utiliser $1 pour représenter le nom du schéma et $2 le nom de la table.
 Par exemple :
 - ''$1 ~ ANY(ARRAY[''''^r_'''', ''''^e_'''']'' appliquera le modèle aux tables des schémas des blocs "données référentielles" (préfixe ''r_'') et "données externes" (préfixe ''e_'') de la nomenclature nationale ;
@@ -375,9 +372,8 @@ Les noms des ensembles n''ont pas d''incidence.
 COMMENT ON COLUMN z_metadata.meta_template.priority IS 'Niveau de priorité du modèle.
 Si un jeu de données remplit les conditions de plusieurs modèles, celui dont la priorité est la plus élevée sera retenu comme modèle par défaut.' ;
 
--- la table et la séquence sont marquées comme tables de configuration de l'extension
+-- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_metadata.meta_template'::regclass, '') ;
-SELECT pg_extension_config_dump('z_metadata.meta_template_tpl_id_seq'::regclass, '') ;
 
 
 -- Function: z_metadata.meta_execute_sql_filter(text, text, text)
@@ -435,7 +431,7 @@ COMMENT ON FUNCTION z_metadata.meta_execute_sql_filter(text, text, text) IS 'Dé
 
 CREATE TABLE z_metadata.meta_template_categories (
     tplcat_id serial PRIMARY KEY,
-    tpl_id integer NOT NULL,
+    tpl_label varchar(48) NOT NULL,
     shrcat_path text,
     loccat_path text,
     cat_label text,
@@ -449,9 +445,9 @@ CREATE TABLE z_metadata.meta_template_categories (
     is_mandatory boolean,
     order_key int,
     read_only boolean,
-    CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_id, shrcat_path, loccat_path),
-    CONSTRAINT meta_template_categories_tpl_id_fkey FOREIGN KEY (tpl_id)
-        REFERENCES z_metadata.meta_template (tpl_id)
+    CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_label, shrcat_path, loccat_path),
+    CONSTRAINT meta_template_categories_tpl_label_fkey FOREIGN KEY (tpl_label)
+        REFERENCES z_metadata.meta_template (tpl_label)
         ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT meta_template_categories_shrcat_path_fkey FOREIGN KEY (shrcat_path)
         REFERENCES z_metadata.meta_shared_categorie (path)
@@ -470,7 +466,7 @@ COMMENT ON TABLE z_metadata.meta_template_categories IS 'Métadonnées. Désigna
 Les autres champs permettent de personnaliser la présentation des catégories pour le modèle considéré. S''ils ne sont pas renseignés, les valeurs saisies dans meta_categorie seront utilisées. À défaut, le plugin s''appuyera sur le schéma des catégories communes (évidemment pour les catégories communes uniquement).' ;
 
 COMMENT ON COLUMN z_metadata.meta_template_categories.tplcat_id IS 'Identifiant unique.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.tpl_id IS 'Identifiant du modèle de formulaire.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.tpl_label IS 'Nom du modèle de formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.shrcat_path IS 'Chemin SPARQL / identifiant de la catégorie de métadonnées (si catégorie commune).' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.loccat_path IS 'Chemin SPARQL / identifiant de la catégorie de métadonnées (si catégorie supplémentaire locale).' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.cat_label IS 'Libellé de la catégorie de métadonnées.
@@ -505,7 +501,6 @@ SELECT pg_extension_config_dump('z_metadata.meta_template_categories_tplcat_id_s
 CREATE VIEW z_metadata.meta_template_categories_full AS (
     SELECT
         tc.tplcat_id,
-        tc.tpl_id,
         t.tpl_label,
         coalesce(tc.shrcat_path, tc.loccat_path) AS path,
         c.origin,
@@ -524,13 +519,12 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
             LEFT JOIN z_metadata.meta_categorie AS c
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
             LEFT JOIN z_metadata.meta_template AS t
-                ON tc.tpl_id = t.tpl_id
+                ON tc.tpl_label = t.tpl_label
     ) ;
 
 COMMENT ON VIEW z_metadata.meta_template_categories_full IS 'Métadonnées. Description complète des modèles de formulaire (rassemble les informations de meta_categorie et meta_template_categories).' ;
 
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.tplcat_id IS 'Identifiant unique.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.tpl_id IS 'Identifiant du modèle de formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.tpl_label IS 'Nom du modèle.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.path IS 'Chemin SPARQL / identifiant de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire.' ;
@@ -595,9 +589,9 @@ BEGIN
 	-- boucle sur les modèles :
 	FOR tpl IN SELECT * FROM (
 	    VALUES
-			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Donnée externe', '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])', '{"c1": {"snum:isExternal": "True"}}'::jsonb, 10),
-			(nextval('z_metadata.meta_template_tpl_id_seq'::regclass), 'Basique', NULL, NULL, 0)
-	    ) AS t (tpl_id, tpl_label, sql_filter, md_conditions, priority)
+			('Donnée externe', '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])', '{"c1": {"snum:isExternal": "True"}}'::jsonb, 10),
+			('Basique', NULL, NULL, 0)
+	    ) AS t (tpl_label, sql_filter, md_conditions, priority)
 		WHERE meta_import_sample_template.tpl_label IS NULL
 			OR meta_import_sample_template.tpl_label = t.tpl_label
 	LOOP
@@ -613,8 +607,8 @@ BEGIN
 		END IF ;
 		
 		INSERT INTO z_metadata.meta_template
-			(tpl_id, tpl_label, sql_filter, md_conditions, priority)
-			VALUES (tpl.tpl_id, tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority) ;
+			(tpl_label, sql_filter, md_conditions, priority)
+			VALUES (tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority) ;
 		
 		-- boucle sur les associations modèles-catégories :
 		FOR tplcat IN SELECT * FROM (
@@ -651,8 +645,8 @@ BEGIN
 		LOOP
 		
 			INSERT INTO z_metadata.meta_template_categories
-				(tpl_id, shrcat_path)
-				VALUES (tpl.tpl_id, tplcat.shrcat_path) ;
+				(tpl_label, shrcat_path)
+				VALUES (tpl.tpl_label, tplcat.shrcat_path) ;
 		
 		END LOOP ;
 	
