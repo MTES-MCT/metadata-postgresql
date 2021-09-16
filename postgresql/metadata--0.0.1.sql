@@ -588,7 +588,7 @@ Si le nom de modèle fourni en argument est inconnu, la
 fonction n'a aucun effet et renverra une table vide.
 */
 DECLARE
-    tpl record
+    tpl record ;
     tplcat record ;
 BEGIN
 
