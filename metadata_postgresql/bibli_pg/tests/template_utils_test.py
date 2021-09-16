@@ -11,6 +11,17 @@ from metadata_postgresql.bibli_rdf import __path__
 from metadata_postgresql.bibli_rdf.rdf_utils import build_dict, load_vocabulary, load_shape, metagraph_from_pg_description
 from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import search_keys
 
+# connexion à utiliser pour les tests
+# -> l'extension metadata doit être installée sur la base
+# -> il est préférable d'utiliser un super-utilisateur (commandes de
+# création et suppression de table dans le schéma z_metadata)
+connection_string = "host={} port={} dbname={} user={} password={}".format(
+    input('host (localhost): ') or 'localhost',
+    input('port (5432): ') or '5432',
+    input('dbname (metadata_dev): ') or 'metadata_dev',
+    input('user (postgres): ') or 'postgres',
+    input('password : ')
+    )
 
 class TestTemplateUtils(unittest.TestCase):
 
@@ -24,18 +35,6 @@ class TestTemplateUtils(unittest.TestCase):
             
         # fiche de métadonnées vide
         self.metagraph_empty = metagraph_from_pg_description("", self.shape)
-        
-        # connexion à utiliser pour les tests
-        # -> l'extension metadata doit être installée sur la base
-        # -> il est préférable d'utiliser un super-utilisateur (commandes de
-        # création et suppression de table dans le schéma z_metadata)
-        self.connection_string = "host={} port={} dbname={} user={} password={}".format(
-            input('host (localhost): ') or 'localhost',
-            input('port (5432): ') or '5432',
-            input('dbname (metadata_dev): ') or 'metadata_dev',
-            input('user (postgres): ') or 'postgres',
-            input('password : ')
-            )
         
         # quelques pseudo-modèles avec conditions d'emploi
         self.template1 = (
@@ -69,7 +68,7 @@ class TestTemplateUtils(unittest.TestCase):
     ### -----------------------------------
     
     def test_query_update_table_comment_1(self):
-        conn = psycopg2.connect(self.connection_string)
+        conn = psycopg2.connect(connection_string)
         
         with conn:
             with conn.cursor() as cur:
@@ -94,7 +93,7 @@ class TestTemplateUtils(unittest.TestCase):
     ### -----------------------------
     
     def test_query_list_templates_1(self):
-        conn = psycopg2.connect(self.connection_string)
+        conn = psycopg2.connect(connection_string)
         
         with conn:
             with conn.cursor() as cur:
@@ -117,7 +116,7 @@ class TestTemplateUtils(unittest.TestCase):
     ### -----------------------------
     
     def test_query_get_categories_1(self):
-        conn = psycopg2.connect(self.connection_string)
+        conn = psycopg2.connect(connection_string)
         
         with conn:
             with conn.cursor() as cur:
