@@ -567,8 +567,7 @@ CREATE OR REPLACE FUNCTION z_metadata.meta_import_sample_template(
 configurés (ou tous si l'argument n'est pas renseigné).
 
 Réexécuter la fonction sur un modèle déjà répertorié aura
-pour effet de le réinitialiser (par suppression / création,
-donc l'identifiant numérique sera modifié).
+pour effet de le réinitialiser.
 
 ARGUMENTS :
 - [optionnel] tpl_label : nom du modèle à importer.
