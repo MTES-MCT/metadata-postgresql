@@ -344,3 +344,227 @@ $_$;
 COMMENT ON FUNCTION z_metadata_recette.t005() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec schéma z_metadata pré-existant.' ;
 
 
+-- Function: z_metadata_recette.t006()
+
+CREATE OR REPLACE FUNCTION z_metadata_recette.t006()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+   e_mssg text ;
+   e_detl text ;
+BEGIN
+	
+	-- mime une commande INSERT produite par un
+	-- script de restauration.
+	-- en changeant le label
+	INSERT INTO z_metadata.metada_shared_categorie (
+	    origin, path, cat_label, widget_type, row_span,
+		help_text, default_value, placeholder_text, input_mask,
+		multiple_values, is_mandatory, order_key
+		)
+		VALUES ('shared', 'dct:description', 'résumé', 'QTextEdit', 15, NULL, NULL, NULL, NULL, True, True, 1)
+		
+	ASSERT (
+		SELECT cat_label = 'résumé'
+			FROM z_metadata.metada_categorie
+			WHERE path = 'dct:description'
+		) ;
+
+	-- on remet le label initial
+	UPDATE z_metadata.metada_categorie
+		SET cat_label = 'description'
+		WHERE path = 'dct:description' ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_metadata_recette.t006() IS 'Métadonnées (recette). TEST : Restauration des modifications utilisateur dans meta_shared_categorie.' ;
+
+
+-- Function: z_metadata_recette.t007()
+
+CREATE OR REPLACE FUNCTION z_metadata_recette.t007()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+   e_mssg text ;
+   e_detl text ;
+BEGIN
+
+	-- sans schéma ni table :
+	ASSERT (
+		SELECT z_metadata.meta_execute_sql_filter(
+			'pg_has_role(''pg_monitor'', ''pg_read_all_stats'', ''USAGE'')',
+			'schema',
+			'table'
+			)
+		), 'échec assertion #1' ;
+		
+	ASSERT (
+		SELECT NOT z_metadata.meta_execute_sql_filter(
+			'pg_has_role(''pg_read_all_stats'', ''pg_monitor'', ''USAGE'')',
+			'schema',
+			'table'
+			)
+		), 'échec assertion #2' ;
+
+	-- avec schéma :
+	ASSERT (
+		SELECT z_metadata.meta_execute_sql_filter(
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']',
+			'r_ign_bdtopo',
+			'table'
+			)
+		), 'échec assertion #3' ;
+		
+	ASSERT (
+		SELECT NOT z_metadata.meta_execute_sql_filter(
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']',
+			'schema',
+			'table'
+			)
+		), 'échec assertion #4' ;
+		
+	-- avec schéma et table :
+	ASSERT (
+		SELECT z_metadata.meta_execute_sql_filter(
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''] AND $2 ~ ''_fr$''',
+			'r_ign_admin_express',
+			'region_fr'
+			)
+		), 'échec assertion #5' ;
+		
+	ASSERT (
+		SELECT NOT z_metadata.meta_execute_sql_filter(
+			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''] AND $2 ~ ''_fr$''',
+			'r_ign_admin_express',
+			NULL
+			)
+		), 'échec assertion #6' ;
+		-- NB. la fonction applique un coalesce '' sur le nom 
+		-- de la table.
+	
+	-- pas de filtre :
+	ASSERT (
+		SELECT NOT z_metadata.meta_execute_sql_filter(
+			NULL,
+			'schema',
+			'table'
+			)
+		), 'échec assertion #7' ;
+		
+	ASSERT (
+		SELECT NOT z_metadata.meta_execute_sql_filter(
+			'',
+			'schema',
+			'table'
+			)
+		), 'échec assertion #8' ;
+	
+	-- avec un filtre invalide :
+	ASSERT (
+		SELECT NOT z_metadata.meta_execute_sql_filter(
+			'n''importe quoi',
+			'schema',
+			'table'
+			)
+		), 'échec assertion #9' ;
+
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_metadata_recette.t007() IS 'Métadonnées (recette). TEST : Exécution des filtres SQL par meta_execute_sql_filter.' ;
+
+
+
+-- Function: z_metadata_recette.t008()
+
+CREATE OR REPLACE FUNCTION z_metadata_recette.t008()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+   e_mssg text ;
+   e_detl text ;
+BEGIN
+
+	-- import d'un modèle
+	SELECT meta_import_sample_template('Basique') ;
+	
+	ASSERT (
+		SELECT count(*)
+			FROM z_metadata.meta_template_categories_full
+			WHERE tpl_label = 'Basique'
+		) > 0, 'échec assertion #1' ;
+		
+	DELETE FROM z_metadata.meta_template
+		WHERE tpl_label = 'Basique' ;
+		
+	-- import de tous les modèles
+	SELECT meta_import_sample_template() ;
+	
+	ASSERT (
+		SELECT count(*)
+			FROM z_metadata.meta_template_categories_full
+			WHERE tpl_label = 'Basique'
+		) > 0, 'échec assertion #2' ;
+		
+	ASSERT (
+		SELECT count(*)
+			FROM z_metadata.meta_template
+		) > 1, 'échec assertion #3' ;
+	
+	-- réinitialisation
+	UPDATE z_metadata.meta_template
+	    SET sql_filter = 'True'
+		WHERE tpl_label = 'Basique' ;
+		
+	SELECT meta_import_sample_template('Basique') ;
+	
+	ASSERT (
+		SELECT sql_filter IS NULL
+			FROM z_metadata.meta_template
+			WHERE tpl_label = 'Basique'
+		), 'échec assertion #4' ;
+		
+	DROP EXTENSION metadata ;
+	CREATE EXTENSION metadata ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_metadata_recette.t008() IS 'Métadonnées (recette). TEST : Insertion des modèles pré-configurés avec meta_import_sample_template.' ;
+
