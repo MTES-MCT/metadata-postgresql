@@ -520,7 +520,7 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
         tc.read_only AS read_only
         FROM z_metadata.meta_template_categories AS tc
             LEFT JOIN z_metadata.meta_categorie AS c
-                ON coalesce(tc.shrcat_path, tc.loccat_path) = c.cat_path
+                ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
             LEFT JOIN z_metadata.meta_template AS t
                 ON tc.tpl_id = t.tpl_id
     ) ;
