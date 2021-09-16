@@ -34,8 +34,8 @@ def search_template(schema_name, table_name, metagraph,
     
     Quand plusieurs modèles convienne, celui qui a la plus
     grande valeur de "priority" est retenu. Si le niveau
-    de priorité est le même, le modèle avec le plus petit
-    identifiant (= le premier traité) sera conservé.
+    de priorité est le même, c'est l'ordre alphabétique qui
+    déterminera quel modèle est conservé.
     """
     r = None
     p = 0
@@ -43,18 +43,18 @@ def search_template(schema_name, table_name, metagraph,
     
     for t in templates:
     
-        if t[4] is None or t[4] <= p:
+        if t[3] is None or t[3] <= p:
             continue
         
         # filtre SQL (dont on a d'ores-et-déjà le résultat
-        # dans t[2], calculé côté serveur)
-        if t[2]:
-            r = t[1]
-            p = t[4]
+        # dans t[1], calculé côté serveur)
+        if t[1]:
+            r = t[0]
+            p = t[3]
         
         # conditions sur les métadonnées
-        if isinstance(t[3], dict):
-            for e in t[3].values():
+        if isinstance(t[2], dict):
+            for e in t[2].values():
             
                 if isinstance(e, dict) and len(e) > 0:
                     b = True
@@ -80,8 +80,8 @@ def search_template(schema_name, table_name, metagraph,
                             b = False
                             
                     if b:
-                        r = t[1]
-                        p = t[4]
+                        r = t[0]
+                        p = t[3]
                         break
                 
     return r
