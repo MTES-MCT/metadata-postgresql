@@ -154,8 +154,6 @@ class TestTemplateUtils(unittest.TestCase):
     def test_search_template_1(self):
         self.assertEqual(
             template_utils.search_template(
-                'schema',
-                'table',
                 self.metagraph_empty,
                 [self.template1]
                 ),
@@ -163,8 +161,6 @@ class TestTemplateUtils(unittest.TestCase):
             )
         self.assertEqual(
             template_utils.search_template(
-                'schema',
-                'table',
                 self.metagraph_empty,
                 [self.template1, self.template2, self.template3]
                 ),
@@ -172,8 +168,6 @@ class TestTemplateUtils(unittest.TestCase):
             )
         self.assertEqual(
             template_utils.search_template(
-                'schema',
-                'table',
                 self.metagraph_empty,
                 [self.template2, self.template3, self.template1]
                 ),
@@ -181,8 +175,6 @@ class TestTemplateUtils(unittest.TestCase):
             )
         self.assertEqual(
             template_utils.search_template(
-                'schema',
-                'table',
                 self.metagraph,
                 [self.template1, self.template2, self.template3]
                 ),
@@ -190,8 +182,6 @@ class TestTemplateUtils(unittest.TestCase):
             )
         self.assertEqual(
             template_utils.search_template(
-                'schema',
-                'table',
                 self.metagraph,
                 [self.template1, self.template3]
                 ),
@@ -199,8 +189,6 @@ class TestTemplateUtils(unittest.TestCase):
             )
         self.assertEqual(
             template_utils.search_template(
-                'schema',
-                'table',
                 self.metagraph,
                 [self.template3]
                 ),
