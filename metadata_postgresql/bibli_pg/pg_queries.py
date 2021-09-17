@@ -10,7 +10,7 @@ de la fonction execute() (valeurs litérales).
 La syntaxe est systématiquement détaillée dans l'en-tête
 des fonctions.
 
-Dépendances : psycopg2-binary (https://www.psycopg.org).
+Dépendances : psycopg2 (https://www.psycopg.org).
 """
 
 
