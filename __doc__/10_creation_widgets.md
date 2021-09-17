@@ -10,6 +10,41 @@ Chaque enregistrement du dictionnaire des widgets contrôle un widget principal 
 
 [Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
+Le widget principal et les widgets annexes sont totalement indépendants. Ils peuvent être simplement créés les uns à la suite des autres, de la manière suivante :
+
+```python
+	
+	# commandes de création du widget principal, variables
+	# selon le type :
+	if widgetsdict[key]['main widget type'] == 'QGroupBox':
+		...	
+	elif widgetsdict[key]['main widget type'] == ...
+		...
+	# etc.
+	
+	# commandes de création du widget annexe d'étiquette,
+	# s'il y a lieu :
+	if widgetsdict[key]['object'] == 'edit' and widgetsdict[key]['label']:
+		...
+	
+	# commandes de création du widget annexe de sélection de
+	# la source, s'il y a lieu :
+	if widgetsdict[key]['multiple sources']:
+		...
+		
+	# commandes de création du widget annexe de sélection de
+	# la langue, s'il y a lieu :
+	if widgetsdict[key]['authorized languages']:
+		...
+		
+	# commandes de création du widget annexe bouton moins,
+	# s'il y a lieu :
+	if widgetsdict[key]['has minus button']:
+		...
+
+```
+
+Les commandes à exécuter sont détaillées dans la suite.
  
 ## Widget principal
 
@@ -354,7 +389,7 @@ widgetsdict[key]['main widget']
 
 ```python
 
-widgetsdict[key]['label']
+widgetsdict[key]['object'] == 'edit' and widgetsdict[key]['label']
 
 ```
 
