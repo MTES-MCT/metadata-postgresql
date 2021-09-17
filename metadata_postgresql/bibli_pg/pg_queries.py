@@ -39,7 +39,30 @@ def query_update_table_comment(schema_name, table_name):
         "COMMENT ON TABLE {} IS %s"
         ).format(
             sql.Identifier(schema_name, table_name)
-        )
+            )
+
+
+def query_get_table_comment(schema_name, table_name):
+    """Crée une requête de récupération du descriptif d'une table ou vue.
+    
+    ARGUMENTS
+    ---------
+    - schema_name (str) : nom du schéma de la table ;
+    - table_name (str) : nom de la table.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> query = query_get_table_comment(schema_name, table_name)
+    >>> cur.execute(query)
+    >>> old_description = cur.cur.fetchone()[0]
+    
+    """
+    return sql.SQL(
+        "SELECT obj_description('{}'::regclass, 'pg_class')"
+        ).format(
+            sql.Identifier(schema_name, table_name)
+            )
 
 
 def query_list_templates():
