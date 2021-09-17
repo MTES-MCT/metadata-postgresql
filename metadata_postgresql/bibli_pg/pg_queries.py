@@ -17,6 +17,35 @@ Dépendances : psycopg2 (https://www.psycopg.org).
 from psycopg2 import sql
 
 
+def query_exists_extension():
+    """Crée une requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
+    
+    ARGUMENTS
+    ---------
+    Néant.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> cur.execute(query_exists_extension(), (extension_name,))
+    
+    Avec (arguments positionnels) :
+    - extension_name (str) : le nom de l'extension.
+    
+    Cette requête renverra :
+    - True si l'extension est installée ;
+    - False si elle est disponible dans le répertoire des
+    extension du serveur mais non installée ;
+    - NULL si elle n'est pas disponible sur le serveur.
+    """
+    return """
+        SELECT count(*) = 1
+            FROM pg_available_extensions
+            WHERE name = %s
+                AND installed_version IS NOT NULL
+        """
+
+
 def query_update_table_comment(schema_name, table_name):
     """Crée une requête de mise à jour du descriptif d'une table ou vue.
     
@@ -55,7 +84,7 @@ def query_get_table_comment(schema_name, table_name):
     Une requête prête à l'emploi, à utiliser comme suit :
     >>> query = query_get_table_comment(schema_name, table_name)
     >>> cur.execute(query)
-    >>> old_description = cur.cur.fetchone()[0]
+    >>> old_description = cur.fetchone()[0]
     
     """
     return sql.SQL(
