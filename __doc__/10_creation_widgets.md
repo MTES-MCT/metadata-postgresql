@@ -152,7 +152,7 @@ widgetsdict[key]['main action']
 
 *Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md#boutons-plus-et-boutons-de-traduction).*
 
-- L'image à utiliser est toujours [plus_button.svg](/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+- L'image à utiliser est toujours [plus_button.svg](/metadata_postgresql/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
@@ -278,7 +278,7 @@ thesaurus = build_vocabulary(widgetsdict[key]['current source'], vocabulary, lan
 
 ```
 
-*`language` est le paramètre utilisateur qui spécifie la langue principale de saisie des métadonnées, qui est également la langue dans laquelle seront affichés les termes des QComboBox. Cf. [Paramètres utilisateur](/__doc__/20_parametres_utilisateurs.md).*
+*`language` est le paramètre utilisateur qui spécifie la langue principale de saisie des métadonnées, qui est également la langue dans laquelle seront affichés les termes des QComboBox. Cf. [Paramètres utilisateur](/__doc__/20_parametres_utilisateur.md).*
 *`vocabulary` est le graphe qui répertorie les termes de tous les thésaurus, importé via la fonction `rdf_utils.load_vocabulary()`. Cf. [Génération du dictionnaire de widgets](/__doc__/05_generation_dictionnaire_widgets.md) pour plus de détails.*
 
 - Comme les QTextEdit et QLineEdit, les widgets QComboBox peuvent afficher une **valeur fictive** fournie par la clé `'placeholder text'`. Celle-ci sera généralement renseignée car, si ni le schéma des métadonnées communes ni le modèle local ne fournissent de texte fictif, c'est le nom du thésaurus courant qui sera affiché.
@@ -511,7 +511,7 @@ widgetsdict[key]['sources']
 
 ```
 
-*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#bouton-de-sélection-de-la-source).*
+*Pour la définition des actions, cf. [15_actions_widgets](/__doc__/15_actions_widgets.md#boutons-de-sélection-de-la-source).*
 
 Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du QComboBox - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Son nom est donné par la clé `'current source'`.
 
@@ -545,12 +545,12 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 ### Icône
 
-L'icône à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
+L'icône à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/metadata_postgresql/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
 
-## Widget annexe : bouton  de sélection de la langue
+## Widget annexe : bouton de sélection de la langue
 
 Un widget QToolButton de sélection de langue doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira que si le mode traduction est actif) :
 
@@ -720,7 +720,7 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 ### Icône
 
-L'image à utiliser pour un bouton moins est toujours [minus_button.svg](/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+L'image à utiliser pour un bouton moins est toujours [minus_button.svg](/metadata_postgresql/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
