@@ -119,6 +119,8 @@ Concrètement, la table `meta_categorie` a deux fonctions :
 
 Les champs sur lesquels l'ADL peut intervenir sont :
 
+| Nom du champ | Description |
+| --- | --- |
 | `cat_label` | Libellé de la catégorie. | 
 | `widget_type` | Type de widget de saisie à utiliser. | 
 | `row_span` | Nombre de lignes occupées par le widget de saisie, s'il y a lieu. La valeur ne sera considérée que pour un widget de type `'QTextEdit'`. | 
@@ -136,6 +138,8 @@ Les valeurs autorisées pour `widget_type` sont définies par le type énuméré
 
 Concrètement :
 
+| Valeur de `widget_type` | Description |
+| --- | --- |
 | `'QLineEdit'` | saisie de texte libre sur une seule ligne |
 | `'QTextEdit'` | saisie multiligne de texte libre |
 | `'QDateEdit'` | date avec aide à la saisie |
@@ -188,6 +192,8 @@ La fonction renvoie une table dont la première colonne contient les noms des mo
 
 Modèles pré-configurés disponibles :
 
+| Nom du modèle (`tpl_label`) | Description |
+| --- | --- |
 | `'Basique'` | Modèle limité à quelques catégories de métadonnées essentielles. |
 | `'Donnée externe'` | Modèle assez complet adapté à des données externes. |
 
@@ -198,8 +204,28 @@ La gestion des modèles par le plugin fait intervenir :
 - [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py) pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
 - [template_utils.py](/metadata_postgresql/bibli_pg/template_utils.py) pour tout les outils permettant de traiter le résultat des requêtes.
 
+Aucune des fonctions de ces deux fichiers n'envoie à proprement parler de requête au serveur PostgreSQL.
 
+Soit `connection_string` la chaîne de connexion à la base de données PostgreSQL.
+Soit `old_description` la description PostgreSQL de la table ou de la vue.
 
+Cette information est a priori déjà disponible par l'intermédiaire des classes de QGIS. Néanmoins, si nécessaire, [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py) met à disposition la requête pré-configurée `query_get_table_comment()`, qui peut être utilisée comme suit :
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+    with conn.cursor() as cur:
+    
+        query = query_get_table_comment(schema_name, table_name)
+        cur.execute(query)
+        old_description = cur.cur.fetchone()[0]
+
+conn.close()
+
+```
 
 ## Génération du *template*
 
