@@ -67,6 +67,8 @@ new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_met
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
+Cette action sort du périmètres des fonctions de RDF Utils. On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
+
 Soit :
 - `schema_name` le nom du schéma contenant la table dont on édite les métadonnées ;
 - `table_name` le nom de cette dernière ;
@@ -74,17 +76,14 @@ Soit :
 
 ```python
 
-from psycopg2 import sql
-
-query = sql.SQL("COMMENT ON TABLE {} IS %s").format(
-            sql.Identifier(schema_name, table_name)
-            )
-
+query = query_update_table_comment(schema_name, table_name)
 cur.execute(query, (new_pg_description,))
 
 ```
 
 ## Activation du mode traduction
+
+Lorsque le mode traduction est actif, l'utilisateur a la possibilité de définir la langue des valeurs qu'il saisit (sinon c'est le paramètre utilisateur `language` qui est systématiquement utilisé).
 
 ## Choix de la trame de formulaire
 
