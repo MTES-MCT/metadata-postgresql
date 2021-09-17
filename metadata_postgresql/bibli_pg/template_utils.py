@@ -7,14 +7,11 @@ import re
 from rdflib import Graph
 
 
-def search_template(schema_name, table_name, metagraph,
-    templates):
+def search_template(metagraph, templates):
     """Recherche le modèle de formulaire à utiliser.
     
     ARGUMENTS
     ---------
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table ou vue ;
     - metagraph (rdflib.graph.Graph) : le graphe de métadonnées
     extrait du commentaire de la table grâce à la fonction 
     rdf_utils.metagraph_from_pg_description() ;
@@ -32,7 +29,7 @@ def search_template(schema_name, table_name, metagraph,
     de configuration de l'utilisateur ou, à défaut, aucun
     modèle.
     
-    Quand plusieurs modèles convienne, celui qui a la plus
+    Quand plusieurs modèles conviennent, celui qui a la plus
     grande valeur de "priority" est retenu. Si le niveau
     de priorité est le même, c'est l'ordre alphabétique qui
     déterminera quel modèle est conservé.
@@ -97,7 +94,7 @@ def build_template(categories):
     importée du serveur PostgreSQL de cette façon :
     >>> cur.execute(query_list_templates())
     >>> templates = cur.fetchall()
-    >>> tpl_label = search_template(schema_name, table_name, metagraph, templates)
+    >>> tpl_label = search_template(metagraph, templates)
     Si n'est pas None :
     >>> cur.execute(query_get_categories(), (tpl_label,))
     >>> categories = cur.fetchall()
