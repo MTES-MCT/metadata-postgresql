@@ -730,6 +730,7 @@ widgetsdict.group_kind(key)
 
 Comme pour les QGroupBox et les boutons plus/boutons de traduction, on pourra utiliser les valeurs par défaut suivantes :
 
+| --- | --- | --- |
 | Groupe de propriétés | `'group of properties'` | `'#958B62'` |
 | Groupe de valeurs | `'group of values'` | `'#5770BE'` |
 | Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
