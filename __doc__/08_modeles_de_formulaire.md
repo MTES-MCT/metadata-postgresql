@@ -4,6 +4,8 @@ Les modèles de formulaire sont définis par l'administrateur de données pour t
 
 Leur usage est totalement optionnel.
 
+[Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import par le plugin](#import-par-le-plugin)
+
 
 ## Gestion dans PostgreSQL
 
@@ -206,10 +208,26 @@ La gestion des modèles par le plugin fait intervenir :
 
 Aucune des fonctions de ces deux fichiers n'envoie à proprement parler de requête au serveur PostgreSQL.
 
-Soit `connection_string` la chaîne de connexion à la base de données PostgreSQL.
-Soit `old_description` la description PostgreSQL de la table ou de la vue.
+Concrètement, l'import du modèle de formulaire se fait en cinq temps :
+1. vérification de la présence de l'extension *metadata*.
+2. récupération sur le serveur PostgreSQL de la liste des modèles disponibles et de leurs conditions d'application → `templates`.
+3. sélection du modèle à utiliser parmi la liste → `tpl_label`.
+4. récupération sur le serveur PostgreSQL des catégories associées au modèle sélectionné avec leurs paramètres d'affichage → `categories`.
+5. mise au propre sous la forme d'un dictionnaire → `template`.
 
-Cette information est a priori déjà disponible par l'intermédiaire des classes de QGIS. Néanmoins, si nécessaire, [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py) met à disposition la requête pré-configurée `query_get_table_comment()`, qui peut être utilisée comme suit :
+À l'ouverture de la fiche de métadonnées, le choix du modèle (étape 3) est automatique, mais les étapes 4 et 5 pourront être relancées par la suite, si l'utilisateur souhaite changer le modèle courant.
+
+Soit :
+- `connection_string` la chaîne de connexion à la base de données PostgreSQL ;
+- `table_name` le nom de la table ou vue dont l'utilisateur cherche à consulter / éditer les métadonnées ;
+- `schema_name` le nom de son schéma.
+
+
+### Présence de l'extension *metadata*
+
+Si l'extension n'est pas installée sur la base d'où provient la table considérée, on peut d'ores-et-déjà conclure qu'il n'y a pas de modèle de formulaire à appliquer (`template` vaut `None`) et en rester là.
+
+Pour le vérifier :
 
 ```python
 
@@ -219,13 +237,91 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        query = query_get_table_comment(schema_name, table_name)
-        cur.execute(query)
-        old_description = cur.cur.fetchone()[0]
+        cur.execute(pg_queries.query_exists_extension(), ('metadata',))
+        metadata_exists = cur.fetchone()[0]
 
 conn.close()
 
 ```
 
-## Génération du *template*
+Si `metadata_exists` vaut `True`, on poursuit avec les opérations suivantes.
+
+
+### Récupération de la liste des modèles
+
+Il s'agit tout bêtement d'aller chercher sur le serveur le contenu de la table `meta_template`, à la petite nuance près que `query_list_templates()` exécute ce faisant les filtres SQL du champ `sql_filter` (côté serveur, grâce à la fonction `z_metadata.meta_execute_sql_filter(text, text, text)` de l'extension *metadata*) et c'est le booléen résultant qui est importé plutôt que le filtre lui-même.
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+    with conn.cursor() as cur:
+    
+        cur.execute(pg_queries.query_list_templates(), (schema_name, table_name))
+        templates = cur.fetchall()
+
+conn.close()
+
+```
+
+Puisque l'utilisateur devra avoir la possibilité de choisir ultérieurement un nouveau modèle (ou aucun modèle), la liste doit être gardée en mémoire. Les conditions ne servant plus à rien, on pourra se contenter des noms :
+
+```python
+
+templateLabels = [t[0] for t in templates]
+
+```
+
+
+### Sélection automatique du modèle
+
+Cette étape détermine le modèle qui sera utilisé à l'ouverture initiale du formulaire. Elle mobilise la fonction `search_template()`, qui parcourt la liste des modèles (avec le résultat du filtre SQL / champ `sql_filter` de `meta_template`) en déterminant si les conditions d'usage portant sur les métadonnées (champ `md_conditions`) sont vérifiées, et renvoie le nom du modèle de plus haut niveau de priorité (champ `priority`) dont le filtre SQL ou les conditions sur les métadonnées sont satisfaites.
+
+```python
+
+tpl_label = template_utils.search_template(metagraph, templates)
+
+```
+
+*`metagraph` est le graphe contenant les métadonnées de la table ou vue considérée. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#metagraph--le-graphe-des-métadonnées-pré-existantes).*
+
+Il est tout à possible que la fonction `search_template()` ne renvoie rien, d'autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d'application automatique des modèles. Dans ce cas, on utilisera le "modèle préféré" (`preferedTemplate`) désigné dans les paramètres de configuration de l'utilisateur -- sous réserve qu'il soit défini et fasse bien partie de `templateLabels` -- ou, à défaut, aucun modèle (`template = None`).
+
+À noter que l'utilisateur peut décider que son modèle préféré prévaut sur toute sélection automatique, en mettant à `True` le paramètre utilisateur `enforcePreferedTemplate`. Dans ce cas, il n'est même pas utile de lancer `search_template()`.
+
+
+### Récupération des catégories associées au modèle retenu
+
+Une fois le nom du modèle à appliquer connu (s'il y en a un), on peut aller chercher dans la table `meta_template_categories` les catégories associées au modèle.
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+    with conn.cursor() as cur:
+    
+        cur.execute(pg_queries.query_get_categories(), (tpl_label,))
+        categories = cur.fetchall()
+
+conn.close()
+
+```
+
+### Génération de *template*
+
+À ce stade, `categories` est une liste de tuples, qui doit être transformée en dictionnaire et consolidée avant de pouvoir être utilisée par `build_dict()`.
+
+C'est l'affaire de la fonction `build_template()` :
+
+```python
+
+template = template_utils.build_template(categories)
+
+```
+
+Le dictionnaire ainsi obtenu peut être passé dans l'argument `template` de la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#template--le-modèle-de-formulaire).
 
