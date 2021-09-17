@@ -62,7 +62,60 @@ class TestTemplateUtils(unittest.TestCase):
                     "dct:publisher / foaf:name": "Institut national de l'information géographique et forestière (IGN-F)"
                 }
             }, 15)
+
+
+    ### FONCTION query_exists_extension
+    ### -------------------------------
+    
+    # l'extension metada est supposée être installée
+    # sur la base de recette
+    def test_query_query_exists_extension_1(self):
+        conn = psycopg2.connect(connection_string)
         
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute(
+                    pg_queries.query_exists_extension(),
+                    ('metadata',)
+                    )
+                res = cur.fetchone()
+        
+        conn.close()
+        
+        self.assertTrue(res[0])
+
+    
+    ### FONCTION query_get_table_comment
+    ### --------------------------------
+    
+    def test_query_get_table_comment_1(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute('CREATE TABLE z_metadata.table_test (num int)')
+                cur.execute(
+                    'COMMENT ON TABLE z_metadata.table_test IS %s',
+                    ('Nouvelle description',)
+                    )
+                # création d'une table de test avec descriptif
+                
+                cur.execute(
+                    pg_queries.query_get_table_comment(
+                        'z_metadata', 'table_test'
+                        )
+                    )
+                descr = cur.fetchone()
+                
+                cur.execute('DROP TABLE z_metadata.table_test')
+                # suppression de la table de test
+        
+        conn.close()
+        
+        self.assertEqual(descr[0], 'Nouvelle description')
+  
 
     ### FONCTION query_update_table_comment
     ### -----------------------------------
@@ -147,8 +200,8 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertTrue(len(categories) > 2)
     
 
-    ### FONCTION build_template
-    ### -----------------------
+    ### FONCTION search_template
+    ### ------------------------
 
     # graphe vide, sélection sur les préfixes et suffixes
     def test_search_template_1(self):
