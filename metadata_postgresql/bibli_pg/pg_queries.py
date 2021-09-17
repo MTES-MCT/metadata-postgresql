@@ -106,6 +106,10 @@ def query_list_templates():
     Une requête prête à l'emploi, à utiliser comme suit :
     >>> cur.execute(query_list_templates(), (schema_name, table_name))
     
+    Avec (arguments positionnels) :
+    - schema_name (str) : nom du schéma de la table ;
+    - table_name (str) : nom de la table.
+    
     On notera qu'au lieu d'importer le filtre sql_filter, la
     commande l'exécute et renvoie un booléen indiquant s'il est
     vérifié.
