@@ -36,7 +36,7 @@ Le bouton utilise l'icône [edit.svg](/metadata_postgresql/icons/general/edit.sv
 
 Il ne devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
-Pour s'en assurer :
+Pour s'en assurer, on utilisera la requête définie par la fonction `query_is_relation_owner()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
 
 ```python
 
@@ -48,7 +48,7 @@ with conn:
 	
 		cur.execute(
 			pg_queries.query_is_relation_owner(),
-			('z_metadata', 'metadata_categorie')
+			(schema_name, table_name)
 			)
 		res = cur.fetchone()
 		is_owner = res[0] if res else False
@@ -56,7 +56,8 @@ with conn:
 conn.close()
 
 ```
-*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on affiche les métadonnées, `schema_name` est le nom de son schéma.*
 
 
 ## Sauvegarde
@@ -103,19 +104,24 @@ new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_met
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
-Cette action sort du périmètres des fonctions de RDF Utils. On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
-
-Soit :
-- `schema_name` le nom du schéma contenant la table dont on édite les métadonnées ;
-- `table_name` le nom de cette dernière ;
-- `cur` le nom d'un curseur ouvert sur la connexion psycopg2 au serveur PostgreSQL. 
+On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
 
 ```python
 
-query = query_update_table_comment(schema_name, table_name)
-cur.execute(query, (new_pg_description,))
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		query = query_update_table_comment(schema_name, table_name)
+		cur.execute(query, (new_pg_description,))
+
+conn.close()
 
 ```
+
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on édite les métadonnées, `schema_name` est le nom de son schéma.*
 
 ### Caractéristiques du bouton
 
