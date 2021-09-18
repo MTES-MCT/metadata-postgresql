@@ -25,7 +25,8 @@ Le formulaire de saisie/consultation peut ensuite être recréé à partir du no
 Certaines des actions générales décrites dans la suite ne devraient être disponibles qu'en mode édition :
 - la sauvegarde des modifications ;
 - l'activation ou la désactivation du mode traduction ;
-- l'import de métadonnées depuis un fichier.
+- l'import de métadonnées depuis un fichier ;
+- la réinitialisation de la fiche.
 
 ### Caractéristiques du bouton
 
@@ -188,3 +189,14 @@ Il utilise l'icône [import.svg](/metadata_postgresql/icons/general/import.svg) 
 Ce bouton utilise l'icône [export.svg](/metadata_postgresql/icons/general/export.svg) :
 ![import.svg](/metadata_postgresql/icons/general/export.svg)
 
+
+## Réinitialisation
+
+### Effets
+
+### Caractéristiques du bouton
+
+Ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [empty.svg](/metadata_postgresql/icons/general/empty.svg) :
+![empty.svg](/metadata_postgresql/icons/general/empty.svg)
