@@ -4,7 +4,7 @@ Recette de template_utils et pg_queries.
 
 import re, uuid, unittest, json, psycopg2
 from pathlib import Path
-from rdflib import Graph
+from rdflib import Graph, URIRef
 
 from metadata_postgresql.bibli_pg import template_utils, pg_queries
 from metadata_postgresql.bibli_rdf import __path__
@@ -75,7 +75,7 @@ class TestTemplateUtils(unittest.TestCase):
             
                 cur.execute(
                     pg_queries.query_is_relation_owner(),
-                    ('z_metadata', 'metadata_categorie')
+                    ('z_metadata', 'meta_categorie')
                     )
                 res = cur.fetchone()
         
@@ -342,7 +342,10 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertTrue(d[mdk]['default value'] == d[mdk]['value'] == '2021-09-01')
         # vérifie aussi que la valeur par défaut est bien reprise par build_dict
         # dans le cas d'un formulaire vide
-        self.assertEqual(d[mdk]['data type'], 'dateTime')
+        self.assertEqual(
+            d[mdk]['data type'],
+            URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
+            )
         # vérifie que les modification sur data type sont ignorées
         # pour les catégories communes
         self.assertEqual(d[lck]['main widget type'], 'QLineEdit')
@@ -355,10 +358,16 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(d[lck]['placeholder text'], '230-FG')
         self.assertEqual(d[lck]['input mask'], '000-XX')
         self.assertTrue(d[lck]['multiple values'])
-        self.assertEqual(d[lck]['data type'], 'string')
+        self.assertEqual(
+            d[lck]['data type'],
+            URIRef('http://www.w3.org/2001/XMLSchema#string')
+            )
         # vérifie que string est appliqué si aucun type n'est
         # spécifié
-        self.assertEqual(d[lck2]['data type'], 'date')
+        self.assertEqual(
+            d[lck2]['data type'],
+            URIRef('http://www.w3.org/2001/XMLSchema#date')
+            )
         self.assertEqual(d[lck2]['main widget type'], 'QDateEdit')
 
     # ajout automatique des ancêtres manquants
