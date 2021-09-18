@@ -16,6 +16,8 @@ Concrètement, le passage d'un mode à l'autre implique simplement de regénére
 - `mode='edit'` en mode édition (ou rien, `'edit'` étant la valeur par défaut) ;
 - `mode='read'` en mode lecture.
 
+Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md).
+
 Le formulaire de saisie/consultation peut ensuite être recréé à partir du nouveau dictionnaire, selon les mêmes modalités quel que soit le mode.
 
 ### Autres effets
@@ -25,7 +27,41 @@ Certaines des actions générales décrites dans la suite ne devraient être dis
 - l'activation ou la désactivation du mode traduction ;
 - l'import de métadonnées depuis un fichier.
 
-## Bouton de sauvegarde
+### Caractéristiques du bouton
+
+**Initialement, toutes les fiches s'ouvrent en mode lecture**. L'utilisateur doit cliquer sur le bouton d'activation du mode édition pour basculer dans ce dernier.
+
+Le bouton utilise l'icône [edit.svg](/medata_postgresql/icons/general/edit.svg) :
+![edit.svg](/medata_postgresql/icons/general/edit.svg).
+
+Il ne devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
+
+Pour s'en assurer :
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			pg_queries.query_is_relation_owner(),
+			('z_metadata', 'metadata_categorie')
+			)
+		res = cur.fetchone()
+		is_owner = res[0] if res else False
+
+conn.close()
+
+```
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+
+
+## Sauvegarde
+
+### Effets
 
 Le **bouton de sauvegarde** permet à l'utilisateur d'enregistrer sur le serveur PostgreSQL les informations qu'il a saisies.
 
@@ -81,9 +117,34 @@ cur.execute(query, (new_pg_description,))
 
 ```
 
+### Caractéristiques du bouton
+
+Comme susmentionné, ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [save.svg](/medata_postgresql/icons/general/save.svg) :
+![save.svg](/medata_postgresql/icons/general/save.svg)
+
+
 ## Activation du mode traduction
 
-Lorsque le mode traduction est actif, l'utilisateur a la possibilité de définir la langue des valeurs qu'il saisit (sinon c'est le paramètre utilisateur `language` qui est systématiquement utilisé).
+### Effets
+
+Lorsque le mode traduction est actif, l'utilisateur a la possibilité de définir la langue des valeurs qu'il saisit (sinon c'est le paramètre utilisateur `language` qui est systématiquement utilisé). Il pourra également saisir des traductions pour des catégories qui n'acceptent qu'une valeur par langue (par exemple le libellé de la donnée).
+
+Concrètement, l'activation ou la désactivation du mode traduction impliquera de regénérer le dictionnaire de widgets, c'est-à-dire relancer la fonction `build_dict()` avec :
+- `translation=True` si le mode traduction est actif ;
+- `translation=False` s'il ne l'est pas (ou sans spécifier `translation`, `False` étant la valeur par défaut).
+
+Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md).
+
+Le formulaire peut ensuite être recréé à partir du nouveau dictionnaire, selon les mêmes modalités que le mode traduction soit actif ou non.
+
+### Caractéristiques du bouton
+
+Ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [save.svg](/medata_postgresql/icons/general/translation.svg) :
+![save.svg](/medata_postgresql/icons/general/translation.svg)
 
 ## Choix de la trame de formulaire
 
