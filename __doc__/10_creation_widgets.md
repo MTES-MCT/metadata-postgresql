@@ -133,6 +133,8 @@ widgetsdict.group_kind(key)
 
 On pourra utiliser les valeurs par défaut suivantes :
 
+| Type de groupe | `group_kind(key)` | Couleur |
+| --- | --- | --- |
 | Groupe de propriétés | `'group of properties'` | `'#958B62'` |
 | Groupe de valeurs | `'group of values'` | `'#5770BE'` |
 | Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
@@ -162,6 +164,8 @@ widgetsdict.group_kind(key)
 
 Comme pour les QGroupBox, on pourra utiliser les valeurs par défaut suivantes :
 
+| Type de groupe | `group_kind(key)` | Couleur |
+| --- | --- | --- |
 | Groupe de propriétés | `'group of properties'` | `'#958B62'` |
 | Groupe de valeurs | `'group of values'` | `'#5770BE'` |
 | Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
@@ -730,7 +734,7 @@ widgetsdict.group_kind(key)
 
 Comme pour les QGroupBox et les boutons plus/boutons de traduction, on pourra utiliser les valeurs par défaut suivantes :
 
-| Type de groupe | Clé `'object'` | Couleur |
+| Type de groupe | `group_kind(key)` | Couleur |
 | --- | --- | --- |
 | Groupe de propriétés | `'group of properties'` | `'#958B62'` |
 | Groupe de valeurs | `'group of values'` | `'#5770BE'` |
