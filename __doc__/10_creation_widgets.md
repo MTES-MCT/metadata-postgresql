@@ -152,7 +152,7 @@ widgetsdict[key]['main action']
 
 *Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md#boutons-plus-et-boutons-de-traduction).*
 
-- L'image à utiliser est toujours [plus_button.svg](/metadata_postgresql/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+- L'image ![plus_button.svg](/metadata_postgresql/icons/buttons/plus_button.svg) à utiliser est toujours [plus_button.svg](/metadata_postgresql/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
@@ -545,7 +545,7 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 ### Icône
 
-L'icône à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/metadata_postgresql/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
+L'icône ![source_button.svg](/metadata_postgresql/icons/buttons/source_button.svg) à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/metadata_postgresql/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
@@ -720,7 +720,7 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 ### Icône
 
-L'image à utiliser pour un bouton moins est toujours [minus_button.svg](/metadata_postgresql/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+L'image ![minus_button.svg](/metadata_postgresql/icons/buttons/minus_button.svg) à utiliser pour un bouton moins est toujours [minus_button.svg](/metadata_postgresql/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
