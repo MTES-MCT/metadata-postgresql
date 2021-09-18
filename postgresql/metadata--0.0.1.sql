@@ -65,6 +65,7 @@
 -- objets créés par le script :
 -- - Schema: z_metadata
 -- - Type: z_metadata.meta_widget_type
+-- - Type: z_metadata.meta_data_type
 -- - Table: z_metadata.meta_categorie
 -- - Table: z_metadata.meta_shared_categorie
 -- - Function: z_metadata.meta_shared_categorie_before_insert()
@@ -155,6 +156,15 @@ CREATE TYPE z_metadata.meta_widget_type AS ENUM (
 COMMENT ON TYPE z_metadata.meta_widget_type IS 'Métadonnées. Types de widgets de saisie supportés par le plugin QGIS de gestion des métadonnées.' ;
 
 
+-- Type: z_metadata.meta_data_type
+
+CREATE TYPE z_metadata.meta_data_type AS ENUM (
+	'string', 'integer', 'decimal', 'float', 'double', 'boolean', 'date', 'time', 'dateTime', 'duration'
+	) ;
+	
+COMMENT ON TYPE z_metadata.meta_data_type IS 'Métadonnées. Types de valeurs supportés par le plugin QGIS de gestion des métadonnées (correspondant aux types XMLSchema utilisés par le RDF).' ;
+
+
 --Table: z_metadata.meta_categorie
 
 CREATE TABLE z_metadata.meta_categorie (
@@ -162,6 +172,7 @@ CREATE TABLE z_metadata.meta_categorie (
 	origin text NOT NULL DEFAULT 'local',
 	is_node boolean NOT NULL DEFAULT False,
     cat_label text NOT NULL,
+	data_type z_metadata.meta_data_type,
     widget_type z_metadata.meta_widget_type,
     row_span int,
     help_text text,
@@ -182,13 +193,14 @@ COMMENT ON COLUMN z_metadata.meta_categorie.path IS 'Chemin SPARQL de la catégo
 COMMENT ON COLUMN z_metadata.meta_categorie.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.cat_label IS 'Libellé de la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.data_type IS 'Type de valeur attendu pour la catégorie. Pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
-COMMENT ON COLUMN z_metadata.meta_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QLineEdit ou QTextEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
-COMMENT ON COLUMN z_metadata.meta_categorie.multiple_values IS 'True si la catégorie admet plusieurs valeurs.' ;
+COMMENT ON COLUMN z_metadata.meta_categorie.multiple_values IS 'True si la catégorie admet plusieurs valeurs. Pour les catégories commnes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
@@ -207,11 +219,12 @@ COMMENT ON COLUMN z_metadata.meta_shared_categorie.path IS 'Chemin SPARQL de la 
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.origin IS 'Origine de la catégorie. Toujours ''shared''. NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn). NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.cat_label IS 'Libellé de la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.data_type IS 'Type de valeur attendu pour la catégorie. ATTENTION : toute modification sur ce champ sera ignorée par le plugin QGIS.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
-COMMENT ON COLUMN z_metadata.meta_shared_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
+COMMENT ON COLUMN z_metadata.meta_shared_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QLineEdit ou QTextEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.multiple_values IS 'True si la catégorie admet plusieurs valeurs. ATTENTION : toute modification sur ce champ sera ignorée par le plugin QGIS.' ;
 COMMENT ON COLUMN z_metadata.meta_shared_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
@@ -328,11 +341,12 @@ COMMENT ON COLUMN z_metadata.meta_local_categorie.path IS 'Chemin SPARQL de la c
 COMMENT ON COLUMN z_metadata.meta_local_categorie.origin IS 'Origine de la catégorie. Toujours ''local''. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Toujours False pour une catégorie locale. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.cat_label IS 'Libellé de la catégorie.' ;
-COMMENT ON COLUMN z_metadata.meta_local_categorie.widget_type IS 'Type de widget de saisie à utiliser.' ;
+COMMENT ON COLUMN z_metadata.meta_local_categorie.data_type IS 'Type de valeur attendu pour la catégorie. Si ce champ n''est pas renseigné pour une catégorie locale, le plugin considérera qu''elle prend des valeurs de type ''string''.' ;
+COMMENT ON COLUMN z_metadata.meta_local_categorie.widget_type IS 'Type de widget de saisie à utiliser. Si ce champ n''est pas renseigné pour une catégorie locale, le plugin utilisera des widgets QLineEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.default_value IS 'Valeur par défaut, le cas échéant.' ;
-COMMENT ON COLUMN z_metadata.meta_local_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
+COMMENT ON COLUMN z_metadata.meta_local_categorie.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QLineEdit ou QTextEdit.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.input_mask IS 'Masque de saisie, s''il y a lieu.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.multiple_values IS 'True si la catégorie admet plusieurs valeurs.' ;
 COMMENT ON COLUMN z_metadata.meta_local_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.' ;
@@ -442,6 +456,7 @@ CREATE TABLE z_metadata.meta_template_categories (
     shrcat_path text,
     loccat_path text,
     cat_label text,
+	data_type z_metadata.meta_data_type,
     widget_type z_metadata.meta_widget_type,
     row_span int,
     help_text text,
@@ -476,26 +491,19 @@ COMMENT ON COLUMN z_metadata.meta_template_categories.tplcat_id IS 'Identifiant 
 COMMENT ON COLUMN z_metadata.meta_template_categories.tpl_label IS 'Nom du modèle de formulaire.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.shrcat_path IS 'Chemin SPARQL / identifiant de la catégorie de métadonnées (si catégorie commune).' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.loccat_path IS 'Chemin SPARQL / identifiant de la catégorie de métadonnées (si catégorie supplémentaire locale).' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.cat_label IS 'Libellé de la catégorie de métadonnées.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.cat_label IS 'Libellé de la catégorie de métadonnées. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.data_type IS 'Type de valeur attendu pour la catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. ATTENTION : pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.widget_type IS 'Type de widget de saisie à utiliser.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.default_value IS 'Valeur par défaut, le cas échéant.
 Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.input_mask IS 'Masque de saisie, s''il y a lieu.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.multiple_values IS 'True si la catégorie admet plusieurs valeurs.
-ATTENTION : pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.
-ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.
-Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QLineEdit ou QTextEdit. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.input_mask IS 'Masque de saisie, s''il y a lieu. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.multiple_values IS 'True si la catégorie admet plusieurs valeurs. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. ATTENTION : pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.read_only IS 'True si la catégorie est en lecture seule' ;
 
 -- la table et la séquence sont marquées comme tables de configuration de l'extension
@@ -513,6 +521,7 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
         c.origin,
 		c.is_node,
         coalesce(tc.cat_label, c.cat_label) AS cat_label,
+		coalesce(tc.data_type, c.data_type) AS data_type,
         coalesce(tc.widget_type, c.widget_type) AS widget_type,
         coalesce(tc.row_span, c.row_span) AS row_span,
         coalesce(tc.help_text, c.help_text) AS help_text,
@@ -537,26 +546,17 @@ COMMENT ON COLUMN z_metadata.meta_template_categories_full.tpl_label IS 'Nom du 
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.path IS 'Chemin SPARQL / identifiant de la catégorie.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn).' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.cat_label IS 'Libellé de la catégorie de métadonnées.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.widget_type IS 'Type de widget de saisie à utiliser.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.default_value IS 'Valeur par défaut, le cas échéant.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.input_mask IS 'Masque de saisie, s''il y a lieu.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.multiple_values IS 'True si la catégorie admet plusieurs valeurs.
-ATTENTION : pour les catégories communes, les modifications apportées sur ce champs ne seront pas prises en compte.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.
-ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories_full.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.
-Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.cat_label IS 'Libellé de la catégorie de métadonnées. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata..meta_template_categories_full.data_type IS 'Type de valeur attendu pour la catégorie.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.widget_type IS 'Type de widget de saisie à utiliser. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.row_span IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu. La valeur ne sera considérée que pour un widget QTextEdit. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.help_text IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.default_value IS 'Valeur par défaut, le cas échéant. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.placeholder_text IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.input_mask IS 'Masque de saisie, s''il y a lieu. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.multiple_values IS 'True si la catégorie admet plusieurs valeurs.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes (uniquement s''il s''agit de rendre obligatoire une catégorie optionnelle).' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.read_only IS 'True si la catégorie est en lecture seule.' ;
 
 
