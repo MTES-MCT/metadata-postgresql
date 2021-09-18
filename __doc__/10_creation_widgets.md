@@ -1,12 +1,14 @@
 # Création d'un nouveau widget
 
+La présente page explique comment créer les widgets qui formeront le formulaire de consultation / édition des métadonnées à partir du dictionnaire des widgets. On suppose que le programme est en train de boucler sur les clés du dictionnaire.
+
 Soit :
 - `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)).
 - `key` la clé de l'enregistrement en cours de traitement.
 - `vocabulary` le graphe RDF qui rassemble les valeurs des thésaurus (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#vocabulary--la-compilation-des-thésaurus)).
 - `language` la langue principale de rédaction des métadonnées sélectionnée par l'utilisateur (cf. [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées)).
 
-Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes.
+Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.
 
 [Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
