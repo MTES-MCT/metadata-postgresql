@@ -1,10 +1,10 @@
 # Création d'un nouveau widget
 
 Soit :
-- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage.
+- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)).
 - `key` la clé de l'enregistrement en cours de traitement.
-- `vocabulary` le graphe RDF qui rassemble les valeurs des thésaurus.
-- `language` la langue principale de rédaction des métadonnées sélectionnée par l'utilisateur.
+- `vocabulary` le graphe RDF qui rassemble les valeurs des thésaurus (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#vocabulary--la-compilation-des-thésaurus)).
+- `language` la langue principale de rédaction des métadonnées sélectionnée par l'utilisateur (cf. [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées)).
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes.
 
