@@ -143,8 +143,8 @@ Le formulaire peut ensuite être recréé à partir du nouveau dictionnaire, sel
 
 Ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [save.svg](/metadata_postgresql/icons/general/translation.svg) :
-![save.svg](/metadata_postgresql/icons/general/translation.svg)
+Il utilise l'icône [translation.svg](/metadata_postgresql/icons/general/translation.svg) :
+![translation.svg](/metadata_postgresql/icons/general/translation.svg)
 
 ## Choix de la trame de formulaire
 
