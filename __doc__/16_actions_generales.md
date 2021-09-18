@@ -152,11 +152,39 @@ Ce bouton ne doit être actif qu'en mode édition.
 Il utilise l'icône [translation.svg](/metadata_postgresql/icons/general/translation.svg) :
 ![translation.svg](/metadata_postgresql/icons/general/translation.svg)
 
+
 ## Choix de la trame de formulaire
+
+### Effets
+
+### Caractéristiques du bouton
+
 
 ## Langue principale des métadonnées
 
+### Effets
+
+### Caractéristiques du bouton
+
+
 ## Import de métadonnées depuis un fichier
 
+### Effets
+
+### Caractéristiques du bouton
+
+Ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [import.svg](/metadata_postgresql/icons/general/import.svg) :
+![import.svg](/metadata_postgresql/icons/general/import.svg)
+
+
 ## Export des métadonnées dans un fichier
+
+### Effets
+
+### Caractéristiques du bouton
+
+Ce bouton utilise l'icône [export.svg](/metadata_postgresql/icons/general/export.svg) :
+![import.svg](/metadata_postgresql/icons/general/export.svg)
 
