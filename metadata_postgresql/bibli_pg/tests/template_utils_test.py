@@ -64,6 +64,26 @@ class TestTemplateUtils(unittest.TestCase):
             }, 15)
 
 
+    ### FONCTION query_is_relation_owner
+    ### --------------------------------
+    
+    def test_query_is_relation_owner_1(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute(
+                    pg_queries.query_is_relation_owner(),
+                    ('z_metadata', 'metadata_categorie')
+                    )
+                res = cur.fetchone()
+        
+        conn.close()
+        
+        self.assertTrue(res[0])
+    
+
     ### FONCTION query_exists_extension
     ### -------------------------------
     
@@ -255,20 +275,22 @@ class TestTemplateUtils(unittest.TestCase):
     def test_build_template_1(self):
         categories = [
             ('shared', 'dct:title', 'libellé', 'QLineEdit', None, None, None,
-                None, None, True, True, 0, True, False),
+                None, None, True, True, 0, True, False, 'string'),
             ('shared', 'dct:description', 'description', 'QTextEdit', 99, None,
-                None, None, None, False, False, 50, False, False),
+                None, None, None, False, False, 50, False, False, 'string'),
             ('shared', 'dct:modified', 'dernière modification', 'QDateEdit', None,
-                None, '2021-09-01', None, None, False, False, 90, False, False),
+                None, '2021-09-01', None, None, False, False, 90, False, False, 'string'),
             ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>', 'code ADL',
                 None, 30, 'code maison', None, '230-FG', '000-XX', True, False, 8,
-                False, False)
+                False, False, None),
+            ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582ag>', 'ma date',
+                'QDateEdit', None, None, None, None, None, None, None, None, None, 'date')
             ]
         template = template_utils.build_template(categories)
         d = build_dict(Graph(), self.shape, self.vocabulary, template)
-        self.assertEqual(len(d), 7)
+        self.assertEqual(len(d), 8)
         # racine + title + description + modified + groupe de valeur
-        # pour code ADL + code ADL + bouton plus de code ADL = 7
+        # pour code ADL + code ADL + bouton plus de code ADL + ma date = 8
         
         ttk = search_keys(d, 'dct:title', 'edit')[0]
         self.assertIsNotNone(ttk)
@@ -294,6 +316,12 @@ class TestTemplateUtils(unittest.TestCase):
              'plus button'
              )[0]
         self.assertIsNotNone(lck_b)
+        lck2 = search_keys(
+             d,
+             '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582ag>',
+             'edit'
+             )[0]
+        self.assertIsNotNone(lck2)
         
         self.assertEqual(d[ttk]['row'], 0)
         self.assertEqual(d[lck_g]['row'], 1)
@@ -301,6 +329,7 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(d[dsk]['row'], 3)
         self.assertEqual(d[mdk]['row'], 102)
         # 3 + un row span de 99 -> 102
+        self.assertEqual(d[lck2]['row'], 103)
         
         self.assertTrue(d[ttk]['read only'])
         self.assertFalse(d[ttk]['multiple values'])
@@ -313,6 +342,9 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertTrue(d[mdk]['default value'] == d[mdk]['value'] == '2021-09-01')
         # vérifie aussi que la valeur par défaut est bien reprise par build_dict
         # dans le cas d'un formulaire vide
+        self.assertEqual(d[mdk]['data type'], 'dateTime')
+        # vérifie que les modification sur data type sont ignorées
+        # pour les catégories communes
         self.assertEqual(d[lck]['main widget type'], 'QLineEdit')
         # vérifie que build_dict met bien des QLineEdit par défaut
         self.assertEqual(d[lck_g]['label'], 'code ADL')
@@ -323,13 +355,18 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(d[lck]['placeholder text'], '230-FG')
         self.assertEqual(d[lck]['input mask'], '000-XX')
         self.assertTrue(d[lck]['multiple values'])
+        self.assertEqual(d[lck]['data type'], 'string')
+        # vérifie que string est appliqué si aucun type n'est
+        # spécifié
+        self.assertEqual(d[lck2]['data type'], 'date')
+        self.assertEqual(d[lck2]['main widget type'], 'QDateEdit')
 
     # ajout automatique des ancêtres manquants
     def test_build_template_2(self):
         categories = [
             ('shared', 'dcat:distribution /dct:license/ rdfs:label',
                 None, None, None, None, None, None, None, None, None,
-                None, None, False)
+                None, None, False, None)
             ]
         template = template_utils.build_template(categories)
         self.assertTrue('dcat:distribution' in template)
@@ -342,7 +379,7 @@ class TestTemplateUtils(unittest.TestCase):
         categories = [
             ('shared', 'dcat:distribution /dct:license',
                 None, None, None, None, None, None, None, None,
-                None, None, None, True)
+                None, None, None, True, None)
             ]
         template = template_utils.build_template(categories)
         self.assertFalse('dcat:distribution' in template)
