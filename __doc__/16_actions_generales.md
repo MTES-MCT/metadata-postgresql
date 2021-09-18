@@ -31,8 +31,8 @@ Certaines des actions générales décrites dans la suite ne devraient être dis
 
 **Initialement, toutes les fiches s'ouvrent en mode lecture**. L'utilisateur doit cliquer sur le bouton d'activation du mode édition pour basculer dans ce dernier.
 
-Le bouton utilise l'icône [edit.svg](/medata_postgresql/icons/general/edit.svg) :
-![edit.svg](/medata_postgresql/icons/general/edit.svg).
+Le bouton utilise l'icône [edit.svg](/metadata_postgresql/icons/general/edit.svg) :
+![edit.svg](/metadata_postgresql/icons/general/edit.svg).
 
 Il ne devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
@@ -121,8 +121,8 @@ cur.execute(query, (new_pg_description,))
 
 Comme susmentionné, ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [save.svg](/medata_postgresql/icons/general/save.svg) :
-![save.svg](/medata_postgresql/icons/general/save.svg)
+Il utilise l'icône [save.svg](/metadata_postgresql/icons/general/save.svg) :
+![save.svg](/metadata_postgresql/icons/general/save.svg)
 
 
 ## Activation du mode traduction
@@ -143,8 +143,8 @@ Le formulaire peut ensuite être recréé à partir du nouveau dictionnaire, sel
 
 Ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [save.svg](/medata_postgresql/icons/general/translation.svg) :
-![save.svg](/medata_postgresql/icons/general/translation.svg)
+Il utilise l'icône [save.svg](/metadata_postgresql/icons/general/translation.svg) :
+![save.svg](/metadata_postgresql/icons/general/translation.svg)
 
 ## Choix de la trame de formulaire
 
