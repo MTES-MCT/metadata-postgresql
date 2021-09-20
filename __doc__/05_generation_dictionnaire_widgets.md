@@ -21,6 +21,7 @@ Sources de données :
 Paramètres utilisateurs :
 
 | Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
+| --- | --- | --- | --- | --- | --- |
 | 5 | `mode` | str | non | `'edit'` | [1](#mode) |
 | 6 | `readHideBlank` | bool | non | `True` | [1](#readhideblank) |
 | 7 | `hideUnlisted` | bool | non | `False` | [1](#hideunlisted) |
