@@ -434,6 +434,61 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[tck2_end]['row'], 0)
         e = check_rows(d)
         self.assertIsNone(e)
+
+    # vérifie qu'en l'absence de thésaurus,
+    # les QComboBox deviennent bien des QLineEdit
+    def test_build_dict_8(self):
+        
+        # cas où il n'y a pas de thésaurus
+        # dans shape :
+        shape2 = rdf_utils.load_shape()
+        shape2.update(
+            """
+            DELETE { ?o snum:ontology ?v }
+            WHERE { ?o sh:path dct:accessRights ;
+                snum:ontology ?v }
+            """
+            )
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=shape2,
+            vocabulary=self.vocabulary
+            )
+        ark = search_keys(d, "dct:accessRights", 'edit')[0]
+        self.assertEqual(d[ark]['main widget type'], 'QLineEdit')
+        d = rdf_utils.build_dict(
+            metagraph=Graph(),
+            shape=shape2,
+            vocabulary=self.vocabulary
+            )
+        ark = search_keys(d, "dct:accessRights", 'edit')[0]
+        self.assertEqual(d[ark]['main widget type'], 'QLineEdit')
+        
+        # cas où l'unique thésaurus n'a pas de vocabulaire associé :
+        voc=Graph()
+        voc.namespace_manager.bind(
+            'skos',
+            URIRef('http://www.w3.org/2004/02/skos/core#'),
+            override=True, replace=True
+            )
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=voc
+            )
+        ark = search_keys(d, "dct:accessRights", 'edit')[0]
+        self.assertEqual(d[ark]['main widget type'], 'QLineEdit')
+        dtk = search_keys(d, "dcat:theme", 'edit')[0]
+        self.assertEqual(d[dtk]['main widget type'], 'QLineEdit')
+        d = rdf_utils.build_dict(
+            metagraph=Graph(),
+            shape=self.shape,
+            vocabulary=voc
+            )
+        ark = search_keys(d, "dct:accessRights", 'edit')[0]
+        self.assertEqual(d[ark]['main widget type'], 'QLineEdit')
+        dtk = search_keys(d, "dcat:theme", 'edit')[0]
+        self.assertEqual(d[dtk]['main widget type'], 'QLineEdit')
     
     # à compléter !
 
@@ -1673,14 +1728,14 @@ class TestRDFUtils(unittest.TestCase):
     def test_build_vocabulary_1(self):
         self.assertEqual(
             rdf_utils.build_vocabulary("Thème de données (UE)", Graph()),
-            None
+            []
             )
 
     # ensemble non renseigné :
     def test_build_vocabulary_2(self):
         self.assertEqual(
             rdf_utils.build_vocabulary("", self.vocabulary),
-            None
+            []
             )
 
     # cas normal :
@@ -1701,7 +1756,7 @@ class TestRDFUtils(unittest.TestCase):
     def test_build_vocabulary_4(self):
         self.assertEqual(
             rdf_utils.build_vocabulary("Ensemble inconnu", self.vocabulary),
-            None
+            []
             )
 
     # autre langue (connue et utilisée pour le nom de l'ensemble) :
@@ -1720,14 +1775,14 @@ class TestRDFUtils(unittest.TestCase):
     def test_build_vocabulary_6(self):
         self.assertEqual(
             rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='it'),
-            None
+            []
             )
 
     # le nom de l'ensemble n'est pas dans la langue indiquée :
     def test_build_vocabulary_6(self):
         self.assertEqual(
             rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='fr'),
-            None
+            []
             )
 
 
