@@ -1796,11 +1796,12 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
                 
-                if mWidgetType == "QComboBox" and mCurSource == '< URI >':
+                if mWidgetType == "QComboBox" and ( ( not mVSources ) or '< URI >' in mVSources ):
                     mWidgetType = "QLineEdit"
                     # le schéma SHACL prévoira généralement un QComboBox
                     # pour les URI, mais on est dans un cas où, pour on ne sait quelle
-                    # raison, aucun thésaurus n'est disponible
+                    # raison, aucun thésaurus n'est disponible. Dans ce cas on affiche
+                    # un QLineEdit à la place.
                 
                 if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
                     mLabelRow = rowidx[mParent]
@@ -2317,8 +2318,11 @@ def build_vocabulary(schemeStr, vocabulary, language="fr"):
 
     RESULTAT
     --------
-    Liste (list) contenant les libellés (str), triés par ordre alphabétique selon
-    la locale de l'utilisateur.
+    Liste (list) contenant les libellés (str) des termes du thésaurus, triés par
+    ordre alphabétique selon la locale de l'utilisateur.
+    
+    Renvoie une liste vide si le thésaurus n'est pas référencé ou s'il n'a aucun
+    terme pour la langue considérée.
 
     EXEMPLES
     --------
@@ -2359,6 +2363,8 @@ def build_vocabulary(schemeStr, vocabulary, language="fr"):
             [str(l['label']) for l in q_vc],
             key=lambda x: strxfrm(x)
             )
+   
+    return []
 
 
 def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
