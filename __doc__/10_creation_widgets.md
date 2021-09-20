@@ -97,7 +97,7 @@ widgetsdict.parent_widget(key)
 
 Certains widgets seront à masquer ou afficher selon les actions de l'utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu'une métadonnée peut être saisie au choix sous la forme d'un URI ou d'un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l'utilisateur ne décide pas de changer de forme.
 
-Concrètement, le widget principal et tous les widgets annexes d'un enregistrement devront être masqués dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+Concrètement, le widget principal **et tous les widgets annexes** d'un enregistrement devront être masqués dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
 
 ```python
 
@@ -459,6 +459,15 @@ widgetsdict[key]['label widget'].setToolTip(widgetsdict[key]['help text'])
 [↑ haut de page](#création-dun-nouveau-widget)
 
 
+### Widget masqué ?
+
+Le QLabel doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+
+```python
+
+widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
+
+```
 
 
 ## Widget annexe : bouton de sélection de la source
@@ -556,6 +565,17 @@ L'icône ![source_button.svg](/metadata_postgresql/icons/buttons/source_button.s
 [↑ haut de page](#création-dun-nouveau-widget)
 
 
+### Widget masqué ?
+
+Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+
+```python
+
+widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
+
+```
+
+
 ## Widget annexe : bouton de sélection de la langue
 
 Un widget QToolButton de sélection de langue doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira que si le mode traduction est actif) :
@@ -647,6 +667,16 @@ Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column s
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
+
+### Widget masqué ?
+
+Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+
+```python
+
+widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
+
+```
 
 
 ## Widget annexe : bouton "moins"
@@ -752,5 +782,14 @@ colored_svg = raw_svg.format(fill=color)
 
 ```
 
+### Widget masqué ?
+
+Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+
+```python
+
+widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
+
+```
 
 [↑ haut de page](#création-dun-nouveau-widget)
