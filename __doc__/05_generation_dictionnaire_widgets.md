@@ -12,27 +12,27 @@ Sources de données :
 
 | Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
 | --- | --- | --- | --- | --- | --- |
-| 0 | `metagraph` | rdflib.graph.Graph | oui |  | [1](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
-| 1 | `shape` | rdflib.graph.Graph | oui |  | [1](#shape--le-schéma-shacl-des-métadonnées-communes) |
-| 2 | `vocabulary` | rdflib.graph.Graph | oui |  | [1](#vocabulary--la-compilation-des-thésaurus) |
-| 3 | `template` | dict | non | `None` | [1](#template--le-modèle-de-formulaire) |
-| 4 | `data` | dict | non | `None` | [1](#data--les-métadonnées-calculées) |
+| 0 | `metagraph` | rdflib.graph.Graph | oui |  | [→](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
+| 1 | `shape` | rdflib.graph.Graph | oui |  | [→](#shape--le-schéma-shacl-des-métadonnées-communes) |
+| 2 | `vocabulary` | rdflib.graph.Graph | oui |  | [→](#vocabulary--la-compilation-des-thésaurus) |
+| 3 | `template` | dict | non | `None` | [→](#template--le-modèle-de-formulaire) |
+| 4 | `data` | dict | non | `None` | [→](#data--les-métadonnées-calculées) |
 
 Paramètres utilisateurs :
 
 | Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
 | --- | --- | --- | --- | --- | --- |
-| 5 | `mode` | str | non | `'edit'` | [1](#mode) |
-| 6 | `readHideBlank` | bool | non | `True` | [1](#readhideblank) |
-| 7 | `hideUnlisted` | bool | non | `False` | [1](#hideunlisted) |
-| 8 | `language` | str | non | `'fr'` | [1](#language) |
-| 9 | `translation` | bool | non | `False` | [1](#translation) |
-| 10 | `langList` | list (str) | non | `['fr', 'en']` | [1](#langlist) |
-| 11 | `readOnlyCurrentLanguage` | bool | non | `True` | [1](#readonlycurrentlanguage) |
-| 12 | `editOnlyCurrentLanguage` | bool | non | `False` | [1](#editonlycurrentlanguage) |
-| 13 | `labelLengthLimit` | int | non | `25` | [1](#labellengthlimit) |
-| 14 | `valueLengthLimit` | int | non | `100` | [1](#valuelengthlimit) |
-| 15 | `textEditRowSpan` | int | non | `6` | [1](#texteditrowspan) |
+| 5 | `mode` | str | non | `'edit'` | [→](#mode) |
+| 6 | `readHideBlank` | bool | non | `True` | [→](#readhideblank) |
+| 7 | `hideUnlisted` | bool | non | `False` | [→](#hideunlisted) |
+| 8 | `language` | str | non | `'fr'` | [→](#language) |
+| 9 | `translation` | bool | non | `False` | [→](#translation) |
+| 10 | `langList` | list (str) | non | `['fr', 'en']` | [→](#langlist) |
+| 11 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
+| 12 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
+| 13 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
+| 14 | `valueLengthLimit` | int | non | `100` | [→](#valuelengthlimit) |
+| 15 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
 
 Tous les arguments sont décrits plus en détail dans la suite, ainsi que le résultat obtenu.
 
