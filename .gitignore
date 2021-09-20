@@ -3,3 +3,4 @@ __pycache__/
 __archives__/
 TO_DO.txt
 *.zip
+test_export_*
