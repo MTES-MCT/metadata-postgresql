@@ -107,7 +107,7 @@ Il faudra soit que toutes les conditions de l'un des ensembles du JSON soient v�
 
 ### Catégories de métadonnées
 
-La table `meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/metadata_postgresql_bibi_rdf/modeles/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
+La table `meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/metadata_postgresql/bibli_rdf/modeles/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
 
 Il s'agit en fait d'une table partitionnée avec deux tables filles :
 - `meta_shared_categorie` pour les catégories communes (`origin` vaut `shared`) ;
@@ -121,26 +121,25 @@ Concrètement, la table `meta_categorie` a deux fonctions :
 
 Les champs sur lesquels l'ADL peut intervenir sont :
 
-| Nom du champ | Description |
-| --- | --- |
-| `cat_label` | Libellé de la catégorie. | 
-| `widget_type` | Type de widget de saisie à utiliser. | 
-| `row_span` | Nombre de lignes occupées par le widget de saisie, s'il y a lieu. La valeur ne sera considérée que pour un widget de type `'QTextEdit'`. | 
-| `help_text` | Description de la catégorie. Sera affiché sous la forme d'un texte d'aide dans le formulaire. | 
-| `default_value` | Valeur par défaut pour la catégorie, le cas échéant. *NB : les valeurs par défaut ne sont appliquées que sur les fiches de métadonnées vierges.* | 
-| `placeholder_text` | Valeur fictive pré-affichée en tant qu'exemple dans le widget de saisie, s'il y a lieu. | 
-| `input_mask` | Masque de saisie, s'il y a lieu. | 
-| `multiple_values` | `True` si la catégorie admet plusieurs valeurs. *NB : pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.*| 
-| `is_mandatory` | `True` si une valeur doit obligatoirement être saisie pour cette catégorie. *NB : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.*| 
-| `order_key` | Ordre d'apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier, il n'est pas nécessaire que les numéros se suivent. Dans le cas des catégories communes, qui ont une structure arborescente, il s'agit de l'ordre parmi les catégories de même niveau dans la branche. | 
+| Nom du champ | Description | Remarques |
+| --- | --- | --- |
+| `cat_label` | Libellé de la catégorie. | |
+| `data_type` | Type de valeur attendu pour la catégorie, parmi (type énuméré `meta_data_type`) : `'string'`, `'integer'`, `'decimal'`, `'float'`, `'double'`, `'boolean'`, `'date'`, `'time'`, `'dateTime'`, `'duration'`. | Pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte. Si, pour une catégorie locale, aucune valeur n'est renseignée pour ce champ (ni dans `meta_categorie` ni dans `meta_template_categories`), le plugin considérera que la catégorie prend des valeurs de type `'string'`. |
+| `widget_type` | Type de widget de saisie à utiliser. Cf. ci-après. | Pour une catégorie locale, si aucune valeur n'est renseignée pour ce champ (ni dans `meta_categorie` ni dans `meta_template_categories`), le plugin appliquera un widget `'QLineEdit'`. | 
+| `row_span` | Nombre de lignes occupées par le widget de saisie, s'il y a lieu. | La valeur ne sera considérée que pour un widget de type `'QTextEdit'`. | 
+| `help_text` | Description de la catégorie. Sera affiché sous la forme d'un texte d'aide dans le formulaire. | |
+| `default_value` | Valeur par défaut pour la catégorie, le cas échéant. | Les valeurs par défaut ne sont appliquées que sur les fiches de métadonnées vierges. | 
+| `placeholder_text` | Valeur fictive pré-affichée en tant qu'exemple dans le widget de saisie, s'il y a lieu. | La valeur ne sera considérée que pour un widget de type `'QTextEdit'` ou `'QLineEdit'`. | 
+| `input_mask` | Masque de saisie, s'il y a lieu. | |
+| `multiple_values` | `True` si la catégorie admet plusieurs valeurs. | Pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte. | 
+| `is_mandatory` | `True` si une valeur doit obligatoirement être saisie pour cette catégorie. | Modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse. | 
+| `order_key` | Ordre d'apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier, il n'est pas nécessaire que les numéros se suivent. Dans le cas des catégories communes, qui ont une structure arborescente, il s'agit de l'ordre parmi les catégories de même niveau dans la branche. | |
 
 Les champs `path` (chemin SPARQL identifiant la catégorie), `origin` et `is_node` sont calculés automatiquement. Il est fortement recommandé de ne pas les modifier à la main.
 
 Les valeurs autorisées pour `widget_type` sont définies par le type énuméré, `meta_widget_type`.
 
-Concrètement :
-
-| Valeur de `widget_type` | Description |
+| Valeur | Description |
 | --- | --- |
 | `'QLineEdit'` | saisie de texte libre sur une seule ligne |
 | `'QTextEdit'` | saisie multiligne de texte libre |
@@ -325,3 +324,10 @@ template = template_utils.build_template(categories)
 
 Le dictionnaire ainsi obtenu peut être passé dans l'argument `template` de la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#template--le-modèle-de-formulaire).
 
+Concrètement, `template` est un dictionnaire dont la structure est similaire à celle des `WidgetsDict`, si ce n'est que :
+- ses clés sont des chemins SPARQL identifiant des catégories de métadonnées. Par exemple `dcat:contactPoint / vcard:hasEmail` pour l'adresse mél du point de contact ;
+- ses dictionnaires internes comprennent nettement moins de clés.
+
+Avec `build_template()`, toutes les clés possibles seront systématiquement présentes pour toutes les catégories, mais ce n'est pas obligatoire (la fonction `build_dict()` utilise systématiquement la méthode `get` pour interroger le formulaire).
+
+Le fichier [exemple_dict_modele_local.json](/metadata_postgresql/bibli_rdf/exemples/exemple_dict_modele_local.json) donne un exemple de `template` valide sérialisé en JSON.

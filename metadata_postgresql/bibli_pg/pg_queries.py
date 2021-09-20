@@ -17,6 +17,30 @@ Dépendances : psycopg2 (https://www.psycopg.org).
 from psycopg2 import sql
 
 
+def query_is_relation_owner():
+    """Crée une requête qui vérifie que le rôle courant est membre du propriétaire d'une table.
+    
+    ARGUMENTS
+    ---------
+    Néant.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> cur.execute(query_is_relation_owner(), (schema_name, table_name))
+    
+    Avec (arguments positionnels) :
+    - schema_name (str) : nom du schéma de la table ;
+    - table_name (str) : nom de la table (ou toute autre relation).
+    """
+    return """
+        SELECT pg_has_role(relowner, 'USAGE')
+            FROM pg_catalog.pg_class
+            WHERE relnamespace = quote_ident(%s)::regnamespace
+                AND relname = %s
+        """
+    
+
 def query_exists_extension():
     """Crée une requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
     
@@ -145,7 +169,7 @@ def query_get_categories():
             origin,
             path,
             cat_label,
-            widget_type,
+            widget_type::text,
             row_span,
             help_text,
             default_value,
@@ -155,7 +179,8 @@ def query_get_categories():
             is_mandatory,
             order_key,
             read_only,
-            is_node
+            is_node,
+            data_type::text
             FROM z_metadata.meta_template_categories_full
             WHERE tpl_label = %s
         """

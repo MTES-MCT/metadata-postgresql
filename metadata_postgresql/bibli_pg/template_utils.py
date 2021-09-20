@@ -164,7 +164,8 @@ def build_template(categories):
                     'multiple values' : c[9],
                     'is mandatory' : c[10],
                     'order' : c[11],
-                    'read only' : c[12]
+                    'read only' : c[12],
+                    'data type' : c[13]
                     }
             })
   

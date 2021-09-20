@@ -16,6 +16,8 @@ Concrètement, le passage d'un mode à l'autre implique simplement de regénére
 - `mode='edit'` en mode édition (ou rien, `'edit'` étant la valeur par défaut) ;
 - `mode='read'` en mode lecture.
 
+Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md).
+
 Le formulaire de saisie/consultation peut ensuite être recréé à partir du nouveau dictionnaire, selon les mêmes modalités quel que soit le mode.
 
 ### Autres effets
@@ -23,9 +25,45 @@ Le formulaire de saisie/consultation peut ensuite être recréé à partir du no
 Certaines des actions générales décrites dans la suite ne devraient être disponibles qu'en mode édition :
 - la sauvegarde des modifications ;
 - l'activation ou la désactivation du mode traduction ;
-- l'import de métadonnées depuis un fichier.
+- l'import de métadonnées depuis un fichier ;
+- la réinitialisation de la fiche.
 
-## Bouton de sauvegarde
+### Caractéristiques du bouton
+
+**Initialement, toutes les fiches s'ouvrent en mode lecture**. L'utilisateur doit cliquer sur le bouton d'activation du mode édition pour basculer dans ce dernier.
+
+Le bouton utilise l'icône [edit.svg](/metadata_postgresql/icons/general/edit.svg) :
+![edit.svg](/metadata_postgresql/icons/general/edit.svg).
+
+Il ne devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
+
+Pour s'en assurer, on utilisera la requête définie par la fonction `query_is_relation_owner()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			pg_queries.query_is_relation_owner(),
+			(schema_name, table_name)
+			)
+		res = cur.fetchone()
+		is_owner = res[0] if res else False
+
+conn.close()
+
+```
+
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on affiche les métadonnées, `schema_name` est le nom de son schéma.*
+
+
+## Sauvegarde
+
+### Effets
 
 Le **bouton de sauvegarde** permet à l'utilisateur d'enregistrer sur le serveur PostgreSQL les informations qu'il a saisies.
 
@@ -67,29 +105,98 @@ new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_met
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
-Cette action sort du périmètres des fonctions de RDF Utils. On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
-
-Soit :
-- `schema_name` le nom du schéma contenant la table dont on édite les métadonnées ;
-- `table_name` le nom de cette dernière ;
-- `cur` le nom d'un curseur ouvert sur la connexion psycopg2 au serveur PostgreSQL. 
+On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
 
 ```python
 
-query = query_update_table_comment(schema_name, table_name)
-cur.execute(query, (new_pg_description,))
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		query = query_update_table_comment(schema_name, table_name)
+		cur.execute(query, (new_pg_description,))
+
+conn.close()
 
 ```
 
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on édite les métadonnées, `schema_name` est le nom de son schéma.*
+
+### Caractéristiques du bouton
+
+Comme susmentionné, ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [save.svg](/metadata_postgresql/icons/general/save.svg) :
+![save.svg](/metadata_postgresql/icons/general/save.svg)
+
+
 ## Activation du mode traduction
 
-Lorsque le mode traduction est actif, l'utilisateur a la possibilité de définir la langue des valeurs qu'il saisit (sinon c'est le paramètre utilisateur `language` qui est systématiquement utilisé).
+### Effets
+
+Lorsque le mode traduction est actif, l'utilisateur a la possibilité de définir la langue des valeurs qu'il saisit (sinon c'est le paramètre utilisateur `language` qui est systématiquement utilisé). Il pourra également saisir des traductions pour des catégories qui n'acceptent qu'une valeur par langue (par exemple le libellé de la donnée).
+
+Concrètement, l'activation ou la désactivation du mode traduction impliquera de regénérer le dictionnaire de widgets, c'est-à-dire relancer la fonction `build_dict()` avec :
+- `translation=True` si le mode traduction est actif ;
+- `translation=False` s'il ne l'est pas (ou sans spécifier `translation`, `False` étant la valeur par défaut).
+
+Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md).
+
+Le formulaire peut ensuite être recréé à partir du nouveau dictionnaire, selon les mêmes modalités que le mode traduction soit actif ou non.
+
+### Caractéristiques du bouton
+
+Ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [translation.svg](/metadata_postgresql/icons/general/translation.svg) :
+![translation.svg](/metadata_postgresql/icons/general/translation.svg)
+
 
 ## Choix de la trame de formulaire
 
+### Effets
+
+### Caractéristiques du bouton
+
+
 ## Langue principale des métadonnées
+
+### Effets
+
+### Caractéristiques du bouton
+
 
 ## Import de métadonnées depuis un fichier
 
+### Effets
+
+### Caractéristiques du bouton
+
+Ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [import.svg](/metadata_postgresql/icons/general/import.svg) :
+![import.svg](/metadata_postgresql/icons/general/import.svg)
+
+
 ## Export des métadonnées dans un fichier
 
+### Effets
+
+### Caractéristiques du bouton
+
+Ce bouton utilise l'icône [export.svg](/metadata_postgresql/icons/general/export.svg) :
+![import.svg](/metadata_postgresql/icons/general/export.svg)
+
+
+## Réinitialisation
+
+### Effets
+
+### Caractéristiques du bouton
+
+Ce bouton ne doit être actif qu'en mode édition.
+
+Il utilise l'icône [empty.svg](/metadata_postgresql/icons/general/empty.svg) :
+![empty.svg](/metadata_postgresql/icons/general/empty.svg)
