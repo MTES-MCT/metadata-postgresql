@@ -519,7 +519,8 @@ class TestRDFUtils(unittest.TestCase):
         auk = search_keys(d, "dcat:distribution / dct:accessURL", 'edit')[0]
         self.assertTrue(rdf_utils.is_ancestor((1,), auk))
         self.assertTrue(rdf_utils.is_ancestor(dbk, auk))
-        
+        e = check_rows(d)
+        self.assertIsNone(e)    
         
     # à compléter !
 
@@ -617,19 +618,19 @@ class TestRDFUtils(unittest.TestCase):
     
     # groupe de valeurs
     def test_wd_order_keys_1(self):
-        self.assertEqual(self.widgetsdict.order_keys(self.tck[1]), [1])
+        self.assertEqual(self.widgetsdict.order_keys(self.tck[1]), [9999])
    
     # bouton plus
     def test_wd_order_keys_2(self):
-        self.assertEqual(self.widgetsdict.order_keys(self.tck_plus), [1])
+        self.assertEqual(self.widgetsdict.order_keys(self.tck_plus), [9999])
     
     # groupe de traduction
     def test_wd_order_keys_3(self):
-        self.assertEqual(self.widgetsdict.order_keys(self.ttk[1]), [1])
+        self.assertEqual(self.widgetsdict.order_keys(self.ttk[1]), [9999])
 
     # bouton de traduction
     def test_wd_order_keys_4(self):
-        self.assertEqual(self.widgetsdict.order_keys(self.ttk_plus), [1])
+        self.assertEqual(self.widgetsdict.order_keys(self.ttk_plus), [9999])
     
     # groupe de propriétés masqué
     def test_wd_order_keys_5(self):
@@ -637,7 +638,7 @@ class TestRDFUtils(unittest.TestCase):
         d.change_source(self.lck, '< manuel >')
         d.update_value(self.lck_m_txt, "Non vide")
         d.change_source(self.lck_m, '< URI >')
-        self.assertEqual(self.widgetsdict.order_keys(self.lck_m_txt), [1])
+        self.assertEqual(self.widgetsdict.order_keys(self.lck_m_txt), [9999])
     
     # groupe de propriétés non masqué
     def test_wd_order_keys_6(self):
@@ -678,6 +679,23 @@ class TestRDFUtils(unittest.TestCase):
             check_unchanged(
                 self.metagraph, self.shape, self.vocabulary, language='en',
                 readOnlyCurrentLanguage=True, mode='read'
+                )
+            )
+
+    # avec template et onglets
+    def test_wd_build_graph_4(self):
+        template = {
+            "dct:title":  { "order": 10, "tab name": "Général" },
+            "dcat:distribution": { "tab name": "Distribution" },
+            "dcat:distribution / dct:issued": {},
+            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:keyword" : {}
+            }
+        templateTabs = { "Général" : (0,), "Distribution" : (1,) }
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, template=template,
+                templateTabs=templateTabs
                 )
             )
 
@@ -874,7 +892,43 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(len(ldbk), 2)
         self.assertEqual(sorted([d[ldbk[0]]['row'], d[ldbk[1]]['row']]), [0, 1])
         self.assertEqual(d[dbk_plus]['row'], 2)
-        
+
+    # ajout/suppression de groupes de propriétés
+    # dans un onglet qui n'est pas (0,)
+    def test_wd_add_drop_5(self):
+        template = {
+            "dct:title":  { "order": 10, "tab name": "Général" },
+            "dcat:distribution": { "tab name": "Distribution" },
+            "dcat:distribution / dct:issued": {},
+            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:keyword" : {}
+            }
+        templateTabs = { "Général" : (0,), "Distribution" : (1,) }
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs
+            )
+        dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
+        d.add(dbk_plus)
+        d.add(dbk_plus)
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ldbk = search_keys(d, 'dcat:distribution', 'group of properties')
+        self.assertEqual(len(ldbk), 3)
+        self.assertEqual(sorted([d[ldbk[0]]['row'], d[ldbk[1]]['row'], d[ldbk[2]]['row']]), [0, 1, 2])
+        self.assertEqual(d[dbk_plus]['row'], 3)
+
+        d.drop(ldbk[1])
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ldbk = search_keys(d, 'dcat:distribution', 'group of properties')
+        self.assertEqual(len(ldbk), 2)
+        self.assertEqual(sorted([d[ldbk[0]]['row'], d[ldbk[1]]['row']]), [0, 1])
+        self.assertEqual(d[dbk_plus]['row'], 2)
+
     # à compléter !
 
 
