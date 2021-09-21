@@ -794,6 +794,36 @@ class TestRDFUtils(unittest.TestCase):
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'hidden.button'):
             d.add(self.ttk_plus)
 
+    # ajout d'un groupe de propriétés
+    def test_wd_add_4(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
+        d.add(dbk_plus)
+        llck_label = search_keys(d, "dcat:distribution / dct:license / rdfs:label", 'edit')
+        self.assertEqual(len(llck_label), 2)
+        llck_uri = search_keys(d, "dcat:distribution / dct:license", 'edit')
+        self.assertEqual(len(llck_uri), 2)
+        self.assertEqual(
+            d[llck_uri[0]]['hidden M'],
+            d[llck_uri[1]]['hidden M']
+            )
+        self.assertEqual(
+            d[llck_uri[0]]['hidden M'],
+            not d[(llck_uri[0][0], llck_uri[0][1], 'M')]['hidden M']
+            )
+        self.assertEqual(
+            d[llck_uri[0]]['hidden M'],
+            not d[llck_label[0]]['hidden M']
+            )
+        self.assertEqual(
+            d[llck_uri[0]]['hidden M'],
+            not d[(llck_uri[1][0], llck_uri[1][1], 'M')]['hidden M']
+            )
+        self.assertEqual(
+            d[llck_uri[0]]['hidden M'],
+            not d[llck_label[1]]['hidden M']
+            )       
+
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
     def test_wd_add_drop_1(self):
@@ -831,7 +861,7 @@ class TestRDFUtils(unittest.TestCase):
     # ajout/suppression d'un widget de saisie
     # occupant plusieurs lignes
     def test_wd_add_drop_2(self):
-        d = self.widgetsdict
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         dsk_plus = search_keys(d, 'dct:description', 'translation button')[0]
         d.add(dsk_plus)
         e = check_rows(d)
@@ -852,7 +882,7 @@ class TestRDFUtils(unittest.TestCase):
     # ajout/suppression de widgets dans
     # un groupe de valeurs
     def test_wd_add_drop_3(self):
-        d = self.widgetsdict
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         kwk_plus = search_keys(d, 'dcat:keyword', 'plus button')[0]
         d.add(kwk_plus)
         d.add(kwk_plus)
@@ -872,7 +902,6 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[kwk_plus]['row'], 2)
 
     # ajout/suppression de groupes de propriétés
-    # (dans un groupe de valeurs)
     def test_wd_add_drop_4(self):
         d = self.widgetsdict
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
@@ -1139,6 +1168,16 @@ class TestRDFUtils(unittest.TestCase):
     def test_replace_ancestor_7(self):
         with self.assertRaisesRegex(ValueError, r'^M\s'):
             rdf_utils.replace_ancestor((2, (1, (0,))), (1, (0,)), (3, (0, ), 'M'))
+
+    def test_replace_ancestor_8(self):
+        self.assertEqual(
+            rdf_utils.replace_ancestor(
+                (0, (2, (0, (0, (1,))), 'M')),
+                (0, (0, (1,))),
+                (2, (0, (1,)))
+                ),
+            (0, (2, (2, (0, (1,))), 'M'))
+            )
     
     
     ### FONCTION WidgetsDict.parent_widget
