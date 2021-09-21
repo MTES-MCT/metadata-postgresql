@@ -484,11 +484,11 @@ class WidgetsDict(dict):
                 self[key]['row']
                 ))
         
-        for k in self.keys():
- 
-            # cas des frères et soeurs :
-            if len(k) > 1 and k[1] == key[1] and self[k]['object'] in (
-                        'group of properties', 'translation group', 'edit'):
+        for k in iter_siblings_keys(self, key, include=True):
+        # cas des frères et soeurs
+        
+            if self[k]['object'] in ('group of properties',
+                'translation group', 'edit'):
                 
                 # on vient d'ajouter un enregistrement au groupe,
                 # donc il y a lieu d'ajouter des boutons moins
@@ -507,12 +507,17 @@ class WidgetsDict(dict):
                         self[k]['authorized languages'].remove(language)
                         d["language menu to update"].append(k)
         
-        
+        for k in iter_children_keys(self.copy(), c):
             # cas des descendants de la clé c :
             # uniquement pour les boutons plus, puisque les
             # groupes de traduction sont toujours en bout de
             # chaîne
-            if self[key]['object'] == 'plus button' and is_ancestor(c, k):
+            # on fait l'itération sur une copie du
+            # dictionnaire, parce qu'on va ajouter des clés
+            # au cours de l'itération (et on aurait sinon des
+            # erreurs de type "RuntimeError: dictionary changed
+            # size during iteration")
+            if self[key]['object'] == 'plus button':
             
                 if self[k[1]]['object'] == 'group of properties' \
                         or self[k]['object'] in ('plus button', 'translation button') \
@@ -522,7 +527,7 @@ class WidgetsDict(dict):
                         # et le groupe ou widget placé sur la première ligne
                         # de la grille
                     newkey = replace_ancestor(k, c, (n, key[1]))
-                    self.update( { newkey: self.clean_copy(c) } )
+                    self.update( { newkey: self.clean_copy(k) } )
                     d['new keys'].append(newkey)
                     
         return d
@@ -1047,14 +1052,15 @@ class WidgetsDict(dict):
         raise RuntimeError("Unknown group kind for key {}.".format(key))
 
 
-def build_dict(metagraph, shape, vocabulary, template=None, data=None,
-    mode='edit', readHideBlank=True, hideUnlisted=False,
+def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
+    data=None, mode='edit', readHideBlank=True, hideUnlisted=False,
     language="fr", translation=False, langList=['fr', 'en'],
     readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
     labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
-    mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None):
+    mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
+    mTemplateTabs=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
     ARGUMENTS
@@ -1077,6 +1083,10 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
     caractéristiques ne peuvent être définies que pour les catégories de métadonnées
     locales : il n'est pas possible de changer 'data type' ni 'multiple values' pour une
     catégorie commune.
+    - [optionnel] templateTabs (dict) : dictionnaire complémentaire à template, dont les
+    clés sont les noms des onglets du formulaire et les valeurs les futures clés
+    correspondant aux onglets dans le dictionnaire de widgets. L'ordre des clés dans le
+    dictionnaire sera l'ordre des onglets.    
     - [optionnel] data (dict) : un dictionnaire contenant des informations actualisées
     à partir de sources externes (par exemple déduites des données) qui devront écraser
     les valeurs présentes dans metagraph. Les clés du dictionnaire sont des chemins
@@ -1374,19 +1384,26 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
             'shape order' : None,
             'template order' : None
             }
-
-        # on initialise le dictionnaire avec un groupe racine :
-        mParentWidget = (0,)
         
-        mDict = { mParentWidget : mWidgetDictTemplate.copy() }
-        mDict[mParentWidget].update( {
-            'object' : 'group of properties',
-            'main widget type' : 'QGroupBox',
-            'row' : 0,
-            'node' : mParentNode,
-            'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
-            'shape order' : 0
-            } )
+        mTemplateTabs = templateTabs.copy() if templateTabs \
+                        else { "Général": (0,) } 
+
+        # on initialise le dictionnaire avec les groupes racines,
+        # qui correspondent aux onglets du formulaire :
+        for label, key in mTemplateTabs.items():
+        
+            mDict = { key : mWidgetDictTemplate.copy() }
+            mDict[key].update( {
+                'object' : 'group of properties',
+                'main widget type' : 'QGroupBox',
+                'label' : label or '???',
+                'row' : 0,
+                'node' : mParentNode,
+                'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
+                'shape order' : key[0]
+                } ) 
+
+        mParentWidget = (0,)
 
 
     # ---------- EXECUTION COURANTE ----------
@@ -1486,6 +1503,18 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
         if not mNHidden and ( mNPath in mShallowTemplate ):
             t = mShallowTemplate[mNPath]
             mShallowTemplate[mNPath].update( { 'done' : True } )
+            
+            # choix du bon onglet (évidemment juste
+            # pour les catégories de premier niveau)
+            if is_root(mParent):
+                tab = t.get('tab name', None)
+                if tab and tab in mTemplateTabs:
+                    mParent = mTemplateTabs[tab]
+                    if not mParent in idx:
+                        idx.update({ mParent: 0 })
+                    if not mParent in rowidx:
+                        rowidx.update({ mParent: 0 })
+            
         else:
             t = dict()
 
@@ -1695,8 +1724,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
 
                 if not mNHidden or isinstance(mValueBrut, BNode):              
                     build_dict(
-                        metagraph, shape, vocabulary, template=template, data=data,
-                        mode=mode, readHideBlank=readHideBlank, hideUnlisted=hideUnlisted,
+                        metagraph, shape, vocabulary, template=template, templateTabs=templateTabs,
+                        data=data, mode=mode, readHideBlank=readHideBlank, hideUnlisted=hideUnlisted,
                         language=language, translation=translation, langList=langList,
                         readOnlyCurrentLanguage=readOnlyCurrentLanguage,
                         editOnlyCurrentLanguage=editOnlyCurrentLanguage,
@@ -1705,7 +1734,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, data=None,
                         mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
                         mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
-                        mHidden=mNHidden, mHideM=mVHideM
+                        mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs 
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -2664,6 +2693,29 @@ def owlthing_from_tel(telStr, addPrefixFr=True):
 
     if tel and not tel == "":
         return URIRef("tel:" + tel)
+
+
+def is_root(key):
+    """La clé key est-elle une clé racine ?
+    
+    ARGUMENTS
+    ---------
+    - key (tuple) : clé d'un dictionnaire de widgets (WidgetsDict).
+    
+    RESULTAT
+    --------
+    True si la clé est une clé racine, c'est-à-dire une clé sans ancêtre,
+    correspondant à un onglet du formulaire.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils.is_root((1,))
+    True
+    
+    >>> rdf_utils.is_root((0,(0,)))
+    False
+    """
+    return len(key) == 1
 
 
 def is_older(key1, key2):
