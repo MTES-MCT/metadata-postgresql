@@ -141,8 +141,9 @@ $$ ;
 
 /* 1.1 - TABLE DE CATEGORIES
    1.2 - TABLE DES MODELES
-   1.3 - ASSOCIATION DES CATEGORIES AUX MODELES
-   1.4 - IMPORT DE MODELES PRE-CONFIGURES */
+   1.3 - TABLE DES ONGLETS
+   1.4 - ASSOCIATION DES CATEGORIES AUX MODELES
+   1.5 - IMPORT DE MODELES PRE-CONFIGURES */
 
 
 ------ 1.1 - TABLE DE CATEGORIES ------
@@ -446,7 +447,23 @@ $BODY$ ;
 COMMENT ON FUNCTION z_metadata.meta_execute_sql_filter(text, text, text) IS 'Détermine si un filtre SQL est vérifié.' ;
 
 
----- 1.3 - ASSOCIATION DES CATEGORIES AUX MODELES ------
+---- 1.3 - TABLE DES ONGLETS ------
+
+CREATE TABLE z_metadata.meta_tab (
+    tab_name varchar(48) PRIMARY KEY,
+    tab_num int
+    ) ;
+    
+COMMENT ON TABLE z_metadata.meta_tab IS 'Métadonnées. Onglets des modèles.' ;
+
+COMMENT ON COLUMN z_metadata.meta_tab.tab_name IS 'Nom de l''onglet.' ;
+COMMENT ON COLUMN z_metadata.meta_tab.tab_num IS 'Numéro de l''onglet. Les onglets sont affichés du plus petit numéro au plus grand (NULL à la fin), puis par ordre alphabétique en cas d''égalité. Les numéros n''ont pas à se suivre et peuvent être répétés.' ;
+
+-- la table est marquée comme table de configuration de l'extension
+SELECT pg_extension_config_dump('z_metadata.meta_tab'::regclass, '') ;
+
+
+---- 1.4 - ASSOCIATION DES CATEGORIES AUX MODELES ------
 
 -- Table z_metadata.meta_template_categories
 
@@ -467,6 +484,7 @@ CREATE TABLE z_metadata.meta_template_categories (
     is_mandatory boolean,
     order_key int,
     read_only boolean,
+    tab_name varchar(48),
     CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_label, shrcat_path, loccat_path),
     CONSTRAINT meta_template_categories_tpl_label_fkey FOREIGN KEY (tpl_label)
         REFERENCES z_metadata.meta_template (tpl_label)
@@ -477,6 +495,9 @@ CREATE TABLE z_metadata.meta_template_categories (
     CONSTRAINT meta_template_categories_loccat_path_fkey FOREIGN KEY (loccat_path)
         REFERENCES z_metadata.meta_local_categorie (path)
         ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT meta_template_categories_tab_name_fkey FOREIGN KEY (tab_name)
+        REFERENCES z_metadata.meta_tab (tab_name)
+        ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT meta_template_categories_path_check CHECK (
         shrcat_path IS NULL OR loccat_path IS NULL
         AND shrcat_path IS NOT NULL OR loccat_path IS NOT NULL
@@ -504,7 +525,8 @@ COMMENT ON COLUMN z_metadata.meta_template_categories.input_mask IS 'Masque de s
 COMMENT ON COLUMN z_metadata.meta_template_categories.multiple_values IS 'True si la catégorie admet plusieurs valeurs. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. ATTENTION : pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. ATTENTION : modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l''inverse.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
-COMMENT ON COLUMN z_metadata.meta_template_categories.read_only IS 'True si la catégorie est en lecture seule' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.read_only IS 'True si la catégorie est en lecture seule.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories.tab_name IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle dans la présente table ou, à défaut, dans un onglet "Général".' ;
 
 -- la table et la séquence sont marquées comme tables de configuration de l'extension
 SELECT pg_extension_config_dump('z_metadata.meta_template_categories'::regclass, '') ;
@@ -531,7 +553,8 @@ CREATE VIEW z_metadata.meta_template_categories_full AS (
         coalesce(tc.multiple_values, c.multiple_values) AS multiple_values,
         coalesce(tc.is_mandatory, c.is_mandatory) AS is_mandatory,
         coalesce(tc.order_key, c.order_key) AS order_key,
-        tc.read_only AS read_only
+        tc.read_only,
+        tc.tab_name
         FROM z_metadata.meta_template_categories AS tc
             LEFT JOIN z_metadata.meta_categorie AS c
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
@@ -558,9 +581,10 @@ COMMENT ON COLUMN z_metadata.meta_template_categories_full.multiple_values IS 'T
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes (uniquement s''il s''agit de rendre obligatoire une catégorie optionnelle).' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.order_key IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_metadata.meta_template_categories_full.read_only IS 'True si la catégorie est en lecture seule.' ;
+COMMENT ON COLUMN z_metadata.meta_template_categories_full.tab_name IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, à défaut, dans un onglet "Général".' ;
 
 
------- 1.4 - IMPORT DE MODELES PRE-CONFIGURES -------
+------ 1.5 - IMPORT DE MODELES PRE-CONFIGURES -------
 
 -- Function: z_metadata.meta_import_sample_template(text)
 
