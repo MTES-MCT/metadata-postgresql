@@ -129,7 +129,7 @@ def check_rows(widgetsdict):
         if 'group' in c['object'] and not k in idx:
             idx.update( { k : [] } )
             
-        if k == (0,):
+        if rdf_utils.is_root(k):
             continue
             
         if not k[1] in idx:
