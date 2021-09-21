@@ -165,9 +165,44 @@ def build_template(categories):
                     'is mandatory' : c[10],
                     'order' : c[11],
                     'read only' : c[12],
-                    'data type' : c[13]
+                    'data type' : c[13],
+                    'tab name': c[14]
                     }
             })
   
     return d
     
+
+def build_template_tabs(tabs):
+    """Crée un dictionnaire exploitable à partir d'une liste d''onglets.
+    
+    ARGUMENTS
+    ---------
+    - tabs (list) : la liste de toutes les onglets du modèle
+    et leur paramétrage (tuples). Concrètement elle est 
+    importée du serveur PostgreSQL de cette façon :
+    >>> cur.execute(query_list_templates())
+    >>> templates = cur.fetchall()
+    >>> tpl_label = search_template(metagraph, templates)
+    Si n'est pas None :
+    >>> cur.execute(query_template_tabs(), (tpl_label,))
+    >>> tabs = cur.fetchall()
+    
+    RESULTAT
+    --------
+    La liste d'onglets (templateTabs) qui sera à donner en argument à la
+    fonction rdf_utils.build_dict().
+    
+    La fonction renvoie None si le modèle ne définit pas d'onglets.
+    """
+    n = 0
+    d = {}
+    
+    for t in tabs:
+        d.update({ t[0]: (n,) })
+        n += 1
+    
+    if n > 0:
+        return d
+
+
