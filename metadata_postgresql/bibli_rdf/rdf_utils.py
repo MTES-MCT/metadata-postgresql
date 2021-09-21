@@ -484,11 +484,11 @@ class WidgetsDict(dict):
                 self[key]['row']
                 ))
         
-        for k in iter_siblings_keys(self, key, include=True):
-        # cas des frères et soeurs
+        for k in self.copy().keys():
         
-            if self[k]['object'] in ('group of properties',
-                'translation group', 'edit'):
+            # cas des frères et soeurs
+            if len(k) > 1 and k[1] == key[1] and self[k]['object'] in (
+                    'group of properties', 'translation group', 'edit'):
                 
                 # on vient d'ajouter un enregistrement au groupe,
                 # donc il y a lieu d'ajouter des boutons moins
@@ -507,7 +507,6 @@ class WidgetsDict(dict):
                         self[k]['authorized languages'].remove(language)
                         d["language menu to update"].append(k)
         
-        for k in iter_children_keys(self.copy(), c):
             # cas des descendants de la clé c :
             # uniquement pour les boutons plus, puisque les
             # groupes de traduction sont toujours en bout de
@@ -517,7 +516,7 @@ class WidgetsDict(dict):
             # au cours de l'itération (et on aurait sinon des
             # erreurs de type "RuntimeError: dictionary changed
             # size during iteration")
-            if self[key]['object'] == 'plus button':
+            if self[key]['object'] == 'plus button' and is_ancestor(c, k):
             
                 if self[k[1]]['object'] == 'group of properties' \
                         or self[k]['object'] in ('plus button', 'translation button') \
@@ -1003,12 +1002,13 @@ class WidgetsDict(dict):
         """
         if ( self[key]['node'] is None and self[key]['value'] in (None, '') ) \
             or self[key]['hidden M']:
-            return [1]
+            return [9999]
             # tout ce qui n'est pas un groupe de propriétés ou
             # un widget de saisie non masqué contenant une
             # valeur sera mis en vrac à la fin (puisque toutes
             # les autres clés auront une valeur de tri commençant
-            # par l'indice de la racine, c'est-à-dire 0.
+            # par l'indice de leur racine / onglet, supposée
+            # inférieure à 9999.
             
         l = re.findall(r'[0-9]+', str(key))
         l.reverse()
@@ -1390,9 +1390,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
 
         # on initialise le dictionnaire avec les groupes racines,
         # qui correspondent aux onglets du formulaire :
-        for label, key in mTemplateTabs.items():
-        
-            mDict = { key : mWidgetDictTemplate.copy() }
+        mDict = {}
+        for label, key in mTemplateTabs.items():       
+            mDict.update( { key : mWidgetDictTemplate.copy() } )
             mDict[key].update( {
                 'object' : 'group of properties',
                 'main widget type' : 'QGroupBox',
