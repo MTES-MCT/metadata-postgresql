@@ -489,7 +489,38 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[ark]['main widget type'], 'QLineEdit')
         dtk = search_keys(d, "dcat:theme", 'edit')[0]
         self.assertEqual(d[dtk]['main widget type'], 'QLineEdit')
-    
+
+    # modèle de formulaire avec onglets
+    def test_build_dict_9(self):
+        template = {
+            "dct:title":  { "order": 10, "tab name": "Général" },
+            "dcat:distribution": { "tab name": "Distribution" },
+            "dcat:distribution / dct:issued": {},
+            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:keyword" : {}
+            }
+        templateTabs = { "Général" : (0,), "Distribution" : (1,) }
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs
+            )
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertTrue(rdf_utils.is_ancestor((0,), ttk))
+        kwk = search_keys(d, "dcat:keyword", 'edit')[0]
+        self.assertTrue(rdf_utils.is_ancestor((0,), kwk))
+        dbk = search_keys(d, "dcat:distribution", 'group of properties')[0]
+        self.assertTrue(rdf_utils.is_ancestor((1,), dbk))
+        isk = search_keys(d, "dcat:distribution / dct:issued", 'edit')[0]
+        self.assertTrue(rdf_utils.is_ancestor((1,), isk))
+        self.assertTrue(rdf_utils.is_ancestor(dbk, isk))
+        auk = search_keys(d, "dcat:distribution / dct:accessURL", 'edit')[0]
+        self.assertTrue(rdf_utils.is_ancestor((1,), auk))
+        self.assertTrue(rdf_utils.is_ancestor(dbk, auk))
+        
+        
     # à compléter !
 
 
@@ -821,6 +852,28 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(len(lkwk), 2)
         self.assertEqual(sorted([d[lkwk[0]]['row'], d[lkwk[1]]['row']]), [0, 1])
         self.assertEqual(d[kwk_plus]['row'], 2)
+
+    # ajout/suppression de groupes de propriétés
+    # (dans un groupe de valeurs)
+    def test_wd_add_drop_4(self):
+        d = self.widgetsdict
+        dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
+        d.add(dbk_plus)
+        d.add(dbk_plus)
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ldbk = search_keys(d, 'dcat:distribution', 'group of properties')
+        self.assertEqual(len(ldbk), 3)
+        self.assertEqual(sorted([d[ldbk[0]]['row'], d[ldbk[1]]['row'], d[ldbk[2]]['row']]), [0, 1, 2])
+        self.assertEqual(d[dbk_plus]['row'], 3)
+
+        d.drop(ldbk[1])
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ldbk = search_keys(d, 'dcat:distribution', 'group of properties')
+        self.assertEqual(len(ldbk), 2)
+        self.assertEqual(sorted([d[ldbk[0]]['row'], d[ldbk[1]]['row']]), [0, 1])
+        self.assertEqual(d[dbk_plus]['row'], 2)
         
     # à compléter !
 
