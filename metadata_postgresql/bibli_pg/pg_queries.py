@@ -180,8 +180,36 @@ def query_get_categories():
             order_key,
             read_only,
             is_node,
-            data_type::text
+            data_type::text,
+            tab_name
             FROM z_metadata.meta_template_categories_full
             WHERE tpl_label = %s
+        """
+
+
+def query_template_tabs():
+    """Crée une requête d'import des onglets utilisés par un modèle.
+    
+    ARGUMENTS
+    ---------
+    Néant.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> cur.execute(query_template_tabs(), (tpl_label,))
+    
+    Avec :
+    - tpl_label (str) : nom du modèle.
+    """
+    return """
+        SELECT
+            meta_tab.tab_name
+            FROM z_metadata.meta_tab
+                LEFT JOIN z_metadata.template_categories
+                    ON meta_tab.tab_name = meta_template_categories.tab_name
+            WHERE meta_template_categories.tpl_label = %s
+            GROUP BY meta_tab.tab_name, meta_tab.tab_num
+            ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab_name
         """
 
