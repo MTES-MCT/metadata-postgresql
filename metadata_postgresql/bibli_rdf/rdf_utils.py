@@ -119,7 +119,10 @@ class WidgetsDict(dict):
         vides ;
         - la clé "value" est remise à la valeur par défaut ;
         - la clé "language value" vaudra language et "authorized languages"
-        vaudra langList (s'il y avait lieu de spécifier une langue).
+        vaudra langList (s'il y avait lieu de spécifier une langue) ;
+        - la clé "hidden" est réinitialisée (ne vaudra jamais True sauf si
+        la liste des langues autorisées ne contient qu'une langue). À noter que
+        "hidden M" est par contre conservée en l'état.
         """
         
         d = self[key].copy()
@@ -143,7 +146,9 @@ class WidgetsDict(dict):
             'language value' : language if d['language value'] else None,
             'authorized languages' : langList.copy() if ( d['authorized languages'] \
                                      and langList is not None ) else None,
-            'sources' : d['sources'].copy() if d['sources'] is not None else None   
+            'sources' : d['sources'].copy() if d['sources'] is not None else None,
+            'hidden' : len(langList) == 1 if ( langList is not None
+                and d['object'] == 'translation button' ) else None
             })
         
         return d
@@ -464,6 +469,8 @@ class WidgetsDict(dict):
             self.update( { k2: self.clean_copy(cm, language, mLangList) } )   
             self[k2]['row'] = r
             d['new keys'].append(k2)
+        else:
+            cm = None
     
         # mise à jour de l'indice mémorisé dans le bouton
         # pour le prochain enregistrement à ajouter
@@ -485,6 +492,11 @@ class WidgetsDict(dict):
                 ))
         
         for k in self.copy().keys():
+        # on fait l'itération sur une copie du
+        # dictionnaire, parce qu'on va ajouter des clés
+        # au cours de l'itération (et on aurait sinon des
+        # erreurs de type "RuntimeError: dictionary changed
+        # size during iteration")
         
             # cas des frères et soeurs
             if len(k) > 1 and k[1] == key[1] and self[k]['object'] in (
@@ -507,25 +519,28 @@ class WidgetsDict(dict):
                         self[k]['authorized languages'].remove(language)
                         d["language menu to update"].append(k)
         
-            # cas des descendants de la clé c :
+            # cas des descendants de la clé c ou de son double M :
             # uniquement pour les boutons plus, puisque les
             # groupes de traduction sont toujours en bout de
             # chaîne
-            # on fait l'itération sur une copie du
-            # dictionnaire, parce qu'on va ajouter des clés
-            # au cours de l'itération (et on aurait sinon des
-            # erreurs de type "RuntimeError: dictionary changed
-            # size during iteration")
-            if self[key]['object'] == 'plus button' and is_ancestor(c, k):
+            # on exclut les enregistrements qui n'ont pas
+            # vocation à alimenter des widget (pas de main
+            # widget type)
+            cr = c if is_ancestor(c, k) else (
+                cm if ( cm and is_ancestor(cm, k) ) else None
+                )
+            if cr and self[key]['object'] == 'plus button' \
+                and self[key]['main widget type']:
             
                 if self[k[1]]['object'] == 'group of properties' \
-                        or self[k]['object'] in ('plus button', 'translation button') \
-                        or self[k]['row'] == 0:
-                        # dans les groupes de propriétés, tout est dupliqué ;
-                        # dans les autres groupes, on ne garde que les boutons
-                        # et le groupe ou widget placé sur la première ligne
-                        # de la grille
-                    newkey = replace_ancestor(k, c, (n, key[1]))
+                    or self[k]['object'] in ('plus button', 'translation button') \
+                    or self[k]['row'] == 0 \
+                    or self[k]['label row'] == 0:
+                    # dans les groupes de propriétés, tout est dupliqué ;
+                    # dans les autres groupes, on ne garde que les boutons
+                    # et le groupe ou widget placé sur la première ligne
+                    # de la grille
+                    newkey = replace_ancestor(k, cr, (n, key[1]))
                     self.update( { newkey: self.clean_copy(k) } )
                     d['new keys'].append(newkey)
                     
@@ -2818,7 +2833,7 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
     if len(new_ancestor) == 3:
         raise ValueError("M keys aren't allowed as ancestor.")
 
-    t = re.sub(re.escape(str(old_ancestor)) + r"([)]*(:?[,]\s[']M['][)])?)$", str(new_ancestor) + '\g<1>', str(key))
+    t = re.sub(re.escape(str(old_ancestor)) + r"([)]*(:?[,]\s[']M['][)]+)?)$", str(new_ancestor) + '\g<1>', str(key))
 
     return eval(t)
     
