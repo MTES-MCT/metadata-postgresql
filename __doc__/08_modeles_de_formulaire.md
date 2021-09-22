@@ -105,6 +105,15 @@ Il faudra soit que toutes les conditions de l'un des ensembles du JSON soient v�
 À noter que les conditions ne valent qu'à l'ouverture de la fiche. L'utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d'application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n'appliquer aucun modèle, auquel cas le schéma des métadonnées communes s'appliquera tel quel.
 
 
+### Onglets des formulaires
+
+Sans que ce soit obligatoire en aucune façon, les modèles de formulaires peuvent répartir les catégories de métadonnées par onglets.
+
+Avant d'y affecter des catégories, les onglets doivent être définis dans la table `meta_tab`. Celle-ci contient deux champs :
+- `tab_name` pour le nom de l'onglet. Il est limité à 48 caractères et doit obligatoirement être renseigné ;
+- `tab_num` sert à ordonner les onglets. Les onglets sont affichés du plus petit numéro au plus grand (`NULL` à la fin), puis par ordre alphabétique en cas d''égalité. Les numéros n''ont pas à se suivre et peuvent être répétés. *NB. Tous les onglets de `meta_tab` ne seront évidemment pas présents dans tous les modèles, mais ceux qui le sont seront donc toujours présentés dans le même ordre quel que soit le modèle.*
+
+
 ### Catégories de métadonnées
 
 La table `meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/metadata_postgresql/bibli_rdf/modeles/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
@@ -166,9 +175,11 @@ Soit un modèle M, une catégorie de métadonnées C et une propriété P.
 - Sinon, si une valeur est renseignée pour la propriété P et la catégorie C dans `meta_categorie`, alors elle s'applique au modèle M pour la catégorie C et la propriété P.
 - Sinon, pour une catégorie commune, la valeur éventuellement prévue par le schéma SHACL s'appliquera au modèle M pour la catégorie C et la propriété P. Pour les catégories locales, des valeurs par défaut sont prévues sur les propriétés essentielles - par exemple des widgets `'QLineEdit'` seront utilisés si le type n'est spécifié ni dans `meta_template_categories` ni dans `meta_categorie`.
 
-Aux champs de paramétrage qui apparaissaient déjà dans `meta_categorie`, la table `meta_template_categories` ajoute un champ booléen `read_only` qui pourra valoir `True` si la catégorie doit être en lecture seule pour le modèle considéré. Il peut notamment être mis à profit lorsque des fiches de métadonnées sont co-rédigées par un service métier référent et l'administrateur de données, pour permettre à chacun de voir les informations saisies par l'autre, sans qu'il risque de les modifier involontairement (sauf à ce qu'il change de modèle, bien sûr, ce n'est pas un dispositif de verrouillage, seulement de l'aide à la saisie).
+Aux champs de paramétrage qui apparaissaient déjà dans `meta_categorie`, la table `meta_template_categories` ajoute deux champs optionnels :
+- un champ booléen `read_only` qui pourra valoir `True` si la catégorie doit être en lecture seule pour le modèle considéré. Il peut notamment être mis à profit lorsque des fiches de métadonnées sont co-rédigées par un service métier référent et l'administrateur de données, pour permettre à chacun de voir les informations saisies par l'autre, sans qu'il risque de les modifier involontairement (sauf à ce qu'il change de modèle, bien sûr, ce n'est pas un dispositif de verrouillage, seulement de l'aide à la saisie) ;
+- un champ `tab_name` qui permet de spécifier l'onglet (préalablement déclaré dans `meta_tab` dans lequel devra être placée la catégorie. Cette information n'est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple `'dcat:distribution / dct:issued'` ira nécessairement dans le même onglet que `'dcat:distribution'`). Pour celles-ci, si aucun onglet n'est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, si le modèle n'utilise explicitement aucun onglet, dans un onglet "Général".
 
-*NB. Pour les catégories de métadonnées communes imbriquées, il serait théoriquement attendu qu'un modèle fasse systématiquement apparaître tous les chemins intermédiaires (par exemple `'dcat:distribution'` et `'dcat:distribution / dct:license'` pour `'dcat:distribution / dct:license / rdfs:label'`) puisqu'ils devront figurer également dans le formulaire pour que la catégorie finale puisse être présentée à l'utilisateur. En pratique, toutefois, le plugin saura ajouter lui-même les chemins intermédiaires manquants, de même qu'il enlèvera d'ailleurs les chemins intermédiaires sans catégorie finale. Ainsi, l'administrateur pourra se contenter d'associer `'dcat:distribution / dct:license / rdfs:label'` à son modèle, sauf à avoir envie de renommer les catégories `'dcat:distribution'` et/ou `'dcat:distribution / dct:license'`, de leur ajouter un texte d'aide, etc.* 
+*NB. Pour les catégories de métadonnées communes imbriquées, il serait théoriquement attendu qu'un modèle fasse systématiquement apparaître tous les chemins intermédiaires (par exemple `'dcat:distribution'` et `'dcat:distribution / dct:license'` pour `'dcat:distribution / dct:license / rdfs:label'`) puisqu'ils devront figurer également dans le formulaire pour que la catégorie finale puisse être présentée à l'utilisateur. En pratique, toutefois, le plugin saura ajouter lui-même les chemins intermédiaires manquants, de même qu'il enlèvera les chemins intermédiaires sans catégorie finale. Ainsi, l'administrateur pourra se contenter d'associer `'dcat:distribution / dct:license / rdfs:label'` à son modèle, sauf à avoir envie de renommer les catégories `'dcat:distribution'` et/ou `'dcat:distribution / dct:license'`, de leur ajouter un texte d'aide, etc.* 
 
 
 ### Modèles pré-configurés
@@ -212,7 +223,9 @@ Concrètement, l'import du modèle de formulaire se fait en cinq temps :
 2. récupération sur le serveur PostgreSQL de la liste des modèles disponibles et de leurs conditions d'application → `templates`.
 3. sélection du modèle à utiliser parmi la liste → `tpl_label`.
 4. récupération sur le serveur PostgreSQL des catégories associées au modèle sélectionné avec leurs paramètres d'affichage → `categories`.
-5. mise au propre sous la forme d'un dictionnaire → `template`.
+5. mise au propre du modèle sous la forme d'un dictionnaire → `template`.
+6. récupération sur le serveur PostgreSQL de la liste des onglets du modèle → `tabs`.
+7. mise au propre de la liste des onglets sous la forme d'un dictionnaire → `templateTabs`.
 
 À l'ouverture de la fiche de métadonnées, le choix du modèle (étape 3) est automatique, mais les étapes 4 et 5 pourront être relancées par la suite, si l'utilisateur souhaite changer le modèle courant.
 
@@ -273,7 +286,6 @@ templateLabels = [t[0] for t in templates]
 
 ```
 
-
 ### Sélection automatique du modèle
 
 Cette étape détermine le modèle qui sera utilisé à l'ouverture initiale du formulaire. Elle mobilise la fonction `search_template()`, qui parcourt la liste des modèles (avec le résultat du filtre SQL / champ `sql_filter` de `meta_template`) en déterminant si les conditions d'usage portant sur les métadonnées (champ `md_conditions`) sont vérifiées, et renvoie le nom du modèle de plus haut niveau de priorité (champ `priority`) dont le filtre SQL ou les conditions sur les métadonnées sont satisfaites.
@@ -331,3 +343,35 @@ Concrètement, `template` est un dictionnaire dont la structure est similaire à
 Avec `build_template()`, toutes les clés possibles seront systématiquement présentes pour toutes les catégories, mais ce n'est pas obligatoire (la fonction `build_dict()` utilise systématiquement la méthode `get` pour interroger le formulaire).
 
 Le fichier [exemple_dict_modele_local.json](/metadata_postgresql/bibli_rdf/exemples/exemple_dict_modele_local.json) donne un exemple de `template` valide sérialisé en JSON.
+
+
+### Récupération des onglets associés au modèle retenu
+
+La liste des onglets est obtenue en exécutant `query_template_tabs()` avec le nom du modèle en paramètre.
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+    with conn.cursor() as cur:
+    
+        cur.execute(pg_queries.query_template_tabs(), (tpl_label,))
+        tabs = cur.fetchall()
+
+conn.close()
+
+```
+
+### Génération de *templateTabs*
+
+La fonction `build_template_tabs()` permet de transformer la liste brute `tabs` renvoyée par `query_template_tabs()` en un dictionnaire qui pourra être fourni en argument à la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#templatetabs--la-liste-des-onglets).
+
+```python
+
+templateTabs = template_utils.build_template_tabs(tabs)
+
+```
+
+`templateTabs` peut être égal à `None` si le modèle n'utilise pas d'onglets. Dans ce cas, `build_dict()` affectera toutes les catégories à un unique onglet nommé "Général".
