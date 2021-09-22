@@ -126,6 +126,44 @@ class TestTemplateUtils(unittest.TestCase):
         
         self.assertEqual([x[0] for x in tabs], ['O2', 'O4', 'O1'])
 
+    def test_query_template_tabs_2(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO z_metadata.meta_tab (tab_name, tab_num)
+                        VALUES ('O1', NULL), ('O2', 10), ('O3', 15), ('O4', 12) ;
+                    INSERT INTO z_metadata.meta_categorie
+                        (path, origin, cat_label) VALUES
+                        ('<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
+                            'local', 'Loval valide'),
+                        ('dct:title', 'shared', 'Commun valide'),
+                        ('dcat:distribution / dct:issued', 'shared', 'Commun composé')
+                        ;
+                    INSERT INTO z_metadata.meta_template (tpl_label)
+                        VALUES ('Template test') ;
+                    INSERT INTO z_metadata.meta_template_categories
+                        (tab_name, shrcat_path, loccat_path, tpl_label) VALUES
+                        ('O1', 'dct:title', NULL, 'Template test'),
+                        ('O2', NULL, '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
+                            'Template test'),
+                        ('O4', 'dcat:distribution / dct:issued', NULL, 'Template test') ;
+                    """)
+        
+                cur.execute(
+                    pg_queries.query_template_tabs(),
+                    ('Template test',)
+                    )
+                tabs = cur.fetchall()
+                
+                cur.execute('DROP EXTENSION metadata ; CREATE EXTENSION metadata')
+                # suppression des modèles pré-configurés
+        
+        conn.close()
+        
+        self.assertEqual([x[0] for x in tabs], ['O2', 'O1'])
+
 
     ### FONCTION build_template_tabs
     ### ----------------------------
