@@ -165,8 +165,8 @@ def build_template(categories):
                     'is mandatory' : c[10],
                     'order' : c[11],
                     'read only' : c[12],
-                    'data type' : c[13],
-                    'tab name': c[14]
+                    'data type' : c[14],
+                    'tab name': c[15]
                     }
             })
   
