@@ -92,7 +92,6 @@ widgetsdict.parent_widget(key)
 
 ```
 
-
 ### Widget masqué ?
 
 Certains widgets seront à masquer ou afficher selon les actions de l'utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu'une métadonnée peut être saisie au choix sous la forme d'un URI ou d'un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l'utilisateur ne décide pas de changer de forme.
@@ -105,7 +104,36 @@ widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
 
 ```
 
+
 ### Paramètres spécifiques aux widgets QGroupBox
+
+Deux cas doivent être distingués lorsque `'main widget type'` vaut `'QGroupBox'` : les onglets et les autres groupes.
+
+
+#### Onglets
+
+Les onglets sont reconnaissables au fait que la condition suivante est remplie :
+
+```python
+
+if rdf_utils.is_root(key):
+    ...
+
+```
+
+Ils correspondent aux onglets du formulaire. Contrairement à tous les autres widgets, ils n'auront donc pas vocation à être placés dans un QGridLayout (la partie [Placement dans la grille](#placement-dans-la-grille) ne s'applique pas à eux), mais devront être insérés en tant que pages dans le QTabWidget qui portera le formulaire. Le QTabWidget en question ne fait pas l'objet d'un enregistrement du dictionnaire et devra avoir été créé au préalable.
+
+Les libellés des onglets sont fournis par la clé `'label'` du dictionnaire interne.
+
+```python
+
+widgetsdict[key]['label']
+
+```
+
+#### Autres groupes
+
+Pour tous les autres groupes, c'est-à-dire ceux pour lesquels `rdf_utils.is_root(key)` renvoie `False`.
 
 - L'**étiquette** - paramètre `title` du QGroupBox - est fournie par la clé `'label'` du dictionnaire interne.
 
@@ -140,6 +168,7 @@ On pourra utiliser les valeurs par défaut suivantes :
 | Groupe de propriétés | `'group of properties'` | `'#958B62'` |
 | Groupe de valeurs | `'group of values'` | `'#5770BE'` |
 | Groupe de traduction | `'translation group'` | `'#FF8D7E'` |
+
 
 
 ### Paramètres spécifiques aux widgets QToolButton
@@ -307,7 +336,10 @@ widgetsdict[key]['main widget'].setPlaceholderText(widgetsdict[key]['placeholder
 Autant que possible - considérant la quantité de termes dans certains thésaurus - les QComboBox devraient afficher une ligne de saisie avec **auto-complétion**. Il est par contre important qu'ils **ne permettent pas d'entrer d'autres valeurs que celles des thésaurus**.
 
 
+
 ### Placement dans la grille
+
+*Les informations ci-après ne valent pas pour les onglets (cf. [Onglets](#onglets)).*
 
 Le nouveau widget doit être placé dans le QGridLayout associé à son parent.
 
@@ -359,8 +391,8 @@ columnSpan = 1 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is
 
 ```
 
-[↑ haut de page](#création-dun-nouveau-widget)
 
+[↑ haut de page](#création-dun-nouveau-widget)
 
 
 ## Widget annexe : grille
