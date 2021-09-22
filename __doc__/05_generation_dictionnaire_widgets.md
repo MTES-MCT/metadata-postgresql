@@ -16,23 +16,24 @@ Sources de données :
 | 1 | `shape` | rdflib.graph.Graph | oui |  | [→](#shape--le-schéma-shacl-des-métadonnées-communes) |
 | 2 | `vocabulary` | rdflib.graph.Graph | oui |  | [→](#vocabulary--la-compilation-des-thésaurus) |
 | 3 | `template` | dict | non | `None` | [→](#template--le-modèle-de-formulaire) |
-| 4 | `data` | dict | non | `None` | [→](#data--les-métadonnées-calculées) |
+| 4 | `templateTabs` | dict | non | `None` | [→](#templateTabs--la-liste-des-onglets) |
+| 5 | `data` | dict | non | `None` | [→](#data--les-métadonnées-calculées) |
 
 Paramètres utilisateurs :
 
 | Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
 | --- | --- | --- | --- | --- | --- |
-| 5 | `mode` | str | non | `'edit'` | [→](#mode) |
-| 6 | `readHideBlank` | bool | non | `True` | [→](#readhideblank) |
-| 7 | `hideUnlisted` | bool | non | `False` | [→](#hideunlisted) |
-| 8 | `language` | str | non | `'fr'` | [→](#language) |
-| 9 | `translation` | bool | non | `False` | [→](#translation) |
-| 10 | `langList` | list (str) | non | `['fr', 'en']` | [→](#langlist) |
-| 11 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
-| 12 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
-| 13 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
-| 14 | `valueLengthLimit` | int | non | `100` | [→](#valuelengthlimit) |
-| 15 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
+| 6 | `mode` | str | non | `'edit'` | [→](#mode) |
+| 7 | `readHideBlank` | bool | non | `True` | [→](#readhideblank) |
+| 8 | `hideUnlisted` | bool | non | `False` | [→](#hideunlisted) |
+| 9 | `language` | str | non | `'fr'` | [→](#language) |
+| 10 | `translation` | bool | non | `False` | [→](#translation) |
+| 11 | `langList` | list (str) | non | `['fr', 'en']` | [→](#langlist) |
+| 12 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
+| 13 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
+| 14 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
+| 15 | `valueLengthLimit` | int | non | `100` | [→](#valuelengthlimit) |
+| 16 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
 
 Tous les arguments sont décrits plus en détail dans la suite, ainsi que le résultat obtenu.
 
@@ -158,6 +159,25 @@ Les modèles de formulaires sont définis à l'échelle du service et stockés d
 La forme de `template` est proche de celle d'un dictionnaire de widgets, si ce n'est que ses clés sont des chemins SPARQL identifiant des catégories de métadonnées et ses contiennent moins de clés.
 
 Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `template`.
+
+
+### templateTabs : le liste des onglets
+
+`templateTabs` est un dictionnaire qui répertorie les onglets utilisés par le modèle de formulaire. Il peut valoir `None` en l'absence de modèle ou si le modèle ne répartit pas les catégories dans des onglets.
+
+S'il existe, sa structure est très simple : les clés sont les noms des modèles, les valeurs sont les futures clés correspondantes dans le dictionnaire de widgets.
+
+Par exemple :
+
+```python
+{
+    "Onglet n°1": (0,),
+    "Onglet n°2": (1,),
+    "Onglet n°3": (2,)
+}
+```
+
+Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `templateTabs`.
 
 
 ### data : les métadonnées calculées
