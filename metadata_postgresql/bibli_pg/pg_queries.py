@@ -209,6 +209,12 @@ def query_template_tabs():
                 LEFT JOIN z_metadata.meta_template_categories
                     ON meta_tab.tab_name = meta_template_categories.tab_name
             WHERE meta_template_categories.tpl_label = %s
+                AND (
+                    meta_template_categories.shrcat_path IS NOT NULL
+                        AND meta_template_categories.shrcat_path ~ '^[a-z]{1,10}[:][a-z0-9-]{1,25}$'
+                    OR meta_template_categories.shrcat_path IS NULL
+                        AND meta_template_categories.loccat_path ~ '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
+                    )
             GROUP BY meta_tab.tab_name, meta_tab.tab_num
             ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab_name
         """
