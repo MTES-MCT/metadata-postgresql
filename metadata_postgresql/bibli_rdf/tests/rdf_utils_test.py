@@ -521,7 +521,25 @@ class TestRDFUtils(unittest.TestCase):
         self.assertTrue(rdf_utils.is_ancestor(dbk, auk))
         e = check_rows(d)
         self.assertIsNone(e)    
+
+
+    # génération des tests d'aide sur les boutons
+    def test_build_dict_10(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            translation=True
+            )
+        for k, v in d.items():
+            with self.subTest(key=k):
+                if v['object'] == 'translation button':
+                    self.assertEqual(v['help text'], 'Ajouter une traduction')
+                if v['object'] == 'plus button':
+                    self.assertTrue(v['help text'].startswith('Ajouter un élément'))
         
+
+    
     # à compléter !
 
 
