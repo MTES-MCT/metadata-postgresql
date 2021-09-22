@@ -182,6 +182,14 @@ colored_svg = raw_svg.format(fill=color)
 
 ```
 
+- Le texte d'aide à afficher en infobulle sur le bouton se trouve dans la clé `text help` du dictionnaire.
+
+```python
+
+widgetsdict[key]['text help']
+
+```
+
 ### Paramètres spécifiques aux widgets de saisie
 
 - Lorsqu'elle existe, soit parce qu'elle était déjà renseignée dans la fiche de métadonnées, soit parce qu'une valeur par défaut est définie pour la catégorie considérée, la **valeur à afficher** dans le widget est fournie par la clé `'value'` du dictionnaire.
@@ -565,6 +573,17 @@ L'icône ![source_button.svg](/metadata_postgresql/icons/buttons/source_button.s
 [↑ haut de page](#création-dun-nouveau-widget)
 
 
+### Texte d'aide
+
+On pourra afficher en infobulle sur le bouton le texte suivant :
+
+```python
+
+'Sélection du thésaurus ou mode de saisie'
+
+```
+
+
 ### Widget masqué ?
 
 Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
@@ -641,6 +660,16 @@ Au lieu d'une icône, le QToolButton de sélection de la langue montre un texte 
 ```python
 
 widgetsdict[key]['language value']
+
+```
+
+### Texte d'aide
+
+On pourra afficher en infobulle sur le bouton le texte suivant :
+
+```python
+
+'Sélection de la langue de la métadonnée'
 
 ```
 
@@ -779,6 +808,16 @@ Soit `color` la couleur souhaitée pour le bouton et `raw_svg` le contenu du fic
 ```python
 
 colored_svg = raw_svg.format(fill=color)
+
+```
+
+### Texte d'aide
+
+On pourra afficher en infobulle sur le bouton le texte suivant :
+
+```python
+
+'Supprimer l'élément'
 
 ```
 
