@@ -1,5 +1,16 @@
 """
 Recette de template_utils et pg_queries.
+
+Les tests nécessite une connexion PostgreSQL (définie par
+input) pointant sur une base où :
+- l'extension metadata est installée ;
+- le schéma z_metadata_recette existe et contient les fonctions
+de la recette côté serveur, qui sera exécutée par l'un des tests.
+
+Il est préférable d'utiliser un super-utilisateur (commandes de
+création et suppression de table dans le schéma z_metadata,
+l'extension est désinstallée et réinstallée, etc.).
+
 """
 
 import re, uuid, unittest, json, psycopg2
@@ -12,9 +23,6 @@ from metadata_postgresql.bibli_rdf.rdf_utils import build_dict, load_vocabulary,
 from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import search_keys
 
 # connexion à utiliser pour les tests
-# -> l'extension metadata doit être installée sur la base
-# -> il est préférable d'utiliser un super-utilisateur (commandes de
-# création et suppression de table dans le schéma z_metadata)
 connection_string = "host={} port={} dbname={} user={} password={}".format(
     input('host (localhost): ') or 'localhost',
     input('port (5432): ') or '5432',
@@ -62,6 +70,129 @@ class TestTemplateUtils(unittest.TestCase):
                     "dct:publisher / foaf:name": "Institut national de l'information géographique et forestière (IGN-F)"
                 }
             }, 15)
+
+
+    ### EXECUTION de la recette PostgreSQL
+    ### ----------------------------------
+    
+    def test_pg_tests(self):
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    DROP EXTENSION METADATA ;
+                    CREATE EXTENSION METADATA ;
+                    SELECT * FROM z_metadata_recette.execute_recette() ;
+                    """)
+                errors = cur.fetchall()     
+        conn.close()  
+        self.assertEqual(errors, [])
+
+
+    ### FONCTION query_template_tabs
+    ### ----------------------------
+    
+    def test_query_template_tabs_1(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
+                # import des modèles pré-configurés
+                cur.execute("""
+                    INSERT INTO z_metadata.meta_tab (tab_name, tab_num)
+                        VALUES ('O1', NULL), ('O2', 10), ('O3', 15), ('O4', 12) ;
+                    UPDATE z_metadata.meta_template_categories
+                        SET tab_name = 'O1'
+                        WHERE shrcat_path = 'dct:title' AND tpl_label = 'Basique' ;
+                    UPDATE z_metadata.meta_template_categories
+                        SET tab_name = 'O2'
+                        WHERE shrcat_path = 'dct:description' AND tpl_label = 'Basique' ;
+                    UPDATE z_metadata.meta_template_categories
+                        SET tab_name = 'O4'
+                        WHERE shrcat_path = 'dct:temporal' AND tpl_label = 'Basique' ;
+                    """)
+        
+                cur.execute(
+                    pg_queries.query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                
+                cur.execute('DROP EXTENSION metadata ; CREATE EXTENSION metadata')
+                # suppression des modèles pré-configurés
+        
+        conn.close()
+        
+        self.assertEqual([x[0] for x in tabs], ['O2', 'O4', 'O1'])
+
+
+    ### FONCTION build_template_tabs
+    ### ----------------------------
+    
+    def test_build_template_tabs_1(self):
+        tabs = [('O2',), ('O4',), ('O1',)]
+        self.assertEqual(
+            template_utils.build_template_tabs(tabs),
+            { 'O2': (0,), 'O4': (1,), 'O1': (2,) }
+            )
+
+    # modèle sans onglets
+    def test_build_template_tabs_2(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
+                # import des modèles pré-configurés
+        
+                cur.execute(
+                    pg_queries.query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                
+                cur.execute('DROP EXTENSION metadata ; CREATE EXTENSION metadata')
+        
+        conn.close()
+        
+        self.assertIsNone(template_utils.build_template_tabs(tabs))
+
+    def test_build_template_tabs_3(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_metadata.meta_import_sample_template()')
+                # import des modèles pré-configurés
+                cur.execute("""
+                    INSERT INTO z_metadata.meta_tab (tab_name, tab_num)
+                        VALUES ('O1', NULL), ('O2', 10), ('O3', 15), ('O4', 12) ;
+                    UPDATE z_metadata.meta_template_categories
+                        SET tab_name = 'O1'
+                        WHERE shrcat_path = 'dct:title' AND tpl_label = 'Basique' ;
+                    UPDATE z_metadata.meta_template_categories
+                        SET tab_name = 'O2'
+                        WHERE shrcat_path = 'dct:description' AND tpl_label = 'Basique' ;
+                    UPDATE z_metadata.meta_template_categories
+                        SET tab_name = 'O4'
+                        WHERE shrcat_path = 'dct:temporal' AND tpl_label = 'Basique' ;
+                    """)
+        
+                cur.execute(
+                    pg_queries.query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                
+                cur.execute('DROP EXTENSION metadata ; CREATE EXTENSION metadata')
+        
+        conn.close()
+        
+        self.assertEqual(
+            template_utils.build_template_tabs(tabs),
+            { 'O2': (0,), 'O4': (1,), 'O1': (2,) }
+            )
 
 
     ### FONCTION query_is_relation_owner
@@ -275,16 +406,18 @@ class TestTemplateUtils(unittest.TestCase):
     def test_build_template_1(self):
         categories = [
             ('shared', 'dct:title', 'libellé', 'QLineEdit', None, None, None,
-                None, None, True, True, 0, True, False, 'string'),
+                None, None, True, True, 0, True, False, 'string', None),
             ('shared', 'dct:description', 'description', 'QTextEdit', 99, None,
-                None, None, None, False, False, 50, False, False, 'string'),
+                None, None, None, False, False, 50, False, False, 'string', None),
             ('shared', 'dct:modified', 'dernière modification', 'QDateEdit', None,
-                None, '2021-09-01', None, None, False, False, 90, False, False, 'string'),
+                None, '2021-09-01', None, None, False, False, 90, False, False,
+                'string', None),
             ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>', 'code ADL',
                 None, 30, 'code maison', None, '230-FG', '000-XX', True, False, 8,
-                False, False, None),
+                False, False, None, None),
             ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582ag>', 'ma date',
-                'QDateEdit', None, None, None, None, None, None, None, None, None, 'date')
+                'QDateEdit', None, None, None, None, None, None, None, None, None,
+                False, 'date', None)
             ]
         template = template_utils.build_template(categories)
         d = build_dict(Graph(), self.shape, self.vocabulary, template)
@@ -375,7 +508,7 @@ class TestTemplateUtils(unittest.TestCase):
         categories = [
             ('shared', 'dcat:distribution /dct:license/ rdfs:label',
                 None, None, None, None, None, None, None, None, None,
-                None, None, False, None)
+                None, None, False, None, None)
             ]
         template = template_utils.build_template(categories)
         self.assertTrue('dcat:distribution' in template)
@@ -388,7 +521,7 @@ class TestTemplateUtils(unittest.TestCase):
         categories = [
             ('shared', 'dcat:distribution /dct:license',
                 None, None, None, None, None, None, None, None,
-                None, None, None, True, None)
+                None, None, None, True, None, None)
             ]
         template = template_utils.build_template(categories)
         self.assertFalse('dcat:distribution' in template)
