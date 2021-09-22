@@ -1910,7 +1910,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                 'next child' : idx[mParent] + 1,
                 'hidden M' : mHideM,
                 'hidden' :  len(mVLangList) == 1 if multilingual else None,
-                'path' : mNPath
+                'path' : mNPath,
+                'help text': 'Ajouter une traduction' if multilingual \
+                    else 'Ajouter un élément « {} »'.format(t.get('label', None) or str(p['name']) or '')
                 } )
             
             idx[mParent] += 1
@@ -1982,6 +1984,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                 rowidx.update( { mWidget : 0 } )
                 mParent = mWidget
 
+
             for mValueBrut in values:
                 
                 # on considère que toutes les valeurs sont des Literal
@@ -2047,8 +2050,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                     'main widget type' : 'QToolButton',
                     'row' : rowidx[mParent],
                     'next child' : idx[mParent] + 1,
-                    'hidden' : len(mVLangList) == 1 if multilingual else None,
-                    'path' : meta
+                    'path' : meta,
+                    'help text' : 'Ajouter un élément « {} »'.format(t.get('label', ''))
                     } )
                 
                 idx[mParent] += 1
