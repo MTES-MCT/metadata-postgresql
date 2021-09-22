@@ -206,7 +206,7 @@ def query_template_tabs():
         SELECT
             meta_tab.tab_name
             FROM z_metadata.meta_tab
-                LEFT JOIN z_metadata.template_categories
+                LEFT JOIN z_metadata.meta_template_categories
                     ON meta_tab.tab_name = meta_template_categories.tab_name
             WHERE meta_template_categories.tpl_label = %s
             GROUP BY meta_tab.tab_name, meta_tab.tab_num
