@@ -11,7 +11,8 @@ import re, uuid, unittest, json
 from pathlib import Path
 
 from metadata_postgresql.bibli_rdf import rdf_utils, __path__
-from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, populate_widgets, search_keys, check_rows
+from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
+    populate_widgets, search_keys, check_rows, execute_pseudo_actions
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -984,10 +985,9 @@ class TestRDFUtils(unittest.TestCase):
 
     def test_wd_change_language_1(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        populate_widgets(d)
         
         a = d.add(self.ttk_plus)
-        populate_widgets(d)
+        execute_pseudo_actions(d, a)
         self.assertEqual(d[self.ttk]['language value'], 'fr')
         self.assertEqual(d[a["new keys"][0]]['language value'], 'en')
         self.assertEqual(d[self.ttk]['authorized languages'], ['fr', 'it'])
@@ -1017,7 +1017,6 @@ class TestRDFUtils(unittest.TestCase):
     # la nouvelle langue est identique à l'ancienne :
     def test_wd_change_language_4(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        populate_widgets(d)
         c = d.change_language(self.ttk, 'fr')
         self.assertEqual(c["language menu to update"], [])
         self.assertEqual(c["widgets to hide"], [])
@@ -1025,19 +1024,18 @@ class TestRDFUtils(unittest.TestCase):
     # cas d'une langue de fait non autorisée :
     def test_wd_change_language_5(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
-        populate_widgets(d)
         # modification manuelle de la langue
         d[self.ttk]['language value'] = 'es'
         d[self.ttk]['authorized languages'].append('es')
         d[self.ttk]['authorized languages'].sort()
         
         a1 = d.add(self.ttk_plus)
-        populate_widgets(d)
+        execute_pseudo_actions(d, a1)
         self.assertEqual(d[a1["new keys"][0]]['language value'], 'en')
         self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'fr', 'it'])
         self.assertEqual(d[self.ttk]['authorized languages'], ['es', 'fr', 'it'])
         a2 = d.add(self.ttk_plus)
-        populate_widgets(d)
+        execute_pseudo_actions(d, a2)
         self.assertEqual(d[a2["new keys"][0]]['language value'], 'fr')
         self.assertEqual(d[a2["new keys"][0]]['authorized languages'], ['fr', 'it'])
         self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'it'])
@@ -1210,7 +1208,7 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_parent_widget_2(self):
         self.assertEqual(
             self.widgetsdict.parent_widget((0,(0,))),
-            '< (0,) main widget (QGroupBox) >'
+            ['< (0,) main widget (QGroupBox) >', True, 0, None]
             )
 
 
@@ -1226,7 +1224,7 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_parent_2(self):
         self.assertEqual(
             self.widgetsdict.parent_grid((0,(0,))),
-            '< (0,) grid widget (QGridLayout) >'
+            ['< (0,) grid widget (QGridLayout) >', True, None, None]
             )
 
 
