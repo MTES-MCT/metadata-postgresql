@@ -591,7 +591,7 @@ Le bouton de sélection de la source est toujours positionné immédiatement à 
 ```python
 
 row = widgetsdict[key]['row']
-column = 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 1
+column = 2
 
 ```
 
@@ -720,7 +720,7 @@ Le bouton de sélection de la langue est toujours positionné immédiatement à 
 ```python
 
 row = widgetsdict[key]['row']
-column = 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 1
+column = 2
 
 ```
 
@@ -749,14 +749,6 @@ Un tel widget doit être créé dès lors que la condition suivante est vérifi�
 ```python
 
 widgetsdict[key]['has minus button']
-
-```
-
-Il devra cependant être masqué si le groupe de traduction ou groupe de valeurs ne contient qu'un élément, soit quand la condition suivante est remplie :
-
-```python
-
-widgetsdict[key]['hide minus button']
 
 ```
 
@@ -807,8 +799,7 @@ Le bouton "moins" est positionné sur la ligne de la zone de saisie, à droite d
 ```python
 
 row = widgetsdict[key]['row']
-column = ( 2 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 1 ) \
-    + ( 1 if widgetsdict[key]['multiple sources'] else 0 ) \
+column = 2 + ( 1 if widgetsdict[key]['multiple sources'] else 0 ) \
     + ( 1 if widgetsdict[key]['authorized languages'] else 0 )
 
 ```
@@ -855,11 +846,19 @@ On pourra afficher en infobulle sur le bouton le texte suivant :
 
 ### Widget masqué ?
 
-Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+Comme tous les autres widgets, le QToolButton du bouton moins doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
 
 ```python
 
 widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
+
+```
+
+Il devra également être masqué si le groupe de traduction ou groupe de valeurs ne contient qu'un élément, soit quand la condition suivante est remplie :
+
+```python
+
+widgetsdict[key]['hide minus button']
 
 ```
 
