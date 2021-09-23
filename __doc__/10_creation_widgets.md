@@ -742,21 +742,21 @@ widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M']
 
 ## Widget annexe : bouton "moins"
 
-Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs précédemment saisies.
+Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs précédemment saisies, à condition qu'il en reste au moins une.
 
-Un tel widget doit être créé dès lors que le widget appartient à un groupe de valeurs ou groupe de traduction, soit (pour information) quand :
-
-```python
-
-len(key) > 1 and widgetsdict[key[1]]['object'] in ('translation group', 'group of values')
-
-```
-
-Il ne devra cependant être affiché que si la condition suivante est vérifiée :
+Un tel widget doit être créé dès lors que la condition suivante est vérifiée :
 
 ```python
 
 widgetsdict[key]['has minus button']
+
+```
+
+Il devra cependant être masqué si le groupe de traduction ou groupe de valeurs ne contient qu'un élément, soit quand la condition suivante est remplie :
+
+```python
+
+widgetsdict[key]['hide minus button']
 
 ```
 
