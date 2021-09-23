@@ -88,7 +88,181 @@ def check_unchanged(metagraph, shape, vocabulary, language="fr", **args):
     
     return isomorphic(metagraph, g)
     
+
+def check_buttons(widgetsdict, populated=False):
+    """Vérifie la cohérence des boutons plus, moins et de traduction du dictionnaire.
     
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - populated (bool) : True si le dictionnaire a été peuplé de pseudo-widgets
+    avec la populate_widgets(). Dans ce cas, la fonction vérifie aussi que les
+    clés '... widget' des boutons sont remplies quand il le faut et seulement
+    dans ce cas.
+    
+    RESULTAT
+    --------
+    Si un problème est détecté, la fonction renvoie un dictionnaire recensant tous
+    les problèmes rencontrés. La clé est un numéro d'ordre. La valeur est un tuple
+    constitué de la clé de l'enregistrement concerné, de la nature du bouton et
+    d'une chaîne de caractère qui donne la nature du problème :
+    - 'should be hidden (keys)' : le bouton devrait être marqué comme masqué ;
+    - 'should not be hidden (keys)' : le bouton ne devrait pas être marqué comme masqué ;
+    - 'should have been created (keys)' : le bouton aurait dû être marqué comme à créer ;
+    - 'should not have been created (keys)' : le bouton n'aurait pas dû être marqué comme à créer.
+    
+    Dans le cas d'un dictionnaire rempli de pseudo-widgets :
+    - 'should be hidden (widget)' : le pseudo-widget aurait dû être masqué ;
+    - 'should not be hidden (widget)' : le pseudo-widget n'aurait pas dû être masqué ;
+    - 'should have been created (widget)' : le pseudo-widget aurait dû être créé ;
+    - 'should not have been created (widget)' : le pseudo-widget n'aurait pas dû être créé.
+    """
+    issues = {}
+    n = 0
+    
+    for k, v in widgetsdict.items():
+    
+        if rdf_utils.is_root(k):
+            continue
+    
+        if v['object'] in ('edit', 'group of properties') \
+            and widgetsdict[k[1]]['object'] in ('group of values', 'translation group'):
+            # widgets de saisie et groupe de propriétés dans des groupes valeur ou de traduction
+            
+            if widgetsdict.count_siblings(k) > 1:
+            # plus d'un enregistrement dans le groupe, il faut nécessairement
+            # un bouton moins visible
+                if not v['has minus button']:
+                    issues.update({ n: (k, 'minus button', 'should have been created (keys)') })
+                    n += 1
+                if v['hide minus button']:
+                    issues.update({ n: (k, 'minus button', 'should not be hidden (keys)') })
+                    n += 1
+                
+                if populated and not v['minus widget']:
+                    issues.update({ n: (k, 'minus button', 'should have been created (widget)') })
+                    n += 1
+                elif populated and not v['minus widget'][1] and not v['hidden M']:
+                    issues.update({ n: (k, 'minus button', 'should not be hidden (widget)') })
+                    n += 1
+        
+            else:
+            # un seul enregistrement dans le groupe, le bouton moins devrait exister
+            # mais être masqué
+                if not v['has minus button']:
+                    issues.update({ n: (k, 'minus button', 'should have been created (keys)') })
+                    n += 1
+                if not v['hide minus button']:
+                    issues.update({ n: (k, 'minus button', 'should be hidden (keys)') })
+                    n += 1
+                if populated and not v['minus widget']:
+                    issues.update({ n: (k, 'minus button', 'should have been created (widget)') })
+                    n += 1
+                elif populated and v['minus widget'][1]:
+                    issues.update({ n: (k, 'minus button', 'should be hidden (widget)') })
+                    n += 1
+                    
+            continue
+        
+        else:
+        # jamais de boutons moins sur les autres types d'objets
+        
+            if v['has minus button']:
+                issues.update({ n: (k, 'minus button', 'should not have been created (keys)') })
+                n += 1
+            if populated and v['minus widget']:
+                issues.update({ n: (k, 'minus button', 'should not have been created (widget)') })
+                n += 1
+
+  
+        if v['object'] in ('plus button', 'translation button'):
+        # boutons plus et boutons de traduction
+        
+            if v['object'] == 'plus button' and not widgetsdict[k[1]]['object'] == 'group of values':
+            # un bouton plus hors d'un groupe de valeurs n'aurait pas dû exister
+            
+                issues.update({ n: (k, v['plus button'], 'should not have been created (keys)') })
+                n += 1
+                
+                if populated and v['main widget']:
+                    issues.update({ n: (k, v['plus button'], 'should not have been created (widget)') })
+                    n += 1
+            
+            elif v['object'] == 'translation button' and not widgetsdict[k[1]]['object'] == 'translation group':
+            # un bouton de tranduction hors d'un groupe de traduction
+            # n'aurait pas dû exister
+            
+                issues.update({ n: (k, v['translation button'], 'should not have been created (keys)') })
+                n += 1
+                
+                if populated and v['main widget']:
+                    issues.update({ n: (k, v['translation button'], 'should not have been created (widget)') })
+                    n += 1
+            
+            elif widgetsdict[k[1]]['object'] == 'group of values':
+            # un bouton plus dans un groupe de valeurs devrait toujours être visible (s'il
+            # n'est pas dans une branche masquée)
+                if v['hidden']:
+                    issues.update({ n: (k, 'plus button', 'should not be hidden (keys)') })
+                    n += 1
+                if populated and not v['main widget'][1] and not v['hidden M']:
+                    issues.update({ n: (k, 'plus button', 'should not be hidden (widget)') })
+                    n += 1
+            
+            else:
+            # dans un groupe de traduction, le bouton plus est visible dès lors que les listes
+            # de langues autorisées contiennent au moins deux valeurs
+                c = widgetsdict[widgetsdict.child(k[1])]['authorized languages']
+                
+                if len(c) > 1:
+                    if v['hidden']:
+                        issues.update({ n: (k, 'translation button', 'should not be hidden (keys)') })
+                        n += 1
+                    if populated and not v['main widget'][1] and not v['hidden M']:
+                        issues.update({ n: (k, 'translation button', 'should not be hidden (widget)') })
+                        n += 1
+                        
+                else:
+                    if not v['hidden']:
+                        issues.update({ n: (k, 'translation button', 'should be hidden (keys)') })
+                        n += 1
+                    if populated and v['main widget'][1]:
+                        issues.update({ n: (k, 'translation button', 'should be hidden (widget)') })
+                        n += 1
+                        
+            continue
+   
+        if v['object'] == 'group of values':
+        # dans un groupe de valeur, le bouton plus devrait toujours avoir été créé
+        
+            if not any([widgetsdict[e]['object'] == 'plus button' 
+                for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
+                issues.update({ n: (k, 'plus button', 'should have been created (keys)') })
+                n += 1
+            
+            if populated and not any([widgetsdict[e]['object'] == 'plus button' and widgetsdict[e]['main widget']
+                for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
+                issues.update({ n: (k, 'plus button', 'should have been created (widget)') })
+                n += 1
+                
+        elif v['object'] == 'translation group':
+        # dans un groupe de traduction, le bouton de traduction devrait toujours avoir été créé
+        
+            if not any([widgetsdict[e]['object'] == 'translation button' 
+                for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
+                issues.update({ n: (k, 'translation button', 'should have been created (keys)') })
+                n += 1
+            
+            if populated and not any([widgetsdict[e]['object'] == 'translation button' and widgetsdict[e]['main widget']
+                for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
+                issues.update({ n: (k, 'translation button', 'should have been created (widget)') })
+                n += 1
+                
+    if issues:
+        return issues
+    
+   
 
 def check_rows(widgetsdict):
     """Check if row keys of given widget dictionnary are consistent.
@@ -195,30 +369,225 @@ def populate_widgets(widgetsdict):
     RESULTAT
     --------
     Pas de valeur renvoyée.
-    """
-    for k, v in widgetsdict.items():
     
-        widgetsdict[k]['main widget'] = '< {} main widget ({}) >'.format(k, widgetsdict[k]['main widget type'])
+    Les widgets sont représentés par des listes :
+    [0] est une chaîne de caractères identifiant le widget ;
+    [1] est un booléen indiquant si le widget est visible ;
+    [2] est le numéro de la ligne du widget dans la grille (None pour les
+    QGridLayout) ;
+    [3] est la valeur affichée dans le widget, le cas échéant.
+    
+    Les clés actions contiennent des listes de chaînes de caractères, qui
+    ne contiennent en fait qu'un identifiant représentant toutes les
+    actions.
+    
+    Les menus sont des listes :
+    [0] est une chaîne de caractères identifiant le menu ;
+    [1] est la liste des items du menu ;
+    [2] est le nom de l'item actuellement sélectionné.
+    """
+    for k in widgetsdict.keys(): 
+        populate_widgets_key(widgetsdict, k)
+ 
+
+def populate_widgets_key(widgetsdict, key):
+    """Populate one key of a WidgetsDict with false widgets.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - key (tuple) : la clé de widgetsdict pour laquelle on veut générer
+    les widgets.
+    
+    RESULTAT
+    --------
+    Pas de valeur renvoyée.
+    
+    Cf. populate_widgets() pour les modalités de génération des pseudo-widgets.
+    """
+    v = widgetsdict[key]
+    
+    for e in ('main widget', 'minus widget', 'language widget', 'language menu',
+        'language actions', 'label widget', 'grid widget', 'switch source widget',
+        'switch source menu', 'switch source actions'):
+        if v[e] is not None:
+            raise ValueError('Widget should not exist already : key {}, {}.'.format(key, e))
+    
+    v['main widget'] = [
+        '< {} main widget ({}) >'.format(key, v['main widget type']),
+        ( not v['hidden'] and not v['hidden M'] ) or False,
+        v['row'],
+        v['value']
+        ]
+    
+    if v['has minus button']:
+        v['minus widget'] = [
+            '< {} minus widget (QToolButton) >'.format(key),
+            ( not v['hidden'] and not v['hidden M'] and not v['hide minus button'] ) or False,
+            v['row'],
+            None
+            ]
+    
+    if v['authorized languages']:
+        v['language widget'] = [
+            '< {} language widget (QToolButton) >'.format(key),
+            ( not v['hidden'] and not v['hidden M'] ) or False,
+            v['row'],
+            None
+            ]
+        v['language menu'] = [
+            '< {} language menu (QMenu) >'.format(key),
+            v['authorized languages'],
+            v['language value']
+            ]
+        v['language actions'] = ['< {} language actions (QAction) >'.format(key)]
         
-        if len(k) > 1 and widgetsdict[k[1]]['object'] in ('translation group', 'group of values'):
-            widgetsdict[k]['minus widget'] = '< {} minus widget (QToolButton) >'.format(k)
+    if v['label'] and v['object']=='edit':
+        v['label widget'] = [
+            '< {} label widget (QLabel) >'.format(key),
+            ( not v['hidden'] and not v['hidden M'] ) or False,
+            v['row'],
+            None
+            ]
+
+    if 'group' in v['object']:
+        v['grid widget'] = [
+            '< {} grid widget (QGridLayout) >'.format(key),
+            ( not v['hidden'] and not v['hidden M'] ) or False,
+            None,
+            None
+            ]
+
+    if v['multiple sources']:
+        v['switch source widget'] = [
+            '< {} switch source widget (QToolButton) >'.format(key),
+            ( not v['hidden'] and not v['hidden M'] ) or False,
+            v['row'],
+            None
+            ]
+        v['switch source menu'] = [
+            '< {} switch source menu (QMenu) >'.format(key),
+            v['sources'],
+            v['current source']
+            ]
+        v['switch source actions'] = ['< {} switch source actions (QAction) >'.format(key)]   
+
+
+def execute_pseudo_actions(widgetsdict, actions):
+    """Exécution de pseudo-actions sur un dictionnaire de widgets.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict. Il doit avoir été préalablement peuplé par
+    populate_widgets().
+    - actions (dict) : un dictionnaire d'actions, tels ceux renvoyés
+    par les méthodes add(), drop(), etc.
+    
+    RESULTAT
+    --------
+    Pas de valeur renvoyée, la fonction agit sur les clés
+    'actions', 'menu' et 'widget' des dictionnaires internes
+    de widgetsdict.
+    """
+    for a, l in actions.items():
+    
+        if a == "concepts list to update":
+            pass
+    
+        elif a == "widgets to show":
+            for w in l:
+                w[1] = True
+                
+        elif a == "widgets to hide":
+            for w in l:
+                w[1] = False
+                
+        elif a == "widgets to move":
+            for t in l:
+                t[1][2] = t[2]
+                
+        elif a == "language menu to update":
+            for k in l:
+                widgetsdict[k]['language menu'][1] = widgetsdict[k]['authorized languages']
+                widgetsdict[k]['language menu'][2] = widgetsdict[k]['language value']
+                
+        elif a == "switch source menu to update":
+            for k in l:
+                widgetsdict[k]['switch source menu'][1] = widgetsdict[k]['sources']
+                widgetsdict[k]['switch source menu'][2] = widgetsdict[k]['current source']
+
+        elif a == "new keys":
+            for k in l:
+                populate_widgets_key(widgetsdict, k)
+                
+        elif a == "widgets to delete":
+            lb = l.copy()
+            for k, v in widgetsdict.items():
+                for w in lb:
+                    for e in ('main widget', 'minus widget', 'language widget', 'label widget',
+                        'grid widget', 'switch source widget'):
+                        if v[e] == w:
+                            v[e] = None
+                            lb.remove(w)
+            if lb:
+                raise RuntimeError("Could not delete the following widgets : {}.".format(lb))
         
-        if widgetsdict[k]['authorized languages']:
-            widgetsdict[k]['language widget'] = '< {} language widget (QToolButton) >'.format(k)
-            widgetsdict[k]['language menu'] = '< {} language menu (QMenu) >'.format(k)
-            widgetsdict[k]['language actions'] = ['< {} language actions (QAction) >'.format(k)]
-            
-        if widgetsdict[k]['label'] and widgetsdict[k]['object']=='edit':
-            widgetsdict[k]['label widget'] = '< {} label widget (QLabel) >'.format(k)
+        elif a == "actions to delete":
+            lb = l.copy()
+            for k, v in widgetsdict.items():
+                for w in lb:
+                    for e in ('language actions', 'switch source actions'):
+                        if v[e] == [w]:
+                            v[e] = None
+                            lb.remove(w)
+            if lb:
+                raise RuntimeError("Could not delete the following actions : {}.".format(lb))
+                            
+        
+        elif a == "menus to delete":
+            lb = l.copy()
+            for k, v in widgetsdict.items():
+                for w in lb:
+                    for e in ('language menu', 'switch source menu'):
+                        if v[e] == w:
+                            v[e] = None
+                            lb.remove(w)
+            if lb:
+                raise RuntimeError("Could not delete the following menus : {}.".format(lb))
 
-        if 'group' in widgetsdict[k]['object']:
-            widgetsdict[k]['grid widget'] = '< {} grid widget (QGridLayout) >'.format(k)
+        elif a == "widgets to empty":
+            for w in l:
+                w[3] = None
 
-        if widgetsdict[k]['multiple sources']:
-            widgetsdict[k]['switch source widget'] = '< {} switch source widget (QToolButton) >'.format(k)
-            widgetsdict[k]['switch source menu'] = '< {} switch source menu (QMenu) >'.format(k)
-            widgetsdict[k]['switch source actions'] = ['< {} switch source actions (QAction) >'.format(k)]
-            
+        else:
+            raise ValueError('Unknow action : "{}".'.format(a))
 
 
+def write_pseudo_widget(widgetsdict, key, value):
+    """Mime la saisie par l'utilisateur d'une valeur dans un pseudo-widget de saisie.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - key (tuple) : la clé de widgetsdict pour laquelle on saisir une valeur.
+    Si elle ne pointe pas sur un widget de saisie, la fonction renverra une
+    erreur.
+    - value (str) : la valeur à saisir.
+    
+    RESULTAT
+    --------
+    Pas de valeur renvoyée.
+    """
+    if not widgetsdict[key]['object'] == 'edit':
+        raise rdf_utils.ForbiddenOperation("This widget isn't meant for writing ({}).".format(
+            widgetsdict[key]['object']))
+    
+    if not widgetsdict[key]['main widget']:
+        raise RuntimeError("Couldn't find any widget to write in.")
+    
+    widgetsdict[key]['main widget'][3] = value
+    
 
