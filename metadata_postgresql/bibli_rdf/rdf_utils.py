@@ -267,6 +267,10 @@ class WidgetsDict(dict):
         if n < 2:
             raise ForbiddenOperation("This is the last of its kind, you can't destroy it !")
         
+        keym = (key[0], key[1]) if len(key) == 3 else (key[0], key[1], 'M')
+        if not keym in self:
+            keym = None
+        
         for k in self.keys():
             
             # cas des descendants (+ l'enregistrement cible et,
@@ -274,7 +278,8 @@ class WidgetsDict(dict):
             # NB : on ne cherche pas les descendants dans un groupe de
             # traduction puisqu'il ne peut pas y en avoir
             if (g == 'group of values' and is_ancestor(key, k)) \
-                    or (len(k) > 1 and k[0] == key[0] and k[1] == key[1]):
+                or (g == 'group of values' and keym and is_ancestor(keym, k)) \
+                or (len(k) > 1 and k[0] == key[0] and k[1] == key[1]):
             
                 l.append(k)
                 
