@@ -231,8 +231,8 @@ class WidgetsDict(dict):
         sont supprimés du dictionnaire.
         - Les clés row des enregistrements de même parent qui étaient
         placés en dessous dans la grille sont mises à jour en conséquence.
-        S'il ne reste qu'une valeur, la clé 'has minus button' de
-        l'enregistrement indiquera désormais False.
+        S'il ne reste qu'une valeur, la clé 'hide minus button' de
+        l'enregistrement indiquera désormais True.
         
         EXEMPLES
         --------
@@ -340,7 +340,7 @@ class WidgetsDict(dict):
                     if n == 2:
                         # le bouton moins doit être masqué s'il ne
                         # reste qu'une seule valeur
-                        self[k]['has minus button'] = False
+                        self[k]['hide minus button'] = True
                         
                         w = self[k]['minus widget']
                         if w:
@@ -510,8 +510,8 @@ class WidgetsDict(dict):
                 # on vient d'ajouter un enregistrement au groupe,
                 # donc il y a lieu d'ajouter des boutons moins
                 # s'ils n'étaient pas déjà là
-                if not self[k]['has minus button']:
-                    self[k]['has minus button'] = True                     
+                if self[k]['hide minus button']:
+                    self[k]['hide minus button'] = False
                     w = self[k]['minus widget']
                     if w:
                         d["widgets to show"].append(w)
@@ -804,7 +804,7 @@ class WidgetsDict(dict):
                     for e in ('main widget', 'grid widget', 'label widget', 'minus widget',
                       'language widget', 'switch source widget'):                
                         w = self[k][e]
-                        if w and (e != 'minus widget' or self[k]['has minus button']):
+                        if w and (e != 'minus widget' or not self[k]['hide minus button']):
                             d["widgets to show"].append(w)
                             
                      
@@ -816,6 +816,8 @@ class WidgetsDict(dict):
                         w = self[k][e]
                         if w:
                             d["widgets to hide"].append(w)
+                            # peut contenir des boutons déjà masqués du fait de 'hidden'
+                            # ou 'hide minus button'.
                         
 
         
@@ -1192,9 +1194,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
     le label), le widget QLabel associé.
     - 'minus widget' : pour les propriétés qui admettent plusieurs valeurs ou qui, de fait, en ont,
     (concrètement celles pour lesquelles la clé "has minus button" vaut True), widget QButtonTool [-]
-    permettant de supprimer les widgets. Un tel widget doit être créé pour tout élément appartenant
-    à un groupe de traduction ou un groupe de valeurs, mais ne sera affiché que si "has minus button"
-    vaut True.
+    permettant de supprimer les widgets.
     - 'language widget' : pour certains widgets "edit" (concrètement, ceux dont 'authorized languages'
     n'est pas vide), widget pour afficher/sélectionner la langue de la métadonnée. Les 'languages
     widget' n'auront vocation à être affiché que si le mode "traduction" est actif, soit un 
@@ -1255,9 +1255,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
     lieu (cf. 'language widget').
     - 'is mandatory'* : booléen indiquant si la métadonnée doit obligatoirement être renseignée.
     - 'has minus button' : booléen indiquant si un bouton de suppression du widget doit être
-    affiché (cf. minus widget). Sur le principe, un bouton de suppression doit apparaître dès qu'il
-    y a effectivement plusieurs valeurs saisies ou en cours de saisie pour une catégorie (un pour
-    chacune).
+    créé (cf. minus widget). Sur le principe, ce sera le cas dès qu'une catégorie admet plusieurs
+    valeurs ou traductions, ou qu'il y a effectivement plusieurs valeurs saisies (un bouton pour
+    chaque valeur).
+    - 'hide minus button' : booléen qui vaudra True si le bouton moins doit être masqué parce
+    qu'il ne reste qu'un widget dans le groupe de valeurs ou groupe de traduction.
     - 'regex validator pattern' : pour un widget "edit", une éventuelle expression régulière que la
     valeur est censée vérifier. Pour usage par un QRegularExpressionValidator.
     - 'regex validator flags' : flags associés à 'regex validator pattern', le cas échéant.
@@ -1376,6 +1378,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
             'input mask' : None,
             'is mandatory' : None,
             'has minus button' : None,
+            'hide minus button': None,
             'regex validator pattern' : None,
             'regex validator flags' : None,
             'type validator' : None,
@@ -1719,7 +1722,9 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                         'row' : rowidx[mParent],
                         'label' : mLabel,
                         'help text' : mHelp,
-                        'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
+                        'has minus button' : mode == 'edit' and ( multiple or len(values) > 1 ),
+                        'hide minus button': len(values) <= 1 if ( mode == 'edit' and ( multiple or len(values) > 1 ) ) \
+                            else None,
                         'multiple values' : multiple,
                         'node kind' : mKind,
                         'class' : p['class'],
@@ -1874,7 +1879,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                         ) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None) or ( int(p['min']) > 0 if p['min'] else False ),
-                    'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
+                    'has minus button' : mode == 'edit' and ( ( multilingual and translation and mVLangList and len(mVLangList) > 1 )
+                        or multiple or len(values) > 1 ),
+                    'hide minus button' : len(values) <= 1 if ( mode == 'edit' and (
+                        ( multilingual and translation and mVLangList and len(mVLangList) > 1 ) or multiple or len(values) > 1 ) ) \
+                        else None,
                     'regex validator pattern' : str(p['pattern']) if p['pattern'] else None,
                     'regex validator flags' : str(p['flags']) if p['flags'] else None,
                     'default value' : mDefault,
@@ -2029,7 +2038,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                     'language value' : mLanguage,
                     'is mandatory' : t.get('is mandatory', None),
                     'multiple values' : multiple,
-                    'has minus button' : ( len(values) > 1 and mode == 'edit' ) or False,
+                    'has minus button' : mode == 'edit' and ( multiple or len(values) > 1 ),
+                    'hide minus button': len(values) <= 1 if ( mode == 'edit' and ( multiple or len(values) > 1 ) ) else None,
                     'default value' : t.get('default value', None),
                     'node kind' : "sh:Literal",
                     'data type' : mType,
@@ -2176,6 +2186,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                     'data type' : mType,
                     'multiple values' : False,
                     'has minus button' : ( len(dpv[p]) > 1 and mode == 'edit' ) or False,
+                    'hide minus button': False if ( len(dpv[p]) > 1 and mode == 'edit' ) else None,
                     'subject' : mParentNode,
                     'predicate' : p,
                     'path' : p.n3(nsm),
