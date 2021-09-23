@@ -168,7 +168,8 @@ def pseudo_form(widgetsDict):
                    + ( v['label'] or '' )
                    + '_' * ( 55 - l - c * 4 )
                    + ( ' ••• ' if v['multiple sources'] else '_' * 5 )
-                   + ( '_ - ' if v['has minus button'] else '_' * 4)
+                   + ( '_ - ' if v['has minus button'] \
+                       and not v['hide minus button'] else '_' * 4)
                    + '_' + ' ' +  ' |' * c )
 
         if 'edit' == v['object']:
@@ -210,7 +211,7 @@ def pseudo_form(widgetsDict):
             else:
                 e += 5
                 
-            if v['has minus button']:
+            if v['has minus button'] and not v['hide minus button']:
                 o += '  -'
             else:
                 e += 3
