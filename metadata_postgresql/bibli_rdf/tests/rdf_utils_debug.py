@@ -262,15 +262,203 @@ def check_buttons(widgetsdict, populated=False):
     if issues:
         return issues
     
-   
 
-def check_rows(widgetsdict):
+def check_hidden_branches(widgetsdict, populated=False):
+    """Vérifie que les branches à masquer sont correctement masquées.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - populated (bool) : True si le dictionnaire a été peuplé de pseudo-widgets
+    avec la populate_widgets(). Dans ce cas, la fonction vérifie aussi que les
+    clés '... widget' sont remplies comme il le faut.
+    
+    RESULTAT
+    --------
+    Si un problème est détecté, la fonction renvoie un dictionnaire recensant tous
+    les problèmes rencontrés. La clé est un numéro d'ordre. La valeur est un tuple
+    constitué de [0] la clé de l'enregistrement concerné, [1] la nature de
+    l'objet concerné, [2] une chaîne de caractère qui donne la nature du problème :
+    - "members of hidden branches should be hidden M" : l'enregistrement devrait
+    être marqué comme masqué (cas du descendant d'une branche masquée) ;
+    - "can't hide M this type of object outside of an hidden branch" : les groupes
+    de valeurs, groupes de traduction et boutons ne sont pas supposés être masqués
+    s'ils ne sont pas dans une branche masquée ;
+    - "roots can't be hidden M" : les enregistrements racines (onglets) ne peuvent
+    pas être masqués ;
+    - "hidden M but no M twin" : l'enregistrement ne devrait pas
+    être marqué comme masqué (cas d'un enregistrement masqué de bon type, mais
+    qui n'a pas de double M) ;
+    - "both M twins are hidden M" : l'enregistrement et son double M sont tous
+    deux masqués (et n'appartiennent pas à une branche masquée) ;
+    - "none of the M twins is hidden M" : l'enregistrement et son double M sont
+    deux visibles.
+    
+    Dans le cas d'un dictionnaire rempli de pseudo-widgets :
+    - 'should be hidden (widget)' : le pseudo-widget aurait dû être masqué ;
+    - 'should not be hidden (widget)' : le pseudo-widget n'aurait pas dû être masqué ;
+    - "value should have been cleaned (widget)" : les valeurs renseignés dans les
+    widgets de saisie des racines de branches masquées sont supposées être effacées.
+    """
+    issues = {}
+    n = 0
+    hidden = []
+    visible = []
+    
+    for k, v in widgetsdict.items():
+    
+        if v['main widget type'] is None:
+            continue
+        
+        if any([rdf_utils.is_ancestor(a, k) for a in hidden]):
+        # cas du descendant d'une branche déjà identifiée
+        # comme masquée
+            if not v['hidden M']:
+                issues.update({ n: (k, v['object'], "members of hidden branches should be hidden M") })
+                n += 1
+                
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and v[e][1]:
+                        issues.update({ n: (k, e, 'should be hidden (widget)') })
+                        n += 1
+
+            continue
+
+        if not v['object'] in ('group of properties', 'edit'):
+        # cas d'un enregistrement qui ne peut pas être la racine d'une
+        # branche masquée
+            if v['hidden M']:
+                issues.update({ n: (k, v['object'], "can't hide M this type of object outside of an hidden branch") })
+                n += 1
+            
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and not v['hidden'] \
+                        and not (e == 'minus widget' and v['hide minus button']) \
+                        and not v[e][1]:
+                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        n += 1
+  
+            continue
+        
+        if rdf_utils.is_root(k):
+        # cas d'un enregistrement racine (onglet)
+            if v['hidden M']:
+                issues.update({ n: (k, v['object'], "roots can't be hidden M") })
+                n += 1
+                
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and not v['hidden'] \
+                        and not (e == 'minus widget' and v['hide minus button']) \
+                        and not v[e][1]:
+                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        n += 1
+                        
+            continue
+            
+        km = (k[0], k[1], 'M') if len(k) == 2 else (k[0], k[1])
+        
+        if not km in widgetsdict:
+        # enregistrement sans double M
+            if v['hidden M']:
+                issues.update({ n: (k, v['object'], "hidden M but no M twin") })
+                n += 1
+                
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and not v['hidden'] \
+                        and not (e == 'minus widget' and v['hide minus button']) \
+                        and not v[e][1]:
+                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        n += 1
+                        
+            continue
+            
+        if km in hidden:
+        # le double M est déjà identifié comme masqué
+            if v['hidden M']:
+                issues.update({ n: (k, v['object'], "both M twins are hidden M") })
+                n += 1
+                
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and not v['hidden'] \
+                        and not (e == 'minus widget' and v['hide minus button']) \
+                        and not v[e][1]:
+                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        n += 1
+                        
+            continue
+            
+        if km in visible:
+        # le double M est déjà identifié comme non masqué
+        
+            if not v['hidden M']:
+                issues.update({ n: (k, v['object'], "none of the M twins is hidden M") })
+                n += 1
+                
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and v[e][1]:
+                        issues.update({ n: (k, e, 'should be hidden (widget)') })
+                        n += 1
+                
+                if v[e] and v['main widget'][3] is not None:
+                # NB : on pourrait restreindre le test aux widgets de saisie
+                # mais les autres ne sont pas supposés contenir de valeur
+                # non plus, donc autant en profiter pour tester
+                    issues.update({ n: (k, v['object'], "value should have been cleaned (widget)") })
+                    n += 1
+                
+            continue
+            
+        if v['hidden M']:
+            hidden.append(k)
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and v[e][1]:
+                        issues.update({ n: (k, e, 'should be hidden (widget)') })
+                        n += 1
+                
+                if v[e] and v['main widget'][3] is not None:
+                    issues.update({ n: (k, v['object'], "value should have been cleaned (widget)") })
+                    n += 1
+                    
+        else:
+            visible.append(k)
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e] and not v['hidden'] \
+                        and not (e == 'minus widget' and v['hide minus button']) \
+                        and not v[e][1]:
+                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        n += 1
+
+    if issues:
+        return issues
+
+
+def check_rows(widgetsdict, populated=False):
     """Check if row keys of given widget dictionnary are consistent.
 
     ARGUMENTS
     ---------
     - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
     fonction build_dict.
+    - populated (bool) : True si le dictionnaire a été peuplé de pseudo-widgets
+    avec la populate_widgets(). Dans ce cas, la fonction vérifie aussi que les
+    clés '... widget' sont remplies comme il le faut.
     
     RESULTAT
     --------
@@ -286,9 +474,17 @@ def check_rows(widgetsdict):
     sans M),
     - 'unknown parent' (le parent n'est pas référencé dans le dictionnaire ou 
     n'a pas encore été traité),
-    - 'row on hidden object' (valeur non affichée mais avec un numéro de ligne),
+    - 'row on phantom object' (enregistrement sans widget, mais avec un numéro
+    de ligne),
     - 'label row but no label' (ligne pour l'étiquette alors qu'il n'y a pas
     d'étiquette).
+    
+    Dans le cas d'un dictionnaire rempli de pseudo-widgets :
+    - "x widget row doesn't match with key 'row'" : la ligne du pseudo-widget
+    est différente de celle du dictionnaire (x est remplacé par le type du
+    widget considéré).
+    - "label widget row doesn't match with keys 'label row' or 'row'" : la
+    ligne du pseudo-widget d'étiquette est différente de celle du dictionnaire.
     
     EXEMPLES
     --------
@@ -313,7 +509,7 @@ def check_rows(widgetsdict):
             
         if c['main widget type'] is None:
             if c['row']:
-                issues.update( { n : (k, 'row on hidden object') } )
+                issues.update( { n : (k, 'row on phantom object') } )
             continue
                 
         if c['row'] is None:
@@ -338,12 +534,21 @@ def check_rows(widgetsdict):
                 issues.update( { n : (k, 'already affected (label row)') } )
                 n += 1
                 
-            idx[k[1]].append(c['label row'])
-            
+            idx[k[1]].append(c['label row'])            
             
         if c['row'] in idx[k[1]]:
             issues.update( { n : (k, 'already affected') } )
             n += 1
+            
+        if populated and c['label widget'] \
+            and not c['label widget'][2] == ( c['label row'] or c['row'] ):
+            issues.update( { n : (k, "label widget row doesn't match with keys 'label row' or 'row'") } )
+            n += 1
+        
+        for e in ('main widget', 'minus widget', 'language widget', 'switch source widget'):
+            if populated and c[e] and not c[e][2] == c['row']:
+                issues.update( { n : (k, "{} row doesn't match with key 'row'".format(e)) } )
+                n += 1
             
         for x in range(c['row span'] or 1):
             idx[k[1]].append(c['row'] + x)
@@ -447,7 +652,7 @@ def populate_widgets_key(widgetsdict, key):
         v['label widget'] = [
             '< {} label widget (QLabel) >'.format(key),
             ( not v['hidden'] and not v['hidden M'] ) or False,
-            v['row'],
+            v['label row'] or v['row'],
             None
             ]
 
