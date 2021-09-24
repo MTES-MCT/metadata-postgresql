@@ -357,40 +357,13 @@ widgetsdict.parent_grid(key)
 
 ```
 
-Son placement vertical (paramètre *row* de la méthode addWidget) est donné par la clé `'row'` du dictionnaire interne.
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
 
 ```python
 
-row = widgetsdict[key]['row']
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(key, 'main widget')
 
 ```
-
-La hauteur du widget (paramètre `row span`) est fournie par la clé `'row span'` du dictionnaire interne. Cette clé n'étant renseignée que pour les widgets QTextEdit, on pourra utiliser une valeur par défaut de `1` pour tous les autres.
-
-```python
-
-rowSpan = widgetsdict[key]['row span'] or 1
-
-```
-
-*Le placement horizontal (paramètre `column`) et la largeur du widget (paramètre `column span`) ne sont pas explicitement définis par le dictionnaire à ce stade, mais pourraient l'être à l'avenir.*
-
-D'une manière générale, `column` vaudra `0`, sauf pour un widget de saisie tel qu'une étiquette est placée sur la même ligne. Dans ce cas, `column` vaut `1`.
-
-```python
-
-column = 1 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 0
-
-```
-
-`columnSpan` est ajusté de manière à ce que le widget principal (groupe ou widget de saisie) et l'éventuelle étiquette occupent toujours deux colonnes.
-
-```python
-
-columnSpan = 1 if widgetsdict[key]['label'] and widgetsdict[key]['label row'] is None else 2
-
-```
-
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
@@ -469,20 +442,13 @@ widgetsdict.parent_grid(key)
 
 ```
 
-Son placement vertical (paramètre `row` de la méthode addWidget) est donné par :
-- la clé `'label row'` si elle n'est pas vide. Cela correspond au cas où le label doit être positionné au-dessus de la zone de saisie ;
-- sinon la clé `'row'`. Dans ce cas le label et la zone de saisie sont toujours placés sur la même ligne.
-
-Le paramètre `column` vaut toujours 0.
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
 
 ```python
 
-row = widgetsdict[key]['label row'] or widgetsdict[key]['row']
-column = 0
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(key, 'label widget')
 
 ```
-
-*Le paramètre `column span` n'est pas défini par le dictionnaire à ce stade, mais pourrait l'être à l'avenir.*
 
 
 ### Texte d'aide
@@ -588,14 +554,13 @@ widgetsdict.parent_grid(key)
 
 Le bouton de sélection de la source est toujours positionné immédiatement à droite de la zone de saisie.
 
+Concrètement, les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
+
 ```python
 
-row = widgetsdict[key]['row']
-column = 2
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(key, 'switch source widget')
 
 ```
-
-Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
 
 ### Icône
@@ -717,14 +682,13 @@ widgetsdict.parent_grid(key)
 
 Le bouton de sélection de la langue est toujours positionné immédiatement à droite de la zone de saisie. Il n'y a pas de conflit possible avec les boutons de sélection de source, car ceux-là ne peuvent apparaître que sur des objets de type *IRI* ou *BlankNode*, alors que spécifier la langue n'est possible que pour les objets de type *Literal*.
 
+Concrètement, les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
+
 ```python
 
-row = widgetsdict[key]['row']
-column = 2
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(key, 'language widget')
 
 ```
-
-Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
@@ -796,15 +760,13 @@ widgetsdict.parent_grid(key)
 
 Le bouton "moins" est positionné sur la ligne de la zone de saisie, à droite du bouton de sélection de la source / de la langue s'il y en a un, sinon immédiatement à droite de la zone de saisie. À noter que, par construction, il ne peut jamais y avoir à la fois un bouton de sélection de la langue et un bouton de sélection de la source.
 
+Concrètement, les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
+
 ```python
 
-row = widgetsdict[key]['row']
-column = 2 + ( 1 if widgetsdict[key]['multiple sources'] else 0 ) \
-    + ( 1 if widgetsdict[key]['authorized languages'] else 0 )
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(key, 'minus widget')
 
 ```
-
-Il n'y a a priori pas lieu de spécifier les paramètres `row span` et `column span`.
 
 ### Icône
 
