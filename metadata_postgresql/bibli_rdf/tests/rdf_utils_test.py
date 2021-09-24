@@ -57,6 +57,40 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict) 
 
 
+    ### FONCTION WidgetsDict.widget_placement
+    ### -------------------------------------
+    
+    def test_wd_widget_placement_1(self):
+        d = self.widgetsdict
+        k = search_keys(d, 'dct:title', 'translation group')
+        self.assertEqual(
+            d.widget_placement(k[0], 'main widget'),
+            (0, 0, 1, 2)
+            )
+        k = search_keys(d, 'dct:description', 'edit')
+        self.assertEqual(
+            d.widget_placement(k[0], 'main widget'),
+            (0, 0, d[k[0]]['row span'], 2)
+            )
+        self.assertEqual(
+            d.widget_placement(k[0], 'language widget'),
+            (0, 2, 1, 1)
+            )
+        self.assertEqual(
+            d.widget_placement(k[0], 'minus widget'),
+            (0, 3, 1, 1)
+            )
+        k = search_keys(d, 'dcat:distribution / dct:license', 'edit')
+        self.assertEqual(
+            d.widget_placement(k[0], 'switch source widget'),
+            (d[k[0]]['row'], 2, 1, 1)
+            )
+        self.assertEqual(
+            d.widget_placement(k[0], 'label widget'),
+            (d[k[0]]['row'], 0, 1, 1)
+            )
+
+
     ### FONCTION WidgetsDict.group_kind
     ### -------------------------------
     
