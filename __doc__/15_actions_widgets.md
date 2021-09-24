@@ -183,11 +183,11 @@ Soit :
 
 ### Mise à jour du dictionnaire des widgets
 
-Quand l'utilisateur sélectionne une nouvelle langue dans le menu, il faudra commencer par exécuter la commande de mise à jour du dictionnaire (méthode `change_language()`) :
+Quand l'utilisateur sélectionne une nouvelle langue `new_language` dans le menu, il faudra commencer par exécuter la commande de mise à jour du dictionnaire (méthode `change_language()`) :
 
 ```python
 
-r = widgetsdict.change_language(key, language, langList)
+r = widgetsdict.change_language(key, new_language, langList)
 
 ```
 
