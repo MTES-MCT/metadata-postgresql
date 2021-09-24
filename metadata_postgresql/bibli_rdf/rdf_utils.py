@@ -1074,6 +1074,56 @@ class WidgetsDict(dict):
         raise RuntimeError("Unknown group kind for key {}.".format(key))
 
 
+    def widget_placement(self, key, kind):
+        """Renvoie les paramètres de placement du widget dans la grille.
+        
+        ARGUMENTS
+        ---------
+        - key (tuple) : clé du dictionnaire de widgets.
+        - kind (str) : nature du widget considéré : 'main widget',
+        'minus widget', 'switch source widget', 'language widget',
+        'label widget'.
+        
+        RESULTAT
+        --------
+        Un tuple avec :
+        [0] l'indice de la ligne (row) ;
+        [1] l'indice de la colonne (column) ;
+        [2] le nombre de lignes occupées (row span) ;
+        [3] le nombre de colonnes occupées (column span).
+        
+        La fonction renvoie None si la nature de widget donnée en
+        argument n'est pas une valeur reconnue.
+        """
+        
+        if kind == 'main widget' and 'group' in self[key]['object']:
+            return (self[key]['row'], 0, 1, 2)
+            
+        if kind == 'main widget' and 'button' in self[key]['object']:
+            return (self[key]['row'], 0, 1, 1)
+            
+        if kind == 'main widget' and self[key]['object'] == 'edit':
+            rowSpan = self[key]['row span'] or 1
+            column = 1 if self[key]['label'] and self[key]['label row'] is None else 0
+            columnSpan = 1 if self[key]['label'] and self[key]['label row'] is None else 2
+            return (self[key]['row'], column, rowSpan, columnSpan)
+            
+        if kind == 'label widget':
+            row = self[key]['label row'] if self[key]['label row'] is not None \
+                else self[key]['row']
+            columnSpan = 2 if self[key]['label row'] is not None else 1
+            return (row, 0, 1, columnSpan)
+            
+        if kind == 'minus widget':
+            column = 2 + ( 1 if self[key]['multiple sources'] else 0 ) \
+                + ( 1 if self[key]['authorized languages'] else 0 )
+            return (self[key]['row'], column, 1, 1)
+        
+        if kind in ('language widget', 'switch source widget'):
+            return (self[key]['row'], 2, 1, 1)
+  
+
+
 def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
     data=None, mode='edit', readHideBlank=True, hideUnlisted=False,
     language="fr", translation=False, langList=['fr', 'en'],
@@ -3030,7 +3080,7 @@ def metagraph_from_file(filepath, format=None):
     return g
     
 
-def iter_children_keys(widgetdict, key):
+def iter_children_keys(widgetsdict, key):
     """Generator on keys of given record children.
     
     ARGUMENTS
@@ -3043,7 +3093,7 @@ def iter_children_keys(widgetdict, key):
     --------
     Un générateur sur les clés des enregistrements du dictionnaire dont
     key est la clé parente, qui pourra être appelé ainsi :
-    >>> for k in iter_children_keys(widgetdict, key):
+    >>> for k in iter_children_keys(widgetsdict, key):
     ...     [do whatever]
     
     EXEMPLES
@@ -3051,12 +3101,12 @@ def iter_children_keys(widgetdict, key):
     >>> for k in rdf_utils.iter_children_keys(d, (0,)):
     ...     print(k)
     """
-    for k in widgetdict.keys():
+    for k in widgetsdict.keys():
         if len(k) > 1 and k[1] == key:
             yield k
 
 
-def iter_siblings_keys(widgetdict, key, include=False):
+def iter_siblings_keys(widgetsdict, key, include=False):
     """Generator on keys of given record siblings.
     
     ARGUMENTS
@@ -3071,7 +3121,7 @@ def iter_siblings_keys(widgetdict, key, include=False):
     --------
     Un générateur sur les enregistrements du dictionnaire de même
     parent que key, qui pourra être appelé ainsi :
-    >>> for k in iter_siblings_keys(widgetdict, key):
+    >>> for k in iter_siblings_keys(widgetsdict, key):
     ...     [do whatever]
     
     EXEMPLES
@@ -3080,7 +3130,7 @@ def iter_siblings_keys(widgetdict, key, include=False):
     ...     print(k)
     """
     if len(key) > 1:
-        for k in widgetdict.keys():
+        for k in widgetsdict.keys():
             if len(k) > 1 and k[1] == key[1] \
                 and (include or not k == key):
                 yield k
