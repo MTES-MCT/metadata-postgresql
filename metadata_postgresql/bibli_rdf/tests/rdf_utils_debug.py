@@ -541,7 +541,8 @@ def check_rows(widgetsdict, populated=False):
             n += 1
             
         if populated and c['label widget'] \
-            and not c['label widget'][2] == ( c['label row'] or c['row'] ):
+            and not c['label widget'][2] == ( c['label row'] \
+                if c['label row'] is not None else c['row'] ):
             issues.update( { n : (k, "label widget row doesn't match with keys 'label row' or 'row'") } )
             n += 1
         
@@ -652,7 +653,7 @@ def populate_widgets_key(widgetsdict, key):
         v['label widget'] = [
             '< {} label widget (QLabel) >'.format(key),
             ( not v['hidden'] and not v['hidden M'] ) or False,
-            v['label row'] or v['row'],
+            v['label row'] if v['label row'] is not None else v['row'],
             None
             ]
 
