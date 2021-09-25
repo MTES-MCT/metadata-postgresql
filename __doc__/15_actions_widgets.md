@@ -52,7 +52,10 @@ Le résultat, ici `r`, est un dictionnaire à cinq clés :
 - `"widgets to move"` fournit une liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a ajouté un widget au-dessus d'eux dans la grille - il faut à présent modifier la position :
     - `[0]` est la grille concernée (QGridLayout).
     - `[1]` est le widget lui-même (QWidget).
-    - `[2]` est le nouveau numéro de ligne/valeur du paramètre `row` pour le widget dans la grille.
+    - `[2]` est le nouveau numéro de ligne du widget dans la grille / valeur du paramètre `row` de la méthode `addWidget()`.
+    - `[3]` est le numéro de colonne (inchangé) du widget dans la grille / valeur du paramètre `column` de la méthode `addWidget()`.
+    - `[4]` est le nombre (inchangé) de lignes occupées par le widget dans la grille / valeur du paramètre `rowSpan` de la méthode `addWidget()`.
+    - `[5]` est le nombre (inchangé) de colonnes occupées par le widget dans la grille / valeur du paramètre `columnSpan` de la méthode `addWidget()`.
     
     *Concrètement, cela concerne systématiquement et exclusivement le bouton plus ou bouton de traduction lui-même.*
     
@@ -114,7 +117,10 @@ Le résultat, ici `r`, est un dictionnaire à sept clés :
 - `"widgets to move"` fournit une liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a supprimé un widget antérieurement positionné au-dessus d'eux dans la grille - il faut à présent modifier la position :
     - `[0]` est la grille concernée (QGridLayout).
     - `[1]` est le widget lui-même (QWidget).
-    - `[2]` est le nouveau numéro de ligne/valeur du paramètre `row` pour le widget dans la grille.
+    - `[2]` est le nouveau numéro de ligne du widget dans la grille / valeur du paramètre `row` de la méthode `addWidget()`.
+    - `[3]` est le numéro de colonne (inchangé) du widget dans la grille / valeur du paramètre `column` de la méthode `addWidget()`.
+    - `[4]` est le nombre (inchangé) de lignes occupées par le widget dans la grille / valeur du paramètre `rowSpan` de la méthode `addWidget()`.
+    - `[5]` est le nombre (inchangé) de colonnes occupées par le widget dans la grille / valeur du paramètre `columnSpan` de la méthode `addWidget()`.
 
 
 ## Boutons de sélection de la source
