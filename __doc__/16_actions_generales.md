@@ -2,6 +2,8 @@
 
 Sont décrites ici les actions que l'utilisateur peut réaliser dans la partie fixe de l'interface du plugin. Pour les interactions de l'utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md).
 
+[Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation)
+
 ## Mode lecture, mode édition
 
 ### Effet sur le formulaire
@@ -144,7 +146,7 @@ Concrètement, l'activation ou la désactivation du mode traduction impliquera d
 
 Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md).
 
-Le formulaire peut ensuite être recréé à partir du nouveau dictionnaire, selon les mêmes modalités que le mode traduction soit actif ou non.
+Le formulaire peut ensuite être regénéré à partir du nouveau dictionnaire, selon les mêmes modalités que le mode traduction soit actif ou non (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
 
 ### Caractéristiques du bouton
 
@@ -153,24 +155,103 @@ Ce bouton ne doit être actif qu'en mode édition.
 Il utilise l'icône [translation.svg](/metadata_postgresql/icons/general/translation.svg) :
 ![translation.svg](/metadata_postgresql/icons/general/translation.svg)
 
+### Initialisation
+
+Ce paramètre pourra être systématiquement sauvegardé dans le fichier `QGIS3.ini`, et initialisé à l'activation du mode édition à partir de la valeur récupérée dans les fichiers de configuration (ou `False` à défaut).
+
 
 ## Choix de la trame de formulaire
 
 ### Effets
 
-### Caractéristiques du bouton
+Le modèle de formulaire détermine les catégories de métadonnées affichées dans le formulaire et la manière dont elles sont présentées - cf [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md).
+
+Dès lors que des modèles sont disponibles, c'est-à-dire que `templateLabels` n'est pas `None` ou une liste vide (cf. [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md), étape [Récupération de la liste des modèles](/__doc__/08_modeles_de_formulaire.md#récupération-de-la-liste-des-modèles)), l'utilisateur doit avoir la possibilité de basculer à tout moment d'un modèle pré-défini à l'autre ou de ne pas appliquer de modèle du tout.
+
+Dans ce dernier cas, on aurait :
+
+```python
+
+template = None
+templateTabs = None
+
+```
+
+Sinon `template` et `templateTabs` devront être générés à partir du nom du modèle sélectionné (`tpl_label`), en suivant la méthode décrite dans [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md#récupération-de-la-liste-des-modèles) (étape [Récupération des catégories associées au modèle retenu](/__doc__/08_modeles_de_formulaire.md#récupération-des-catégories-associées-au-modèle-retenu) et suivantes).
+
+Dans tous les cas, il faudra réexécuter `build_dict()` avec les nouveaux paramètres pour `template` et `templateTabs`, puis recréer le formulaire à partir du dictionnaire de widgets actualisé ainsi obtenu.
+
+### Caractéristiques du widget
+
+Le widget de sélection du modèle pourra être soit un QComboBox soit un QToolButton similaire aux boutons de sélection de la source du formulaire (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source)).
+
+Les valeurs disponibles sont les noms de modèles listés par `templateLabels`, auxquelles ont ajoutera un item `'Aucun modèle'` (ou autre nom similaire).
+
+Si `templateLabels` est `None` ou une liste vide, il n'y a pas lieu d'afficher le widget. `template` et `templateTabs` vaudront simplement toujours `None`.
+
+D'autant que de besoin, le bouton utilise l'icône [template.svg](/metadata_postgresql/icons/general/template.svg) :
+![template.svg](/metadata_postgresql/icons/general/template.svg)
+
+### Initialisation
+
+La démarche à suivre à l'ouverture d'une fiche de métadonnées, est décrite dans [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin). On commencera par récupérer les paramètres `preferedTemplate` et `enforcePreferedTemplate` dans les fichiers de configuration, si tant est qu'ils soient présents.
 
 
 ## Langue principale des métadonnées
 
 ### Effets
 
-### Caractéristiques du bouton
+La langue principale de métadonnées correspond au paramètre utilisateur `language` que prennent en entrée de nombreuses fonctions et méthodes de [rdf_utils.py](/metadata_postgresql/bibli_rdf/rdf_utils.py).
+
+Hors mode traduction, toutes les métadonnées saisies qui ne soient pas des dates, nombres, URL ou autres types qui ne sont pas supposés avoir une langue seront présumées être dans cette langue. C'est aussi dans cette langue que seront affichées les valeurs issues des thésaurus (autant que possible, car les thésaurus ne contiennent pas de traductions pour toutes les langues imaginables).
+
+Lorsque l'utilisateur modifie la langue principale, il est nécessaire de regénérer le dictionnaire de widgets avec la nouvelle valeur de `language` (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
+
+### Caractéristiques du widget
+
+Le widget de choix de la langue principale pourra être soit un QComboBox soit un QToolButton similaire aux boutons de sélection de la langue du formulaire (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue)). Dans les deux cas, les valeurs disponibles sont les langues listées par le paramètre utilisateur `langList`.
+
+### Initialisation
+
+Le paramètre `language` pourra être systématiquement sauvegardé dans le fichier `QGIS3.ini`, et initialisé à l'activation du plugin à partir de la valeur récupérée dans les fichiers de configuration.
+
+Un point important est que `language` doit toujours être l'une des langues listées par le paramètre utilisateur `langList`. Si ce n'est pas le cas avec les valeurs issues des fichiers de configuration, on pourra soit ajouter `language` à `langList`, soit choisir pour `language` une des valeurs effectives de `langList` (sous réserve que ce dernier soit renseigné). Et si aucun de ces paramètres n'est défini, on pourra utiliser les mêmes valeurs par défaut que celles de la fonction `build_dict()`, à savoir `'fr'` pour `language` et `['fr', 'en']` pour `langList`. 
 
 
 ## Import de métadonnées depuis un fichier
 
 ### Effets
+
+Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées depuis un fichier. L'import ne fonctionnera que si les métadonnées sont encodées dans un format RDF et il ne donnera un résulat concluant que si elles respectent les profils DCAT, DCAT-AP ou GeoDCAT, ou le profil GeoDCAT étendu mis en oeuvre par le plugin.
+
+L'import est réalisé via la fonction `rdf_utils.metagraph_from_file()` :
+
+```python
+
+try:
+    metagraph = rdf_utils.metagraph_from_file(filepath, format)
+except:
+    # notamment si ce n'était pas du RDF 
+    ...
+
+```
+
+*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées, parmi `"turtle"`, `"json-ld"`, `"xml"`, `"n3"`, `"nt"`, `"trig"`. Ces deux paramètres sont à spécifier par l'utilisateur.*
+
+Si le format n'est pas déterminé, la fonction est généralement capable de le déduire de l'extension du fichier (sinon elle renverra une erreur). Il serait donc admissible de ne pas le demander et se contenter de :
+
+```python
+
+try:
+    metagraph = rdf_utils.metagraph_from_file(filepath)
+except:
+    # notamment si ce n'était pas du RDF ou
+    # si le format n'a pas pu être deviné
+    ...
+
+```
+
+Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
 
 ### Caractéristiques du bouton
 
@@ -179,20 +260,64 @@ Ce bouton ne doit être actif qu'en mode édition.
 Il utilise l'icône [import.svg](/metadata_postgresql/icons/general/import.svg) :
 ![import.svg](/metadata_postgresql/icons/general/import.svg)
 
+Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats disponibles.
+
 
 ## Export des métadonnées dans un fichier
 
 ### Effets
+
+Cette fonctionnalité permet d'exporter une sérialisation RDF de `metagraph` dans un fichier.
+
+Elle fait appel à la fonction `rdf_utils.export_metagraph()`.
+
+```python
+
+try:
+    rdf_utils.export_metagraph(metagraph, shape, filepath, format)
+except:
+    ...
+
+```
+
+*`metagraph` est le graphe des métadonnées (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes)), `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)), `filepath` est le chemin complet de la destination, `format` est le format RDF d'export. Les deux derniers paramètres sont à spécifier par l'utilisateur.*
+
+Le contrôle d'erreur n'est pas aussi essentiel ici que pour l'import, mais on préférera être prudent. Un échec à l'export ne mérite pas un plantage du plugin.
+
+Les formats autorisés varient selon le contenu de `metagraph`. Pour obtenir la liste, on fera appel à la fonction `rdf_utils.available_formats()` :
+
+```python
+
+exportFormats = rdf_utils.available_formats(metagraph, shape)
+
+```
+
+C'est bien `metagraph` qui est exporté et non le contenu (potentiellement non sauvegardé) du formulaire.
 
 ### Caractéristiques du bouton
 
 Ce bouton utilise l'icône [export.svg](/metadata_postgresql/icons/general/export.svg) :
 ![import.svg](/metadata_postgresql/icons/general/export.svg)
 
+Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats autorisés.
+
 
 ## Réinitialisation
 
 ### Effets
+
+Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par un graphe vide.
+
+On utilisera la commande suivante :
+
+```python
+
+metagraph = rdf_utils.metagraph_from_pg_description('', shape)
+
+```
+*`shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)).*
+
+Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
 
 ### Caractéristiques du bouton
 
@@ -200,3 +325,4 @@ Ce bouton ne doit être actif qu'en mode édition.
 
 Il utilise l'icône [empty.svg](/metadata_postgresql/icons/general/empty.svg) :
 ![empty.svg](/metadata_postgresql/icons/general/empty.svg)
+
