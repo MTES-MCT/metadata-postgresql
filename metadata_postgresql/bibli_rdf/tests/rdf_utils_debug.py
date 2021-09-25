@@ -102,7 +102,7 @@ def check_buttons(widgetsdict, populated=False):
     dans ce cas.
     
     RESULTAT
-    --------
+    --------    
     Si un problème est détecté, la fonction renvoie un dictionnaire recensant tous
     les problèmes rencontrés. La clé est un numéro d'ordre. La valeur est un tuple
     constitué de la clé de l'enregistrement concerné, de la nature du bouton et
@@ -117,6 +117,9 @@ def check_buttons(widgetsdict, populated=False):
     - 'should not be hidden (widget)' : le pseudo-widget n'aurait pas dû être masqué ;
     - 'should have been created (widget)' : le pseudo-widget aurait dû être créé ;
     - 'should not have been created (widget)' : le pseudo-widget n'aurait pas dû être créé.
+    
+    NB. Cette fonction est faite pour des dictionnaires construits pour le mode édition.
+    Il n'est pas supposé y avoir de boutons plus et moins en mode lecture.
     """
     issues = {}
     n = 0
@@ -182,22 +185,22 @@ def check_buttons(widgetsdict, populated=False):
             if v['object'] == 'plus button' and not widgetsdict[k[1]]['object'] == 'group of values':
             # un bouton plus hors d'un groupe de valeurs n'aurait pas dû exister
             
-                issues.update({ n: (k, v['plus button'], 'should not have been created (keys)') })
+                issues.update({ n: (k, 'plus button', 'should not have been created (keys)') })
                 n += 1
                 
                 if populated and v['main widget']:
-                    issues.update({ n: (k, v['plus button'], 'should not have been created (widget)') })
+                    issues.update({ n: (k, 'plus button', 'should not have been created (widget)') })
                     n += 1
             
             elif v['object'] == 'translation button' and not widgetsdict[k[1]]['object'] == 'translation group':
             # un bouton de tranduction hors d'un groupe de traduction
             # n'aurait pas dû exister
             
-                issues.update({ n: (k, v['translation button'], 'should not have been created (keys)') })
+                issues.update({ n: (k, 'translation button', 'should not have been created (keys)') })
                 n += 1
                 
                 if populated and v['main widget']:
-                    issues.update({ n: (k, v['translation button'], 'should not have been created (widget)') })
+                    issues.update({ n: (k, 'translation button', 'should not have been created (widget)') })
                     n += 1
             
             elif widgetsdict[k[1]]['object'] == 'group of values':
@@ -235,16 +238,32 @@ def check_buttons(widgetsdict, populated=False):
    
         if v['object'] == 'group of values':
         # dans un groupe de valeur, le bouton plus devrait toujours avoir été créé
+        # ... sauf s'il contient des traductions hors mode traduction
         
-            if not any([widgetsdict[e]['object'] == 'plus button' 
-                for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
-                issues.update({ n: (k, 'plus button', 'should have been created (keys)') })
-                n += 1
+            c = widgetsdict.child(k)
             
-            if populated and not any([widgetsdict[e]['object'] == 'plus button' and widgetsdict[e]['main widget']
-                for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
-                issues.update({ n: (k, 'plus button', 'should have been created (widget)') })
-                n += 1
+            if widgetsdict[c]['one per language']:
+            
+                for e in rdf_utils.iter_children_keys(widgetsdict, k):
+                    if widgetsdict[e]['object'] == 'plus button':
+                        issues.update({ n: (e, 'plus button', 'should not have been created (keys)') })
+                        n += 1
+                
+                        if populated and widgetsdict[e]['main widget']:
+                            issues.update({ n: (e, 'plus button', 'should not have been created (widget)') })
+                            n += 1
+            
+            else:
+        
+                if not any([widgetsdict[e]['object'] == 'plus button' 
+                    for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
+                    issues.update({ n: (k, 'plus button', 'should have been created (keys)') })
+                    n += 1
+                
+                if populated and not any([widgetsdict[e]['object'] == 'plus button' and widgetsdict[e]['main widget']
+                    for e in rdf_utils.iter_children_keys(widgetsdict, k)]):
+                    issues.update({ n: (k, 'plus button', 'should have been created (widget)') })
+                    n += 1
                 
         elif v['object'] == 'translation group':
         # dans un groupe de traduction, le bouton de traduction devrait toujours avoir été créé
