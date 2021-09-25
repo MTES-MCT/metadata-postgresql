@@ -12,7 +12,8 @@ from pathlib import Path
 
 from metadata_postgresql.bibli_rdf import rdf_utils, __path__
 from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
-    populate_widgets, search_keys, check_rows, execute_pseudo_actions
+    populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
+    check_hidden_branches, check_buttons
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -289,12 +290,12 @@ class TestRDFUtils(unittest.TestCase):
                 )
     
     # informations mises à jour depuis une source externe 
-    # + catégorie absente du modèle et hideUnlisted valant True :
+    # + catégorie absente du modèle et editHideUnlisted valant True :
     def test_build_dict_2(self):
         self.assertTrue(not 'dct:modified' in self.template)
         d = rdf_utils.build_dict(
             Graph(), self.shape, self.vocabulary,
-            template = self.template, hideUnlisted=True,
+            template = self.template, editHideUnlisted=True,
             data = { 'dct:modified' : ['2021-08-31T17:32:00'] }
             )
         b = False
@@ -418,14 +419,14 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(e)
 
     # consistance de "row" avec template
-    # et hideUnlisted
+    # et editHideUnlisted
     def test_build_dict_6(self):
         d = rdf_utils.build_dict(
             metagraph=self.metagraph,
             shape=self.shape,
             vocabulary=self.vocabulary,
             template=self.template,
-            hideUnlisted=True
+            editHideUnlisted=True
             )
         e = check_rows(d)
         self.assertIsNone(e)
