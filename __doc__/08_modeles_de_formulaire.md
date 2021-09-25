@@ -237,7 +237,7 @@ Soit :
 
 ### Présence de l'extension *metadata*
 
-Si l'extension n'est pas installée sur la base d'où provient la table considérée, on peut d'ores-et-déjà conclure qu'il n'y a pas de modèle de formulaire à appliquer (`template` vaut `None`) et en rester là.
+Si l'extension n'est pas installée sur la base d'où provient la table considérée, on peut d'ores-et-déjà conclure qu'il n'y a pas de modèle de formulaire à appliquer (`template` et `templateTabs` valent `None`) et en rester là.
 
 Pour le vérifier :
 
@@ -298,9 +298,17 @@ tpl_label = template_utils.search_template(metagraph, templates)
 
 *`metagraph` est le graphe contenant les métadonnées de la table ou vue considérée. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#metagraph--le-graphe-des-métadonnées-pré-existantes).*
 
-Il est tout à possible que la fonction `search_template()` ne renvoie rien, d'autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d'application automatique des modèles. Dans ce cas, on utilisera le "modèle préféré" (`preferedTemplate`) désigné dans les paramètres de configuration de l'utilisateur -- sous réserve qu'il soit défini et fasse bien partie de `templateLabels` -- ou, à défaut, aucun modèle (`template = None`).
+Il est tout à possible que la fonction `search_template()` ne renvoie rien, d'autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d'application automatique des modèles. Dans ce cas, on utilisera le "modèle préféré" (`preferedTemplate`) désigné dans les paramètres de configuration de l'utilisateur -- sous réserve qu'il soit défini et fasse bien partie de `templateLabels` -- ou, à défaut, aucun modèle (`template` et `templateTabs` valent `None`).
 
-À noter que l'utilisateur peut décider que son modèle préféré prévaut sur toute sélection automatique, en mettant à `True` le paramètre utilisateur `enforcePreferedTemplate`. Dans ce cas, il n'est même pas utile de lancer `search_template()`.
+À noter que l'utilisateur peut décider que son modèle préféré prévaut sur toute sélection automatique, en mettant à `True` le paramètre utilisateur `enforcePreferedTemplate`. Dans ce cas, il n'est même pas utile de lancer `search_template()`, on a directement :
+
+```python
+
+if preferedTemplate and enforcePreferedTemplate \
+    and templateLabels and preferedTemplate in templateLabels:
+    tpl_label = preferedTemplate
+
+```
 
 
 ### Récupération des catégories associées au modèle retenu
