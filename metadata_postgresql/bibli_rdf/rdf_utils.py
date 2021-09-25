@@ -1187,23 +1187,23 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     - [optionnel] langList (list) : paramètre utilisateur spécifiant la liste des langues
     autorisées pour les traductions (str), par défaut français et anglais, soit ['fr', 'en'].
     - [optionnel] readOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
-    en mode lecture et lorsque le mode traduction est inactif, seules les métadonnées
-    saisies dans la langue principale (paramètre language) sont affichées. True par défaut.
+    en mode lecture, seules les métadonnées saisies dans la langue principale
+    (paramètre language) sont affichées. True par défaut.
     À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
     d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
-    existe, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
+    existent, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
     - [optionnel] editOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
     en mode édition et lorsque le mode traduction est inactif, seules les métadonnées
     saisies dans la langue principale (paramètre language) sont affichées. False par défaut.
     À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
     d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
-    existe, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
+    existent, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
     - [optionnel] labelLengthLimit (int) : nombre de caractères au-delà duquel le label sera
     toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que
     pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive. 25 par défaut.
-    - [optionnel] valueLengthLimit (int) : nombre de caractères au-delà duquel une valeur qui aurait
-    dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit.
-    Indépendemment du nombre de catactères, la substitution sera aussi réalisée si la
+    - [optionnel] valueLengthLimit (int) : nombre de caractères au-delà duquel une valeur qui
+    aurait dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit.
+    Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la
     valeur contient un retour à la ligne. 100 par défaut.
     - [optionnel] textEditRowSpan (int) : nombre de lignes par défaut pour un widget QTextEdit
     (utilisé si non défini par shape ou template). 6 par défaut.
@@ -1954,7 +1954,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'multiple sources' : len(mVSources) > 1 if mVSources and mode == 'edit' else False,
                     'current source' : mCurSource,
                     'sources' : ( mVSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mVSources,
-                    'one per language' : multilingual and translation,
+                    'one per language' : multilingual,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
                     'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None ),
@@ -2179,7 +2179,13 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         
         dpv = dict()
         
-        for p, v in q_gr:          
+        for p, v in q_gr:
+        
+            if isinstance(v, BNode):
+                # on élimine d'entrée de jeu tout ce qui
+                # n'est pas une branche terminale
+                continue
+                
             if not p.n3(nsm) in [ d.get('path', None) for d in mDict.values() ]:        
                 dpv.update( { p : ( dpv.get(p, []) ) + [ v ] } )
 
