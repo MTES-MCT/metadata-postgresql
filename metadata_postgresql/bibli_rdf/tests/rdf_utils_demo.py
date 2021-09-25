@@ -34,9 +34,9 @@ d = rdf_utils.build_dict(Graph(), shape, vocabulary, translation=True)
 #d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, langList=['fr'])
 #d = rdf_utils.build_dict(g, shape, vocabulary, mode='read')
 #d = rdf_utils.build_dict(g, shape, vocabulary, template=template)
-#d = rdf_utils.build_dict(g, shape, vocabulary, hideUnlisted=True)
+#d = rdf_utils.build_dict(g, shape, vocabulary, editHideUnlisted=True)
 #d = rdf_utils.build_dict(Graph(), shape, vocabulary, template=template)
-#d = rdf_utils.build_dict(g, shape, vocabulary, template=template, hideUnlisted=True, translation=True)
+#d = rdf_utils.build_dict(g, shape, vocabulary, template=template, editHideUnlisted=True, translation=True)
 
 rdf_utils_debug.populate_widgets(d)
 
