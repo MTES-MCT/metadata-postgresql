@@ -135,8 +135,6 @@ class WidgetsDict(dict):
             'language widget' : None,
             'switch source widget' : None,
 
-            'main action' : None,
-            'minus action' : None,
             'switch source menu' : None,
             'switch source actions' : None,
             'language menu' : None,
@@ -291,11 +289,6 @@ class WidgetsDict(dict):
                     w = self[k][e]
                     if w:
                         d["widgets to delete"].append(w)
-                        
-                for e in ['main action', 'minus action']:
-                    a = self[k][e]
-                    if a:
-                        d["actions to delete"].append(a)
                         
                 for e in ('switch source actions', 'language actions'):
                     a = self[k][e]
@@ -1271,9 +1264,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
     - 'switch source menu' : pour le QMenu associé au 'switch source widget'.
     - 'switch source actions' : liste des QAction associées au 'switch source menu'.
     - 'language menu' : pour le QMenu associé au 'language widget'.
-    - 'language actions' : liste des QAction associées au 'language menu'.
-    - 'main action' : pour la QAction éventuellement associée au widget principal.
-    - 'minus action' : pour la QAction associée au 'minus widget'.    
+    - 'language actions' : liste des QAction associées au 'language menu'.   
 
     Les clés suivantes sont, elles, remplies par la fonction, avec toutes les informations nécessaires
     au paramétrage des widgets.
@@ -1417,8 +1408,6 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
             'language widget' : None,
             'switch source widget' : None,
 
-            'main action' : None,
-            'minus action' : None,
             'switch source menu' : None,
             'switch source actions' : None,
             'language menu' : None,
