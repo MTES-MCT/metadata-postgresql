@@ -221,7 +221,10 @@ class WidgetsDict(dict):
         Les tuples de la clé "widgets to move" sont formés comme suit :
         [0] la grille (QGridLayout) où un widget doit être déplacé.
         [1] le widget en question (QWidget).
-        [2] son nouveau numéro de ligne/valeur du paramètre row (int).
+        [2] son nouveau numéro de ligne / row (int).
+        [3] son numéro de colonne / column (int).
+        [4] le nombre de lignes occupées / rowSpan (int).
+        [5] le nombre de colonnes occupées / columnSpan (int).
         
         NB : Les widgets à détruire ne sont plus répertoriés dans le
         dictionnaire, au contraire des widgets à masquer.
@@ -316,10 +319,11 @@ class WidgetsDict(dict):
                         # pas de label widget, l'étiquette est sur le groupe
                         w = self[k][e]
                         if w:
+                            row, column, rowSpan, columnSpan = self.widget_placement(k, e)
                             d["widgets to move"].append((
                                 self.parent_grid(k),
                                 w,
-                                self[k]['row']
+                                row, column, rowSpan, columnSpan
                                 ))
             
             
@@ -398,7 +402,10 @@ class WidgetsDict(dict):
         Les tuples de la clé "widgets to move" sont formés comme suit :
         [0] la grille (QGridLayout) où un widget doit être déplacé.
         [1] le widget en question (QWidget).
-        [2] son nouveau numéro de ligne/valeur du paramètre row (int).
+        [2] son nouveau numéro de ligne / row (int).
+        [3] son numéro de colonne / column (int).
+        [4] le nombre de lignes occupées / rowSpan (int).
+        [5] le nombre de colonnes occupées / columnSpan (int).
         
         EXEMPLES
         --------
@@ -490,10 +497,11 @@ class WidgetsDict(dict):
         self[key]['row'] += ( self[k1]['row span'] or 1 )
         w = self[key]['main widget']
         if w:
+            row, column, rowSpan, columnSpan = self.widget_placement(key, 'main widget')
             d["widgets to move"].append((
                 self.parent_grid(key),
                 w,
-                self[key]['row']
+                row, column, rowSpan, columnSpan
                 ))
         
         for k in self.copy().keys():
@@ -552,7 +560,7 @@ class WidgetsDict(dict):
         return d
 
 
-    def change_language(self, key, language, langList=['fr', 'en']):
+    def change_language(self, key, new_language, langList=['fr', 'en']):
         """Change la langue sélectionnée pour une clé.
         
         ARGUMENTS
@@ -560,7 +568,7 @@ class WidgetsDict(dict):
         - key (tuple) : une clé du dictionnaire de widgets, et plus
         précisément la clé pour laquelle l'utilisateur vient de
         choisir une nouvelle langue.
-        - language (str) : la nouvelle langue.
+        - new_language (str) : la nouvelle langue.
         - [optionnel] langList (list) : paramètre utilisateur, liste des
         langues autorisées pour les traductions (str). Par défaut
         français et anglais, soit ['fr', 'en'].
@@ -585,8 +593,8 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("You can't put a language tag on anything but a string !")
             
         if not self[key]['authorized languages'] \
-            or not language in self[key]['authorized languages']:
-            raise ForbiddenOperation("{} isn't an authorized language for key {}.".format(language, key))
+            or not new_language in self[key]['authorized languages']:
+            raise ForbiddenOperation("{} isn't an authorized language for key {}.".format(new_language, key))
         
         d = {
             "language menu to update": [],
@@ -596,7 +604,7 @@ class WidgetsDict(dict):
         # ancienne langue
         old_language = self[key]['language value']
         
-        if language == old_language:
+        if new_language == old_language:
             return d
         
         b = old_language and old_language in langList
@@ -607,7 +615,7 @@ class WidgetsDict(dict):
             # plus utilisée  
         
         # mise à jour de la langue courante pour key
-        self[key]['language value'] = language
+        self[key]['language value'] = new_language
         d["language menu to update"].append(key)
                 
         # dans le cas d'un groupe de traduction,
@@ -618,8 +626,8 @@ class WidgetsDict(dict):
                 
                     if self[k]['object'] == 'edit':
                 
-                        if language in self[k]['authorized languages']:
-                            self[k]['authorized languages'].remove(language)
+                        if new_language in self[k]['authorized languages']:
+                            self[k]['authorized languages'].remove(new_language)
                             d["language menu to update"].append(k)
                             
                         if b and not old_language in self[k]['authorized languages']:
