@@ -1125,8 +1125,9 @@ class WidgetsDict(dict):
   
 
 
-def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
-    data=None, mode='edit', readHideBlank=True, hideUnlisted=False,
+def build_dict(metagraph, shape, vocabulary, template=None,
+    templateTabs=None, data=None, mode='edit',
+    readHideBlank=True, readHideUnlisted=True, editHideUnlisted=False,
     language="fr", translation=False, langList=['fr', 'en'],
     readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
     labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
@@ -1173,9 +1174,11 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
     dictionnaire que le mode lecture.
     - [optionnel] readHideBlank (bool) : paramètre utilisateur qui indique si les champs
     vides doivent être masqués en mode lecture. True par défaut.
-    - [optionnel] hideUnlisted (bool) : paramètre utilisateur qui indique si les catégories
-    hors template doivent être masquées. En l'absence de template, si hideUnlisted vaut True,
-    seules les métadonnées communes seront visibles. False par défaut.
+    - [optionnel] readHideUnlisted (bool) : paramètre utilisateur qui indique si les
+    catégories hors template doivent être masquées en mode lecture. En l'absence de template,
+    si readHideUnlisted vaut True, seules les métadonnées communes seront visibles. True par défaut.
+    - [optionnel] editHideUnlisted (bool) : idem readHideUnlisted mais pour le mode édition.
+    False par défaut.
     - [optionnel] language (str) : langue principale de rédaction des métadonnées
     (paramètre utilisateur). Français ("fr") par défaut. La valeur de language doit être
     incluse dans langList ci-après.
@@ -1560,11 +1563,13 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
         if values in ( None, [], [ None ] ) and not mTemplateEmpty and not ( mNPath in template ):
             continue
         # s'il y a une valeur, mais que
-        # hideUnlisted vaut True et que la catégorie n'est
+        # read/editHideUnlisted vaut True et que la catégorie n'est
         # pas prévue par le modèle, on poursuit le traitement
         # pour ne pas perdre la valeur, mais on ne créera
         # pas de widget
-        elif hideUnlisted and not mTemplateEmpty and not ( mNPath in template ):
+        elif ( (mode == 'edit' and editHideUnlisted) or \
+            (mode == 'read' and readHideUnlisted) ) \
+            and not mTemplateEmpty and not ( mNPath in template ):
             mNHidden = True
         
         if not ( readHideBlank and mode == 'read' ):
@@ -1797,7 +1802,8 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
                 if not mNHidden or isinstance(mValueBrut, BNode):              
                     build_dict(
                         metagraph, shape, vocabulary, template=template, templateTabs=templateTabs,
-                        data=data, mode=mode, readHideBlank=readHideBlank, hideUnlisted=hideUnlisted,
+                        data=data, mode=mode, readHideBlank=readHideBlank,
+                        readHideUnlisted=readHideUnlisted, editHideUnlisted=editHideUnlisted,
                         language=language, translation=translation, langList=langList,
                         readOnlyCurrentLanguage=readOnlyCurrentLanguage,
                         editOnlyCurrentLanguage=editOnlyCurrentLanguage,
@@ -2158,7 +2164,7 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
     # ---------- METADONNEES NON DEFINIES ----------
     # métadonnées présentes dans le graphe mais ni dans shape ni dans template
     
-    if not hideUnlisted and mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
+    if mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
         
         q_gr = metagraph.query(
             """
@@ -2182,73 +2188,109 @@ def build_dict(metagraph, shape, vocabulary, template=None, templateTabs=None,
             mParent = mParentWidget
             
             if len(dpv[p]) > 1:
+            
+                if ( (mode == 'edit' and editHideUnlisted) or \
+                    (mode == 'read' and readHideUnlisted) ):
+                    # si les catégories non répertoriées ne
+                    # doivent pas être affichées
+                    mWidget = ( idx[mParent], mParent )
+                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict[mWidget].update( {
+                        'object' : 'group of values'
+                        } )
 
-                mWidget = ( idx[mParent], mParent )
-                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
-                mDict[mWidget].update( {
-                    'object' : 'group of values',
-                    'main widget type' : 'QGroupBox',
-                    'row' : rowidx[mParent],
-                    'label' : "???",
-                    'path' : p.n3(nsm)
-                    } )
+                    idx[mParent] += 1
+                    idx.update( { mWidget : 0 } )
+                    mParent = mWidget
+                
+                else:
+                    mWidget = ( idx[mParent], mParent )
+                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict[mWidget].update( {
+                        'object' : 'group of values',
+                        'main widget type' : 'QGroupBox',
+                        'row' : rowidx[mParent],
+                        'label' : "???",
+                        'path' : p.n3(nsm)
+                        } )
 
-                idx[mParent] += 1
-                rowidx[mParent] += 1
-                idx.update( { mWidget : 0 } )
-                rowidx.update( { mWidget : 0 } )
-                mParent = mWidget
+                    idx[mParent] += 1
+                    rowidx[mParent] += 1
+                    idx.update( { mWidget : 0 } )
+                    rowidx.update( { mWidget : 0 } )
+                    mParent = mWidget
 
 
             for v in dpv[p]:
 
                 mValue = str(v)
-                mWidgetType = 'QTextEdit' if ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ) else "QLineEdit"
-                mLabelRow = None
-
-                if len(dpv[p]) == 1 and mWidgetType == 'QTextEdit':
-                    mLabelRow = rowidx[mParent]
-                    rowidx[mParent] += 1
-
+                
                 mType = ( v.datatype if isinstance(v, Literal) else None ) or URIRef("http://www.w3.org/2001/XMLSchema#string")
                 # NB : pourrait ne pas être homogène pour toutes les valeurs d'une même catégorie
                 
                 mLanguage = ( ( v.language if isinstance(v, Literal) else None ) or language 
                             ) if mType.n3(nsm) == 'xsd:string' else None
                             
-                mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) if not mLanguage in ( langList or [] ) else langList.copy() 
-                            ) if mLanguage and translation else None
+                if ( (mode == 'edit' and editHideUnlisted) or \
+                    (mode == 'read' and readHideUnlisted) ):
+                    # si les catégories non répertoriées ne
+                    # doivent pas être affichées
+                    mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                    mDict[ ( idx[mParent], mParent ) ].update( {
+                        'object' : 'edit',                      
+                        'value' : mValue,                        
+                        'language value' : mLanguage,                        
+                        'node kind' : "sh:Literal",
+                        'data type' : mType,
+                        'path' : p.n3(nsm),
+                        'subject' : mParentNode,
+                        'predicate' : p                      
+                        } )
+                
+                    idx[mParent] += 1
+                    
+                else:
 
-                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
-                mDict[ ( idx[mParent], mParent ) ].update( {
-                    'object' : 'edit',
-                    'main widget type' : mWidgetType,
-                    'row' : rowidx[mParent],
-                    'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
-                    'label' : "???" if len(dpv[p]) == 1 else None,
-                    'label row' : mLabelRow,
-                    'value' : mValue,
-                    'language value' : mLanguage,
-                    'node kind' : "sh:Literal",
-                    'data type' : mType,
-                    'multiple values' : False,
-                    'has minus button' : ( len(dpv[p]) > 1 and mode == 'edit' ) or False,
-                    'hide minus button': False if ( len(dpv[p]) > 1 and mode == 'edit' ) else None,
-                    'subject' : mParentNode,
-                    'predicate' : p,
-                    'path' : p.n3(nsm),
-                    'default widget type' : "QLineEdit",
-                    'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
-                        'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
-                    'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
-                    'read only' : ( mode == 'read' )
-                    } )
-                        
-                idx[mParent] += 1
-                rowidx[mParent] += 1
+                    mWidgetType = 'QTextEdit' if ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ) else "QLineEdit"
+                    mLabelRow = None
 
-            # pas de bouton plus, faute de modèle indiquant si la catégorie
-            # admet des valeurs multiples
+                    if len(dpv[p]) == 1 and mWidgetType == 'QTextEdit':
+                        mLabelRow = rowidx[mParent]
+                        rowidx[mParent] += 1
+                                
+                    mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) if not mLanguage in ( langList or [] ) else langList.copy() 
+                                ) if mLanguage and translation else None
+
+                    mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                    mDict[ ( idx[mParent], mParent ) ].update( {
+                        'object' : 'edit',
+                        'main widget type' : mWidgetType,
+                        'row' : rowidx[mParent],
+                        'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
+                        'label' : "???" if len(dpv[p]) == 1 else None,
+                        'label row' : mLabelRow,
+                        'value' : mValue,
+                        'language value' : mLanguage,
+                        'node kind' : "sh:Literal",
+                        'data type' : mType,
+                        'multiple values' : False,
+                        'has minus button' : ( len(dpv[p]) > 1 and mode == 'edit' ) or False,
+                        'hide minus button': False if ( len(dpv[p]) > 1 and mode == 'edit' ) else None,
+                        'subject' : mParentNode,
+                        'predicate' : p,
+                        'path' : p.n3(nsm),
+                        'default widget type' : "QLineEdit",
+                        'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
+                            'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
+                        'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
+                        'read only' : ( mode == 'read' )
+                        } )
+                            
+                    idx[mParent] += 1
+                    rowidx[mParent] += 1
+
+                    # pas de bouton plus, faute de modèle indiquant si la catégorie
+                    # admet des valeurs multiples
 
     return WidgetsDict(mDict)
 
