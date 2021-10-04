@@ -192,99 +192,85 @@ class Ui_Dialog_postmeta(object):
         # Window Versus Dock
         #=====================================================  
         #Menu Dialog
-        iconParam = bibli_postmeta.getThemeIcon("postmeta.png")
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconParam         = _pathIcons + "/colorbloc.svg"
         self.mMenuBarDialog = QMenuBar(self)
+        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 300, 20))
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
         mText = QtWidgets.QApplication.translate("postmeta_main", "Edit") 
-        self.postmetaEdit = QAction(QIcon(_iconSourcesEdit),mText,Dialog)
-        self.postmetaEdit.setToolTip(mText)
+        self.postmetaEdit = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaEdit.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaEdit.setIcon(QIcon(_iconSourcesEdit))
         self.postmetaEdit.setObjectName(mText)
-        self.postmetaEdit.triggered.connect(self.clickButtonsActions)
-        self.mMenuBarDialog.addAction(self.postmetaEdit)
-
-
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Edit") 
-        self.postmetaEdit2 = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaEdit2.setIcon(QIcon(_iconSourcesEdit))
-        self.postmetaEdit2.setObjectName(mText)
-        self.postmetaEdit2.setToolTip(mText)
-        self.postmetaEdit2.setGeometry(QtCore.QRect(10,0,18,18))
-        self.postmetaEdit2.setObjectName(mText)
-        self.postmetaEdit2.clicked.connect(self.clickButtonsActions)
-
-
+        self.postmetaEdit.setToolTip(mText)
+        self.postmetaEdit.setGeometry(QtCore.QRect(10,0,18,18))
+        self.postmetaEdit.clicked.connect(self.clickButtonsActions)
         #--
         mText = QtWidgets.QApplication.translate("postmeta_main", "Save") 
-        self.postmetaSave = QAction(QIcon(_iconSourcesSave),"Save",Dialog)
-        self.postmetaSave.setText(mText)
-        self.postmetaSave.setToolTip(mText)
-        self.postmetaSave.setEnabled(False)
+        self.postmetaSave = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaSave.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaSave.setIcon(QIcon(_iconSourcesSave))
         self.postmetaSave.setObjectName(mText)
-        self.postmetaSave.triggered.connect(self.clickButtonsActions)
-        self.mMenuBarDialog.addAction(self.postmetaSave)
+        self.postmetaSave.setToolTip(mText)
+        self.postmetaSave.setGeometry(QtCore.QRect(40,0,18,18))
+        self.postmetaSave.clicked.connect(self.clickButtonsActions)
         #--
         mText = QtWidgets.QApplication.translate("postmeta_main", "Empty") 
-        self.postmetaEmpty = QAction(QIcon(_iconSourcesEmpty),"Empty",Dialog)
-        self.postmetaEmpty.setText(mText)
-        self.postmetaEmpty.setToolTip(mText)
+        self.postmetaEmpty = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaEmpty.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaEmpty.setIcon(QIcon(_iconSourcesEmpty))
         self.postmetaEmpty.setObjectName(mText)
-        self.postmetaEmpty.triggered.connect(self.clickButtonsActions)
-        self.mMenuBarDialog.addAction(self.postmetaEmpty)
+        self.postmetaEmpty.setToolTip(mText)
+        self.postmetaEmpty.setGeometry(QtCore.QRect(70,0,18,18))
+        self.postmetaEmpty.clicked.connect(self.clickButtonsActions)
         #--
         mText = QtWidgets.QApplication.translate("postmeta_main", "Export") 
-        self.postmetaExport = QAction(QIcon(_iconSourcesExport),"Export",Dialog)
-        self.postmetaExport.setText(mText)
-        self.postmetaExport.setToolTip(mText)
+        self.postmetaExport = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaExport.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaExport.setIcon(QIcon(_iconSourcesExport))
         self.postmetaExport.setObjectName(mText)
-        self.postmetaExport.triggered.connect(self.clickButtonsActions)
-        #self.mMenuBarDialog.addAction(self.postmetaExport)
+        self.postmetaExport.setToolTip(mText)
+        self.postmetaExport.setGeometry(QtCore.QRect(100,0,18,18))
+        self.postmetaExport.clicked.connect(self.clickButtonsActions)
         #--
         mText = QtWidgets.QApplication.translate("postmeta_main", "Import") 
-        self.postmetaImport = QAction(QIcon(_iconSourcesImport),"Import",Dialog)
-        self.postmetaImport.setText(mText)
-        self.postmetaImport.setToolTip(mText)
+        self.postmetaImport = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaImport.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaImport.setIcon(QIcon(_iconSourcesImport))
         self.postmetaImport.setObjectName(mText)
-        self.postmetaImport.triggered.connect(self.clickButtonsActions)
-        #self.mMenuBarDialog.addAction(self.postmetaImport)
+        self.postmetaImport.setToolTip(mText)
+        self.postmetaImport.setGeometry(QtCore.QRect(130,0,18,18))
+        self.postmetaImport.clicked.connect(self.clickButtonsActions)
         #--
         mText = QtWidgets.QApplication.translate("postmeta_main", "Template") 
-        self.postmetaTemplate = QAction(QIcon(_iconSourcesTemplate),"Template",Dialog)
-        self.postmetaTemplate.setText(mText)
-        self.postmetaTemplate.setToolTip(mText)
+        self.postmetaTemplate = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaTemplate.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaTemplate.setIcon(QIcon(_iconSourcesTemplate))
         self.postmetaTemplate.setObjectName(mText)
-        self.postmetaTemplate.triggered.connect(self.clickButtonsActions)
-        #self.mMenuBarDialog.addAction(self.postmetaTemplate)
+        self.postmetaTemplate.setToolTip(mText)
+        self.postmetaTemplate.setGeometry(QtCore.QRect(160,0,18,18))
+        self.postmetaTemplate.clicked.connect(self.clickButtonsActions)
         #--
         mText = QtWidgets.QApplication.translate("postmeta_main", "Translation") 
-        self.postmetaTranslation = QAction(QIcon(_iconSourcesTranslation),"Translation",Dialog)
-        self.postmetaTranslation.setText(mText)
-        self.postmetaTranslation.setToolTip(mText)
+        self.postmetaTranslation = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaTranslation.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaTranslation.setIcon(QIcon(_iconSourcesTranslation))
         self.postmetaTranslation.setObjectName(mText)
-        self.postmetaTranslation.triggered.connect(self.clickButtonsActions)
-        #self.mMenuBarDialog.addAction(self.postmetaTranslation)
+        self.postmetaTranslation.setToolTip(mText)
+        self.postmetaTranslation.setGeometry(QtCore.QRect(190,0,18,18))
+        self.postmetaTranslation.clicked.connect(self.clickButtonsActions)
         #------------
         #------------
-        self.mMenuParam = QMenu(self)
-        self.mMenuParam.setToolTipsVisible(True)
-        self.mMenuBarDialog.addMenu(self.mMenuParam)
-        self.mMenuParam.setTitle(QtWidgets.QApplication.translate("asgard_general_ui", "ParamSettings"))
-
-        self.mMenuParam.addAction(self.postmetaExport)
-        self.mMenuParam.addAction(self.postmetaImport)
-        self.mMenuParam.addAction(self.postmetaTemplate)
-        self.mMenuParam.addAction(self.postmetaTranslation)
-        self.mMenuParam.addSeparator()
-
-
-        #--
-        self.paramColor = QAction(QIcon(iconParam),"Customization of the IHM",Dialog)
-        self.paramColor.setText(QtWidgets.QApplication.translate("asgard_main", "Customization of the IHM"))
-        self.mMenuParam.addAction(self.paramColor)
-        #- Actions
-        self.paramColor.triggered.connect(self.clickColorDialog)
+        mText = QtWidgets.QApplication.translate("postmeta_main", "Customization of the IHM") 
+        self.paramColor = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.paramColor.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.paramColor.setIcon(QIcon(iconParam))
+        self.paramColor.setObjectName(mText)
+        self.paramColor.setToolTip(mText)
+        self.paramColor.setGeometry(QtCore.QRect(220,0,18,18))
+        self.paramColor.clicked.connect(self.clickColorDialog)
+        
         if self.ihm in ["dockTrue", "dockFalse"] : self.mMenuBarDialog.show()
-
-
         #==========================
         #==========================
 
