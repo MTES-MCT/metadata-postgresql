@@ -2,7 +2,7 @@
 
 Sont décrites ici les actions que l'utilisateur peut réaliser dans la partie fixe de l'interface du plugin. Pour les interactions de l'utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md).
 
-[Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation)
+[Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation) • [Sélection de la table à documenter](#sélection-de-la-table-à-documenter)
 
 ## Mode lecture, mode édition
 
@@ -37,7 +37,16 @@ Certaines des actions générales décrites dans la suite ne devraient être dis
 Le bouton utilise l'icône [edit.svg](/metadata_postgresql/icons/general/edit.svg) :
 ![edit.svg](/metadata_postgresql/icons/general/edit.svg).
 
-Il ne devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
+L'idéal serait que le texte d'aide s'adapte au mode courant :
+
+| Mode actif | Condition | Infobulle |
+| --- | --- | --- |
+| lecture | `if mode == 'read'` | *Basculer en mode édition* |
+| édition | `if mode == 'edit'` | *Quitter le mode édition* |
+
+Si toutefois cela s'avère complexe à mettre en oeuvre, on se contera de *Basculer en mode édition*.
+
+Le bouton devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
 Pour s'en assurer, on utilisera la requête définie par la fonction `query_is_relation_owner()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
 
@@ -133,6 +142,7 @@ Comme susmentionné, ce bouton ne doit être actif qu'en mode édition.
 Il utilise l'icône [save.svg](/metadata_postgresql/icons/general/save.svg) :
 ![save.svg](/metadata_postgresql/icons/general/save.svg)
 
+Texte d'aide : *Enregistrer les métadonnées*.
 
 ## Activation du mode traduction
 
@@ -154,6 +164,15 @@ Ce bouton ne doit être actif qu'en mode édition.
 
 Il utilise l'icône [translation.svg](/metadata_postgresql/icons/general/translation.svg) :
 ![translation.svg](/metadata_postgresql/icons/general/translation.svg)
+
+L'idéal serait que le texte d'aide s'adapte selon que le mode traduction est actif ou non :
+
+| Mode traduction activé | Condition | Infobulle |
+| --- | --- | --- |
+| non | `if not translation` | *Activer les fonctions de traduction* |
+| oui | `if translation` | *Désactiver les fonctions de traduction* |
+
+Si toutefois cela s'avère complexe à mettre en oeuvre, on se contera de *Activer les fonctions de traduction*.
 
 ### Initialisation
 
@@ -192,6 +211,8 @@ Si `templateLabels` est `None` ou une liste vide, il n'y a pas lieu d'afficher l
 D'autant que de besoin, le bouton utilise l'icône [template.svg](/metadata_postgresql/icons/general/template.svg) :
 ![template.svg](/metadata_postgresql/icons/general/template.svg)
 
+Texte d'aide : *Choisir un modèle de formulaire*.
+
 ### Initialisation
 
 La démarche à suivre à l'ouverture d'une fiche de métadonnées, est décrite dans [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin). On commencera par récupérer les paramètres `preferedTemplate` et `enforcePreferedTemplate` dans les fichiers de configuration, si tant est qu'ils soient présents.
@@ -210,6 +231,8 @@ Lorsque l'utilisateur modifie la langue principale, il est nécessaire de regén
 ### Caractéristiques du widget
 
 Le widget de choix de la langue principale pourra être soit un QComboBox soit un QToolButton similaire aux boutons de sélection de la langue du formulaire (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue)). Dans les deux cas, les valeurs disponibles sont les langues listées par le paramètre utilisateur `langList`.
+
+Texte d'aide : *Modifier la langue principale des métadonnées*.
 
 ### Initialisation
 
@@ -262,6 +285,7 @@ Il utilise l'icône [import.svg](/metadata_postgresql/icons/general/import.svg) 
 
 Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats disponibles.
 
+Texte d'aide : *Importer les métadonnées depuis un fichier*.
 
 ## Export des métadonnées dans un fichier
 
@@ -301,6 +325,7 @@ Ce bouton utilise l'icône [export.svg](/metadata_postgresql/icons/general/expor
 
 Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats autorisés.
 
+Texte d'aide : *Exporter les métadonnées dans un fichier*.
 
 ## Réinitialisation
 
@@ -325,4 +350,32 @@ Ce bouton ne doit être actif qu'en mode édition.
 
 Il utilise l'icône [empty.svg](/metadata_postgresql/icons/general/empty.svg) :
 ![empty.svg](/metadata_postgresql/icons/general/empty.svg)
+
+Texte d'aide : *Vider la fiche de métadonnées*.
+
+
+## Sélection de la table à documenter
+
+Au contraire de toutes les actions précédemment décrites, la sélection de la table ou vue dont l'utilisateur souhaite éditer les métadonnées se fait hors de l'interface du plugin, dans le panneau explorateur, le panneau des couches ou encore le panneau d'AsgardMenu.
+
+### Si aucun objet n'est sélectionné
+
+... il n'y a évidemment pas de métadonnées à afficher.
+
+En principe, cette situation ne devrait se produire qu'à l'ouverture du plugin, lorsque l'utilisateur n'a pas préalablement cliqué sur une table ou vue dans l'un des panneaux pour la sélectionner.
+
+Dans ce cas, on lui montre une interface vide, avec uniquement la barre de menus.
+
+Les seuls boutons actifs sont alors :
+- le bouton de choix du modèle ;
+- le bouton de sélection de la langue principale ;
+- le bouton de configuration de l'interface ;
+- le bouton d'aide.
+
+### Quand l'utilisateur sélectionne un nouvel objet
+
+**Définir une nouvelle table source ne doit être possible qu'en mode lecture.** Il est important que l'utilisateur ne perde pas involontairement toutes ses modifications en cours à cause d'un clic malencontreux dans l'explorateur... Il n'est bien sûr pas question d'empêcher l'utilisateur de sélectionner des objets dans les panneaux de QGIS, mais le plugin ne devra pas le prendre en compte tant que le mode édition reste actif.
+
+Lorsqu'une nouvelle tables ou vue est sélectionnée, le plugin devra d'abord extraire les métadonnées contenues dans son descriptif PostgreSQL - cf. [metagraph : le graphe des métadonnées pré-existantes](/__doc__/05_generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes). Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
+
 
