@@ -15,7 +15,7 @@ from .bibli_rdf import rdf_utils
                      
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet, _mParent) :
-    _pathIcons = os.path.dirname(__file__) + "/bibli_rdf/icons/buttons"
+    _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
     _iconSources          = _pathIcons + "/source_button.svg"
     _iconSourcesSelect    = _pathIcons + "/source_button.png"
     _iconSourcesVierge    = _pathIcons + "/vierge.png"

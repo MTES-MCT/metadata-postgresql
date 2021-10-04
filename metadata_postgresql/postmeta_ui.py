@@ -72,7 +72,7 @@ class Ui_Dialog_postmeta(object):
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]    #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
         #---
-        _pathIcons = os.path.dirname(__file__) + "/bibli_rdf/icons/general"
+        _pathIcons = os.path.dirname(__file__) + "/icons/general"
         _iconSourcesEdit         = _pathIcons + "/edit.svg"
         _iconSourcesEmpty        = _pathIcons + "/empty.svg"
         _iconSourcesExport       = _pathIcons + "/export.svg"
