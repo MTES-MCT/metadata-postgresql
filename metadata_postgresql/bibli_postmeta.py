@@ -108,6 +108,69 @@ def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
 
 #==================================================
+def updateUriWithPassword(self, mUri) :
+        print(mUri.password())
+        print(os.environ.get('PGPASSWORD'))
+        nameBase = mUri.database()
+        print(nameBase)
+        #===========================
+        if returnSiVersionQgisSuperieureOuEgale("3.10") : 
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+           metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+
+           if nameBase not in metadata.connections(False) :
+              QMessageBox.critical(self, "Error", "new : There is no defined database connection for " + nameBase)
+              mListConnectBase = []
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+           uri = QgsDataSourceUri(metadata.findConnection(nameBase).uri())
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+           self.password = uri.password() or os.environ.get('PGPASSWORD')
+        else :
+           mSettings = QgsSettings()
+           self.mConnectionSettingsKey = "/PostgreSQL/connections/{}".format(nameBase)
+           mSettings.beginGroup(self.mConnectionSettingsKey)
+           if not mSettings.contains("database") :
+              QMessageBox.critical(self, "Error", "There is no defined database connection")
+              mListConnectBase = []
+           else :
+              uri = QgsDataSourceUri()
+              settingsList = ["service", "host", "port", "database", "username", "password"]
+              self.service, self.host, self.port, self.database, self.username, self.password = map(lambda x: mSettings.value(x, "", type=str), settingsList)
+           mSettings.endGroup()
+
+        return self.password
+
+#==================================================
+def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
+    _mVersMax = 1000000  #Valeur max arbitraire
+    try :
+       _mVers = qgis.utils.Qgis.QGIS_VERSION_INT
+    except : 
+       _mVers = _mVersMax
+    if _mVersTexte == "3.4.5" :
+       _mBorne = 30405
+       _mMess = "_mVers >= '3.4.5'"                    
+    elif _mVersTexte == "3.10" : 
+       _mBorne = 31006
+       _mMess = "_mVers >= '3.10'" 
+    elif _mVersTexte == "3.16" : 
+       _mBorne = 31605
+       _mMess = "_mVers >= '3.16'" 
+    elif _mVersTexte == "3.18" : 
+       _mBorne = 31801
+       _mMess = "_mVers >= '3.18'"
+    elif _mVersTexte == "3.20" : 
+       _mBorne = 32002
+       _mMess = "_mVers >= '3.20'"
+    elif _mVersTexte == "3.21" : 
+       _mBorne = 33000
+       _mMess = "_mVers >= '3.21'"
+
+    return True if _mVers >= _mBorne else False
+
+#==================================================
 def cleanMessError(mMess) :
     mContext = "CONTEXT:"
     mErreur  = "ERREUR:"  
@@ -136,10 +199,6 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     larg, haut =  self.tabWidget.width()-5, self.tabWidget.height()-25
     for elem in self.listeResizeIhm :
         elem.setGeometry(QtCore.QRect(x, y, larg, haut))
-    #----
-    #self.Dialog.groupBoxDown.setGeometry(QtCore.QRect(10,h_Dialog - 50,l_Dialog -20,40))    
-    #self.okhButton.setGeometry(QtCore.QRect(((self.Dialog.groupBoxDown.width() -200) / 3) + 100 + ((self.Dialog.groupBoxDown.width() -200) / 3), 10, 100,23))
-    #self.helpButton.setGeometry(QtCore.QRect((self.Dialog.groupBoxDown.width() -200) / 3, 10, 100,23))
     #----
     #----
     #Réinit les dimensions de l'IHM
@@ -270,7 +329,6 @@ def CorrigePath(nPath):
 
 #==================================================
 #==================================================
-#==================================================
 def displayMess(mDialog, type,zTitre,zMess, level=Qgis.Critical, duration = 10):
     #type 1 = MessageBar
     #type 2 = QMessageBox
@@ -280,7 +338,8 @@ def displayMess(mDialog, type,zTitre,zMess, level=Qgis.Critical, duration = 10):
     else :
        QMessageBox.information(None,zTitre,zMess)
     return  
-#--
+
+#==================================================
 def debugMess(type,zTitre,zMess, level=Qgis.Critical):
     #type 1 = MessageBar
     #type 2 = QMessageBox

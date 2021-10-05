@@ -16,7 +16,10 @@ changelog:
                Version under Qgis 3.20
        *------------- 
        IHM
-         ** Construction automatisee a partir des bibliotheques du projet metadata-postgresql
+         ** Boite de dialogue fenetree ou panneaux ancres ou flottants
+         ** Barre de menu integree a la boite de dialogue (Edit / Save / Empty / Export / Template / Import / Traduction / Personnalisation / Help)
+         ** Construction a la volee automatique de l interface a partir des bibliotheques du projet metadata-postgresql
+         ** Boutons de creation / Suppression / Langue de traduction / Selection de la source 
     =======================================
 
 tags= POSTGRESQL, metadonnees, stockage
