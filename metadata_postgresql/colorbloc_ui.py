@@ -13,11 +13,12 @@ class Ui_Dialog_ColorBloc(object):
     def setupUiColorBloc(self, DialogColorBloc):
         self.DialogColorBloc = DialogColorBloc
         self.zMessTitle    =  QtWidgets.QApplication.translate("colorbloc_ui", "Customization of the IHM.", None)
-        myPath = os.path.dirname(__file__)+"\\icons\\logo\\colorbloc.png"
+        myPath = os.path.dirname(__file__)+"\\icons\\logo\\postmeta.svg"
 
         self.DialogColorBloc.setObjectName("DialogConfirme")
         self.DialogColorBloc.setFixedSize(810,460)
-        iconSource = bibli_postmeta.getThemeIcon("colorbloc.png")
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconSource          = _pathIcons + "/postmeta.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.DialogColorBloc.setWindowIcon(icon)
@@ -154,7 +155,7 @@ class Ui_Dialog_ColorBloc(object):
         self.pushButtonAnnuler.setGeometry(QtCore.QRect(self.DialogColorBloc.width() / 2 + 20, self.DialogColorBloc.height() - 50, 80, 25))
         self.pushButtonAnnuler.clicked.connect(self.DialogColorBloc.reject)
         #----------
-        self.DialogColorBloc.setWindowTitle("POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL) - (" + str(bibli_postmeta.returnVersion()) + ")")
+        self.DialogColorBloc.setWindowTitle(QtWidgets.QApplication.translate("postmeta_main", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL") + "  (" + str(bibli_postmeta.returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("colorbloc_ui", self.zMessTitle, None))
         self.pushButton.setText(QtWidgets.QApplication.translate("colorbloc_ui", "OK", None))
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Cancel", None))

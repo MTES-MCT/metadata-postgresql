@@ -40,8 +40,8 @@ class MainPlugin(object):
      #Construction du menu
      self.menu=QMenu("postmeta")
      self.menu.setTitle(QtWidgets.QApplication.translate("postmeta_main", "POSTGRESQL METADATA IHM") + "  (" + str(bibli_postmeta.returnVersion()) + ")")
-
-     menuIcon = bibli_postmeta.getThemeIcon("postmeta.png")
+     _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+     menuIcon          = _pathIcons + "/postmeta.svg"
      self.postmeta2 = QAction(QIcon(menuIcon),"POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)" + "  (" + str(bibli_postmeta.returnVersion()) + ")",self.iface.mainWindow())
      self.postmeta2.setText(QtWidgets.QApplication.translate("postmeta_main", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL) ") + "  (" + str(bibli_postmeta.returnVersion()) + ")")
      self.postmeta2.triggered.connect(self.clickIHMpostmeta2)

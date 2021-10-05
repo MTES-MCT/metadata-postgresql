@@ -75,14 +75,16 @@ class Ui_Dialog_postmeta(object):
         _iconSourcesSave         = _pathIcons + "/Save.svg"
         _iconSourcesTemplate     = _pathIcons + "/template.svg"
         _iconSourcesTranslation  = _pathIcons + "/translation.svg"
-        _iconSourcesHelp         = _pathIcons + "/assistance.png"
+        _iconSourcesHelp         = _pathIcons + "/info.svg"
+        _iconSourcesParam        = _pathIcons + "/configuration.svg"
              
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         Dialog.setWindowTitle("POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)")
         Dialog.setWindowModality(Qt.WindowModal)
         Dialog.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint) 
-        iconSource = bibli_postmeta.getThemeIcon("postmeta.png")
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconSource          = _pathIcons + "/postmeta.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -104,38 +106,7 @@ class Ui_Dialog_postmeta(object):
                                                     width: 160px; padding: 2px;} \
                                       QTabBar::tab:selected {background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 " + self.colorQTabWidget  + ", stop: 1 white);  font: bold;} \
                                      ")
-        """
-        #--                        
-        #==========================         
-        #Groupe liseré bas
-        self.groupBoxDown = QtWidgets.QGroupBox(Dialog)
-        self.groupBoxDown.setGeometry(QtCore.QRect(10,self.hScreenDialog - 50,self.lScreenDialog -20,40))
-        self.groupBoxDown.setObjectName("groupBoxDown")
-        self.groupBoxDown.setStyleSheet("QGroupBox {   \
-                                border-style: outset;    \
-                                border-width: 1px;       \
-                                border-radius: 10px;     \
-                                border-color: grey;      \
-                                font: bold 12px;         \
-                                padding: 6px;            \
-                                }")  
-        #=====================================================
-        #Boutons  
-        #------       
-        self.okhButton = QtWidgets.QPushButton(self.groupBoxDown)
-        self.okhButton.setGeometry(QtCore.QRect(((self.groupBoxDown.width() -200) / 3) + 100 + ((self.groupBoxDown.width() -200) / 3), 10, 100,23))
-        self.okhButton.setObjectName("okhButton")
-        if self.ihm in ["dockTrue", "dockFalse"] :
-           self.okhButton.setVisible(False) 
-        #------                                    
-        self.helpButton = QtWidgets.QPushButton(self.groupBoxDown)
-        self.helpButton.setGeometry(QtCore.QRect((self.groupBoxDown.width() -200) / 3, 10, 100,23))
-        self.helpButton.setObjectName("helpButton")
-        #------  
-        #Connections  
-        self.helpButton.clicked.connect(Dialog.myHelpAM)
-        self.okhButton.clicked.connect(Dialog.reject)        
-        """                     
+
         QtCore.QMetaObject.connectSlotsByName(Dialog)
         #========================== 
 
@@ -193,8 +164,6 @@ class Ui_Dialog_postmeta(object):
         # Window Versus Dock
         #=====================================================  
         #Menu Dialog
-        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
-        iconParam         = _pathIcons + "/colorbloc.svg"
         self.mMenuBarDialog = QMenuBar(self)
         self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 280, 20))
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
@@ -265,7 +234,7 @@ class Ui_Dialog_postmeta(object):
         mText = QtWidgets.QApplication.translate("postmeta_main", "Customization of the IHM") 
         self.paramColor = QtWidgets.QPushButton(self.mMenuBarDialog)
         self.paramColor.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.paramColor.setIcon(QIcon(iconParam))
+        self.paramColor.setIcon(QIcon(_iconSourcesParam))
         self.paramColor.setObjectName(mText)
         self.paramColor.setToolTip(mText)
         self.paramColor.setGeometry(QtCore.QRect(220,0,18,18))
@@ -294,7 +263,10 @@ class Ui_Dialog_postmeta(object):
     def clickButtonsActions(self):
         if not hasattr(self, 'mConnectEnCours') :
            zTitre = QtWidgets.QApplication.translate("postmeta_ui", "POSTMETA : Warning", None)
-           zMess  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Merci de sélectionner une table, une vue dans un schéma.", None)
+           zMess  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Merci de sélectionner une table, une vue dans un schéma. \
+                                                                          \n\nSoit :                                               \
+                                                                          \n * dans votre panneau 'Explorateur'                       \
+                                                                          \n * dans votre gestionnaire de couche.", None)
            bibli_postmeta.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
            return
 
@@ -356,7 +328,8 @@ class Ui_Dialog_postmeta(object):
            if self.layer.dataProvider().name() == 'postgres':
               self.getAllFromUri()
               #--
-              bibli_postmeta.test_interaction_sql(self)
+              if self.connectBaseOKorKO[0] :
+                 bibli_postmeta.test_interaction_sql(self)
         return
     
     #---------------------------
@@ -376,7 +349,8 @@ class Ui_Dialog_postmeta(object):
             self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
             self.getAllFromUri()
             #--
-            bibli_postmeta.test_interaction_sql(self)
+            if self.connectBaseOKorKO[0] :
+               bibli_postmeta.test_interaction_sql(self)
         return
 
     #---------------------------
@@ -385,10 +359,47 @@ class Ui_Dialog_postmeta(object):
         self.schema, self.table = uri.schema(), uri.table()
         #print( [ self.schema, self.table ] )
         #self.relationType = db_table._relationType #type de relation v=vue, m= vue matérialisée, r = relation (table)
-        mConnectEnCours = psycopg2.connect(uri.connectionInfo(), application_name="POSTMETA")
-        self.mConnectEnCours = mConnectEnCours
-        self.mConnectEnCoursPointeur = mConnectEnCours.cursor()
+        #-
+        self.uri, self.mConfigConnection, self.username, self.password = uri, uri.connectionInfo(), uri.username() or "", uri.password() or ""
+        self.connectBaseOKorKO = self.connectBase()
+        #-
+        if self.connectBaseOKorKO[0] :
+           self.mConnectEnCoursPointeur = self.mConnectEnCours.cursor()
+        else :    
+           zTitre = QtWidgets.QApplication.translate("postmeta_ui", "POSTMETA : Warning", None)
+           zMess  = QtWidgets.QApplication.translate("postmeta_ui", "Authentication problem", None)
+           bibli_postmeta.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
         return
+
+    #----------------------
+    def connectBase(self) :
+        return self.mTestConnect(self.mConfigConnection, self.uri)
+          
+    #----------------------
+    def mTestConnect(self, mConfigConnection, uri) :
+        retUser, retPassword, mTestConnect, okConnect = self.username, self.password, True, False
+        mMessAuth = QtWidgets.QApplication.translate("postmeta_ui", "Authentication problem, check your password in particular.", None)
+        connInfoUri = uri.connectionInfo()
+
+        while mTestConnect :
+           try :
+              mConnectEnCours = psycopg2.connect(uri.connectionInfo(), application_name="Asgard Manager")
+              mTestConnect, okConnect = False, True
+           except :
+              (retSuccess, retUser, retPassword) = QgsCredentials.instance().get(connInfoUri, retUser, retPassword, mMessAuth)
+              if not retSuccess : #Annuler 
+                 mTestConnect, okConnect = False, False
+              else :
+                 uri.setUsername(retUser)     if retUser else ''
+                 uri.setPassword(retPassword) if retPassword else ''
+        #--------
+        if okConnect :
+           QgsCredentials.instance().put(connInfoUri, retUser, retPassword) 
+           self.mConnectEnCours = mConnectEnCours
+           self.mConnectEnCoursPointeur = mConnectEnCours.cursor()
+           return True, self.mConnectEnCours, mConfigConnection
+        else : 
+           return False, None, ""    
 
     # == Gestion des INTERACTIONS
     #---------------------------
@@ -467,8 +478,6 @@ class Ui_Dialog_postmeta(object):
     #==========================
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtWidgets.QApplication.translate("postmeta_ui", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_postmeta.returnVersion()) + ")")
-        #self.helpButton.setText(QtWidgets.QApplication.translate("postmeta_ui", "Help", None))
-        #self.okhButton.setText(QtWidgets.QApplication.translate("postmeta_ui", "Close", None))
 
     #==========================
     def clickColorDialog(self):
