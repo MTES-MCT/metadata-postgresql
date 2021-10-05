@@ -242,4 +242,5 @@ def pseudo_form(widgetsDict):
                + '_|' + ' |' * ( c - i - 1) )
 
 
-
+def post_meta_return():
+    return template, d, shape, vocabulary, g, g1
