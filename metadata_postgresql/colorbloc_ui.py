@@ -510,7 +510,6 @@ class Ui_Dialog_ColorBloc(object):
            #Ajouter si autre param
            mDicAutre = {}
            mDicAutre["ihm"] = self.zComboWinVsDock
-           print(self.zComboWinVsDock)
            mSettings.beginGroup("Generale")
            for key, value in mDicAutre.items():
                mSettings.setValue(key, value)

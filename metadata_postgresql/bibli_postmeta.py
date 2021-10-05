@@ -11,6 +11,9 @@ from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayerCache, QgsFeatureRe
  
 from qgis.utils import iface
 import psycopg2
+from . import doerreur
+from .bibli_pg  import pg_queries
+from .bibli_pg  import template_utils
 
 from qgis.gui import (QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel)
 from qgis.utils import iface
@@ -40,14 +43,8 @@ def dicListSql(mKeySql):
     return  mdicListSql[mKeySql]
 
 #==================================================
-def test_interaction_sql(self) :
-    mKeySql = dicListSql("Fonction_Tests_SELECT")                
-    #**********************
-    mSchemaNew, mSchemaOld = self.schema, "#schema#"
-    mTableNew,  mTableOld  = self.table, "#table#"
-    dicReplace = {mSchemaOld: mSchemaNew, mTableOld: mTableNew}
-    #**********************
-    for key, value in dicReplace.items():
+def transformeSql(self, mDic, mKeySql) :
+    for key, value in mDic.items():
         if isinstance(value, bool) :
            mValue = str(value)
         elif (value is None) :
@@ -56,8 +53,14 @@ def test_interaction_sql(self) :
            value = value.replace("'", "''")
            mValue =  str(value) 
         mKeySql = mKeySql.replace(key, mValue)
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql)
+    return mKeySql
 
+#==================================================
+def test_interaction_sql(self) :
+
+    mKeySql = pg_queries.query_get_table_comment(self.schema, self.table)
+    #**********************
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
     # A SUPPRIMER
     self.textTest = "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence." 
     for k, v in self.mDicObjetsInstancies.items() :
@@ -65,14 +68,24 @@ def test_interaction_sql(self) :
            self.mDicObjetsInstancies[k]['main widget'].setText(str(r))
            break
     # A SUPPRIMER
+    return
 
 #==================================================
-def executeSql(pointeurBase, _mKeySql) :
+def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
     QApplication.instance().setOverrideCursor(Qt.WaitCursor) 
     try :
-      pointeurBase.execute(_mKeySql)
-      result = pointeurBase.fetchall()
+      if isinstance(_mKeySql, tuple) :
+         pointeurBase.execute(_mKeySql[0], _mKeySql[1])
+      else :
+         pointeurBase.execute(_mKeySql)
+      #--
+      if optionRetour == None :
+         result = pointeurBase.fetchall()
+      elif optionRetour == "fetchone" :
+         result = pointeurBase.fetchone()[0]
+      else :   
+         result = pointeurBase.fetchall()
           
     except Exception as err:
       QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
@@ -81,19 +94,42 @@ def executeSql(pointeurBase, _mKeySql) :
       zMessError_Erreur = (str(err.pgerror) if hasattr(err, 'pgerror') else '')
       print("err.pgcode = %s" %(zMessError_Code))
       print("err.pgerror = %s" %(zMessError_Erreur))
-      #zMessError_Erreur = cleanMessError(zMessError_Erreur)
-      #dialogueMessageError(mTypeErreur, zMessError_Erreur )   
+      zMessError_Erreur = cleanMessError(zMessError_Erreur)
+      mListeErrorCode = ["42501", "P0000", "P0001", "P0002", "P0003", "P0004"] 
+      if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur Asgard
+         mTypeErreur = "PostmetaGEREE" if dicExisteExpRegul(self, 'Search_0', zMessError_Erreur) else "PostmetaNONGEREE"
+      else : 
+         mTypeErreur = "Postmeta"
+
+      dialogueMessageError(mTypeErreur, zMessError_Erreur )   
       #-------------
 
     QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
+
+#==================================================
+def cleanMessError(mMess) :
+    mContext = "CONTEXT:"
+    mErreur  = "ERREUR:"  
+    mHint    = "HINT:"  
+    mDetail  = "DETAIL:"
+    mMess = mMess[0:mMess.find(mContext)].lstrip() if mMess.find(mContext) != -1 else mMess
+    mMess = mMess[0:mMess.find(mErreur)].lstrip() + mMess[mMess.find(mErreur) + len(mErreur):].lstrip() if mMess.find(mErreur) != -1 else mMess
+    mMess = mMess[0:mMess.find(mHint)].lstrip() + "<br><br>" + mMess[mMess.find(mHint) + len(mHint):].lstrip() if mMess.find(mHint) != -1 else mMess
+    mMess = mMess[0:mMess.find(mDetail)].lstrip() + "<br><br>" + mMess[mMess.find(mDetail) + len(mDetail):].lstrip() if mMess.find(mDetail) != -1 else mMess
+    return mMess 
+ 
+#==================================================
+def dialogueMessageError(mTypeErreur, zMessError_Erreur):
+    d = doerreur.Dialog(mTypeErreur, zMessError_Erreur)
+    d.exec_()
 
 
 #==================================================
 def resizeIhm(self, l_Dialog, h_Dialog) :
     #----
     x, y = 10, 25
-    larg, haut =  self.Dialog.width() -20, (self.Dialog.height() - self.groupBoxDown.height() -40 )
+    larg, haut =  self.Dialog.width() -20, (self.Dialog.height() - 40 )
     self.tabWidget.setGeometry(QtCore.QRect(x, y, larg , haut))
     #----
     x, y = 0, 0 
@@ -101,9 +137,9 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     for elem in self.listeResizeIhm :
         elem.setGeometry(QtCore.QRect(x, y, larg, haut))
     #----
-    self.Dialog.groupBoxDown.setGeometry(QtCore.QRect(10,h_Dialog - 50,l_Dialog -20,40))    
-    self.okhButton.setGeometry(QtCore.QRect(((self.Dialog.groupBoxDown.width() -200) / 3) + 100 + ((self.Dialog.groupBoxDown.width() -200) / 3), 10, 100,23))
-    self.helpButton.setGeometry(QtCore.QRect((self.Dialog.groupBoxDown.width() -200) / 3, 10, 100,23))
+    #self.Dialog.groupBoxDown.setGeometry(QtCore.QRect(10,h_Dialog - 50,l_Dialog -20,40))    
+    #self.okhButton.setGeometry(QtCore.QRect(((self.Dialog.groupBoxDown.width() -200) / 3) + 100 + ((self.Dialog.groupBoxDown.width() -200) / 3), 10, 100,23))
+    #self.helpButton.setGeometry(QtCore.QRect((self.Dialog.groupBoxDown.width() -200) / 3, 10, 100,23))
     #----
     #----
     #Réinit les dimensions de l'IHM

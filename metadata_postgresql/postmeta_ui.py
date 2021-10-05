@@ -1,10 +1,7 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 #        **************************************************************************
-#        copyright            : (C) 2020 by JD Lomenede for
-#                      self.proxy_model = self.navigateurTreeView.model()
-#                      self.model = iface.browserModel()
-#                      item = self.model.dataItem(self.proxy_model.mapToSource(index))
+#        copyright            : (C) 2020 by JD Lomenede for # self.proxy_model = self.navigateurTreeView.model() = self.model = iface.browserModel() = item = self.model.dataItem(self.proxy_model.mapToSource(index)) #
 #        **************************************************************************
 #        copyright            : (C) 2021 by DL
 #        **************************************************************************
@@ -34,13 +31,11 @@ import sys
 
 from .bibli_rdf import rdf_utils_demo
 from .bibli_rdf import rdf_utils
+from .bibli_pg  import pg_queries
+from .bibli_pg  import template_utils
 
 class Ui_Dialog_postmeta(object):
-    #def __init__(self):
     def __init__(self):
-        #"""Constructor."""
-        #super(Ui_Dialog_postmeta).__init__()
-
         self.iface = qgis.utils.iface                         
         self.firstOpen = True                                 
         self.firstOpenConnect = True
@@ -80,6 +75,7 @@ class Ui_Dialog_postmeta(object):
         _iconSourcesSave         = _pathIcons + "/Save.svg"
         _iconSourcesTemplate     = _pathIcons + "/template.svg"
         _iconSourcesTranslation  = _pathIcons + "/translation.svg"
+        _iconSourcesHelp         = _pathIcons + "/assistance.png"
              
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
@@ -91,12 +87,16 @@ class Ui_Dialog_postmeta(object):
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
 
+        #Affiche info si MAJ version
+        self.barInfo = QgsMessageBar(self)
+        self.barInfo.setSizePolicy( QSizePolicy.Minimum, QSizePolicy.Fixed )
+        self.barInfo.setGeometry(280, 0, Dialog.width()-280, 25)
         #==========================              
         #Zone Onglets
         self.tabWidget = QTabWidget(Dialog)
         self.tabWidget.setObjectName("tabWidget")
         x, y = 10, 25
-        larg, haut =  self.lScreenDialog -20, (self.hScreenDialog - 80 )
+        larg, haut =  self.lScreenDialog -20, (self.hScreenDialog - 40 )
         self.tabWidget.setGeometry(QtCore.QRect(x, y, larg , haut))
         self.tabWidget.setStyleSheet("QTabWidget::pane {border: 2px solid " + self.colorQTabWidget  + "; font-family:" + self.policeQGroupBox  +"; } \
                                     QTabBar::tab {border: 1px solid " + self.colorQTabWidget  + "; border-bottom-color: none; font-family:" + self.policeQGroupBox  +";\
@@ -104,6 +104,7 @@ class Ui_Dialog_postmeta(object):
                                                     width: 160px; padding: 2px;} \
                                       QTabBar::tab:selected {background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 " + self.colorQTabWidget  + ", stop: 1 white);  font: bold;} \
                                      ")
+        """
         #--                        
         #==========================         
         #Groupe liseré bas
@@ -134,7 +135,7 @@ class Ui_Dialog_postmeta(object):
         #Connections  
         self.helpButton.clicked.connect(Dialog.myHelpAM)
         self.okhButton.clicked.connect(Dialog.reject)        
-                             
+        """                     
         QtCore.QMetaObject.connectSlotsByName(Dialog)
         #========================== 
 
@@ -195,7 +196,7 @@ class Ui_Dialog_postmeta(object):
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconParam         = _pathIcons + "/colorbloc.svg"
         self.mMenuBarDialog = QMenuBar(self)
-        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 300, 20))
+        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 280, 20))
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
         mText = QtWidgets.QApplication.translate("postmeta_main", "Edit") 
         self.postmetaEdit = QtWidgets.QPushButton(self.mMenuBarDialog)
@@ -269,6 +270,16 @@ class Ui_Dialog_postmeta(object):
         self.paramColor.setToolTip(mText)
         self.paramColor.setGeometry(QtCore.QRect(220,0,18,18))
         self.paramColor.clicked.connect(self.clickColorDialog)
+        #--
+        mText = QtWidgets.QApplication.translate("postmeta_main", "Help") 
+        self.postmetaHelp = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.postmetaHelp.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.postmetaHelp.setIcon(QIcon(_iconSourcesHelp))
+        self.postmetaHelp.setObjectName(mText)
+        self.postmetaHelp.setToolTip(mText)
+        self.postmetaHelp.setGeometry(QtCore.QRect(250,0,18,18))
+        self.postmetaHelp.clicked.connect(self.myHelpAM)
+        #------------
         
         if self.ihm in ["dockTrue", "dockFalse"] : self.mMenuBarDialog.show()
         #==========================
@@ -281,8 +292,30 @@ class Ui_Dialog_postmeta(object):
     #==========================
     # == Gestion des actions de bouttons de la barre de menu
     def clickButtonsActions(self):
-        print(self.mMenuBarDialog.sender().objectName())
-        pass 
+        if not hasattr(self, 'mConnectEnCours') :
+           zTitre = QtWidgets.QApplication.translate("postmeta_ui", "POSTMETA : Warning", None)
+           zMess  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Merci de sélectionner une table, une vue dans un schéma.", None)
+           bibli_postmeta.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+           return
+
+        mItem = self.mMenuBarDialog.sender().objectName()
+        #**********************
+
+        #**********************
+        #**********************
+        if mItem == "Edition" : 
+           mKeySql = (pg_queries.query_is_relation_owner(), (self.schema, self.table))
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+
+           # A SUPPRIMER
+           textTest = "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence." 
+           for k, v in self.mDicObjetsInstancies.items() :
+               if v['value'] == textTest :
+                  self.mDicObjetsInstancies[k]['main widget'].setText(str("SUPER, j'ai les droits" if r else "C'est BALOT !!, je n'ai pas de droits"))
+                  break
+           # A SUPPRIMER
+
+           print(r)
         return
     # == Gestion des actions de bouttons de la barre de menu
     #==========================
@@ -382,7 +415,7 @@ class Ui_Dialog_postmeta(object):
                                 }")
 
         x, y = 0, 0
-        larg, haut =  self.tabWidget.width()- 5, self.tabWidget.height()-25
+        larg, haut =  self.tabWidget.width()- 5, self.tabWidget.height()-5
         zoneWidgetsGroupBox.setGeometry(QtCore.QRect(x, y, larg, haut))
         #--                        
         zoneWidgets = QtWidgets.QGridLayout()
@@ -434,8 +467,8 @@ class Ui_Dialog_postmeta(object):
     #==========================
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtWidgets.QApplication.translate("postmeta_ui", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_postmeta.returnVersion()) + ")")
-        self.helpButton.setText(QtWidgets.QApplication.translate("postmeta_ui", "Help", None))
-        self.okhButton.setText(QtWidgets.QApplication.translate("postmeta_ui", "Close", None))
+        #self.helpButton.setText(QtWidgets.QApplication.translate("postmeta_ui", "Help", None))
+        #self.okhButton.setText(QtWidgets.QApplication.translate("postmeta_ui", "Close", None))
 
     #==========================
     def clickColorDialog(self):
