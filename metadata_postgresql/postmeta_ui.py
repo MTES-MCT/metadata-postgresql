@@ -29,7 +29,7 @@ import subprocess
 import time
 import sys
 
-from .bibli_rdf import rdf_utils_demo
+from .bibli_rdf.tests import rdf_utils_demo
 from .bibli_rdf import rdf_utils
 from .bibli_pg  import pg_queries
 from .bibli_pg  import template_utils
