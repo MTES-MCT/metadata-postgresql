@@ -1900,8 +1900,13 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 
                 mLabelRow = None
 
-                if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
+                if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit \
+                    and not mKind in ('sh:IRI', 'sh:BlankNodeOrIRI') \
+                    or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
+                    # on fait apparaître un QTextEdit à la place du QLineEdit quand
+                    # la longueur du texte dépasse le seuil valueLengthLimit ou
+                    # s'il contient des retours à la ligne, et que ce n'est pas un IRI
                 
                 if mWidgetType == "QComboBox" and ( ( not mVSources ) or '< URI >' in mVSources ):
                     mWidgetType = "QLineEdit"
