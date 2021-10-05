@@ -29,8 +29,8 @@ with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='
 # constitution du dictionnaire
 #d = rdf_utils.build_dict(Graph(), shape, vocabulary)
 #d = rdf_utils.build_dict(g, shape, vocabulary)
-#d = rdf_utils.build_dict(g, shape, vocabulary, translation=True)
-d = rdf_utils.build_dict(Graph(), shape, vocabulary, translation=True)
+d = rdf_utils.build_dict(g, shape, vocabulary, translation=True)
+#d = rdf_utils.build_dict(Graph(), shape, vocabulary, translation=True)
 #d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, langList=['fr'])
 #d = rdf_utils.build_dict(g, shape, vocabulary, mode='read')
 #d = rdf_utils.build_dict(g, shape, vocabulary, template=template)
