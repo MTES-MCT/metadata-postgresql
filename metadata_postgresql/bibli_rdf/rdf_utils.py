@@ -1024,7 +1024,7 @@ class WidgetsDict(dict):
 
         """
         if ( self[key]['node'] is None and self[key]['value'] in (None, '') ) \
-            or self[key]['hidden M']:
+            or self[key]['hidden M'] or self[key]['do not save']:
             return [9999]
             # tout ce qui n'est pas un groupe de propriétés ou
             # un widget de saisie non masqué contenant une
@@ -1126,7 +1126,7 @@ class WidgetsDict(dict):
 
 
 def build_dict(metagraph, shape, vocabulary, template=None,
-    templateTabs=None, data=None, mode='edit',
+    templateTabs=None, columns=None, data=None, mode='edit',
     readHideBlank=True, readHideUnlisted=True, editHideUnlisted=False,
     language="fr", translation=False, langList=['fr', 'en'],
     readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
@@ -1160,7 +1160,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     - [optionnel] templateTabs (dict) : dictionnaire complémentaire à template, dont les
     clés sont les noms des onglets du formulaire et les valeurs les futures clés
     correspondant aux onglets dans le dictionnaire de widgets. L'ordre des clés dans le
-    dictionnaire sera l'ordre des onglets.    
+    dictionnaire sera l'ordre des onglets.
+    - [optionnel] columns (list) : liste de tuples formés de deux éléments, le premier
+    (str) pour le nom du champ, le second (str) pour son descriptif.
     - [optionnel] data (dict) : un dictionnaire contenant des informations actualisées
     à partir de sources externes (par exemple déduites des données) qui devront écraser
     les valeurs présentes dans metagraph. Les clés du dictionnaire sont des chemins
@@ -1342,7 +1344,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     'transform', 'default widget type', 'one per language', 'next child' (indice à utiliser si un
     enregistrement est ajouté au groupe), 'multiple values'* (la catégorie est-elle
     censée admettre plusieurs valeurs ?), 'order shape', 'order template'* (ordre des catégories, cette
-    clé s'appelle simplement "order" dans le template).
+    clé s'appelle simplement "order" dans le template), 'do not save'.
 
     * ces clés apparaissent aussi dans le dictionnaire interne de template.
     ** le dictionnaire interne de template contient également une clé 'data type', mais dont les
@@ -1455,16 +1457,24 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             'one per language' : None,
             'next child' : None,
             'shape order' : None,
-            'template order' : None
+            'template order' : None,
+            'do not save' : None
             }
         
+        # liste des onglets
         mTemplateTabs = templateTabs.copy() if templateTabs \
-                        else { "Général": (0,) } 
+                        else { "Général": (0,) }
+        if columns and not "Champs" in mTemplateTabs:
+            # le cas échéant, on ajoute un onglet pour les
+            # descriptifs des champs
+            i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
+            mTemplateTabs.update({ "Champs": (i,) })
 
         # on initialise le dictionnaire avec les groupes racines,
         # qui correspondent aux onglets du formulaire :
         mDict = {}
-        for label, key in mTemplateTabs.items():       
+        n = 0
+        for label, key in mTemplateTabs.items():        
             mDict.update( { key : mWidgetDictTemplate.copy() } )
             mDict[key].update( {
                 'object' : 'group of properties',
@@ -1473,8 +1483,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 'row' : 0,
                 'node' : mParentNode,
                 'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
-                'shape order' : key[0]
-                } ) 
+                'shape order' : key[0],
+                'do not save' : n > 0
+                } )
+            n += 1
 
         mParentWidget = (0,)
 
@@ -1559,21 +1571,32 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             values = [ v['value'] for v in q_gr ]
     
         # exclusion des catégories qui ne sont pas prévues par
-        # le modèle et n'ont pas de valeur renseignée
-        if values in ( None, [], [ None ] ) and not mTemplateEmpty and not ( mNPath in template ):
+        # le modèle, ne sont pas considérées comme obligatoires
+        # par shape et n'ont pas de valeur renseignée
+        # les catégories obligatoires de shape sont affichées
+        # quoi qu'il arrive en mode édition
+        # les catégories sans valeurs sont éliminées indépendemment
+        # du modèle en mode lecture quand readHideBlank vaut True
+        if values in ( None, [], [ None ] ) and (
+            ( readHideBlank and mode == 'read' ) \
+            or ( not mTemplateEmpty  and not ( mNPath in template ) \
+                and not ( mode == 'edit' and p['min'] and int(p['min']) > 0 ) ) \
+            ):
             continue
         # s'il y a une valeur, mais que
         # read/editHideUnlisted vaut True et que la catégorie n'est
         # pas prévue par le modèle, on poursuit le traitement
         # pour ne pas perdre la valeur, mais on ne créera
         # pas de widget
+        # les catégories obligatoires de shape sont affichées
+        # quoi qu'il arrive
         elif ( (mode == 'edit' and editHideUnlisted) or \
             (mode == 'read' and readHideUnlisted) ) \
-            and not mTemplateEmpty and not ( mNPath in template ):
+            and not mTemplateEmpty and not ( mNPath in template ) \
+            and not ( p['min'] and int(p['min']) > 0 ):
             mNHidden = True
         
-        if not ( readHideBlank and mode == 'read' ):
-            values = values or [ None ]
+        values = values or [ None ]
         
         if not mNHidden and ( mNPath in mShallowTemplate ):
             t = mShallowTemplate[mNPath]
@@ -1592,6 +1615,33 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             
         else:
             t = dict()
+            if not mNHidden and not mTemplateEmpty \
+                and is_root(mParent):
+                # les métadonnées hors modèle non masquées
+                # de premier niveau iront dans un onglet "Autres".
+                # S'il n'existe pas encore, on l'ajoute :
+                if not "Autres" in mTemplateTabs:
+                    i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
+                    mParent = (i,)
+                    mTemplateTabs.update({ "Autres": mParent })
+                    mDict.update( { mParent : mWidgetDictTemplate.copy() } )
+                    mDict[mParent].update( {
+                        'object' : 'group of properties',
+                        'main widget type' : 'QGroupBox',
+                        'label' : "Autres",
+                        'row' : 0,
+                        'node' : mParentNode,
+                        'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
+                        'shape order' : i,
+                        'do not save' : True
+                        } )
+                else:
+                    mParent = mTemplateTabs["Autres"]
+                    
+                if not mParent in idx:
+                    idx.update({ mParent: 0 })
+                if not mParent in rowidx:
+                    rowidx.update({ mParent: 0 })
 
 
         if mNHidden:
@@ -1792,7 +1842,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'template order' : int(t.get('order')) if t.get('order') is not None else None
                         } )
 
-                    if mKind == 'sh:BlankNode':
+                    if mKind == 'sh:BlankNode' or ( mode == 'read'
+                        and isinstance(mValueBrut, BNode) ):
+                        # s'il n'y a pas lieu de créer un widget jumeau
+                        # pour un IRI, on incrémente tout de suite les compteurs
                         idx[mParent] += 1
                         rowidx[mParent] += 1
                         
@@ -1802,7 +1855,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if not mNHidden or isinstance(mValueBrut, BNode):              
                     build_dict(
                         metagraph, shape, vocabulary, template=template, templateTabs=templateTabs,
-                        data=data, mode=mode, readHideBlank=readHideBlank,
+                        columns=columns, data=data, mode=mode, readHideBlank=readHideBlank,
                         readHideUnlisted=readHideUnlisted, editHideUnlisted=editHideUnlisted,
                         language=language, translation=translation, langList=langList,
                         readOnlyCurrentLanguage=readOnlyCurrentLanguage,
@@ -1818,8 +1871,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             # pour tout ce qui n'est pas un pur noeud vide :
             # on ajoute un widget de saisie, en l'initialisant avec
             # une représentation lisible de la valeur
-            if not mKind == 'sh:BlankNode' and (
-                    not readHideBlank or not mode == 'read' or not isinstance(mValueBrut, BNode) ):
+            if not ( mKind == 'sh:BlankNode' \
+                or ( mode == 'read' and isinstance(mValueBrut, BNode) ) ):
                       
                 # cas d'une valeur appartenant à une branche masquée
                 # ou d'une traduction dans une langue qui n'est pas
@@ -2010,6 +2063,19 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 continue
 
             mParent = mParentWidget
+            
+            # choix du bon onglet
+            if is_root(mParent):
+                # NB. Aussi longtemps que les catégories locales
+                # seront toutes de premier niveau, cette condition
+                # devrait toujours être vérifiée
+                tab = t.get('tab name', None)
+                if tab and tab in mTemplateTabs:
+                    mParent = mTemplateTabs[tab]
+                    if not mParent in idx:
+                        idx.update({ mParent: 0 })
+                    if not mParent in rowidx:
+                        rowidx.update({ mParent: 0 })
 
             mType = URIRef( "http://www.w3.org/2001/XMLSchema#" +
                     ( ( t.get('data type', None) ) or "string" ) )
@@ -2137,34 +2203,73 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     # 'template order'). Les métadonnées non définies
     # traitées plus loin iront naturellement à la fin.
     if template:
-    
-        n = 0
-        l = [k for k in iter_children_keys(mDict, mParentWidget)]
-        l.sort(key= lambda k: (
-            mDict[k]["template order"] if mDict[k]["template order"] is not None else 9999,
-            mDict[k]["shape order"] if mDict[k]["shape order"] is not None else 9999
-            ))
         
-        for k in l:       
-            if mDict[k]['row'] is not None:
-        
-                # on ne traite pas les doubles M
-                # indépendemment, mais en même temps
-                # que leurs jumeaux non M
-                if len(k) == 3 and (k[0], k[1]) in mDict:
-                    continue
-                elif len(k) == 2 and (k[0], k[1], 'M') in mDict:                    
-                    mDict[(k[0], k[1], 'M')]['row'] = n
-                    # la question du label ne se pose
-                    # pas puisqu'on est sur un groupe
-                
-                if mDict[k]['label row'] is not None:
-                    mDict[k]['label row'] = n
-                    n += 1
-                
-                mDict[k]['row'] = n
-                n += ( mDict[k]['row span'] or 1 )
+        lw = [k for k in mTemplateTabs.values()] if is_root(mParentWidget) \
+            else [mParentWidget]
+            
+        for w in lw:
+            n = 0
+            l = [k for k in iter_children_keys(mDict, w)]
+            l.sort(key= lambda k: (
+                mDict[k]["template order"] if mDict[k]["template order"] is not None else 9999,
+                mDict[k]["shape order"] if mDict[k]["shape order"] is not None else 9999
+                ))
+            
+            for k in l:       
+                if mDict[k]['row'] is not None:
+            
+                    # on ne traite pas les doubles M
+                    # indépendemment, mais en même temps
+                    # que leurs jumeaux non M
+                    if len(k) == 3 and (k[0], k[1]) in mDict:
+                        continue
+                    elif len(k) == 2 and (k[0], k[1], 'M') in mDict:                    
+                        mDict[(k[0], k[1], 'M')]['row'] = n
+                        # la question du label ne se pose
+                        # pas puisqu'on est sur un groupe
+                    
+                    if mDict[k]['label row'] is not None:
+                        mDict[k]['label row'] = n
+                        n += 1
+                    
+                    mDict[k]['row'] = n
+                    n += ( mDict[k]['row span'] or 1 )
 
+
+    # ---------- DESCRIPTIFS DES CHAMPS ----------
+    
+    if columns and mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
+
+        # dans l'onglet "Champs"
+        mParent = mTemplateTabs["Champs"]
+        if not mParent in idx:
+            idx.update({ mParent: 0 })
+        if not mParent in rowidx:
+            rowidx.update({ mParent: 0 })
+        
+        # pour chaque champ, on référence un widget de saisie
+        # QTextEdit, dont le nom du champ sera le label.
+        for colname, coldescr in columns:
+        
+            mWidgetType = 'QTextEdit'
+
+            mWidget = ( idx[mParent], mParent )
+            mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+            mDict[ ( idx[mParent], mParent ) ].update( {
+                'object' : 'edit',
+                'main widget type' : mWidgetType,
+                'row' : rowidx[mParent] + 1,
+                'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
+                'label' : colname,
+                'label row' : rowidx[mParent],
+                'value' : coldescr,
+                'do not save' : True,
+                'path' : 'snum:column'
+                } )
+            idx[mParent] += 1
+            rowidx[mParent] += ( 1 + textEditRowSpan ) 
+            
+            
 
     # ---------- METADONNEES NON DEFINIES ----------
     # métadonnées présentes dans le graphe mais ni dans shape ni dans template
@@ -2198,6 +2303,33 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
             mParent = mParentWidget
             
+            # les catégories non référencées vont toujours dans
+            # l'onglet "Autres". 
+            # s'il n'existait pas encore, on le crée :
+            if not "Autres" in mTemplateTabs:
+                i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
+                mParent = (i,)
+                mTemplateTabs.update({ "Autres": mParent })
+                mDict.update( { mParent : mWidgetDictTemplate.copy() } )
+                mDict[mParent].update( {
+                    'object' : 'group of properties',
+                    'main widget type' : 'QGroupBox',
+                    'label' : "Autres",
+                    'row' : 0,
+                    'node' : mParentNode,
+                    'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
+                    'shape order' : i,
+                    'do not save' : True
+                    } )
+            else:
+                mParent = mTemplateTabs["Autres"]
+                
+            if not mParent in idx:
+                idx.update({ mParent: 0 })
+            if not mParent in rowidx:
+                rowidx.update({ mParent: 0 })
+            
+            # cas d'un groupe de valeurs
             if len(dpv[p]) > 1:
             
                 if ( (mode == 'edit' and editHideUnlisted) or \
@@ -2405,7 +2537,7 @@ def is_valid_minipath(path, nsm):
     if re.match(r'^[<][^<>"\s{}|\\^`]+[:][^<>"\s{}|\\^`]+[>]$', path):
         return True
 
-    r = re.match('^([a-z]{1,10})[:][a-z0-9-]{1,25}$', path)
+    r = re.match('^([a-z]{1,10})[:][a-z0-9-]{1,100}$', path)
     if r and r[1] in [ k for k,v in nsm.namespaces() ]:
         return True
 
@@ -3214,6 +3346,30 @@ def load_vocabulary():
     l'argument "vocabulary" des fonctions du présent script.
     """
     return metagraph_from_file(__path__[0] + r'\modeles\vocabulary.ttl')
+
+
+def is_dataset_uri(anyIRI):
+    """anyIRI est-il un identifiant de jeu de données ?
+    
+    ARGUMENTS
+    ---------
+    - anyIRI (URIRef) : un IRI quelconque.
+    
+    RESULTAT
+    --------
+    True si la forme d'anyIRI est celle d'un identifiant
+    de jeu de données, False sinon.
+    
+    En aucun cas cette fonction ne vérifie qu'il y a bien
+    dans la base PostgreSQL une table avec ledit identifiant.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils.is_dataset_uri(URIRef("urn:uuid:88b31c95-ff96-4b85-bb55-1edc65402129"))
+    True
+    
+    """
+    return re.fullmatch('^urn[:]uuid[:][a-z0-9-]{36}$', str(anyIRI)) is not None
 
 
 class ForbiddenOperation(Exception):
