@@ -468,7 +468,7 @@ def check_hidden_branches(widgetsdict, populated=False):
         return issues
 
 
-def check_rows(widgetsdict, populated=False):
+def check_rows(widgetsdict, populated=False, mode='edit'):
     """Check if row keys of given widget dictionnary are consistent.
 
     ARGUMENTS
@@ -478,6 +478,7 @@ def check_rows(widgetsdict, populated=False):
     - populated (bool) : True si le dictionnaire a été peuplé de pseudo-widgets
     avec la populate_widgets(). Dans ce cas, la fonction vérifie aussi que les
     clés '... widget' sont remplies comme il le faut.
+    - mode (str) : le mode pour lequel a été généré le graphe, 'read' ou 'edit'.
     
     RESULTAT
     --------
@@ -536,28 +537,30 @@ def check_rows(widgetsdict, populated=False):
             n += 1
             continue
             
-        if len(k) == 3:
-            if not widgetsdict.get( (k[0], k[1]), { 'row' : None } )['row'] == c['row']:
+        if len(k) == 3 and mode == 'edit':
+            if not widgetsdict.get( (k[0], k[1]), {'row' : None} )['row'] == c['row']:
                 issues.update( { n : (k, 'misplaced M widget') } )
-                n += 1
-            continue
+                n += 1 
+        else:
+            if not c['label row'] is None:
+            # surtout pas juste if c['label row'], car 0 ~ False
             
-        if not c['label row'] is None:
-        # surtout pas juste if c['label row'], car 0 ~ False
-        
-            if c['label'] is None:
-                issues.update( { n : (k, 'label row but no label') } )
-                n += 1
+                if c['label'] is None:
+                    issues.update( { n : (k, 'label row but no label') } )
+                    n += 1
+                    
+                if c['label row'] in idx[k[1]]:
+                    issues.update( { n : (k, 'already affected (label row)') } )
+                    n += 1
+                    
+                idx[k[1]].append(c['label row'])            
                 
-            if c['label row'] in idx[k[1]]:
-                issues.update( { n : (k, 'already affected (label row)') } )
+            if c['row'] in idx[k[1]]:
+                issues.update( { n : (k, 'already affected') } )
                 n += 1
-                
-            idx[k[1]].append(c['label row'])            
-            
-        if c['row'] in idx[k[1]]:
-            issues.update( { n : (k, 'already affected') } )
-            n += 1
+             
+            for x in range(c['row span'] or 1):
+                idx[k[1]].append(c['row'] + x)
             
         if populated and c['label widget'] \
             and not c['label widget'][2] == ( c['label row'] \
@@ -569,9 +572,6 @@ def check_rows(widgetsdict, populated=False):
             if populated and c[e] and not c[e][2] == c['row']:
                 issues.update( { n : (k, "{} row doesn't match with key 'row'".format(e)) } )
                 n += 1
-            
-        for x in range(c['row span'] or 1):
-            idx[k[1]].append(c['row'] + x)
 
     for k, l in idx.items():
         l.sort()
