@@ -17,24 +17,25 @@ Sources de données :
 | 2 | `vocabulary` | rdflib.graph.Graph | oui |  | [→](#vocabulary--la-compilation-des-thésaurus) |
 | 3 | `template` | dict | non | `None` | [→](#template--le-modèle-de-formulaire) |
 | 4 | `templateTabs` | dict | non | `None` | [→](#templateTabs--la-liste-des-onglets) |
-| 5 | `data` | dict | non | `None` | [→](#data--les-métadonnées-calculées) |
+| 5 | `columns` | list | non | `None` | [→](#columns--les-descriptifs-des-champs) |
+| 6 | `data` | dict | non | `None` | [→](#data--les-métadonnées-calculées) |
 
 Paramètres utilisateurs :
 
 | Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
 | --- | --- | --- | --- | --- | --- |
-| 6 | `mode` | str | non | `'edit'` | [→](#mode) |
-| 7 | `readHideBlank` | bool | non | `True` | [→](#readhideblank) |
-| 8 | `readHideUnlisted` | bool | non | `True` | [→](#readHideunlisted) |
-| 8 | `editHideUnlisted` | bool | non | `False` | [→](#editHideunlisted) |
-| 9 | `language` | str | non | `'fr'` | [→](#language) |
-| 10 | `translation` | bool | non | `False` | [→](#translation) |
-| 11 | `langList` | list (str) | non | `['fr', 'en']` | [→](#langlist) |
-| 12 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
-| 13 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
-| 14 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
-| 15 | `valueLengthLimit` | int | non | `100` | [→](#valuelengthlimit) |
-| 16 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
+| 7 | `mode` | str | non | `'edit'` | [→](#mode) |
+| 8 | `readHideBlank` | bool | non | `True` | [→](#readhideblank) |
+| 9 | `readHideUnlisted` | bool | non | `True` | [→](#readHideunlisted) |
+| 10 | `editHideUnlisted` | bool | non | `False` | [→](#editHideunlisted) |
+| 11 | `language` | str | non | `'fr'` | [→](#language) |
+| 12 | `translation` | bool | non | `False` | [→](#translation) |
+| 13 | `langList` | list (str) | non | `['fr', 'en']` | [→](#langlist) |
+| 14 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
+| 15 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
+| 16 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
+| 17 | `valueLengthLimit` | int | non | `100` | [→](#valuelengthlimit) |
+| 18 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
 
 Tous les arguments sont décrits plus en détail dans la suite, ainsi que le résultat obtenu.
 
@@ -65,6 +66,8 @@ if mode is not None:
 widgetsdict = rdf_utils.build_dict(**kwa)
 
 ```
+
+**Quoi qu'il arrive, les arguments optionnels doivent impérativement être nommés.** Leurs positions sont susceptibles d'être modifiées si de nouveaux arguments sont ajoutés à la fonction.
 
 ## Sources de données
 
@@ -162,7 +165,7 @@ La forme de `template` est proche de celle d'un dictionnaire de widgets, si ce n
 Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `template`.
 
 
-### templateTabs : le liste des onglets
+### templateTabs : la liste des onglets
 
 `templateTabs` est un dictionnaire qui répertorie les onglets utilisés par le modèle de formulaire. Il peut valoir `None` en l'absence de modèle ou si le modèle ne répartit pas les catégories dans des onglets.
 
@@ -179,6 +182,31 @@ Par exemple :
 ```
 
 Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `templateTabs`.
+
+
+### columns : les descriptifs des champs
+
+`columns` est la liste des champs de la table / vue courante. Plus précisément, il s'agit d'une liste de tuples dont le premier élément est le nom du champ et le second son descriptif.
+
+Elle peut être obtenue ainsi :
+
+```python
+
+import psycopg2
+conn = psycopg2.connect(connection_string)
+
+with conn:
+    with conn.cursor() as cur:
+    
+        query = pg_queries.query_get_columns(schema_name, table_name)
+        cur.execute(query)
+        columns = cur.fetchall()
+
+conn.close()
+
+```
+
+Dans le formulaire résultant, chaque champ se trouvera représenté par un QTextEdit placé dans l'onglet *Champs*.
 
 
 ### data : les métadonnées calculées
