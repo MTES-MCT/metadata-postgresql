@@ -26,10 +26,17 @@ with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encodi
 with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
     g = rdf_utils.metagraph_from_pg_description(src.read(), shape)
 
+# pseudo-liste des champs de la table
+columns = [
+    ("champ 1", "description champ 1"),
+    ("champ 2", "description champ 2"),
+    ("champ 3", "description champ 3")
+    ]
+
 # constitution du dictionnaire
 #d = rdf_utils.build_dict(Graph(), shape, vocabulary)
 #d = rdf_utils.build_dict(g, shape, vocabulary)
-d = rdf_utils.build_dict(g, shape, vocabulary, translation=True)
+d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, columns=columns)
 #d = rdf_utils.build_dict(Graph(), shape, vocabulary, translation=True)
 #d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, langList=['fr'])
 #d = rdf_utils.build_dict(g, shape, vocabulary, mode='read')
