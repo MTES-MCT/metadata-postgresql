@@ -211,11 +211,109 @@ def query_template_tabs():
             WHERE meta_template_categories.tpl_label = %s
                 AND (
                     meta_template_categories.shrcat_path IS NOT NULL
-                        AND meta_template_categories.shrcat_path ~ '^[a-z]{1,10}[:][a-z0-9-]{1,25}$'
+                        AND meta_template_categories.shrcat_path ~ '^[a-z]{1,10}[:][a-z0-9-]{1,100}$'
                     OR meta_template_categories.shrcat_path IS NULL
-                        AND meta_template_categories.loccat_path ~ '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
+                        AND meta_template_categories.loccat_path ~ ANY(ARRAY[
+                            '^[a-z]{1,10}[:][a-z0-9-]{1,100}$',
+                            '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
+                            ])
                     )
             GROUP BY meta_tab.tab_name, meta_tab.tab_num
             ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab_name
         """
+
+
+def query_get_columns(schema_name, table_name):
+    """Crée une requête de récupération des descriptifs des champs d'une table ou vue.
+    
+    ARGUMENTS
+    ---------
+    - schema_name (str) : nom du schéma de la table ;
+    - table_name (str) : nom de la table.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> query = query_get_columns(schema_name, table_name)
+    >>> cur.execute(query)
+
+    """
+    return sql.SQL(
+        """
+        SELECT
+            attname,
+            col_description('{attrelid}'::regclass, attnum)
+            FROM pg_catalog.pg_attribute
+            WHERE attrelid = '{attrelid}'::regclass AND attnum >= 1
+            ORDER BY attnum
+        """
+        ).format(
+            attrelid=sql.Identifier(schema_name, table_name)
+            )
+
+
+def query_update_column_comment(schema_name, table_name, column_name):
+    """Crée une requête de mise à jour du descriptif d'un champ.
+    
+    ARGUMENTS
+    ---------
+    - schema_name (str) : nom du schéma de la table ;
+    - table_name (str) : nom de la table ;
+    - column_name (str) : nom du champ.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> query = query_update_column_comment(schema_name, table_name, column_name)
+    >>> cur.execute(query, (new_pg_col_description,))
+    
+    Avec (arguments positionnels) :
+    - new_pg_col_description (str) : valeur actualisée du descriptif du
+    champ.
+    """
+    return sql.SQL(
+        "COMMENT ON COLUMN {} IS %s"
+        ).format(
+            sql.Identifier(schema_name, table_name, column_name)
+            )
+
+
+def query_update_columns_comments(schema_name, table_name, widgetsdict):
+    """Crée une requête de mise à jour des descriptifs des champs d'une table.
+    
+    ARGUMENTS
+    ---------
+    - schema_name (str) : nom du schéma de la table ;
+    - table_name (str) : nom de la table ;
+    - widgetsdict (WidgetsDict) : le dictionnaire de widgets qui contient
+    les descriptifs actualisés des champs.
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> query = query_update_columns_comments(schema_name, table_name, widgetsdict)
+    >>> cur.execute(query)
+    
+    À noter que cette requête pourrait échouer si des champs ont été
+    supprimés ou renommés entre temps.
+    
+    La fonction renvoie None si elle ne trouve aucun descriptif de champ
+    dans le dictionnaire de widgets.
+    """
+    updated_columns = []
+    for k, v in widgetsdict.items():
+        if v['path'] == 'snum:column' and v['object'] == 'edit':
+            updated_columns.append( (v['label'], v['value'] or '') )
+    
+    if updated_columns:
+        return sql.SQL(' ; ').join([
+            sql.SQL(
+                "COMMENT ON COLUMN {} IS {}"
+                ).format(
+                    sql.Identifier(schema_name, table_name, colname),
+                    sql.Literal(coldescr)
+                    )
+            for colname, coldescr in updated_columns
+            ])
+
 
