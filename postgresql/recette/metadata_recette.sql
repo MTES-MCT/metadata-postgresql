@@ -283,7 +283,7 @@ BEGIN
         FROM z_metadata.meta_categorie
         WHERE cat_label = 'Ma catégorie' ;
         
-    ASSERT p ~ '^[<]urn[:]uuid[:][0-9a-z-]{36}[>]$' ;
+    ASSERT p ~ '^uuid[:][0-9a-z-]{36}$' ;
     
     DELETE FROM z_metadata.meta_categorie ;
 
