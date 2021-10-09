@@ -37,6 +37,9 @@ class TestRDFUtils(unittest.TestCase):
         with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
             self.metagraph = rdf_utils.metagraph_from_pg_description(src.read(), self.shape)
 
+        # fiche de métadonnées vide
+        self.metagraph_empty = rdf_utils.metagraph_from_pg_description("", self.shape)
+
         # construction d'un dictionnaire de widgets à partir d'un graphe vierge
         self.widgetsdict = rdf_utils.build_dict(
             Graph(), self.shape, self.vocabulary,
@@ -575,6 +578,275 @@ class TestRDFUtils(unittest.TestCase):
                     self.assertTrue(v['help text'].startswith('Ajouter un élément'))
         
 
+    # contrôle de l'ordre des catégories en multi-onglets
+    def test_build_dict_11(self):
+        template = {
+            "dct:title":  { "order": 10, "tab name": "Général" },
+            "dcat:distribution": { "tab name": "Distribution", "order": 1 },
+            "dcat:distribution / dct:issued": {},
+            "dcat:distribution / dct:accessURL": {},
+            "dct:publisher": { "tab name": "Distribution", "order": 2 },
+            "dct:modified": { "tab name": "Distribution" },
+            "dcat:keyword" : {},
+            "dct:language" : { "tab name": "Distribution", "order": -1 }
+            }
+        templateTabs = { "Général" : (0,), "Distribution" : (1,) }
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+        dbk = search_keys(d, "dcat:distribution", 'group of values')[0]
+        self.assertEqual(d[dbk[1]]['label'], "Distribution")
+        pbk = search_keys(d, "dct:publisher", 'group of properties')[0]
+        self.assertEqual(d[pbk[1]]['label'], "Distribution")
+        mdk = search_keys(d, "dct:modified", 'edit')[0]
+        self.assertEqual(d[mdk[1]]['label'], "Distribution")
+        lgk = search_keys(d, "dct:language", 'group of values')[0]
+        self.assertEqual(d[lgk[1]]['label'], "Distribution")
+        self.assertTrue(d[lgk]['row'] < d[dbk]['row'] < d[pbk]['row'] < d[mdk]['row'])
+        
+
+    # métadonnées obligatoires de shape absentes du template
+    def test_build_dict_12(self):
+        template = {
+            "dcat:distribution": { "tab name": "Distribution" },
+            "dcat:distribution / dct:issued": {},
+            "dcat:distribution / dct:accessURL": {},
+            "dct:publisher": { "tab name": "Distribution" },
+            "dct:modified": {},
+            "dcat:keyword" : {}
+            }
+        templateTabs = { "Général" : (0,), "Distribution" : (1,) }
+        
+        # mode édition sans editHideUnlisted
+        # métadonnées présentes dans le graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            editHideUnlisted=False
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertEqual(d[ttk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[ttk]['main widget type'])
+        dsk = search_keys(d, "dct:description", 'edit')[0]
+        self.assertEqual(d[dsk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[dsk]['main widget type'])
+        
+        # mode édition avec editHideUnlisted
+        # métadonnées présentes dans le graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            editHideUnlisted=True
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertEqual(d[ttk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[ttk]['main widget type'])
+        dsk = search_keys(d, "dct:description", 'edit')[0]
+        self.assertEqual(d[dsk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[dsk]['main widget type'])
+
+        # mode lecture sans readHideUnlisted
+        # et avec readHideBlank
+        # métadonnées présentes dans le graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read',
+            readHideUnlisted=False,
+            readHideBlank=True
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertEqual(d[ttk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[ttk]['main widget type'])
+        dsk = search_keys(d, "dct:description", 'edit')[0]
+        self.assertEqual(d[dsk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[dsk]['main widget type'])
+
+        # mode lecture avec readHideUnlisted
+        # et avec readHideBlank
+        # métadonnées présentes dans le graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read',
+            readHideUnlisted=True,
+            readHideBlank=True
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertEqual(d[ttk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[ttk]['main widget type'])
+        dsk = search_keys(d, "dct:description", 'edit')[0]
+        self.assertEqual(d[dsk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[dsk]['main widget type'])
+
+        # mode édition sans editHideUnlisted
+        # métadonnées absentes du graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            editHideUnlisted=False
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertEqual(d[ttk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[ttk]['main widget type'])
+        dsk = search_keys(d, "dct:description", 'edit')[0]
+        self.assertEqual(d[dsk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[dsk]['main widget type'])
+        
+        # mode édition avec editHideUnlisted
+        # métadonnées absentes du graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            editHideUnlisted=True
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')[0]
+        self.assertEqual(d[ttk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[ttk]['main widget type'])
+        dsk = search_keys(d, "dct:description", 'edit')[0]
+        self.assertEqual(d[dsk[1]]['label'], "Autres")
+        self.assertIsNotNone(d[dsk]['main widget type'])
+
+        # mode lecture sans readHideUnlisted
+        # et avec readHideBlank
+        # métadonnées absentes du graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read',
+            readHideUnlisted=False,
+            readHideBlank=True
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')
+        self.assertEqual(ttk, [])
+        dsk = search_keys(d, "dct:description", 'edit')
+        self.assertEqual(dsk, [])
+
+        # mode lecture avec readHideUnlisted
+        # et avec readHideBlank
+        # métadonnées absentes du graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read',
+            readHideUnlisted=True,
+            readHideBlank=True
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')
+        self.assertEqual(ttk, [])
+        dsk = search_keys(d, "dct:description", 'edit')
+        self.assertEqual(dsk, [])
+
+        # mode lecture sans readHideUnlisted
+        # et sans readHideBlank
+        # métadonnées absentes du graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read',
+            readHideUnlisted=False,
+            readHideBlank=False
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')
+        self.assertEqual(ttk, [])
+        dsk = search_keys(d, "dct:description", 'edit')
+        self.assertEqual(dsk, [])
+
+        # mode lecture avec readHideUnlisted
+        # et sans readHideBlank
+        # métadonnées absentes du graphe
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read',
+            readHideUnlisted=True,
+            readHideBlank=False
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        ttk = search_keys(d, "dct:title", 'edit')
+        self.assertEqual(ttk, [])
+        dsk = search_keys(d, "dct:description", 'edit')
+        self.assertEqual(dsk, [])
+    
+
+    # avec liste des champs
+    def test_build_dict_13(self):
+        columns = [
+            ("champ 1", "description champ 1"),
+            ("champ 2", "description champ 2"),
+            ("champ 3", "description champ 3")
+            ]
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            columns=columns
+            )
+        e = check_rows(d)
+        self.assertIsNone(e)
+        e = check_buttons(d)
+        self.assertIsNone(e)
+        clk = search_keys(d, "snum:column", 'edit')
+        self.assertEqual(len(clk), 3)
+        self.assertEqual(d[clk[0][1]]['label'], "Champs")
+        self.assertEqual(d[clk[1]]['label'], "champ 2")
+        self.assertEqual(d[clk[1]]['value'], "description champ 2")
+        
     
     # à compléter !
 
@@ -753,6 +1025,41 @@ class TestRDFUtils(unittest.TestCase):
                 )
             )
 
+    # avec liste des champs
+    def test_wd_build_graph_5(self):
+        columns = [
+            ("champ 1", "description champ 1"),
+            ("champ 2", "description champ 2"),
+            ("champ 3", "description champ 3")
+            ]
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, columns=columns
+                )
+            )
+
+    # avec liste des champs et template
+    def test_wd_build_graph_6(self):
+        template = {
+            "dct:title":  { "order": 10, "tab name": "Général" },
+            "dcat:distribution": { "tab name": "Distribution" },
+            "dcat:distribution / dct:issued": {},
+            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:keyword" : {}
+            }
+        columns = [
+            ("champ 1", "description champ 1"),
+            ("champ 2", "description champ 2"),
+            ("champ 3", "description champ 3")
+            ]
+        templateTabs = { "Général" : (0,), "Distribution" : (1,) }
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, template=template,
+                templateTabs=templateTabs, columns=columns
+                )
+            )
+    
     # à compléter !
 
 
