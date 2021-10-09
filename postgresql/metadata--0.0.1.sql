@@ -169,7 +169,7 @@ COMMENT ON TYPE z_metadata.meta_data_type IS 'Métadonnées. Types de valeurs su
 --Table: z_metadata.meta_categorie
 
 CREATE TABLE z_metadata.meta_categorie (
-    path text NOT NULL DEFAULT format('<urn:uuid:%s>', gen_random_uuid()),
+    path text NOT NULL DEFAULT format('uuid:%s', gen_random_uuid()),
 	origin text NOT NULL DEFAULT 'local',
 	is_node boolean NOT NULL DEFAULT False,
     cat_label text NOT NULL,
@@ -330,7 +330,7 @@ COMMENT ON TRIGGER meta_shared_categorie_before_insert ON z_metadata.meta_shared
 CREATE TABLE z_metadata.meta_local_categorie 
     PARTITION OF z_metadata.meta_categorie (
         CONSTRAINT meta_local_categorie_pkey PRIMARY KEY (path),
-        CONSTRAINT meta_local_categorie_path_check CHECK (path ~ '^[<]urn[:]uuid[:][0-9a-z-]{36}[>]$'),
+        CONSTRAINT meta_local_categorie_path_check CHECK (path ~ '^uuid[:][0-9a-z-]{36}$'),
         CONSTRAINT meta_local_categorie_widget_check CHECK (NOT widget_type = 'QComboBox'),
 		CONSTRAINT meta_local_categorie_is_node_check CHECK (NOT is_node)
     )
