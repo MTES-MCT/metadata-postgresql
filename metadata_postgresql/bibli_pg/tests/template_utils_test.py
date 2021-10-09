@@ -19,7 +19,8 @@ from rdflib import Graph, URIRef
 
 from metadata_postgresql.bibli_pg import template_utils, pg_queries
 from metadata_postgresql.bibli_rdf import __path__
-from metadata_postgresql.bibli_rdf.rdf_utils import build_dict, load_vocabulary, load_shape, metagraph_from_pg_description
+from metadata_postgresql.bibli_rdf.rdf_utils import build_dict, load_vocabulary, \
+     load_shape, metagraph_from_pg_description
 from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import search_keys
 
 # connexion à utiliser pour les tests
@@ -89,6 +90,144 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+    ### FONCTION query_update_columns_comments
+    ### --------------------------------------
+    
+    def test_query_update_columns_comments_1(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_metadata.table_test (
+                        champ1 int, "champ 2" int, "Champ3" int
+                        )
+                    ''')
+
+                columns = [
+                    ("champ1", "description champ 1"),
+                    ("champ 2", "description champ 2"),
+                    ("Champ3", "description champ 3")
+                    ]                
+
+                d = build_dict(
+                    metagraph=self.metagraph_empty,
+                    shape=self.shape,
+                    vocabulary=self.vocabulary,
+                    columns=columns
+                    )
+                query = pg_queries.query_update_columns_comments(
+                    'z_metadata', 'table_test', d
+                    )
+                cur.execute(query)
+                cur.execute("""
+                    SELECT
+                        col_description('z_metadata.table_test'::regclass, 1),
+                        col_description('z_metadata.table_test'::regclass, 2),
+                        col_description('z_metadata.table_test'::regclass, 3)
+                    """)
+                descr = cur.fetchone()
+                
+                cur.execute('DROP TABLE z_metadata.table_test')
+                # suppression de la table de test
+        
+        conn.close()
+        
+        self.assertEqual(descr[0], 'description champ 1')
+        self.assertEqual(descr[1], 'description champ 2')
+        self.assertEqual(descr[2], 'description champ 3')
+
+    def test_query_update_columns_comments_2(self):
+        columns = []                
+        d = build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            columns=columns
+            )
+        query = pg_queries.query_update_columns_comments(
+            'z_metadata', 'table_test', d
+            )
+        self.assertIsNone(query)
+
+
+    ### FONCTION query_update_column_comment
+    ### ------------------------------------
+    
+    def test_query_update_column_comment_1(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute('CREATE TABLE z_metadata.table_test (num int)')
+                # création d'une table de test
+                
+                query = pg_queries.query_update_column_comment(
+                    'z_metadata', 'table_test', 'num'
+                    )
+                cur.execute(
+                    query,
+                    ('Nouvelle description',)
+                    )
+                cur.execute(
+                    "SELECT col_description('z_metadata.table_test'::regclass, 1)"
+                    )
+                descr = cur.fetchone()
+                
+                cur.execute('DROP TABLE z_metadata.table_test')
+                # suppression de la table de test
+        
+        conn.close()
+        
+        self.assertEqual(descr[0], 'Nouvelle description')
+
+
+    ### FONCTION query_get_columns
+    ### --------------------------
+    
+    def test_query_get_columns_1(self):
+        conn = psycopg2.connect(connection_string)  
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute(
+                    pg_queries.query_get_columns(
+                        'z_metadata',
+                        'meta_categorie'
+                        )
+                    )
+                columns = cur.fetchall()
+        conn.close()
+        self.assertEqual(columns[0][0], 'path')
+        self.assertTrue('SPARQL' in columns[0][1])
+
+    # cas d'une table sans champ
+    def test_query_get_columns_2(self):
+        conn = psycopg2.connect(connection_string)  
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute('CREATE TABLE z_metadata.table_test ()')
+                # création d'une table de test
+            
+                cur.execute(
+                    pg_queries.query_get_columns(
+                        'z_metadata',
+                        'table_test'
+                        )
+                    )
+                columns = cur.fetchall()
+
+                cur.execute('DROP TABLE z_metadata.table_test')
+                # suppression de la table de test
+                
+        conn.close()
+        self.assertEqual(columns, [])
+    
+
     ### FONCTION query_template_tabs
     ### ----------------------------
     
@@ -136,8 +275,8 @@ class TestTemplateUtils(unittest.TestCase):
                         VALUES ('O1', NULL), ('O2', 10), ('O3', 15), ('O4', 12) ;
                     INSERT INTO z_metadata.meta_categorie
                         (path, origin, cat_label) VALUES
-                        ('<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
-                            'local', 'Loval valide'),
+                        ('uuid:218c1245-6ba7-4163-841e-476e0d5582af',
+                            'local', 'Local valide'),
                         ('dct:title', 'shared', 'Commun valide'),
                         ('dcat:distribution / dct:issued', 'shared', 'Commun composé')
                         ;
@@ -146,7 +285,7 @@ class TestTemplateUtils(unittest.TestCase):
                     INSERT INTO z_metadata.meta_template_categories
                         (tab_name, shrcat_path, loccat_path, tpl_label) VALUES
                         ('O1', 'dct:title', NULL, 'Template test'),
-                        ('O2', NULL, '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
+                        ('O2', NULL, 'uuid:218c1245-6ba7-4163-841e-476e0d5582af',
                             'Template test'),
                         ('O4', 'dcat:distribution / dct:issued', NULL, 'Template test') ;
                     """)
@@ -450,10 +589,10 @@ class TestTemplateUtils(unittest.TestCase):
             ('shared', 'dct:modified', 'dernière modification', 'QDateEdit', None,
                 None, '2021-09-01', None, None, False, False, 90, False, False,
                 'string', None),
-            ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>', 'code ADL',
+            ('local', 'uuid:218c1245-6ba7-4163-841e-476e0d5582af', 'code ADL',
                 None, 30, 'code maison', None, '230-FG', '000-XX', True, False, 8,
                 False, False, None, None),
-            ('local', '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582ag>', 'ma date',
+            ('local', 'uuid:218c1245-6ba7-4163-841e-476e0d5582ag', 'ma date',
                 'QDateEdit', None, None, None, None, None, None, None, None, None,
                 False, 'date', None)
             ]
@@ -471,25 +610,25 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertIsNotNone(mdk)
         lck = search_keys(
              d,
-             '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
+             'uuid:218c1245-6ba7-4163-841e-476e0d5582af',
              'edit'
              )[0]
         self.assertIsNotNone(lck)
         lck_g = search_keys(
              d,
-             '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
+             'uuid:218c1245-6ba7-4163-841e-476e0d5582af',
              'group of values'
              )[0]
         self.assertIsNotNone(lck_g)
         lck_b = search_keys(
              d,
-             '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af>',
+             'uuid:218c1245-6ba7-4163-841e-476e0d5582af',
              'plus button'
              )[0]
         self.assertIsNotNone(lck_b)
         lck2 = search_keys(
              d,
-             '<urn:uuid:218c1245-6ba7-4163-841e-476e0d5582ag>',
+             'uuid:218c1245-6ba7-4163-841e-476e0d5582ag',
              'edit'
              )[0]
         self.assertIsNotNone(lck2)
