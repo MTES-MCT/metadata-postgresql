@@ -187,7 +187,7 @@ def pseudo_form(widgetsDict):
             if v['main widget type'] == 'QCheckBox':
                 o = ( '[x]' if v['value'] else '[ ]' )
                 e += r - 3
-            elif v['main widget type'] in ( 'QLineEdit', 'QTextEdit' ):
+            elif v['main widget type'] in ( 'QLineEdit', 'QTextEdit', 'QLabel' ):
                 o = ( v['value'].ljust(r)[:r] ) if v['value'] else '.' * r
             elif v['main widget type'] == 'QDateEdit':
                 o = ( v['value'] or '0000-00-00' )
