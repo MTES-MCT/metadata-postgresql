@@ -21,6 +21,7 @@ from rdflib.serializer import Serializer
 from rdflib.util import from_n3
 from locale import strxfrm, setlocale, LC_COLLATE
 from pathlib import Path
+from html import escape
 import re, uuid
 
 from metadata_postgresql.bibli_rdf import __path__
@@ -1130,7 +1131,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     readHideBlank=True, readHideUnlisted=True, editHideUnlisted=False,
     language="fr", translation=False, langList=['fr', 'en'],
     readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
-    labelLengthLimit=25, valueLengthLimit=100, textEditRowSpan=6,
+    labelLengthLimit=25, valueLengthLimit=65, textEditRowSpan=6,
+    preserve=False,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
     mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
@@ -1206,9 +1208,13 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     - [optionnel] valueLengthLimit (int) : nombre de caractères au-delà duquel une valeur qui
     aurait dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit.
     Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la
-    valeur contient un retour à la ligne. 100 par défaut.
+    valeur contient un retour à la ligne. 65 par défaut.
     - [optionnel] textEditRowSpan (int) : nombre de lignes par défaut pour un widget QTextEdit
     (utilisé si non défini par shape ou template). 6 par défaut.
+    - [optionnel] preserve (bool) : indique si les valeurs doivent être préservées. Inhibe
+    certaines transformation réalisées en mode lecture, notamment pour présenter des
+    hyperliens à l'utilisateur. Valeur par défaut False. preserve n'est pas un paramètre
+    utilisateur, il sert pour la recette.
 
     Les autres arguments sont uniquement utilisés lors des appels récursifs de la fonction
     et ne doivent pas être renseignés manuellement.
@@ -1541,7 +1547,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         mKind = p['kind'].n3(nsm)
         mNPath = ( mPath + " / " if mPath else '') + mProperty.n3(nsm)
         mSources = None
-        mDefaultTrad = None
+        mDefault = None
+        mDefaultBrut = None
         mDefaultSource = None
         mLangList = None
         mNHidden = mHidden or False
@@ -1699,12 +1706,26 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mSources == []:
                     mSources = None
 
-                if mSources and t.get('default value', None):
-                    mDefaultSource = concept_from_value(t.get('default value', None), None, vocabulary, language)[1]
-                elif mSources and p['default']:
-                    mDefaultTrad, mDefaultSource = value_from_concept(p['default'], vocabulary, language)   
+            # traitement de la valeur par défaut :
+            if t.get('default value'):
+                mDefault = t.get('default value')
+                if mSources:
+                    mDefaultBrut = concept_from_value(mDefault, None, vocabulary, language)[0]
+                    mDefault, mDefaultSource = value_from_concept(mDefaultBrut, vocabulary, language)
+                    # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
+                    if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
+                        mDefault = mDefaultBrut = mDefaultSource = None
+                elif mKind in ("sh:BlankNodeOrIRI", "sh:IRI") and forbidden_char(mDefault) is None:
+                    mDefaultBrut = URIRef(mDefault)
                     
-                        
+            elif p['default']:
+                mDefaultBrut = p['default']
+                if mSources:
+                    mDefault, mDefaultSource = value_from_concept(mDefaultBrut, vocabulary, language)
+                    # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
+                    if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
+                        mDefault = mDefaultBrut = mDefaultSource = None
+
             multilingual = p['unilang'] and bool(p['unilang']) or False
             multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
             
@@ -1836,7 +1857,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'node' : mNode,
                         'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
                         'current source' : mCurSource,
-                        'sources' : mVSources,
+                        'sources' : mVSources if mode == 'edit' else None,
                         'hidden M' : mVHideM,
                         'shape order' : int(p['order']) if p['order'] is not None else None,
                         'template order' : int(t.get('order')) if t.get('order') is not None else None
@@ -1861,11 +1882,12 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         readOnlyCurrentLanguage=readOnlyCurrentLanguage,
                         editOnlyCurrentLanguage=editOnlyCurrentLanguage,
                         labelLengthLimit=labelLengthLimit, valueLengthLimit=valueLengthLimit,
-                        textEditRowSpan=textEditRowSpan, mPath=mNPath, mTargetClass=p['class'],
+                        textEditRowSpan=textEditRowSpan, preserve=preserve,
+                        mPath=mNPath, mTargetClass=p['class'],
                         mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
                         mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
-                        mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs 
+                        mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -1914,39 +1936,69 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 
                 # cas d'une catégorie qui tire ses valeurs d'une
                 # ontologie : on récupère le label à afficher
-                if isinstance(mValueBrut, URIRef) and mVSources:             
-                    mValue, mCurSource = value_from_concept(mValueBrut, vocabulary, language)                   
-                    if not mCurSource in mVSources:
-                        mCurSource = '< non répertorié >'
+                if mVSources:
+                    if isinstance(mValueBrut, URIRef) \
+                        and not mVSources == [ "< URI >", "< manuel >" ]:                    
+                        mValue, mCurSource = value_from_concept(mValueBrut, vocabulary, language)  
+                        if mValue is None or not mCurSource in mVSources:
+                            mCurSource = '< non répertorié >'
+                            mVSources.append(mCurSource)
+
+                    elif mGraphEmpty and ( mValueBrut is None ):
+                        mCurSource = mDefaultSource
+                        # dans le cas d'un graphe vide,
+                        # on s'assure que la valeur par défaut, s'il y en a une,
+                        # est associée à la bonne source
+
+                    if mCurSource is None:
+                        # cas où la valeur n'était pas renseignée - ou n'est pas un IRI
+                        if "< URI >" in mVSources:
+                            # cas où l'utilisateur a le choix entre le mode manuel
+                            # et des URI en saisie libre
+                            mCurSource = "< URI >"
+                        elif mValueBrut:
+                            mCurSource = '< non répertorié >'
+                            mVSources.append(mCurSource)
+                        else:
+                            mCurSource = mVSources[0]
+
+                    elif mCurSource == "< manuel >":
+                        # la saisie est faite sur le noeud vide
+                        # c'est à lui de porter le nom de la source
+                        # courante
+                        mCurSource = None
                         
-                elif mVSources and mGraphEmpty and ( mValueBrut is None ):
-                    mCurSource = mDefaultSource
-
-                if mVSources and ( mCurSource is None ):
-                # cas où la valeur n'était pas renseignée - ou n'est pas un IRI
-                    if "< URI >" in mVSources:
-                        # cas où l'utilisateur a le choix entre le mode manuel
-                        # et des URI en saisie libre
-                        mCurSource = "< URI >"
-                    else:
-                        mCurSource = '< non répertorié >' if mValueBrut else mVSources[0]
-
-                elif mCurSource == "< manuel >":
-                    mCurSource = None               
-                
+                    if mode == 'read':
+                        mVSources = None
 
                 # cas d'un numéro de téléphone. on transforme
                 # l'IRI en quelque chose d'un peu plus lisible
                 if mValueBrut and str(p['transform']) == 'phone':
                     mValue = tel_from_owlthing(mValueBrut)
+                if mDefaultBrut and str(p['transform']) == 'phone':
+                    mDefault = tel_from_owlthing(mDefaultBrut)
 
                 # cas d'une adresse mél. on transforme
                 # l'IRI en quelque chose d'un peu plus lisible
                 if mValueBrut and str(p['transform']) == 'email':
                     mValue = email_from_owlthing(mValueBrut)
+                if mDefaultBrut and str(p['transform']) == 'email':
+                    mDefault = email_from_owlthing(mDefaultBrut)
+                    
+                if mDefaultBrut is not None:
+                    mDefault = mDefault or str(mDefaultBrut)
+                    
+                if mGraphEmpty:
+                    mValueBrut = mDefaultBrut
+                    mValue = mDefault
 
-                mDefault = t.get('default value', None) or mDefaultTrad or ( str(p['default']) if p['default'] else None )
-                mValue = mValue or ( str(mValueBrut) if mValueBrut else ( mDefault if mGraphEmpty else None ) )
+                if mValueBrut and mKind in ("sh:BlankNodeOrIRI", "sh:IRI") \
+                    and mode == 'read' and not preserve:
+                    mValue = text_with_link(mValue or str(mValueBrut), mValueBrut)
+                    # en mode lecture, on modifie la valeur
+                    # pour présenter un lien au lieu du texte brut
+                elif mValueBrut is not None:
+                    mValue = mValue or str(mValueBrut)
 
                 mWidgetType = t.get('main widget type', None) or str(p['widget']) or "QLineEdit"
                 mDefaultWidgetType = mWidgetType
@@ -1954,14 +2006,14 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mLabelRow = None
 
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit \
-                    and not mKind in ('sh:IRI', 'sh:BlankNodeOrIRI') \
                     or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
                     # on fait apparaître un QTextEdit à la place du QLineEdit quand
                     # la longueur du texte dépasse le seuil valueLengthLimit ou
                     # s'il contient des retours à la ligne, et que ce n'est pas un IRI
                 
-                if mWidgetType == "QComboBox" and ( ( not mVSources ) or '< URI >' in mVSources ):
+                if mWidgetType == "QComboBox" and ( ( not mVSources ) \
+                    or '< URI >' in mVSources ):
                     mWidgetType = "QLineEdit"
                     # le schéma SHACL prévoira généralement un QComboBox
                     # pour les URI, mais on est dans un cas où, pour on ne sait quelle
@@ -1972,6 +2024,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     mLabelRow = rowidx[mParent]
                     rowidx[mParent] += 1
                     
+                if ( mode == 'read' ) and mWidgetType in ("QLineEdit", "QTextEdit",
+                    "QComboBox", "QDateEdit", "QDateTimeEdit"):
+                    mWidgetType = 'QLabel'
+                    
                 mRowSpan = ( t.get('row span', None) or ( int(p['rowspan']) if p['rowspan'] else textEditRowSpan ) ) \
                            if mWidgetType == 'QTextEdit' else None
 
@@ -1981,22 +2037,24 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'main widget type' : mWidgetType,
                     'row' : rowidx[mParent],
                     'row span' : mRowSpan,
-                    'input mask' : t.get('input mask', None) or ( str(p['mask']) if p['mask'] else None ),
+                    'input mask' : ( t.get('input mask', None) or ( str(p['mask']) if p['mask'] else None ) \
+                        ) if mode == 'edit' else None,
                     'label' : mLabel,
                     'label row' : mLabelRow,
                     'help text' : mHelp,
                     'value' : mValue,
                     'placeholder text' : ( t.get('placeholder text', None) or ( str(p['placeholder']) if p['placeholder'] else mCurSource ) 
-                        ) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
+                        ) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) and mode == 'edit' else None,
                     'language value' : mLanguage,
-                    'is mandatory' : t.get('is mandatory', None) or ( int(p['min']) > 0 if p['min'] else False ),
+                    'is mandatory' : ( t.get('is mandatory', None) or ( int(p['min']) > 0 if p['min'] else False ) )
+                        if mode == 'edit' else None,
                     'has minus button' : mode == 'edit' and ( ( multilingual and translation and mVLangList and len(mVLangList) > 1 )
                         or multiple or len(values) > 1 ),
                     'hide minus button' : len(values) <= 1 if ( mode == 'edit' and (
                         ( multilingual and translation and mVLangList and len(mVLangList) > 1 ) or multiple or len(values) > 1 ) ) \
                         else None,
-                    'regex validator pattern' : str(p['pattern']) if p['pattern'] else None,
-                    'regex validator flags' : str(p['flags']) if p['flags'] else None,
+                    'regex validator pattern' : str(p['pattern']) if p['pattern'] and mode == 'edit' else None,
+                    'regex validator flags' : str(p['flags']) if p['flags'] and mode == 'edit' else None,
                     'default value' : mDefault,
                     'multiple values' : multiple,
                     'node kind' : mKind,
@@ -2007,11 +2065,13 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'predicate' : mProperty,
                     'default widget type' : mDefaultWidgetType,
                     'transform' : str(p['transform']) if p['transform'] else None,
-                    'type validator' : 'QIntValidator' if p['type'] and p['type'].n3(nsm) == "xsd:integer" else (
-                        'QDoubleValidator' if p['type'] and p['type'].n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
+                    'type validator' : None if mode == 'read' else (
+                        'QIntValidator' if p['type'] and p['type'].n3(nsm) == "xsd:integer" else (
+                        'QDoubleValidator' if p['type'] and p['type'].n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") \
+                        else None )),
                     'multiple sources' : len(mVSources) > 1 if mVSources and mode == 'edit' else False,
                     'current source' : mCurSource,
-                    'sources' : ( mVSources or [] ) + '< non répertorié >' if mCurSource == '< non répertorié >' else mVSources,
+                    'sources' : sorted(mVSources) if mVSources else None,
                     'one per language' : multilingual,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
@@ -2138,12 +2198,17 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mLabel = ( t.get('label', None) or "???" ) if not ( multiple or len(values) > 1 ) else None
                 mLabelRow = None
 
-                if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ):
+                if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit \
+                    or mValue.count("\n") > 0 ):
                     mWidgetType = 'QTextEdit'
 
                 if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
                     mLabelRow = rowidx[mParent]
-                    rowidx[mParent] += 1                
+                    rowidx[mParent] += 1
+
+                if ( mode == 'read' ) and mWidgetType in ("QLineEdit", "QTextEdit",
+                    "QComboBox", "QDateEdit", "QDateTimeEdit"):
+                    mWidgetType = 'QLabel'
 
                 mRowSpan = t.get('row span', textEditRowSpan) if mWidgetType == 'QTextEdit' else None
 
@@ -2153,14 +2218,16 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'main widget type' : mWidgetType,
                     'row' : rowidx[mParent],
                     'row span' : mRowSpan,
-                    'input mask' : t.get('input mask', None),
+                    'input mask' : t.get('input mask', None) if mode == 'edit' else None,
                     'label' : mLabel,
                     'label row' : mLabelRow,
                     'help text' : t.get('help text', None) if not ( multiple or len(values) > 1 ) else None,
                     'value' : mValue,
-                    'placeholder text' : t.get('placeholder text', None) if mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) else None,
+                    'placeholder text' : t.get('placeholder text', None) \
+                        if mode == 'edit' and mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) \
+                        else None,
                     'language value' : mLanguage,
-                    'is mandatory' : t.get('is mandatory', None),
+                    'is mandatory' : t.get('is mandatory', None) if mode == 'edit' else None,
                     'multiple values' : multiple,
                     'has minus button' : mode == 'edit' and ( multiple or len(values) > 1 ),
                     'hide minus button': len(values) <= 1 if ( mode == 'edit' and ( multiple or len(values) > 1 ) ) else None,
@@ -2171,8 +2238,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'predicate' : from_n3(meta, nsm=nsm),
                     'path' : meta,
                     'default widget type' : mDefaultWidgetType,
-                    'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
-                        'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
+                    'type validator' : None if (mode == 'read') else (
+                        'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
+                        'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") \
+                        else None )),
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
                     'template order' : int(t.get('order')) if t.get('order') is not None else None
@@ -2251,7 +2320,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         # QTextEdit, dont le nom du champ sera le label.
         for colname, coldescr in columns:
         
-            mWidgetType = 'QTextEdit'
+            mWidgetType = 'QTextEdit' if mode == 'edit' else 'QLabel'
 
             mWidget = ( idx[mParent], mParent )
             mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
@@ -2275,6 +2344,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     # métadonnées présentes dans le graphe mais ni dans shape ni dans template
     
     if mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
+    
+        mNHidden = (mode == 'edit' and editHideUnlisted) or \
+            (mode == 'read' and readHideUnlisted)
         
         q_gr = metagraph.query(
             """
@@ -2303,37 +2375,37 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
             mParent = mParentWidget
             
-            # les catégories non référencées vont toujours dans
-            # l'onglet "Autres". 
-            # s'il n'existait pas encore, on le crée :
-            if not "Autres" in mTemplateTabs:
-                i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
-                mParent = (i,)
-                mTemplateTabs.update({ "Autres": mParent })
-                mDict.update( { mParent : mWidgetDictTemplate.copy() } )
-                mDict[mParent].update( {
-                    'object' : 'group of properties',
-                    'main widget type' : 'QGroupBox',
-                    'label' : "Autres",
-                    'row' : 0,
-                    'node' : mParentNode,
-                    'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
-                    'shape order' : i,
-                    'do not save' : True
-                    } )
-            else:
-                mParent = mTemplateTabs["Autres"]
-                
-            if not mParent in idx:
-                idx.update({ mParent: 0 })
-            if not mParent in rowidx:
-                rowidx.update({ mParent: 0 })
+            if not mNHidden:
+                # dès lors qu'on les affiche, les catégories non
+                # référencées vont toujours dans l'onglet "Autres". 
+                # s'il n'existait pas encore, on le crée :
+                if not "Autres" in mTemplateTabs:
+                    i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
+                    mParent = (i,)
+                    mTemplateTabs.update({ "Autres": mParent })
+                    mDict.update( { mParent : mWidgetDictTemplate.copy() } )
+                    mDict[mParent].update( {
+                        'object' : 'group of properties',
+                        'main widget type' : 'QGroupBox',
+                        'label' : "Autres",
+                        'row' : 0,
+                        'node' : mParentNode,
+                        'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
+                        'shape order' : i,
+                        'do not save' : True
+                        } )
+                else:
+                    mParent = mTemplateTabs["Autres"]
+                    
+                if not mParent in idx:
+                    idx.update({ mParent: 0 })
+                if not mParent in rowidx:
+                    rowidx.update({ mParent: 0 })
             
             # cas d'un groupe de valeurs
             if len(dpv[p]) > 1:
             
-                if ( (mode == 'edit' and editHideUnlisted) or \
-                    (mode == 'read' and readHideUnlisted) ):
+                if mNHidden:
                     # si les catégories non répertoriées ne
                     # doivent pas être affichées
                     mWidget = ( idx[mParent], mParent )
@@ -2374,8 +2446,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mLanguage = ( ( v.language if isinstance(v, Literal) else None ) or language 
                             ) if mType.n3(nsm) == 'xsd:string' else None
                             
-                if ( (mode == 'edit' and editHideUnlisted) or \
-                    (mode == 'read' and readHideUnlisted) ):
+                if mNHidden:
                     # si les catégories non répertoriées ne
                     # doivent pas être affichées
                     mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
@@ -2394,15 +2465,20 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     
                 else:
 
-                    mWidgetType = 'QTextEdit' if ( len(mValue) > valueLengthLimit or mValue.count("\n") > 0 ) else "QLineEdit"
+                    mWidgetType = 'QTextEdit' if ( len(mValue) > valueLengthLimit \
+                        or mValue.count("\n") > 0 ) else "QLineEdit"
+                        
                     mLabelRow = None
-
                     if len(dpv[p]) == 1 and mWidgetType == 'QTextEdit':
                         mLabelRow = rowidx[mParent]
                         rowidx[mParent] += 1
+                        
+                    if mode == 'read':
+                        mWidgetType = 'QLabel'
                                 
-                    mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) if not mLanguage in ( langList or [] ) else langList.copy() 
-                                ) if mLanguage and translation else None
+                    mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) \
+                        if not mLanguage in ( langList or [] ) else langList.copy() \
+                        ) if mLanguage and translation else None
 
                     mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
                     mDict[ ( idx[mParent], mParent ) ].update( {
@@ -2423,8 +2499,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'predicate' : p,
                         'path' : p.n3(nsm),
                         'default widget type' : "QLineEdit",
-                        'type validator' : 'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
-                            'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") else None ),
+                        'type validator' : None if mode == 'read' else (
+                            'QIntValidator' if mType.n3(nsm) == "xsd:integer" else (
+                            'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") \
+                            else None )),
                         'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                         'read only' : ( mode == 'read' )
                         } )
@@ -3371,6 +3449,34 @@ def is_dataset_uri(anyIRI):
     """
     return re.fullmatch('^urn[:]uuid[:][a-z0-9-]{36}$', str(anyIRI)) is not None
 
+
+def text_with_link(anyStr, anyIRI):
+    """Génère un fragment HTML définissant un lien.
+    
+    ARGUMENTS
+    ---------
+    - anyStr (str) : la chaîne de caractères porteuse du lien.
+    - anyIRI (URIRef) : un IRI quelconque correspondant à la
+    cible du lien.
+    
+    RESULTAT
+    --------
+    Une chaîne de caractère (str) correspondant à un élément A,
+    qui sera interprétée par les widgets comme du texte riche.
+    
+    EXEMPLES
+    --------
+    >>> rdf_utils.text_with_link(
+    ...     "Documentation de PostgreSQL 10",
+    ...     URIRef("https://www.postgresql.org/docs/10/index.html")
+    ...     )
+    '<A href="https://www.postgresql.org/docs/10/index.html">Documentation de PostgreSQL 10</A>'
+    """
+    return """<a href="{}">{}</a>""".format(
+        escape(str(anyIRI), quote=True),
+        escape(anyStr, quote=True)
+        )
+    
 
 class ForbiddenOperation(Exception):
     pass
