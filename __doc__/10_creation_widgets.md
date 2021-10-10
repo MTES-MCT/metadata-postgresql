@@ -10,7 +10,9 @@ Soit :
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.
 
-[Widget principal](#widget-principal) • [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+**Widget principal** : [Type](#type) • [Stockage](#stockage) • [Parent](#parent) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel) • [Placement dans la grille](#placement-dans-la-grille)
+
+**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
 Le widget principal et les widgets annexes sont totalement indépendants. Ils peuvent être simplement créés les uns à la suite des autres, de la manière suivante :
 
@@ -336,6 +338,35 @@ widgetsdict[key]['main widget'].setPlaceholderText(widgetsdict[key]['placeholder
 Autant que possible - considérant la quantité de termes dans certains thésaurus - les QComboBox devraient afficher une ligne de saisie avec **auto-complétion**. Il est par contre important qu'ils **ne permettent pas d'entrer d'autres valeurs que celles des thésaurus**.
 
 
+### Paramètres spécifiques aux widgets QLabel
+
+*NB : il n'est pas question dans cette partie des [widgets annexes d'étiquettes]((#widget-annexe--étiquette)) mais du cas où le widget principal lui-même est un QLabel.*
+
+En mode lecture, des widgets QLabel remplacent la plupart des widgets de saisie (à ce jour tous sauf les QCheckBox). Ils permettent notamment d'afficher des hyperliens cliquables.
+
+Comme pour les véritables widgets de saisie, la **valeur à afficher** est fournie par la clé `'value'` du dictionnaire.
+
+```python
+
+widgetsdict[key]['value']
+
+```
+
+Il importera d'activer le découpage sur plusieurs lignes :
+
+```python
+
+widgetsdict[key]['main widget'].setWordWrap(True)
+
+```
+
+Ainsi sans doute que l'ouverture automatique des liens :
+
+```python
+
+widgetsdict[key]['main widget'].setOpenExternalLinks(True)
+
+```
 
 ### Placement dans la grille
 
