@@ -53,6 +53,11 @@ def check_unchanged(metagraph, shape, vocabulary, language="fr", **args):
     - [optionnel] args (dict) peut contenir tout autre paramètre à passer à build_dict()
     sous forme clé/valeur.
     
+    Attention : dans les arguments de build_dict(), mode='read' devra toujours être
+    accompagné de preserve=True, sans quoi le résultat sera le plus souvent négatif,
+    uniquement à cause des transformation réalisées sur les valeurs en mode lecture
+    (hyperliens).
+    
     RESULTAT
     --------
     Un booléen :
