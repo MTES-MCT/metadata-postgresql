@@ -847,7 +847,103 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[clk[1]]['label'], "champ 2")
         self.assertEqual(d[clk[1]]['value'], "description champ 2")
         
-    
+
+    # pas de clés réservées à l'édition en mode lecture
+    def test_build_dict_14(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read'
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        for k, v in d.items():
+            with self.subTest(key=k):
+                self.assertIsNone(v['placeholder text'])
+                self.assertIsNone(v['input mask'])
+                self.assertIsNone(v['is mandatory'])
+                self.assertTrue(not v['has minus button'])
+                self.assertIsNone(v['hide minus button'])
+                self.assertIsNone(v['regex validator pattern'])
+                self.assertIsNone(v['regex validator flags'])
+                self.assertIsNone(v['type validator'])
+                self.assertTrue(not v['multiple sources'])
+                self.assertIsNone(v['sources'])
+
+    # idem, avec template
+    def test_build_dict_15(self):
+        template = {
+            "dct:title": { },
+            "snum:relevanceScore": {
+                'placeholder text': '10.1',
+                'input mask': 'xx.x',
+                'multiple values': True,
+                'is mandatory': True,
+                'data type': 'decimal'
+                },
+            "uuid:c41423cc-fb59-443f-86f4-72592a4f6778" : {
+                'placeholder text': '10.1',
+                'input mask': 'xx.x',
+                'multiple values': True,
+                'is mandatory': True,
+                'data type': 'decimal'
+                }
+            }
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            template=template
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        for k, v in d.items():
+            with self.subTest(key=k):
+                self.assertIsNone(v['placeholder text'])
+                self.assertIsNone(v['input mask'])
+                self.assertIsNone(v['is mandatory'])
+                self.assertTrue(not v['has minus button'])
+                self.assertIsNone(v['hide minus button'])
+                self.assertIsNone(v['regex validator pattern'])
+                self.assertIsNone(v['regex validator flags'])
+                self.assertIsNone(v['type validator'])
+                self.assertTrue(not v['multiple sources'])
+                self.assertIsNone(v['sources'])
+
+    # pas d'onglet autre parasite pour les
+    # catégories locales non répertoriées en mode
+    # lecture avec readHideUnlisted.
+    def test_build_dict_16(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            readHideUnlisted=True
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        self.assertFalse(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
+            for k, v in d.items()]))
+
+    # ... mais il est bien là sans readHideUnlisted
+    def test_build_dict_17(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            readHideUnlisted=False
+            )
+        e = check_rows(d, mode='read')
+        self.assertIsNone(e)
+        self.assertTrue(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
+            for k, v in d.items()]))
+
+            
+        
     # à compléter !
 
 
@@ -996,7 +1092,8 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_build_graph_2(self):
         self.assertTrue(
             check_unchanged(
-                self.metagraph, self.shape, self.vocabulary, mode='read'
+                self.metagraph, self.shape, self.vocabulary, mode='read',
+                preserve=True
                 )
             )
             
@@ -1004,7 +1101,7 @@ class TestRDFUtils(unittest.TestCase):
         self.assertTrue(
             check_unchanged(
                 self.metagraph, self.shape, self.vocabulary, language='en',
-                readOnlyCurrentLanguage=True, mode='read'
+                readOnlyCurrentLanguage=True, mode='read', preserve=True
                 )
             )
 
