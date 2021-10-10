@@ -34,7 +34,7 @@ Paramètres utilisateurs :
 | 14 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
 | 15 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
 | 16 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
-| 17 | `valueLengthLimit` | int | non | `100` | [→](#valuelengthlimit) |
+| 17 | `valueLengthLimit` | int | non | `65` | [→](#valuelengthlimit) |
 | 18 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
 
 Tous les arguments sont décrits plus en détail dans la suite, ainsi que le résultat obtenu.
@@ -297,7 +297,7 @@ Si `labelLengthLimit` n'apparaît pas dans les arguments de `build_dict()`, le s
 
 `valueLengthLimit` est un entier qui indique le nombre de caractères au-delà duquel une valeur qui aurait dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit. Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la valeur contient un retour à la ligne.
 
-Si `valueLengthLimit` n'apparaît pas dans les arguments de `build_dict()`, le seuil est fixé à 100 caractères.
+Si `valueLengthLimit` n'apparaît pas dans les arguments de `build_dict()`, le seuil est fixé à 65 caractères.
 
 ### textEditRowSpan
 
