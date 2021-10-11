@@ -1,5 +1,5 @@
 # PLUGIN QGIS PLUME
-![](flyers/plume1.png)
+![](plume/flyers/plume1.png)
 > Reste à faire ou en cours 
 
 ---           
