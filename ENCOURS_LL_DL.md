@@ -14,7 +14,7 @@
 |                                    |        |        |
 | Problème double clique sur l'explorateur |   X   |        |   DL   |
 | Widget date et time à revoir ou pas |   X   |        |   DL   |
-|                                    |   X   |        |
+|                                    |       |        |
 | Edition                            |   X   |        |   DL   |
 | Vierge                             |   X   |        |   DL   |
 | Export                             |   X   |        |   DL   |
