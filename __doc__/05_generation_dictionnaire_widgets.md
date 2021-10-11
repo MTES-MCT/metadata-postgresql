@@ -4,7 +4,7 @@ Foncièrement, lorsqu'un utilisateur demande l'affichage de la fiche de métadon
 1. rassemble dans un "dictionnaire de widgets", soit un objet python de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
 2. parcourt ce dictionnaire de widgets pour construire le formulaire qui sera présenté à l'utilisateur. 
 
-La première de ces étapes, objet de la présente partie, est réalisée par la fonction `build_dict` de [rdf_utils.py](/metadata_postgresql/bibli_rdf/rdf_utils.py).
+La première de ces étapes, objet de la présente partie, est réalisée par la fonction `build_dict` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils.py).
 
 Celle-ci prend deux types d'arguments : des sources de données et des paramètres utilisateur.
 
@@ -75,7 +75,7 @@ widgetsdict = rdf_utils.build_dict(**kwa)
 
 Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `old_description`.
 
-Cette information est a priori déjà disponible par l'intermédiaire des classes de QGIS. Néanmoins, si nécessaire, [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui peut être utilisée comme suit :
+Cette information est a priori déjà disponible par l'intermédiaire des classes de QGIS. Néanmoins, si nécessaire, [pg_queries.py](/plume/bibli_pg/pg_queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui peut être utilisée comme suit :
 
 ```python
 
@@ -95,7 +95,7 @@ conn.close()
 
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
 
-Une fois le descriptif récupéré, la fonction `metagraph_from_pg_description()` de [rdf_utils.py](/metadata_postgresql/bibli_rdf/rdf_utils/rdf_utils.py) permet d'en extraire les métadonnées et les dé-sérialiser en graphe RDF.
+Une fois le descriptif récupéré, la fonction `metagraph_from_pg_description()` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils/rdf_utils.py) permet d'en extraire les métadonnées et les dé-sérialiser en graphe RDF.
 
 ```python
 
@@ -131,7 +131,7 @@ except:
 
 C'est un schéma SHACL "augmenté", qui ajoute quelques propriétés au standard (celles dont l'espace de nommage est `snum`) afin de spécifier la manière dont les catégories doivent être représentées dans le formulaire. 
 
-En pratique, il s'agit du fichier [shape.ttl](/metadata_postgresql/bibli_rdf/rdf_utils/modeles/shape.ttl), à importer avec la fonction `load_shape()` de [rdf_utils.py](/metadata_postgresql/bibli_rdf/rdf_utils/rdf_utils.py).
+En pratique, il s'agit du fichier [shape.ttl](/plume/bibli_rdf/rdf_utils/modeles/shape.ttl), à importer avec la fonction `load_shape()` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils/rdf_utils.py).
 
 ```python
 
@@ -143,7 +143,7 @@ shape = rdf_utils.load_shape()
 
 `vocabulary` est un graphe RDF où sont compilés les termes de tous les thésaurus dont `shape` prévoit l'utilisation.
 
-Concrètement, il s'agit du fichier [vocabulary.ttl](/metadata_postgresql/bibli_rdf/rdf_utils/modeles/vocabulary.ttl), à importer avec la fonction `load_vocabulary()` de [rdf_utils.py](/metadata_postgresql/bibli_rdf/rdf_utils/rdf_utils.py).
+Concrètement, il s'agit du fichier [vocabulary.ttl](/plume/bibli_rdf/rdf_utils/modeles/vocabulary.ttl), à importer avec la fonction `load_vocabulary()` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils/rdf_utils.py).
 
 ```python
 

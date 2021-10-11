@@ -116,7 +116,7 @@ Avant d'y affecter des catégories, les onglets doivent être définis dans la t
 
 ### Catégories de métadonnées
 
-La table `meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/metadata_postgresql/bibli_rdf/modeles/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
+La table `meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/plume/bibli_rdf/modeles/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
 
 Il s'agit en fait d'une table partitionnée avec deux tables filles :
 - `meta_shared_categorie` pour les catégories communes (`origin` vaut `shared`) ;
@@ -213,8 +213,8 @@ Modèles pré-configurés disponibles :
 ## Import par le plugin
 
 La gestion des modèles par le plugin fait intervenir :
-- [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py) pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
-- [template_utils.py](/metadata_postgresql/bibli_pg/template_utils.py) pour tout les outils permettant de traiter le résultat des requêtes.
+- [pg_queries.py](/plume/bibli_pg/pg_queries.py) pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
+- [template_utils.py](/plume/bibli_pg/template_utils.py) pour tout les outils permettant de traiter le résultat des requêtes.
 
 Aucune des fonctions de ces deux fichiers n'envoie à proprement parler de requête au serveur PostgreSQL.
 
@@ -350,7 +350,7 @@ Concrètement, `template` est un dictionnaire dont la structure est similaire à
 
 Avec `build_template()`, toutes les clés possibles seront systématiquement présentes pour toutes les catégories, mais ce n'est pas obligatoire (la fonction `build_dict()` utilise systématiquement la méthode `get` pour interroger le formulaire).
 
-Le fichier [exemple_dict_modele_local.json](/metadata_postgresql/bibli_rdf/exemples/exemple_dict_modele_local.json) donne un exemple de `template` valide sérialisé en JSON.
+Le fichier [exemple_dict_modele_local.json](/plume/bibli_rdf/exemples/exemple_dict_modele_local.json) donne un exemple de `template` valide sérialisé en JSON.
 
 
 ### Récupération des onglets associés au modèle retenu

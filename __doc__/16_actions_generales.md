@@ -34,8 +34,8 @@ Certaines des actions générales décrites dans la suite ne devraient être dis
 
 **Initialement, toutes les fiches s'ouvrent en mode lecture**. L'utilisateur doit cliquer sur le bouton d'activation du mode édition pour basculer dans ce dernier.
 
-Le bouton utilise l'icône [edit.svg](/metadata_postgresql/icons/general/edit.svg) :
-![edit.svg](/metadata_postgresql/icons/general/edit.svg).
+Le bouton utilise l'icône [edit.svg](/plume/icons/general/edit.svg) :
+![edit.svg](/plume/icons/general/edit.svg).
 
 L'idéal serait que le texte d'aide s'adapte au mode courant :
 
@@ -48,7 +48,7 @@ Si toutefois cela s'avère complexe à mettre en oeuvre, on se contera de *Bascu
 
 Le bouton devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
-Pour s'en assurer, on utilisera la requête définie par la fonction `query_is_relation_owner()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
+Pour s'en assurer, on utilisera la requête définie par la fonction `query_is_relation_owner()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py).
 
 ```python
 
@@ -116,7 +116,7 @@ new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_met
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
-On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
+On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py).
 
 ```python
 
@@ -137,7 +137,7 @@ conn.close()
 
 5. Mettre à jour les descriptifs des champs.
 
-La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction `query_update_columns_comments()` de [pg_queries.py](/metadata_postgresql/bibli_pg/pg_queries.py).
+La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction `query_update_columns_comments()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py).
 
 ```python
 
@@ -168,8 +168,8 @@ conn.close()
 
 Comme susmentionné, ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [save.svg](/metadata_postgresql/icons/general/save.svg) :
-![save.svg](/metadata_postgresql/icons/general/save.svg)
+Il utilise l'icône [save.svg](/plume/icons/general/save.svg) :
+![save.svg](/plume/icons/general/save.svg)
 
 Texte d'aide : *Enregistrer les métadonnées*.
 
@@ -191,8 +191,8 @@ Le formulaire peut ensuite être regénéré à partir du nouveau dictionnaire, 
 
 Ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [translation.svg](/metadata_postgresql/icons/general/translation.svg) :
-![translation.svg](/metadata_postgresql/icons/general/translation.svg)
+Il utilise l'icône [translation.svg](/plume/icons/general/translation.svg) :
+![translation.svg](/plume/icons/general/translation.svg)
 
 L'idéal serait que le texte d'aide s'adapte selon que le mode traduction est actif ou non :
 
@@ -237,8 +237,8 @@ Les valeurs disponibles sont les noms de modèles listés par `templateLabels`, 
 
 Si `templateLabels` est `None` ou une liste vide, il n'y a pas lieu d'afficher le widget. `template` et `templateTabs` vaudront simplement toujours `None`.
 
-D'autant que de besoin, le bouton utilise l'icône [template.svg](/metadata_postgresql/icons/general/template.svg) :
-![template.svg](/metadata_postgresql/icons/general/template.svg)
+D'autant que de besoin, le bouton utilise l'icône [template.svg](/plume/icons/general/template.svg) :
+![template.svg](/plume/icons/general/template.svg)
 
 Texte d'aide : *Choisir un modèle de formulaire*.
 
@@ -251,7 +251,7 @@ La démarche à suivre à l'ouverture d'une fiche de métadonnées, est décrite
 
 ### Effets
 
-La langue principale de métadonnées correspond au paramètre utilisateur `language` que prennent en entrée de nombreuses fonctions et méthodes de [rdf_utils.py](/metadata_postgresql/bibli_rdf/rdf_utils.py).
+La langue principale de métadonnées correspond au paramètre utilisateur `language` que prennent en entrée de nombreuses fonctions et méthodes de [rdf_utils.py](/plume/bibli_rdf/rdf_utils.py).
 
 Hors mode traduction, toutes les métadonnées saisies qui ne soient pas des dates, nombres, URL ou autres types qui ne sont pas supposés avoir une langue seront présumées être dans cette langue. C'est aussi dans cette langue que seront affichées les valeurs issues des thésaurus (autant que possible, car les thésaurus ne contiennent pas de traductions pour toutes les langues imaginables).
 
@@ -309,8 +309,8 @@ Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe
 
 Ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [import.svg](/metadata_postgresql/icons/general/import.svg) :
-![import.svg](/metadata_postgresql/icons/general/import.svg)
+Il utilise l'icône [import.svg](/plume/icons/general/import.svg) :
+![import.svg](/plume/icons/general/import.svg)
 
 Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats disponibles.
 
@@ -349,8 +349,8 @@ C'est bien `metagraph` qui est exporté et non le contenu (potentiellement non s
 
 ### Caractéristiques du bouton
 
-Ce bouton utilise l'icône [export.svg](/metadata_postgresql/icons/general/export.svg) :
-![import.svg](/metadata_postgresql/icons/general/export.svg)
+Ce bouton utilise l'icône [export.svg](/plume/icons/general/export.svg) :
+![import.svg](/plume/icons/general/export.svg)
 
 Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats autorisés.
 
@@ -377,8 +377,8 @@ Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe
 
 Ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [empty.svg](/metadata_postgresql/icons/general/empty.svg) :
-![empty.svg](/metadata_postgresql/icons/general/empty.svg)
+Il utilise l'icône [empty.svg](/plume/icons/general/empty.svg) :
+![empty.svg](/plume/icons/general/empty.svg)
 
 Texte d'aide : *Vider la fiche de métadonnées*.
 
