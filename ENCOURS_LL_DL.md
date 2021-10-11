@@ -22,7 +22,7 @@
 | Import                             |   X   |        |   DL   |
 | Modèle                             |   X   |        |   DL   |
 | Traduction                         |   X   |        |   DL   |
-| Aide sous scénari                  |   X   |        |   DL   |
+| Aide sous scénari                  |   X   |        |   LL / DL   |
 |                                    |        |        |
 
 
