@@ -6,7 +6,7 @@
 ## version
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   |
-| ------------- | :-------------: | :---------: | --------- |
+| ------------- | :-------------: | :---------: | :---------: |
 | Accès aux trois canaux             |        |   Ok   |   DL   |
 | DockWidget vs Windows              |        |   Ok   |   DL   |
 | Formulaire à la volée              |        |        |
