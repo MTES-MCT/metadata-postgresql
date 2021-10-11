@@ -10,7 +10,7 @@
 | Accès aux trois canaux             |        |   Ok   |   DL   |
 | DockWidget vs Windows              |        |   Ok   |   DL   |
 | Formulaire à la volée              |        |        |
-| ◦ QtabWidget (gestion des onglets) |        |        |   DL   |
+| ◦ QtabWidget (gestion des onglets) |        |   Ok   |   DL   |
 |                                    |        |        |
 | Problème double clique sur l'explorateur |   X   |        |   DL   |
 | Widget date et time à revoir ou pas |   X   |        |   DL   |
