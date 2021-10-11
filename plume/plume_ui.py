@@ -1,8 +1,6 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 #        **************************************************************************
-#        copyright            : (C) 2020 by JD Lomenede for # self.proxy_model = self.navigateurTreeView.model() = self.model = iface.browserModel() = item = self.model.dataItem(self.proxy_model.mapToSource(index)) #
-#        **************************************************************************
 #        copyright            : (C) 2021 by DL
 #        **************************************************************************
 
@@ -11,8 +9,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QDockWidget, QTreeView, QGridLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
 
-from . import bibli_postmeta
-from .bibli_postmeta import *
+from . import bibli_plume
+from .bibli_plume import *
 #
 from . import bibli_gene_objets
 from .bibli_gene_objets import *
@@ -34,7 +32,7 @@ from .bibli_rdf import rdf_utils
 from .bibli_pg  import pg_queries
 from .bibli_pg  import template_utils
 
-class Ui_Dialog_postmeta(object):
+class Ui_Dialog_plume(object):
     def __init__(self):
         self.iface = qgis.utils.iface                         
         self.firstOpen = True                                 
@@ -43,7 +41,7 @@ class Ui_Dialog_postmeta(object):
     def setupUi(self, Dialog):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
-        mDic_LH = bibli_postmeta.returnAndSaveDialogParam(self, "Load")
+        mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
         self.lScreenDialog, self.hScreenDialog = int(self.mDic_LH["dialogLargeur"]), int(self.mDic_LH["dialogHauteur"])
         self.displayMessage  = False if self.mDic_LH["displayMessage"] == 'dialogTitle' else True #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
@@ -80,11 +78,11 @@ class Ui_Dialog_postmeta(object):
              
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
-        Dialog.setWindowTitle("POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)")
+        Dialog.setWindowTitle("PLUME (Metadata storage in PostGreSQL)")
         Dialog.setWindowModality(Qt.WindowModal)
         Dialog.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint) 
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
-        iconSource          = _pathIcons + "/postmeta.svg"
+        iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -112,7 +110,7 @@ class Ui_Dialog_postmeta(object):
 
         #==========================
         #Récupération données 
-        _d_template, _dict, _g_shape, _g_vocabulary, _g, _g1 = rdf_utils_demo.post_meta_return()
+        _d_template, _dict, _g_shape, _g_vocabulary, _g, _g1 = rdf_utils_demo.plume_return()
         self._g_vocabulary = _g_vocabulary
         #Récupération données 
         #==========================
@@ -153,9 +151,9 @@ class Ui_Dialog_postmeta(object):
         if self.ihm in ["dockTrue", "dockFalse"] :
            #----
            dlg = QDockWidget()
-           dlg.setObjectName("POSTMETA")
+           dlg.setObjectName("PLUME")
            dlg.setMinimumSize(420, 300)
-           dlg.setWindowTitle(QtWidgets.QApplication.translate("postmeta_ui", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_postmeta.returnVersion()) + ")")
+           dlg.setWindowTitle(QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
            self.iface.addDockWidget(Qt.RightDockWidgetArea, dlg)
            dlg.setFloating(True if self.ihm in ["dockTrue"] else False)
            dlg.setWidget(self.Dialog)
@@ -167,71 +165,71 @@ class Ui_Dialog_postmeta(object):
         self.mMenuBarDialog = QMenuBar(self)
         self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 280, 20))
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Edit") 
-        self.postmetaEdit = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaEdit.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaEdit.setIcon(QIcon(_iconSourcesEdit))
-        self.postmetaEdit.setObjectName(mText)
-        self.postmetaEdit.setToolTip(mText)
-        self.postmetaEdit.setGeometry(QtCore.QRect(10,0,18,18))
-        self.postmetaEdit.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Edit") 
+        self.plumeEdit = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeEdit.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeEdit.setIcon(QIcon(_iconSourcesEdit))
+        self.plumeEdit.setObjectName(mText)
+        self.plumeEdit.setToolTip(mText)
+        self.plumeEdit.setGeometry(QtCore.QRect(10,0,18,18))
+        self.plumeEdit.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Save") 
-        self.postmetaSave = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaSave.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaSave.setIcon(QIcon(_iconSourcesSave))
-        self.postmetaSave.setObjectName(mText)
-        self.postmetaSave.setToolTip(mText)
-        self.postmetaSave.setGeometry(QtCore.QRect(40,0,18,18))
-        self.postmetaSave.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Save") 
+        self.plumeSave = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeSave.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeSave.setIcon(QIcon(_iconSourcesSave))
+        self.plumeSave.setObjectName(mText)
+        self.plumeSave.setToolTip(mText)
+        self.plumeSave.setGeometry(QtCore.QRect(40,0,18,18))
+        self.plumeSave.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Empty") 
-        self.postmetaEmpty = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaEmpty.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaEmpty.setIcon(QIcon(_iconSourcesEmpty))
-        self.postmetaEmpty.setObjectName(mText)
-        self.postmetaEmpty.setToolTip(mText)
-        self.postmetaEmpty.setGeometry(QtCore.QRect(70,0,18,18))
-        self.postmetaEmpty.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Empty") 
+        self.plumeEmpty = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeEmpty.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeEmpty.setIcon(QIcon(_iconSourcesEmpty))
+        self.plumeEmpty.setObjectName(mText)
+        self.plumeEmpty.setToolTip(mText)
+        self.plumeEmpty.setGeometry(QtCore.QRect(70,0,18,18))
+        self.plumeEmpty.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Export") 
-        self.postmetaExport = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaExport.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaExport.setIcon(QIcon(_iconSourcesExport))
-        self.postmetaExport.setObjectName(mText)
-        self.postmetaExport.setToolTip(mText)
-        self.postmetaExport.setGeometry(QtCore.QRect(100,0,18,18))
-        self.postmetaExport.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Export") 
+        self.plumeExport = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeExport.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeExport.setIcon(QIcon(_iconSourcesExport))
+        self.plumeExport.setObjectName(mText)
+        self.plumeExport.setToolTip(mText)
+        self.plumeExport.setGeometry(QtCore.QRect(100,0,18,18))
+        self.plumeExport.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Import") 
-        self.postmetaImport = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaImport.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaImport.setIcon(QIcon(_iconSourcesImport))
-        self.postmetaImport.setObjectName(mText)
-        self.postmetaImport.setToolTip(mText)
-        self.postmetaImport.setGeometry(QtCore.QRect(130,0,18,18))
-        self.postmetaImport.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Import") 
+        self.plumeImport = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeImport.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeImport.setIcon(QIcon(_iconSourcesImport))
+        self.plumeImport.setObjectName(mText)
+        self.plumeImport.setToolTip(mText)
+        self.plumeImport.setGeometry(QtCore.QRect(130,0,18,18))
+        self.plumeImport.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Template") 
-        self.postmetaTemplate = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaTemplate.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaTemplate.setIcon(QIcon(_iconSourcesTemplate))
-        self.postmetaTemplate.setObjectName(mText)
-        self.postmetaTemplate.setToolTip(mText)
-        self.postmetaTemplate.setGeometry(QtCore.QRect(160,0,18,18))
-        self.postmetaTemplate.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Template") 
+        self.plumeTemplate = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeTemplate.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
+        self.plumeTemplate.setObjectName(mText)
+        self.plumeTemplate.setToolTip(mText)
+        self.plumeTemplate.setGeometry(QtCore.QRect(160,0,18,18))
+        self.plumeTemplate.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Translation") 
-        self.postmetaTranslation = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaTranslation.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaTranslation.setIcon(QIcon(_iconSourcesTranslation))
-        self.postmetaTranslation.setObjectName(mText)
-        self.postmetaTranslation.setToolTip(mText)
-        self.postmetaTranslation.setGeometry(QtCore.QRect(190,0,18,18))
-        self.postmetaTranslation.clicked.connect(self.clickButtonsActions)
+        mText = QtWidgets.QApplication.translate("plume_main", "Translation") 
+        self.plumeTranslation = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeTranslation.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeTranslation.setIcon(QIcon(_iconSourcesTranslation))
+        self.plumeTranslation.setObjectName(mText)
+        self.plumeTranslation.setToolTip(mText)
+        self.plumeTranslation.setGeometry(QtCore.QRect(190,0,18,18))
+        self.plumeTranslation.clicked.connect(self.clickButtonsActions)
         #------------
         #------------
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Customization of the IHM") 
+        mText = QtWidgets.QApplication.translate("plume_main", "Customization of the IHM") 
         self.paramColor = QtWidgets.QPushButton(self.mMenuBarDialog)
         self.paramColor.setStyleSheet("QPushButton { border: 0px solid black;}")  
         self.paramColor.setIcon(QIcon(_iconSourcesParam))
@@ -240,14 +238,14 @@ class Ui_Dialog_postmeta(object):
         self.paramColor.setGeometry(QtCore.QRect(220,0,18,18))
         self.paramColor.clicked.connect(self.clickColorDialog)
         #--
-        mText = QtWidgets.QApplication.translate("postmeta_main", "Help") 
-        self.postmetaHelp = QtWidgets.QPushButton(self.mMenuBarDialog)
-        self.postmetaHelp.setStyleSheet("QPushButton { border: 0px solid black;}")  
-        self.postmetaHelp.setIcon(QIcon(_iconSourcesHelp))
-        self.postmetaHelp.setObjectName(mText)
-        self.postmetaHelp.setToolTip(mText)
-        self.postmetaHelp.setGeometry(QtCore.QRect(250,0,18,18))
-        self.postmetaHelp.clicked.connect(self.myHelpAM)
+        mText = QtWidgets.QApplication.translate("plume_main", "Help") 
+        self.plumeHelp = QtWidgets.QPushButton(self.mMenuBarDialog)
+        self.plumeHelp.setStyleSheet("QPushButton { border: 0px solid black;}")  
+        self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
+        self.plumeHelp.setObjectName(mText)
+        self.plumeHelp.setToolTip(mText)
+        self.plumeHelp.setGeometry(QtCore.QRect(250,0,18,18))
+        self.plumeHelp.clicked.connect(self.myHelpAM)
         #------------
         
         if self.ihm in ["dockTrue", "dockFalse"] : self.mMenuBarDialog.show()
@@ -259,15 +257,15 @@ class Ui_Dialog_postmeta(object):
         self.gestionInteractionConnections()
 
     #==========================
-    # == Gestion des actions de bouttons de la barre de menu
+    # == Gestion des actions de boutons de la barre de menu
     def clickButtonsActions(self):
         if not hasattr(self, 'mConnectEnCours') :
-           zTitre = QtWidgets.QApplication.translate("postmeta_ui", "POSTMETA : Warning", None)
-           zMess  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Merci de sélectionner une table, une vue dans un schéma. \
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+           zMess  = QtWidgets.QApplication.translate("plume_ui", "Merci de sélectionner une table, une vue dans un schéma. \
                                                                           \n\nSoit :                                               \
                                                                           \n * dans votre panneau 'Explorateur'                       \
                                                                           \n * dans votre gestionnaire de couche.", None)
-           bibli_postmeta.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+           bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
            return
 
         mItem = self.mMenuBarDialog.sender().objectName()
@@ -289,7 +287,7 @@ class Ui_Dialog_postmeta(object):
 
            print(r)
         return
-    # == Gestion des actions de bouttons de la barre de menu
+    # == Gestion des actions de boutons de la barre de menu
     #==========================
 
     #---------------------------
@@ -329,7 +327,7 @@ class Ui_Dialog_postmeta(object):
               self.getAllFromUri()
               #--
               if self.connectBaseOKorKO[0] :
-                 bibli_postmeta.test_interaction_sql(self)
+                 bibli_plume.test_interaction_sql(self)
         return
     
     #---------------------------
@@ -338,6 +336,7 @@ class Ui_Dialog_postmeta(object):
         # DL
         self.origine = self.mNav1 if mNav == self.mNav1 else self.mNav2 
         #issu code JD Lomenede
+        # copyright            : (C) 2020 by JD Lomenede for # self.proxy_model = self.navigateurTreeView.model() = self.model = iface.browserModel() = item = self.model.dataItem(self.proxy_model.mapToSource(index)) #
         # DL
         self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
         # DL
@@ -350,7 +349,7 @@ class Ui_Dialog_postmeta(object):
             self.getAllFromUri()
             #--
             if self.connectBaseOKorKO[0] :
-               bibli_postmeta.test_interaction_sql(self)
+               bibli_plume.test_interaction_sql(self)
         return
 
     #---------------------------
@@ -366,9 +365,9 @@ class Ui_Dialog_postmeta(object):
         if self.connectBaseOKorKO[0] :
            self.mConnectEnCoursPointeur = self.mConnectEnCours.cursor()
         else :    
-           zTitre = QtWidgets.QApplication.translate("postmeta_ui", "POSTMETA : Warning", None)
-           zMess  = QtWidgets.QApplication.translate("postmeta_ui", "Authentication problem", None)
-           bibli_postmeta.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+           zMess  = QtWidgets.QApplication.translate("plume_ui", "Authentication problem", None)
+           bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
         return
 
     #----------------------
@@ -378,12 +377,12 @@ class Ui_Dialog_postmeta(object):
     #----------------------
     def mTestConnect(self, mConfigConnection, uri) :
         retUser, retPassword, mTestConnect, okConnect = self.username, self.password, True, False
-        mMessAuth = QtWidgets.QApplication.translate("postmeta_ui", "Authentication problem, check your password in particular.", None)
+        mMessAuth = QtWidgets.QApplication.translate("plume_ui", "Authentication problem, check your password in particular.", None)
         connInfoUri = uri.connectionInfo()
 
         while mTestConnect :
            try :
-              mConnectEnCours = psycopg2.connect(uri.connectionInfo(), application_name="Asgard Manager")
+              mConnectEnCours = psycopg2.connect(uri.connectionInfo(), application_name="PLUME")
               mTestConnect, okConnect = False, True
            except :
               (retSuccess, retUser, retPassword) = QgsCredentials.instance().get(connInfoUri, retUser, retPassword, mMessAuth)
@@ -452,13 +451,13 @@ class Ui_Dialog_postmeta(object):
         if self.firstOpen :
            self.firstOpen = False
         #else :
-        bibli_postmeta.resizeIhm(self, self.Dialog.width(), self.Dialog.height())
+        bibli_plume.resizeIhm(self, self.Dialog.width(), self.Dialog.height())
 
     #==========================
     def clickParamDisplayMessage(self):
         mDicAutre = {}
         mSettings = QgsSettings()
-        mSettings.beginGroup("POSTMETA")
+        mSettings.beginGroup("PLUME")
         mSettings.beginGroup("Generale")
         mDicAutre["displayMessage"] = "dialogBox"
         for key, value in mDicAutre.items():
@@ -477,7 +476,7 @@ class Ui_Dialog_postmeta(object):
         
     #==========================
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtWidgets.QApplication.translate("postmeta_ui", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_postmeta.returnVersion()) + ")")
+        Dialog.setWindowTitle(QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
 
     #==========================
     def clickColorDialog(self):
@@ -494,6 +493,6 @@ class Ui_Dialog_postmeta(object):
            valueDefautFileHelp  = self.fileHelpHtml
         else :
            valueDefautFileHelp  = self.fileHelpHtml
-        bibli_postmeta.execPdf(valueDefautFileHelp)
+        bibli_plume.execPdf(valueDefautFileHelp)
         return
                  

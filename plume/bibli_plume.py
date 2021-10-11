@@ -96,10 +96,10 @@ def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
       print("err.pgerror = %s" %(zMessError_Erreur))
       zMessError_Erreur = cleanMessError(zMessError_Erreur)
       mListeErrorCode = ["42501", "P0000", "P0001", "P0002", "P0003", "P0004"] 
-      if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur Asgard
-         mTypeErreur = "PostmetaGEREE" if dicExisteExpRegul(self, 'Search_0', zMessError_Erreur) else "PostmetaNONGEREE"
+      if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur PLUME
+         mTypeErreur = "plumeGEREE" if dicExisteExpRegul(self, 'Search_0', zMessError_Erreur) else "plumeNONGEREE"
       else : 
-         mTypeErreur = "Postmeta"
+         mTypeErreur = "plume"
 
       dialogueMessageError(mTypeErreur, zMessError_Erreur )   
       #-------------
@@ -216,7 +216,7 @@ def returnAndSaveDialogParam(self, mAction):
     mDicAutreColor = {}
     mDicAutrePolice = {}
     mSettings = QgsSettings()
-    mSettings.beginGroup("POSTMETA")
+    mSettings.beginGroup("PLUME")
     mSettings.beginGroup("Generale")
     
     if mAction == "Load" :
@@ -310,7 +310,7 @@ def getThemeIcon(theName):
     myDefPathIcons = myDefPathIcons.replace("\\","/")+ theName
     myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName
     myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName
-    myQrcPath = "python/plugins/postmeta/" + theName
+    myQrcPath = "python/plugins/plume/" + theName
     if QFile.exists(myDefPath): return myDefPath
     elif QFile.exists(myDefPathIcons): return myDefPathIcons
     elif QFile.exists(myCurThemePath): return myCurThemePath

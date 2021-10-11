@@ -5,8 +5,8 @@ import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.Qt import *
 
-from . import bibli_postmeta
-from .bibli_postmeta import *
+from . import bibli_plume
+from .bibli_plume import *
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog, mTypeErreur, zMessError_Erreur):
@@ -14,14 +14,14 @@ class Ui_Dialog(object):
         self.mTypeErreur = mTypeErreur
         Dialog.setObjectName("Dialog")
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0,520,350).size()).expandedTo(Dialog.minimumSizeHint()))
-        iconSource = bibli_postmeta.getThemeIcon("postmeta.png")
+        iconSource = bibli_plume.getThemeIcon("plume.png")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
         #----------
         self.labelImage = QtWidgets.QLabel(Dialog)
-        if self.mTypeErreur == "Postmeta" :
-           myPath = os.path.dirname(__file__)+"\\icons\\general\\erreur_normale_postmeta.png"
+        if self.mTypeErreur == "plume" :
+           myPath = os.path.dirname(__file__)+"\\icons\\general\\erreur_normale_plume.png"
         myDefPath = myPath.replace("\\","/");
         carIcon = QtGui.QImage(myDefPath)
         self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
@@ -82,30 +82,30 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
 
     def retranslateUi(self, Dialog):
-        mMessErreurPostmeta        =  QtWidgets.QApplication.translate("erreur_ui", "Postmeta has encountered an error.", None)
-        mMessErreurPostmetaGere    =  QtWidgets.QApplication.translate("erreur_ui", "Operation prohibited.", None)
-        mMessErreurPostmetaNonGere =  QtWidgets.QApplication.translate("erreur_ui", "Postmeta has encountered an error.", None)
-        mMessErreur = mMessErreurPostmetaGere
-        mMessRedPostmeta        =  "https://portail-support.din.developpement-durable.gouv.fr/projects/assistance-produits-geomatiques"        
-        mMessRedPostmetaGere    =  "https://portail-support.din.developpement-durable.gouv.fr/projects/assistance-produits-geomatiques"        
-        mMessRedPostmetaNonGere =  "https://portail-support.din.developpement-durable.gouv.fr/projects/assistance-produits-geomatiques"        
-        if self.mTypeErreur == "PostmetaGEREE" :
-           mMessErreur = mMessErreurPostmetaGere
-           mMessRed    = mMessRedPostmetaGere
-           mMessRedTitre = "Redmine Postmeta"
-        elif self.mTypeErreur == "PostmetaNONGEREE" :
-           mMessErreur = mMessErreurPostmetaNonGere
-           mMessRed    = mMessRedPostmetaNonGere
-           mMessRedTitre = "Redmine Postmeta"
-        elif self.mTypeErreur == "Postmeta" :
-           mMessErreur = mMessErreurPostmeta
-           mMessRed    = mMessRedPostmeta
-           mMessRedTitre = "Redmine Postmeta"
+        mMessErreurplume        =  QtWidgets.QApplication.translate("erreur_ui", "plume has encountered an error.", None)
+        mMessErreurplumeGere    =  QtWidgets.QApplication.translate("erreur_ui", "Operation prohibited.", None)
+        mMessErreurplumeNonGere =  QtWidgets.QApplication.translate("erreur_ui", "plume has encountered an error.", None)
+        mMessErreur = mMessErreurplumeGere
+        mMessRedplume        =  "https://portail-support.din.developpement-durable.gouv.fr/projects/assistance-produits-geomatiques"        
+        mMessRedplumeGere    =  "https://portail-support.din.developpement-durable.gouv.fr/projects/assistance-produits-geomatiques"        
+        mMessRedplumeNonGere =  "https://portail-support.din.developpement-durable.gouv.fr/projects/assistance-produits-geomatiques"        
+        if self.mTypeErreur == "plumeGEREE" :
+           mMessErreur = mMessErreurplumeGere
+           mMessRed    = mMessRedplumeGere
+           mMessRedTitre = "Redmine plume"
+        elif self.mTypeErreur == "plumeNONGEREE" :
+           mMessErreur = mMessErreurplumeNonGere
+           mMessRed    = mMessRedplumeNonGere
+           mMessRedTitre = "Redmine plume"
+        elif self.mTypeErreur == "plume" :
+           mMessErreur = mMessErreurplume
+           mMessRed    = mMessRedplume
+           mMessRedTitre = "Redmine plume"
         else :
-           mMessErreur = mMessErreurPostmeta =  QtWidgets.QApplication.translate("erreur_ui", "Unreported errors", None)
-           mMessRed    = mMessRedPostmetaGere
-           mMessRed    = mMessRedPostmetaGere
-           mMessRedTitre = "Redmine Postmeta"
+           mMessErreur = mMessErreurplume =  QtWidgets.QApplication.translate("erreur_ui", "Unreported errors", None)
+           mMessRed    = mMessRedplumeGere
+           mMessRed    = mMessRedplumeGere
+           mMessRedTitre = "Redmine plume"
         #----------
         MonHtml = ""
         MonHtml += "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -120,10 +120,10 @@ class Ui_Dialog(object):
         MonHtml2 += self.zMessError_Erreur
         MonHtml += MonHtml2
         MonHtml += "</i></p></body></html>"
-        Dialog.setWindowTitle("Postmeta - (" + str(bibli_postmeta.returnVersion()) + ")")
+        Dialog.setWindowTitle("plume - (" + str(bibli_plume.returnVersion()) + ")")
         self.textEdit.setHtml(QtWidgets.QApplication.translate("erreur_ui", MonHtml, None))
         self.label_2.setText(QtWidgets.QApplication.translate("erreur_ui", mMessErreur, None))
-        #if self.mTypeErreur != "Postmeta" :
+        #if self.mTypeErreur != "plume" :
         self.labelRedmineTitre.setText('Redmine')
         mLibelle = QtWidgets.QApplication.translate("erreur_ui", "To help improve the tool, report this anomaly to us on the ", None) 
         mLink = '<a href=\"' + mMessRed + '\">' + mLibelle + " " + mMessRedTitre + '</a>'

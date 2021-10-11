@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="2.0">
-<context encoding="UTF-8">
-    <name>bibli_ihm_asgard</name>
-    <message encoding="UTF-8">
-        <location filename="../postmeta_ui.py" line="288"/>
-        <source>Merci de sélectionner une table, une vue dans un schéma.</source>
-        <translation type="obsolete">Merci de sélectionner une table, une vue dans un schéma.</translation>
-    </message>
-    <message encoding="UTF-8">
-        <location filename="../postmeta_ui.py" line="266"/>
-        <source>Merci de sélectionner une table, une vue dans un schéma.                                                                           
-
-Soit :                                                                                                                         
- * dans votre panneau &apos;Explorateur&apos;                                                                                                 
- * dans votre gestionnaire de couche.</source>
-        <translation type="unfinished">Merci de sélectionner une table, une vue dans un schéma.                                                                           
-
-Soit :                                                                                                                         
- * dans votre panneau &apos;Explorateur&apos;                                                                                                 
- * dans votre gestionnaire de couche.</translation>
-    </message>
-</context>
 <context>
-    <name>bibli_postmeta</name>
+    <name>bibli_plume</name>
     <message>
         <location filename="../colorbloc_ui.py" line="519"/>
         <source>Information !!!</source>
@@ -85,11 +64,6 @@ Soit :
 <context>
     <name>erreur_ui</name>
     <message>
-        <location filename="../erreur_ui.py" line="87"/>
-        <source>Postmeta has encountered an error.</source>
-        <translation type="unfinished">Postmeta a rencontré une erreur.</translation>
-    </message>
-    <message>
         <location filename="../erreur_ui.py" line="86"/>
         <source>Operation prohibited.</source>
         <translation type="unfinished">Opération interdite</translation>
@@ -109,96 +83,114 @@ Soit :
         <source>OK</source>
         <translation type="unfinished">OK</translation>
     </message>
+    <message>
+        <location filename="../erreur_ui.py" line="87"/>
+        <source>plume has encountered an error.</source>
+        <translation type="unfinished">PLUME a rencotrée une erreur</translation>
+    </message>
 </context>
 <context>
-    <name>postmeta_main</name>
+    <name>plume_main</name>
     <message>
-        <location filename="../postmeta.py" line="42"/>
-        <source>POSTGRESQL METADATA IHM</source>
-        <translation type="unfinished">Métadonnées (Stockage des métadonnées dans PostGreSQL)</translation>
+        <location filename="../plume.py" line="42"/>
+        <source>PLUGIN METADONNEES</source>
+        <translation type="unfinished">PLUgin MEtadonnées</translation>
     </message>
     <message>
-        <location filename="../postmeta.py" line="46"/>
-        <source>POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL) </source>
-        <translation type="unfinished">Métadonnées (Stockage des métadonnées dans PostGreSQL)</translation>
+        <location filename="../plume.py" line="46"/>
+        <source>PLUGIN METADONNEES (Metadata storage in PostGreSQL) </source>
+        <translation type="unfinished">PLUgin MEtadonnées</translation>
     </message>
     <message>
-        <location filename="../postmeta.py" line="70"/>
-        <source>My tool bar POSTGRESQLMETADATAIHM</source>
-        <translation type="unfinished">Ma barre d&apos;outil Métadonnées</translation>
+        <location filename="../plume.py" line="70"/>
+        <source>My tool bar PLUME</source>
+        <translation type="unfinished">ma barre d&apos;outil PLUME</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="170"/>
+        <location filename="../colorbloc_ui.py" line="158"/>
+        <source>PLUME (Metadata storage in PostGreSQL</source>
+        <translation type="unfinished">PLUgin MEtadonnées (Stockage des métadonnées dans PostGreSQL)</translation>
+    </message>
+    <message>
+        <location filename="../plume_ui.py" line="170"/>
         <source>Edit</source>
         <translation type="unfinished">Edition</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="179"/>
+        <location filename="../plume_ui.py" line="179"/>
         <source>Save</source>
         <translation type="unfinished">Sauvegarde</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="188"/>
+        <location filename="../plume_ui.py" line="188"/>
         <source>Empty</source>
         <translation type="unfinished">Nouvelle</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="197"/>
+        <location filename="../plume_ui.py" line="197"/>
         <source>Export</source>
         <translation type="unfinished">Export</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="206"/>
+        <location filename="../plume_ui.py" line="206"/>
         <source>Import</source>
         <translation type="unfinished">Import</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="215"/>
+        <location filename="../plume_ui.py" line="215"/>
         <source>Template</source>
         <translation type="unfinished">Modèle</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="224"/>
+        <location filename="../plume_ui.py" line="224"/>
         <source>Translation</source>
         <translation type="unfinished">Traduction</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="234"/>
+        <location filename="../plume_ui.py" line="234"/>
         <source>Customization of the IHM</source>
         <translation type="unfinished">Personnalisation de l&apos;IHM</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="243"/>
+        <location filename="../plume_ui.py" line="243"/>
         <source>Help</source>
         <translation type="unfinished">Aide</translation>
     </message>
-    <message>
-        <location filename="../colorbloc_ui.py" line="158"/>
-        <source>POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL</source>
-        <translation type="unfinished">Métadonnées (Stockage des métadonnées dans PostGreSQL)</translation>
-    </message>
 </context>
 <context>
-    <name>postmeta_ui</name>
+    <name>plume_ui</name>
     <message>
-        <location filename="../postmeta_ui.py" line="456"/>
-        <source>Help</source>
-        <translation type="obsolete">Aide</translation>
+        <location filename="../plume_ui.py" line="483"/>
+        <source>PLUGIN METADONNEES (Metadata storage in PostGreSQL)</source>
+        <translation type="unfinished">PLUgin MEtadonnées (Stockage des métadonnées dans PostGreSQL)</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="457"/>
-        <source>Close</source>
-        <translation type="obsolete">Fermer</translation>
+        <location filename="../plume_ui.py" line="370"/>
+        <source>PLUME : Warning</source>
+        <translation type="unfinished">PLUME : Attention !!</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="450"/>
-        <source>POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL)</source>
-        <translation type="unfinished">Métadonnées</translation>
+        <location filename="../plume_ui.py" line="371"/>
+        <source>Authentication problem</source>
+        <translation type="unfinished">Problème d&apos;authentification</translation>
     </message>
     <message>
-        <location filename="../postmeta_ui.py" line="265"/>
-        <source>POSTMETA : Warning</source>
-        <translation type="unfinished">POSTMETA : Attention</translation>
+        <location filename="../plume_ui.py" line="382"/>
+        <source>Authentication problem, check your password in particular.</source>
+        <translation type="unfinished">Problème d&apos;authentification, vérifié votre mot de passe en particulier.</translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../plume_ui.py" line="266"/>
+        <source>Merci de sélectionner une table, une vue dans un schéma.                                                                           
+
+Soit :                                                                                                                         
+ * dans votre panneau &apos;Explorateur&apos;                                                                                                 
+ * dans votre gestionnaire de couche.</source>
+        <translation type="unfinished">Merci de sélectionner une table, une vue dans un schéma.                                                                           
+
+Soit :                                                                                                                         
+ * dans votre panneau &apos;Explorateur&apos;                                                                                                 
+ * dans votre gestionnaire de couche.</translation>
     </message>
 </context>
 </TS>

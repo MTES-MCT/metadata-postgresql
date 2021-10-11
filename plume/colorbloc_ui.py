@@ -1,8 +1,8 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 
-from . import bibli_postmeta
-from .bibli_postmeta import *
+from . import bibli_plume
+from .bibli_plume import *
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.Qt import *
@@ -13,12 +13,12 @@ class Ui_Dialog_ColorBloc(object):
     def setupUiColorBloc(self, DialogColorBloc):
         self.DialogColorBloc = DialogColorBloc
         self.zMessTitle    =  QtWidgets.QApplication.translate("colorbloc_ui", "Customization of the IHM.", None)
-        myPath = os.path.dirname(__file__)+"\\icons\\logo\\postmeta.svg"
+        myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
 
         self.DialogColorBloc.setObjectName("DialogConfirme")
         self.DialogColorBloc.setFixedSize(810,460)
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
-        iconSource          = _pathIcons + "/postmeta.svg"
+        iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.DialogColorBloc.setWindowIcon(icon)
@@ -42,7 +42,7 @@ class Ui_Dialog_ColorBloc(object):
         self.label_2.setObjectName("label_2")                                                     
         
         #========
-        self.mDic_LH = bibli_postmeta.returnAndSaveDialogParam(self, "Load")
+        self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround"}
         self.dicListLettreLabel = { 0:"Onglet", 1:"Groupe général",  2:"Groupe de propriétés",  3:"Groupe de valeurs",  4:"Groupe de traduction", 5:"Libellé"}
         #========
@@ -155,7 +155,7 @@ class Ui_Dialog_ColorBloc(object):
         self.pushButtonAnnuler.setGeometry(QtCore.QRect(self.DialogColorBloc.width() / 2 + 20, self.DialogColorBloc.height() - 50, 80, 25))
         self.pushButtonAnnuler.clicked.connect(self.DialogColorBloc.reject)
         #----------
-        self.DialogColorBloc.setWindowTitle(QtWidgets.QApplication.translate("postmeta_main", "POSTGRESQL METADATA GUI (Metadata storage in PostGreSQL") + "  (" + str(bibli_postmeta.returnVersion()) + ")")
+        self.DialogColorBloc.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(bibli_plume.returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("colorbloc_ui", self.zMessTitle, None))
         self.pushButton.setText(QtWidgets.QApplication.translate("colorbloc_ui", "OK", None))
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Cancel", None))
@@ -490,7 +490,7 @@ class Ui_Dialog_ColorBloc(object):
                       mDicSaveColor[mLettre] = mColorFirst
                       break
            #-
-           mSettings.beginGroup("POSTMETA")
+           mSettings.beginGroup("PLUME")
            mSettings.beginGroup("BlocsColor")
            for key, value in mDicSaveColor.items():
                mSettings.setValue(key, value)
@@ -516,7 +516,7 @@ class Ui_Dialog_ColorBloc(object):
                mSettings.setValue(key, value)
        
            mSettings.endGroup()    
-           zMess, zTitre = QtWidgets.QApplication.translate("colorbloc_ui", "Colors saved.", None), QtWidgets.QApplication.translate("bibli_postmeta", "Information !!!", None)
+           zMess, zTitre = QtWidgets.QApplication.translate("colorbloc_ui", "Colors saved.", None), QtWidgets.QApplication.translate("bibli_plume", "Information !!!", None)
            #QMessageBox.information(self, zTitre, zMess) 
         return 
 

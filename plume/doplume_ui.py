@@ -6,18 +6,18 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QDialog
 from qgis.core import *
 
-from .postmeta_ui import Ui_Dialog_postmeta
-from . import bibli_postmeta
-from .bibli_postmeta import *
+from .plume_ui import Ui_Dialog_plume
+from . import bibli_plume
+from .bibli_plume import *
 
-class Dialog(QDialog, Ui_Dialog_postmeta):
+class Dialog(QDialog, Ui_Dialog_plume):
       def __init__(self):
           QDialog.__init__(self)
           self.setupUi(self)
 
       def reject(self):
           try :
-            bibli_postmeta.returnAndSaveDialogParam(self, "Save")
+            bibli_plume.returnAndSaveDialogParam(self, "Save")
           except:
             pass
 

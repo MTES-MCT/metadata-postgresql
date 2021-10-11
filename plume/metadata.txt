@@ -1,7 +1,7 @@
 [general]
-name = POSTGRESQL METADATA IHM 
-description=POSTGRESQL METADATA IHM - Stockage des metadonnees dans PostGreSQL
-about=This plugin POSTGRESQL METADATA IHM - Stockage des metadonnees dans PostGreSQL
+name = PLUME
+description=PLUGIN METADONNEES - Stockage des metadonnees dans PostGreSQL
+about=This plugin PLUGIN METADONNEES - Stockage des metadonnees dans PostGreSQL
 category = Tools
 version=0.1
 qgisMinimumVersion=3.0
@@ -9,7 +9,7 @@ qgisMinimumVersion=3.0
 changelog:
 
     ==========================================================================
-    = POSTGRESQL IHM
+    = PLUme MEtadonnees
     = Stockage des metadonnees dans PostGreSQL
     ==========================================================================
     ** 0.1.0 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen

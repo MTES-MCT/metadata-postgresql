@@ -9,8 +9,8 @@ from PyQt5.QtGui import *
 from qgis.gui import *
 from qgis.gui import QgsDateTimeEdit
 import os
-from . import bibli_postmeta
-from .bibli_postmeta import *
+from . import bibli_plume
+from .bibli_plume import *
 from .bibli_rdf import rdf_utils
                      
 #==================================================
