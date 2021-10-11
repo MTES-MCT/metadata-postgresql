@@ -16,13 +16,13 @@
 | Widget date et time à revoir ou pas |   X   |        |   DL   |
 |                                    |       |        |
 | Edition                            |   X   |        |   DL   |
+| Sauvegarde                         |   X   |        |   DL   |
 | Vierge                             |   X   |        |   DL   |
 | Export                             |   X   |        |   DL   |
 | Import                             |   X   |        |   DL   |
 | Modèle                             |   X   |        |   DL   |
 | Traduction                         |   X   |        |   DL   |
 | Aide sous scénari                  |   X   |        |   DL   |
-|                                    |        |        |
 |                                    |        |        |
 
 
