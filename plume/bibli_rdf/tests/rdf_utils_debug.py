@@ -4,7 +4,7 @@ Utilitaires pour la recette de rdf_utils.
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
 from rdflib.compare import isomorphic
 
-from metadata_postgresql.bibli_rdf import rdf_utils
+from plume.bibli_rdf import rdf_utils
 
 
 def search_keys(widgetsdict, path, object):

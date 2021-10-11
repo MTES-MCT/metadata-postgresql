@@ -10,8 +10,8 @@ from inspect import signature
 import re, uuid, unittest, json
 from pathlib import Path
 
-from metadata_postgresql.bibli_rdf import rdf_utils, __path__
-from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
+from plume.bibli_rdf import rdf_utils, __path__
+from plume.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
     populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
     check_hidden_branches, check_buttons
 

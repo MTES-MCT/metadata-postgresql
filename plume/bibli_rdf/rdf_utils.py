@@ -24,7 +24,7 @@ from pathlib import Path
 from html import escape
 import re, uuid
 
-from metadata_postgresql.bibli_rdf import __path__
+from plume.bibli_rdf import __path__
 
 
 class WidgetsDict(dict):

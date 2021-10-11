@@ -6,7 +6,7 @@ Utilitaires pour la maintenance du schéma SHACL décrivant les métadonnées co
 from rdflib import Graph, URIRef
 from rdflib.namespace import NamespaceManager
 
-from metadata_postgresql.bibli_rdf.rdf_utils import load_shape
+from plume.bibli_rdf.rdf_utils import load_shape
 
 
 def table_from_shape(

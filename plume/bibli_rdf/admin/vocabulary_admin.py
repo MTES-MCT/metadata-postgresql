@@ -28,7 +28,7 @@ from rdflib import Graph, URIRef, Literal
 from rdflib.util import guess_format
 from rdflib.serializer import Serializer
 
-from metadata_postgresql.bibli_rdf import __path__
+from plume.bibli_rdf import __path__
 
 
 def import_vocabulary(directory, scheme, languages=["fr","en"]):

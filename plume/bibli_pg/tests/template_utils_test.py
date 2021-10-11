@@ -17,11 +17,11 @@ import re, uuid, unittest, json, psycopg2
 from pathlib import Path
 from rdflib import Graph, URIRef
 
-from metadata_postgresql.bibli_pg import template_utils, pg_queries
-from metadata_postgresql.bibli_rdf import __path__
-from metadata_postgresql.bibli_rdf.rdf_utils import build_dict, load_vocabulary, \
+from plume.bibli_pg import template_utils, pg_queries
+from plume.bibli_rdf import __path__
+from plume.bibli_rdf.rdf_utils import build_dict, load_vocabulary, \
      load_shape, metagraph_from_pg_description
-from metadata_postgresql.bibli_rdf.tests.rdf_utils_debug import search_keys
+from plume.bibli_rdf.tests.rdf_utils_debug import search_keys
 
 # connexion à utiliser pour les tests
 connection_string = "host={} port={} dbname={} user={} password={}".format(

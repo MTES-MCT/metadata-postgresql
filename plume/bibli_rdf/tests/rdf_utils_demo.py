@@ -9,8 +9,8 @@ import re, uuid
 import json
 from pathlib import Path
 
-from metadata_postgresql.bibli_rdf import rdf_utils, __path__
-from metadata_postgresql.bibli_rdf.tests import rdf_utils_debug
+from plume.bibli_rdf import rdf_utils, __path__
+from plume.bibli_rdf.tests import rdf_utils_debug
 
 # schéma SHACL qui décrit les métadonnées communes
 shape = rdf_utils.load_shape()
@@ -46,8 +46,6 @@ d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, columns=columns
 #d = rdf_utils.build_dict(g, shape, vocabulary, template=template, editHideUnlisted=True, translation=True)
 
 rdf_utils_debug.populate_widgets(d)
-
-g1 = d.build_graph(vocabulary)
 
 
 
@@ -249,5 +247,5 @@ def pseudo_form(widgetsDict):
                + '_|' + ' |' * ( c - i - 1) )
 
 
-def post_meta_return():
-    return template, d, shape, vocabulary, g, g1
+def plume_return():
+    return template, d, shape, vocabulary, g, g
