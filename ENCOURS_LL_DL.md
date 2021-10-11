@@ -12,16 +12,16 @@
 | Formulaire à la volée              |        |        |
 | ◦ QtabWidget (gestion des onglets) |        |        |   DL   |
 |                                    |        |        |
-| Problème double clique sur l'explorateur |   KO   |        |   DL   |
-| Widget date et time à revoir ou pas |   KO   |        |   DL   |
-|                                    |        |        |
-| Edition                            |        |        |   DL   |
-| Vierge                             |        |        |   DL   |
-| Export                             |        |        |   DL   |
-| Import                             |        |        |   DL   |
-| Modèle                             |        |        |   DL   |
-| Traduction                         |        |        |   DL   |
-| Aide sous scénari                  |        |        |   DL   |
+| Problème double clique sur l'explorateur |   X   |        |   DL   |
+| Widget date et time à revoir ou pas |   X   |        |   DL   |
+|                                    |   X   |        |
+| Edition                            |   X   |        |   DL   |
+| Vierge                             |   X   |        |   DL   |
+| Export                             |   X   |        |   DL   |
+| Import                             |   X   |        |   DL   |
+| Modèle                             |   X   |        |   DL   |
+| Traduction                         |   X   |        |   DL   |
+| Aide sous scénari                  |   X   |        |   DL   |
 |                                    |        |        |
 |                                    |        |        |
 
