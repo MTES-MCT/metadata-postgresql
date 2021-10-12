@@ -14,7 +14,7 @@
     },
     "dcat:contactPoint / vcard:hasEmail": {
         "default value": "sig-contact@developpement-durable.gouv.fr",
-        "read only": "True"
+        "read only": true
     },
     "dcat:keyword": {
     },
