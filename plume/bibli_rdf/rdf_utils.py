@@ -22,6 +22,7 @@ from rdflib.util import from_n3
 from locale import strxfrm, setlocale, LC_COLLATE
 from pathlib import Path
 from html import escape
+from json import dumps
 import re, uuid
 
 from plume.bibli_rdf import __path__
@@ -1726,7 +1727,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
                         mDefault = mDefaultBrut = mDefaultSource = None
 
-            multilingual = p['unilang'] and bool(p['unilang']) or False
+            multilingual = p['unilang'] and (str(p['unilang']).lower() == 'true') or False
             multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
             
             # si seules les métadonnées dans la langue
@@ -2074,7 +2075,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'sources' : sorted(mVSources) if mVSources else None,
                     'one per language' : multilingual,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
-                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
+                    'read only' : ( mode == 'read' ) or t.get('read only', False),
                     'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None ),
                     'shape order' : int(p['order']) if p['order'] is not None else None,
                     'template order' : int(t.get('order')) if t.get('order') is not None else None
@@ -2243,7 +2244,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'QDoubleValidator' if mType.n3(nsm) in ("xsd:decimal", "xsd:float", "xsd:double") \
                         else None )),
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
-                    'read only' : ( mode == 'read' ) or bool(t.get('read only', False)),
+                    'read only' : ( mode == 'read' ) or t.get('read only', False),
                     'template order' : int(t.get('order')) if t.get('order') is not None else None
                     } )
                         
@@ -3476,6 +3477,231 @@ def text_with_link(anyStr, anyIRI):
         escape(str(anyIRI), quote=True),
         escape(anyStr, quote=True)
         )
+    
+
+def get_datasetid(metagraph):
+    """Renvoie l'identifiant du jeu de données contenu dans le graphe.
+    
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées.
+    
+    RESULTAT
+    --------
+    L'identifiant (URIRef) du jeu de données contenu dans le graphe.
+    
+    Cette fonction renvoie None si le graphe ne contient pas de jeu
+    de données.
+    """
+    for s in metagraph.subjects(
+        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+        URIRef("http://www.w3.org/ns/dcat#Dataset")
+        ):
+        return s
+
+
+def strip_uuid(datasetid):
+    """Extrait l'UUID d'un identifiant de dataset.
+    
+    ARGUMENTS
+    ---------
+    - datasetid (rdflib.URIRef) : un identifiant de jeu de données.
+    
+    RESULTAT
+    --------
+    Une chaîne de caractères (str) correspondant à l'UUID du jeu de
+    données, sans espace de nommage.
+    
+    Cette fonction renvoie None si l'identifiant du jeu de données n'est
+    pas un UUID.
+    """
+    u = re.search('[:]([a-z0-9-]{36})$', str(datasetid))
+    if u:
+        return u[1]
+
+
+def build_geoide_json(metagraph):
+    """Renvoie une vue JSON basique des métadonnées, à l'usage de GéoIDE.
+    
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées.
+    
+    RESULTAT
+    --------
+    Une chaîne de caractères (str) correspondant au JSON à copier entre
+    les balises <GEOIDE> et </GEOIDE> du descriptif PostgreSQL, à l'usage de
+    GéoIDE Catalogue.
+    """
+    
+    datasetid = get_datasetid(metagraph)
+    if not datasetid:
+        return None
+    
+    d = {}
+    
+    # identifiant
+    e = strip_uuid(datasetid)
+    if e:
+        d.update({ "business_id": str(e) })
+    
+    # titre
+    e = metagraph.value(
+        datasetid,
+        URIRef("http://purl.org/dc/terms/title")
+        )
+        # on prend le premier élément renvoyé, qui est donc
+        # susceptible d'être dans n'importe quelle langue
+    if e:
+        d.update({ "title" : str(e) })
+        
+    # description
+    l = []
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://purl.org/dc/terms/description")
+        ):
+        l.append(str(e))
+    c = "\n\n".join(l)
+    # s'il y a plusieurs traductions, elles sont concaténées.
+    d.update({ "description" : c })
+    
+    # mots-clés
+    l = []
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://www.w3.org/ns/dcat#keyword")
+        ):
+        l.append(str(e))
+    if l:
+        d.update({ "keywords" : l })
+
+    # jeu original
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://snum.scenari-community.org/Metadata/Vocabulaire/#isExternal")
+        ):
+        # n'est pas supposé renvoyer plus d'un élément,
+        # on prend le premier qui soit un vrai booléen,
+        # quoi qu'il en soit
+        s = str(e).lower()
+        if s in ('true', 'false'):
+            d.update({ "original" : (s == 'false') })
+            break
+
+    # version
+    e = metagraph.value(
+        datasetid,
+        URIRef("http://www.w3.org/2002/07/owl#versionInfo")
+        )
+        # n'est pas supposé renvoyer plus d'un élément,
+        # on ne prend que le premier quoi qu'il en soit
+    if e:
+        d.update({ "version" : str(e) })
+
+    # emprises géographiques nommées
+    l = []
+    for p in metagraph.objects(
+        datasetid,
+        URIRef("http://purl.org/dc/terms/spatial")
+        ):
+        z = metagraph.value(
+            p, URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
+            )
+        if z:
+            for e in metagraph.objects(
+                p, URIRef("http://purl.org/dc/terms/identifier")
+                ):
+                h = '{}/{}'.format(z, e)
+                if forbidden_char(h) is None:
+                    l.append(h)
+    if l:
+        d.update({ "extent" : l })
+    
+    # rectangles d'emprise
+    e = metagraph.value(
+        datasetid,
+        URIRef("http://purl.org/dc/terms/spatial") /
+        URIRef("http://www.w3.org/ns/dcat#bbox")
+        )
+    if e and e.datatype == URIRef("http://www.opengis.net/ont/geosparql#wktLiteral"):
+        long = re.findall(r"(?:[(]|[,])(?:\s)*([-]?[0-9]+(?:[.][0-9]+)?)\s", e)
+        lat = re.findall(r"\s([-]?[0-9]+(?:[.][0-9]+)?)(?:\s)*(?:[)]|[,])", e)
+        if long and lat:
+            longmax = max(long)
+            longmin = min(long)
+            latgmax = max(lat)
+            latgmin = min(lat)
+            if longmax != longmin and latmax != latmin:
+                d.update({ "geographicextent / westBoundLongitude" : longmin })
+                d.update({ "geographicextent / eastBoundLongitude" : longmax })
+                d.update({ "geographicextent / northBoundLatitude" : latmin })
+                d.update({ "geographicextent / southBoundLatitude" : latmax })
+    
+    # date et heure de modification
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://purl.org/dc/terms/modified")
+        ):
+        # n'est pas supposé renvoyer plus d'un élément,
+        # on ne prend que le premier quoi qu'il en soit
+        if re.fullmatch(
+            "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}(T[0-9]{2}[:][0-9]{2}[:][0-9]{2}" \
+            "([.][0-9]{6})?([+][0-9]{2}[:][0-9]{2}([:][0-9]{2}([.][0-9]{6})?)?)?)?$",
+            str(e)
+            ):
+            d.update({ "lastRevisionDate" : str(e) })
+            break
+    
+    # URL des ressources liées
+    l = []
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://xmlns.com/foaf/0.1/page")
+        ):
+        l.append(str(e))
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://www.w3.org/ns/dcat#landingPage")
+        ):
+        l.append(str(e))
+    d.update({ "document / path" : l })
+    
+    # point de contact
+    p = metagraph.value(
+        datasetid,
+        URIRef("http://www.w3.org/ns/dcat#contactPoint")
+        )
+    if p:
+        n = metagraph.value(
+            p, URIRef("http://www.w3.org/2006/vcard/ns#fn")
+            )
+        m = metagraph.value(
+            p, URIRef("http://www.w3.org/2006/vcard/ns#hasEmail")
+            )
+        if n:
+            d.update({ "contact / name" : str(n) })
+        if m:
+            d.update({ "contact / email" : email_from_owlthing(m) })
+    
+    # généalogie
+    l = []
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://purl.org/dc/terms/provenance") /
+        URIRef("http://www.w3.org/2000/01/rdf-schema#label")
+        ):
+        l.append(str(e))
+    for e in metagraph.objects(
+        datasetid,
+        URIRef("http://www.w3.org/ns/adms#versionNotes")
+        ):
+        l.append(str(e))
+    c = "\n\n".join(l)
+    d.update({ "lineage" : c })
+    
+    return dumps(d, indent=4, ensure_ascii=False)
+
     
 
 class ForbiddenOperation(Exception):
