@@ -1,4 +1,39 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+
+<http://id.insee.fr/geo/pays/france> a skos:Concept ;
+    skos:inScheme snum:InseeGeoIndex ;
+    skos:prefLabel "France"@en,
+        "France"@fr .
+  
+<http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
+    skos:inScheme snum:InseeGeoIndex ;
+    skos:prefLabel "Mainland France"@en,
+        "France métropolitaine"@fr .
+        
+<http://id.insee.fr/geo/commune> a skos:Concept ;
+    skos:inScheme snum:InseeGeoIndex ;
+    skos:prefLabel "French commune"@en,
+        "Commune ou arrondissement urbain (code INSEE)"@fr .
+
+<http://id.insee.fr/geo/departement> a skos:Concept ;
+    skos:inScheme snum:InseeGeoIndex ;
+    skos:prefLabel "French departement"@en,
+        "Département"@fr .
+        
+<http://id.insee.fr/geo/region> a skos:Concept ;
+    skos:inScheme snum:InseeGeoIndex ;
+    skos:prefLabel "French region"@en,
+        "Région"@fr .
+        
+<http://id.insee.fr/geo/arrondissement> a skos:Concept ;
+    skos:inScheme snum:InseeGeoIndex ;
+    skos:prefLabel "French region"@en,
+        "Arrondissement"@fr .
+
+snum:InseeGeoIndex a skos:ConceptScheme ;
+    skos:prefLabel "INSEE Gazetteer"@en,
+        "Index géographique de l'INSEE"@fr .
 
 <http://publications.europa.eu/resource/authority/data-theme/AGRI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
@@ -339,11 +374,6 @@
     skos:prefLabel "never"@en,
         "jamais"@fr .
 
-<http://publications.europa.eu/resource/authority/frequency/OP_DATPRO> a skos:Concept ;
-    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
-    skos:prefLabel "Provisional data"@en,
-        "Données provisoires"@fr .
-
 <http://publications.europa.eu/resource/authority/frequency/OTHER> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
     skos:prefLabel "other"@en,
@@ -383,11 +413,6 @@
     skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
     skos:prefLabel "unknown"@en,
         "inconnu"@fr .
-
-<http://publications.europa.eu/resource/authority/frequency/UPDATE_CONT> a skos:Concept ;
-    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
-    skos:prefLabel "continuously updated"@en,
-        "mise à jour continuelle"@fr .
 
 <http://publications.europa.eu/resource/authority/frequency/WEEKLY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
