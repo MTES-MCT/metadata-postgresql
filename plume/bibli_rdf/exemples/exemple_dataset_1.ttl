@@ -11,7 +11,7 @@ uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
     dct:accessRights [ a dct:RightsStatement ;
             rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
     dct:description "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence."@fr ;
-    dct:modified "2021-02-04T00:00:00"^^xsd:dateTime ;
+    dct:modified "2021-02-04"^^xsd:date ;
     dct:provenance [ a dct:ProvenanceStatement ;
             rdfs:label "Donnée référentielle produite par l'IGN."@fr ] ;
     dct:publisher [ a foaf:Agent ;
