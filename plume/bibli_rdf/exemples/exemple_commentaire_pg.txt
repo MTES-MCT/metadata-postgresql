@@ -20,8 +20,8 @@ Commentaire saisi par le service.
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2021-02-04T00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-02-04"
       }
     ],
     "http://purl.org/dc/terms/provenance": [
