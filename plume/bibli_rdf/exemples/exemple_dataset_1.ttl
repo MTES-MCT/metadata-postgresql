@@ -20,7 +20,7 @@ uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
             dcat:endDate "2021-01-15"^^xsd:date ;
             dcat:startDate "2021-01-15"^^xsd:date ] ;
     dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
-    snum:isExternal true ;
+    snum:isExternal "true"^^xsd:boolean ;
     dcat:contactPoint [ a vcard:Kind ;
             vcard:fn "Pôle IG"@fr ;
             vcard:hasEmail <mailto:sig-contact@developpement-durable.gouv.fr> ],
