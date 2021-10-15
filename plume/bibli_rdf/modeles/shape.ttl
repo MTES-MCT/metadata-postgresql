@@ -147,7 +147,8 @@ snum:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class dct:Frequency ;
         sh:maxCount 1 ;
-        snum:ontology <http://publications.europa.eu/resource/authority/frequency> ;
+        snum:ontology <http://publications.europa.eu/resource/authority/frequency>,
+            <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
         sh:order 14 ;
         snum:widget "QComboBox" ;
 	] ;
@@ -161,7 +162,7 @@ snum:DatasetShape
     sh:property [
 		sh:path adms:versionNotes ;
 		sh:name "Note de version"@fr ;
-        sh:description "Différences entre la version courante des données et les versions antérieures"@fr ;
+        sh:description "Différences entre la version courante des données et les versions antérieures."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:uniqueLang true ;
@@ -179,7 +180,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dcat:spatialResolutionInMeters ;
 		sh:name "Résolution spatiale en mètres"@fr ;
-        sh:description "Plus petite distance significative dans le contexte du jeu de données, exprimée en mètres"@fr ;
+        sh:description "Plus petite distance significative dans le contexte du jeu de données, exprimée en mètres."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:decimal ;
         sh:maxCount 1 ;
@@ -209,7 +210,9 @@ snum:DatasetShape
         sh:class dct:RightsStatement ;
         sh:maxCount 1 ;
         sh:order 30 ;
-        snum:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+        snum:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
+            <http://publications.europa.eu/resource/authority/access-right>,
+            snum:CrpaAccessLimitations ;
         snum:widget "QComboBox" ;
 	] ;
     sh:property [
@@ -222,7 +225,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:publisher ;
 		sh:name "Éditeur"@fr ;
-        sh:description "Organisme ou personne qui assure la publication des données"@fr ;
+        sh:description "Organisme ou personne qui assure la publication des données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:maxCount 1 ;
@@ -231,7 +234,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:creator ;
 		sh:name "Auteur"@fr ;
-        sh:description "Principal responsable de la production des données"@fr ;
+        sh:description "Principal responsable de la production des données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:maxCount 1 ;
@@ -240,7 +243,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:rightsHolder ;
 		sh:name "Détenteur de droits"@fr ;
-        sh:description "Organisme ou personne qui détient des droits sur les données"@fr ;
+        sh:description "Organisme ou personne qui détient des droits sur les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 43 ;
@@ -248,7 +251,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:custodian ;
 		sh:name "Gestionnaire"@fr ;
-        sh:description "Organisme ou personne qui assume la maintenance des données"@fr ;
+        sh:description "Organisme ou personne qui assume la maintenance des données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 44 ;
@@ -256,7 +259,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:distributor ;
 		sh:name "Distributeur"@fr ;
-        sh:description "Organisme ou personne qui assure la distribution des données"@fr ;
+        sh:description "Organisme ou personne qui assure la distribution des données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 45 ;
@@ -264,7 +267,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:originator ;
 		sh:name "Commanditaire"@fr ;
-        sh:description "Organisme ou personne qui est à l'origine de la création des données"@fr ;
+        sh:description "Organisme ou personne qui est à l'origine de la création des données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 46 ;
@@ -272,7 +275,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:principalInvestigator ;
 		sh:name "Maître d'œuvre"@fr ;
-        sh:description "Organisme ou personne chargée du recueil des informations"@fr ;
+        sh:description "Organisme ou personne chargée du recueil des informations."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 47 ;
@@ -280,7 +283,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:processor ;
 		sh:name "Intégrateur"@fr ;
-        sh:description "Organisation ou personne qui a retraité les données"@fr ;
+        sh:description "Organisation ou personne qui a retraité les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 48 ;
@@ -288,7 +291,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:resourceProvider ;
 		sh:name "Fournisseur de la ressource"@fr ;
-        sh:description "Organisme ou personne qui diffuse les données, soit directement soit par l'intermédiaire d'un distributeur"@fr ;
+        sh:description "Organisme ou personne qui diffuse les données, soit directement soit par l'intermédiaire d'un distributeur."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 49 ;
@@ -296,7 +299,7 @@ snum:DatasetShape
     sh:property [
 		sh:path geodcat:user ;
 		sh:name "Utilisateur"@fr ;
-        sh:description "Organisme ou personne qui utilise les données"@fr ;
+        sh:description "Organisme ou personne qui utilise les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 50 ;
@@ -304,7 +307,7 @@ snum:DatasetShape
     sh:property [
 		sh:path prov:qualifiedAttribution ;
 		sh:name "Partie prenante"@fr ;
-        sh:description "Entité ou personne intervenant dans le processus de création, de diffusion ou de maintenance de la donnée"@fr ;
+        sh:description "Entité ou personne intervenant dans le processus de création, de diffusion ou de maintenance de la donnée."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class prov:Attribution ;
         sh:order 51 ;
@@ -327,7 +330,7 @@ snum:DatasetShape
     sh:property [
 		sh:path foaf:page ;
 		sh:name "Ressource associée"@fr ;
-        sh:description "Chemin d'une page internet ou d'un document en rapport avec les données"@fr ;
+        sh:description "Chemin d'une page internet ou d'un document en rapport avec les données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 61 ;
@@ -346,7 +349,7 @@ snum:DatasetShape
     sh:property [
 		sh:path snum:relevanceScore ;
 		sh:name "Score"@fr ;
-        sh:description "plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche"@fr ;
+        sh:description "plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:integer ;
         sh:maxCount 1 ;
@@ -420,7 +423,7 @@ snum:DistributionShape
         sh:class dct:LicenseDocument ;
         sh:maxCount 1 ;
         sh:order 4 ;
-        snum:ontology snum:SpdxLicense ;
+        snum:ontology snum:CrpaAuthorizedLicense ;
         snum:widget "QComboBox" ;
 	] .
 
@@ -555,7 +558,7 @@ snum:KindShape
     sh:property [
 		sh:path vcard:organization-name ;
 		sh:name "Organisme"@fr ;
-        sh:description "le cas échéant, organisation plus vaste dont le point de contact fait partie"@fr ;
+        sh:description "Le cas échéant, organisation dont le point de contact fait partie."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
@@ -626,7 +629,7 @@ snum:LocationShape
     sh:property [
 		sh:path skos:inScheme ;
 		sh:name "Index géographique"@fr ;
-        sh:description "Type de lieu, index de référence pour l'identifiant (commune, département...)"@fr ;
+        sh:description "Type de lieu, index de référence pour l'identifiant (commune, département...)."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:ConceptScheme ;
         sh:maxCount 1 ;
@@ -655,7 +658,7 @@ snum:LocationShape
     sh:property [
 		sh:path dcat:bbox ;
 		sh:name "Rectangle d'emprise"@fr ;
-        sh:description "Rectangle d'emprise (BBox), au format textuel WKT"@fr ;
+        sh:description "Rectangle d'emprise (BBox), au format textuel WKT."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
@@ -666,7 +669,7 @@ snum:LocationShape
     sh:property [
 		sh:path dcat:centroid ;
 		sh:name "Centroïde"@fr ;
-        sh:description "Localisant du centre géographique des données, au format textuel WKT"@fr ;
+        sh:description "Localisant du centre géographique des données, au format textuel WKT."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
@@ -677,7 +680,7 @@ snum:LocationShape
     sh:property [
 		sh:path locn:geometry ;
 		sh:name "Géométrie"@fr ;
-        sh:description "Emprise géométrique, au format textuel WKT"@fr ;
+        sh:description "Emprise géométrique, au format textuel WKT."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
@@ -693,10 +696,9 @@ snum:StandardShape
     sh:property [
 		sh:path skos:inScheme ;
 		sh:name "Registre"@fr ;
-        sh:description "Registre, corpus de normes, etc. auquel appartient le standard"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:ConceptScheme ;
-        snum:ontology snum:StandardRegister ;
+        snum:ontology snum:StandardsRegister ;
         sh:maxCount 1 ;
         sh:order 0 ;
         snum:widget "QComboBox" ;
@@ -704,7 +706,7 @@ snum:StandardShape
     sh:property [
 		sh:path dct:identifier ;
 		sh:name "Identifiant"@fr ;
-        sh:description "Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. Pour une loi française, il s'agit de l'ELI."@fr ;
+        sh:description "Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:order 1 ;
@@ -743,7 +745,7 @@ snum:StandardShape
     sh:property [
 		sh:path dct:issued ;
 		sh:name "Date de publication"@fr ;
-        sh:description "Date de publication du standard"@fr ;
+        sh:description "Date de publication du standard."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
