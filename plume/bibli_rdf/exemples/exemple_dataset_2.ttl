@@ -36,7 +36,9 @@ uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
     dcat:landingPage <http://catalogue.geo-ide.developpement-durable.gouv.fr/catalogue/srv/fre/catalog.search#/metadata/fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef> ;
     foaf:page <http://www.driea.ile-de-france.developpement-durable.gouv.fr/atlas-des-zones-d-amenagement-concerte-de-paris-a5574.html> ;
     dct:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
-    dct:conformsTo <http://www.opengis.net/def/crs/EPSG/9.9.1/2154> ;
+    dct:conformsTo [ a dct:Standard ;
+            skos:inScheme <http://www.opengis.net/def/crs/EPSG/0> ;
+            dct:identifier "2154" ] ;
     dcat:spatialResolutionInMeters "2"^^xsd:decimal ;
     dct:provenance [ a dct:ProvenanceStatement ;
             rdfs:label """DÉLIMITATION DES ZONES
