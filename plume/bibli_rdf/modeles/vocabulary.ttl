@@ -1,39 +1,395 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+
+
+
+<http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
+    skos:inScheme snum:StandardRegister ;
+    skos:prefLabel "OGC EPSG Coordinate Reference Systems Register"@en,
+        "Système de coordonnées (registre de codes EPSG de l'OGC)"@fr .
+
+snum:StandardsRegister a skos:ConceptScheme ;
+    skos:prefLabel "Ensemble de standards"@fr,
+        "Standards register"@en.
+
+
+
+<https://spdx.org/licenses/etalab-2.0> a skos:Concept ;
+    skos:inScheme snum:CrpaAuthorizedLicense ;
+    skos:prefLabel "Licence Ouverte version 2.0"@fr .
+    
+<https://spdx.org/licenses/ODbL-1.0> a skos:Concept ;
+    skos:inScheme snum:CrpaAuthorizedLicense ;
+    skos:prefLabel "ODC Open Database License (ODbL) version 1.0"@fr .
+
+snum:CrpaAuthorizedLicense a skos:ConceptScheme ;
+    skos:prefLabel "Authorized licenses for public informations detained by french administrations"@en,
+        "Licences auxquelles peuvent être soumises les informations publiques des administrations françaises"@fr ;
+    foaf:page <https://www.data.gouv.fr/fr/pages/legal/licences> .
+
+
+
+snum:CrpaAccessLimitations-311-2-a1 a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable à la discrétion de l'administration - document non achevé (CRPA, L311-2 §1)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700> .
+    
+snum:CrpaAccessLimitations-311-2-a2 a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable à la discrétion de l'administration - document préparatoire à une décision administrative en court d'élaboration (CRPA, L311-2 §2)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700> .
+    
+snum:CrpaAccessLimitations-311-4 a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable sous réserve - document soumis à des droits de propriété littéraire et artistique (CRPA, L311-4)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033219038> .
+    
+snum:CrpaAccessLimitations-311-5-1 a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - document d'une autorité judiciaire ou de contrôle administratif (CRPA, L311-5 1°)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+
+snum:CrpaAccessLimitations-311-5-2-a a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte au secret des délibérations du Gouvernement et des autorités responsables relevant du pouvoir exécutif (CRPA, L311-5 2°a)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-b a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte au secret de la défense nationale (CRPA, L311-5 2°b)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-c a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte à la conduite de la politique extérieure de la France (CRPA, L311-5 2°c)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-d a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte à la sûreté de l'Etat, à la sécurité publique, à la sécurité des personnes ou à la sécurité des systèmes d'information des administrations (CRPA, L311-5 2°d)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-e a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte à la monnaie et au crédit public (CRPA, L311-5 2°e)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-f a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte au déroulement des procédures engagées devant les juridictions ou d'opérations préliminaires à de telles procédures (CRPA, L311-5 2°f)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-g a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte à la recherche et à la prévention, par les services compétents, d'infractions de toute nature (CRPA, L311-5 2°g)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-5-2-h a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Non communicable - atteinte, sous réserve de l'article L. 124-4 du code de l'environnement, aux autres secrets protégés par la loi (CRPA, L311-5 2°h)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
+    
+snum:CrpaAccessLimitations-311-6-1-vp a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
+    
+snum:CrpaAccessLimitations-311-6-1-sm a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable au seul intéressé - atteinte à la protection du secret médical (CRPA, L311-6 1°)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
+    
+snum:CrpaAccessLimitations-311-6-1-sa a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable au seul intéressé - atteinte à la protection du secret des affaires (CRPA, L311-6 1°)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
+    
+snum:CrpaAccessLimitations-311-6-2 a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable au seul intéressé - appréciation ou jugement de valeur sur une personne physique désignée ou facilement identifiable (CRPA, L311-6 2°)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
+    
+snum:CrpaAccessLimitations-311-6-3 a skos:Concept ;
+    skos:inScheme snum:CrpaAccessLimitations ;
+    skos:prefLabel "Communicable au seul intéressé - document faisant apparaître le comportement d'une personne, dès lors que la divulgation de ce comportement pourrait lui porter préjudice (CRPA, L311-6 3°)"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
+
+snum:CrpaAccessLimitations a skos:ConceptScheme ;
+    skos:prefLabel "Limitations of public access according to French Code des relations entre le public et l'administration"@en,
+        "Restrictions d'accès en application du Code des relations entre le public et l'administration"@fr ;
+    foaf:page <https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000031366350/LEGISCTA000031367696> .
+
+
+
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Aucune restriction d'accès public"@fr,
+        "No limitations to public access"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(a) de la Directive INSPIRE (confidentialité des travaux des autorités publiques)"@fr,
+        "Public access limited according to Article 13(1)(a) of the INSPIRE Directive (confidentiality of the proceedings of public authorities)"@en .
+        
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1b> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(b) de la Directive INSPIRE (relations internationales, sécurité publique ou défense nationale)"@fr,
+        "Public access limited according to Article 13(1)(b) of the INSPIRE Directive (international relations, public security or national defence)"@en .
+        
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1c> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(c) de la Directive INSPIRE (bonne marche de la justice)"@fr,
+        "Public access limited according to Article 13(1)(c) of the INSPIRE Directive (course of justice)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1d> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(d) de la Directive INSPIRE (confidentialité des informations commerciales ou industrielles)"@fr,
+        "Public access limited according to Article 13(1)(d) of the INSPIRE Directive (confidentiality of commercial or industrial information)"@en .
+        
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1e> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(e) de la Directive INSPIRE (droits de propriété intellectuelle)"@fr,
+        "Public access limited according to Article 13(1)(e) of the INSPIRE Directive (intellectual property rights)"@en .
+        
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1f> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(f) de la Directive INSPIRE (confidentialité des données à caractère personnel)"@fr,
+        "Public access limited according to Article 13(1)(f) of the INSPIRE Directive (confidentiality of personal data)"@en .
+        
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1g> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(g) de la Directive INSPIRE (intérêts ou protection de toute personne qui a fourni les informations)"@fr,
+        "Public access limited according to Article 13(1)(g) of the INSPIRE Directive (interests or protection of any person who supplied the information)"@en .
+        
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1h> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Accès public restreint en application de l'article 13(1)(h) de la Directive INSPIRE (protection de l'environnement auquel ces informations ont trait)"@fr,
+        "Public access limited according to Article 13(1)(h) of the INSPIRE Directive (protection of the environment to which such information relates)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> a skos:ConceptScheme ;
+    skos:prefLabel "Restriction d'accès public INSPIRE (UE)"@fr,
+        "INSPIRE Limitations on public access (EU)"@en .
+
+
+<http://inspire.ec.europa.eu/theme/ad> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Adresses"@fr,
+        "Addresses"@en .
+
+<http://inspire.ec.europa.eu/theme/au> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Unités administratives"@fr,
+        "Administrative units"@en .
+
+<http://inspire.ec.europa.eu/theme/rs> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Référentiels de coordonnées"@fr,
+        "Coordinate reference systems"@en .
+
+<http://inspire.ec.europa.eu/theme/gg> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Systèmes de maillage géographique"@fr,
+        "Geographical grid systems"@en .
+
+<http://inspire.ec.europa.eu/theme/cp> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Parcelles cadastrales"@fr,
+        "Cadastral parcels"@en .
+
+<http://inspire.ec.europa.eu/theme/gn> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Dénominations géographiques"@fr,
+        "Geographical names"@en .
+
+<http://inspire.ec.europa.eu/theme/hy> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Hydrographie"@fr,
+        "Hydrography"@en .
+
+<http://inspire.ec.europa.eu/theme/ps> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Sites protégés"@fr,
+        "Protected sites"@en .
+
+<http://inspire.ec.europa.eu/theme/tn> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Réseaux de transport"@fr,
+        "Transport networks"@en .
+
+<http://inspire.ec.europa.eu/theme/el> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Altitude"@fr,
+        "Elevation"@en .
+
+<http://inspire.ec.europa.eu/theme/ge> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Géologie"@fr,
+        "Geology"@en .
+
+<http://inspire.ec.europa.eu/theme/lc> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Occupation des terres"@fr,
+        "Land cover"@en .
+
+<http://inspire.ec.europa.eu/theme/oi> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Ortho-imagerie"@fr,
+        "Orthoimagery"@en .
+
+<http://inspire.ec.europa.eu/theme/af> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Installations agricoles et aquacoles"@fr,
+        "Agricultural and aquaculture facilities"@en .
+
+<http://inspire.ec.europa.eu/theme/am> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Zones de gestion"@fr,
+        "Area management/restriction/regulation zones and reporting units"@en .
+
+<http://inspire.ec.europa.eu/theme/ac> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Conditions atmosphériques"@fr,
+        "Atmospheric conditions"@en .
+
+<http://inspire.ec.europa.eu/theme/br> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Régions biogéographiques"@fr,
+        "Bio-geographical regions"@en .
+
+<http://inspire.ec.europa.eu/theme/bu> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Bâtiments"@fr,
+        "Buildings"@en .
+
+<http://inspire.ec.europa.eu/theme/er> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Sources d'énergie"@fr,
+        "Energy resources"@en .
+
+<http://inspire.ec.europa.eu/theme/ef> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Installations de suivi environnemental"@fr,
+        "Environmental monitoring facilities"@en .
+
+<http://inspire.ec.europa.eu/theme/hb> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Habitats et biotopes"@fr,
+        "Habitats and biotopes"@en .
+
+<http://inspire.ec.europa.eu/theme/hh> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Santé et sécurité des personnes"@fr,
+        "Human health and safety"@en .
+
+<http://inspire.ec.europa.eu/theme/lu> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Usage des sols"@fr,
+        "Land use"@en .
+
+<http://inspire.ec.europa.eu/theme/mr> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Ressources minérales"@fr,
+        "Mineral resources"@en .
+
+<http://inspire.ec.europa.eu/theme/nz> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Zones à risque naturel"@fr,
+        "Natural risk zones"@en .
+
+<http://inspire.ec.europa.eu/theme/of> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Caractéristiques géographiques océanographiques"@fr,
+        "Oceanographic geographical features"@en .
+
+<http://inspire.ec.europa.eu/theme/pd> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Répartition de la population — démographie"@fr,
+        "Population distribution — demography"@en .
+
+<http://inspire.ec.europa.eu/theme/pf> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Lieux de production et sites industriels"@fr,
+        "Production and industrial facilities"@en .
+
+<http://inspire.ec.europa.eu/theme/sr> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Régions maritimes"@fr,
+        "Sea regions"@en .
+
+<http://inspire.ec.europa.eu/theme/so> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Sols"@fr,
+        "Soil"@en .
+
+<http://inspire.ec.europa.eu/theme/sd> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Répartition des espèces"@fr,
+        "Species distribution"@en .
+
+<http://inspire.ec.europa.eu/theme/su> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Unités statistiques"@fr,
+        "Statistical units"@en .
+
+<http://inspire.ec.europa.eu/theme/us> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Services d'utilité publique et services publics"@fr,
+        "Utility and governmental services"@en .
+
+<http://inspire.ec.europa.eu/theme/mf> a skos:Concept ;
+    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Caractéristiques géographiques météorologiques"@fr,
+        "Meteorological geographical features"@en .
+
+<https://inspire.ec.europa.eu/theme> a skos:ConceptScheme ;
+    skos:prefLabel "Thème INSPIRE (UE)"@fr,
+        "INSPIRE theme (EU)"@en .
+
 
 <http://id.insee.fr/geo/pays/france> a skos:Concept ;
     skos:inScheme snum:InseeGeoIndex ;
     skos:prefLabel "France"@en,
-        "France"@fr .
+        "France"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/France> .
   
 <http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
     skos:inScheme snum:InseeGeoIndex ;
     skos:prefLabel "Mainland France"@en,
-        "France métropolitaine"@fr .
+        "France métropolitaine"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine> .
         
 <http://id.insee.fr/geo/commune> a skos:Concept ;
     skos:inScheme snum:InseeGeoIndex ;
     skos:prefLabel "French commune"@en,
-        "Commune ou arrondissement urbain (code INSEE)"@fr .
+        "Commune ou arrondissement urbain (code INSEE)"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Commune_(France)> .
 
 <http://id.insee.fr/geo/departement> a skos:Concept ;
     skos:inScheme snum:InseeGeoIndex ;
     skos:prefLabel "French departement"@en,
-        "Département"@fr .
+        "Département"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Département_français> .
         
 <http://id.insee.fr/geo/region> a skos:Concept ;
     skos:inScheme snum:InseeGeoIndex ;
     skos:prefLabel "French region"@en,
-        "Région"@fr .
+        "Région"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Région_française> .
         
 <http://id.insee.fr/geo/arrondissement> a skos:Concept ;
     skos:inScheme snum:InseeGeoIndex ;
-    skos:prefLabel "French region"@en,
-        "Arrondissement"@fr .
+    skos:prefLabel "French arrondissement"@en,
+        "Arrondissement"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Arrondissement_français> .
 
 snum:InseeGeoIndex a skos:ConceptScheme ;
     skos:prefLabel "INSEE Gazetteer"@en,
-        "Index géographique de l'INSEE"@fr .
+        "Index géographique de l'INSEE"@fr ;
+    foaf:page <http://id.insee.fr> .
+
+
 
 <http://publications.europa.eu/resource/authority/data-theme/AGRI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
