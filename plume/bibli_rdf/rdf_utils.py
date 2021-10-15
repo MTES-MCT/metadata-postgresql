@@ -1551,6 +1551,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         mDefault = None
         mDefaultBrut = None
         mDefaultSource = None
+        mDefaultPage = None
         mLangList = None
         mNHidden = mHidden or False
         mOneLanguage = None
@@ -1712,20 +1713,24 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mDefault = t.get('default value')
                 if mSources:
                     mDefaultBrut = concept_from_value(mDefault, None, vocabulary, language)[0]
-                    mDefault, mDefaultSource = value_from_concept(mDefaultBrut, vocabulary, language)
+                    mDefault, mDefaultSource, mDefaultPage = value_from_concept(
+                        mDefaultBrut, vocabulary, language, getpage=True
+                        )
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
                     if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
-                        mDefault = mDefaultBrut = mDefaultSource = None
+                        mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = None
                 elif mKind in ("sh:BlankNodeOrIRI", "sh:IRI") and forbidden_char(mDefault) is None:
                     mDefaultBrut = URIRef(mDefault)
                     
             elif p['default']:
                 mDefaultBrut = p['default']
                 if mSources:
-                    mDefault, mDefaultSource = value_from_concept(mDefaultBrut, vocabulary, language)
+                    mDefault, mDefaultSource, mDefaultPage = value_from_concept(
+                        mDefaultBrut, vocabulary, language, getpage=True
+                        )
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
                     if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
-                        mDefault = mDefaultBrut = mDefaultSource = None
+                        mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = None
 
             multilingual = p['unilang'] and (str(p['unilang']).lower() == 'true') or False
             multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
@@ -1799,6 +1804,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
                         mKind == 'sh:Literal' and p['type'].n3(nsm) == 'xsd:string' ) else None
             mNGraphEmpty = mGraphEmpty
+            mPage = None
             
             # cas d'un noeud vide :
             # on ajoute un groupe et on relance la fonction sur la classe du noeud
@@ -1940,7 +1946,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mVSources:
                     if isinstance(mValueBrut, URIRef) \
                         and not mVSources == [ "< URI >", "< manuel >" ]:                    
-                        mValue, mCurSource = value_from_concept(mValueBrut, vocabulary, language)  
+                        mValue, mCurSource, mPage = value_from_concept(
+                            mValueBrut, vocabulary, language, getpage = True
+                            )  
                         if mValue is None or not mCurSource in mVSources:
                             mCurSource = '< non répertorié >'
                             mVSources.append(mCurSource)
@@ -1992,10 +2000,11 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mGraphEmpty:
                     mValueBrut = mDefaultBrut
                     mValue = mDefault
+                    mPage = mDefaultPage
 
                 if mValueBrut and mKind in ("sh:BlankNodeOrIRI", "sh:IRI") \
                     and mode == 'read' and not preserve:
-                    mValue = text_with_link(mValue or str(mValueBrut), mValueBrut)
+                    mValue = text_with_link(mValue or str(mValueBrut), mPage or mValueBrut)
                     # en mode lecture, on modifie la valeur
                     # pour présenter un lien au lieu du texte brut
                 elif mValueBrut is not None:
@@ -2810,7 +2819,7 @@ def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
     return ( None, None )
 
 
-def value_from_concept(conceptIRI, vocabulary, language="fr"):
+def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False):
     """Return the skos:prefLabel strings matching given conceptIRI and its scheme.
 
     ARGUMENTS
@@ -2821,12 +2830,16 @@ def value_from_concept(conceptIRI, vocabulary, language="fr"):
     les ensembles à considérer.
     - [optionnel] language (str) : langue attendue pour le libellé résultant.
     Français par défaut.
+    - [optionnel] getpage (bool) : True si la fonction doit également
+    récupérer l'eventuelle page web (foaf:page) associée au concept.
 
     RESULTAT
     --------
     Un tuple contenant deux chaînes de caractères :
     [0] est le libellé du concept (str).
     [1] est le nom de l'ensemble (str).
+    Si getpage vaut True, un troisième élément est ajouté :
+    [2] l'IRI (rdflib.term.URIRef) de la page web associée.
     
     (None, None) si l'IRI n'est pas répertorié.
     
@@ -2853,13 +2866,14 @@ def value_from_concept(conceptIRI, vocabulary, language="fr"):
     q_vc = vocabulary.query(
         """
         SELECT
-            ?label ?scheme
+            ?label ?scheme ?page
         WHERE
             {{ ?c a skos:Concept ;
                skos:inScheme ?s ;
                skos:prefLabel ?label .
                ?s a skos:ConceptScheme ;
                skos:prefLabel ?scheme .
+               OPTIONAL {{ ?c foaf:page ?page }} .
                FILTER ((lang(?label) = "{0}") 
                   && (lang(?scheme) = "{0}")) }}
         """.format(language),
@@ -2870,13 +2884,14 @@ def value_from_concept(conceptIRI, vocabulary, language="fr"):
         q_vc = vocabulary.query(
         """
         SELECT
-            ?label ?scheme
+            ?label ?scheme ?page
         WHERE
             { ?c a skos:Concept ;
                skos:inScheme ?s ;
                skos:prefLabel ?label .
                ?s a skos:ConceptScheme ;
                skos:prefLabel ?scheme .
+               OPTIONAL { ?c foaf:page ?page } .
                FILTER ((lang(?label) = "fr") 
                   && (lang(?scheme) = "fr")) }
         """,
@@ -2884,9 +2899,15 @@ def value_from_concept(conceptIRI, vocabulary, language="fr"):
         )
     
     for t in q_vc:
-        return ( str( t['label'] ), str( t['scheme'] ) )
-        
-    return ( None, None )
+        if getpage:
+            return ( str( t['label'] ), str( t['scheme'] ), t['page'] )
+        else:
+            return ( str( t['label'] ), str( t['scheme'] ) )
+    
+    if getpage:
+        return ( None, None, None )
+    else:
+        return ( None, None )
     
 
 def email_from_owlthing(thingIRI):
