@@ -2583,16 +2583,17 @@ def update_pg_description(description, metagraph, geoideJSON=False):
     
     if geoideJSON:
         j = build_geoide_json(metagraph)
-        t = re.subn(
-        "[<]GEOIDE[>].*[<][/]GEOIDE[>]",
-        "<GEOIDE>\n" + j + "\n</GEOIDE>",
-        new_description,
-        flags=re.DOTALL
-        )
-        if t[1] == 0:
-            new_description = new_description + "\n<GEOIDE>\n" + j + "\n</GEOIDE>\n"
-        else:
-            new_description = t[0]
+        if j:
+            t = re.subn(
+            "[<]GEOIDE[>].*[<][/]GEOIDE[>]",
+            "<GEOIDE>\n" + j + "\n</GEOIDE>",
+            new_description,
+            flags=re.DOTALL
+            )
+            if t[1] == 0:
+                new_description = new_description + "\n<GEOIDE>\n" + j + "\n</GEOIDE>\n"
+            else:
+                new_description = t[0]
     
     return new_description
 
