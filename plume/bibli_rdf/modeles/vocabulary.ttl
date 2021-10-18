@@ -25,7 +25,7 @@ snum:StandardsRegister a skos:ConceptScheme ;
 
 snum:CrpaAuthorizedLicense a skos:ConceptScheme ;
     skos:prefLabel "Authorized licenses for public informations detained by french administrations"@en,
-        "Licences auxquelles peuvent être soumises les informations publiques des administrations françaises"@fr ;
+        "Licences admises pour les informations publiques des administrations françaises"@fr ;
     foaf:page <https://www.data.gouv.fr/fr/pages/legal/licences> .
 
 
