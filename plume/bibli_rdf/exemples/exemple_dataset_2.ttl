@@ -22,17 +22,18 @@
 
 uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
     dct:title "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"@fr ;
-    dct:description "La table L_ZAC_S_075 recense les zones d’aménagement concerté de la Ville de Paris depuis 2004. La table est mise à jour selon l’actualité. Y sont consignées :
+    owl:versionInfo "2020" ;
+    dct:description """La table L_ZAC_S_075 recense les zones d’aménagement concerté de la Ville de Paris depuis 2004. La table est mise à jour selon l’actualité. Y sont consignées :
 - les ZAC en cours ;
 - les ZAC projetées, à court ou moyen terme par la collectivité, dont le dossier de création n’a pas encore été approuvé mais sur lesquelles une procédure de concertation a été lancée ;
-- les anciennes ZAC, supprimées depuis 2004."@fr,
+- les anciennes ZAC, supprimées depuis 2004."""@fr,
         """This dataset contains the delimitations of past, present and future urban development areas know as "zones d'aménagement concerté" in Paris."""@en ;
     dcat:keyword "ZAC"@fr,
         "Paris"@fr,
         "zone d'aménagement concerté"@fr ;
     dcat:theme <http://publications.europa.eu/resource/authority/data-theme/REGI>,
         <http://inspire.ec.europa.eu/theme/lu> ;
-    snum:isExternal "true"^^xsd:boolean ;
+    snum:isExternal "false"^^xsd:boolean ;
     dcat:landingPage <http://catalogue.geo-ide.developpement-durable.gouv.fr/catalogue/srv/fre/catalog.search#/metadata/fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef> ;
     foaf:page <http://www.driea.ile-de-france.developpement-durable.gouv.fr/atlas-des-zones-d-amenagement-concerte-de-paris-a5574.html> ;
     dct:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
@@ -97,14 +98,14 @@ Précisions et/ou corrections sur le programme de la ZAC Chapelle-Charbon.
             vcard:fn "Pôle études et connaissance des territoires de l'unité départementale de Paris (DRIEAT IF/UD 75/SADCT/PECT)"@fr ;
             vcard:hasEmail <mailto:pect.sadct.ud75.drieat-if@developpement-durable.gouv.fr> ;
             vcard:hasPhone <tel:+33-1-82-52-51-84> ;
-            vcard:hasURL <vcard:hasURL> ;
+            vcard:hasURL <http://www.driea.ile-de-france.developpement-durable.gouv.fr> ;
             vcard:organization-name "Direction régionale et interdépartementale de l'environnement, de l'aménagement et des transports d'Île-de-France (DRIEAT IF)"@fr ] ;
-    dct:spatial [ a dct:Location
+    dct:spatial [ a dct:Location ;
             dcat:bbox "POLYGON((2.46962285 48.81560897,2.46962285 48.90165328,2.22396016 48.90165328,2.22396016 48.81560897,2.46962285 48.81560897))"^^gsp:wktLiteral ],
-        [ a dct:Location
+        [ a dct:Location ;
             skos:inScheme <http://id.insee.fr/geo/departement> ;
             dct:identifier "75" ;
-            skos:prefLabel "Département de Paris"@fr ],
+            skos:prefLabel "Paris"@fr ],
         [ a dct:Location ;
             skos:inScheme <http://id.insee.fr/geo/commune> ;
             dct:identifier "75056" ;
