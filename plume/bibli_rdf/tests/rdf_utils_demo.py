@@ -183,7 +183,7 @@ def pseudo_form(widgetsDict):
             r = 29
             
             if v['main widget type'] == 'QCheckBox':
-                o = ( '[x]' if v['value'] else '[ ]' )
+                o = ( '[x]' if str(v['value']).lower() == 'true' else '[ ]' )
                 e += r - 3
             elif v['main widget type'] in ( 'QLineEdit', 'QTextEdit', 'QLabel' ):
                 o = ( v['value'].ljust(r)[:r] ) if v['value'] else '.' * r
