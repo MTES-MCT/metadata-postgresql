@@ -48,6 +48,7 @@ class TestRDFUtils(unittest.TestCase):
 
         # récupération de quelques clés
         self.lgk = search_keys(self.widgetsdict, 'dct:language', 'edit')[0]
+        self.dtk = search_keys(self.widgetsdict, 'dct:type', 'edit')[0]
         self.mdk = search_keys(self.widgetsdict, 'dct:modified', 'edit')[0]
         self.lck = search_keys(self.widgetsdict, 'dcat:distribution / dct:license', 'edit')[0]
         self.lck_m = search_keys(self.widgetsdict, 'dcat:distribution / dct:license', 'group of properties')[0]
@@ -254,18 +255,18 @@ class TestRDFUtils(unittest.TestCase):
             self.assertNotEqual(
                 r['d'],
                 Literal(
-                    '2021-08-31T17:32:00',
-                    datatype='http://www.w3.org/2001/XMLSchema#dateTime'
+                    '2021-08-31',
+                    datatype='http://www.w3.org/2001/XMLSchema#date'
                     )
                 )
         d = rdf_utils.build_dict(
             self.metagraph, self.shape, self.vocabulary,
-            data = { 'dct:modified' : ['2021-08-31T17:32:00'] }
+            data = { 'dct:modified' : ['2021-08-31'] }
             )
         b = False
         for k, v in d.items():
             if v['path'] == 'dct:modified':
-                self.assertEqual(v['value'], '2021-08-31T17:32:00')
+                self.assertEqual(v['value'], '2021-08-31')
                 b = True
         self.assertTrue(b)
         g = d.build_graph(self.vocabulary)
@@ -287,8 +288,8 @@ class TestRDFUtils(unittest.TestCase):
             self.assertEqual(
                 r['d'],
                 Literal(
-                    '2021-08-31T17:32:00',
-                    datatype='http://www.w3.org/2001/XMLSchema#dateTime'
+                    '2021-08-31',
+                    datatype='http://www.w3.org/2001/XMLSchema#date'
                     )
                 )
     
@@ -299,12 +300,12 @@ class TestRDFUtils(unittest.TestCase):
         d = rdf_utils.build_dict(
             Graph(), self.shape, self.vocabulary,
             template = self.template, editHideUnlisted=True,
-            data = { 'dct:modified' : ['2021-08-31T17:32:00'] }
+            data = { 'dct:modified' : ['2021-08-31'] }
             )
         b = False
         for k, v in d.items():
             if v['path'] == 'dct:modified':
-                self.assertEqual(v['value'], '2021-08-31T17:32:00')
+                self.assertEqual(v['value'], '2021-08-31')
                 self.assertIsNone(v['main widget type']) # pas de widget
                 b = True
         self.assertTrue(b)
@@ -327,8 +328,8 @@ class TestRDFUtils(unittest.TestCase):
             self.assertEqual(
                 r['d'],
                 Literal(
-                    '2021-08-31T17:32:00',
-                    datatype='http://www.w3.org/2001/XMLSchema#dateTime'
+                    '2021-08-31',
+                    datatype='http://www.w3.org/2001/XMLSchema#date'
                     )
                 )
 
@@ -1059,7 +1060,7 @@ class TestRDFUtils(unittest.TestCase):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.change_source(self.lck, '< manuel >')
         d.update_value(self.lck_m_txt, "Non vide")
-        d.change_source(self.lck_m, '< URI >')
+        d.change_source(self.lck_m, 'Licences admises pour les informations publiques des administrations françaises')
         self.assertEqual(self.widgetsdict.order_keys(self.lck_m_txt), [9999])
     
     # groupe de propriétés non masqué
@@ -1957,8 +1958,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -1966,8 +1967,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertTrue(
             isomorphic(
@@ -1990,8 +1992,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -1999,8 +2001,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertTrue(
             isomorphic(
@@ -2019,8 +2022,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2028,8 +2031,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA></METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertTrue(
             isomorphic(
@@ -2048,8 +2052,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2057,8 +2061,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA></METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertTrue(
             isomorphic(
@@ -2087,8 +2092,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2096,8 +2101,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertTrue(
             isomorphic(
@@ -2123,8 +2129,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2133,8 +2139,9 @@ class TestRDFUtils(unittest.TestCase):
 """
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2151,8 +2158,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2161,8 +2168,9 @@ class TestRDFUtils(unittest.TestCase):
 """
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2181,8 +2189,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2190,8 +2198,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2206,8 +2215,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2215,8 +2224,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2231,8 +2241,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2240,8 +2250,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>"""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2256,8 +2267,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2265,8 +2276,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>Suite."""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2281,8 +2293,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2290,8 +2302,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>Suite."""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
@@ -2307,8 +2320,8 @@ class TestRDFUtils(unittest.TestCase):
     ],
     "http://purl.org/dc/terms/modified": [
       {
-        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-        "@value": "2020-08-03 00:00:00"
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
       }
     ]
   }
@@ -2316,8 +2329,9 @@ class TestRDFUtils(unittest.TestCase):
 </METADATA>Suite."""
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        d[self.mdk]['value'] = "2020-08-03 00:00:00"
+        d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
         g = d.build_graph(self.vocabulary)
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
