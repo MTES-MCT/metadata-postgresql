@@ -97,7 +97,7 @@ Précisions et/ou corrections sur le programme de la ZAC Chapelle-Charbon.
     dcat:contactPoint [ a vcard:Kind ;
             vcard:fn "Pôle études et connaissance des territoires de l'unité départementale de Paris (DRIEAT IF/UD 75/SADCT/PECT)"@fr ;
             vcard:hasEmail <mailto:pect.sadct.ud75.drieat-if@developpement-durable.gouv.fr> ;
-            vcard:hasPhone <tel:+33-1-82-52-51-84> ;
+            vcard:hasTelephone <tel:+33-1-82-52-51-84> ;
             vcard:hasURL <http://www.driea.ile-de-france.developpement-durable.gouv.fr> ;
             vcard:organization-name "Direction régionale et interdépartementale de l'environnement, de l'aménagement et des transports d'Île-de-France (DRIEAT IF)"@fr ] ;
     dct:spatial [ a dct:Location ;
