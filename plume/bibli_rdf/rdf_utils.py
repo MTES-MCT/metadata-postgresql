@@ -2526,7 +2526,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     return WidgetsDict(mDict)
 
 
-def update_pg_description(description, metagraph):
+def update_pg_description(description, metagraph, geoideJSON=False):
     """Return new description with metadata section updated from JSON-LD serialization of metadata graph.
 
     ARGUMENTS
@@ -2535,6 +2535,10 @@ def update_pg_description(description, metagraph):
     jour suite aux actions effectuées par l'utilisateur.
     - description (str) : chaîne de caractères supposée correspondre à la
     description (ou le commentaire) d'un objet PostgreSQL.
+    - geoideJSON (bool) : True si, en plus de la sérialisation JSON-LD
+    standard, doit un constitué un fragment JSON contenant les
+    métadonnées gérées par le processus de réplication GéoIDE. False par
+    défaut.
 
     RESULTAT
     --------
@@ -2542,8 +2546,14 @@ def update_pg_description(description, metagraph):
     d'après le contenu du graphe.
 
     Les informations comprises entre les deux balises <METADATA> et </METADATA>
-    sont remplacées. Si les balises n'existaient pas, elles sont ajoutées à la
+    sont remplacées par un JSON-LD contenant les métadonnées de l'objet
+    PostgreSQL. Si les balises n'existaient pas, elles sont ajoutées à la
     fin du texte.
+    
+    Si geoideJSON vaut True, les informations comprises entre les deux balises
+    <GEOIDE> et </GEOIDE> sont remplacées par un JSON contenant une petite
+    partie des métadonnées communes - celles qui sont prises en charge par
+    le processus de réplication de GéoIDE.
 
     EXEMPLES
     --------
@@ -2567,10 +2577,24 @@ def update_pg_description(description, metagraph):
     # de la fonction metagraph_from_pg_description)
 
     if t[1] == 0:
-        return description + "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
-
+        new_description = description + "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
     else:
-        return t[0]
+        new_description = t[0]
+    
+    if geoideJSON:
+        j = build_geoide_json(metagraph)
+        t = re.subn(
+        "[<]GEOIDE[>].*[<][/]GEOIDE[>]",
+        "<GEOIDE>\n" + j + "\n</GEOIDE>",
+        new_description,
+        flags=re.DOTALL
+        )
+        if t[1] == 0:
+            new_description = new_description + "\n<GEOIDE>\n" + j + "\n</GEOIDE>\n"
+        else:
+            new_description = t[0]
+    
+    return new_description
 
 
 def forbidden_char(anyStr):
@@ -3645,9 +3669,14 @@ def build_geoide_json(metagraph):
         URIRef("http://purl.org/dc/terms/spatial") /
         URIRef("http://www.w3.org/ns/dcat#bbox")
         )
-    if e and e.datatype == URIRef("http://www.opengis.net/ont/geosparql#wktLiteral"):
-        long = re.findall(r"(?:[(]|[,])(?:\s)*([-]?[0-9]+(?:[.][0-9]+)?)\s", e)
-        lat = re.findall(r"\s([-]?[0-9]+(?:[.][0-9]+)?)(?:\s)*(?:[)]|[,])", e)
+    if e and e.datatype == URIRef("http://www.opengis.net/ont/geosparql#wktLiteral") \
+        and ( str(e).startswith("POLYGON") or "/CRS84> POLYGON" in str(e) \
+        or "/4979> POLYGON" in str(e) ):
+        # ne fournira des coordonnées en degré d'angle que si on était en
+        # CRS84 / EPSG 4979 au départ (http://www.opengis.net/def/crs/OGC/1.3/CRS84),
+        # c'est plus ou moins ce que vérifie la condition ci-avant
+        long = re.findall(r"(?:[(]|[,])(?:\s)*([-]?[0-9]+(?:[.][0-9]+)?)\s", str(e))
+        lat = re.findall(r"\s([-]?[0-9]+(?:[.][0-9]+)?)(?:\s)*(?:[)]|[,])", str(e))
         if long and lat:
             longmax = max(long)
             longmin = min(long)
@@ -3656,8 +3685,9 @@ def build_geoide_json(metagraph):
             if longmax != longmin and latmax != latmin:
                 d.update({ "geographicextent / westBoundLongitude" : longmin })
                 d.update({ "geographicextent / eastBoundLongitude" : longmax })
-                d.update({ "geographicextent / northBoundLatitude" : latmin })
-                d.update({ "geographicextent / southBoundLatitude" : latmax })
+                d.update({ "geographicextent / southBoundLatitude" : latmin })
+                d.update({ "geographicextent / northBoundLatitude" : latmax })
+                
     
     # date et heure de modification
     for e in metagraph.objects(
