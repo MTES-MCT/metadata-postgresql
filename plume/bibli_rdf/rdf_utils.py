@@ -3651,8 +3651,8 @@ def build_geoide_json(metagraph):
         if long and lat:
             longmax = max(long)
             longmin = min(long)
-            latgmax = max(lat)
-            latgmin = min(lat)
+            latmax = max(lat)
+            latmin = min(lat)
             if longmax != longmin and latmax != latmin:
                 d.update({ "geographicextent / westBoundLongitude" : longmin })
                 d.update({ "geographicextent / eastBoundLongitude" : longmax })
