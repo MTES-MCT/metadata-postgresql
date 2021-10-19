@@ -586,7 +586,7 @@ class TestTemplateUtils(unittest.TestCase):
                 None, None, True, True, 0, True, False, 'string', None),
             ('shared', 'dct:description', 'description', 'QTextEdit', 99, None,
                 None, None, None, False, False, 50, False, False, 'string', None),
-            ('shared', 'dct:modified', 'dernière modification', 'QDateEdit', None,
+            ('shared', 'dct:modified', 'dernière modification', 'QLineEdit', None,
                 None, '2021-09-01', None, None, False, False, 90, False, False,
                 'string', None),
             ('local', 'uuid:218c1245-6ba7-4163-841e-476e0d5582af', 'code ADL',
@@ -648,13 +648,13 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertTrue(d[dsk]['is mandatory'])
         # vérifie que build_dict ne permet pas de rendre optionnelles les
         # rares catégories communes obligatoires
-        self.assertEqual(d[mdk]['main widget type'], 'QDateEdit')
+        self.assertEqual(d[mdk]['main widget type'], 'QLineEdit')
         self.assertTrue(d[mdk]['default value'] == d[mdk]['value'] == '2021-09-01')
         # vérifie aussi que la valeur par défaut est bien reprise par build_dict
         # dans le cas d'un formulaire vide
         self.assertEqual(
             d[mdk]['data type'],
-            URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
+            URIRef('http://www.w3.org/2001/XMLSchema#date')
             )
         # vérifie que les modification sur data type sont ignorées
         # pour les catégories communes
