@@ -219,9 +219,17 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignLeft)
         #Valeur 
-       if valueExiste('value', _valueObjet) : 
-          _valueDate = tuple(map(int, _valueObjet['value'].split('-')))                      
-          _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
+       if valueExiste('value', _valueObjet) :
+          try : 
+            _valueDate = tuple(map(int, _valueObjet['value'].split('-')))                      
+            _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
+          except :
+            # Is QDateTimeEdit
+            try : 
+              _valueDate = tuple(map(int, _valueObjet['value'][0:10].split('-')))                      
+              _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
+            except :
+              pass  
        else :
           _mObjetQDateEdit.setDateTime(QDateTime.currentDateTime())
        #Lecture seule                        
