@@ -147,7 +147,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
 	with conn.cursor() as cur:
 	
-		query = query_update_columns_comments(
+        query = query_update_columns_comments(
             schema_name, table_name, widgetsdict
             )
         
@@ -161,8 +161,8 @@ conn.close()
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on édite les métadonnées, `schema_name` est le nom de son schéma.*
 
 *La condition de non nullité sur `query` est nécessaire, car la fonction pourrait renvoyer `None` si le dictionnaire ne contenait aucun descriptif de champs. Ceci peut arriver :*
-*- si la liste des champs `columns` n'a pas été fournie en argument de `build_dict()` ;*
-*- ou si cette liste était vide, parce que la table n'a aucun champ.*
+- *si la liste des champs `columns` n'a pas été fournie en argument de `build_dict()` ;*
+- *ou si cette liste était vide, parce que la table n'a aucun champ.*
 
 ### Caractéristiques du bouton
 
