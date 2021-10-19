@@ -126,7 +126,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
 	with conn.cursor() as cur:
 	
-		query = query_update_table_comment(schema_name, table_name)
+		query = pg_queries.query_update_table_comment(schema_name, table_name)
 		cur.execute(query, (new_pg_description,))
 
 conn.close()
@@ -147,7 +147,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
 	with conn.cursor() as cur:
 	
-        query = query_update_columns_comments(
+        query = pg_queries.query_update_columns_comments(
             schema_name, table_name, widgetsdict
             )
         
