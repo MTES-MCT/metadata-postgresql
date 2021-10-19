@@ -77,6 +77,7 @@ class Ui_Dialog_ColorBloc(object):
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]  #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"] #Police QTabWidget
         self.ihm              = self.mDic_LH["ihm"]  #window/dock
+        self.toolBarDialog    = self.mDic_LH["toolBarDialog"]  #toolBarDialog
         #-
         self.labelQGroupBox = QtWidgets.QLabel(self.DialogColorBloc)
         self.labelQGroupBox.setGeometry(QtCore.QRect(10, 285, 180, 30))
@@ -122,12 +123,12 @@ class Ui_Dialog_ColorBloc(object):
         self.spinBoxEpai.valueChanged.connect(self.functionEpai)
         self.zEpaiQGroupBox = self.epaiQGroupBox  # si ouverture sans chgt et sauve
         #-
+        self.zEditStyle = self.editStyle  # si ouverture sans chgt et sauve
+        #-
         self.labelWinVsDock = QtWidgets.QLabel(self.DialogColorBloc)
         self.labelWinVsDock.setGeometry(QtCore.QRect(10, 345, 180, 30))
         self.labelWinVsDock.setAlignment(Qt.AlignRight)        
         self.labelWinVsDock.setText("Interface :")        
-        #-
-        self.zEditStyle = self.editStyle  # si ouverture sans chgt et sauve
         #-
         mDicWinVsDock = {"window":"Fenêtre", "dockFalse":"Panneau ancré", "dockTrue":"Panneau flottant"}
         self.comboWinVsDock = QtWidgets.QComboBox(self.DialogColorBloc)
@@ -138,7 +139,21 @@ class Ui_Dialog_ColorBloc(object):
         self.comboWinVsDock.currentTextChanged.connect(lambda : self.functionWinVsDock(mDicWinVsDock))
         mValueTemp = [ k for k, v in mDicWinVsDock.items() if v == self.comboWinVsDock.currentText()][0]
         self.zComboWinVsDock = mValueTemp  # si ouverture sans chgt et sauve
-
+        #-
+        self.labelToolBarDialog = QtWidgets.QLabel(self.DialogColorBloc)
+        self.labelToolBarDialog.setGeometry(QtCore.QRect(10, 365, 180, 30))
+        self.labelToolBarDialog.setAlignment(Qt.AlignRight)        
+        self.labelToolBarDialog.setText("Barre d'outil :")        
+        #-
+        mDicToolBarDialog = {"button":"Mode 'Bouton'", "picture":"Mode 'Image'"}
+        self.comboToolBarDialog = QtWidgets.QComboBox(self.DialogColorBloc)
+        self.comboToolBarDialog.setGeometry(QtCore.QRect(205, 360, 190, 20))
+        self.comboToolBarDialog.setObjectName("comboToolBarDialog")
+        self.comboToolBarDialog.addItems([ elem for elem in mDicToolBarDialog.values() ])
+        self.comboToolBarDialog.setCurrentText(mDicToolBarDialog[self.toolBarDialog])         
+        self.comboToolBarDialog.currentTextChanged.connect(lambda : self.functionToolBarDialog(mDicToolBarDialog))
+        mValueTemp = [ k for k, v in mDicToolBarDialog.items() if v == self.comboToolBarDialog.currentText()][0]
+        self.zComboToolBarDialog = mValueTemp  # si ouverture sans chgt et sauve
 
         #======== wysiwyg
         self.createWYSIWYG()
@@ -182,6 +197,15 @@ class Ui_Dialog_ColorBloc(object):
     #==========================             
     def functionWinVsDock(self, mDicWinVsDock):
         self.zComboWinVsDock = [ k for k, v in mDicWinVsDock.items() if v == self.comboWinVsDock.currentText()][0]
+        # --
+        self.applyWYSIWYG() #Lecture et apply des variables
+        # --
+        return 
+
+    #==========================         
+    #==========================             
+    def functionToolBarDialog(self, mDicWToolBarDialog):
+        self.zComboToolBarDialog = [ k for k, v in mDicWToolBarDialog.items() if v == self.comboToolBarDialog.currentText()][0]
         # --
         self.applyWYSIWYG() #Lecture et apply des variables
         # --
@@ -510,7 +534,8 @@ class Ui_Dialog_ColorBloc(object):
            #---------------
            #Ajouter si autre param
            mDicAutre = {}
-           mDicAutre["ihm"] = self.zComboWinVsDock
+           mDicAutre["ihm"]           = self.zComboWinVsDock
+           mDicAutre["toolBarDialog"] = self.zComboToolBarDialog
            mSettings.beginGroup("Generale")
            for key, value in mDicAutre.items():
                mSettings.setValue(key, value)
