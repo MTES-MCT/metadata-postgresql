@@ -79,7 +79,7 @@ Commentaire saisi par le service.
     ],
     "http://www.w3.org/ns/dcat#landingPage": [
       {
-        "@id": "https://geoservices.ign.fr/ressources_documentaires/Espace_documentaire/BASES_VECTORIELLES/ADMIN_EXPRESS/IGNF_ADMIN_EXPRESS_2-4.html"
+        "@id": "https://geoservices.ign.fr/documentation/donnees/vecteur/adminexpress"
       }
     ],
     "http://www.w3.org/ns/dcat#theme": [
