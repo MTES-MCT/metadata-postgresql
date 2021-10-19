@@ -16,11 +16,13 @@ l'extension est désinstallée et réinstallée, etc.).
 import re, uuid, unittest, json, psycopg2
 from pathlib import Path
 from rdflib import Graph, URIRef
+from rdflib.compare import isomorphic
 
 from plume.bibli_pg import template_utils, pg_queries
 from plume.bibli_rdf import __path__
 from plume.bibli_rdf.rdf_utils import build_dict, load_vocabulary, \
-     load_shape, metagraph_from_pg_description
+     load_shape, metagraph_from_pg_description, WidgetsDict, \
+     update_pg_description
 from plume.bibli_rdf.tests.rdf_utils_debug import search_keys
 
 # connexion à utiliser pour les tests
@@ -41,6 +43,10 @@ class TestTemplateUtils(unittest.TestCase):
         # import d'un exemple de fiche de métadonnée
         with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
             self.metagraph = metagraph_from_pg_description(src.read(), self.shape)
+
+        # import d'un autre exemple de fiche de métadonnée
+        with Path(__path__[0] + r'\exemples\exemple_commentaire_pg_2.txt').open(encoding='UTF-8') as src:
+            self.metagraph_2 = metagraph_from_pg_description(src.read(), self.shape)
             
         # fiche de métadonnées vide
         self.metagraph_empty = metagraph_from_pg_description("", self.shape)
@@ -704,6 +710,53 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertFalse('dcat:distribution' in template)
         self.assertFalse('dcat:distribution / dct:license' in template)
         self.assertEqual(len(template), 0)
+
+
+    ### DIVERS
+    ### ------
+
+    # encodage des retours à la ligne
+    def test_divers_1(self):
+        d = build_dict(self.metagraph_2, self.shape, self.vocabulary)
+        k = search_keys(d, 'dct:description', 'edit')
+        d.update_value(k[0], """La table L_ZAC_S_075 recense les zones d’aménagement concerté de la Ville de Paris depuis 2004. La table est mise à jour selon l’actualité. Y sont consignées :
+- les ZAC en cours ;
+- les ZAC projetées, à court ou moyen terme par la collectivité, dont le dossier de création n’a pas encore été approuvé mais sur lesquelles une procédure de concertation a été lancée ;
+- les anciennes ZAC, supprimées depuis 2004.""")
+        new_metagraph = d.build_graph(self.vocabulary)
+        new_pg_description = update_pg_description("", new_metagraph)
+        
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+            
+                cur.execute('CREATE TABLE z_metadata.table_test (num int)')
+                # création d'une table de test
+                
+                query = pg_queries.query_update_table_comment(
+                    'z_metadata', 'table_test'
+                    )
+                cur.execute(
+                    query,
+                    (new_pg_description,)
+                    )
+                cur.execute(
+                    pg_queries.query_get_table_comment(
+                        'z_metadata', 'table_test'
+                        )
+                    )
+                descr = cur.fetchone()
+                
+                cur.execute('DROP TABLE z_metadata.table_test')
+                # suppression de la table de test
+        
+        conn.close()
+
+        gt = metagraph_from_pg_description(descr[0], self.shape)
+        
+        self.assertTrue(isomorphic(new_metagraph, gt))
+
 
 unittest.main()
 
