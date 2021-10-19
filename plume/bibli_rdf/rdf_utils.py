@@ -1740,8 +1740,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             # disponible dans cette langue, on prendra le parti d'afficher
             # arbitrairement les valeurs de la première langue venue
             if ( ( mode == 'read' and readOnlyCurrentLanguage ) or
-                   ( mode == 'edit' and editOnlyCurrentLanguage ) ) \
-                and not translation \
+                   ( mode == 'edit' and editOnlyCurrentLanguage and not translation ) ) \
                 and not any([ not isinstance(v, Literal) or v.language in (None, language) \
                               for v in values ]):
                     for v in values:
@@ -1908,9 +1907,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 # supposée être affichée (c'est à dire toute autre
                 # langue que celle qui a été demandée ou la langue
                 # de substitution fournie par mOneLanguage)
-                if mNHidden or ( not translation \
-                    and ( ( mode == 'read' and readOnlyCurrentLanguage ) \
-                        or ( mode == 'edit' and editOnlyCurrentLanguage ) ) \
+                if mNHidden or ( \
+                    ( ( mode == 'read' and readOnlyCurrentLanguage ) \
+                        or ( mode == 'edit' and editOnlyCurrentLanguage and not translation ) ) \
                     and isinstance(mValueBrut, Literal) \
                     and not mValueBrut.language in (None, language, mOneLanguage) ):
                 
@@ -2563,8 +2562,8 @@ def update_pg_description(description, metagraph, geoideJSON=False):
     if len(metagraph) == 0:
         return description
     
-    s = metagraph.serialize(format="json-ld")
-    # s = metagraph.serialize(format="json-ld").decode("utf-8")
+    b = metagraph.serialize(format="json-ld", encoding="utf-8")
+    s = b.decode("utf-8")
     
     t = re.subn(
         "[<]METADATA[>].*[<][/]METADATA[>]",
