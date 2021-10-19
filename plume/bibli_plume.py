@@ -12,8 +12,13 @@ from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayerCache, QgsFeatureRe
 from qgis.utils import iface
 import psycopg2
 from . import doerreur
+
+import re, uuid
+import json
+from pathlib import Path
 from .bibli_pg  import pg_queries
 from .bibli_pg  import template_utils
+from .bibli_rdf import rdf_utils,  __path__
 
 from qgis.gui import (QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel)
 from qgis.utils import iface
@@ -43,6 +48,105 @@ def dicListSql(mKeySql):
     return  mdicListSql[mKeySql]
 
 #==================================================
+def returnObjetVocabulary() :
+    #**********************
+    # vocabulaire - ontologies utilisées par les métadonnées communes
+    vocabulary = rdf_utils.load_vocabulary()
+    return vocabulary 
+
+#==================================================
+def returnObjetShape() :
+    #**********************
+    # schéma SHACL qui décrit les métadonnées communes
+    shape = rdf_utils.load_shape()
+    return shape 
+
+#==================================================
+def returnObjetMetagraph(self, old_description) :
+    #**********************
+    # Récupération fiche de métadonnée
+    try:
+       #       g = rdf_utils.metagraph_from_pg_description(src.read(), shape)
+       metagraph = rdf_utils.metagraph_from_pg_description(old_description, self.shape)
+    except:
+    # dialogue avec l'utilisateur
+    #...
+	# si l'exécution n'est pas interrompue :
+       metagraph = rdf_utils.metagraph_from_pg_description("", self.shape)
+    return metagraph 
+
+#==================================================
+def returnObjetTemplate() :
+    #**********************
+    # exemple de modèle de formulaire
+    with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encoding='UTF-8') as src:
+        template = json.loads(src.read())
+    #template = None
+    return template 
+
+#==================================================
+def returnObjetColumns(self, _schema, _table) :
+    #**********************
+    # liste des champs de la table
+    mKeySql = pg_queries.query_get_columns(_schema, _table)
+    columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+    return columns 
+
+#==================================================
+def returnObjetTranslation(self) :
+    #**********************
+    # Mode  True False
+    translation = True if self.initTranslation == 'true' else False
+    return translation 
+
+#==================================================
+def saveObjetTranslation(mTranslation) :
+    mSettings = QgsSettings()
+    mDicAutre = {}
+    mSettings.beginGroup("PLUME")
+    mSettings.beginGroup("Generale")
+
+    mDicAutre["initTranslation"] = "true" if mTranslation else 'false'
+                 
+    for key, value in mDicAutre.items():
+        mSettings.setValue(key, value)
+
+    mSettings.endGroup()
+    mSettings.endGroup()    
+    return    
+
+#==================================================
+def returnObjetComment(self, _schema, _table) :
+    #**********************
+    # Récupération champ commentaire
+    mKeySql = pg_queries.query_get_table_comment(_schema, _table)
+    old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+    return old_description
+
+#==================================================
+def returnObjetsMeta(self, _schema, _table) :
+    #**********************
+    #Create Dict
+    kwa = {}
+    # ajout des arguments obligatoires
+    kwa.update({'metagraph': self.metagraph,	'shape': self.shape,	'vocabulary': self.vocabulary})
+    # ajout des arguments optionnels
+    if self.template is not None:
+       kwa.update({ 'template': self.template })
+    #--   
+    if self.columns is not None:
+       kwa.update({ 'columns': self.columns })
+    #--
+    if self.mode is not None:
+       kwa.update({ 'mode': self.mode })
+    #--
+    if self.translation is not None:
+       kwa.update({ 'translation': self.translation })
+    #--   
+    d = rdf_utils.build_dict(**kwa)
+    return d
+    
+#==================================================
 def transformeSql(self, mDic, mKeySql) :
     for key, value in mDic.items():
         if isinstance(value, bool) :
@@ -54,21 +158,6 @@ def transformeSql(self, mDic, mKeySql) :
            mValue =  str(value) 
         mKeySql = mKeySql.replace(key, mValue)
     return mKeySql
-
-#==================================================
-def test_interaction_sql(self) :
-
-    mKeySql = pg_queries.query_get_table_comment(self.schema, self.table)
-    #**********************
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
-    # A SUPPRIMER
-    self.textTest = "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence." 
-    for k, v in self.mDicObjetsInstancies.items() :
-        if v['value'] == self.textTest :
-           self.mDicObjetsInstancies[k]['main widget'].setText(str(r))
-           break
-    # A SUPPRIMER
-    return
 
 #==================================================
 def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
@@ -229,14 +318,18 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautFileHelpHtml  = "https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "window"
-       mDicAutre["dialogLargeur"]  = valueDefautL
-       mDicAutre["dialogHauteur"]  = valueDefautH
-       mDicAutre["displayMessage"] = valueDefautDisplayMessage
-       mDicAutre["fileHelp"]       = valueDefautFileHelp
-       mDicAutre["fileHelpPdf"]    = valueDefautFileHelpPdf
-       mDicAutre["fileHelpHtml"]   = valueDefautFileHelpHtml
-       mDicAutre["durationBarInfo"]= valueDefautDurationBarInfo
-       mDicAutre["ihm"]            = valueDefautIHM
+       valueDefautToolBarDialog = "picture"
+       valueDefautinitTranslation = "false"
+       mDicAutre["dialogLargeur"]   = valueDefautL
+       mDicAutre["dialogHauteur"]   = valueDefautH
+       mDicAutre["displayMessage"]  = valueDefautDisplayMessage
+       mDicAutre["fileHelp"]        = valueDefautFileHelp
+       mDicAutre["fileHelpPdf"]     = valueDefautFileHelpPdf
+       mDicAutre["fileHelpHtml"]    = valueDefautFileHelpHtml
+       mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
+       mDicAutre["ihm"]             = valueDefautIHM
+       mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
+       mDicAutre["initTranslation"] = valueDefautinitTranslation
 
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
@@ -248,10 +341,10 @@ def returnAndSaveDialogParam(self, mAction):
        mSettings.beginGroup("BlocsColor")
        #Ajouter si autre param
        mDicAutreColor["defaut"]                      = "#958B62"
-       mDicAutreColor["QGroupBox"]                   = "#BADCFF"
-       mDicAutreColor["QGroupBoxGroupOfProperties"]  = "#7560FF"
-       mDicAutreColor["QGroupBoxGroupOfValues"]      = "#00FF21"
-       mDicAutreColor["QGroupBoxTranslationGroup"]   = "#0026FF"
+       mDicAutreColor["QGroupBox"]                   = "#958B62"
+       mDicAutreColor["QGroupBoxGroupOfProperties"]  = "#958B62"
+       mDicAutreColor["QGroupBoxGroupOfValues"]      = "#5770BE"
+       mDicAutreColor["QGroupBoxTranslationGroup"]   = "#FF8D7E"
        mDicAutreColor["QTabWidget"]                  = "#958B62"
        mDicAutreColor["QLabelBackGround"]            = "#BFEAE2"
 
