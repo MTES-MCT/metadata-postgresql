@@ -2563,13 +2563,12 @@ def update_pg_description(description, metagraph, geoideJSON=False):
     if len(metagraph) == 0:
         return description
     
-    b = metagraph.serialize(format="json-ld", encoding="utf-8")
-    s = b.decode("utf-8")
+    s = metagraph.serialize(format="json-ld")
     
     if description:
         t = re.subn(
             "[<]METADATA[>].*[<][/]METADATA[>]",
-            "<METADATA>\n" + s + "\n</METADATA>",
+            "<METADATA>\n" + s.replace('\\', r'\\') + "\n</METADATA>",
             description,
             flags=re.DOTALL
             )
