@@ -124,8 +124,8 @@ import psycopg2
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
+    with conn.cursor() as cur:
+
         cur.execute(
             pg_queries.query_get_relation_kind(
                 schema_name, table_name
@@ -133,10 +133,10 @@ with conn:
             )
         kind = cur.fetchone()
         
-		query = pg_queries.query_update_table_comment(
+        query = pg_queries.query_update_table_comment(
             schema_name, table_name, relation_kind=kind[0]
             )
-		cur.execute(query, (new_pg_description,))
+        cur.execute(query, (new_pg_description,))
 
 conn.close()
 
