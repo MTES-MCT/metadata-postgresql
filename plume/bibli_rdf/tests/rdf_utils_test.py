@@ -2336,6 +2336,36 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
 
 
+    def test_update_pg_description_10(self):
+        c1 = None
+        c2 = """
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2020-08-03"
+      }
+    ]
+  }
+]
+</METADATA>
+"""
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+        d[self.mdk]['value'] = "2020-08-03"
+        d[self.lgk]['value'] = None
+        d[self.dtk]['value'] = None
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(rdf_utils.update_pg_description(c1, g), c2)
+
+
     ### FONCTION build_vocabulary
     ### -------------------------
 
