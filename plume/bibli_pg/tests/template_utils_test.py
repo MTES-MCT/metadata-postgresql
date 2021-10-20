@@ -96,6 +96,77 @@ class TestTemplateUtils(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+    ### FONCTION query_get_relation_kind
+    ### --------------------------------
+    
+    def test_query_get_relation_kind_1(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute(
+                    pg_queries.query_get_relation_kind(
+                        'z_metadata', 'meta_local_categorie'
+                        )
+                    )
+                kind_r = cur.fetchone()
+                cur.execute(
+                    pg_queries.query_get_relation_kind(
+                        'z_metadata', 'meta_categorie'
+                        )
+                    )
+                kind_p = cur.fetchone()
+                cur.execute(
+                    pg_queries.query_get_relation_kind(
+                        'z_metadata', 'meta_template_categories_full'
+                        )
+                    )
+                kind_v = cur.fetchone()
+                cur.execute("""CREATE MATERIALIZED VIEW z_metadata.m_test AS (
+                    SELECT * FROM z_metadata.meta_categorie)""")
+                cur.execute(
+                    pg_queries.query_get_relation_kind(
+                        'z_metadata', 'm_test'
+                        )
+                    )
+                kind_m = cur.fetchone()
+                cur.execute('DROP MATERIALIZED VIEW z_metadata.m_test')
+
+                cur.execute("""
+                    CREATE EXTENSION IF NOT EXISTS postgres_fdw ;
+
+                    CREATE SERVER serveur_bidon
+                        FOREIGN DATA WRAPPER postgres_fdw
+                        OPTIONS (host 'localhost', port '5432', dbname 'base_bidon') ;
+    
+                    CREATE FOREIGN TABLE z_metadata.f_test (
+                        id integer NOT NULL,
+                        data text
+                        )
+                        SERVER serveur_bidon
+                        OPTIONS (schema_name 'schema_bidon', table_name 'table_bidon') ;
+                    """)
+                cur.execute(
+                    pg_queries.query_get_relation_kind(
+                        'z_metadata', 'f_test'
+                        )
+                    )
+                kind_f = cur.fetchone()
+                cur.execute("""
+                    DROP FOREIGN TABLE z_metadata.f_test ;
+                    DROP SERVER serveur_bidon ;
+                    """)
+
+        conn.close()
+        
+        self.assertEqual(kind_r[0], 'r')
+        self.assertEqual(kind_v[0], 'v')
+        self.assertEqual(kind_m[0], 'm')
+        self.assertEqual(kind_p[0], 'p')
+        self.assertEqual(kind_f[0], 'f')
+
+
     ### FONCTION query_update_columns_comments
     ### --------------------------------------
     
@@ -481,6 +552,78 @@ class TestTemplateUtils(unittest.TestCase):
         conn.close()
         
         self.assertEqual(descr[0], 'Nouvelle description')
+
+    # prise en charge de tous les types de relations pertinents
+    def test_query_update_table_comment_2(self):
+        conn = psycopg2.connect(connection_string)
+        
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute("""
+                    CREATE TABLE z_metadata.r_test (num int) ;
+                    
+                    CREATE VIEW z_metadata.v_test AS (
+                        SELECT * FROM z_metadata.meta_categorie
+                        ) ;
+                        
+                    CREATE MATERIALIZED VIEW z_metadata.m_test AS (
+                        SELECT * FROM z_metadata.meta_categorie
+                        ) ;
+
+                    CREATE TABLE z_metadata.p_test (id int, cle text)
+                        PARTITION BY LIST (cle) ;
+                        
+                    CREATE EXTENSION IF NOT EXISTS postgres_fdw ;
+
+                    CREATE SERVER serveur_bidon
+                        FOREIGN DATA WRAPPER postgres_fdw
+                        OPTIONS (host 'localhost', port '5432', dbname 'base_bidon') ;
+    
+                    CREATE FOREIGN TABLE z_metadata.f_test (
+                        id integer NOT NULL,
+                        data text
+                        )
+                        SERVER serveur_bidon
+                        OPTIONS (schema_name 'schema_bidon', table_name 'table_bidon') ;
+                    """)
+                res = {'r_test': None, 'v_test': None, 'm_test': None,
+                       'p_test': None, 'f_test': None}
+                for k in res.keys():
+                    cur.execute(
+                        pg_queries.query_get_relation_kind(
+                            'z_metadata', k
+                            )
+                        )
+                    kind = cur.fetchone()[0]
+                    query = pg_queries.query_update_table_comment(
+                        'z_metadata', k, relation_kind=kind
+                        )
+                    cur.execute(
+                        query,
+                        ('Nouvelle description',)
+                        )
+                    cur.execute(
+                        pg_queries.query_get_table_comment(
+                            'z_metadata', k
+                            )
+                        )
+                    res[k] = cur.fetchone()[0]
+                
+                cur.execute("""
+                    DROP TABLE z_metadata.r_test ;
+                    DROP VIEW z_metadata.v_test ;
+                    DROP MATERIALIZED VIEW z_metadata.m_test ;
+                    DROP TABLE z_metadata.p_test ;
+                    DROP FOREIGN TABLE z_metadata.f_test ;
+                    DROP SERVER serveur_bidon ;
+                    """)
+
+        conn.close()
+
+        for k, v in res.items():
+            with self.subTest(objet=k):
+                self.assertEqual(v, 'Nouvelle description')
 
 
     ### FONCTION query_list_templates
