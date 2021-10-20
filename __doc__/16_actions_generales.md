@@ -82,15 +82,20 @@ En arrière plan, cela suppose plusieurs opérations successives.
 
 1. Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie. On utilisera pour ce faire la méthode `update_value()`.
 
+Cette méthode ne doit être exécutée que sur des widgets de saisie, soit (les deux modes de gestion sont possibles) quand la clé `'object'` vaut `'edit'` ou lorsque `'main widget type'` est un widget de saisie.
+
+De plus, pour les widgets masqués (branches de saisie manuelle non utilisées), les valeurs doivent systématiquement être supprimées. 
+
 Soit :
 - `key` la clé du widget de saisie dans le dictionnaire de widgets `widgetsdict` ;
-- `value` la valeur contenue dans le widget (QWidget).
+- `widget_value` la valeur contenue dans le widget (QWidget).
 
-On exécutera :
+Pour les widgets de saisie, on exécutera donc :
 
 ```python
 
-widgetsdict.update_value(key, value)
+new_value = None if ( widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M'] ) else widget_value
+widgetsdict.update_value(key, new_value)
 
 ```
 
