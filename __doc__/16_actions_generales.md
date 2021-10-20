@@ -116,7 +116,7 @@ new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_met
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
-On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py).
+On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py). À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec `query_get_relation_kind()`.
 
 ```python
 
@@ -126,7 +126,16 @@ conn = psycopg2.connect(connection_string)
 with conn:
 	with conn.cursor() as cur:
 	
-		query = pg_queries.query_update_table_comment(schema_name, table_name)
+        cur.execute(
+            pg_queries.query_get_relation_kind(
+                schema_name, table_name
+                )
+            )
+        kind = cur.fetchone()
+        
+		query = pg_queries.query_update_table_comment(
+            schema_name, table_name, relation_kind=kind[0]
+            )
 		cur.execute(query, (new_pg_description,))
 
 conn.close()
