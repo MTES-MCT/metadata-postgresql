@@ -70,13 +70,38 @@ def query_exists_extension():
         """
 
 
-def query_update_table_comment(schema_name, table_name):
+def query_get_relation_kind(schema_name, table_name):
+    """Crée une requête qui récupère le type d'une relation PostgreSQL.
+    
+    ARGUMENTS
+    ---------
+    - schema_name (str) : nom du schéma de la relation ;
+    - table_name (str) : nom de la relation (table, vue...).
+    
+    RESULTAT
+    --------
+    Une requête prête à l'emploi, à utiliser comme suit :
+    >>> query = query_get_relation_type(schema_name, table_name)
+    >>> cur.execute(query)
+    >>> relkind = cur.fetchone()[0]
+    
+    """
+    return sql.SQL(
+        "SELECT relkind FROM pg_catalog.pg_class WHERE pg_class.oid = '{}'::regclass"
+        ).format(
+            sql.Identifier(schema_name, table_name)
+            )
+
+
+def query_update_table_comment(schema_name, table_name, relation_kind='r'):
     """Crée une requête de mise à jour du descriptif d'une table ou vue.
     
     ARGUMENTS
     ---------
     - schema_name (str) : nom du schéma de la table ;
     - table_name (str) : nom de la table.
+    - relation_kind (str) : le type de relation. 'r' (table simple)
+    par défaut.
     
     RESULTAT
     --------
@@ -88,9 +113,16 @@ def query_update_table_comment(schema_name, table_name):
     - new_pg_description (str) : valeur actualisée du descriptif de
     la table.
     """
+    d = { 'r': 'TABLE', 'v': 'VIEW', 'm': 'MATERIALIZED VIEW',
+        'f': 'FOREIGN TABLE', 'p': 'TABLE' }
+    
+    if not relation_kind in d:
+        raise ValueError('Unknown or unsupported relation type "{}".'.format(relation_kind))
+    
     return sql.SQL(
-        "COMMENT ON TABLE {} IS %s"
+        "COMMENT ON {} {} IS %s"
         ).format(
+            sql.SQL(d[relation_kind]),
             sql.Identifier(schema_name, table_name)
             )
 
