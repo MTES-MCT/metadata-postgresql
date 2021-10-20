@@ -44,6 +44,6 @@
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
-| Prise en charge des relations entre tables   |        |   Ok   |   LL   | |
-| Gestion des métadonnées des schémas          |        |   Ok   |   LL / DL  | |
-| Recherche                                    |        |   Ok   |   LL / DL  | |
+| Prise en charge des relations entre tables   |   X     |      |   LL   | |
+| Gestion des métadonnées des schémas          |   X     |      |   LL / DL  | |
+| Recherche                                    |   X     |      |   LL / DL  | |
