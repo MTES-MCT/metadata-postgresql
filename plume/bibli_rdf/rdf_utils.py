@@ -848,7 +848,8 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("{} is a {}, you can't store a value here.".format(
                 key, self[key]['object']))
 
-        if self[key]['hidden M']:
+        if ( self[key]['hidden M'] or self[key]['hidden'] ) \
+            and value is not None:
             raise ForbiddenOperation("Widget {} is hidden, you can't update its value.".format(key))
 
         self[key]['value'] = value
