@@ -867,7 +867,11 @@ class TestTemplateUtils(unittest.TestCase):
 - les ZAC projetées, à court ou moyen terme par la collectivité, dont le dossier de création n’a pas encore été approuvé mais sur lesquelles une procédure de concertation a été lancée ;
 - les anciennes ZAC, supprimées depuis 2004.""")
         new_metagraph = d.build_graph(self.vocabulary)
-        new_pg_description = update_pg_description("", new_metagraph)
+        new_pg_description = update_pg_description(""""
+            Description +
+            <METADATA> Truc à remplacer
+            </METADATA>
+            """, new_metagraph)
         
         conn = psycopg2.connect(connection_string)
         
