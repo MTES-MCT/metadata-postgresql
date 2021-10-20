@@ -96,6 +96,25 @@ class TestRDFUtils(unittest.TestCase):
             )
 
 
+    ### FONCTION WidgetsDict.update_value
+    ### ---------------------------------
+
+    def test_wd_update_value_1(self):
+        k = search_keys(self.widgetsdict, 'dct:title', 'edit')[0]
+        self.widgetsdict.update_value(k, 'Mon titre')
+        self.assertEqual(self.widgetsdict[k]['value'], 'Mon titre')
+
+    # cas des widgets masqués
+    def test_wd_update_value_2(self):
+        k = search_keys(self.widgetsdict, 'dct:accessRights / rdfs:label', 'edit')[0]
+        self.assertTrue(self.widgetsdict[k]['hidden M'])
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'hidden'):
+            self.widgetsdict.update_value(k, 'not None')
+        self.widgetsdict[k]['value'] = 'not None'
+        self.widgetsdict.update_value(k, None)
+        self.assertIsNone(self.widgetsdict[k]['value'])
+        
+
     ### FONCTION WidgetsDict.group_kind
     ### -------------------------------
     
