@@ -2565,20 +2565,23 @@ def update_pg_description(description, metagraph, geoideJSON=False):
     b = metagraph.serialize(format="json-ld", encoding="utf-8")
     s = b.decode("utf-8")
     
-    t = re.subn(
-        "[<]METADATA[>].*[<][/]METADATA[>]",
-        "<METADATA>\n" + s + "\n</METADATA>",
-        description,
-        flags=re.DOTALL
-        )
-    # cette expression remplace tout de la première balise <METADATA> à
-    # la dernière balise </METADATA> (elle maximise la cible, au contraire
-    # de la fonction metagraph_from_pg_description)
+    if description:
+        t = re.subn(
+            "[<]METADATA[>].*[<][/]METADATA[>]",
+            "<METADATA>\n" + s + "\n</METADATA>",
+            description,
+            flags=re.DOTALL
+            )
+        # cette expression remplace tout de la première balise <METADATA> à
+        # la dernière balise </METADATA> (elle maximise la cible, au contraire
+        # de la fonction metagraph_from_pg_description)
 
-    if t[1] == 0:
-        new_description = description + "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
+        if t[1] == 0:
+            new_description = description + "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
+        else:
+            new_description = t[0]
     else:
-        new_description = t[0]
+        new_description = "\n\n<METADATA>\n" + s + "\n</METADATA>\n"
     
     if geoideJSON:
         j = build_geoide_json(metagraph)
