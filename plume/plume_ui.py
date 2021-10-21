@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBo
                              QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator)
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
-                                                                                                                                    
+
+from .bibli_pg  import template_utils                                                                                                                                    
 from . import bibli_plume
 from .bibli_plume import *
 #
@@ -212,8 +213,16 @@ class Ui_Dialog_plume(object):
     #==========================
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
     def clickButtonsTemplateActions(self):
-        mItem = self.mMenuBarDialog.sender().objectName()
-        print(mItem)
+        mItemTemplates = self.mMenuBarDialog.sender().objectName()
+        print("mItemTemplates {}".format(str(mItemTemplates)))
+        # Sélection automatique du modèle
+        tpl_label = template_utils.search_template(self.metagraph, mItemTemplates)
+        print("tpl_label {}".format(str(tpl_label)))
+
+
+        #mKeySql = pg_queries.query_get_columns(_schema, _table)
+        #columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+
         return
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
     #==========================

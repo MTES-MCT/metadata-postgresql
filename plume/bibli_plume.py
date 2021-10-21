@@ -70,12 +70,16 @@ def returnObjetMetagraph(self, old_description) :
     try:
        #       g = rdf_utils.metagraph_from_pg_description(src.read(), shape)
        metagraph = rdf_utils.metagraph_from_pg_description(old_description, self.shape)
-       print("Ok OK dans metagraph_from_pg_description" )
     except:
-    # dialogue avec l'utilisateur
-    #...
-	# si l'exécution n'est pas interrompue :
-       print("Erreur dans metagraph_from_pg_description" )
+       # dialogue avec l'utilisateur  
+       # La fonction metagraph_from_pg_description() renverra un graphe vide si le descriptif PostgreSQL ne contenait pas les balises <METADATA> et </METADATA> 
+       # entre lesquelles est supposé se trouver le JSON-LD contenant les métadonnées. 
+       # C'est typiquement ce qui arrivera lorsque les métadonnées n'ont pas encore été rédigées.
+       # Si les balises sont présentes, mais ne contiennent pas un JSON valide, la fonction échouera sur une erreur json.decoder.JSONDecodeError. 
+       # Dans ce cas, on pourra proposer à l'utilisateur de choisir entre abandonner l'ouverture de la fiche de métadonnées 
+       #ou ouvrir une fiche vierge à la place.si entre les ba:lise
+       #...
+       # si l'exécution n'est pas interrompue :
        metagraph = rdf_utils.metagraph_from_pg_description("", self.shape)
     return metagraph 
 
@@ -173,9 +177,8 @@ def saveMetaIhm(self, _schema, _table) :
         elif _valueObjet['main widget type'] in ("QCheckBox") :
            value = True if _valueObjet['main widget'].isChecked() else False
 
-        if _valueObjet['object'] == "edit" : 
-           new_value = None if (_valueObjet['hidden'] or _valueObjet['hidden M']) else value
-           self.mDicObjetsInstancies.update_value(_keyObjet, new_value)
+        if _valueObjet['object'] == "edit" and not (_valueObjet['hidden'] or _valueObjet['hidden M']): 
+           self.mDicObjetsInstancies.update_value(_keyObjet, value)
     #-    
     #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
     self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary, language=_language) 
@@ -183,9 +186,11 @@ def saveMetaIhm(self, _schema, _table) :
     #Créer une version actualisée du descriptif PostgreSQL de l'objet.   
     new_pg_description = rdf_utils.update_pg_description(self.comment, self.metagraph) 
     self.comment = new_pg_description
-    #-    
     # une requête de mise à jour du descriptif.
-    mKeySql = (pg_queries.query_update_table_comment(_schema, _table), (new_pg_description,)) 
+    mKeySql = pg_queries.query_get_relation_kind(_schema, _table) 
+    kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+    #-    
+    mKeySql = (pg_queries.query_update_table_comment(_schema, _table, relation_kind=kind[0]), (new_pg_description,)) 
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #-
@@ -195,19 +200,6 @@ def saveMetaIhm(self, _schema, _table) :
     self.mConnectEnCours.commit()
     return  
     
-#==================================================
-def transformeSql(self, mDic, mKeySql) :
-    for key, value in mDic.items():
-        if isinstance(value, bool) :
-           mValue = str(value)
-        elif (value is None) :
-           mValue = "''"
-        else :
-           value = value.replace("'", "''")
-           mValue =  str(value) 
-        mKeySql = mKeySql.replace(key, mValue)
-    return mKeySql
- 
 #==================================================
 def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
@@ -246,6 +238,19 @@ def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
       #-------------
     QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
+
+#==================================================
+def transformeSql(self, mDic, mKeySql) :
+    for key, value in mDic.items():
+        if isinstance(value, bool) :
+           mValue = str(value)
+        elif (value is None) :
+           mValue = "''"
+        else :
+           value = value.replace("'", "''")
+           mValue =  str(value) 
+        mKeySql = mKeySql.replace(key, mValue)
+    return mKeySql
 
 #==================================================
 def updateUriWithPassword(self, mUri) :
