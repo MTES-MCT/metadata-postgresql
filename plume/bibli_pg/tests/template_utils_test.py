@@ -649,7 +649,7 @@ class TestTemplateUtils(unittest.TestCase):
         
         conn.close()
         
-        self.assertEqual(len(templates), 2)
+        self.assertEqual(len(templates), 3)
 
 
     ### FONCTION query_get_categories
