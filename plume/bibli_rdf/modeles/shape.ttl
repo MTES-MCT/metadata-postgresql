@@ -322,6 +322,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dcat:landingPage ;
 		sh:name "Page internet"@fr ;
+        sh:description "URL de la fiche de métadonnées sur internet."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 60 ;
