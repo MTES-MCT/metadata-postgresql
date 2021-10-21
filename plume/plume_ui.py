@@ -488,7 +488,7 @@ class Ui_Dialog_plume(object):
                          \npour consulter ses métadonnées.</html>"
            zMess  = QtWidgets.QApplication.translate("plume_ui", _zMess, None)
            self.zoneWarningClickSource = QtWidgets.QLabel(self.tabWidget )
-           self.zoneWarningClickSource.setGeometry(30, 110, 220, 100)
+           self.zoneWarningClickSource.setGeometry(30, 110, 300, 100)
            self.zoneWarningClickSource.setStyleSheet("QLabel {   \
                                 font-family:" + self.policeQGroupBox  +" ; \
                                 }")
