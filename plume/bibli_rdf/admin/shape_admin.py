@@ -5,6 +5,8 @@ Utilitaires pour la maintenance du schéma SHACL décrivant les métadonnées co
 
 from rdflib import Graph, URIRef, Literal
 from rdflib.namespace import NamespaceManager
+from psycopg2 import sql
+import re, psycopg2
 
 from plume.bibli_rdf.rdf_utils import load_shape
 
@@ -295,60 +297,119 @@ def table_from_shape(
     shape = load_shape()
     
     nsm = mNSManager or shape.namespace_manager
+
+    for s in shape.subjects(URIRef("http://www.w3.org/ns/shacl#targetClass"), mTargetClass):
+        subj = s
+        break
     
-    q_tp = shape.query(
-        """
-        SELECT
-            ?property ?name ?kind
-            ?class ?order ?widget ?descr
-            ?default ?min ?max
-            ?placeholder ?rowspan ?mask
-        WHERE
-            { ?u sh:targetClass ?c ;
-                 sh:property ?x .
-              ?x sh:path ?property ;
-                 sh:name ?name ;
-                 sh:nodeKind ?kind ;
-                 sh:order ?order .
-              OPTIONAL { ?x snum:widget ?widget } .
-              OPTIONAL { ?x sh:class ?class } .
-              OPTIONAL { ?x sh:description ?descr } .
-              OPTIONAL { ?x snum:placeholder ?placeholder } .
-              OPTIONAL { ?x snum:inputMask ?mask } .
-              OPTIONAL { ?x sh:defaultValue ?default } .
-              OPTIONAL { ?x snum:rowSpan ?rowspan } .
-              OPTIONAL { ?x sh:minCount ?min } .
-              OPTIONAL { ?x sh:maxCount ?max } . }
-        ORDER BY ?order
-        """,
-        initBindings = { 'c' : mTargetClass }
-        )
+    dmap = {
+        "sh:path": "property",
+        "sh:name": "name",
+        "sh:description": "descr",
+        "sh:nodeKind": "kind",
+        "sh:order": "order",
+        "snum:widget" : "widget",
+        "sh:class": "class",
+        "snum:placeholder": "placeholder",
+        "snum:inputMask": "mask",
+        "sh:defaultValue": "default",
+        "snum:rowSpan": "rowspan",
+        "sh:minCount": "min",
+        "sh:maxCount": "max",
+        "sh:datatype": "datatype"
+        }
     
-    for p in q_tp:
+    dbase = {
+        "property": None,
+        "name": None,
+        "datatype": None,
+        "kind": None,
+        "class": None,
+        "order":None,
+        "widget": None,
+        "descr": None,
+        "default": None,
+        "min": None,
+        "max": None,
+        "placeholder": None,
+        "rowspan": None,
+        "mask": None
+        }
+    
+    for prop in shape.objects(subj, URIRef("http://www.w3.org/ns/shacl#property")):
+        d = dbase.copy()
         
-        mKind = p['kind'].n3(nsm)
-        mNPath = ( mPath + " / " if mPath else '') + p['property'].n3(nsm)
-        
+        for p, o in shape.predicate_objects(prop):
+            if p.n3(nsm) in dmap:
+                d[dmap[p.n3(nsm)]] = o
+
+        mKind = d['kind'].n3(nsm)
+        mNPath = ( mPath + " / " if mPath else '') + d['property'].n3(nsm)
+            
         mList.append((
             'shared',
             mNPath,
             mKind == 'sh:BlankNode',
-            str(p['name']) if p['name'] else None,
-            str(p['widget']) if p['widget'] else None,
-            int(p['rowspan']) if p['rowspan'] else None,
-            str(p['descr']) if p['descr'] else None,
-            str(p['default']) if p['default'] else None,
-            str(p['placeholder']) if p['placeholder'] else None,
-            str(p['mask']) if p['mask'] else None,
-            int(p['max']) > 1 if p['max'] is not None else True,
-            int(p['min']) >= 1 if p['min'] is not None else False,
-            int(p['order']) if p['order'] is not None else None
+            str(d['name']) if d['name'] else None,
+            str(re.sub("^[a-zA-Z]+[:]", "", d['datatype'].n3(nsm))) if d['datatype'] else None,
+            str(d['widget']) if d['widget'] else None,
+            int(d['rowspan']) if d['rowspan'] else None,
+            str(d['descr']) if d['descr'] else None,
+            str(d['default']) if d['default'] else None,
+            str(d['placeholder']) if d['placeholder'] else None,
+            str(d['mask']) if d['mask'] else None,
+            int(d['max']) > 1 if d['max'] is not None else True,
+            int(d['min']) >= 1 if d['min'] is not None else False,
+            int(d['order']) if d['order'] is not None else None
             ))
         
         if mKind in ('sh:BlankNode', 'sh:BlankNodeOrIRI'):
-            table_from_shape(mList, mNPath, nsm, p['class'])
+            table_from_shape(mList, mNPath, nsm, d['class'])
             
     return mList ;
     
+
+def query_from_shape():
+    """Renvoie et imprime dans la console la requête INSERT permettant de reconstituer meta_shared_categories.
+
+    À l'usage de l'extension PostgreSQL metadata. L'utilisation de cette fonction
+    requiert une connexion PostgreSQL (paramètres saisis dynamiquement).
+
+    ARGUMENTS
+    ---------
+    Néant.
+
+    RESULTAT
+    --------
+    Une chaîne de caractère correspondant à une requête INSERT.
+    """
+    connection_string = "host={} port={} dbname={} user={} password={}".format(
+        input('host (localhost): ') or 'localhost',
+        input('port (5432): ') or '5432',
+        input('dbname (metadata_dev): ') or 'metadata_dev',
+        input('user (postgres): ') or 'postgres',
+        input('password : ')
+        )
     
+    t = table_from_shape()
+
+    conn = psycopg2.connect(connection_string)
+    s = sql.SQL("""INSERT INTO z_metadata.meta_categorie (
+    origin, path, is_node, cat_label, data_type, widget_type,
+    row_span, help_text, default_value, placeholder_text,
+    input_mask, multiple_values, is_mandatory, order_key
+    ) VALUES
+    {} ;""").format(
+        sql.SQL(",\n    ").join(
+            [ sql.SQL("({})").format(
+                sql.SQL(", ").join(
+                    [ sql.Literal(e) for e in v ]
+                    )
+                ) for v in t ]
+            )
+        ).as_string(conn)
+    conn.close()
+    
+    print(s)
+    return s
     
