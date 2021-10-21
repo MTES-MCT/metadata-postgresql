@@ -579,7 +579,6 @@ class Ui_Dialog_plume(object):
         templateLabels.insert(0, "Aucun")
         _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str(int(len(max(templateLabels))) * 10) + "px;}")
         #------------
-        templateLabels.insert(0, "Aucun")
         for elemQMenuItem in templateLabels :
             _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
             _mObjetQMenuItem.setText(elemQMenuItem)
