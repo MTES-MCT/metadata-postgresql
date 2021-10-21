@@ -262,7 +262,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQCheckBox, row, column, rowSpan, columnSpan)
-       _mObjetQCheckBox.setChecked(True if _valueObjet['value'] else False)       
+       _mObjetQCheckBox.setChecked(True if str(_valueObjet['value']).lower() == 'true' else False)       
        #Lecture seule                        
        _mObjetQCheckBox.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        

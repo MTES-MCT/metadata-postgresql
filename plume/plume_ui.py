@@ -577,7 +577,7 @@ class Ui_Dialog_plume(object):
     def createQmenuModele(self, _mObjetQMenu, templateLabels) :
         _mObjetQMenu.clear()
         templateLabels.insert(0, "Aucun")
-        _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str(int(len(max(templateLabels))) * 10) + "px;}")
+        _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(templateLabels))) * 10) + 50) + "px;}")
         #------------
         for elemQMenuItem in templateLabels :
             _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
