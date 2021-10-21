@@ -84,13 +84,39 @@ def returnObjetMetagraph(self, old_description) :
     return metagraph 
 
 #==================================================
-def returnObjetTemplate() :
+def returnObjetTpl_label(self) :
     #**********************
-    # exemple de modèle de formulaire
-    with Path(__path__[0] + r'\exemples\exemple_dict_modele_local.json').open(encoding='UTF-8') as src:
-        template = json.loads(src.read())
-    #template = None
-    return template 
+    #Récupération de la liste des modèles
+    mKeySql = (pg_queries.query_list_templates(), (self.schema, self.table))
+    self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+    self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
+
+    # Sélection automatique du modèle
+    templateLabels = self.templateLabels
+    if self.preferedTemplate and self.enforcePreferedTemplate and templateLabels and self.preferedTemplate in templateLabels :
+       tpl_label = self.preferedTemplate
+    else : 
+       tpl_label = template_utils.search_template(self.metagraph, self.templates)
+
+    return tpl_label 
+
+#==================================================
+# == Génération des CATEGORIES, TEMPLATE, TABS
+def generationTemplateAndTabs(self, tpl_label):
+    # Récupération des CATEGORIES associées au modèle retenu
+    mKeySql = (pg_queries.query_get_categories(), (tpl_label,))
+    categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+        
+    # Génération de template
+    self.template = template_utils.build_template(categories)
+
+    # Récupération des TEMPLATES associés au modèle retenu
+    mKeySql = (pg_queries.query_template_tabs(), (tpl_label,))
+    tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+           
+    # Génération de templateTabs
+    self.templateTabs = template_utils.build_template_tabs(tabs)
+    return self.template, self.templateTabs 
 
 #==================================================
 def returnObjetColumns(self, _schema, _table) :
@@ -112,9 +138,9 @@ def saveObjetTranslation(mTranslation) :
     mSettings = QgsSettings()
     mDicAutre = {}
     mSettings.beginGroup("PLUME")
-    mSettings.beginGroup("Generale")
+    mSettings.beginGroup("UserSettings")    
 
-    mDicAutre["initTranslation"] = "true" if mTranslation else 'false'
+    mDicAutre["translation"] = "true" if mTranslation else 'false'
                  
     for key, value in mDicAutre.items():
         mSettings.setValue(key, value)
@@ -357,9 +383,10 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
 #Lecture du fichier ini pour dimensions Dialog
 #==================================================
 def returnAndSaveDialogParam(self, mAction):
-    mDicAutre = {}
-    mDicAutreColor = {}
-    mDicAutrePolice = {}
+    mDicAutre        = {}
+    mDicAutreColor   = {}
+    mDicAutrePolice  = {}
+    mDicUserSettings = {}
     mSettings = QgsSettings()
     mSettings.beginGroup("PLUME")
     mSettings.beginGroup("Generale")
@@ -375,7 +402,6 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "window"
        valueDefautToolBarDialog = "picture"
-       valueDefautinitTranslation = "false"
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
@@ -385,7 +411,6 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
-       mDicAutre["initTranslation"] = valueDefautinitTranslation
 
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
@@ -429,6 +454,36 @@ def returnAndSaveDialogParam(self, mAction):
               mDicAutrePolice[key] = mSettings.value(key)           
        #----
        mDicAutre = {**mDicAutre, **mDicAutrePolice}          
+
+       #======================
+       # liste des Paramétres UTILISATEURS
+       mSettings.endGroup()
+       mSettings.beginGroup("UserSettings")
+       #Ajouter si autre param
+       mDicUserSettings["preferedTemplate"]        = "Basique"
+       mDicUserSettings["enforcePreferedTemplate"] = "false"
+       mDicUserSettings["readHideBlank"]           = "true"
+       mDicUserSettings["readHideUnlisted"]        = "true"
+       mDicUserSettings["editHideUnlisted"]        = "false"
+       mDicUserSettings["language"]                = "fr"
+       mDicUserSettings["translation"]             = "false"
+       mDicUserSettings["langList"]                = ['fr', 'en']
+       mDicUserSettings["readOnlyCurrentLanguage"] = "true"
+       mDicUserSettings["editOnlyCurrentLanguage"] = "false"
+       mDicUserSettings["labelLengthLimit"]        = 25
+       mDicUserSettings["valueLengthLimit"]        = 65
+       mDicUserSettings["textEditRowSpan"]         = 6
+       #----
+       for key, value in mDicUserSettings.items():
+           if not mSettings.contains(key) :
+              mSettings.setValue(key, value)
+           else :
+              mDicUserSettings[key] = mSettings.value(key)           
+       #----
+       mDicAutre = {**mDicAutre, **mDicUserSettings}          
+       # liste des Paramétres UTILISATEURS
+       #======================
+
     elif mAction == "Save" :
        mDicAutre["dialogLargeur"] = self.Dialog.width()
        mDicAutre["dialogHauteur"] = self.Dialog.height()

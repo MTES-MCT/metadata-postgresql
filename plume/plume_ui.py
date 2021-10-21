@@ -58,7 +58,6 @@ class Ui_Dialog_plume(object):
         self.durationBarInfo = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
         self.ihm             = self.mDic_LH["ihm"]  #window/dock
         self.toolBarDialog   = self.mDic_LH["toolBarDialog"]    #toolBarDialog
-        self.initTranslation = self.mDic_LH["initTranslation"]  #initTranslation
         #---
         self.colorDefaut                      = self.mDic_LH["defaut"]                      #Color QGroupBox
         self.colorQGroupBox                   = self.mDic_LH["QGroupBox"]                   #Color QGroupBox
@@ -74,8 +73,23 @@ class Ui_Dialog_plume(object):
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]    #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
         #---
+        # liste des Paramétres UTILISATEURS
+        self.preferedTemplate        = self.mDic_LH["preferedTemplate"]
+        self.enforcePreferedTemplate = True if self.mDic_LH["enforcePreferedTemplate"] == "true" else False
+        self.readHideBlank           = True if self.mDic_LH["readHideBlank"] == "true" else False
+        self.readHideUnlisted        = True if self.mDic_LH["readHideUnlisted"] == "true" else False 
+        self.editHideUnlisted        = True if self.mDic_LH["editHideUnlisted"] == "true" else False 
+        self.language                = self.mDic_LH["language"]
+        self.initTranslation         = self.mDic_LH["translation"]  
+        self.langList                = self.mDic_LH["langList"]
+        self.readOnlyCurrentLanguage = True if self.mDic_LH["readOnlyCurrentLanguage"] == "true" else False
+        self.editOnlyCurrentLanguage = True if self.mDic_LH["editOnlyCurrentLanguage"] == "true" else False
+        self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]
+        self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]
+        self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]
+        # liste des Paramétres UTILISATEURS
+        #---
         _pathIcons = os.path.dirname(__file__) + "/icons/general"
-        _iconSourcesEdit         = _pathIcons + "/edit.svg"
         _iconSourcesRead         = _pathIcons + "/read.svg"
         _iconSourcesEmpty        = _pathIcons + "/empty.svg"
         _iconSourcesExport       = _pathIcons + "/export.svg"
@@ -85,8 +99,7 @@ class Ui_Dialog_plume(object):
         _iconSourcesTranslation  = _pathIcons + "/translation.svg"
         _iconSourcesHelp         = _pathIcons + "/info.svg"
         _iconSourcesParam        = _pathIcons + "/configuration.svg"
-
-        self.listIconToolBar = [ _iconSourcesEdit, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam ]
+        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         Dialog.setWindowTitle("PLUME (Metadata storage in PostGreSQL)")
@@ -164,7 +177,6 @@ class Ui_Dialog_plume(object):
         #Instanciation des "shape, template, vocabulary, mode" 
         self.vocabulary  = bibli_plume.returnObjetVocabulary()
         self.shape       = bibli_plume.returnObjetShape()
-        self.template    = bibli_plume.returnObjetTemplate()
         self.translation = bibli_plume.returnObjetTranslation(self)
         #-
         self.displayToolBar(*self.listIconToolBar)    
@@ -214,15 +226,21 @@ class Ui_Dialog_plume(object):
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
     def clickButtonsTemplateActions(self):
         mItemTemplates = self.mMenuBarDialog.sender().objectName()
-        print("mItemTemplates {}".format(str(mItemTemplates)))
-        # Sélection automatique du modèle
-        tpl_label = template_utils.search_template(self.metagraph, mItemTemplates)
-        print("tpl_label {}".format(str(tpl_label)))
 
+        #Lecture existence Extension METADATA
+        _mContinue = True
+        if not hasattr(self, 'mConnectEnCoursPointeur') :
+           if not self.instalMetadata : _mContinue = False
 
-        #mKeySql = pg_queries.query_get_columns(_schema, _table)
-        #columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
-
+        if _mContinue :
+           if mItemTemplates == "Aucun" :
+              self.template, self.templateTabs = None, None
+           else :   
+              # Choix du modèle
+              bibli_plume.generationTemplateAndTabs(self, mItemTemplates)
+           # Génération à la volée
+           self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+           
         return
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
     #==========================
@@ -311,6 +329,15 @@ class Ui_Dialog_plume(object):
                  #-
                  self.displayToolBar(*self.listIconToolBar)
                  #-
+                 if self.instalMetadata :
+                    #-
+                    tpl_labelDefaut                  = bibli_plume.returnObjetTpl_label(self)
+                    self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                    #-
+                    self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                 else :
+                    self.template, self.templateTabs = None, None   
+                 #-
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
         return
     
@@ -341,6 +368,15 @@ class Ui_Dialog_plume(object):
                self.mode = "read"
                #-
                self.displayToolBar(*self.listIconToolBar)
+               #-
+               if self.instalMetadata :
+                  #-
+                  tpl_labelDefaut                  = bibli_plume.returnObjetTpl_label(self)
+                  self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                  #-
+                  self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+               else :
+                  self.template, self.templateTabs = None, None   
                #-
                self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
         return
@@ -464,7 +500,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
-    def displayToolBar(self, _iconSourcesEdit, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam) :
+    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam) :
         #-- Désactivation
         self.plumeEdit.setEnabled(False)
         self.plumeSave.setEnabled(False)
@@ -484,33 +520,16 @@ class Ui_Dialog_plume(object):
            #Lecture existence Extension METADATA
            mKeySql = (pg_queries.query_exists_extension(), ('metadata',))
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+           self.instalMetadata = False
            if r :
+              self.instalMetadata = True
               self.plumeTemplate.setEnabled(True)
-              #Récupération de la liste des modèles
-              mKeySql = (pg_queries.query_list_templates(), (self.schema, self.table))
-              r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
-              mListTemplates = [t[0] for t in r]
-              #mListTemplates = ["Mon template 1", "Mon template 2"]
-              
               #MenuQToolButton                        
-              _mObjetQMenu = QMenu()
-              _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str(int(len(max(mListTemplates))) * 10) + "px;}")
-              #------------
-              for elemQMenuItem in mListTemplates :
-                  _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
-                  _mObjetQMenuItem.setText(elemQMenuItem)
-                  _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
-                  _mObjetQMenu.addAction(_mObjetQMenuItem)   
-                  #- Actions
-                  _mObjetQMenuItem.triggered.connect(lambda : self.clickButtonsTemplateActions())
-              #-
-              self.plumeTemplate.setPopupMode(self.plumeTemplate.MenuButtonPopup)
-              self.plumeTemplate.setMenu(_mObjetQMenu)
-
+              # Génération des items via def createQmenuModele(self, _mObjetQMenu, templateLabels)
               mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Choisir un modèle de formulaire.") 
               self.plumeTemplate.setEnabled(True)
            else :
-              self.plumeTemplate.setEnabled(True)
+              self.plumeTemplate.setEnabled(False)
               mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Extension METADATA non installée.") 
            self.plumeTemplate.setToolTip(mTextToolTip)
         #--QToolButton TEMPLATE                                               
@@ -554,7 +573,26 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================
-    def createToolBar(self, _iconSourcesEdit, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam):
+    # == Gestion des actions de boutons de la barre de menu
+    def createQmenuModele(self, _mObjetQMenu, templateLabels) :
+        _mObjetQMenu.clear()
+        _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str(int(len(max(templateLabels))) * 10) + "px;}")
+        #------------
+        templateLabels.insert(0, "Aucun")
+        for elemQMenuItem in templateLabels :
+            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+            _mObjetQMenuItem.setText(elemQMenuItem)
+            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+            _mObjetQMenu.addAction(_mObjetQMenuItem)   
+            #- Actions
+            _mObjetQMenuItem.triggered.connect(lambda : self.clickButtonsTemplateActions())
+        #-
+        self.plumeTemplate.setPopupMode(self.plumeTemplate.MenuButtonPopup)
+        self.plumeTemplate.setMenu(_mObjetQMenu)
+        return
+
+    #==========================
+    def createToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam):
         #Menu Dialog
         self.mMenuBarDialog = QMenuBar(self)
         self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 300, 20))
@@ -620,6 +658,9 @@ class Ui_Dialog_plume(object):
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Extension METADATA non installée.") 
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Choisir un modèle de formulaire.") 
         self.plumeTemplate.setToolTip(mTextToolTip)
+        #MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        self._mObjetQMenu = _mObjetQMenu
         #self.plumeTemplate.clicked.connect(self.clickButtonsActions)
         #--QToolButton TEMPLATE                                               
         #====================
