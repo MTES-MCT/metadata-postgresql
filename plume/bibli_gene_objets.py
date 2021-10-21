@@ -128,9 +128,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        else :   
           _mObjetQSaisie.setMinimumSize(QtCore.QSize(100, 23))
 
-       if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
+       if _valueObjet['main widget type'] in ("QLineEdit") :
           #Valeur                        
           _mObjetQSaisie.setText(_valueObjet['value'])
+       elif _valueObjet['main widget type'] in ("QTextEdit") :
+          #Valeur  
+          _mObjetQSaisie.setAcceptRichText(True)                      
+          _mObjetQSaisie.setPlainText(_valueObjet['value'])
+
+       if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
           #Lecture seule                        
           _mObjetQSaisie.setEnabled(False if _valueObjet['read only'] else True)
           #Masque valeur fictive                        

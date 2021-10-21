@@ -13,6 +13,8 @@ from qgis.utils import iface
 import psycopg2
 from . import doerreur
 
+from psycopg2 import sql
+
 import re, uuid
 import json
 from pathlib import Path
@@ -68,10 +70,12 @@ def returnObjetMetagraph(self, old_description) :
     try:
        #       g = rdf_utils.metagraph_from_pg_description(src.read(), shape)
        metagraph = rdf_utils.metagraph_from_pg_description(old_description, self.shape)
+       print("Ok OK dans metagraph_from_pg_description" )
     except:
     # dialogue avec l'utilisateur
     #...
 	# si l'exécution n'est pas interrompue :
+       print("Erreur dans metagraph_from_pg_description" )
        metagraph = rdf_utils.metagraph_from_pg_description("", self.shape)
     return metagraph 
 
@@ -140,11 +144,56 @@ def returnObjetsMeta(self, _schema, _table) :
     if self.mode is not None:
        kwa.update({ 'mode': self.mode })
     #--
-    if self.translation is not None:
+    if self.translation is not None and self.mode == "edit" :
        kwa.update({ 'translation': self.translation })
     #--   
     d = rdf_utils.build_dict(**kwa)
     return d
+
+#==================================================
+def saveMetaIhm(self, _schema, _table) :
+    #---------------------------
+    # Gestion des langues
+    _language = 'fr'
+
+    #-    
+    # Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie.
+    for _keyObjet, _valueObjet in self.mDicObjetsInstancies.items() :
+        value = None
+        if _valueObjet['main widget type'] in ("QLineEdit") :
+           value = _valueObjet['main widget'].text()
+        elif _valueObjet['main widget type'] in ("QTextEdit") :
+           value = _valueObjet['main widget'].toPlainText()
+        elif _valueObjet['main widget type'] in ("QComboBox") :
+           value = _valueObjet['main widget'].currentText()                   
+        elif _valueObjet['main widget type'] in ("QDateEdit") :
+           value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
+        elif _valueObjet['main widget type'] in ("QDateTimeEdit") :
+           value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
+        elif _valueObjet['main widget type'] in ("QCheckBox") :
+           value = True if _valueObjet['main widget'].isChecked() else False
+
+        if _valueObjet['object'] == "edit" : 
+           new_value = None if (_valueObjet['hidden'] or _valueObjet['hidden M']) else value
+           self.mDicObjetsInstancies.update_value(_keyObjet, new_value)
+    #-    
+    #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
+    self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary, language=_language) 
+    #-    
+    #Créer une version actualisée du descriptif PostgreSQL de l'objet.   
+    new_pg_description = rdf_utils.update_pg_description(self.comment, self.metagraph) 
+    self.comment = new_pg_description
+    #-    
+    # une requête de mise à jour du descriptif.
+    mKeySql = (pg_queries.query_update_table_comment(_schema, _table), (new_pg_description,)) 
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = None)
+    self.mConnectEnCours.commit()
+    #-
+    #Mettre à jour les descriptifs des champs de la table.    
+    mKeySql = pg_queries.query_update_columns_comments(_schema, _table, self.mDicObjetsInstancies)
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = None)
+    self.mConnectEnCours.commit()
+    return  
     
 #==================================================
 def transformeSql(self, mDic, mKeySql) :
@@ -158,11 +207,12 @@ def transformeSql(self, mDic, mKeySql) :
            mValue =  str(value) 
         mKeySql = mKeySql.replace(key, mValue)
     return mKeySql
-
+ 
 #==================================================
 def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
     QApplication.instance().setOverrideCursor(Qt.WaitCursor) 
+
     try :
       if isinstance(_mKeySql, tuple) :
          pointeurBase.execute(_mKeySql[0], _mKeySql[1])
@@ -170,9 +220,11 @@ def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
          pointeurBase.execute(_mKeySql)
       #--
       if optionRetour == None :
-         result = pointeurBase.fetchall()
+         result = None
       elif optionRetour == "fetchone" :
          result = pointeurBase.fetchone()[0]
+      elif optionRetour == "fetchall" :
+         result = pointeurBase.fetchall()
       else :   
          result = pointeurBase.fetchall()
           
@@ -192,7 +244,6 @@ def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
 
       dialogueMessageError(mTypeErreur, zMessError_Erreur )   
       #-------------
-
     QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
 

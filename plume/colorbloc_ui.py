@@ -572,12 +572,12 @@ class Ui_Dialog_ColorBloc(object):
                 "QLabelBackGround"
                 ]
         listBlocsValue = [
-                "#BADCFF",
-                "#7560FF",
-                "#00FF21",
-                "#0026FF",
                 "#958B62",
-                "#BFEAE2"
+                "#958B62",
+                "#5770BE",         
+                "#FF8D7E",
+                "#958B62",
+                "#BFEAE2"   
                 ] 
         mDicDashBoard = dict(zip(listBlocsKey, listBlocsValue))
  
