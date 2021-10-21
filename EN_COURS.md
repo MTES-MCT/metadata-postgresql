@@ -20,7 +20,7 @@
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Bascule mode lecture/mode édition  |       |   Ok   |   DL   | |
-| Sauvegarde                         |   X   |        |   DL   | |
+| Sauvegarde                         |       |   OK   |   DL   | |
 | Réinitialisation                   |   X   |        |   DL   | |
 | Export                             |   X   |        |   DL   | |
 | Import                             |   X   |        |   DL   | |
