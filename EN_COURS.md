@@ -27,7 +27,7 @@
 | Choix du modèle                    |       |   OK   |   DL   | |
 | Activation du mode traduction      |       |   OK   |   DL   | |
 | Choix de la langue principale      |   X   |        |   DL   | |
-| Génération petit JSON GéoIDE      |   X   |        |   LL   | Les fonctions sont écrites, mise à jour de la doc à faire avant passage de relai à DL. |
+| Génération petit JSON GéoIDE      |   X   |        |   DL   | Petite adaptation à faire à l'étape 3 du [processus de sauvegarde](/__doc__/16_actions_generales.md#sauvegarde). Il s'agit de passer un paramètre supplémentaire à `update_pg_description()` + gestion du [paramètre utilisateur](/__doc__/20_parametres_utilisateurs.md) correspondant (`geoideJSON`). |
 | Récupération des UUID GéoIDE     |   X   |        |   LL   | |
 | Mécanisme de copier/coller de fiche complète |   X   |        |   LL   | À ajouter à la documentation avant passage de relai à DL. |
 
