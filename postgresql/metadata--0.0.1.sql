@@ -813,6 +813,11 @@ BEGIN
                 ('Classique', 'prov:qualifiedAttribution', NULL),
                 ('Classique', 'prov:qualifiedAttribution / dcat:hadRole', NULL),
                 ('Classique', 'prov:qualifiedAttribution / prov:agent', NULL),
+                ('Classique', 'prov:qualifiedAttribution / prov:agent / dct:type', NULL),
+                ('Classique', 'prov:qualifiedAttribution / prov:agent / foaf:mbox', NULL),
+                ('Classique', 'prov:qualifiedAttribution / prov:agent / foaf:name', NULL),
+                ('Classique', 'prov:qualifiedAttribution / prov:agent / foaf:phone', NULL),
+                ('Classique', 'prov:qualifiedAttribution / prov:agent / foaf:workplaceHomepage', NULL),
                 ('Classique', 'snum:isExternal', False),
                 
                 ('Donnée externe', 'adms:versionNotes', NULL),
