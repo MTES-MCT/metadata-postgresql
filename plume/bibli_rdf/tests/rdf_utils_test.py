@@ -42,7 +42,7 @@ class TestRDFUtils(unittest.TestCase):
 
         # construction d'un dictionnaire de widgets à partir d'un graphe vierge
         self.widgetsdict = rdf_utils.build_dict(
-            Graph(), self.shape, self.vocabulary,
+            self.metagraph_empty, self.shape, self.vocabulary,
             translation=True, langList=['fr', 'en', 'it']
             )
 
@@ -60,6 +60,106 @@ class TestRDFUtils(unittest.TestCase):
 
         # création de pseudo-widgets
         populate_widgets(self.widgetsdict) 
+
+
+
+    ### FONCTION WidgetsDict.retrieve_subject
+    ### -------------------------------------
+
+    # appliquée à la racine
+    def test_wd_retrieve_subject_1(self):
+        parent = (0,)
+        child = search_keys(self.widgetsdict, 'dct:title', 'edit')[0]
+        subject = self.widgetsdict.retrieve_subject(parent)
+        self.assertEqual(
+            subject,
+            self.widgetsdict[parent]['node']
+            )
+        self.assertEqual(
+            subject,
+            self.widgetsdict[child]['subject']
+            )
+
+    # appliquée à un groupe de valeurs
+    def test_wd_retrieve_subject_2(self):
+        parent = search_keys(self.widgetsdict, 'dcat:keyword', 'group of values')[0]
+        child = search_keys(self.widgetsdict, 'dcat:keyword', 'edit')[0]
+        subject = self.widgetsdict.retrieve_subject(parent)
+        self.assertEqual(
+            subject,
+            self.widgetsdict[(0,)]['node']
+            )
+        self.assertEqual(
+            subject,
+            self.widgetsdict[child]['subject']
+            )
+
+    # appliquée à un groupe de propriétés autre
+    # que la racine
+    def test_wd_retrieve_subject_3(self):
+        parent = search_keys(self.widgetsdict, 'dcat:distribution', 'group of properties')[0]
+        child = search_keys(self.widgetsdict, 'dcat:distribution / dct:issued', 'edit')[0]
+        subject = self.widgetsdict.retrieve_subject(parent)
+        self.assertEqual(
+            subject,
+            self.widgetsdict[parent]['node']
+            )
+        self.assertEqual(
+            subject,
+            self.widgetsdict[child]['subject']
+            )
+
+
+    ### FONCTION get_geoide_json_uuid
+    ### -----------------------------
+    
+    def test_get_geoide_json_uuid_1(self):
+        description = """ /////////////// <GEOIDE>
+{
+    "business_id": "479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "title": "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"
+}
+</GEOIDE> /////////////// """
+        self.assertEqual(
+            rdf_utils.get_geoide_json_uuid(description),
+            "479fd670-32c5-4ade-a26d-0268b0ce5046"
+            )
+
+    # pas un UUID valide
+    def test_get_geoide_json_uuid_2(self):
+        description = """ /////////////// <GEOIDE>
+{
+    "business_id": "pas-un-uuid",
+    "title": "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"
+}
+</GEOIDE> /////////////// """
+        self.assertIsNone(
+            rdf_utils.get_geoide_json_uuid(description)
+            )
+
+    # pas un JSON valide
+    def test_get_geoide_json_uuid_3(self):
+        description = """ /////////////// <GEOIDE>
+{
+    "business_id": "479fd670-32c5-4ade-a26d-0268b0ce5046" !
+    "title": "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"
+}
+</GEOIDE> /////////////// """
+        self.assertIsNone(
+            rdf_utils.get_geoide_json_uuid(description)
+            )
+
+    # balises manquantes
+    def test_get_geoide_json_uuid_4(self):
+        description = """ ///////////////
+{
+    "business_id": "479fd670-32c5-4ade-a26d-0268b0ce5046" !
+    "title": "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"
+}
+/////////////// """
+        self.assertIsNone(
+            rdf_utils.get_geoide_json_uuid(description)
+            )
 
 
     ### FONCTION WidgetsDict.widget_placement
@@ -1300,8 +1400,27 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(
             d[llck_uri[0]]['hidden M'],
             not d[llck_label[1]]['hidden M']
-            )       
+            )
 
+    # ajout d'un groupe de propriétés + sauvegarde
+    def test_wd_add_5(self):
+        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
+        d.add(dbk_plus)
+        populate_widgets(d)
+        self.assertIsNone(check_buttons(d, populated=True))
+        self.assertIsNone(check_rows(d, populated=True))
+        # on implémente des valeurs pour que les deux distributions
+        # soient enregistrées :
+        for k in search_keys(d, "dcat:distribution / dct:accessURL", 'edit'):
+            d.update_value(k, "http://url")   
+        g = d.build_graph(self.vocabulary)
+        d2 = rdf_utils.build_dict(g, self.shape, self.vocabulary)
+        # et on est bien supposé retrouver deux distributions différentes :
+        self.assertEqual(
+            len(search_keys(d, "dcat:distribution", 'group of properties')), 2
+            )
+        
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
     def test_wd_add_drop_1(self):
