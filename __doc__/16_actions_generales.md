@@ -113,9 +113,11 @@ Soit `old_pg_description` le descriptif/commentaire original.
 
 ```python
 
-new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_metagraph)
+new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_metagraph, geoideJSON=geoideJSON)
 
 ```
+
+`geoideJSON` est un [paramètre utilisateur](/__doc__/20_parametres_utilisateurs.md) qui indique si le petit JSON contenant les métadonnées prises en charge par GéoIDE doit être généré parallèlement au JSON-LD qui sérialise l'ensemble des métadonnées. Par commodité, `update_pg_description()` considère qu'il vaut `False` lorsqu'il n'est pas spécifié, mais d'une manière générale Plume devrait plutôt considérer qu'il vaut `True`, sauf si l'ADL inhibe explicitement la création des petits JSON (ce qui aurait un sens pour un service qui n'utilise pas GéoIDE). Autrement dit, il s'agit d'un paramètre à sauvegarder dans les fichiers de configuration avec une valeur par défaut à `True`.
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 

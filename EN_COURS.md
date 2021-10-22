@@ -27,7 +27,7 @@
 | Choix du modèle                    |       |   OK   |   DL   | |
 | Activation du mode traduction      |       |   OK   |   DL   | |
 | Choix de la langue principale      |   X   |        |   DL   | |
-| Génération petit JSON GéoIDE      |   X   |        |   LL   | Les fonctions sont écrites, mise à jour de la doc à faire avant passage de relai à DL. |
+| Génération petit JSON GéoIDE      |   X   |        |   DL   | Petite adaptation à faire à l'étape 3 du [processus de sauvegarde](/__doc__/16_actions_generales.md#sauvegarde). Il s'agit de passer un paramètre supplémentaire à `update_pg_description()` + gestion du [paramètre utilisateur](/__doc__/20_parametres_utilisateurs.md) correspondant (`geoideJSON`). |
 | Récupération des UUID GéoIDE     |   X   |        |   LL   | |
 | Mécanisme de copier/coller de fiche complète |   X   |        |   LL   | À ajouter à la documentation avant passage de relai à DL. |
 
@@ -39,9 +39,11 @@
 | Widget date et time à revoir ou pas       |   X   |        |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
 | Valeur vide dans les listes des QComboBox |   X   |        |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
 | Changer les couleurs par défaut des cadres |       |   OK   |   DL   | Les bonnes sont [là](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/10_creation_widgets.md#autres-groupes). |
-| Créer une icône pour la valeur courante des menus des QToolButton  |   X   |        |   LL   | |
+| Créer une icône pour la valeur courante des menus des QToolButton  |      |    OK    |   LL   | Finalement, pas de nouvelle icône. On utilise le logo de Plume. |
 | La petite flèche des QComboBox n'a pas le même aspect que celles des autres widgets ?  |   X   |        |   DL   | |
 | `rdf:langString` au lieu de `xsd:string` dans le schéma SHACL pour distinguer les valeurs litérales qui appellent réellement une traduction  |   X   |        |   LL   | |
+| Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |   X   |        |   LL   | À confirmer, mais lancer `mDict[mParentWidget]['main widget'] = None` si `rowidx[mParentWidget] == 0` devrait faire l'affaire. |
+| Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |   X   |        |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
 
 ## Plume version 2.0
 
