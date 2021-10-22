@@ -22,7 +22,7 @@ from rdflib.util import from_n3
 from locale import strxfrm, setlocale, LC_COLLATE
 from pathlib import Path
 from html import escape
-from json import dumps
+from json import dumps, loads
 import re, uuid
 
 from plume.bibli_rdf import __path__
@@ -32,7 +32,7 @@ class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
     """
     
-    def count_siblings(self, key, restrict=True):
+    def count_siblings(self, key, restrict=True, visibleOnly=False):
         """Renvoie le nombre de clés de même parent que key.
         
         ARGUMENTS
@@ -40,6 +40,8 @@ class WidgetsDict(dict):
         - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
         - restrict (bool) : si True, les enregistrements "plus button"
         et "translation button" ne sont pas comptabilisés. True par défaut.
+        - visibleOnly (bool) : si True, les widgets masqués ne sont pas
+        comptabilisés.
         
         RESULTAT
         --------
@@ -56,10 +58,10 @@ class WidgetsDict(dict):
         n = 0
         
         for k in self.keys():
-            if len(k) > 1 and k[1] == key[1] and (
-                    not self[k]['object'] in ('translation button', 'plus button') \
-                    or not restrict
-                    ) :
+            if len(k) > 1 and k[1] == key[1] and ( not restrict or
+                not self[k]['object'] in ('translation button', 'plus button') ) \
+                and ( not visibleOnly or ( self[k]['main widget type'] and \
+                not self[k]['hidden'] and not self[k]['hidden M'] ) ):
                 n += 1
                 
         return n
@@ -97,6 +99,31 @@ class WidgetsDict(dict):
         return c 
 
 
+    def retrieve_subject(self, parent):
+        """Renvoie la valeur attendue pour la clé "subject" d'un enfant de la clé parent.
+        
+        ARGUMENTS
+        ---------
+        - parent (tuple) : clé du dictionnaire de widgets (WidgetsDict).
+        
+        RESULTAT
+        --------
+        Un IRI (URIRef) ou noeud vide (BNode) qui pourra sera la valeur
+        de la clé "node" de parent si elle existe, sinon la valeur de la
+        clé "node" du premier ancêtre qui en ait une.
+        """
+        
+        if self[parent]['node']:
+            return self[parent]['node']
+            
+        else:
+            key = parent
+            while not is_root(key):
+                key = key[1]
+                if self[key]['node']:
+                    return self[key]['node']
+
+
     def clean_copy(self, key, language='fr', langList=['fr', 'en']):
         """Renvoie une copie nettoyée du dictionnaire interne de la clé key.
         
@@ -124,7 +151,8 @@ class WidgetsDict(dict):
         vaudra langList (s'il y avait lieu de spécifier une langue) ;
         - la clé "hidden" est réinitialisée (ne vaudra jamais True sauf si
         la liste des langues autorisées ne contient qu'une langue). À noter que
-        "hidden M" est par contre conservée en l'état.
+        "hidden M" est par contre conservée en l'état ;
+        - la clé "node", si elle n'était pas vide, reçoit un nouveau noeud vide.
         """
         
         d = self[key].copy()
@@ -148,7 +176,9 @@ class WidgetsDict(dict):
                                      and langList is not None ) else None,
             'sources' : d['sources'].copy() if d['sources'] is not None else None,
             'hidden' : len(langList) == 1 if ( langList is not None
-                and d['object'] == 'translation button' ) else None
+                and d['object'] == 'translation button' ) else None,
+                
+            'node': BNode() if d['node'] else None
             })
         
         return d
@@ -550,6 +580,12 @@ class WidgetsDict(dict):
                     # de la grille
                     newkey = replace_ancestor(k, cr, (n, key[1]))
                     self.update( { newkey: self.clean_copy(k) } )
+                    
+                    # clean_copy se charge de réinitialiser les noeuds
+                    # vides objets, par contre il faut maintenant récupérer
+                    # le bon sujet pour chaque triple
+                    self[newkey]['subject'] = self.retrieve_subject(newkey[1])
+                    
                     d['new keys'].append(newkey)
                     
         return d
@@ -3756,7 +3792,52 @@ def build_geoide_json(metagraph):
     
     return dumps(d, indent=4, ensure_ascii=False)
 
+
+def get_geoide_json_uuid(description):
+    """Renvoie l'UUID contenu dans le JSON de GéoIDE, si présent.
+
+    ARGUMENTS
+    ---------
+    - description (str) : chaîne de caractères supposée correspondre à la
+    description (ou le commentaire) d'un objet PostgreSQL.
+
+    RESULTAT
+    --------
+    Une chaîne de caractère (str) correspondant à un UUID.
     
+    Pour que cette fonction retourne un résultat, il faut :
+    - que les balises <GEOIDE> et </GEOIDE> soient présentes ;
+    - que leur contenu soit un JSON dé-sérialisable ;
+    - que "business_id" soit une clé de premier niveau du JSON ;
+    - que sa valeur respecte la forme d'un UUID.
+    """
+    if not description:
+        return None
+    
+    j = re.search("^(?:.*)[<]GEOIDE[>](.*?)[<][/]GEOIDE[>]", description, re.DOTALL)
+    # s'il y a plusieurs balises <GEOIDE> et/ou </GEOIDE>, cette expression retient
+    # les caractères compris entre la dernière balise <GEOIDE> et la première balise </GEOIDE>.
+    # s'il devait y avoir plusieurs couples de balises, elle retiendrait le contenu du
+    # dernier.
+    
+    if j is None or not j[1]:
+        return None
+
+    try:
+        d = loads(j[1])
+    except:
+        return None
+  
+    if not isinstance(d, dict):
+        return None
+        
+    uuid = d.get('business_id')
+    
+    if uuid and re.fullmatch('^[a-z0-9-]{36}$', uuid):
+        return uuid
+
+    return None
+
 
 class ForbiddenOperation(Exception):
     pass
