@@ -571,6 +571,8 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
 # Traitement action sur QToolButton avec Menu
 def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['switch source menu'].sender()
+    print(_selectItem)
+    print("*" + str(_selectItem.text()) + "*")
     #maj Source 
     ret = self.mDicObjetsInstancies.change_source(__keyObjet, _selectItem.text() )
     #---------------------------------------------
@@ -592,10 +594,11 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
            elem.setVisible(False)
         except : 
            pass   
-    #- Maj QComboBox 
+    #- Maj QComboBox
     for elem in ret['concepts list to update'] : 
         __valueObjet = self.mDicObjetsInstancies[elem]
         _thesaurus = rdf_utils.build_vocabulary(__valueObjet['current source'], self.vocabulary, language=_language)
+        __valueObjet['main widget'].clear()
         __valueObjet['main widget'].addItems(_thesaurus)
 
     #---------------------------------------------
