@@ -24,7 +24,7 @@
 | Réinitialisation                   |   X   |        |   DL   | |
 | Export                             |   X   |        |   DL   | |
 | Import                             |   X   |        |   DL   | |
-| Choix du modèle                    |   X   |        |   DL   | |
+| Choix du modèle                    |       |   OK   |   DL   | |
 | Activation du mode traduction      |       |   OK   |   DL   | |
 | Choix de la langue principale      |   X   |        |   DL   | |
 | Génération petit JSON GéoIDE      |   X   |        |   LL   | Les fonctions sont écrites, mise à jour de la doc à faire avant passage de relai à DL. |
