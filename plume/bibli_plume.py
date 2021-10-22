@@ -170,6 +170,9 @@ def returnObjetsMeta(self, _schema, _table) :
     #--   
     if self.columns is not None:
        kwa.update({ 'columns': self.columns })
+    #--   
+    if self.templateTabs  is not None:
+       kwa.update({ 'templateTabs ': self.templateTabs })
     #--
     if self.mode is not None:
        kwa.update({ 'mode': self.mode })
@@ -224,6 +227,8 @@ def saveMetaIhm(self, _schema, _table) :
     mKeySql = pg_queries.query_update_columns_comments(_schema, _table, self.mDicObjetsInstancies)
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
+    #- Mettre à jour les descriptifs de la variable columns pour réaffichage
+    self.columns = returnObjetColumns(self, self.schema, self.table)
     return  
     
 #==================================================

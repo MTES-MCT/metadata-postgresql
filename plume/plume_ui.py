@@ -206,11 +206,6 @@ class Ui_Dialog_plume(object):
         elif mItem == "Save" :                                            
            bibli_plume.saveMetaIhm(self, self.schema, self.table) 
         #**********************
-        elif mItem == "Template" : 
-           pass                                       
-           #bibli_plume.saveMetaIhm(self, self.schema, self.table) 
-
-        #**********************
         #*** commun
         if mItem in ["Edition", "Traduction", "Save"] :
            bibli_plume.saveObjetTranslation(self.translation)
@@ -232,7 +227,7 @@ class Ui_Dialog_plume(object):
         if not hasattr(self, 'mConnectEnCoursPointeur') :
            if not self.instalMetadata : _mContinue = False
 
-        if _mContinue :
+        if _mContinue : 
            if mItemTemplates == "Aucun" :
               self.template, self.templateTabs = None, None
            else :   
@@ -240,6 +235,10 @@ class Ui_Dialog_plume(object):
               bibli_plume.generationTemplateAndTabs(self, mItemTemplates)
            # Génération à la volée
            self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+
+           # MAJ ICON FLAGS
+           self.majQmenuModeleIconFlag(mItemTemplates)
+           # MAJ ICON FLAGS
            
         return
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
@@ -335,6 +334,7 @@ class Ui_Dialog_plume(object):
                     self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
                     #-
                     self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                    self.majQmenuModeleIconFlag(tpl_labelDefaut)
                  else :
                     self.template, self.templateTabs = None, None   
                  #-
@@ -375,6 +375,7 @@ class Ui_Dialog_plume(object):
                   self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
                   #-
                   self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                  self.majQmenuModeleIconFlag(tpl_labelDefaut)
                else :
                   self.template, self.templateTabs = None, None   
                #-
@@ -589,6 +590,21 @@ class Ui_Dialog_plume(object):
         #-
         self.plumeTemplate.setPopupMode(self.plumeTemplate.MenuButtonPopup)
         self.plumeTemplate.setMenu(_mObjetQMenu)
+        return
+
+    #==========================
+    # == Gestion des Icons Flags dans le menu des templates
+    def majQmenuModeleIconFlag(self, mItemTemplates) :
+        _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
+        _iconSourcesSelect    = _pathIcons + "/source_button.png"
+        _iconSourcesVierge    = _pathIcons + "/vierge.png"
+
+        for elemQMenuItem in self._mObjetQMenu.children() :
+            if elemQMenuItem.text() == mItemTemplates : 
+               _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
+            else :                 
+               _mObjetQMenuIcon = QIcon(_iconSourcesVierge)
+            elemQMenuItem.setIcon(_mObjetQMenuIcon)
         return
 
     #==========================
