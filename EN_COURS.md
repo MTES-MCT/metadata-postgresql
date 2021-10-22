@@ -42,7 +42,8 @@
 | Créer une icône pour la valeur courante des menus des QToolButton  |      |    OK    |   LL   | Finalement, pas de nouvelle icône. On utilise le logo de Plume. |
 | La petite flèche des QComboBox n'a pas le même aspect que celles des autres widgets ?  |   X   |        |   DL   | |
 | `rdf:langString` au lieu de `xsd:string` dans le schéma SHACL pour distinguer les valeurs litérales qui appellent réellement une traduction  |   X   |        |   LL   | |
-| Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |   X   |        |   LL   | |
+| Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |   X   |        |   LL   | À confirmer, mais lancer `mDict[mParentWidget]['main widget'] = None` si `rowidx[mParentWidget] == 0` devrait faire l'affaire. |
+| Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |   X   |        |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
 
 ## Plume version 2.0
 
