@@ -172,6 +172,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #QCOMBOBOX                        
        if _valueObjet['main widget type'] in ("QComboBox") :
           _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source'], self.vocabulary, language=_language)
+          _thesaurus.insert(0, "")
           #print(_thesaurus)
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
           _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
@@ -571,8 +572,6 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
 # Traitement action sur QToolButton avec Menu
 def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['switch source menu'].sender()
-    print(_selectItem)
-    print("*" + str(_selectItem.text()) + "*")
     #maj Source 
     ret = self.mDicObjetsInstancies.change_source(__keyObjet, _selectItem.text() )
     #---------------------------------------------
@@ -598,6 +597,7 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
     for elem in ret['concepts list to update'] : 
         __valueObjet = self.mDicObjetsInstancies[elem]
         _thesaurus = rdf_utils.build_vocabulary(__valueObjet['current source'], self.vocabulary, language=_language)
+        _thesaurus.insert(0, "")
         __valueObjet['main widget'].clear()
         __valueObjet['main widget'].addItems(_thesaurus)
 
