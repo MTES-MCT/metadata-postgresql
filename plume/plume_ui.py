@@ -595,16 +595,20 @@ class Ui_Dialog_plume(object):
     #==========================
     # == Gestion des Icons Flags dans le menu des templates
     def majQmenuModeleIconFlag(self, mItemTemplates) :
-        _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
-        _iconSourcesSelect    = _pathIcons + "/source_button.png"
-        _iconSourcesVierge    = _pathIcons + "/vierge.png"
+        try : 
+           _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
+           _iconSourcesSelect    = _pathIcons + "/source_button.png"
+           _iconSourcesVierge    = _pathIcons + "/vierge.png"
 
-        for elemQMenuItem in self._mObjetQMenu.children() :
-            if elemQMenuItem.text() == mItemTemplates : 
-               _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
-            else :                 
-               _mObjetQMenuIcon = QIcon(_iconSourcesVierge)
-            elemQMenuItem.setIcon(_mObjetQMenuIcon)
+           if mItemTemplates == None : mItemTemplates = "Aucun" # Gestion si None
+           for elemQMenuItem in self._mObjetQMenu.children() :
+               if elemQMenuItem.text() == mItemTemplates : 
+                  _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
+               else :                 
+                  _mObjetQMenuIcon = QIcon(_iconSourcesVierge)
+               elemQMenuItem.setIcon(_mObjetQMenuIcon)
+        except :
+           pass 
         return
 
     #==========================
