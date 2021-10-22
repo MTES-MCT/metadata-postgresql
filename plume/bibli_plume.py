@@ -172,7 +172,7 @@ def returnObjetsMeta(self, _schema, _table) :
        kwa.update({ 'columns': self.columns })
     #--   
     if self.templateTabs  is not None:
-       kwa.update({ 'templateTabs ': self.templateTabs })
+       kwa.update({ 'templateTabs': self.templateTabs })
     #--
     if self.mode is not None:
        kwa.update({ 'mode': self.mode })
