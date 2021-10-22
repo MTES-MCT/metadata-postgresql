@@ -138,7 +138,7 @@ def check_buttons(widgetsdict, populated=False):
             and widgetsdict[k[1]]['object'] in ('group of values', 'translation group'):
             # widgets de saisie et groupe de propriétés dans des groupes valeur ou de traduction
             
-            if widgetsdict.count_siblings(k) > 1:
+            if widgetsdict.count_siblings(k, visibleOnly=True) > 1:
             # plus d'un enregistrement dans le groupe, il faut nécessairement
             # un bouton moins visible
                 if not v['has minus button']:
@@ -638,11 +638,11 @@ def populate_widgets_key(widgetsdict, key):
     """
     v = widgetsdict[key]
     
-    for e in ('main widget', 'minus widget', 'language widget', 'language menu',
-        'language actions', 'label widget', 'grid widget', 'switch source widget',
-        'switch source menu', 'switch source actions'):
-        if v[e] is not None:
-            raise ValueError('Widget should not exist already : key {}, {}.'.format(key, e))
+    # for e in ('main widget', 'minus widget', 'language widget', 'language menu',
+        # 'language actions', 'label widget', 'grid widget', 'switch source widget',
+        # 'switch source menu', 'switch source actions'):
+        # if v[e] is not None:
+            # raise ValueError('Widget should not exist already : key {}, {}.'.format(key, e))
     
     v['main widget'] = [
         '< {} main widget ({}) >'.format(key, v['main widget type']),
