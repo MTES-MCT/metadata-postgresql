@@ -732,24 +732,25 @@ class TestTemplateUtils(unittest.TestCase):
     def test_build_template_1(self):
         categories = [
             ('shared', 'dct:title', 'libellé', 'QLineEdit', None, None, None,
-                None, None, True, True, 0, True, False, 'string', None),
+                None, None, True, True, 0, True, False, 'rdf:langString', None),
             ('shared', 'dct:description', 'description', 'QTextEdit', 99, None,
-                None, None, None, False, False, 50, False, False, 'string', None),
+                None, None, None, False, False, 50, False, False, 'rdf:langString', None),
             ('shared', 'dct:modified', 'dernière modification', 'QLineEdit', None,
                 None, '2021-09-01', None, None, False, False, 90, False, False,
-                'string', None),
+                'xsd:string', None),
             ('local', 'uuid:218c1245-6ba7-4163-841e-476e0d5582af', 'code ADL',
                 None, 30, 'code maison', None, '230-FG', '000-XX', True, False, 8,
                 False, False, None, None),
             ('local', 'uuid:218c1245-6ba7-4163-841e-476e0d5582ag', 'ma date',
                 'QDateEdit', None, None, None, None, None, None, None, None, None,
-                False, 'date', None)
+                False, 'xsd:date', None)
             ]
         template = template_utils.build_template(categories)
         d = build_dict(Graph(), self.shape, self.vocabulary, template)
-        self.assertEqual(len(d), 8)
+        self.assertEqual(len(d), 10)
         # racine + title + description + modified + groupe de valeur
-        # pour code ADL + code ADL + bouton plus de code ADL + ma date = 8
+        # pour code ADL + code ADL + bouton plus de code ADL + ma date
+        # + identifiant + onglet "Autres" pour l'identifiant = 10
         
         ttk = search_keys(d, 'dct:title', 'edit')[0]
         self.assertIsNotNone(ttk)
