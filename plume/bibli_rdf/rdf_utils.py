@@ -620,7 +620,10 @@ class WidgetsDict(dict):
         """
         
         if not self[key]['object'] == 'edit' \
-            or not self[key]['data type'] == URIRef('http://www.w3.org/2001/XMLSchema#string'):
+            or not self[key]['data type'] in (
+                URIRef('http://www.w3.org/2001/XMLSchema#string'),
+                URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#langString')
+                ):
             raise ForbiddenOperation("You can't put a language tag on anything but a string !")
             
         if not self[key]['authorized languages'] \
@@ -985,8 +988,11 @@ class WidgetsDict(dict):
                 if d['node kind'] == 'sh:Literal':
             
                     mObject = Literal( d['value'], datatype = d['data type'] ) \
-                                if not d['data type'] == URIRef("http://www.w3.org/2001/XMLSchema#string") \
-                                else Literal( d['value'], lang = d['language value'] )
+                        if not d['data type'] in (
+                            URIRef("http://www.w3.org/2001/XMLSchema#string"),
+                            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString")
+                            ) \
+                        else Literal( d['value'], lang = d['language value'] )
                                 
                 else:
         
@@ -1174,7 +1180,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
     mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
-    mTemplateTabs=None):
+    mTemplateTabs=None, mData=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
     ARGUMENTS
@@ -1402,6 +1408,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     """
 
     nsm = mNSManager or shape.namespace_manager
+    mDataIdentifier = None
     
     # ---------- INITIALISATION ----------
     # uniquement à la première itération de la fonction
@@ -1421,30 +1428,36 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         # au fur et à mesure de leur traitement par la première itération (sur les
         # catégories communes). À l'issue de celle-ci, ne resteront donc dans le
         # dictionnaire que les catégories locales.
-        mShallowTemplate = template.copy() if template else dict()        
+        mShallowTemplate = template.copy() if template else dict()
+
+        # même logique pour data
+        mData = data.copy() if data else dict()
 
         # récupération de l'identifiant
         # du jeu de données dans le graphe, s'il existe
         if not mGraphEmpty:
-        
-            q_id = metagraph.query(
-                """
-                SELECT
-                    ?id
-                WHERE
-                    { ?id a dcat:Dataset . }
-                """
-                )
+            mParentNode = mParentNode or get_datasetid(metagraph)
 
-            if len(q_id) > 1:
-                raise ValueError("More than one dcat:Dataset object in graph.")
-
-            for i in q_id:
-                mParentNode = i['id']
+        # récupération de l'identifiant dans mData, si présent
+        if mData:
+            ident = (mData.get("dct:identifier") or [None])[0]
+            if ident:
+                mDataIdentifier = URIRef("urn:uuid:" + ident)
 
         # si on n'a pas pu extraire d'identifiant, on en génère un nouveau
         # (et, in fine, le formulaire sera vierge)
-        mParentNode = mParentNode or URIRef("urn:uuid:" + str(uuid.uuid4()))
+        # NB : ici, l'identifiant du graphe prévaut sur celui de data,
+        # parce qu'on veut pouvoir récupérer les métadonnées même si
+        # l'identifiant a changé. Mais celui de data prévaudra partout
+        # ailleurs, et remplacera in fine celui du graphe
+        mParentNode = mParentNode or mDataIdentifier \
+            or URIRef("urn:uuid:" + str(uuid.uuid4()))
+        
+        # on stocke l'identifiant dans mData, pour être présenté à
+        # l'utilisateur sous dct:identifier
+        mData.update({
+            'dct:identifier': [strip_uuid(mDataIdentifier or mParentNode)]
+            })
 
         # coquille de dictionnaire pour les attributs des widgets
         mWidgetDictTemplate = {
@@ -1525,7 +1538,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 'main widget type' : 'QGroupBox',
                 'label' : label or '???',
                 'row' : 0,
-                'node' : mParentNode,
+                'node' : mDataIdentifier or mParentNode,
                 'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
                 'shape order' : key[0],
                 'do not save' : n > 0
@@ -1596,8 +1609,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
         # cas d'une propriété dont les valeurs sont mises à
         # jour à partir d'informations disponibles côté serveur
-        if data and mNPath in data:
-            values = data[mNPath]
+        if mData and mNPath in mData:
+            values = mData[mNPath]
+            del mData[mNPath]
 
         # sinon, on extrait la ou les valeurs éventuellement
         # renseignées dans le graphe pour cette catégorie
@@ -1838,7 +1852,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             mVHideM = None
             mVLangList = mLangList.copy() if mLangList is not None else None
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
-                        mKind == 'sh:Literal' and p['type'].n3(nsm) == 'xsd:string' ) else None
+                        mKind == 'sh:Literal' and p['type'].n3(nsm) == 'rdf:langString' ) else None
             mNGraphEmpty = mGraphEmpty
             mPage = None
             
@@ -1858,7 +1872,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'node kind' : mKind,
                         'class' : p['class'],
                         'path' : mNPath,
-                        'subject' : mParentNode,
+                        'subject' : mDataIdentifier or mParentNode,
                         'predicate' : mProperty,
                         'node' : mNode
                         } )
@@ -1895,7 +1909,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'node kind' : mKind,
                         'class' : p['class'],
                         'path' : mNPath,
-                        'subject' : mParentNode,
+                        'subject' : mDataIdentifier or mParentNode,
                         'predicate' : mProperty,
                         'node' : mNode,
                         'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
@@ -1930,7 +1944,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
                         mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
-                        mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs
+                        mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs,
+                        mData=mData
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -1962,7 +1977,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'data type' : p['type'],
                         'class' : p['class'],
                         'path' : mNPath,
-                        'subject' : mParentNode,
+                        'subject' : mDataIdentifier or mParentNode,
                         'predicate' : mProperty                      
                         } )
                 
@@ -2107,7 +2122,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'data type' : p['type'],
                     'class' : p['class'],
                     'path' : mNPath,
-                    'subject' : mParentNode,
+                    'subject' : mDataIdentifier or mParentNode,
                     'predicate' : mProperty,
                     'default widget type' : mDefaultWidgetType,
                     'transform' : str(p['transform']) if p['transform'] else None,
@@ -2183,13 +2198,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     if not mParent in rowidx:
                         rowidx.update({ mParent: 0 })
 
-            mType = URIRef( "http://www.w3.org/2001/XMLSchema#" +
-                    ( ( t.get('data type', None) ) or "string" ) )
-
-            if not mType.n3(nsm) in ('xsd:string', 'xsd:integer', "xsd:decimal",
-                        "xsd:float", "xsd:double", 'xsd:boolean', 'xsd:date',
-                        'xsd:time', 'xsd:dateTime', 'xsd:duration'):
-                mType = URIRef("http://www.w3.org/2001/XMLSchema#string")
+            mType = uripath_from_sparqlpath( t.get('data type', None) or 'xsd:string', nsm )
 
             # on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
@@ -2233,8 +2242,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 
                 # on considère que toutes les valeurs sont des Literal
                 mValue = str(mValueBrut) if mValueBrut else None
+                
                 mLanguage = ( ( mValueBrut.language if mValueBrut and isinstance(mValueBrut, Literal) else None ) or language
-                                 ) if mType.n3(nsm) == 'xsd:string' else None
+                                 ) if mType.n3(nsm) == 'rdf:langString' else None
                                  
                 mVLangList = ( [ mLanguage ] + ( langList.copy() or [] ) if not mLanguage in ( langList or [] ) \
                             else langList.copy()) if mLanguage and translation else None
@@ -2280,7 +2290,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'default value' : t.get('default value', None),
                     'node kind' : "sh:Literal",
                     'data type' : mType,
-                    'subject' : mParentNode,
+                    'subject' : mDataIdentifier or mParentNode,
                     'predicate' : from_n3(meta, nsm=nsm),
                     'path' : meta,
                     'default widget type' : mDefaultWidgetType,
@@ -2489,8 +2499,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mType = ( v.datatype if isinstance(v, Literal) else None ) or URIRef("http://www.w3.org/2001/XMLSchema#string")
                 # NB : pourrait ne pas être homogène pour toutes les valeurs d'une même catégorie
                 
-                mLanguage = ( ( v.language if isinstance(v, Literal) else None ) or language 
-                            ) if mType.n3(nsm) == 'xsd:string' else None
+                mLanguage = ( v.language if isinstance(v, Literal) else None ) \
+                    if mType.n3(nsm) in ('xsd:string', 'rdf:langString') else None
                             
                 if mNHidden:
                     # si les catégories non répertoriées ne
@@ -2503,7 +2513,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'node kind' : "sh:Literal",
                         'data type' : mType,
                         'path' : p.n3(nsm),
-                        'subject' : mParentNode,
+                        'subject' : mDataIdentifier or mParentNode,
                         'predicate' : p                      
                         } )
                 
@@ -2541,7 +2551,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'multiple values' : False,
                         'has minus button' : ( len(dpv[p]) > 1 and mode == 'edit' ) or False,
                         'hide minus button': False if ( len(dpv[p]) > 1 and mode == 'edit' ) else None,
-                        'subject' : mParentNode,
+                        'subject' : mDataIdentifier or mParentNode,
                         'predicate' : p,
                         'path' : p.n3(nsm),
                         'default widget type' : "QLineEdit",
@@ -2688,7 +2698,7 @@ def is_valid_minipath(path, nsm):
     if re.match(r'^[<][^<>"\s{}|\\^`]+[:][^<>"\s{}|\\^`]+[>]$', path):
         return True
 
-    r = re.match('^([a-z]{1,10})[:][a-z0-9-]{1,100}$', path)
+    r = re.match('^([a-z]+)[:][a-zA-Z0-9-]+$', path)
     if r and r[1] in [ k for k,v in nsm.namespaces() ]:
         return True
 
@@ -3837,6 +3847,42 @@ def get_geoide_json_uuid(description):
         return uuid
 
     return None
+
+
+def uripath_from_sparqlpath(path, nsm):
+    """Convertit un chemin SPARQL en chemin d'URIRef.
+
+    ARGUMENTS
+    ---------
+    - path (str) : un chemin SPARQL.
+    - nsm (rdflib.namespace.NamespaceManager) : un
+    gestionnaire d'espaces de nommage.
+
+    RESULTAT
+    --------
+    Si path ne contient qu'un élément, l'URIRef correspondant.
+    Si path est composé de plusieurs éléments, un objet RDFLib Path.
+    
+    ATTENTION : à ce stade, cette fonction ne renverra un
+    résultat correct que si le chemin est formé d'éléments
+    préfixés (pas de "<elem>", seulement "prefix:elem").
+    """
+    d = { k: v for k, v in nsm.namespaces() }
+    l = re.split(r"\s*[/]\s*", path)
+    p = None
+    
+    for e in l:
+        r = re.match('^([a-z]+)[:]([a-zA-Z0-9-]+)$', e)
+        if r and r[1] and r[2]:
+            if r[1] in d:
+                p = ( p / URIRef(str(d[r[1]]) + r[2]) ) if p \
+                    else URIRef(str(d[r[1]]) + r[2])
+            else:
+                raise ValueError("Unkown namespace prefix '{}'.".format(r[1]))
+        else:
+            raise ValueError("'{}' is not a valid prefixed SPARQL path element.".format(e))
+            
+    return p
 
 
 class ForbiddenOperation(Exception):
