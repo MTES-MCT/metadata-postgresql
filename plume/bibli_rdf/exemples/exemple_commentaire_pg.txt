@@ -1,4 +1,4 @@
-Commentaire saisi par le service.
+IGN Admin Express. Départements 2021-01.
 
 <METADATA>
 [
@@ -92,7 +92,7 @@ Commentaire saisi par le service.
         "@id": "http://publications.europa.eu/resource/authority/data-theme/REGI"
       },
       {
-        "@id": "http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO"
+        "@id": "http://inspire.ec.europa.eu/theme/au"
       }
     ],
     "urn:uuid:218c1245-6ba7-4163-841e-476e0d5582af": [
