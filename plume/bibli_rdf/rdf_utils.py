@@ -1002,10 +1002,10 @@ class WidgetsDict(dict):
                     elif d['transform'] == 'phone':
                         mObject = owlthing_from_tel(d['value']) 
                         
-                    elif d['current source']:
+                    elif not d['current source'] in (None, '< URI >', '< non répertorié >'):
                         c = concept_from_value(d['value'], d['current source'], vocabulary, language)
                         
-                        if c is None:
+                        if c == (None, None):
                             raise ValueError( "'{}' isn't referenced as a label in scheme '{}' for language '{}'.".format(
                                 d['value'], d['current source'], language )
                                 ) 
@@ -1180,7 +1180,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
     mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
-    mTemplateTabs=None, mData=None):
+    mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
     ARGUMENTS
@@ -1517,7 +1517,31 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             'template order' : None,
             'do not save' : None
             }
-        
+            
+        # utilitaires pour la récupération des informations
+        # contenues dans le schéma SHACL
+        mPropMap = {
+            "sh:path": "property",
+            "sh:name": "name",
+            "sh:description": "descr",
+            "sh:nodeKind": "kind",
+            "sh:order": "order",
+            "snum:widget" : "widget",
+            "sh:class": "class",
+            "snum:placeholder": "placeholder",
+            "snum:inputMask": "mask",
+            "sh:defaultValue": "default",
+            "snum:rowSpan": "rowspan",
+            "sh:minCount": "min",
+            "sh:maxCount": "max",
+            "sh:datatype": "type",
+            "sh:uniqueLang": "unilang",
+            "sh:pattern": "pattern",
+            "sh:flags": "flags",
+            "snum:transform": "transform"
+            } 
+        mPropTemplate = { v: None for v in mPropMap.values() }
+
         # liste des onglets
         mTemplateTabs = templateTabs.copy() if templateTabs \
                         else { "Général": (0,) }
@@ -1553,45 +1577,28 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     idx = dict( { mParentWidget : 0 } )
     rowidx = dict( { mParentWidget : 0 } )
 
-    # on extrait du modèle la liste des catégories de métadonnées qui
-    # décrivent la classe cible, avec leurs caractéristiques
-    q_tp = shape.query(
-        """
-        SELECT
-            ?property ?name ?kind ?type
-            ?class ?order ?widget ?descr
-            ?default ?min ?max ?unilang
-            ?pattern ?flags ?transform
-            ?placeholder ?rowspan ?mask
-        WHERE
-            { ?u sh:targetClass ?c ;
-                sh:property ?x .
-              ?x sh:path ?property ;
-                sh:name ?name ;
-                sh:nodeKind ?kind ;
-                sh:order ?order .
-              OPTIONAL { ?x snum:widget ?widget } .
-              OPTIONAL { ?x sh:datatype ?type } .
-              OPTIONAL { ?x sh:class ?class } .
-              OPTIONAL { ?x sh:description ?descr } .
-              OPTIONAL { ?x snum:placeholder ?placeholder } .
-              OPTIONAL { ?x snum:inputMask ?mask } .
-              OPTIONAL { ?x sh:defaultValue ?default } .
-              OPTIONAL { ?x sh:pattern ?pattern } .
-              OPTIONAL { ?x sh:flags ?flags } .
-              OPTIONAL { ?x snum:transform ?transform } .
-              OPTIONAL { ?x snum:rowSpan ?rowspan } .
-              OPTIONAL { ?x sh:uniqueLang ?unilang } .
-              OPTIONAL { ?x sh:minCount ?min } .
-              OPTIONAL { ?x sh:maxCount ?max } . }
-        ORDER BY ?order
-        """,
-        initBindings = { 'c' : mTargetClass }
-        )
+    # on identifie la forme du schéma SHACL qui décrit la
+    # classe cible :
+    for s in shape.subjects(
+        URIRef("http://www.w3.org/ns/shacl#targetClass"),
+        mTargetClass
+        ):
+        mShape = s
+        break
 
     # --- BOUCLE SUR LES CATEGORIES
     
-    for p in q_tp:
+    for mShapeProperty in shape.objects(
+        mShape,
+        URIRef("http://www.w3.org/ns/shacl#property")
+        ):
+        
+        # récupération des informations relatives
+        # à la catégorie dans le schéma SHACL
+        p = mPropTemplate.copy()
+        for a, b in shape.predicate_objects(mShapeProperty):
+            if a.n3(nsm) in mPropMap:
+                p[mPropMap[a.n3(nsm)]] = b
 
         mParent = mParentWidget
         mProperty = p['property']
@@ -1945,7 +1952,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
                         mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs,
-                        mData=mData
+                        mData=mData, mPropMap=mPropMap, mPropTemplate=mPropTemplate
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
