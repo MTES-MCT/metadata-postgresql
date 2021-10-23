@@ -213,15 +213,19 @@ Dans le formulaire résultant, chaque champ se trouvera représenté par un QTex
 
 `data` est un dictionnaire contenant des informations actualisées à partir de sources externes (par exemple déduites des données) qui écraseront les valeurs présentes dans `metagraph`. Les clés du dictionnaire sont des chemins SPARQL identifiant des catégories de métadonnées, ses valeurs sont des listes contenant la ou les valeurs (str) à faire apparaître pour les catégories en question.
 
-À ce stade, `data` est implémenté dans `build_dict()`, mais aucun mécanisme n'a été mis en place pour le constituer.
+À ce stade, `data` est uniquement utilisé pour mettre en cohérence l'identifiant du jeu de données avec celui qui est contenu dans le petit JSON de GéoIDE.
 
 On se contentera donc pour l'heure de :
 
 ```python
 
-data = None
+geoide_id = rdf_utils.get_geoide_json_uuid(old_description)
+data = { 'dct:identifier': [geoide_id] } if geoide_id else None
 
 ```
+
+*`old_description` est le descriptif PostgreSQL de la table ou vue, [préalablement récupéré](#metagraph--le-graphe-des-métadonnées-pré-existantes) pour générer `metagraph`.*
+
 
 ## Paramètres utilisateur
 
