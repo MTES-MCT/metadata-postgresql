@@ -29,7 +29,7 @@ snum:DatasetShape
 		sh:name "Libellé"@fr ;
         sh:description "Libellé explicite du jeu de données."@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
 		sh:minCount 1 ;
         sh:uniqueLang true ;
         sh:order 0 ;
@@ -50,7 +50,7 @@ snum:DatasetShape
 		sh:name "Description"@fr ;
         sh:description "Description du jeu de données."@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
 		sh:minCount 1 ;
         sh:uniqueLang true ;
         sh:order 2 ;
@@ -90,7 +90,7 @@ snum:DatasetShape
 		sh:path dcat:keyword ;
 		sh:name "Mots-clé libres"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:order 6 ;
         snum:widget "QLineEdit" ;
 	] ;
@@ -164,7 +164,7 @@ snum:DatasetShape
 		sh:name "Note de version"@fr ;
         sh:description "Différences entre la version courante des données et les versions antérieures."@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 21 ;
         snum:widget "QTextEdit" ;
@@ -191,7 +191,7 @@ snum:DatasetShape
 		sh:path rdfs:comment ;
 		sh:name "Commentaire sur la résolution spatiale"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:order 25 ;
         snum:widget "QTextEdit" ;
 	] ;
@@ -372,6 +372,7 @@ snum:DatasetShape
 		sh:name "Identifiant interne"@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
+        sh:maxCount 1 ;
         sh:order 83 ;
         snum:widget "QLineEdit" ;
 	] ;
@@ -436,7 +437,7 @@ snum:RightsStatementShape
 		sh:path rdfs:label ;
 		sh:name "Mention"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 1 ;
         snum:widget "QTextEdit" ;
@@ -461,7 +462,7 @@ snum:LicenseDocumentShape
 		sh:path rdfs:label ;
 		sh:name "Termes"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 2 ;
         snum:widget "QTextEdit" ;
@@ -476,7 +477,7 @@ snum:ProvenanceStatementShape
 		sh:path rdfs:label ;
 		sh:name "Texte"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 0 ;
         snum:widget "QTextEdit" ;
@@ -650,7 +651,7 @@ snum:LocationShape
 		sh:path skos:prefLabel ;
 		sh:name "Libellé"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:order 2 ;
         sh:uniqueLang true ;
         snum:widget "QLineEdit" ;
@@ -717,7 +718,7 @@ snum:StandardShape
 		sh:name "Libellé"@fr ;
         sh:description "Libellé explicite du standard."@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:order 2 ;
         sh:uniqueLang true ;
         snum:widget "QLineEdit" ;
@@ -737,7 +738,7 @@ snum:StandardShape
 		sh:name "Description"@fr ;
         sh:description "Description sommaire de l'objet du standard."@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:order 4 ;
         sh:uniqueLang true ;
         snum:widget "QTextEdit" ;
