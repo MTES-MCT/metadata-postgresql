@@ -2643,9 +2643,8 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(
             rdf_utils.build_vocabulary("Thème de données (UE)", self.vocabulary),
             ['Agriculture, pêche, sylviculture et alimentation',
-            'Données provisoires', 'Économie et finances',
-            'Éducation, culture et sport', 'Énergie', 'Environnement',
-            'Gouvernement et secteur public',
+            'Économie et finances', 'Éducation, culture et sport', 'Énergie',
+            'Environnement', 'Gouvernement et secteur public',
             'Justice, système juridique et sécurité publique',
             'Population et société', 'Questions internationales',
             'Régions et villes', 'Santé', 'Science et technologie',
@@ -2667,8 +2666,7 @@ class TestRDFUtils(unittest.TestCase):
             'Education, culture and sport', 'Energy', 'Environment',
             'Government and public sector', 'Health', 'International issues',
             'Justice, legal system and public safety', 'Population and society',
-            'Provisional data', 'Regions and cities', 'Science and technology',
-            'Transport']
+            'Regions and cities', 'Science and technology', 'Transport']
             )
 
     # autre langue (inconnue) :
