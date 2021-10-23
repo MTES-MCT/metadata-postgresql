@@ -20,7 +20,7 @@
     },
     "uuid:218c1245-6ba7-4163-841e-476e0d5582af" : {
         "label": "notes ADL",
-        "data type": "string",
+        "data type": "xsd:string",
         "main widget type": "QTextEdit",
         "order": 3
     }
