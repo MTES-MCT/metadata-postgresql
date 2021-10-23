@@ -36,15 +36,16 @@
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Problème double clique sur l'explorateur  |   X   |        |   DL   | |
+| ToolTips sur les QLabel ?  |   X   |        |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
 | Widget date et time à revoir ou pas       |   X   |        |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
-| Valeur vide dans les listes des QComboBox |   X   |        |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
+| Valeur vide dans les listes des QComboBox |       |   OK   |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
 | Changer les couleurs par défaut des cadres |       |   OK   |   DL   | Les bonnes sont [là](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/10_creation_widgets.md#autres-groupes). |
 | Créer une icône pour la valeur courante des menus des QToolButton  |      |    OK    |   LL   | Finalement, pas de nouvelle icône. On utilise le logo de Plume. |
 | La petite flèche des QComboBox n'a pas le même aspect que celles des autres widgets ?  |   X   |        |   DL   | |
 | `rdf:langString` au lieu de `xsd:string` dans le schéma SHACL pour distinguer les valeurs litérales qui appellent réellement une traduction  |       |   OK   |   LL   | |
 | Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |   X   |        |   LL   | À confirmer, mais lancer `mDict[mParentWidget]['main widget'] = None` si `rowidx[mParentWidget] == 0` devrait faire l'affaire. |
 | Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |   X   |        |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
-| Anomalie : quand l'extension metadata est installée mais que les modèles pré-configurés n'ont pas été chargés, à l'ouverture d'une fiche de métadonnées on a un onglet "Général" vide et toutes les métadonnées dans "Autres". |   X   |      |   DL   | NB : la petite plume de l'interface indique que le modèle est "Aucun", mais ce n'est pas vraiment le cas puisque cliquer sur "Aucun" remet les choses en ordre (= toutes les métadonnées dans "Général"). Il y a probablement un rapport avec le paramètre `preferedTemplate` enregistré avec comme valeur `"Basique"` dans `QGIS3.ini`. |
+| Anomalie : quand l'extension metadata est installée mais que les modèles pré-configurés n'ont pas été chargés, à l'ouverture d'une fiche de métadonnées on a un onglet "Général" vide et toutes les métadonnées dans "Autres". |   X   |      |   DL   | NB : la petite plume de l'interface indique que le modèle est "Aucun", mais ce n'est pas vraiment le cas puisque cliquer sur "Aucun" remet les choses en ordre (= toutes les métadonnées dans "Général"). Il y a peut-être un rapport avec le paramètre `preferedTemplate` enregistré avec comme valeur `"Basique"` dans `QGIS3.ini` ? |
 
 ## Plume version 2.0
 
