@@ -102,11 +102,27 @@ class TestRDFUtils(unittest.TestCase):
                 )
 
     def test_uripath_from_sparqlpath_4(self):
-        with self.assertRaisesRegex(ValueError, 'prefix'):
+        with self.assertRaisesRegex(ValueError, 'known.*prefix'):
             rdf_utils.uripath_from_sparqlpath(
                 'chose:chose',
                 self.metagraph.namespace_manager
                 )
+
+    def test_uripath_from_sparqlpath_5(self):
+        p = rdf_utils.uripath_from_sparqlpath(
+            'chose',
+            self.metagraph.namespace_manager,
+            strict=False
+            )
+        self.assertIsNone(p)
+
+    def test_uripath_from_sparqlpath_6(self):
+        p = rdf_utils.uripath_from_sparqlpath(
+            'chose:chose',
+            self.metagraph.namespace_manager,
+            strict=False
+            )
+        self.assertIsNone(p)
 
 
     ### FONCTION WidgetsDict.retrieve_subject
