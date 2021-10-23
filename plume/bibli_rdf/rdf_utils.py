@@ -1519,28 +1519,31 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             }
             
         # utilitaires pour la récupération des informations
-        # contenues dans le schéma SHACL
+        # contenues dans le schéma SHACL.
+        # NB : le second élément des tuples de mPropMap
+        # indique si la propriété admet plusieurs valeurs
         mPropMap = {
-            "sh:path": "property",
-            "sh:name": "name",
-            "sh:description": "descr",
-            "sh:nodeKind": "kind",
-            "sh:order": "order",
-            "snum:widget" : "widget",
-            "sh:class": "class",
-            "snum:placeholder": "placeholder",
-            "snum:inputMask": "mask",
-            "sh:defaultValue": "default",
-            "snum:rowSpan": "rowspan",
-            "sh:minCount": "min",
-            "sh:maxCount": "max",
-            "sh:datatype": "type",
-            "sh:uniqueLang": "unilang",
-            "sh:pattern": "pattern",
-            "sh:flags": "flags",
-            "snum:transform": "transform"
+            "sh:path": ("property", False),
+            "sh:name": ("name", False),
+            "sh:description": ("descr", False),
+            "sh:nodeKind": ("kind", False),
+            "sh:order": ("order", False),
+            "snum:widget" : ("widget", False),
+            "sh:class": ("class", False),
+            "snum:placeholder": ("placeholder", False),
+            "snum:inputMask": ("mask", False),
+            "sh:defaultValue": ("default", False),
+            "snum:rowSpan": ("rowspan", False),
+            "sh:minCount": ("min", False),
+            "sh:maxCount": ("max", False),
+            "sh:datatype": ("type", False),
+            "sh:uniqueLang": ("unilang", False),
+            "sh:pattern": ("pattern", False),
+            "sh:flags": ("flags", False),
+            "snum:transform": ("transform", False),
+            "snum:ontology": ("ontologies", True)
             } 
-        mPropTemplate = { v: None for v in mPropMap.values() }
+        mPropTemplate = { v[0]: None for v in mPropMap.values() }
 
         # liste des onglets
         mTemplateTabs = templateTabs.copy() if templateTabs \
@@ -1598,7 +1601,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         p = mPropTemplate.copy()
         for a, b in shape.predicate_objects(mShapeProperty):
             if a.n3(nsm) in mPropMap:
-                p[mPropMap[a.n3(nsm)]] = b
+                if mPropMap[a.n3(nsm)][1]:
+                    p[mPropMap[a.n3(nsm)][0]] = (p[mPropMap[a.n3(nsm)][0]] or []) + [b]
+                else:
+                    p[mPropMap[a.n3(nsm)][0]] = b
 
         mParent = mParentWidget
         mProperty = p['property']
@@ -1613,6 +1619,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         mNHidden = mHidden or False
         mOneLanguage = None
         values = None
+        
+        multilingual = p['unilang'] and (str(p['unilang']).lower() == 'true') or False
+        multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
 
         # cas d'une propriété dont les valeurs sont mises à
         # jour à partir d'informations disponibles côté serveur
@@ -1623,19 +1632,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         # sinon, on extrait la ou les valeurs éventuellement
         # renseignées dans le graphe pour cette catégorie
         # et le sujet considéré
-        if not values and not mGraphEmpty:
-        
-            q_gr = metagraph.query(
-                """
-                SELECT
-                    ?value
-                WHERE
-                     { ?n ?p ?value . }
-                """,
-                initBindings = { 'n' : mParentNode, 'p' : mProperty }
-                )
-                
-            values = [ v['value'] for v in q_gr ]
+        if not values and not mGraphEmpty: 
+            values = [ o for o in metagraph.objects(mParentNode, mProperty) ]
     
         # exclusion des catégories qui ne sont pas prévues par
         # le modèle, ne sont pas considérées comme obligatoires
@@ -1732,36 +1730,12 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         
         else:
             # récupération de la liste des thésaurus
-            if mKind in ("sh:BlankNodeOrIRI", "sh:IRI") :
+            if mKind in ("sh:BlankNodeOrIRI", "sh:IRI") and p['ontologies']:
 
-                q_on = shape.query(
-                    """
-                    SELECT
-                        ?ontology
-                    WHERE
-                        { ?u sh:targetClass ?c .
-                          ?u sh:property ?x .
-                          ?x sh:path ?p .
-                          ?x snum:ontology ?ontology . }
-                    """,
-                    initBindings = { 'c' : mTargetClass, 'p' : mProperty }
-                    )
-
-                for s in q_on:
-                    
-                    q_vc = vocabulary.query(
-                        """
-                        SELECT
-                            ?scheme
-                        WHERE
-                            {{ ?s a skos:ConceptScheme ;
-                             skos:prefLabel ?scheme .
-                              FILTER ( lang(?scheme) = "{}" ) }}
-                        """.format(language),
-                        initBindings = { 's' : s['ontology'] }
-                        )
-
-                    mSources = ( mSources or [] ) + ( [ str(l['scheme']) for l in q_vc ] if len(q_vc) == 1 else [] )
+                for s in p['ontologies']:
+                    mSources = ( mSources or [] ) + [ str(o) for o in vocabulary.objects(
+                        s, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+                        ) if o.language == language ]
                         
                 if mSources == []:
                     mSources = None
@@ -1789,9 +1763,6 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
                     if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
                         mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = None
-
-            multilingual = p['unilang'] and (str(p['unilang']).lower() == 'true') or False
-            multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
             
             # si seules les métadonnées dans la langue
             # principale doivent être affichées et qu'aucune valeur n'est
@@ -2189,7 +2160,11 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 # à un seul élément et dont le préfixe éventuel
                 # est déjà référencé
                 continue
-
+                
+            mProperty = uripath_from_sparqlpath(meta, nsm, strict=False)
+            if mProperty is None:
+                continue
+                
             mParent = mParentWidget
             
             # choix du bon onglet
@@ -2205,22 +2180,17 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     if not mParent in rowidx:
                         rowidx.update({ mParent: 0 })
 
-            mType = uripath_from_sparqlpath( t.get('data type', None) or 'xsd:string', nsm )
+            mType = uripath_from_sparqlpath(
+                t.get('data type', None) or 'xsd:string',
+                nsm, strict=False
+                ) or URIRef('http://www.w3.org/2001/XMLSchema#string')
 
             # on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
-            q_gr = metagraph.query(
-                """
-                SELECT
-                    ?value
-                WHERE
-                     {{ ?n {} ?value . }}
-                """.format(meta),
-                initBindings = { 'n' : mParentNode }
-                )
-
-            values = [ v['value'] for v in q_gr ] if mode == 'read' and readHideBlank else (
-                        [ v['value'] for v in q_gr ] or [ t.get('default value', None) if mGraphEmpty else None ] )
+            values = [ o for o in metagraph.objects(mParentNode, mProperty) ] \
+                if mode == 'read' and readHideBlank else \
+                ( [ o for o in metagraph.objects(mParentNode, mProperty) ] \
+                or [ t.get('default value', None) if mGraphEmpty else None ] )
 
             multiple = t.get('multiple values', False)
 
@@ -2298,7 +2268,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'node kind' : "sh:Literal",
                     'data type' : mType,
                     'subject' : mDataIdentifier or mParentNode,
-                    'predicate' : from_n3(meta, nsm=nsm),
+                    'predicate' : mProperty,
                     'path' : meta,
                     'default widget type' : mDefaultWidgetType,
                     'type validator' : None if (mode == 'read') else (
@@ -2410,25 +2380,17 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     
         mNHidden = (mode == 'edit' and editHideUnlisted) or \
             (mode == 'read' and readHideUnlisted)
-        
-        q_gr = metagraph.query(
-            """
-            SELECT
-                ?property ?value
-            WHERE
-                { ?n ?property ?value . 
-                  FILTER ( ?property != rdf:type ) }
-            """,
-            initBindings = { 'n' : mParentNode }
-            )
-        
+
         dpv = dict()
         
-        for p, v in q_gr:
+        for p, v in metagraph.predicate_objects(mParentNode):
         
             if isinstance(v, BNode):
                 # on élimine d'entrée de jeu tout ce qui
                 # n'est pas une branche terminale
+                continue
+                
+            if p == URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"):
                 continue
                 
             if not p.n3(nsm) in [ d.get('path', None) for d in mDict.values() ]:        
@@ -2796,36 +2758,39 @@ def build_vocabulary(schemeStr, vocabulary, language="fr"):
     'Population et société', 'Questions internationales', 'Régions et villes', 'Santé',
     'Science et technologie', 'Transports']
     """
+    if schemeStr in ('< non répertorié >', '< manuel >', '< URI >'):
+        return []
     
-    vocabulary.namespace_manager.bind(
-        'skos',
-        URIRef('http://www.w3.org/2004/02/skos/core#'),
-        override=True, replace=True
-        )
+    schemeIRI = None
     
-    q_vc = vocabulary.query(
-        """
-        SELECT
-            ?label
-        WHERE
-            {{ ?c a skos:Concept ;
-            skos:inScheme ?s ;
-            skos:prefLabel ?label .
-            ?s a skos:ConceptScheme ;
-                skos:prefLabel ?l .
-              FILTER ( lang(?label) = "{}" ) }}
-        """.format(language),
-        initBindings = { 'l' : Literal(schemeStr, lang=language) }
-        )
+    for s in vocabulary.subjects(
+        URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        Literal(schemeStr, lang=language)
+        ):
+        schemeIRI = s
+        break
 
-    if len(q_vc) > 0:
+    if schemeIRI is None:
+        return []
+    
+    concepts = [ c for c in vocabulary.subjects(
+        URIRef("http://www.w3.org/2004/02/skos/core#inScheme"),
+        schemeIRI ) ]
 
-        setlocale(LC_COLLATE, "")
+    if concepts:
+        labels = []
+        for c in concepts:
+            labels += [ str(o) for o in vocabulary.objects(
+                c, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+                ) if o.language == language ]
 
-        return sorted(
-            [str(l['label']) for l in q_vc],
-            key=lambda x: strxfrm(x)
-            )
+        if labels:
+            setlocale(LC_COLLATE, "")
+
+            return sorted(
+                labels,
+                key=lambda x: strxfrm(x)
+                )
    
     return []
 
@@ -3856,7 +3821,7 @@ def get_geoide_json_uuid(description):
     return None
 
 
-def uripath_from_sparqlpath(path, nsm):
+def uripath_from_sparqlpath(path, nsm, strict=True):
     """Convertit un chemin SPARQL en chemin d'URIRef.
 
     ARGUMENTS
@@ -3864,6 +3829,8 @@ def uripath_from_sparqlpath(path, nsm):
     - path (str) : un chemin SPARQL.
     - nsm (rdflib.namespace.NamespaceManager) : un
     gestionnaire d'espaces de nommage.
+    - strict (bool) : si True (défaut), la fonction échoue
+    sur un chemin invalide. Si False elle renvoie None.
 
     RESULTAT
     --------
@@ -3873,6 +3840,10 @@ def uripath_from_sparqlpath(path, nsm):
     ATTENTION : à ce stade, cette fonction ne renverra un
     résultat correct que si le chemin est formé d'éléments
     préfixés (pas de "<elem>", seulement "prefix:elem").
+    
+    Appliquée à un chemin à un élément, uripath_from_sparqlpath
+    est similaire à la fonction from_n3() de RDFLib, si ce n'est que
+    son résultat est plus contrôlé.
     """
     d = { k: v for k, v in nsm.namespaces() }
     l = re.split(r"\s*[/]\s*", path)
@@ -3884,9 +3855,9 @@ def uripath_from_sparqlpath(path, nsm):
             if r[1] in d:
                 p = ( p / URIRef(str(d[r[1]]) + r[2]) ) if p \
                     else URIRef(str(d[r[1]]) + r[2])
-            else:
-                raise ValueError("Unkown namespace prefix '{}'.".format(r[1]))
-        else:
+            elif strict:
+                raise ValueError("Unknown namespace prefix '{}'.".format(r[1]))
+        elif strict:
             raise ValueError("'{}' is not a valid prefixed SPARQL path element.".format(e))
             
     return p
