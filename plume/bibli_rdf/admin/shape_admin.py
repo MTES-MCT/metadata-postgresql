@@ -66,6 +66,9 @@ def check_shape(shape, vocabulary, mIssues=None, mShape=None):
     ne vaut pas 1 ;
     - "uniqueLang can only be applied on rdf:langString" si
     uniqueLang est utilisé avec un autre datatype ;
+    - "should use uniqueLang instead of maxCount on rdf:langString"
+    si maxCount est utilisé sur un rdf:langString (qui devrait toujours
+    admettre des traductions) ;
     - "Literal or IRI without widget" si la propriété n'est pas
     un noeud vide mais n'a pas de widget associé ;
     - "BlankNode with widget" si la propriété est un noeud vide et
@@ -256,6 +259,9 @@ def check_shape(shape, vocabulary, mIssues=None, mShape=None):
             if not dt.n3(ns) == "rdf:langString" \
                 and "sh:uniqueLang" in propPredicates:
                 mIssues.append((mShape.n3(ns), path.n3(ns), "uniqueLang can only be applied on rdf:langString"))
+            if dt.n3(ns) == "rdf:langString" \
+                and "sh:maxCount" in propPredicates:
+                mIssues.append((mShape.n3(ns), path.n3(ns), "should use uniqueLang instead of maxCount on rdf:langString"))
         
         if "snum:ontology" in propPredicates:
             for o in shape.objects(
@@ -351,7 +357,7 @@ def table_from_shape(
             mNPath,
             mKind == 'sh:BlankNode',
             str(d['name']) if d['name'] else None,
-            str(re.sub("^[a-zA-Z]+[:]", "", d['datatype'].n3(nsm))) if d['datatype'] else None,
+            str(d['datatype'].n3(nsm)) if d['datatype'] else None,
             str(d['widget']) if d['widget'] else None,
             int(d['rowspan']) if d['rowspan'] else None,
             str(d['descr']) if d['descr'] else None,
