@@ -62,6 +62,52 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict) 
 
 
+    ### FONCTION uripath_from_sparqlpath
+    ### --------------------------------
+
+    def test_uripath_from_sparqlpath_1(self):
+        p = rdf_utils.uripath_from_sparqlpath(
+            'dct:title',
+            self.metagraph.namespace_manager
+            )
+        s = rdf_utils.get_datasetid(self.metagraph)
+        self.assertEqual(
+            p, URIRef("http://purl.org/dc/terms/title")
+            )
+        self.assertIsNotNone(
+            self.metagraph.value(s, p)
+            )
+
+    def test_uripath_from_sparqlpath_2(self):
+        p = rdf_utils.uripath_from_sparqlpath(
+            'dcat:distribution / dct:license / rdfs:label',
+            self.metagraph.namespace_manager
+            )
+        s = rdf_utils.get_datasetid(self.metagraph)
+        self.assertEqual(
+            p,
+            URIRef("http://www.w3.org/ns/dcat#distribution") \
+                / URIRef("http://purl.org/dc/terms/license") \
+                / URIRef("http://www.w3.org/2000/01/rdf-schema#label")
+            )
+        self.assertIsNotNone(
+            self.metagraph.value(s, p)
+            )
+
+    def test_uripath_from_sparqlpath_3(self):
+        with self.assertRaisesRegex(ValueError, 'not.*valid.*path'):
+            rdf_utils.uripath_from_sparqlpath(
+                'chose',
+                self.metagraph.namespace_manager
+                )
+
+    def test_uripath_from_sparqlpath_4(self):
+        with self.assertRaisesRegex(ValueError, 'prefix'):
+            rdf_utils.uripath_from_sparqlpath(
+                'chose:chose',
+                self.metagraph.namespace_manager
+                )
+
 
     ### FONCTION WidgetsDict.retrieve_subject
     ### -------------------------------------
@@ -1000,14 +1046,14 @@ class TestRDFUtils(unittest.TestCase):
                 'input mask': 'xx.x',
                 'multiple values': True,
                 'is mandatory': True,
-                'data type': 'decimal'
+                'data type': 'xsd:decimal'
                 },
             "uuid:c41423cc-fb59-443f-86f4-72592a4f6778" : {
                 'placeholder text': '10.1',
                 'input mask': 'xx.x',
                 'multiple values': True,
                 'is mandatory': True,
-                'data type': 'decimal'
+                'data type': 'xsd:decimal'
                 }
             }
         d = rdf_utils.build_dict(
@@ -1062,8 +1108,79 @@ class TestRDFUtils(unittest.TestCase):
         self.assertTrue(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
             for k, v in d.items()]))
 
-            
-        
+    # mise à jour de l'identifiant via data
+    def test_build_dict_18(self):
+        g_id = rdf_utils.get_datasetid(self.metagraph)
+        g_title = self.metagraph.value(g_id, URIRef('http://purl.org/dc/terms/title'))
+        self.assertIsNotNone(g_title)
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            data={ "dct:identifier": ["479fd670-32c5-4ade-a26d-0268b0cexxxx"] }
+            )
+        self.assertIsNone(check_rows(d))
+        g1 = d.build_graph(self.vocabulary)
+        g1_id = rdf_utils.get_datasetid(g1)
+        self.assertEqual(
+            rdf_utils.strip_uuid(g1_id),
+            "479fd670-32c5-4ade-a26d-0268b0cexxxx"
+            )
+        g1_title = g1.value(g1_id, URIRef('http://purl.org/dc/terms/title'))
+        self.assertEqual(g_title, g1_title)
+        j1 = rdf_utils.build_geoide_json(g1)
+        self.assertTrue(
+            '"business_id": "479fd670-32c5-4ade-a26d-0268b0cexxxx"' in j1
+            )
+
+    # idem en mode lecture (même si ça n'a aucun sens
+    # puisque l'utilisateur ne pourra pas enregistrer le
+    # nouvel identifiant) et avec un template où
+    # l'identifiant n'apparait pas
+    def test_build_dict_19(self):
+        g_id = rdf_utils.get_datasetid(self.metagraph)
+        g_title = self.metagraph.value(g_id, URIRef('http://purl.org/dc/terms/title'))
+        self.assertIsNotNone(g_title)
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read',
+            preserve=True,
+            readHideUnlisted=True,
+            template={ "dcat:keyword": {} },
+            data={ "dct:identifier": ["479fd670-32c5-4ade-a26d-0268b0cexxxx"] }
+            )
+        self.assertIsNone(check_rows(d))
+        g1 = d.build_graph(self.vocabulary)
+        g1_id = rdf_utils.get_datasetid(g1)
+        self.assertEqual(
+            rdf_utils.strip_uuid(g1_id),
+            "479fd670-32c5-4ade-a26d-0268b0cexxxx"
+            )
+        g1_title = g1.value(g1_id, URIRef('http://purl.org/dc/terms/title'))
+        self.assertEqual(g_title, g1_title)
+        j1 = rdf_utils.build_geoide_json(g1)
+        self.assertTrue(
+            '"business_id": "479fd670-32c5-4ade-a26d-0268b0cexxxx"' in j1
+            )
+
+    # utilisation de data pour mettre à jour une propriété
+    # dont le chemin est composé
+    def test_build_dict_20(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            data={ "dcat:distribution / dct:license / rdfs:label": ["Ma license"] }
+            )
+        self.assertIsNone(check_rows(d))
+        k = search_keys(d, "dcat:distribution / dct:license / rdfs:label", "edit")[0]
+        self.assertEqual(
+            d[k]['value'], "Ma license"
+            )
+
+    
     # à compléter !
 
 
