@@ -436,11 +436,6 @@ snum:InseeGeoIndex a skos:ConceptScheme ;
     skos:prefLabel "Justice, legal system and public safety"@en,
         "Justice, système juridique et sécurité publique"@fr .
 
-<http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO> a skos:Concept ;
-    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
-    skos:prefLabel "Provisional data"@en,
-        "Données provisoires"@fr .
-
 <http://publications.europa.eu/resource/authority/data-theme/REGI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Regions and cities"@en,
@@ -476,11 +471,6 @@ snum:InseeGeoIndex a skos:ConceptScheme ;
     skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
     skos:prefLabel "non-public"@en,
         "non public"@fr .
-
-<http://publications.europa.eu/resource/authority/access-right/OP_DATPRO> a skos:Concept ;
-    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
-    skos:prefLabel "Provisional data"@en,
-        "Données provisoires"@fr .
 
 <http://publications.europa.eu/resource/authority/access-right/PUBLIC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
