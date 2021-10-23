@@ -37,7 +37,7 @@ uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
         "donnée externe"@fr,
         "ign"@fr ;
     dcat:landingPage <https://geoservices.ign.fr/documentation/donnees/vecteur/adminexpress> ;
-    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO>,
+    dcat:theme <http://inspire.ec.europa.eu/theme/au>,
         <http://publications.europa.eu/resource/authority/data-theme/REGI> ;
     uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
 
