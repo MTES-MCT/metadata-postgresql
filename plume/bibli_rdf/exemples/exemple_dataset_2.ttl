@@ -1,46 +1,30 @@
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix dctype: <http://purl.org/dc/dcmitype/> .
-@prefix dqv: <http://www.w3.org/ns/dqv#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix geodcat: <http://data.europa.eu/930/> .
 @prefix gsp: <http://www.opengis.net/ont/geosparql#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sdo: <http://schema.org/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+@prefix uuid: <urn:uuid:> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-@prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
-@prefix uuid: <urn:uuid:> .
-
-
 uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
-    dct:title "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"@fr ;
-    owl:versionInfo "2020" ;
-    dct:description """La table L_ZAC_S_075 recense les zones d’aménagement concerté de la Ville de Paris depuis 2004. La table est mise à jour selon l’actualité. Y sont consignées :
-- les ZAC en cours ;
-- les ZAC projetées, à court ou moyen terme par la collectivité, dont le dossier de création n’a pas encore été approuvé mais sur lesquelles une procédure de concertation a été lancée ;
-- les anciennes ZAC, supprimées depuis 2004."""@fr,
-        """This dataset contains the delimitations of past, present and future urban development areas know as "zones d'aménagement concerté" in Paris."""@en ;
-    dcat:keyword "ZAC"@fr,
-        "Paris"@fr,
-        "zone d'aménagement concerté"@fr ;
-    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/REGI>,
-        <http://inspire.ec.europa.eu/theme/lu> ;
-    snum:isExternal "false"^^xsd:boolean ;
-    dcat:landingPage <http://catalogue.geo-ide.developpement-durable.gouv.fr/catalogue/srv/fre/catalog.search#/metadata/fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef> ;
-    foaf:page <http://www.driea.ile-de-france.developpement-durable.gouv.fr/atlas-des-zones-d-amenagement-concerte-de-paris-a5574.html> ;
+    dct:accessRights <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> ;
     dct:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
     dct:conformsTo [ a dct:Standard ;
-            skos:inScheme <http://www.opengis.net/def/crs/EPSG/0> ;
             dct:identifier "2154" ] ;
-    dcat:spatialResolutionInMeters "2"^^xsd:decimal ;
+    dct:created "2011-01-01"^^xsd:date ;
+    dct:description "This dataset contains the delimitations of past, present and future urban development areas know as \"zones d'aménagement concerté\" in Paris."@en,
+        """La table L_ZAC_S_075 recense les zones d’aménagement concerté de la Ville de Paris depuis 2004. La table est mise à jour selon l’actualité. Y sont consignées :
+- les ZAC en cours ;
+- les ZAC projetées, à court ou moyen terme par la collectivité, dont le dossier de création n’a pas encore été approuvé mais sur lesquelles une procédure de concertation a été lancée ;
+- les anciennes ZAC, supprimées depuis 2004."""@fr ;
+    dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+    dct:language <http://publications.europa.eu/resource/authority/language/FRA> ;
+    dct:modified "2020-01-21"^^xsd:date ;
     dct:provenance [ a dct:ProvenanceStatement ;
             rdfs:label """DÉLIMITATION DES ZONES
 
@@ -64,6 +48,22 @@ DONNÉES ATTRIBUTAIRES
 Les données attributaires sont collectées par le pôle planification urbaine et aménagement durable de l’UDEA75 dans les délibérations du Conseil de Paris relatives aux ZAC et leurs annexes. Pour les ZAC en projet, les dossiers de concertation et d’étude d’impact peuvent également être utilisés. À cette date, les attributs sont renseignés que pour les ZAC en cours, en projet ou supprimées après le 1er janvier 2017.
 
 Dans les champs relatifs au programme de la ZAC, une valeur nulle doit être interprétée comme une absence d’information disponible sur le point considéré."""@fr ] ;
+    dct:spatial [ a dct:Location ;
+            dcat:bbox "POLYGON((2.46962285 48.81560897,2.46962285 48.90165328,2.22396016 48.90165328,2.22396016 48.81560897,2.46962285 48.81560897))"^^gsp:wktLiteral ],
+        [ a dct:Location ;
+            dct:identifier "75" ;
+            skos:inScheme <http://id.insee.fr/geo/departement> ;
+            skos:prefLabel "Paris"@fr ],
+        [ a dct:Location ;
+            dct:identifier "75056" ;
+            skos:inScheme <http://id.insee.fr/geo/commune> ;
+            skos:prefLabel "Paris"@fr ] ;
+    dct:temporal [ a dct:PeriodOfTime ;
+            dcat:endDate "2020-01-01"^^xsd:date ;
+            dcat:startDate "2017-01-01"^^xsd:date ] ;
+    dct:title "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"@fr ;
+    snum:isExternal false ;
+    owl:versionInfo "2020" ;
     adms:versionNotes """HISTORIQUE DES MODIFICATIONS (depuis 2016-12)
 
 2019-05-14 : Consolidation de l’attribut l_nat_ref.
@@ -95,26 +95,17 @@ Précisions et/ou corrections sur le programme de la ZAC Chapelle-Charbon.
 
 2016-12-20 : La ZAC Saint-Vincent-de-Paul a été créée par délibération au Conseil de Paris des 12, 13, 14 et 15 décembre 2016, elle passe du statut « en projet » à « en cours »."""@fr ;
     dcat:contactPoint [ a vcard:Kind ;
-            vcard:fn "Pôle études et connaissance des territoires de l'unité départementale de Paris (DRIEAT IF/UD 75/SADCT/PECT)"@fr ;
+            vcard:fn "Pôle études et connaissance des territoires de l'unité départementale de Paris (DRIEAT IF/UD 75/SADCT/PECT)" ;
             vcard:hasEmail <mailto:pect.sadct.ud75.drieat-if@developpement-durable.gouv.fr> ;
             vcard:hasTelephone <tel:+33-1-82-52-51-84> ;
-            vcard:hasURL <http://www.driea.ile-de-france.developpement-durable.gouv.fr> ;
-            vcard:organization-name "Direction régionale et interdépartementale de l'environnement, de l'aménagement et des transports d'Île-de-France (DRIEAT IF)"@fr ] ;
-    dct:spatial [ a dct:Location ;
-            dcat:bbox "POLYGON((2.46962285 48.81560897,2.46962285 48.90165328,2.22396016 48.90165328,2.22396016 48.81560897,2.46962285 48.81560897))"^^gsp:wktLiteral ],
-        [ a dct:Location ;
-            skos:inScheme <http://id.insee.fr/geo/departement> ;
-            dct:identifier "75" ;
-            skos:prefLabel "Paris"@fr ],
-        [ a dct:Location ;
-            skos:inScheme <http://id.insee.fr/geo/commune> ;
-            dct:identifier "75056" ;
-            skos:prefLabel "Paris"@fr ] ;
-    dct:temporal [ a dct:PeriodOfTime ;
-            dcat:startDate "2017-01-01"^^xsd:date ;
-            dcat:endDate "2020-01-01"^^xsd:date ] ;
-    dct:modified "2020-01-21"^^xsd:date ;
-    dct:created "2011-01-01"^^xsd:date ;
-    dct:accessRights <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> ;
-    dct:language <http://publications.europa.eu/resource/authority/language/FRA> .
+            vcard:hasURL <http://www.driea.ile-de-france.developpement-durable.gouv.fr/> ;
+            vcard:organization-name "Direction régionale et interdépartementale de l'environnement, de l'aménagement et des transports d'Île-de-France (DRIEAT IF)" ] ;
+    dcat:keyword "Paris"@fr,
+        "ZAC"@fr,
+        "zone d'aménagement concerté"@fr ;
+    dcat:landingPage <http://catalogue.geo-ide.developpement-durable.gouv.fr/catalogue/srv/fre/catalog.search#/metadata/fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef> ;
+    dcat:spatialResolutionInMeters 2.0 ;
+    dcat:theme <http://inspire.ec.europa.eu/theme/lu>,
+        <http://publications.europa.eu/resource/authority/data-theme/REGI> ;
+    foaf:page <http://www.driea.ile-de-france.developpement-durable.gouv.fr/atlas-des-zones-d-amenagement-concerte-de-paris-a5574.html> .
 
