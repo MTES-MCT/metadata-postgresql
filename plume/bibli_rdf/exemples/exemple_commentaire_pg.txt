@@ -18,6 +18,11 @@ Commentaire saisi par le service.
         "@value": "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence."
       }
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -98,14 +103,32 @@ Commentaire saisi par le service.
     ]
   },
   {
-    "@id": "_:ub6bL16C19",
+    "@id": "_:ub6bL18C18",
     "@type": [
-      "http://xmlns.com/foaf/0.1/Agent"
+      "http://purl.org/dc/terms/PeriodOfTime"
     ],
-    "http://xmlns.com/foaf/0.1/name": [
+    "http://www.w3.org/ns/dcat#endDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#startDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL14C20",
+    "@type": [
+      "http://purl.org/dc/terms/ProvenanceStatement"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
       {
         "@language": "fr",
-        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
+        "@value": "Donnée référentielle produite par l'IGN."
       }
     ]
   },
@@ -118,6 +141,49 @@ Commentaire saisi par le service.
       {
         "@language": "fr",
         "@value": "Aucune restriction d'accès ou d'usage."
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL25C23",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Kind"
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:contact.geoservices@ign.fr"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#organization-name": [
+      {
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL22C23",
+    "@type": [
+      "http://www.w3.org/2006/vcard/ns#Kind"
+    ],
+    "http://www.w3.org/2006/vcard/ns#fn": [
+      {
+        "@value": "Pôle IG"
+      }
+    ],
+    "http://www.w3.org/2006/vcard/ns#hasEmail": [
+      {
+        "@id": "mailto:sig-contact@developpement-durable.gouv.fr"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL16C19",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Agent"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
       }
     ]
   },
@@ -152,70 +218,6 @@ Commentaire saisi par le service.
       {
         "@language": "fr",
         "@value": "Base de données soumise aux conditions de la licence ouverte Etalab."
-      }
-    ]
-  },
-  {
-    "@id": "_:ub6bL14C20",
-    "@type": [
-      "http://purl.org/dc/terms/ProvenanceStatement"
-    ],
-    "http://www.w3.org/2000/01/rdf-schema#label": [
-      {
-        "@language": "fr",
-        "@value": "Donnée référentielle produite par l'IGN."
-      }
-    ]
-  },
-  {
-    "@id": "_:ub6bL25C23",
-    "@type": [
-      "http://www.w3.org/2006/vcard/ns#Kind"
-    ],
-    "http://www.w3.org/2006/vcard/ns#hasEmail": [
-      {
-        "@id": "mailto:contact.geoservices@ign.fr"
-      }
-    ],
-    "http://www.w3.org/2006/vcard/ns#organization-name": [
-      {
-        "@language": "fr",
-        "@value": "Institut national de l'information géographique et forestière (IGN-F)"
-      }
-    ]
-  },
-  {
-    "@id": "_:ub6bL22C23",
-    "@type": [
-      "http://www.w3.org/2006/vcard/ns#Kind"
-    ],
-    "http://www.w3.org/2006/vcard/ns#fn": [
-      {
-        "@language": "fr",
-        "@value": "Pôle IG"
-      }
-    ],
-    "http://www.w3.org/2006/vcard/ns#hasEmail": [
-      {
-        "@id": "mailto:sig-contact@developpement-durable.gouv.fr"
-      }
-    ]
-  },
-  {
-    "@id": "_:ub6bL18C18",
-    "@type": [
-      "http://purl.org/dc/terms/PeriodOfTime"
-    ],
-    "http://www.w3.org/ns/dcat#endDate": [
-      {
-        "@type": "http://www.w3.org/2001/XMLSchema#date",
-        "@value": "2021-01-15"
-      }
-    ],
-    "http://www.w3.org/ns/dcat#startDate": [
-      {
-        "@type": "http://www.w3.org/2001/XMLSchema#date",
-        "@value": "2021-01-15"
       }
     ]
   }
