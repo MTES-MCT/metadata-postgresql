@@ -34,8 +34,8 @@ Certaines des actions générales décrites dans la suite ne devraient être dis
 
 **Initialement, toutes les fiches s'ouvrent en mode lecture**. L'utilisateur doit cliquer sur le bouton d'activation du mode édition pour basculer dans ce dernier.
 
-Le bouton utilise l'icône [edit.svg](/plume/icons/general/edit.svg) :
-![edit.svg](/plume/icons/general/edit.svg).
+Le bouton utilise l'icône [edit.svg](/plume/icons/general/read.svg) :
+![edit.svg](/plume/icons/general/read.svg).
 
 L'idéal serait que le texte d'aide s'adapte au mode courant :
 
