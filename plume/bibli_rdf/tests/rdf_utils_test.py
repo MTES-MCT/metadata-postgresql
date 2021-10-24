@@ -37,6 +37,10 @@ class TestRDFUtils(unittest.TestCase):
         with Path(__path__[0] + r'\exemples\exemple_commentaire_pg.txt').open(encoding='UTF-8') as src:
             self.metagraph = rdf_utils.metagraph_from_pg_description(src.read(), self.shape)
 
+        # import d'un exemple de fiche de métadonnée alternative
+        with Path(__path__[0] + r'\exemples\exemple_commentaire_pg_2.txt').open(encoding='UTF-8') as src:
+            self.metagraph_2 = rdf_utils.metagraph_from_pg_description(src.read(), self.shape)
+
         # fiche de métadonnées vide
         self.metagraph_empty = rdf_utils.metagraph_from_pg_description("", self.shape)
 
@@ -61,6 +65,35 @@ class TestRDFUtils(unittest.TestCase):
         # création de pseudo-widgets
         populate_widgets(self.widgetsdict) 
 
+
+    ### FONCTION pick_translation
+    ### -------------------------
+
+    def test_pick_translation_1(self):
+        l = [
+            Literal('a', lang='en'),
+            Literal('b', lang='es'),
+            Literal('c', lang='fr'),
+            Literal('d', lang='de')
+            ]
+        self.assertEqual(
+            rdf_utils.pick_translation(l, 'de'),
+            Literal('d', lang='de')
+            )
+        # pas traduction pour la langue demandée,
+        # mais français est dans la liste :
+        self.assertEqual(
+            rdf_utils.pick_translation(l, 'it'),
+            Literal('c', lang='fr')
+            )
+        l.remove(Literal('c', lang='fr'))
+        # pas de traduction et français n'est
+        # plus dans la liste :
+        self.assertEqual(
+            rdf_utils.pick_translation(l, 'it'),
+            Literal('a', lang='en')
+            )
+        
 
     ### FONCTION uripath_from_sparqlpath
     ### --------------------------------
@@ -1136,6 +1169,10 @@ class TestRDFUtils(unittest.TestCase):
             data={ "dct:identifier": ["479fd670-32c5-4ade-a26d-0268b0cexxxx"] }
             )
         self.assertIsNone(check_rows(d))
+        idk = search_keys(d, 'dct:identifier', 'edit')[0]
+        self.assertEqual(
+            d[idk]['value'], "479fd670-32c5-4ade-a26d-0268b0cexxxx"
+            )
         g1 = d.build_graph(self.vocabulary)
         g1_id = rdf_utils.get_datasetid(g1)
         self.assertEqual(
@@ -1196,7 +1233,77 @@ class TestRDFUtils(unittest.TestCase):
             d[k]['value'], "Ma license"
             )
 
-    
+
+    # effacement a posteriori des groupes de propriétés
+    # dont toutes les propriétés sont masquées (en mode lecture)
+    def test_build_dict_21(self):
+        template = {
+            "dct:spatial": {},
+            "dct:spatial / skos:inScheme": {},
+            "dct:spatial / dct:identifier": {}
+            }
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_2,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            mode='read'
+            )
+        self.assertIsNone(check_rows(d))
+        self.assertIsNone(check_hidden_branches(d))
+        bbk = search_keys(d, 'dct:spatial / dcat:bbox', 'edit')[0]
+        self.assertIsNone(d[bbk]['main widget type'])
+        self.assertEqual(d.count_siblings(bbk, visibleOnly=True), 0)
+        self.assertIsNone(d[bbk[1]]['main widget type'])
+
+    # effacement a posteriori des onglets vides
+    def test_build_dict_22(self):
+        template = {
+            "dct:title":  { "tab name": "Général" },
+            "geodcat:custodian": { "tab name": "À cacher" }
+            }
+        templateTabs = { "Général" : (0,), "À cacher" : (1,) }
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs
+            )
+        self.assertIsNone(check_rows(d))
+        self.assertEqual(d[(1,)]['main widget type'], 'QGroupBox')
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            template=template,
+            templateTabs=templateTabs,
+            mode='read'
+            )
+        self.assertIsNone(check_rows(d))
+        self.assertIsNone(d[(1,)]['main widget type'])
+        
+
+    # présentation de l'identifiant d'un graphe vide
+    # (en mode lecture non, en mode édition oui)
+    def test_build_dict_23(self):
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='read'
+            )
+        idk = search_keys(d, 'dct:identifier', 'edit')
+        self.assertEqual(idk, [])
+        d = rdf_utils.build_dict(
+            metagraph=self.metagraph_empty,
+            shape=self.shape,
+            vocabulary=self.vocabulary,
+            mode='edit'
+            )
+        idk = search_keys(d, 'dct:identifier', 'edit')
+        self.assertTrue(re.fullmatch('^[a-z0-9-]{36}$', d[idk[0]]['value']))
+        
     # à compléter !
 
 
@@ -1436,36 +1543,32 @@ class TestRDFUtils(unittest.TestCase):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         g = d.build_graph(self.vocabulary)
-        q_id = g.query(
-            """
-            SELECT
-                ?id
-            WHERE
-                { ?id a dcat:Dataset . }
-            """,
-            initNs = {'dcat': URIRef('http://www.w3.org/ns/dcat#')}
-            )
-        self.assertEqual(len(q_id), 1)
+        l_id = [s for s in g.subjects(
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef('http://www.w3.org/ns/dcat#Dataset')
+            )]
+        self.assertEqual(len(l_id), 1)
+        for i in l_id:
+            with self.subTest(uuid=str(i)):
+                self.assertEqual(
+                    i, URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+                    )
 
     def test_wd_replace_uuid_2(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-        g = d.build_graph(self.vocabulary)
-        q_id = g.query(
-            """
-            SELECT
-                ?id
-            WHERE
-                { ?id a dcat:Dataset . }
-            """,
-            initNs = {'dcat': URIRef('http://www.w3.org/ns/dcat#')}
+        idk = search_keys(d, "dct:identifier", "edit")
+        self.assertEqual(
+            d[idk[0]]['value'], "c41423cc-fb59-443f-86f4-72592a4f6778"
             )
-        for i in q_id:
-            with self.subTest(uuid=i):
-                self.assertEqual(
-                    i['id'],
-                    URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
-                    )
+        g = d.build_graph(self.vocabulary)
+        self.assertEqual(
+            g.value(
+                URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+                URIRef("http://purl.org/dc/terms/identifier")
+                ),
+            Literal("c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
     
 
     ### FONCTIONS WidgetsDict.add et WidgetsDict.drop
@@ -2227,6 +2330,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2261,6 +2369,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2291,6 +2404,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2320,6 +2438,11 @@ class TestRDFUtils(unittest.TestCase):
     "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
     ],
     "http://purl.org/dc/terms/modified": [
       {
@@ -2361,6 +2484,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2398,6 +2526,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2426,6 +2559,11 @@ class TestRDFUtils(unittest.TestCase):
     "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
     ],
     "http://purl.org/dc/terms/modified": [
       {
@@ -2458,6 +2596,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2483,6 +2626,11 @@ class TestRDFUtils(unittest.TestCase):
     "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
     ],
     "http://purl.org/dc/terms/modified": [
       {
@@ -2510,6 +2658,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2535,6 +2688,11 @@ class TestRDFUtils(unittest.TestCase):
     "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
     ],
     "http://purl.org/dc/terms/modified": [
       {
@@ -2562,6 +2720,11 @@ class TestRDFUtils(unittest.TestCase):
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
     ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
+    ],
     "http://purl.org/dc/terms/modified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
@@ -2588,6 +2751,11 @@ class TestRDFUtils(unittest.TestCase):
     "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
     ],
     "http://purl.org/dc/terms/modified": [
       {
@@ -2617,6 +2785,11 @@ class TestRDFUtils(unittest.TestCase):
     "@id": "urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778",
     "@type": [
       "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "c41423cc-fb59-443f-86f4-72592a4f6778"
+      }
     ],
     "http://purl.org/dc/terms/modified": [
       {
