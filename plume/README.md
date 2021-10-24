@@ -61,23 +61,23 @@ Il est également possible de télécharger une archive ZIP du code du plugin su
 
 ## Documentation
 
-*À venir*. Documentation utilisateur : http://snum.scenari-community.org/Metadata/Plume/Documentation
+*À venir*. Documentation utilisateur : http://snum.scenari-community.org/Metadata/Plume/Documentation.
 
-La documentation technique se trouve dans le répertoire [__doc__](/_doc__) du dépôt GitHub.
+La documentation technique se trouve dans le répertoire [`__doc__`](/_doc__) du dépôt GitHub.
 
 
 ## Structure des fichiers
 
 ```bash
-.                        # `racine où se trouve les sources .py`
+.                        # racine où se trouve les sources .py
 │
-├── i18n                 # `fichiers des langues
-└── icons                # `icônes de l'application`
-    └── general          # `icônes de la barre d'outils de Plume`
-    └── buttons          # `icônes des boutons du formulaire généré à la volée`
-    └── logo             # `icônes pour le menu Extension et la barre d'outils de QGIS`
-├── bibli_pg             # `bibliothèque de fonctions pour la gestion des interactions avec PostgreSQL`
-├── bibli_rdf            # `bibliothèque de fonctions pour la manipulation des métadonnées RDF`
+├── i18n                 # fichiers des langues
+└── icons                # icônes de l'application
+    └── general          # icônes de la barre d'outils de Plume
+    └── buttons          # icônes des boutons du formulaire généré à la volée
+    └── logo             # icônes pour le menu Extension et la barre d'outils de QGIS
+├── bibli_pg             # bibliothèque de fonctions pour la gestion des interactions avec PostgreSQL
+├── bibli_rdf            # bibliothèque de fonctions pour la manipulation des métadonnées RDF
 ```
 
 ## Crédits
