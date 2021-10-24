@@ -52,7 +52,7 @@ Il est également possible de télécharger une archive ZIP du code du plugin su
 
 ![Formulaire en mode lecture](flyers/plume_read.png)
 
-3. Si vous êtes habilité à éditer les métadonnées de la couche (membre du rôle propriétaire de la table ou de la vue), vous pouvez activer le mode édition en cliquant sur le crayon ![edit.svg](/plume/icons/general/edit.svg) dans la barre d'outils de Plume.
+3. Si vous êtes habilité à éditer les métadonnées de la couche (membre du rôle propriétaire de la table ou de la vue), vous pouvez activer le mode édition en cliquant sur le crayon ![read.svg](/plume/icons/general/read.svg) dans la barre d'outils de Plume.
 
 ![Formulaire en mode édition](flyers/plume_edit.png)
 
