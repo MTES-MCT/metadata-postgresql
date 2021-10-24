@@ -43,8 +43,8 @@
 | Créer une icône pour la valeur courante des menus des QToolButton  |      |    OK    |   LL   | Finalement, pas de nouvelle icône. On utilise le logo de Plume. |
 | La petite flèche des QComboBox n'a pas le même aspect que celles des autres widgets ?  |   X   |        |   DL   | |
 | `rdf:langString` au lieu de `xsd:string` dans le schéma SHACL pour distinguer les valeurs litérales qui appellent réellement une traduction  |       |   OK   |   LL   | |
-| Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |   X   |        |   LL   | À confirmer, mais lancer `mDict[mParentWidget]['main widget'] = None` si `rowidx[mParentWidget] == 0` devrait faire l'affaire. |
-| Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |   X   |        |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
+| Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |       |   OK   |   LL   | À confirmer, mais lancer `mDict[mParentWidget]['main widget'] = None` si `rowidx[mParentWidget] == 0` devrait faire l'affaire. |
+| Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |       |   OK   |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
 | Anomalie : quand l'extension metadata est installée mais que les modèles pré-configurés n'ont pas été chargés, à l'ouverture d'une fiche de métadonnées on a un onglet "Général" vide et toutes les métadonnées dans "Autres". |   X   |      |   DL   | NB : la petite plume de l'interface indique que le modèle est "Aucun", mais ce n'est pas vraiment le cas puisque cliquer sur "Aucun" remet les choses en ordre (= toutes les métadonnées dans "Général"). Il y a peut-être un rapport avec le paramètre `preferedTemplate` enregistré avec comme valeur `"Basique"` dans `QGIS3.ini` ? |
 
 ## Plume version 2.0
