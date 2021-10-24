@@ -1,5 +1,4 @@
-"""
-Utilitary class and functions for parsing and serializing RDF metadata.
+"""Utilitary class and functions for parsing and serializing RDF metadata.
 
 Les fonctions suivantes permettent :
 - d'extraire des métadonnées en JSON-LD d'une chaîne de
@@ -949,17 +948,11 @@ class WidgetsDict(dict):
                 # ... sauf dans le cas du noeud racine, qui est porteur
                 # de l'identifiant, donc créé quoi qu'il arrive
                 if k == (0,):
-                    graph.update("""
-                        INSERT
-                            { ?n a ?c }
-                        WHERE
-                            { }
-                    """,
-                    initBindings = {
-                        'n' : mem[2],
-                        'c' : mem[3]
-                        }
-                    )
+                    graph.add((
+                        mem[2],
+                        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                        mem[3]
+                        ))
                     mem = None
                     
             else:
@@ -968,21 +961,12 @@ class WidgetsDict(dict):
                 
                     # création effective du noeud vide à partir
                     # des informations mémorisées
-                    graph.update("""
-                        INSERT
-                            { ?s ?p ?n .
-                              ?n a ?c }
-                        WHERE
-                            { }
-                    """,
-                    initBindings = {
-                        's' : mem[0],
-                        'p' : mem[1],
-                        'n' : mem[2],
-                        'c' : mem[3]
-                        }
-                    )
-                    
+                    graph.add((mem[0], mem[1], mem[2]))
+                    graph.add((
+                        mem[2],
+                        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                        mem[3]
+                        ))                    
                     mem = None
             
                 if d['node kind'] == 'sh:Literal':
@@ -1019,14 +1003,7 @@ class WidgetsDict(dict):
                             
                         mObject = URIRef( d['value'] )
                 
-                graph.update("""
-                    INSERT
-                        { ?s ?p ?o }
-                    WHERE
-                        { }
-                """,
-                initBindings = { 's' : d['subject'], 'p' : d['predicate'], 'o' : mObject }
-                )  
+                graph.add((d['subject'], d['predicate'], mObject))
 
         return graph
 
@@ -1053,6 +1030,10 @@ class WidgetsDict(dict):
         for k, v in self.items():
             if v['subject'] == o:
                 v['subject'] = n
+            if v['node'] == o:
+                v['node'] = n
+            if v['path'] == 'dct:identifier':
+                v['value'] = strip_uuid(n)
 
     
     def order_keys(self, key):
@@ -1180,7 +1161,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
     mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
-    mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None):
+    mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None,
+    idx=None, rowidx=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
     ARGUMENTS
@@ -1454,10 +1436,13 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             or URIRef("urn:uuid:" + str(uuid.uuid4()))
         
         # on stocke l'identifiant dans mData, pour être présenté à
-        # l'utilisateur sous dct:identifier
-        mData.update({
-            'dct:identifier': [strip_uuid(mDataIdentifier or mParentNode)]
-            })
+        # l'utilisateur sous dct:identifier (sauf en mode lecture
+        # quand l'identifiant n'existe pas encore, car celui qui serait
+        # régénéré en cas de bascule en mode édition serait différent)
+        if not (mode == 'read' and mGraphEmpty and not mDataIdentifier):
+            mData.update({
+                'dct:identifier': [strip_uuid(mDataIdentifier or mParentNode)]
+                })
 
         # coquille de dictionnaire pour les attributs des widgets
         mWidgetDictTemplate = {
@@ -1573,12 +1558,15 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             n += 1
 
         mParentWidget = (0,)
+        
+        idx = dict()
+        rowidx = dict()
 
 
     # ---------- EXECUTION COURANTE ----------
 
-    idx = dict( { mParentWidget : 0 } )
-    rowidx = dict( { mParentWidget : 0 } )
+    idx.update( { mParentWidget : 0 } )
+    rowidx.update( { mParentWidget : 0 } )
 
     # on identifie la forme du schéma SHACL qui décrit la
     # classe cible :
@@ -1626,7 +1614,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         # cas d'une propriété dont les valeurs sont mises à
         # jour à partir d'informations disponibles côté serveur
         if mData and mNPath in mData:
-            values = mData[mNPath]
+            values = mData[mNPath].copy()
             del mData[mNPath]
 
         # sinon, on extrait la ou les valeurs éventuellement
@@ -1923,7 +1911,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
                         mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs,
-                        mData=mData, mPropMap=mPropMap, mPropTemplate=mPropTemplate
+                        mData=mData, mPropMap=mPropMap, mPropTemplate=mPropTemplate,
+                        idx=idx, rowidx=rowidx
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -2026,7 +2015,10 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mDefaultBrut is not None:
                     mDefault = mDefault or str(mDefaultBrut)
                     
-                if mGraphEmpty:
+                if mGraphEmpty and not mValueBrut:
+                    # NB : la condition sur mValueBrut est nécessaire,
+                    # car on peut avoir des valeurs issues de data
+                    # dans un graphe vide
                     mValueBrut = mDefaultBrut
                     mValue = mDefault
                     mPage = mDefaultPage
@@ -2538,6 +2530,22 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     # pas de bouton plus, faute de modèle indiquant si la catégorie
                     # admet des valeurs multiples
 
+    if not is_root(mParentWidget) and rowidx[mParentWidget] == 0 \
+        and mDict[mParentWidget]['main widget type']:
+        # cas d'un groupe de propriétés dans lequel on n'aura finalement
+        # aucune propriété à afficher. Dans ce cas, on n'affiche pas non
+        # plus le groupe
+        mDict[mParentWidget]['main widget type'] = None
+        mDict[mParentWidget]['row'] = None
+        # et on corrige l'index du parent
+        rowidx[mParentWidget[1]] -= 1
+        
+    elif mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
+        # contrôle des onglets non utilisés
+        for t in mTemplateTabs.values():
+            if (not t in rowidx) or rowidx[t] == 0:
+                mDict[t]['main widget type'] = None
+
     return WidgetsDict(mDict)
 
 
@@ -2819,47 +2827,51 @@ def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
 
     EXEMPLES
     --------
-    >>> concept_from_value("Domaine public", "Types de licences (UE)", vocabulary)
+    >>> rdf_utils.concept_from_value("Domaine public", "Types de licence (UE)", vocabulary)
     (rdflib.term.URIRef('http://purl.org/adms/licencetype/PublicDomain'), rdflib.term.URIRef('http://purl.org/adms/licencetype/1.1'))
         
-    >>> concept_from_value("Transports", None, vocabulary)
+    >>> rdf_utils.concept_from_value("Transports", None, vocabulary)
     (rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme/TRAN'), rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme'))
-    """
+    """    
+    if schemeStr in ('< non répertorié >', '< manuel >', '< URI >'):
+        return None, None
 
-    if schemeStr:
-        q_vc = vocabulary.query(
-            """
-            SELECT
-                ?concept ?scheme
-            WHERE
-                { ?concept a skos:Concept ;
-                   skos:inScheme ?scheme ;
-                   skos:prefLabel ?c .
-                   ?scheme a skos:ConceptScheme ;
-                   skos:prefLabel ?s . }
-            """,
-            initBindings = { 'c' : Literal(conceptStr, lang=language),
-                            's' : Literal(schemeStr, lang=language) }
+    # IRI des concepts dont le label est conceptStr :
+    concepts = [ s for s in vocabulary.subjects(
+        URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
+        Literal(conceptStr, lang=language)
+        ) ]
+        
+    if not concepts:
+        return None, None
+        
+    if schemeStr is None:
+        # choix arbitraire d'un concept dans la liste :
+        conceptIRI = concepts[0]
+        # IRI de l'ensemble dont fait partie le concept :
+        schemeIRI = vocabulary.value(
+            conceptIRI,
+            URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
             )
-         
-        for t in q_vc:
-            return ( t['concept'], t['scheme'] )
-            
-    else:
-        q_vc = vocabulary.query(
-            """
-            SELECT
-                ?concept ?scheme
-            WHERE
-                { ?concept a skos:Concept ;
-                   skos:inScheme ?scheme ;
-                   skos:prefLabel ?c . }
-            """,
-            initBindings = { 'c' : Literal(conceptStr, lang=language) }
+        if schemeIRI:
+            # NB : cette condition est en principe inutile. Si
+            # vocabulary a été correctement contrôlé, inScheme
+            # sera présent sur tous les concepts
+            return conceptIRI, schemeIRI
+
+    for conceptIRI in concepts:
+        # IRI de l'ensemble dont fait partie le concept :
+        schemeIRI = vocabulary.value(
+            conceptIRI,
+            URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
             )
-         
-        for t in q_vc:
-            return t['concept'], t['scheme']
+        # label de l'ensemble :
+        labels = [ str(o) for o in vocabulary.objects(
+            schemeIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+            ) if o.language == language ]
+        # ... et on le garde s'il coïncide avec schemeStr :
+        if labels and labels[0] == schemeStr:
+            return conceptIRI, schemeIRI
         
     return ( None, None )
 
@@ -2889,7 +2901,7 @@ def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False):
     (None, None) si l'IRI n'est pas répertorié.
     
     Si aucune valeur n'est disponible pour la langue spécifiée, la fonction retournera
-    la traduction française (si elle existe).
+    la traduction française (si elle existe), ou à défaut la première traduction venue.
     
     EXEMPLES
     --------
@@ -2898,61 +2910,56 @@ def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False):
 
     >>> u = URIRef("http://publications.europa.eu/resource/authority/data-theme/TRAN")
     
-    >>> value_from_concept(u, vocabulary)
+    >>> rdf_utils.value_from_concept(u, vocabulary)
     ('Transports', 'Thèmes de données (UE)')
     
-    >>> value_from_concept(u, vocabulary, 'en')
+    >>> rdf_utils.value_from_concept(u, vocabulary, 'en')
     ('Transport', 'Data theme (EU)')
     
-    >>> value_from_concept(u, vocabulary, 'es')
+    >>> rdf_utils.value_from_concept(u, vocabulary, 'es')
     ('Transports', 'Thèmes de données (UE)')
     """
     
-    q_vc = vocabulary.query(
-        """
-        SELECT
-            ?label ?scheme ?page
-        WHERE
-            {{ ?c a skos:Concept ;
-               skos:inScheme ?s ;
-               skos:prefLabel ?label .
-               ?s a skos:ConceptScheme ;
-               skos:prefLabel ?scheme .
-               OPTIONAL {{ ?c foaf:page ?page }} .
-               FILTER ((lang(?label) = "{0}") 
-                  && (lang(?scheme) = "{0}")) }}
-        """.format(language),
-        initBindings = { 'c' : conceptIRI }
+    # labels du concept dans toutes les langues :
+    labels = [ o for o in vocabulary.objects(
+        conceptIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+        ) ]
+
+    if not labels:
+        # concept non référencé
+        return (None, None, None) if getpage else (None, None)
+        
+    conceptStr = str(pick_translation(labels, language))
+    
+    schemeIRI = vocabulary.value(
+        conceptIRI, URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
         )
     
-    if len(q_vc) == 0:
-        q_vc = vocabulary.query(
-        """
-        SELECT
-            ?label ?scheme ?page
-        WHERE
-            { ?c a skos:Concept ;
-               skos:inScheme ?s ;
-               skos:prefLabel ?label .
-               ?s a skos:ConceptScheme ;
-               skos:prefLabel ?scheme .
-               OPTIONAL { ?c foaf:page ?page } .
-               FILTER ((lang(?label) = "fr") 
-                  && (lang(?scheme) = "fr")) }
-        """,
-        initBindings = { 'c' : conceptIRI }
-        )
+    if schemeIRI is None:
+        # NB : cette condition est en principe inutile. Si
+        # vocabulary a été correctement contrôlé, inScheme
+        # sera présent sur tous les concepts
+        return (None, None, None) if getpage else (None, None)
     
-    for t in q_vc:
-        if getpage:
-            return ( str( t['label'] ), str( t['scheme'] ), t['page'] )
-        else:
-            return ( str( t['label'] ), str( t['scheme'] ) )
+    # labels de l'ensemble dans toutes les langues :
+    slabels = [ o for o in vocabulary.objects(
+        schemeIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+        ) ]
+        
+    if not slabels:
+        # NB : ne devrait jamais arriver. Tout ensemble
+        # référencé a au moins un label
+        return (None, None, None) if getpage else (None, None)
+        
+    schemeStr = str(pick_translation(slabels, language))
     
     if getpage:
-        return ( None, None, None )
-    else:
-        return ( None, None )
+        page = vocabulary.value(
+            conceptIRI, URIRef("http://xmlns.com/foaf/0.1/#page")
+            )
+        return conceptStr, schemeStr, page
+
+    return conceptStr, schemeStr
     
 
 def email_from_owlthing(thingIRI):
@@ -3861,6 +3868,45 @@ def uripath_from_sparqlpath(path, nsm, strict=True):
             raise ValueError("'{}' is not a valid prefixed SPARQL path element.".format(e))
             
     return p
+
+
+def pick_translation(litList, language):
+    """Renvoie l'élément de la liste correspondant à la langue désirée.
+    
+    ARGUMENTS
+    ---------
+    - litList (list) : une liste de Literal, présumés
+    de type xsd:string.
+    - language (str) : la langue pour laquelle on cherche
+    une traduction.
+    
+    RESULTAT
+    --------
+    Un des éléments de la liste (Literal), qui peut être :
+    - le premier dont la langue est language ;
+    - à défaut, le dernier dont la langue est 'fr' ;
+    - à défaut, le premier de la liste.
+    
+    ATTENTION : cette fonction ne doit en aucun cas être
+    appliquée à une liste vide (provoquerait une erreur).
+    """
+    val = None
+    
+    for l in litList:
+        if l.language == language:
+            val = l
+            break
+        elif l.language == 'fr':
+            # à défaut de mieux, on gardera la traduction
+            # française
+            val = l
+            
+    if val is None:
+        # s'il n'y a ni la langue demandée ni traduction
+        # française, on prend la première valeur de la liste
+        val = litList[0]
+        
+    return val
 
 
 class ForbiddenOperation(Exception):
