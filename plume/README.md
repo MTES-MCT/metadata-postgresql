@@ -56,7 +56,7 @@ Il est également possible de télécharger une archive ZIP du code du plugin su
 
 ![Formulaire en mode édition](flyers/plume_edit.png)
 
-4. Une fois les modifications réalisées, cliquez sur la disquette ![Bouton de sauvegarde](/plume/icons/general/save.svg) pour enregistrer. Vous pouvez également quitter le mode édition sans sauvegarder en cliquant de nouveau sur le crayon ![Bouton d'activation du mode édition](/plume/icons/general/edit.svg).
+4. Une fois les modifications réalisées, cliquez sur la disquette ![Bouton de sauvegarde](/plume/icons/general/save.svg) pour enregistrer. Vous pouvez également quitter le mode édition sans sauvegarder en cliquant de nouveau sur le crayon ![Bouton d'activation du mode édition](/plume/icons/general/read.svg).
 
 
 ## Documentation
