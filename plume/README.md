@@ -82,17 +82,16 @@ La documentation technique se trouve dans le répertoire [`__doc__`](/_doc__) du
 
 ## Crédits
 
+© République Française, 2021.
+
 ### Production
 
-© République Française, 2021.
-Secrétariat général des Ministère de la transition écologique, Ministère de la cohésion des territoires et des relations avec les collectivités territoriales et Ministère de la Mer.
-Service du numérique.
+Service du numérique du secrétariat général des Ministère de la transition écologique, Ministère de la cohésion des territoires et des relations avec les collectivités territoriales et Ministère de la Mer.
 
 ### Équipe
 
-Didier LECLERC (SNUM/UNI/DRC) : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL.
-
-Leslie LEMAIRE (SNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes ([bibli_rdf](/plume/bibli_rdf) et [bibli_pg](/plume/bibli_pg)), création des logos et icônes.
+- Didier LECLERC (SNUM/UNI/DRC) : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL.
+- Leslie LEMAIRE (SNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes ([bibli_rdf](/plume/bibli_rdf) et [bibli_pg](/plume/bibli_pg)), création des logos et icônes.
 
 ### Contact
 
