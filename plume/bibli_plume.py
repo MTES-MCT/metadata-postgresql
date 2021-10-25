@@ -88,7 +88,7 @@ def returnObjetTpl_label(self) :
     #**********************
     #Récupération de la liste des modèles
     mKeySql = (pg_queries.query_list_templates(), (self.schema, self.table))
-    self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+    self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
 
     # Sélection automatique du modèle
@@ -105,14 +105,14 @@ def returnObjetTpl_label(self) :
 def generationTemplateAndTabs(self, tpl_label):
     # Récupération des CATEGORIES associées au modèle retenu
     mKeySql = (pg_queries.query_get_categories(), (tpl_label,))
-    categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+    categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         
     # Génération de template
     self.template = template_utils.build_template(categories)
 
     # Récupération des TEMPLATES associés au modèle retenu
     mKeySql = (pg_queries.query_template_tabs(), (tpl_label,))
-    tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+    tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
            
     # Génération de templateTabs
     self.templateTabs = template_utils.build_template_tabs(tabs)
@@ -123,7 +123,7 @@ def returnObjetColumns(self, _schema, _table) :
     #**********************
     # liste des champs de la table
     mKeySql = pg_queries.query_get_columns(_schema, _table)
-    columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchall")
+    columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     return columns 
 
 #==================================================
@@ -154,7 +154,7 @@ def returnObjetComment(self, _schema, _table) :
     #**********************
     # Récupération champ commentaire
     mKeySql = pg_queries.query_get_table_comment(_schema, _table)
-    old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+    old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     return old_description
 
 #==================================================
@@ -217,24 +217,25 @@ def saveMetaIhm(self, _schema, _table) :
     self.comment = new_pg_description
     # une requête de mise à jour du descriptif.
     mKeySql = pg_queries.query_get_relation_kind(_schema, _table) 
-    kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+    kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     #-    
     mKeySql = (pg_queries.query_update_table_comment(_schema, _table, relation_kind=kind[0]), (new_pg_description,)) 
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = None)
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #-
     #Mettre à jour les descriptifs des champs de la table.    
     mKeySql = pg_queries.query_update_columns_comments(_schema, _table, self.mDicObjetsInstancies)
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = None)
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #- Mettre à jour les descriptifs de la variable columns pour réaffichage
     self.columns = returnObjetColumns(self, self.schema, self.table)
     return  
     
 #==================================================
-def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
+def executeSql(pointeur, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
-    QApplication.instance().setOverrideCursor(Qt.WaitCursor) 
+    QApplication.instance().setOverrideCursor(Qt.WaitCursor)
+    pointeurBase = pointeur.cursor() 
 
     try :
       if isinstance(_mKeySql, tuple) :
@@ -265,9 +266,11 @@ def executeSql(pointeurBase, _mKeySql, optionRetour = None) :
       else : 
          mTypeErreur = "plume"
 
-      dialogueMessageError(mTypeErreur, zMessError_Erreur )   
+      dialogueMessageError(mTypeErreur, zMessError_Erreur )
+      pointeurBase.close()   
       #-------------
     QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
+    pointeurBase.close()   
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
 
 #==================================================

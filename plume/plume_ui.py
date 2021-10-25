@@ -222,7 +222,7 @@ class Ui_Dialog_plume(object):
 
         #Lecture existence Extension METADATA
         _mContinue = True
-        if not hasattr(self, 'mConnectEnCoursPointeur') :
+        if not hasattr(self, 'mConnectEnCours') :
            if not self.instalMetadata : _mContinue = False
 
         if _mContinue : 
@@ -388,7 +388,7 @@ class Ui_Dialog_plume(object):
         self.connectBaseOKorKO = self.connectBase()
         #-
         if self.connectBaseOKorKO[0] :
-           self.mConnectEnCoursPointeur = self.mConnectEnCours.cursor()
+           pass
         else :    
            zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
            zMess  = QtWidgets.QApplication.translate("plume_ui", "Authentication problem", None)
@@ -420,7 +420,6 @@ class Ui_Dialog_plume(object):
         if okConnect :
            QgsCredentials.instance().put(connInfoUri, retUser, retPassword) 
            self.mConnectEnCours = mConnectEnCours
-           self.mConnectEnCoursPointeur = mConnectEnCours.cursor()
            return True, self.mConnectEnCours, mConfigConnection
         else : 
            return False, None, ""    
@@ -509,13 +508,13 @@ class Ui_Dialog_plume(object):
         #====================
         #====================
         #--QToolButton TEMPLATE                                               
-        if hasattr(self, 'mConnectEnCoursPointeur') :
+        if hasattr(self, 'mConnectEnCours') :
            if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { border: 0px solid black;}")  
            self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
            self.plumeTemplate.setObjectName("Template")
            #Lecture existence Extension METADATA
            mKeySql = (pg_queries.query_exists_extension(), ('metadata',))
-           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
            self.instalMetadata = False
            if r :
               self.instalMetadata = True
@@ -534,7 +533,7 @@ class Ui_Dialog_plume(object):
 
         if hasattr(self, 'mConnectEnCours') :
            mKeySql = (pg_queries.query_is_relation_owner(), (self.schema, self.table))
-           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCoursPointeur, mKeySql, optionRetour = "fetchone")
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
            #-- Activation ou pas 
            self.plumeEdit.setEnabled(r)
            self.plumeSave.setEnabled(r)
