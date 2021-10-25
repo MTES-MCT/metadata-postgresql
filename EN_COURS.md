@@ -21,15 +21,15 @@
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Bascule mode lecture/mode édition  |       |   Ok   |   DL   | |
 | Sauvegarde                         |       |   OK   |   DL   | |
-| Réinitialisation                   |   X   |        |   DL   | |
-| Export                             |   X   |        |   DL   | |
-| Import                             |   X   |        |   DL   | |
+| Réinitialisation                   |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#réinitialisation) |
+| Export                             |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#export-des-métadonnées-dans-un-fichier) |
+| Import                             |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#import-de-métadonnées-depuis-un-fichier) |
 | Choix du modèle                    |       |   OK   |   DL   | |
 | Activation du mode traduction      |       |   OK   |   DL   | |
-| Choix de la langue principale      |   X   |        |   DL   | |
+| Choix de la langue principale      |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées) |
 | Génération petit JSON GéoIDE       |   X   |        |   DL   | Petite adaptation à faire à l'étape 3 du [processus de sauvegarde](/__doc__/16_actions_generales.md#sauvegarde). Il s'agit de passer un paramètre supplémentaire à `update_pg_description()` + gestion du [paramètre utilisateur](/__doc__/20_parametres_utilisateurs.md) correspondant (`geoideJSON`). |
 | Récupération des UUID GéoIDE       |   X   |        |   DL   | L'argument `data` de `build_dict()` sert maintenant à quelque chose ! La [documentation](/__doc__/05_generation_dictionnaire_widgets.md#data--les-métadonnées-calculées) explique comment l'utiliser pour passer l'identifiant GéoIDE à `build_dict()`. |
-| Mécanisme de copier/coller de fiche complète |   X   |        |   LL   | À ajouter à la documentation avant passage de relai à DL. |
+| Mécanisme de copier/coller de fiche complète |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#copier--coller-dune-fiche-complète) |
 
 ### Anomalies et bricoles
 
