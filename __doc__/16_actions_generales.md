@@ -2,7 +2,9 @@
 
 Sont décrites ici les actions que l'utilisateur peut réaliser dans la partie fixe de l'interface du plugin. Pour les interactions de l'utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à [Actions contrôlées par les widgets du formulaire](/__doc__/15_actions_widgets.md).
 
-[Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation) • [Sélection de la table à documenter](#sélection-de-la-table-à-documenter)
+Barre d'outils de plume : [Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation) • [Copier / coller d'une fiche complète](#copier---coller-d-une-fiche-complète)
+
+Autres actions : [Sélection de la table à documenter](#sélection-de-la-table-à-documenter)
 
 ## Mode lecture, mode édition
 
@@ -395,6 +397,31 @@ Il utilise l'icône [empty.svg](/plume/icons/general/empty.svg) :
 ![empty.svg](/plume/icons/general/empty.svg)
 
 Texte d'aide : *Vider la fiche de métadonnées*.
+
+
+## Copier / coller d'une fiche complète
+
+### Effets
+
+Cette fonctionnalité permet à l'utilisateur de copier l'ensemble des métadonnées renseignées pour une table A vers une autre table B.
+
+Concrètement :
+- l'action *Copier* (sur la table A) mémorise le `metagraph` de la table A ;
+- l'action *Coller* (sur la table B) régénère le dictionnaire de widgets en utilisant le graphe de mémorisé comme argument `metagraph` de `build_dict()` (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis re-construit le formulaire en conséquence (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
+
+### Caractéristiques des boutons
+
+Le bouton *Copier* est actif quel que soit le mode.
+
+Icône : ![copy_all.svg](/plume/icons/general/copy_all.svg)
+
+Texte d'aide : *Copier la fiche de métadonnées*.
+
+Le bouton *Coller* n'est actif qu'en mode édition et si un graphe a été préalablement mémorisé.
+
+Icône : ![paste_all.svg](/plume/icons/general/paste_all.svg)
+
+Texte d'aide : *Coller la fiche de métadonnées mémorisée*.
 
 
 ## Sélection de la table à documenter
