@@ -234,7 +234,6 @@ def saveMetaIhm(self, _schema, _table) :
 #==================================================
 def executeSql(pointeur, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
-    QApplication.instance().setOverrideCursor(Qt.WaitCursor)
     pointeurBase = pointeur.cursor() 
 
     try :
@@ -253,7 +252,6 @@ def executeSql(pointeur, _mKeySql, optionRetour = None) :
          result = pointeurBase.fetchall()
           
     except Exception as err:
-      QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
       result = None
       zMessError_Code   = (str(err.pgcode) if hasattr(err, 'pgcode') else '')
       zMessError_Erreur = (str(err.pgerror) if hasattr(err, 'pgerror') else '')
@@ -269,7 +267,6 @@ def executeSql(pointeur, _mKeySql, optionRetour = None) :
       dialogueMessageError(mTypeErreur, zMessError_Erreur )
       pointeurBase.close()   
       #-------------
-    QApplication.instance().setOverrideCursor(Qt.ArrowCursor) 
     pointeurBase.close()   
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
 
@@ -504,7 +501,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.1.0"
+def returnVersion() : return "version 0.2.0"
 
 #==================================================
 #Execute Pdf 

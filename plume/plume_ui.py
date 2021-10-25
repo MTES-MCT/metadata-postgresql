@@ -144,16 +144,7 @@ class Ui_Dialog_plume(object):
         #=====================================================  
         # Window Versus Dock
         if self.ihm in ["dockTrue", "dockFalse"] :
-           #----
-           dlg = QDockWidget()
-           dlg.setObjectName("PLUME")
-           dlg.setMinimumSize(420, 300)
-           dlg.setWindowTitle(QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
-           self.iface.addDockWidget(Qt.RightDockWidgetArea, dlg)
-           dlg.setFloating(True if self.ihm in ["dockTrue"] else False)
-           dlg.setWidget(self.Dialog)
-           dlg.resize(420, 300)
-           self.dlg = dlg 
+           monDock = MONDOCK(self.Dialog)
         # Window Versus Dock
         #----
         self.mode = "read"  #Intiialise les autres instances  
@@ -196,16 +187,18 @@ class Ui_Dialog_plume(object):
               self.mode = "read"
            else  : 
               self.mode = "read"
-           #-
-        #**********************
-        elif mItem == "Traduction" :
-           self.translation = (False if self.translation else True) 
         #**********************
         elif mItem == "Save" :                                            
            bibli_plume.saveMetaIhm(self, self.schema, self.table) 
         #**********************
+        elif mItem == "Empty" :
+           self.metagraph  = bibli_plume.returnObjetMetagraph(self, "")
+        #**********************
+        elif mItem == "Traduction" :
+           self.translation = (False if self.translation else True) 
+        #**********************
         #*** commun
-        if mItem in ["Edition", "Traduction", "Save"] :
+        if mItem in ["Edition", "Save", "Empty", "Traduction"] :
            bibli_plume.saveObjetTranslation(self.translation)
            self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
 
@@ -429,6 +422,31 @@ class Ui_Dialog_plume(object):
     #---------------------------
 
     #==========================
+    def closeEvent(self, event):
+        print("DOCK DIALOG " + str(event))
+
+        try :
+           if hasattr(self, 'mConnectEnCours') :
+              self.mConnectEnCours.close()
+        except:
+           pass
+
+        try :
+           self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)
+        except:
+           pass
+
+        try :
+           self.navigateurTreeView2.clicked.disconnect(self.retrieveInfoLayerBrowser)
+        except:
+           pass
+
+        try :
+           iface.layerTreeView().clicked.disconnect(self.retrieveInfoLayerQgis)
+        except:
+           pass
+
+    #==========================
     def resizeEvent(self, event):
         if self.firstOpen :
            self.firstOpen = False
@@ -553,10 +571,6 @@ class Ui_Dialog_plume(object):
         #-
         self.plumeEdit.setToolTip(self.mTextToolTipEdit if self.mode == 'read' else self.mTextToolTipRead)   
         if self.toolBarDialog == "picture" :
-           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#B5B5B5"     #Gris
-           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#FFFF84"     #Jaune
-           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#FFB27F"     #Orange
-           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#958B62"     #Brun
            _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
            self.plumeEdit.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if self.mode == 'read' else \
                                         "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
@@ -636,7 +650,7 @@ class Ui_Dialog_plume(object):
         self.plumeEmpty = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeEmpty.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeEmpty.setIcon(QIcon(_iconSourcesEmpty))
-        self.plumeEmpty.setObjectName(mText)
+        self.plumeEmpty.setObjectName("Empty")
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Vider la fiche de métadonnées.") 
         self.plumeEmpty.setToolTip(mTextToolTip)
         self.plumeEmpty.setGeometry(QtCore.QRect(70,0,18,18))
@@ -722,4 +736,54 @@ class Ui_Dialog_plume(object):
            valueDefautFileHelp  = self.fileHelpHtml
         bibli_plume.execPdf(valueDefautFileHelp)
         return
+
+#==========================
+# Window Versus Dock
+class MONDOCK(QDockWidget):
+    def __init__(self, mDialog):
+        super().__init__()
+        dlg = QDockWidget()
+        dlg.setObjectName("PLUME")
+        dlg.setMinimumSize(420, 300)
+        dlg.setWindowTitle(QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
+        mDialog.iface.addDockWidget(Qt.RightDockWidgetArea, dlg)
+        dlg.setFloating(True if mDialog.ihm in ["dockTrue"] else False)
+        dlg.setWidget(mDialog)
+        dlg.resize(420, 300)
+        mDialog.dlg = dlg
+
+    #==========================
+    def event(self, event):
+        print("DOCK event " + str(event))
+        event.accept()
+        return
+
+    #==========================
+    def closeEvent(self, event):
+        print(mDialog.ihm)
+        print("DOCK closeEvent " + str(event))
+        try :
+           if hasattr(self, 'mConnectEnCours') :
+              self.mConnectEnCours.close()
+        except:
+           pass
+
+        try :
+           self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)
+        except:
+           pass
+
+        try :
+           self.navigateurTreeView2.clicked.disconnect(self.retrieveInfoLayerBrowser)
+        except:
+           pass
+
+        try :
+           iface.layerTreeView().clicked.disconnect(self.retrieveInfoLayerQgis)
+        except:
+           pass
+        return
+         
+# Window Versus Dock
+            
                  
