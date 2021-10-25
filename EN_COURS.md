@@ -31,6 +31,7 @@
 | Génération petit JSON GéoIDE       |   X   |        |   DL   | Petite adaptation à faire à l'étape 3 du [processus de sauvegarde](/__doc__/16_actions_generales.md#sauvegarde). Il s'agit de passer un paramètre supplémentaire à `update_pg_description()` + gestion du [paramètre utilisateur](/__doc__/20_parametres_utilisateurs.md) correspondant (`geoideJSON`). |
 | Récupération des UUID GéoIDE       |   X   |        |   DL   | L'argument `data` de `build_dict()` sert maintenant à quelque chose ! La [documentation](/__doc__/05_generation_dictionnaire_widgets.md#data--les-métadonnées-calculées) explique comment l'utiliser pour passer l'identifiant GéoIDE à `build_dict()`. |
 | Mécanisme de copier/coller de fiche complète |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#copier--coller-dune-fiche-complète) |
+| Consolidation de la gestion des paramètres utilisateurs  |   X   |        |   DL   | Comme évoqué [ici](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/20_parametres_utilisateur.md), il s'agit de ne plus créer de valeur par défaut pour certains paramètres. |
 
 ### Anomalies et bricoles
 
@@ -48,6 +49,8 @@
 | Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |       |   OK   |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
 | Anomalie : quand l'extension metadata est installée mais que les modèles pré-configurés n'ont pas été chargés, à l'ouverture d'une fiche de métadonnées on a un onglet "Général" vide et toutes les métadonnées dans "Autres". |   X   |      |   DL   | NB : la petite plume de l'interface indique que le modèle est "Aucun", mais ce n'est pas vraiment le cas puisque cliquer sur "Aucun" remet les choses en ordre (= toutes les métadonnées dans "Général"). Il y a peut-être un rapport avec le paramètre `preferedTemplate` enregistré avec comme valeur `"Basique"` dans `QGIS3.ini` ? |
 | Gestion des erreurs PostgreSQL à nettoyer |   X   |        |   DL   | Pas besoin de distinguer des erreurs gérées ou non pour Plume - PG n'est jamais censé renvoyer d'erreur. Pour l'image affichée dans la boîte de dialogue, le logo de Plume devrait faire l'affaire pour l'instant. |
+| Reprise du `metagraph` d'origine lorsqu'on quitte le mode édition sans sauvegarder après une réinitialisation, un import ou un copier/coller.  |   X   |        |   DL   | Pour l'heure le formulaire est régénéré avec le `metagraph` résultant de l'action annulée lorsque l'utilisateur revient en mode lecture. Il faut recliquer sur la source pour retrouver les métadonnées d'origine. |
+| Quand le modèle référencé dans `preferedTemplate` est appelé mais n'existe pas, `template` et `templateTabs` devraient être mis à `None`.  |   X   |        |   DL   | |
 
 ## Plume version 2.0
 
