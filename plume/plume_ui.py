@@ -32,13 +32,10 @@ import subprocess
 import time
 import sys
 
-from .bibli_rdf.tests import rdf_utils_demo
-
 from .bibli_rdf import rdf_utils
 from .bibli_pg  import pg_queries
 from .bibli_pg  import template_utils
 
-       
 class Ui_Dialog_plume(object):
     def __init__(self):
         self.iface = qgis.utils.iface                         
@@ -48,6 +45,7 @@ class Ui_Dialog_plume(object):
     def setupUi(self, Dialog):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
+        #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
         self.lScreenDialog, self.hScreenDialog = int(self.mDic_LH["dialogLargeur"]), int(self.mDic_LH["dialogHauteur"])
@@ -288,7 +286,6 @@ class Ui_Dialog_plume(object):
     # == Gestion des INTERACTIONS
     def gestionInteractionConnections(self):
         _mCommentPlume = "Attention !! des métadonnées sont gérées pour cette couche !"
-        #self.dbplugin = createDbPlugin('postgis', 'postgres')
         self.db      = None
         self.schema  = None
         self.table   = None
@@ -340,21 +337,19 @@ class Ui_Dialog_plume(object):
                  #-
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
         return
-    
+
     #---------------------------
     def retrieveInfoLayerBrowser(self, index):
         mNav = self.sender().objectName()
         # DL
-        self.origine = self.mNav1 if mNav == self.mNav1 else self.mNav2 
         #issu code JD Lomenede
         # copyright            : (C) 2020 by JD Lomenede for # self.proxy_model = self.navigateurTreeView.model() = self.model = iface.browserModel() = item = self.model.dataItem(self.proxy_model.mapToSource(index)) #
-        # DL
         self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
         # DL
+        self.modelDefaut = iface.browserModel() 
         self.model = iface.browserModel()
         item = self.model.dataItem(self.proxy_model.mapToSource(index))
         #issu code JD Lomenede
-
         if isinstance(item, QgsLayerItem):
             self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
             self.getAllFromUri()
