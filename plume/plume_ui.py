@@ -194,11 +194,18 @@ class Ui_Dialog_plume(object):
         elif mItem == "Empty" :
            self.metagraph  = bibli_plume.returnObjetMetagraph(self, "")
         #**********************
+        elif mItem == "Export" :
+           pass
+        #**********************
+        elif mItem == "Import" :
+           metagraph  = bibli_plume.importObjetMetagraph(self)
+           if metagraph != None : self.metagraph = metagraph
+        #**********************
         elif mItem == "Traduction" :
            self.translation = (False if self.translation else True) 
         #**********************
         #*** commun
-        if mItem in ["Edition", "Save", "Empty", "Traduction"] :
+        if mItem in ["Edition", "Save", "Empty", "Import", "Traduction"] :
            bibli_plume.saveObjetTranslation(self.translation)
            self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
 
@@ -660,7 +667,7 @@ class Ui_Dialog_plume(object):
         self.plumeExport = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeExport.setIcon(QIcon(_iconSourcesExport))
-        self.plumeExport.setObjectName(mText)
+        self.plumeExport.setObjectName("Export")
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Exporter les métadonnées dans un fichier.") 
         self.plumeExport.setToolTip(mTextToolTip)
         self.plumeExport.setGeometry(QtCore.QRect(100,0,18,18))
@@ -670,7 +677,7 @@ class Ui_Dialog_plume(object):
         self.plumeImport = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeImport.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeImport.setIcon(QIcon(_iconSourcesImport))
-        self.plumeImport.setObjectName(mText)
+        self.plumeImport.setObjectName("Import")
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Importer les métadonnées depuis un fichier.") 
         self.plumeImport.setToolTip(mTextToolTip)
         self.plumeImport.setGeometry(QtCore.QRect(130,0,18,18))

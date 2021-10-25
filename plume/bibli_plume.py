@@ -84,6 +84,47 @@ def returnObjetMetagraph(self, old_description) :
     return metagraph 
 
 #==================================================
+def exportObjetMetagraph(self) :
+    #boite de dialogue Fichiers
+    InitDir = os.path.dirname(__file__) + "\\" + "AM_Export_Csv_" + time.strftime("%Y%m%d_%Hh%Mm%S") + ".csv"
+    TypeList = QtWidgets.QApplication.translate("bibli_graph_asgard", "Dashboard Export CSV", None) + " (*.csv)"
+    fileName = QFileDialog.getSaveFileName(None,QtWidgets.QApplication.translate("bibli_graph_asgard", "Asgard Manager Dashboard Export CSV", None),InitDir,TypeList)
+
+    #**********************
+    # Récupération fiche de métadonnée
+    try:
+       metagraph = rdf_utils.metagraph_from_file(filepath)
+    except:
+       zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à importer votre fiche de métadonnées.", None)
+       displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+
+       metagraph = None
+    return metagraph 
+
+#==================================================
+def importObjetMetagraph(self) :
+    #boite de dialogue Fichiers
+    MonFichierPath = os.path.join(os.path.dirname(__file__))
+    MonFichierPath = MonFichierPath.replace("\\","/")        
+    InitDir = MonFichierPath
+    TypeList = "json-ld (*.json *.jsonld);;xml (*.xml *.rdf);;turtle\t (*.ttl);;n3 (*.n3);;nt (*.nt);;trig (*.trig);;Tous les fichiers (*.*)"
+    fileName = QFileDialog.getOpenFileName(None,"metadata file",InitDir,TypeList)
+    filepath = str(fileName[0]) if fileName[0] != "" else "" 
+    if filepath == "" : return
+    #**********************
+    # Récupération fiche de métadonnée
+    try:
+       metagraph = rdf_utils.metagraph_from_file(filepath)
+    except:
+       zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à importer votre fiche de métadonnées.", None)
+       displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+
+       metagraph = None
+    return metagraph 
+
+#==================================================
 def returnObjetTpl_label(self) :
     #**********************
     #Récupération de la liste des modèles
@@ -192,22 +233,23 @@ def saveMetaIhm(self, _schema, _table) :
     #-    
     # Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie.
     for _keyObjet, _valueObjet in self.mDicObjetsInstancies.items() :
-        value = None
-        if _valueObjet['main widget type'] in ("QLineEdit") :
-           value = _valueObjet['main widget'].text()
-        elif _valueObjet['main widget type'] in ("QTextEdit") :
-           value = _valueObjet['main widget'].toPlainText()
-        elif _valueObjet['main widget type'] in ("QComboBox") :
-           value = _valueObjet['main widget'].currentText()                   
-        elif _valueObjet['main widget type'] in ("QDateEdit") :
-           value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
-        elif _valueObjet['main widget type'] in ("QDateTimeEdit") :
-           value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
-        elif _valueObjet['main widget type'] in ("QCheckBox") :
-           value = True if _valueObjet['main widget'].isChecked() else False
+        if _valueObjet['main widget type'] != None :
+           value = None
+           if _valueObjet['main widget type'] in ("QLineEdit") :
+               value = _valueObjet['main widget'].text()
+           elif _valueObjet['main widget type'] in ("QTextEdit") :
+               value = _valueObjet['main widget'].toPlainText()
+           elif _valueObjet['main widget type'] in ("QComboBox") :
+               value = _valueObjet['main widget'].currentText()                   
+           elif _valueObjet['main widget type'] in ("QDateEdit") :
+               value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
+           elif _valueObjet['main widget type'] in ("QDateTimeEdit") :
+              value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
+           elif _valueObjet['main widget type'] in ("QCheckBox") :
+              value = True if _valueObjet['main widget'].isChecked() else False
 
-        if _valueObjet['object'] == "edit" and not (_valueObjet['hidden'] or _valueObjet['hidden M']): 
-           self.mDicObjetsInstancies.update_value(_keyObjet, value)
+           if _valueObjet['object'] == "edit" and not (_valueObjet['hidden'] or _valueObjet['hidden M']): 
+              self.mDicObjetsInstancies.update_value(_keyObjet, value)
     #-    
     #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
     self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary, language=_language) 
