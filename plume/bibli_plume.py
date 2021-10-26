@@ -105,11 +105,11 @@ def exportObjetMetagraph(self) :
 #==================================================
 def importObjetMetagraph(self) :
     #boite de dialogue Fichiers
-    MonFichierPath = os.path.join(os.path.dirname(__file__))
+    MonFichierPath = desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
     MonFichierPath = MonFichierPath.replace("\\","/")        
     InitDir = MonFichierPath
-    TypeList = "json-ld (*.json *.jsonld);;xml (*.xml *.rdf);;turtle\t (*.ttl);;n3 (*.n3);;nt (*.nt);;trig (*.trig);;Tous les fichiers (*.*)"
-    fileName = QFileDialog.getOpenFileName(None,"metadata file",InitDir,TypeList)
+    TypeList = "xml (*.xml *.rdf);;json-ld (*.json *.jsonld);;turtle\t (*.ttl);;n3 (*.n3);;nt (*.nt);;trig (*.trig);;Tous les fichiers (*.*)"
+    fileName = QFileDialog.getOpenFileName(None,"Fiches de métadonnées",InitDir,TypeList)
     filepath = str(fileName[0]) if fileName[0] != "" else "" 
     if filepath == "" : return
     #**********************
@@ -133,11 +133,14 @@ def returnObjetTpl_label(self) :
     self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
 
     # Sélection automatique du modèle
-    templateLabels = self.templateLabels
+    templateLabels = self.templateLabels 
     if self.preferedTemplate and self.enforcePreferedTemplate and templateLabels and self.preferedTemplate in templateLabels :
        tpl_label = self.preferedTemplate
     else : 
        tpl_label = template_utils.search_template(self.metagraph, self.templates)
+       if not tpl_label :
+          if self.preferedTemplate and templateLabels and self.preferedTemplate in templateLabels :
+             tpl_label = self.preferedTemplate
 
     return tpl_label 
 
@@ -228,7 +231,7 @@ def returnObjetsMeta(self, _schema, _table) :
 def saveMetaIhm(self, _schema, _table) :
     #---------------------------
     # Gestion des langues
-    _language = 'fr'
+    _language = self.language
 
     #-    
     # Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie.
@@ -253,9 +256,10 @@ def saveMetaIhm(self, _schema, _table) :
     #-    
     #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
     self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary, language=_language) 
+    self.oldMetagraph  = self. metagraph
     #-    
-    #Créer une version actualisée du descriptif PostgreSQL de l'objet.   
-    new_pg_description = rdf_utils.update_pg_description(self.comment, self.metagraph) 
+    #Créer une version actualisée du descriptif PostgreSQL de l'objet. 
+    new_pg_description = rdf_utils.update_pg_description(self.comment, self.metagraph, geoideJSON=self.geoideJSON) 
     self.comment = new_pg_description
     # une requête de mise à jour du descriptif.
     mKeySql = pg_queries.query_get_relation_kind(_schema, _table) 
@@ -507,19 +511,10 @@ def returnAndSaveDialogParam(self, mAction):
        mSettings.endGroup()
        mSettings.beginGroup("UserSettings")
        #Ajouter si autre param
-       mDicUserSettings["preferedTemplate"]        = "Basique"
-       mDicUserSettings["enforcePreferedTemplate"] = "false"
-       mDicUserSettings["readHideBlank"]           = "true"
-       mDicUserSettings["readHideUnlisted"]        = "true"
-       mDicUserSettings["editHideUnlisted"]        = "false"
        mDicUserSettings["language"]                = "fr"
        mDicUserSettings["translation"]             = "false"
        mDicUserSettings["langList"]                = ['fr', 'en']
-       mDicUserSettings["readOnlyCurrentLanguage"] = "true"
-       mDicUserSettings["editOnlyCurrentLanguage"] = "false"
-       mDicUserSettings["labelLengthLimit"]        = 25
-       mDicUserSettings["valueLengthLimit"]        = 65
-       mDicUserSettings["textEditRowSpan"]         = 6
+       mDicUserSettings["geoideJSON"]              = "true"
        #----
        for key, value in mDicUserSettings.items():
            if not mSettings.contains(key) :

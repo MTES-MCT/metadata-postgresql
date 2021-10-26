@@ -72,19 +72,20 @@ class Ui_Dialog_plume(object):
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
         #---
         # liste des Paramétres UTILISATEURS
-        self.preferedTemplate        = self.mDic_LH["preferedTemplate"]
-        self.enforcePreferedTemplate = True if self.mDic_LH["enforcePreferedTemplate"] == "true" else False
-        self.readHideBlank           = True if self.mDic_LH["readHideBlank"] == "true" else False
-        self.readHideUnlisted        = True if self.mDic_LH["readHideUnlisted"] == "true" else False 
-        self.editHideUnlisted        = True if self.mDic_LH["editHideUnlisted"] == "true" else False 
-        self.language                = self.mDic_LH["language"]
-        self.initTranslation         = self.mDic_LH["translation"]  
-        self.langList                = self.mDic_LH["langList"]
-        self.readOnlyCurrentLanguage = True if self.mDic_LH["readOnlyCurrentLanguage"] == "true" else False
-        self.editOnlyCurrentLanguage = True if self.mDic_LH["editOnlyCurrentLanguage"] == "true" else False
-        self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]
-        self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]
-        self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]
+        self.preferedTemplate        = self.mDic_LH["preferedTemplate"]                                       if "preferedTemplate"        in self.mDic_LH   else None
+        self.enforcePreferedTemplate = (True if self.mDic_LH["enforcePreferedTemplate"] == "true" else False) if "enforcePreferedTemplate" in self.mDic_LH   else None
+        self.readHideBlank           = (True if self.mDic_LH["readHideBlank"]           == "true" else False) if "readHideBlank"           in self.mDic_LH   else None
+        self.readHideUnlisted        = (True if self.mDic_LH["readHideUnlisted"]        == "true" else False) if "readHideUnlisted"        in self.mDic_LH   else None
+        self.editHideUnlisted        = (True if self.mDic_LH["editHideUnlisted"]        == "true" else False) if "editHideUnlisted"        in self.mDic_LH   else None
+        self.language                = self.mDic_LH["language"]                                               if "language"                in self.mDic_LH   else "fr"
+        self.initTranslation         = self.mDic_LH["translation"]                                            if "translation"             in self.mDic_LH   else "false" 
+        self.langList                = self.mDic_LH["langList"]                                               if "langList"                in self.mDic_LH   else ['fr', 'en']
+        self.geoideJSON              = (True if self.mDic_LH["geoideJSON"]              == "true" else False) if "geoideJSON"              in self.mDic_LH   else True
+        self.readOnlyCurrentLanguage = (True if self.mDic_LH["readOnlyCurrentLanguage"] == "true" else False) if "readOnlyCurrentLanguage" in self.mDic_LH   else None
+        self.editOnlyCurrentLanguage = (True if self.mDic_LH["editOnlyCurrentLanguage"] == "true" else False) if "editOnlyCurrentLanguage" in self.mDic_LH   else None
+        self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]                                       if "labelLengthLimit"        in self.mDic_LH   else None
+        self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if "valueLengthLimit"        in self.mDic_LH   else None
+        self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if "textEditRowSpan"         in self.mDic_LH   else None
         # liste des Paramétres UTILISATEURS
         #---
         _pathIcons = os.path.dirname(__file__) + "/icons/general"
@@ -187,17 +188,36 @@ class Ui_Dialog_plume(object):
               self.mode = "read"
            else  : 
               self.mode = "read"
+           #-   
+           if self.saveMetaGraph :
+              self.oldMetagraph  = self.metagraph
+           else :   
+              self.metagraph     = self.oldMetagraph
+           self.saveMetaGraph = False
         #**********************
         elif mItem == "Save" :                                            
            bibli_plume.saveMetaIhm(self, self.schema, self.table) 
+           self.saveMetaGraph = True
         #**********************
         elif mItem == "Empty" :
+           if self.saveMetaGraph :
+              self.oldMetagraph  = self.metagraph
+           else :   
+              self.metagraph     = self.oldMetagraph
+           self.saveMetaGraph = False
+           #-   
            self.metagraph  = bibli_plume.returnObjetMetagraph(self, "")
         #**********************
         elif mItem == "Export" :
            pass
         #**********************
         elif mItem == "Import" :
+           if self.saveMetaGraph :
+              self.oldMetagraph  = self.metagraph
+           else :   
+              self.metagraph     = self.oldMetagraph
+           self.saveMetaGraph = False
+           #-   
            metagraph  = bibli_plume.importObjetMetagraph(self)
            if metagraph != None : self.metagraph = metagraph
         #**********************
@@ -320,6 +340,8 @@ class Ui_Dialog_plume(object):
                  #-
                  self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
                  self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
+                 self.oldMetagraph  = self.metagraph
+                 self.saveMetaGraph = False
                  self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
                  self.mode = "read"
                  #-
@@ -327,8 +349,11 @@ class Ui_Dialog_plume(object):
                  #-
                  if self.instalMetadata :
                     #-
-                    tpl_labelDefaut                  = bibli_plume.returnObjetTpl_label(self)
-                    self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                    tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
+                    if tpl_labelDefaut :
+                       self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                    else :
+                       self.template, self.templateTabs = None, None   
                     #-
                     self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
                     self.majQmenuModeleIconFlag(tpl_labelDefaut)
@@ -359,6 +384,8 @@ class Ui_Dialog_plume(object):
                #-
                self.comment = bibli_plume.returnObjetComment(self, self.schema, self.table)
                self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
+               self.oldMetagraph  = self.metagraph
+               self.saveMetaGraph = False
                self.columns = bibli_plume.returnObjetColumns(self, self.schema, self.table)
                self.mode = "read"
                #-
@@ -366,8 +393,11 @@ class Ui_Dialog_plume(object):
                #-
                if self.instalMetadata :
                   #-
-                  tpl_labelDefaut                  = bibli_plume.returnObjetTpl_label(self)
-                  self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                  tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
+                  if tpl_labelDefaut :
+                     self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                  else :
+                     self.template, self.templateTabs = None, None   
                   #-
                   self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
                   self.majQmenuModeleIconFlag(tpl_labelDefaut)

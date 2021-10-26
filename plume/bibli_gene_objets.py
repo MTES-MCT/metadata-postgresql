@@ -32,8 +32,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 
     #---------------------------
     # Gestion des langues
-    _language = 'fr'
-    _langList = ['fr', 'en']
+    _language = self.language
+    _langList = self.langList
 
     #---------------------------
     #Pour Gestion et Génération à la volée des onglets 
