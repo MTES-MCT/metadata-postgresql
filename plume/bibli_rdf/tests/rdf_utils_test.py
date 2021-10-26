@@ -750,7 +750,7 @@ class TestRDFUtils(unittest.TestCase):
             "dct:title":  { "order": 10, "tab name": "Général" },
             "dcat:distribution": { "tab name": "Distribution" },
             "dcat:distribution / dct:issued": {},
-            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:distribution / dcat:accessURL": { "tab name": "Autre", "order": 1 },
             "dcat:keyword" : {}
             }
         templateTabs = { "Général" : (0,), "Distribution" : (1,) }
@@ -770,7 +770,7 @@ class TestRDFUtils(unittest.TestCase):
         isk = search_keys(d, "dcat:distribution / dct:issued", 'edit')[0]
         self.assertTrue(rdf_utils.is_ancestor((1,), isk))
         self.assertTrue(rdf_utils.is_ancestor(dbk, isk))
-        auk = search_keys(d, "dcat:distribution / dct:accessURL", 'edit')[0]
+        auk = search_keys(d, "dcat:distribution / dcat:accessURL", 'edit')[0]
         self.assertTrue(rdf_utils.is_ancestor((1,), auk))
         self.assertTrue(rdf_utils.is_ancestor(dbk, auk))
         e = check_rows(d)
@@ -799,7 +799,7 @@ class TestRDFUtils(unittest.TestCase):
             "dct:title":  { "order": 10, "tab name": "Général" },
             "dcat:distribution": { "tab name": "Distribution", "order": 1 },
             "dcat:distribution / dct:issued": {},
-            "dcat:distribution / dct:accessURL": {},
+            "dcat:distribution / dcat:accessURL": {},
             "dct:publisher": { "tab name": "Distribution", "order": 2 },
             "dct:modified": { "tab name": "Distribution" },
             "dcat:keyword" : {},
@@ -831,7 +831,7 @@ class TestRDFUtils(unittest.TestCase):
         template = {
             "dcat:distribution": { "tab name": "Distribution" },
             "dcat:distribution / dct:issued": {},
-            "dcat:distribution / dct:accessURL": {},
+            "dcat:distribution / dcat:accessURL": {},
             "dct:publisher": { "tab name": "Distribution" },
             "dct:modified": {},
             "dcat:keyword" : {}
@@ -1471,7 +1471,7 @@ class TestRDFUtils(unittest.TestCase):
             "dct:title":  { "order": 10, "tab name": "Général" },
             "dcat:distribution": { "tab name": "Distribution" },
             "dcat:distribution / dct:issued": {},
-            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:distribution / dcat:accessURL": { "tab name": "Autre", "order": 1 },
             "dcat:keyword" : {}
             }
         templateTabs = { "Général" : (0,), "Distribution" : (1,) }
@@ -1501,7 +1501,7 @@ class TestRDFUtils(unittest.TestCase):
             "dct:title":  { "order": 10, "tab name": "Général" },
             "dcat:distribution": { "tab name": "Distribution" },
             "dcat:distribution / dct:issued": {},
-            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:distribution / dcat:accessURL": { "tab name": "Autre", "order": 1 },
             "dcat:keyword" : {}
             }
         columns = [
@@ -1648,7 +1648,7 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_rows(d, populated=True))
         # on implémente des valeurs pour que les deux distributions
         # soient enregistrées :
-        for k in search_keys(d, "dcat:distribution / dct:accessURL", 'edit'):
+        for k in search_keys(d, "dcat:distribution / dcat:accessURL", 'edit'):
             d.update_value(k, "http://url")   
         g = d.build_graph(self.vocabulary)
         d2 = rdf_utils.build_dict(g, self.shape, self.vocabulary)
@@ -1762,7 +1762,7 @@ class TestRDFUtils(unittest.TestCase):
             "dct:title":  { "order": 10, "tab name": "Général" },
             "dcat:distribution": { "tab name": "Distribution" },
             "dcat:distribution / dct:issued": {},
-            "dcat:distribution / dct:accessURL": { "tab name": "Autre", "order": 1 },
+            "dcat:distribution / dcat:accessURL": { "tab name": "Autre", "order": 1 },
             "dcat:keyword" : {}
             }
         templateTabs = { "Général" : (0,), "Distribution" : (1,) }
