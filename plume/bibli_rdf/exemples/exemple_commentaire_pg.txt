@@ -192,7 +192,7 @@ IGN Admin Express. Départements 2021-01.
     "@type": [
       "http://www.w3.org/ns/dcat#Distribution"
     ],
-    "http://purl.org/dc/terms/accessURL": [
+    "http://www.w3.org/ns/dcat#accessURL": [
       {
         "@id": "https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express"
       }
