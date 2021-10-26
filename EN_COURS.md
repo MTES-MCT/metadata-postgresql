@@ -23,8 +23,8 @@
 | Bascule mode lecture/mode édition  |       |   Ok   |   DL   | |
 | Sauvegarde                         |       |   OK   |   DL   | |
 | Réinitialisation                   |       |   OK   |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#réinitialisation) |
-| Export                             |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#export-des-métadonnées-dans-un-fichier) |
-| Import                             |       |   OK    |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#import-de-métadonnées-depuis-un-fichier) |
+| Export                             |       |   OK   |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#export-des-métadonnées-dans-un-fichier) |
+| Import                             |       |   OK   |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#import-de-métadonnées-depuis-un-fichier) |
 | Choix du modèle                    |       |   OK   |   DL   | |
 | Activation du mode traduction      |       |   OK   |   DL   | |
 | Choix de la langue principale      |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées) |
