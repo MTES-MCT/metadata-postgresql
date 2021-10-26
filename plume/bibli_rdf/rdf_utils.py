@@ -1803,9 +1803,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         ( mode == 'read' and len(values) <= 1 ) or not (
                         multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
                         
-            mHelp = ( t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ) ) if (
-                        ( mode == 'read' and len(values) <= 1 ) or not (
-                        multiple or len(values) > 1 or ( multilingual and translation ) ) ) else None
+            mHelp = t.get('help text', None) or ( str(p['descr']) if p['descr'] else None )
 
 
         # --- BOUCLE SUR LES VALEURS
@@ -2246,7 +2244,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'input mask' : t.get('input mask', None) if mode == 'edit' else None,
                     'label' : mLabel,
                     'label row' : mLabelRow,
-                    'help text' : t.get('help text', None) if not ( multiple or len(values) > 1 ) else None,
+                    'help text' : t.get('help text', None),
                     'value' : mValue,
                     'placeholder text' : t.get('placeholder text', None) \
                         if mode == 'edit' and mWidgetType in ( 'QTextEdit', 'QLineEdit', 'QComboBox' ) \
@@ -2355,6 +2353,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 'row' : rowidx[mParent] + 1,
                 'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
                 'label' : colname,
+                'help text' : 'Description du champ.',
                 'label row' : rowidx[mParent],
                 'value' : coldescr,
                 'do not save' : True,
@@ -2443,6 +2442,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'main widget type' : 'QGroupBox',
                         'row' : rowidx[mParent],
                         'label' : "???",
+                        'help text' : p.n3(nsm),
                         'path' : p.n3(nsm)
                         } )
 
@@ -2505,6 +2505,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'row span' : textEditRowSpan if mWidgetType == "QTextEdit" else None,
                         'label' : "???" if len(dpv[p]) == 1 else None,
                         'label row' : mLabelRow,
+                        'help text' : p.n3(nsm),
                         'value' : mValue,
                         'language value' : mLanguage,
                         'node kind' : "sh:Literal",
