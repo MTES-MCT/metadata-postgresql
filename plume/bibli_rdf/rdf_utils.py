@@ -3910,6 +3910,112 @@ def pick_translation(litList, language):
     return val
 
 
+def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
+    mSubject=None, mMemMetagraph=None, mMap=None):
+    """Nettoie un graphe issu d'une source externe.
+    
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées.
+    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant
+    les catégories de métadonnées communes.
+    
+    Les autres arguments servent uniquement aux appels récursifs
+    de la fonction.
+    
+    RESULTAT
+    --------
+    Un graphe retraité pour qu'un maximum de métadonnées soient reconnues
+    lors du passage dans build_dict().
+    En particulier, la fonction s'assure que tous les noeuds internes sont
+    de type BNode et donne un nouvel identifiant à la fiche.
+    """
+    
+    if mSubject is None:
+    
+        # ------ initialisation ------
+        
+        mMetagraph=Graph()
+        # mMetagraph est le futur graphe nettoyé
+        mMemMetagraph=Graph()
+        # mMemMetagraph contient les éléments de
+        # metagraph déjà traités. Il est là pour éviter
+        # les boucles infinies
+        
+        mTriple=None
+        
+        # mapping de propriétés qui ont notoirement tendance à
+        # être mal écrites (formes dépréciées, coquilles...)
+        mMap = {
+            URIRef("http://www.w3.org/2006/vcard/ns#organisation-name"): URIRef("http://www.w3.org/2006/vcard/ns#organization-name"),
+            URIRef("http://schema.org/endDate"): URIRef("http://www.w3.org/ns/dcat#endDate"),
+            URIRef("http://schema.org/startDate"): URIRef("http://www.w3.org/ns/dcat#startDate")
+            }
+        
+    
+        # ------ gestion de l'identifiant -------
+        
+        mSubject = get_datasetid(metagraph)
+        
+        # le graphe ne contient pas de dcat:Dataset
+        if not mSubject :
+            return
+        
+        # on génère un nouvel identifiant
+        mNSubject = URIRef("urn:uuid:" + str(uuid.uuid4()))     
+    
+    
+    # ------ exécution courante ------
+        
+    l = [ (p, o) for p, o in metagraph.predicate_objects(mSubject) ]
+    
+    # juste un IRI avec une classe, on oublie
+    # l'information sur la classe
+    if len(l) == 1 and \
+        l[0][0] == URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"):
+        l = []
+        
+    if l:
+        t = metagraph.value(
+            mSubject,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+            )
+            
+        # pas de classe, ou classe non décrite dans shape
+        # un IRI ou Literal sera écrit tel quel,
+        # sans ses descendants, un BNode est effacé
+        if not t or not (
+            None, URIRef("http://www.w3.org/ns/shacl#targetClass"), t
+            ) in shape:
+            l = []
+            if isinstance(mSubject, BNode):
+                mTriple = None
+
+    if mTriple:
+    
+        mNSubject = mSubject
+    
+        # cas d'un IRI non terminal
+        # on le remplace par un noeud vide
+        if l and not isinstance(mSubject, BNode):
+            mNSubject = BNode()
+            mTriple = (mTriple[0], mTriple[1], mNSubject)
+        
+        mMetagraph.add(mTriple)        
+    
+    for p, o in l:
+    
+        if not (mSubject, p, o) in mMemMetagraph:
+            mMemMetagraph.add((mSubject, p, o))
+            clean_metagraph(
+                metagraph, shape, mMetagraph=mMetagraph,
+                mTriple=(mNSubject, mMap.get(p, p), o), mSubject=o,
+                mMemMetagraph=mMemMetagraph, mMap=mMap
+                )
+                
+    return mMetagraph
+    
+
 class ForbiddenOperation(Exception):
     pass
 
