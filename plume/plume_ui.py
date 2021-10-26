@@ -56,6 +56,7 @@ class Ui_Dialog_plume(object):
         self.durationBarInfo = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
         self.ihm             = self.mDic_LH["ihm"]  #window/dock
         self.toolBarDialog   = self.mDic_LH["toolBarDialog"]    #toolBarDialog
+        self.extExport       = self.mDic_LH["extExport"]    #extExport
         #---
         self.colorDefaut                      = self.mDic_LH["defaut"]                      #Color QGroupBox
         self.colorQGroupBox                   = self.mDic_LH["QGroupBox"]                   #Color QGroupBox
@@ -233,6 +234,15 @@ class Ui_Dialog_plume(object):
         self.displayToolBar(*self.listIconToolBar)
         return
     # == Gestion des actions de boutons de la barre de menu
+    #==========================
+
+    #==========================
+    # == Gestion des actions du bouton EXPORT de la barre de menu
+    def clickButtonsExportActions(self):
+        mItemExport = self.mMenuBarDialog.sender().objectName()
+        exportObjetMetagraph(self, self.schema, self.table, mItemExport)
+        return
+    # == Gestion des actions du bouton EXPORT de la barre de menu
     #==========================
 
     #==========================
@@ -693,15 +703,33 @@ class Ui_Dialog_plume(object):
         self.plumeEmpty.setGeometry(QtCore.QRect(70,0,18,18))
         self.plumeEmpty.clicked.connect(self.clickButtonsActions)
         #--                                        
+        #====================
+        #--QToolButton EXPORT                                               
         mText = QtWidgets.QApplication.translate("plume_main", "Export") 
-        self.plumeExport = QtWidgets.QPushButton(self.mMenuBarDialog)
-        if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
+        self.plumeExport = QtWidgets.QToolButton(self.mMenuBarDialog)
+        if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QToolButton { border: 0px solid black;}")  
         self.plumeExport.setIcon(QIcon(_iconSourcesExport))
         self.plumeExport.setObjectName("Export")
+        self.plumeExport.setGeometry(QtCore.QRect(85,0,42,18))
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Exporter les métadonnées dans un fichier.") 
         self.plumeExport.setToolTip(mTextToolTip)
-        self.plumeExport.setGeometry(QtCore.QRect(100,0,18,18))
-        self.plumeExport.clicked.connect(self.clickButtonsActions)
+        #MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        mListExtension = self.extExport
+        _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtension))) * 10) + 70) + "px;}")
+        #------------
+        for elemQMenuItem in mListExtension :
+            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+            _mObjetQMenuItem.setText(elemQMenuItem)
+            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+            _mObjetQMenu.addAction(_mObjetQMenuItem)   
+            #- Actions
+            _mObjetQMenuItem.triggered.connect(lambda : self.clickButtonsExportActions())
+        #-
+        self.plumeExport.setPopupMode(self.plumeExport.MenuButtonPopup)
+        self.plumeExport.setMenu(_mObjetQMenu)
+        #--QToolButton EXPORT                                               
+        #====================
         #--
         mText = QtWidgets.QApplication.translate("plume_main", "Import") 
         self.plumeImport = QtWidgets.QPushButton(self.mMenuBarDialog)
@@ -710,7 +738,7 @@ class Ui_Dialog_plume(object):
         self.plumeImport.setObjectName("Import")
         mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Importer les métadonnées depuis un fichier.") 
         self.plumeImport.setToolTip(mTextToolTip)
-        self.plumeImport.setGeometry(QtCore.QRect(130,0,18,18))
+        self.plumeImport.setGeometry(QtCore.QRect(135,0,18,18))
         self.plumeImport.clicked.connect(self.clickButtonsActions)
         #====================
         #--QToolButton TEMPLATE                                               
@@ -757,7 +785,7 @@ class Ui_Dialog_plume(object):
         self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
         self.plumeHelp.setObjectName(mText)
         self.plumeHelp.setToolTip(mText)
-        self.plumeHelp.setGeometry(QtCore.QRect(260,0,18,18))
+        self.plumeHelp.setGeometry(QtCore.QRect(250,0,18,18))
         self.plumeHelp.clicked.connect(self.myHelpAM)
         #------------
         return

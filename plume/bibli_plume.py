@@ -84,28 +84,27 @@ def returnObjetMetagraph(self, old_description) :
     return metagraph 
 
 #==================================================
-def exportObjetMetagraph(self) :
+def exportObjetMetagraph(self, schema, table, extension) :
     #boite de dialogue Fichiers
-    InitDir = os.path.dirname(__file__) + "\\" + "AM_Export_Csv_" + time.strftime("%Y%m%d_%Hh%Mm%S") + ".csv"
-    TypeList = QtWidgets.QApplication.translate("bibli_graph_asgard", "Dashboard Export CSV", None) + " (*.csv)"
-    fileName = QFileDialog.getSaveFileName(None,QtWidgets.QApplication.translate("bibli_graph_asgard", "Asgard Manager Dashboard Export CSV", None),InitDir,TypeList)
-
+    InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table)
+    TypeList = QtWidgets.QApplication.translate("plume_ui", "Export des fiches de métadonnées (*.*)", None)
+    fileName = QFileDialog.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
+    print("fileName '" + str(fileName) + "'")
+    if fileName == "" : return
     #**********************
-    # Récupération fiche de métadonnée
+    # Export fiche de métadonnée
     try:
-       metagraph = rdf_utils.metagraph_from_file(filepath)
+       rdf_utils.export_metagraph(self.metagraph, self.shape, fileName, extension)
     except:
        zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-       zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à importer votre fiche de métadonnées.", None)
+       zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à exporter votre fiche de métadonnées.", None)
        displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-
-       metagraph = None
-    return metagraph 
+    return  
 
 #==================================================
 def importObjetMetagraph(self) :
     #boite de dialogue Fichiers
-    MonFichierPath = desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
     MonFichierPath = MonFichierPath.replace("\\","/")        
     InitDir = MonFichierPath
     TypeList = "xml (*.xml *.rdf);;json-ld (*.json *.jsonld);;turtle\t (*.ttl);;n3 (*.n3);;nt (*.nt);;trig (*.trig);;Tous les fichiers (*.*)"
@@ -462,7 +461,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
-
+       mDicAutre["extExport"]       = ["turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"]
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
               mSettings.setValue(key, value)
