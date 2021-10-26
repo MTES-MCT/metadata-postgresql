@@ -29,7 +29,7 @@ uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
             vcard:hasEmail <mailto:contact.geoservices@ign.fr> ;
             vcard:organization-name "Institut national de l'information géographique et forestière (IGN-F)" ] ;
     dcat:distribution [ a dcat:Distribution ;
-            dct:accessURL <https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express> ;
+            dcat:accessURL <https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#admin-express> ;
             dct:issued "2021-01-19"^^xsd:date ;
             dct:license [ a dct:LicenseDocument ;
                     rdfs:label "Base de données soumise aux conditions de la licence ouverte Etalab."@fr ] ] ;
