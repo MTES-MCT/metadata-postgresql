@@ -391,7 +391,7 @@ snum:DistributionShape
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [
-		sh:path dct:accessURL ;
+		sh:path dcat:accessURL ;
 		sh:name "URL d'accès"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class rdfs:Resource ;
