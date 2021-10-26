@@ -87,7 +87,7 @@ def returnObjetMetagraph(self, old_description) :
 def exportObjetMetagraph(self, schema, table, extension) :
     #boite de dialogue Fichiers
     InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table)
-    TypeList = QtWidgets.QApplication.translate("plume_ui", "Export des fiches de métadonnées (*.*)", None)
+    TypeList = QtWidgets.QApplication.translate("plume_ui", "Export des fiches de métadonnées" , None) + " (*)"
     fileName = QFileDialog.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
     print("fileName '" + str(fileName) + "'")
     if fileName == "" : return

@@ -57,6 +57,7 @@ class Ui_Dialog_plume(object):
         self.ihm             = self.mDic_LH["ihm"]  #window/dock
         self.toolBarDialog   = self.mDic_LH["toolBarDialog"]    #toolBarDialog
         self.extExport       = self.mDic_LH["extExport"]    #extExport
+        print(self.extExport)
         #---
         self.colorDefaut                      = self.mDic_LH["defaut"]                      #Color QGroupBox
         self.colorQGroupBox                   = self.mDic_LH["QGroupBox"]                   #Color QGroupBox
@@ -597,6 +598,9 @@ class Ui_Dialog_plume(object):
         #====================
 
         if hasattr(self, 'mConnectEnCours') :
+           #--QToolButton EXPORT                                               
+           self.majQmenuExportIconFlag()
+           #-
            mKeySql = (pg_queries.query_is_relation_owner(), (self.schema, self.table))
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
            #-- Activation ou pas 
@@ -667,6 +671,24 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================
+    # == Gestion des Icons Flags dans le menu des templates
+    def majQmenuExportIconFlag(self) :
+        mListExtension = rdf_utils.available_formats(self.metagraph, self.shape)
+        self._mObjetQMenuExport.clear()
+        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtension))) * 10) + 70) + "px;}")
+        #------------
+        for elemQMenuItem in mListExtension :
+            _mObjetQMenuItem = QAction(elemQMenuItem, self._mObjetQMenuExport)
+            _mObjetQMenuItem.setText(elemQMenuItem)
+            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+            self._mObjetQMenuExport.addAction(_mObjetQMenuItem)   
+            #- Actions
+            _mObjetQMenuItem.triggered.connect(lambda : self.clickButtonsExportActions())
+        #-
+        self.plumeExport.setPopupMode(self.plumeExport.MenuButtonPopup)
+        self.plumeExport.setMenu(self._mObjetQMenuExport)
+        return
+    #==========================
     def createToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam):
         #Menu Dialog
         self.mMenuBarDialog = QMenuBar(self)
@@ -715,19 +737,7 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setToolTip(mTextToolTip)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
-        mListExtension = self.extExport
-        _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtension))) * 10) + 70) + "px;}")
-        #------------
-        for elemQMenuItem in mListExtension :
-            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
-            _mObjetQMenuItem.setText(elemQMenuItem)
-            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
-            _mObjetQMenu.addAction(_mObjetQMenuItem)   
-            #- Actions
-            _mObjetQMenuItem.triggered.connect(lambda : self.clickButtonsExportActions())
-        #-
-        self.plumeExport.setPopupMode(self.plumeExport.MenuButtonPopup)
-        self.plumeExport.setMenu(_mObjetQMenu)
+        self._mObjetQMenuExport = _mObjetQMenu
         #--QToolButton EXPORT                                               
         #====================
         #--
