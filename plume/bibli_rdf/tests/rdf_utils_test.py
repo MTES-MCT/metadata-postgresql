@@ -63,9 +63,144 @@ class TestRDFUtils(unittest.TestCase):
         self.tck_plus = search_keys(self.widgetsdict, 'dct:temporal', 'plus button')[0]
 
         # création de pseudo-widgets
-        populate_widgets(self.widgetsdict) 
+        populate_widgets(self.widgetsdict)
 
 
+
+    ### FONCTION copy_metagraph
+    ### -----------------------
+
+    # récupération de l'identifiant de l'ancien graphe
+    def test_copy_metagraph_1(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre")
+            ) )
+        gc = rdf_utils.copy_metagraph(g, old_metagraph=g_old)
+        self.assertEqual(len(gc), 2)
+        self.assertEqual(
+            rdf_utils.get_datasetid(gc),
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+        self.assertTrue( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre")
+            ) in gc )
+
+    # récupération de l'identifiant de l'ancien graphe, avec
+    # graphe à copier qui ne contient pas de dcat:Dataset
+    def test_copy_metagraph_2(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        gc = rdf_utils.copy_metagraph(g, old_metagraph=g_old)
+        self.assertEqual(len(gc), 1)
+        self.assertEqual(
+            rdf_utils.get_datasetid(gc),
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+
+    # échec de la récupération de l'identifiant de l'ancien graphe
+    # + graphe à copier qui ne contient pas de dcat:Dataset
+    # -> graphe vide
+    def test_copy_metagraph_3(self):
+        g_old = Graph()
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        gc = rdf_utils.copy_metagraph(g, old_metagraph=g_old)
+        self.assertEqual(len(gc), 0)
+
+    # échec de la récupération de l'identifiant de l'ancien graphe
+    # et graphe à copier valide -> nouvel identifiant
+    def test_copy_metagraph_4(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre")
+            ) )
+        gc = rdf_utils.copy_metagraph(g, old_metagraph=g_old)
+        self.assertEqual(len(gc), 2)
+        u = rdf_utils.get_datasetid(gc)
+        self.assertTrue(rdf_utils.is_dataset_uri(u))
+        self.assertNotEqual(
+            u, URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+        self.assertNotEqual(
+            u, URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            )
+
+    # copie d'un graphe vide avec récupération de l'identifiant
+    def test_copy_metagraph_5(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g = Graph()
+        gc = rdf_utils.copy_metagraph(g, old_metagraph=g_old)
+        self.assertEqual(len(gc), 1)
+        self.assertEqual(
+            rdf_utils.get_datasetid(gc),
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+
+    # graphe à copier valant None
+    def test_copy_metagraph_6(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g = None
+        gc = rdf_utils.copy_metagraph(g, old_metagraph=g_old)
+        self.assertEqual(len(gc), 1)
+        self.assertEqual(
+            rdf_utils.get_datasetid(gc),
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+
+  
     ### FONCTION clean_metagraph
     ### ------------------------
     
@@ -287,6 +422,99 @@ class TestRDFUtils(unittest.TestCase):
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
             URIRef("http://www.w3.org/ns/dcat#Dataset")
             ) in gc )
+
+    # récupération de l'identifiant de l'ancien graphe
+    def test_clean_metagraph_9(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape, old_metagraph=g_old)
+        self.assertEqual(len(gc), 2)
+        self.assertEqual(
+            rdf_utils.get_datasetid(gc),
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+
+    # récupération de l'identifiant de l'ancien graphe, avec
+    # graphe importé qui ne contient pas de dcat:Dataset
+    def test_clean_metagraph_10(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape, old_metagraph=g_old)
+        self.assertEqual(len(gc), 1)
+        self.assertEqual(
+            rdf_utils.get_datasetid(gc),
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+
+    # échec de la récupération de l'identifiant de l'ancien graphe
+    # + graphe importé qui ne contient pas de dcat:Dataset
+    # -> graphe vide
+    def test_clean_metagraph_11(self):
+        g_old = Graph()
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape, old_metagraph=g_old)
+        self.assertEqual(len(gc), 0)
+
+    # échec de la récupération de l'identifiant de l'ancien graphe
+    # et graphe importé valide -> nouvel identifiant
+    def test_clean_metagraph_12(self):
+        g_old = Graph()
+        g_old.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape, old_metagraph=g_old)
+        self.assertEqual(len(gc), 2)
+        u = rdf_utils.get_datasetid(gc)
+        self.assertTrue(rdf_utils.is_dataset_uri(u))
+        self.assertNotEqual(
+            u, URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+        self.assertNotEqual(
+            u, URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            )
 
 
     ### FONCTION pick_translation
