@@ -3959,7 +3959,7 @@ def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
         
         # le graphe ne contient pas de dcat:Dataset
         if not mSubject :
-            return
+            return mMetagraph
         
         # on génère un nouvel identifiant
         mNSubject = URIRef("urn:uuid:" + str(uuid.uuid4()))     
@@ -3990,6 +3990,10 @@ def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
             l = []
             if isinstance(mSubject, BNode):
                 mTriple = None
+
+    # suppression des noeuds vides terminaux
+    if not l and isinstance(mSubject, BNode):
+        mTriple = None
 
     if mTriple:
     
