@@ -298,7 +298,7 @@ L'import est réalisé via la fonction `rdf_utils.metagraph_from_file()`, puis l
 
 try:
     raw_metagraph = rdf_utils.metagraph_from_file(filepath, format)
-    metagraph = rdf_utils.clean_metagraph(metagraph_brut, shape, old_metagraph)
+    metagraph = rdf_utils.clean_metagraph(raw_metagraph, shape, old_metagraph)
 except:
     # notamment si ce n'était pas du RDF 
     ...
@@ -313,7 +313,7 @@ Si le format n'est pas déterminé, la fonction est généralement capable de le
 
 try:
     raw_metagraph = rdf_utils.metagraph_from_file(filepath)
-    metagraph = rdf_utils.clean_metagraph(metagraph_brut, shape, old_metagraph)
+    metagraph = rdf_utils.clean_metagraph(raw_metagraph, shape, old_metagraph)
 except:
     # notamment si ce n'était pas du RDF ou
     # si le format n'a pas pu être deviné
