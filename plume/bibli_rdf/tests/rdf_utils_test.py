@@ -66,6 +66,229 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict) 
 
 
+    ### FONCTION clean_metagraph
+    ### ------------------------
+    
+    # pas un dcat:Dataset
+    # la fonction renvoie un graphe vide
+    def test_clean_metagraph_1(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://xmlns.com/foaf/0.1/Agent")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 0)
+   
+    # remplacement de l'identifiant
+    def test_clean_metagraph_2(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 2)
+        u = rdf_utils.get_datasetid(gc)
+        self.assertTrue(rdf_utils.is_dataset_uri(u))
+        self.assertNotEqual(
+            u, URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
+            )
+        self.assertEqual(
+            gc.value(u, URIRef("http://purl.org/dc/terms/title")),
+            Literal("Mon titre")
+            )
+ 
+    # remplacement des IRI internes par des noeuds vides
+    def test_clean_metagraph_3(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Distribution")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre de distribution")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 4)
+        u = rdf_utils.get_datasetid(gc)
+        b = gc.value(u, URIRef("http://www.w3.org/ns/dcat#distribution"))
+        self.assertTrue(isinstance(b, BNode))
+        self.assertEqual(
+            gc.value(b, URIRef("http://purl.org/dc/terms/title")),
+            Literal("Mon titre de distribution")
+            )
+
+    # classe non spécifiée (BNode) -> branche éliminée
+    def test_clean_metagraph_4(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre de distribution")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 1)
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) in gc )
+
+    # classe non spécifiée (IRI) -> branche éliminée, IRI conservée
+    def test_clean_metagraph_5(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre de distribution")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 2)
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) in gc )
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            ) in gc )
+
+    # classe non décrite par shape (BNode) -> branche éliminée
+    def test_clean_metagraph_6(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#PasUneDistribution")
+            ) )
+        g.add( (
+            b,
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre de distribution")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 1)
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) in gc )
+
+    # classe non décrite par shape (IRI) -> branche éliminée, mais
+    # l'IRI est conservée
+    def test_clean_metagraph_7(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#PasUneDistribution")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc"),
+            URIRef("http://purl.org/dc/terms/title"),
+            Literal("Mon titre de distribution")
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 2)
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) in gc )
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            URIRef("urn:uuid:dd4bbc90-ba36-48ee-8840-083a54f87bbc")
+            ) in gc )
+  
+    # noeud vide terminal -> éliminé
+    def test_clean_metagraph_8(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            b
+            ) )
+        gc = rdf_utils.clean_metagraph(g, self.shape)
+        self.assertEqual(len(gc), 1)
+        self.assertTrue( (
+            None,
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) in gc )
+
+
     ### FONCTION pick_translation
     ### -------------------------
 
@@ -441,7 +664,9 @@ class TestRDFUtils(unittest.TestCase):
                 if f.is_file():
                     g = rdf_utils.metagraph_from_file(f)
                     self.assertTrue(len(g) > 0)
-
+                    gc = rdf_utils.clean_metagraph(g, self.shape)
+                    self.assertTrue(len(gc) > 0)
+                    
     # NB. trig n'est pas testé à ce stade, l'import
     # semble donner un graphe vide
   
