@@ -2703,9 +2703,8 @@ def metagraph_from_pg_description(description, shape):
     Si la valeur contenue entre les balises n'est pas un JSON valide, la
     fonction échoue sur une erreur de type json.decoder.JSONDecodeError.
 
-    S'il n'y a pas de balises, s'il n'y a rien entre les balises ou si la valeur
-    contenue entre les balises est un JSON et pas un JSON-LD, la fonction renvoie
-    un graphe vide.
+    S'il n'y a pas de balises ou s'il n'y a rien entre les balises, la fonction renvoie
+    un graphe vierge, avec seulement un identifiant de dcat:Dataset.
 
     EXEMPLES
     --------
@@ -2722,19 +2721,13 @@ def metagraph_from_pg_description(description, shape):
     # s'il devait y avoir plusieurs couples de balises, elle retiendrait le contenu du
     # dernier.
 
-    if j is None:
-
+    if j is None or not j[1]:
         g = Graph()
-
-    elif j[1]:
-
-        g = Graph().parse(data=j[1], format='json-ld')
-
     else:
-        g = Graph()
+        g = Graph().parse(data=j[1], format='json-ld')
   
     for n, u in shape.namespace_manager.namespaces():
-            g.namespace_manager.bind(n, u, override=True, replace=True)
+        g.namespace_manager.bind(n, u, override=True, replace=True)
 
     return g
 
@@ -3910,23 +3903,29 @@ def pick_translation(litList, language):
     return val
 
 
-def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
-    mSubject=None, mMemMetagraph=None, mMap=None):
+def clean_metagraph(raw_metagraph, shape, old_metagraph=None,
+    mMetagraph=None, mTriple=None, mSubject=None,
+    mMemMetagraph=None, mMap=None):
     """Nettoie un graphe issu d'une source externe.
     
     ARGUMENTS
     ---------
-    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées.
+    - raw_metagraph (rdflib.graph.Graph) : un graphe de métadonnées
+    présumé issu d'un import via metagraph_from_file ou
+    équivalent.
     - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant
     les catégories de métadonnées communes.
+    - [optionnel] old_metagraph (rdflib.graph.Graph) : l'ancien
+    graphe de métadonnées de l'objet PostgreSQL considéré, dont on
+    récupèrera l'identifiant.
     
     Les autres arguments servent uniquement aux appels récursifs
     de la fonction.
     
     RESULTAT
     --------
-    Un graphe retraité pour qu'un maximum de métadonnées soient reconnues
-    lors du passage dans build_dict().
+    Un graphe (rdflib.graph.Graph) retraité pour qu'un maximum de
+    métadonnées soient reconnues lors du passage dans build_dict().
     En particulier, la fonction s'assure que tous les noeuds internes sont
     de type BNode et donne un nouvel identifiant à la fiche.
     """
@@ -3955,19 +3954,35 @@ def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
     
         # ------ gestion de l'identifiant -------
         
-        mSubject = get_datasetid(metagraph)
+        mSubject = get_datasetid(raw_metagraph)
+        mNSubject = None
         
+        # autant que possible, on récupère l'identifiant
+        # de l'ancien graphe
+        if old_metagraph:
+            mNSubject = get_datasetid(old_metagraph)
+
         # le graphe ne contient pas de dcat:Dataset
+        # on renvoie un graphe avec uniquement l'ancien
+        # identifiant, ou vierge en l'absence d'identifiant
         if not mSubject :
+            if mNSubject:
+                mMetagraph.add( (
+                    mNSubject,
+                    URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                    URIRef("http://www.w3.org/ns/dcat#Dataset")
+                    ) )
             return mMetagraph
         
-        # on génère un nouvel identifiant
-        mNSubject = URIRef("urn:uuid:" + str(uuid.uuid4()))     
-    
+        # à défaut d'avoir pu récupérer l'identifiant de
+        # l'ancien graphe, on en génère un nouveau
+        if not mNSubject:
+            mNSubject = URIRef("urn:uuid:" + str(uuid.uuid4())) 
+
     
     # ------ exécution courante ------
         
-    l = [ (p, o) for p, o in metagraph.predicate_objects(mSubject) ]
+    l = [ (p, o) for p, o in raw_metagraph.predicate_objects(mSubject) ]
     
     # juste un IRI avec une classe, on oublie
     # l'information sur la classe
@@ -3976,7 +3991,7 @@ def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
         l = []
         
     if l:
-        t = metagraph.value(
+        t = raw_metagraph.value(
             mSubject,
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
             )
@@ -4012,12 +4027,80 @@ def clean_metagraph(metagraph, shape, mMetagraph=None, mTriple=None,
         if not (mSubject, p, o) in mMemMetagraph:
             mMemMetagraph.add((mSubject, p, o))
             clean_metagraph(
-                metagraph, shape, mMetagraph=mMetagraph,
+                raw_metagraph=raw_metagraph, shape=shape,
+                old_metagraph=old_metagraph, mMetagraph=mMetagraph,
                 mTriple=(mNSubject, mMap.get(p, p), o), mSubject=o,
                 mMemMetagraph=mMemMetagraph, mMap=mMap
                 )
                 
     return mMetagraph
+    
+
+def copy_metagraph(src_metagraph, old_metagraph=None):
+    """Renvoie un graphe avec l'identifiant de old_metagraph et les métadonnées de src_metagraph.
+    
+    ARGUMENTS
+    ---------
+    - src_metagraph (rdflib.graph.Graph) : le graphe dont on
+    souhaite copier le contenu. None est admis et aura le même
+    effet qu'un graphe vide.
+    - [optionnel] old_metagraph (rdflib.graph.Graph) : l'ancien
+    graphe de métadonnées de l'objet PostgreSQL considéré, dont on
+    récupèrera l'identifiant.
+    
+    RESULTAT
+    --------
+    Un graphe (rdflib.graph.Graph) dont l'identifiant est,
+    autant que possible, l'identifiant de old_metagraph, et
+    qui contient toutes les métadonnées des src_metagraph.
+    
+    La fonction ne réalise aucun contrôle sur src_metagraph. Si
+    celui-ci n'est pas issu d'une source fiable, il est préférable
+    d'utiliser la fonction clean_metagraph().
+    """
+    if src_metagraph is None:
+        src_metagraph = Graph()
+        srcId = None
+    else:  
+        srcId = get_datasetid(src_metagraph)
+        
+    oldId = get_datasetid(old_metagraph) if old_metagraph else None
+    mMetagraph = Graph()
+    
+    # cas où le graphe à copier ne contiendrait pas
+    # de descriptif de dataset, on renvoie un graphe contenant
+    # uniquement l'identifiant, ou vierge à défaut d'identifiant
+    if not srcId:
+        if oldId:
+            mMetagraph.add( (
+                oldId,
+                URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                URIRef("http://www.w3.org/ns/dcat#Dataset")
+                ) )
+        return mMetagraph
+    
+    # à défaut d'avoir pu d'extraire un identifiant de l'ancien
+    # graphe, on en génère un nouveau
+    if not oldId:
+        oldId = URIRef("urn:uuid:" + str(uuid.uuid4()))
+    
+    # boucle sur les triples du graphe source, on remplace
+    # l'identifiant partout où il apparaît en sujet ou (même si
+    # ça ne devrait pas être le cas) en objet
+    for s, p, o in src_metagraph:
+        mMetagraph.add( (
+            oldId if s == srcId else s,
+            p,
+            oldId if o == srcId else o
+            ) )
+        
+    # NB : on ne se préoccupe pas de mettre à jour dct:identifier,
+    # build_dict() s'en chargera.
+    return mMetagraph
+    
+    
+    
+    
     
 
 class ForbiddenOperation(Exception):
