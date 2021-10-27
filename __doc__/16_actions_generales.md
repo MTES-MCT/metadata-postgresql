@@ -292,19 +292,20 @@ Un point important est que `language` doit toujours être l'une des langues list
 
 Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées depuis un fichier. L'import ne fonctionnera que si les métadonnées sont encodées dans un format RDF et il ne donnera un résulat concluant que si elles respectent les profils DCAT, DCAT-AP ou GeoDCAT, ou le profil GeoDCAT étendu mis en oeuvre par le plugin.
 
-L'import est réalisé via la fonction `rdf_utils.metagraph_from_file()` :
+L'import est réalisé via la fonction `rdf_utils.metagraph_from_file()`, puis le résultat est nettoyé avec la fonction `rdf_utils.clean_metagraph()` :
 
 ```python
 
 try:
-    metagraph = rdf_utils.metagraph_from_file(filepath, format)
+    metagraph_brut = rdf_utils.metagraph_from_file(filepath, format)
+    metagraph = rdf_utils.clean_metagraph(metagraph_brut, shape)
 except:
     # notamment si ce n'était pas du RDF 
     ...
 
 ```
 
-*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées, parmi `"turtle"`, `"json-ld"`, `"xml"`, `"n3"`, `"nt"`, `"trig"`. Ces deux paramètres sont à spécifier par l'utilisateur.*
+*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées, parmi `"turtle"`, `"json-ld"`, `"xml"`, `"n3"`, `"nt"`, `"trig"`. Ces deux paramètres sont à spécifier par l'utilisateur. `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)).*
 
 Si le format n'est pas déterminé, la fonction est généralement capable de le déduire de l'extension du fichier (sinon elle renverra une erreur). Il serait donc admissible de ne pas le demander et se contenter de :
 
