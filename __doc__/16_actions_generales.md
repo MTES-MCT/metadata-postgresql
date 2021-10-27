@@ -297,22 +297,23 @@ L'import est réalisé via la fonction `rdf_utils.metagraph_from_file()`, puis l
 ```python
 
 try:
-    metagraph_brut = rdf_utils.metagraph_from_file(filepath, format)
-    metagraph = rdf_utils.clean_metagraph(metagraph_brut, shape)
+    raw_metagraph = rdf_utils.metagraph_from_file(filepath, format)
+    metagraph = rdf_utils.clean_metagraph(metagraph_brut, shape, old_metagraph)
 except:
     # notamment si ce n'était pas du RDF 
     ...
 
 ```
 
-*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées, parmi `"turtle"`, `"json-ld"`, `"xml"`, `"n3"`, `"nt"`, `"trig"`. Ces deux paramètres sont à spécifier par l'utilisateur. `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)).*
+*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées, parmi `"turtle"`, `"json-ld"`, `"xml"`, `"n3"`, `"nt"`, `"trig"`. Ces deux paramètres sont à spécifier par l'utilisateur. `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)). `old_metagraph` est l'ancien graphe de métadonnées de la table, soit le `metagraph` actuel, dont la fonction récupère l'identifiant.*
 
 Si le format n'est pas déterminé, la fonction est généralement capable de le déduire de l'extension du fichier (sinon elle renverra une erreur). Il serait donc admissible de ne pas le demander et se contenter de :
 
 ```python
 
 try:
-    metagraph = rdf_utils.metagraph_from_file(filepath)
+    raw_metagraph = rdf_utils.metagraph_from_file(filepath)
+    metagraph = rdf_utils.clean_metagraph(metagraph_brut, shape, old_metagraph)
 except:
     # notamment si ce n'était pas du RDF ou
     # si le format n'a pas pu être deviné
@@ -332,6 +333,7 @@ Il utilise l'icône [import.svg](/plume/icons/general/import.svg) :
 Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats disponibles.
 
 Texte d'aide : *Importer les métadonnées depuis un fichier*.
+
 
 ## Export des métadonnées dans un fichier
 
@@ -373,6 +375,7 @@ Une implémentation possible serait d'utiliser un QToolButton avec un menu lista
 
 Texte d'aide : *Exporter les métadonnées dans un fichier*.
 
+
 ## Réinitialisation
 
 ### Effets
@@ -383,10 +386,10 @@ On utilisera la commande suivante :
 
 ```python
 
-metagraph = rdf_utils.metagraph_from_pg_description('', shape)
+metagraph = rdf_utils.copy_metagraph(None, old_metagraph)
 
 ```
-*`shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)).*
+*`old_metagraph` est l'ancien graphe de métadonnées de la table, soit le `metagraph` actuel, dont la fonction conserve l'identifiant.*
 
 Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
 
@@ -409,6 +412,17 @@ Cette fonctionnalité permet à l'utilisateur de copier l'ensemble des métadonn
 Concrètement :
 - l'action *Copier* (sur la table A) mémorise le `metagraph` de la table A ;
 - l'action *Coller* (sur la table B) régénère le dictionnaire de widgets en utilisant le graphe de mémorisé comme argument `metagraph` de `build_dict()` (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis re-construit le formulaire en conséquence (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
+
+Plus précisément, l'argument `metagraph` à fournir à `build_dict()` pour la table B est obtenu via :
+
+```python
+
+metagraph = rdf_utils.copy_metagraph(src_metagraph, old_metagraph)
+
+```
+*`old_metagraph` est l'ancien graphe de métadonnées de la table B, soit son `metagraph` actuel, dont la fonction conserve l'identifiant. `src_metagraph` est le graphe mémorisé de la table A.*
+
+
 
 ### Caractéristiques des boutons
 
