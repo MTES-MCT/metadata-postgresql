@@ -84,12 +84,16 @@ def returnObjetMetagraph(self, old_description) :
     return metagraph 
 
 #==================================================
-def exportObjetMetagraph(self, schema, table, extension) :
+def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
     #boite de dialogue Fichiers
-    InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table)
-    TypeList = QtWidgets.QApplication.translate("plume_ui", "Export des fiches de métadonnées" , None) + " (*)"
-    fileName = QFileDialog.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
-    print("fileName '" + str(fileName) + "'")
+    extStr = ""
+    for elem in mListExtensionExport :
+        extStr += ";;" + str(elem) + " (*." + str(elem) + ")" 
+    TypeList = extStr[2:]
+    InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table) + "." + extension
+    mDialogueSave = QFileDialog
+    fileName = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
+    fileName, extension = os.path.splitext(fileName)[0], os.path.splitext(fileName)[1][1:] 
     if fileName == "" : return
     #**********************
     # Export fiche de métadonnée
@@ -114,7 +118,9 @@ def importObjetMetagraph(self) :
     #**********************
     # Récupération fiche de métadonnée
     try:
-       metagraph = rdf_utils.metagraph_from_file(filepath)
+       old_metagraph = self.metagraph
+       raw_metagraph  = rdf_utils.metagraph_from_file(filepath)
+       metagraph = rdf_utils.clean_metagraph(raw_metagraph , self.shape, old_metagraph)
     except:
        zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à importer votre fiche de métadonnées.", None)
@@ -537,7 +543,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.0"
+def returnVersion() : return "version 0.2.1"
 
 #==================================================
 #Execute Pdf 
