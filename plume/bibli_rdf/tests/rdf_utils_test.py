@@ -1840,9 +1840,10 @@ class TestRDFUtils(unittest.TestCase):
     def test_build_dict_22(self):
         template = {
             "dct:title":  { "tab name": "Général" },
-            "geodcat:custodian": { "tab name": "À cacher" }
+            "geodcat:custodian": { "tab name": "À cacher" },
+            "dcat:temporalResolution": { "tab name": "À cacher 2" }
             }
-        templateTabs = { "Général" : (0,), "À cacher" : (1,) }
+        templateTabs = { "Général" : (0,), "À cacher" : (1,), "À cacher 2" : (2,) }
         d = rdf_utils.build_dict(
             metagraph=self.metagraph,
             shape=self.shape,
@@ -1851,7 +1852,12 @@ class TestRDFUtils(unittest.TestCase):
             templateTabs=templateTabs
             )
         self.assertIsNone(check_rows(d))
-        self.assertEqual(d[(1,)]['main widget type'], 'QGroupBox')
+        self.assertIsNone(d[(1,)]['main widget type'])
+        self.assertEqual(d[(2,)]['main widget type'], 'QGroupBox')
+        # "geodcat:custodian" a pour objet un noeud vide, donc elle
+        # n'est pas affichée même en mode écriture, et par suite
+        # l'onglet non plus
+        
         d = rdf_utils.build_dict(
             metagraph=self.metagraph,
             shape=self.shape,
@@ -1862,6 +1868,7 @@ class TestRDFUtils(unittest.TestCase):
             )
         self.assertIsNone(check_rows(d))
         self.assertIsNone(d[(1,)]['main widget type'])
+        self.assertIsNone(d[(2,)]['main widget type'])
         
 
     # présentation de l'identifiant d'un graphe vide
@@ -1883,7 +1890,81 @@ class TestRDFUtils(unittest.TestCase):
             )
         idk = search_keys(d, 'dct:identifier', 'edit')
         self.assertTrue(re.fullmatch('^[a-z0-9-]{36}$', d[idk[0]]['value']))
+
+
+    # double M non créé, car toutes ses propriétés
+    # sont hors template
+    def test_build_dict_24(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations")
+            ) )
         
+        # accessRights est dans le modèle, mais aucune des
+        # propriétés du noeud vide
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={ 'dct:accessRights': {} }, mode='edit')
+        k = search_keys(d, 'dct:accessRights', 'edit')[0]
+        self.assertIsNotNone(d[k]['main widget type'])
+        lkm = search_keys(d, 'dct:accessRights', 'group of properties')
+        self.assertEqual(len(lkm), 0)
+        self.assertFalse('< manuel >' in d[k]['sources'])
+        self.assertIsNone(check_rows(d))
+        self.assertIsNone(check_hidden_branches(d))
+        self.assertIsNone(check_buttons(d))
+
+        # accessRights n'est même pas dans le modèle
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        k = search_keys(d, 'dct:accessRights', 'edit')[0]
+        self.assertIsNotNone(d[k]['main widget type'])
+        lkm = search_keys(d, 'dct:accessRights', 'group of properties')
+        self.assertEqual(len(lkm), 0)
+        self.assertFalse('< manuel >' in d[k]['sources'])
+        self.assertIsNone(check_rows(d))
+        self.assertIsNone(check_hidden_branches(d))
+        self.assertIsNone(check_buttons(d))
+
+
+    # idem, avec une propriété qui n'admettait qu'une source en
+    # plus de < manuel >
+    def test_build_dict_25(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://purl.org/dc/terms/license"),
+            URIRef("https://spdx.org/licenses/etalab-2.0")
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        k = search_keys(d, 'dcat:distribution / dct:license', 'edit')[0]
+        self.assertIsNotNone(d[k]['main widget type'])
+        lkm = search_keys(d, 'dct:accessRights', 'group of properties')
+        self.assertEqual(len(lkm), 0)
+        self.assertFalse('< manuel >' in d[k]['sources'])
+        self.assertTrue(not d[k]['multiple sources'])
+        self.assertIsNone(check_rows(d))
+        self.assertIsNone(check_hidden_branches(d))
+        self.assertIsNone(check_buttons(d))
+    
     # à compléter !
 
 
@@ -2096,6 +2177,20 @@ class TestRDFUtils(unittest.TestCase):
                 templateTabs=templateTabs, columns=columns
                 )
             )
+
+    # avec template vide
+    def test_wd_build_graph_7(self):
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, template={}
+                )
+            )
+        self.assertTrue(
+            check_unchanged(
+                self.metagraph, self.shape, self.vocabulary, template={},
+                mode = 'read', preserve = True
+                )
+            )
     
     # à compléter !
 
@@ -2192,7 +2287,7 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_add_4(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
-        d.add(dbk_plus)
+        a = d.add(dbk_plus)
         llck_label = search_keys(d, "dcat:distribution / dct:license / rdfs:label", 'edit')
         self.assertEqual(len(llck_label), 2)
         llck_uri = search_keys(d, "dcat:distribution / dct:license", 'edit')
@@ -2217,15 +2312,20 @@ class TestRDFUtils(unittest.TestCase):
             d[llck_uri[0]]['hidden M'],
             not d[llck_label[1]]['hidden M']
             )
+        self.assertIsNone(check_hidden_branches(d))
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        
 
     # ajout d'un groupe de propriétés + sauvegarde
     def test_wd_add_5(self):
         d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
-        d.add(dbk_plus)
-        populate_widgets(d)
+        a = d.add(dbk_plus)
+        execute_pseudo_actions(d, a)
         self.assertIsNone(check_buttons(d, populated=True))
         self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
         # on implémente des valeurs pour que les deux distributions
         # soient enregistrées :
         for k in search_keys(d, "dcat:distribution / dcat:accessURL", 'edit'):
@@ -2371,6 +2471,47 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(sorted([d[ldbk[0]]['row'], d[ldbk[1]]['row']]), [0, 1])
         self.assertEqual(d[dbk_plus]['row'], 2)
 
+    # opérations sur widgets multi-sources hors template
+    def test_wd_add_drop_6(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations")
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        populate_widgets(d)
+        k = search_keys(d, 'dct:accessRights', 'plus button')[0]
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        lkm = search_keys(d, 'dct:accessRights', 'group of properties')
+        self.assertEqual(len(lkm), 0)
+        
+        a = d.add(k)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        lk = search_keys(d, 'dct:accessRights', 'edit')
+        self.assertEqual(len(lk), 2)
+        lkm = search_keys(d, 'dct:accessRights', 'group of properties')
+        self.assertEqual(len(lkm), 0)
+        
+        a = d.drop(lk[0])
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        lk = search_keys(d, 'dct:accessRights', 'edit')
+        self.assertEqual(len(lk), 1)
+
     # à compléter !
 
 
@@ -2458,6 +2599,44 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_child_2(self):
         self.assertEqual(self.widgetsdict.child(self.tck), (0, self.tck))
 
+    # enfants masqués
+    def test_wd_child_3(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/ns/dcat#distribution"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://www.w3.org/ns/dcat#accessURL"),
+            URIRef("http://mon-url.fr")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations")
+            ) )
+        template = { 'dct:title': {}, 'dct:accessRights': {},
+                     'dct:accessRights / rdfs:label': {} }
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template=template, mode='read')
+        k = search_keys(d, 'dcat:distribution', 'group of properties')[0]
+        self.assertIsNone(d.child(k))
+        self.assertIsNotNone(d.child(k, visibleOnly=False))
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template=template, mode='edit')
+        k = search_keys(d, 'dct:accessRights', 'group of properties')[0]
+        self.assertTrue(d[k]['hidden M'])
+        self.assertIsNone(d.child(k))
+        self.assertIsNotNone(d.child(k, visibleOnly=False))
+        
 
     ### FONCTION WidgetsDict.count_siblings
     ### -----------------------------------
