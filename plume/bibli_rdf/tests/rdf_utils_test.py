@@ -66,6 +66,133 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict)
 
 
+    ### FONCTION export_format_from_extension
+    ### -------------------------------------
+
+    def test_export_format_from_extension_1(self):
+        l = ['.ttl', '.n3', '.json', '.jsonld', '.xml', '.nt', '.rdf', '.trig']
+        for e in l:
+            with self.subTest(extension=e):
+                self.assertIsNotNone(
+                    rdf_utils.export_format_from_extension(e)
+                    )
+
+    def test_export_format_from_extension_2(self):
+        self.assertEqual(
+            rdf_utils.export_format_from_extension('.json'),
+            'json-ld'
+            )
+        self.assertEqual(
+            rdf_utils.export_format_from_extension('.rdf'),
+            'pretty-xml'
+            )
+        self.assertIsNone(
+            rdf_utils.export_format_from_extension('chose')
+            )
+
+
+    ### FONCTION import_format_from_extension
+    ### -------------------------------------
+
+    def test_import_format_from_extension_1(self):
+        l = ['.ttl', '.n3', '.json', '.jsonld', '.xml', '.nt', '.rdf', '.trig']
+        for e in l:
+            with self.subTest(extension=e):
+                self.assertIsNotNone(
+                    rdf_utils.import_format_from_extension(e)
+                    )
+
+    def test_import_format_from_extension_2(self):
+        self.assertEqual(
+            rdf_utils.import_format_from_extension('.json'),
+            'json-ld'
+            )
+        self.assertEqual(
+            rdf_utils.import_format_from_extension('.rdf'),
+            'xml'
+            )
+        self.assertIsNone(
+            rdf_utils.import_format_from_extension('chose')
+            )
+
+
+    ### FONCTION import_formats
+    ### -----------------------
+
+    def test_import_formats_1(self):
+        l = rdf_utils.import_formats()
+        lref = ['turtle', 'n3', 'json-ld', 'xml', 'nt', 'trig']
+        self.assertEqual(len(l), len(lref))
+        for f in lref:
+            with self.subTest(format=f):
+                self.assertTrue(f in l)
+
+
+    ### FONCTION import_extensions_from_format
+    ### --------------------------
+
+    def test_import_extensions_from_format_1(self):
+        lref = ['turtle', 'n3', 'json-ld', 'xml', 'nt', 'trig']
+        for f in lref:
+            with self.subTest(format=f):
+                e = rdf_utils.import_extensions_from_format(f)
+                self.assertIsNotNone(e)
+
+    def test_import_extensions_from_format_2(self):
+        self.assertEqual(
+            rdf_utils.import_extensions_from_format('xml'),
+            ['.rdf', '.xml']
+            )
+
+    def test_import_extensions_from_format_3(self):
+        l = rdf_utils.import_extensions_from_format()
+        lref = ['.ttl', '.n3', '.json', '.jsonld', '.xml', '.nt', '.rdf', '.trig']
+        self.assertEqual(len(l), len(lref))
+        for e in lref:
+            with self.subTest(extension=e):
+                self.assertTrue(e in l)
+
+    def test_import_extensions_from_format_4(self):
+        self.assertEqual(
+            rdf_utils.import_extensions_from_format('chose'),
+            None
+            )
+
+
+    ### FONCTION export_formats
+    ### -----------------------
+
+    def test_export_formats_1(self):
+        l = rdf_utils.export_formats()
+        lref = ['turtle', 'json-ld', 'xml', 'n3', 'nt', 'pretty-xml', 'trig']
+        self.assertEqual(len(l), len(lref))
+        for f in lref:
+            with self.subTest(format=f):
+                self.assertTrue(f in l)
+
+                
+    ### FONCTION export_extension_from_format
+    ### -------------------------
+
+    def test_export_extension_from_format_1(self):
+        lref = ['turtle', 'json-ld', 'xml', 'n3', 'nt', 'pretty-xml', 'trig']
+        for f in lref:
+            with self.subTest(format=f):
+                e = rdf_utils.export_extension_from_format(f)
+                self.assertIsNotNone(e)
+
+    def test_export_extension_from_format_2(self):
+        self.assertEqual(
+            rdf_utils.export_extension_from_format('turtle'),
+            '.ttl'
+            )
+
+    def test_export_extension_from_format_3(self):
+        self.assertEqual(
+            rdf_utils.export_extension_from_format('chose'),
+            None
+            )
+
 
     ### FONCTION copy_metagraph
     ### -----------------------
