@@ -33,7 +33,7 @@
 | Récupération des UUID GéoIDE       |   X   |        |   DL   | L'argument `data` de `build_dict()` sert maintenant à quelque chose ! La [documentation](/__doc__/05_generation_dictionnaire_widgets.md#data--les-métadonnées-calculées) explique comment l'utiliser pour passer l'identifiant GéoIDE à `build_dict()`. |
 | Mécanisme de copier/coller de fiche complète |       |   OK   |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#copier--coller-dune-fiche-complète) |
 | Consolidation de la gestion des paramètres utilisateurs  |      |   OK   |   DL   | Comme évoqué [ici](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/20_parametres_utilisateur.md), il s'agit de ne plus créer de valeur par défaut pour certains paramètres. |
-| Nouvelle gestion des paramètres utilisateurs   |   X    |        |   DL   | Il s'agit à l'ouverture de Plume, de créer les paramètres utilisateurs (Sous section + nom du paramètre) dans le QGIS3.ini sans valeur. Pour le prendre en compte dans les process de Plume, l'utilisateur, n'aura plus qu'à saisir une valeur sans se soucier de la syntaxe  |
+| Nouvelle gestion des paramètres utilisateurs   |   X    |        |   DL   | Il s'agit à l'ouverture de Plume, de créer les paramètres utilisateurs (Sous section + nom du paramètre) dans le QGIS3.ini sans valeur. Pour que le paramètre soit pris en compte dans les process de Plume, l'utilisateur, n'aura plus qu'à saisir une valeur sans se soucier de la syntaxe  |
 
 ### Anomalies et bricoles
 
