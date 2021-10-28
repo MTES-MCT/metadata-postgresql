@@ -305,7 +305,7 @@ except:
 
 ```
 
-*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées, parmi `"turtle"`, `"json-ld"`, `"xml"`, `"n3"`, `"nt"`, `"trig"`. Ces deux paramètres sont à spécifier par l'utilisateur. `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)). `old_metagraph` est l'ancien graphe de métadonnées de la table, soit le `metagraph` actuel, dont la fonction récupère l'identifiant.*
+*`filepath` est le chemin complet du fichier source, *format* est le format RDF des métadonnées qu'il contient. Ces deux paramètres sont à spécifier par l'utilisateur. `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)). `old_metagraph` est l'ancien graphe de métadonnées de la table, soit le `metagraph` actuel, dont la fonction récupère l'identifiant.*
 
 Si le format n'est pas déterminé, la fonction est généralement capable de le déduire de l'extension du fichier (sinon elle renverra une erreur). Il serait donc admissible de ne pas le demander et se contenter de :
 
@@ -323,6 +323,7 @@ except:
 
 Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md)).
 
+
 ### Caractéristiques du bouton
 
 Ce bouton ne doit être actif qu'en mode édition.
@@ -333,6 +334,30 @@ Il utilise l'icône [import.svg](/plume/icons/general/import.svg) :
 Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats disponibles.
 
 Texte d'aide : *Importer les métadonnées depuis un fichier*.
+
+La liste des formats autorisés est obtenue ainsi :
+
+```python
+
+importFormats = rdf_utils.import_formats()
+
+```
+
+Pour avoir la liste des extensions correspondant à un format :
+
+```python
+
+extensions = rdf_utils.import_extensions_from_format(format)
+
+```
+
+Pour avoir la liste de toutes les extensions reconnues :
+
+```python
+
+extensions = rdf_utils.import_extensions_from_format()
+
+```
 
 
 ## Export des métadonnées dans un fichier
@@ -356,14 +381,6 @@ except:
 
 Le contrôle d'erreur n'est pas aussi essentiel ici que pour l'import, mais on préférera être prudent. Un échec à l'export ne mérite pas un plantage du plugin.
 
-Les formats autorisés varient selon le contenu de `metagraph`. Pour obtenir la liste, on fera appel à la fonction `rdf_utils.available_formats()` :
-
-```python
-
-exportFormats = rdf_utils.available_formats(metagraph, shape)
-
-```
-
 C'est bien `metagraph` qui est exporté et non le contenu (potentiellement non sauvegardé) du formulaire.
 
 ### Caractéristiques du bouton
@@ -371,10 +388,23 @@ C'est bien `metagraph` qui est exporté et non le contenu (potentiellement non s
 Ce bouton utilise l'icône [export.svg](/plume/icons/general/export.svg) :
 ![import.svg](/plume/icons/general/export.svg)
 
-Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats autorisés.
-
 Texte d'aide : *Exporter les métadonnées dans un fichier*.
 
+Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats autorisés. Ceux-ci varient selon le contenu de `metagraph`. Pour obtenir la liste, on fera appel à la fonction `rdf_utils.available_formats()` :
+
+```python
+
+exportFormats = rdf_utils.available_formats(metagraph, shape)
+
+```
+
+Pour connaître l'extension associée par défaut à un format :
+
+```python
+
+extension = rdf_utils.export_extension_from_format(format)
+
+```
 
 ## Réinitialisation
 
