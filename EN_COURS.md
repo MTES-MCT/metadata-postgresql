@@ -11,6 +11,7 @@
 | DockWidget vs Windows              |        |   Ok   |   DL   | |
 | Formulaire à la volée              |        |   Ok   |   DL   | |
 | QtabWidget (gestion des onglets)   |        |   Ok   |   DL   | |
+| Import de la bibliothèque RDFLIB   |   X    |        |   DL   | |
 | Compléter le schéma SHACL          |   X    |        |   LL   | + thésaurus manquants |
 | Outillage de l'import de métadonnées GéoIDE Catalogue |   X    |        |   LL   | En attente retour de Luc Boyer sur la documentation de l'API. |
 | Documentation sous Scenari         |   X   |        |   LL / DL   | |
