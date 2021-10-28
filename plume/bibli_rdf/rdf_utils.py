@@ -38,10 +38,10 @@ class WidgetsDict(dict):
         ARGUMENTS
         ---------
         - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
-        - restrict (bool) : si True, les enregistrements "plus button"
+        - [optionnel] restrict (bool) : si True, les enregistrements "plus button"
         et "translation button" ne sont pas comptabilisés. True par défaut.
-        - visibleOnly (bool) : si True, les widgets masqués ne sont pas
-        comptabilisés.
+        - [optionnel] visibleOnly (bool) : si True, les widgets masqués
+        ne sont pas comptabilisés.
         
         RESULTAT
         --------
@@ -67,7 +67,7 @@ class WidgetsDict(dict):
         return n
 
 
-    def child(self, key):
+    def child(self, key, visibleOnly=True):
         """Renvoie la clé d'un enfant de la clé key (hors boutons).
         
         Cette fonction est supposée être lancée sur un groupe de valeurs
@@ -76,6 +76,8 @@ class WidgetsDict(dict):
         ARGUMENTS
         ---------
         - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
+        - [optionnel] visibleOnly (bool) : si True (valeur par défaut),
+        les widgets masqués ne sont pas pris en compte.
         
         RESULTAT
         --------
@@ -88,11 +90,13 @@ class WidgetsDict(dict):
         """
         c = None
         
-        for k in self.keys():
+        for k, v in self.items():
         
             if len(k) > 1 and k[1] == key \
-                    and not self[k]['object'] in ('plus button', 'translation button'):
-                    
+                and not v['object'] in ('plus button', 'translation button') \
+                and (not visibleOnly or (not v['hidden'] and not v['hidden M'] \
+                and v['main widget type']) \
+                ):
                 c = k
                 break
                 
@@ -282,6 +286,10 @@ class WidgetsDict(dict):
         g = self[key[1]]['object']
         if not g in ('translation group', 'group of values'):
             raise ForbiddenOperation("You can't delete a record outside of a group of values or translation group.")
+            
+        if not self[key]['main widget type'] or self[key]['hidden'] \
+            or self[key]['hidden M']:
+            raise ForbiddenOperation("Widget {} is hidden, no action is allowed here.".format(key))
         
         d = {
             "widgets to delete": [],
@@ -332,8 +340,9 @@ class WidgetsDict(dict):
                     if m:
                         d["menus to delete"].append(m)
 
-            # cas des frères et soeurs
-            elif len(k) > 1 and k[1] == key[1]:
+            # cas des frères et soeurs (pour ceux qui 
+            # ne sont pas du stockage sans widget)
+            elif self[k]['main widget type'] and len(k) > 1 and k[1] == key[1]:
             
                 if self[k]['row'] > self[key]['row']:
                     
@@ -497,13 +506,13 @@ class WidgetsDict(dict):
         k2 = (n, key[1], 'M') if len(c) == 2 else (n, key[1])
         cm = (c[0], c[1], 'M') if len(c) == 2 else (c[0], c[1])
         
-        self.update( { k1: self.clean_copy(c, language, mLangList) } )   
+        self.update( { k1: self.clean_copy(c, language, mLangList) } )
         self[k1]['row'] = r
         d['new keys'].append(k1)
         
-        # cas d'un enregistrement avec un double M               
-        if cm in self:
-            self.update( { k2: self.clean_copy(cm, language, mLangList) } )   
+        # cas d'un enregistrement avec un double M
+        if cm in self and self[cm]['main widget type']:
+            self.update( { k2: self.clean_copy(cm, language, mLangList) } )  
             self[k2]['row'] = r
             d['new keys'].append(k2)
         else:
@@ -537,8 +546,10 @@ class WidgetsDict(dict):
         # size during iteration")
         
             # cas des frères et soeurs
-            if len(k) > 1 and k[1] == key[1] and self[k]['object'] in (
-                    'group of properties', 'translation group', 'edit'):
+            if len(k) > 1 and k[1] == key[1] \
+                and self[k]['object'] in ('group of properties',
+                'translation group', 'edit') and \
+                self[k]['main widget type']:
                 
                 # on vient d'ajouter un enregistrement au groupe,
                 # donc il y a lieu d'ajouter des boutons moins
@@ -568,7 +579,7 @@ class WidgetsDict(dict):
                 cm if ( cm and is_ancestor(cm, k) ) else None
                 )
             if cr and self[key]['object'] == 'plus button' \
-                and self[key]['main widget type']:
+                and self[k]['main widget type']:
             
                 if self[k[1]]['object'] == 'group of properties' \
                     or self[k]['object'] in ('plus button', 'translation button') \
@@ -735,6 +746,13 @@ class WidgetsDict(dict):
         
         if not self[key]['multiple sources']:
             raise ForbiddenOperation("Key {} doesn't provide multiple sources.".format(key))
+            
+        if not self[key]['main widget type'] or self[key]['hidden'] \
+            or self[key]['hidden M']:
+            # surtout important pour le cas d'un double M qui n'a pas été
+            # créé ('main widget type' valant None), et qui propose donc une
+            # source "< manuel >" qui ne serait pas dans la liste de son jumeau
+            raise ForbiddenOperation("Widget {} is hidden, no action is allowed here.".format(key))
             
         if not self[key]['sources'] \
             or not source in self[key]['sources']:
@@ -1163,7 +1181,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
     mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
     mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None,
-    idx=None, rowidx=None):
+    idx=None, rowidx=None, mVSources=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
 
     ARGUMENTS
@@ -1911,7 +1929,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
                         mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs,
                         mData=mData, mPropMap=mPropMap, mPropTemplate=mPropTemplate,
-                        idx=idx, rowidx=rowidx
+                        idx=idx, rowidx=rowidx, mVSources=mVSources
                         )
 
             # pour tout ce qui n'est pas un pur noeud vide :
@@ -2113,25 +2131,40 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 idx[mParent] += 1
                 rowidx[mParent] += ( mRowSpan or 1 )
 
-        # référencement d'un widget bouton pour ajouter une valeur
-        # si la catégorie en admet plusieurs
-        if not mNHidden and mode == 'edit' and ( ( multilingual and translation and mVLangList and len(mVLangList) > 1 ) or multiple ):
         
-            mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
-            mDict[ ( idx[mParent], mParent ) ].update( {
-                'object' : 'translation button' if multilingual else 'plus button',
-                'main widget type' : 'QToolButton',
-                'row' : rowidx[mParent],
-                'next child' : idx[mParent] + 1,
-                'hidden M' : mHideM,
-                'hidden' :  len(mVLangList) == 1 if multilingual else None,
-                'path' : mNPath,
-                'help text': 'Ajouter une traduction' if multilingual \
-                    else 'Ajouter un élément « {} »'.format(t.get('label', None) or str(p['name']) or '')
-                } )
-            
-            idx[mParent] += 1
-            rowidx[mParent] += 1
+        if mDict[mParent]['object'] in ('group of values', 'translation group'):
+        
+            if rowidx.get(mParent) == 0:
+                # on vient de créer un groupe de valeurs... qui n'en contient finalement
+                # aucune (cas rare où les enfants auraient été des groupes de propriétés,
+                # mais toutes les propriétés en question sont hors template)
+                if idx[mParent] == 0:
+                    del mDict[mParent]
+                else:
+                    mDict[mParent]['main widget type'] = None
+                rowidx[mParent[1]] -= 1
+                
+            elif not mNHidden and mode == 'edit' and \
+                ( ( multilingual and translation and mVLangList and len(mVLangList) > 1 ) \
+                or multiple ):
+                
+                # référencement d'un widget bouton pour ajouter une valeur
+                # si la catégorie en admet plusieurs
+                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                mDict[ ( idx[mParent], mParent ) ].update( {
+                    'object' : 'translation button' if multilingual else 'plus button',
+                    'main widget type' : 'QToolButton',
+                    'row' : rowidx[mParent],
+                    'next child' : idx[mParent] + 1,
+                    'hidden M' : mHideM,
+                    'hidden' :  len(mVLangList) == 1 if multilingual else None,
+                    'path' : mNPath,
+                    'help text': 'Ajouter une traduction' if multilingual \
+                        else 'Ajouter un élément « {} »'.format(t.get('label', None) or str(p['name']) or '')
+                    } )
+                
+                idx[mParent] += 1
+                rowidx[mParent] += 1
             
 
 
@@ -2532,15 +2565,42 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     # pas de bouton plus, faute de modèle indiquant si la catégorie
                     # admet des valeurs multiples
 
-    if not is_root(mParentWidget) and rowidx[mParentWidget] == 0 \
+
+    # ------ GROUPES VIDES ------
+
+    if not is_root(mParentWidget) and rowidx.get(mParentWidget) == 0 \
         and mDict[mParentWidget]['main widget type']:
         # cas d'un groupe de propriétés dans lequel on n'aura finalement
-        # aucune propriété à afficher. Dans ce cas, on n'affiche pas non
-        # plus le groupe
-        mDict[mParentWidget]['main widget type'] = None
-        mDict[mParentWidget]['row'] = None
-        # et on corrige l'index du parent
-        rowidx[mParentWidget[1]] -= 1
+        # aucune propriété à afficher.
+        
+        if idx[mParentWidget] == 0 :
+            # enregistrement sans descendant, on le supprime.
+            # NB : correspond 1) au cas d'un double M dont
+            # toutes les propriétés sont hors template, en mode édition,
+            # et lorsque soit la valeur renseignée est une IRI, soit
+            # la propriété dont le noeud vide est l'objet est, elle, dans
+            # le template ; 2) au cas où une branche du template se finit
+            # sur un noeud vide, en mode édition et quand aucune valeur
+            # n'était renseignée sur cette branche
+            del mDict[mParentWidget]
+            if len(mParentWidget) == 2:
+                rowidx[mParentWidget[1]] -= 1
+            elif mVSources and '< manuel >' in mVSources:
+                mVSources.remove('< manuel >')
+            
+        else:
+            # si l'enregistrement a des descendants (cas de stockage
+            # d'informations masquées en mode lecture), on se contente
+            # de ne pas afficher le groupe
+            mDict[mParentWidget]['main widget type'] = None
+            mDict[mParentWidget]['row'] = None
+            # on corrige l'index du parent (pas pour les doubles M,
+            # puisque le numéro de ligne est partagé avec le jumeau,
+            # mais tous devraient avoir été traités au point précédent)
+            if len(mParentWidget) == 2:
+                rowidx[mParentWidget[1]] -= 1
+            elif mVSources and '< manuel >' in mVSources:
+                mVSources.remove('< manuel >')
         
     elif mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
         # contrôle des onglets non utilisés
