@@ -88,7 +88,9 @@ def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
     #boite de dialogue Fichiers
     extStr = ""
     for elem in mListExtensionExport :
-        extStr += ";;" + str(elem) + " (*." + str(elem) + ")" 
+        modelExt = rdf_utils.export_extension_from_format(elem)
+        extStr += ";;" + str(elem) + " (*" + str(modelExt) + ")"
+
     TypeList = extStr[2:]
     InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table) + "." + extension
     mDialogueSave = QFileDialog
@@ -108,10 +110,19 @@ def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
 #==================================================
 def importObjetMetagraph(self) :
     #boite de dialogue Fichiers
+    importFormats = rdf_utils.import_formats()
+    extStr = ""
+    for elem in importFormats :
+        modelExt = rdf_utils.import_extensions_from_format(elem)
+        extStrExt = ""
+        for elemExt in modelExt :
+            extStrExt += "*" + str(elemExt) + " "
+        extStr += ";;" + str(elem) + " (" + str(extStrExt) + ")"
+         
     MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
     MonFichierPath = MonFichierPath.replace("\\","/")        
     InitDir = MonFichierPath
-    TypeList = "xml (*.xml *.rdf);;json-ld (*.json *.jsonld);;turtle\t (*.ttl);;n3 (*.n3);;nt (*.nt);;trig (*.trig);;Tous les fichiers (*.*)"
+    TypeList = extStr[2:]
     fileName = QFileDialog.getOpenFileName(None,"Fiches de métadonnées",InitDir,TypeList)
     filepath = str(fileName[0]) if fileName[0] != "" else "" 
     if filepath == "" : return
@@ -467,7 +478,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
-       mDicAutre["extExport"]       = ["turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"]
+       #mDicAutre["extExport"]       = ["turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"]
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
               mSettings.setValue(key, value)

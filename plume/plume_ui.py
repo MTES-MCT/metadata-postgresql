@@ -56,8 +56,6 @@ class Ui_Dialog_plume(object):
         self.durationBarInfo = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
         self.ihm             = self.mDic_LH["ihm"]  #window/dock
         self.toolBarDialog   = self.mDic_LH["toolBarDialog"]    #toolBarDialog
-        self.extExport       = self.mDic_LH["extExport"]    #extExport
-        print(self.extExport)
         #---
         self.colorDefaut                      = self.mDic_LH["defaut"]                      #Color QGroupBox
         self.colorQGroupBox                   = self.mDic_LH["QGroupBox"]                   #Color QGroupBox
