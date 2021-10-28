@@ -1,5 +1,4 @@
-"""
-Utilitaires pour la recette de rdf_utils.
+"""Utilitaires pour la recette de rdf_utils.
 """
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
 from rdflib.compare import isomorphic
@@ -221,7 +220,7 @@ def check_buttons(widgetsdict, populated=False):
             else:
             # dans un groupe de traduction, le bouton plus est visible dès lors que les listes
             # de langues autorisées contiennent au moins deux valeurs
-                c = widgetsdict[widgetsdict.child(k[1])]['authorized languages']
+                c = widgetsdict[widgetsdict.child(k[1], visibleOnly=False)]['authorized languages']
                 
                 if len(c) > 1:
                     if v['hidden']:
@@ -245,7 +244,7 @@ def check_buttons(widgetsdict, populated=False):
         # dans un groupe de valeur, le bouton plus devrait toujours avoir été créé
         # ... sauf s'il contient des traductions hors mode traduction
         
-            c = widgetsdict.child(k)
+            c = widgetsdict.child(k, visibleOnly=False)
             
             if widgetsdict[c]['one per language']:
             
@@ -317,7 +316,12 @@ def check_hidden_branches(widgetsdict, populated=False):
     - "both M twins are hidden M" : l'enregistrement et son double M sont tous
     deux masqués (et n'appartiennent pas à une branche masquée) ;
     - "none of the M twins is hidden M" : l'enregistrement et son double M sont
-    deux visibles.
+    deux visibles ;
+    - "widget to create in a ghost group of properties" : widget marqué comme à créer
+    ('main widget type' non nul) descendant d'un group de propriétés avec un 'main
+    widget type' nul ;
+    - 'should have been a ghost' : groupe de propriétés avec un 'main widget type' non nul,
+    mais aucun descendant avec un 'main widget type' non nul.
     
     Dans le cas d'un dictionnaire rempli de pseudo-widgets :
     - 'should be hidden (widget)' : le pseudo-widget aurait dû être masqué ;
@@ -328,12 +332,30 @@ def check_hidden_branches(widgetsdict, populated=False):
     issues = {}
     n = 0
     hidden = []
+    notcreated = []
     visible = []
+    ghosts = []
     
     for k, v in widgetsdict.items():
     
         if v['main widget type'] is None:
             continue
+        
+        if v['object'] == 'group of properties' and v['main widget type'] is None:
+        # groupes propriétés présumés vides, qui ne seront donc pas créés
+            notcreated.append(k)
+        
+        if v['object'] == 'group of properties' and v['main widget type']:
+            ghosts.append(k)
+            
+        if not rdf_utils.is_root(k) and v['main widget type'] and k[1] in ghosts:
+            ghosts.remove(k[1])
+        
+        if any([rdf_utils.is_ancestor(a, k) for a in notcreated]):
+        # cas du descendant d'un groupe de propriétés non créé
+            if v['main widget type']:
+                issues.update({ n: (k, v['object'], "widget to create in a ghost group of properties") })
+                n += 1
         
         if any([rdf_utils.is_ancestor(a, k) for a in hidden]):
         # cas du descendant d'une branche déjà identifiée
@@ -468,6 +490,10 @@ def check_hidden_branches(widgetsdict, populated=False):
                         and not v[e][1]:
                         issues.update({ n: (k, e, 'should be not hidden (widget)') })
                         n += 1
+
+    for g in ghosts:
+        issues.update({ n: (g, 'group of properties', 'should have been a ghost') })
+        n += 1
 
     if issues:
         return issues
@@ -753,39 +779,35 @@ def execute_pseudo_actions(widgetsdict, actions):
                 populate_widgets_key(widgetsdict, k)
                 
         elif a == "widgets to delete":
-            lb = l.copy()
-            for k, v in widgetsdict.items():
-                for w in lb:
+            # on ne peut pas pseudo-supprimer ces pseudo-widgets, car les clés correspondantes
+            # ont déjà disparu du dictionnaire. Mais on peut au moins vérifier que
+            # les clés citées ne sont plus là.
+            for w in l:
+                for k, v in widgetsdict.items():
                     for e in ('main widget', 'minus widget', 'language widget', 'label widget',
                         'grid widget', 'switch source widget'):
                         if v[e] == w:
-                            v[e] = None
-                            lb.remove(w)
-            if lb:
-                raise RuntimeError("Could not delete the following widgets : {}.".format(lb))
+                            raise RuntimeError("This key should have been droped : {}.".format(k))
         
         elif a == "actions to delete":
-            lb = l.copy()
-            for k, v in widgetsdict.items():
-                for w in lb:
+            # on ne peut pas pseudo-supprimer ces pseudo-actions, car les clés correspondantes
+            # ont déjà disparu du dictionnaire. Mais on peut au moins vérifier que
+            # les clés citées ne sont plus là.
+            for w in l:
+                for k, v in widgetsdict.items():
                     for e in ('language actions', 'switch source actions'):
-                        if v[e] == [w]:
-                            v[e] = None
-                            lb.remove(w)
-            if lb:
-                raise RuntimeError("Could not delete the following actions : {}.".format(lb))
-                            
+                        if v[e] == w:
+                            raise RuntimeError("This key should have been droped : {}.".format(k))
         
         elif a == "menus to delete":
-            lb = l.copy()
-            for k, v in widgetsdict.items():
-                for w in lb:
+            # on ne peut pas pseudo-supprimer ces pseudo-actions, car les clés correspondantes
+            # ont déjà disparu du dictionnaire. Mais on peut au moins vérifier que
+            # les clés citées ne sont plus là.
+            for w in l:
+                for k, v in widgetsdict.items():
                     for e in ('language menu', 'switch source menu'):
                         if v[e] == w:
-                            v[e] = None
-                            lb.remove(w)
-            if lb:
-                raise RuntimeError("Could not delete the following menus : {}.".format(lb))
+                            raise RuntimeError("This key should have been droped : {}.".format(k))
 
         elif a == "widgets to empty":
             for w in l:
