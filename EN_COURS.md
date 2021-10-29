@@ -43,12 +43,12 @@
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Les doubles clics sur une couche n'ont pas d'effet (pour ouvrir la fenêtre des propriétés dans le panneau des couches ou pour charger une couche depuis l'explorateur) |       |   OK   |   DL   | Semble directement lié au temps de chargement des métadonnées. Les améliorations de performance ont résolu complètement le problème chez DL, partiellement chez LL. |
-| ToolTips sur les QLabel ?  |   X   |        |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
+| ToolTips sur les QLabel ?  |       |   OK   |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
 | Widget date et time à revoir ou pas       |   X   |        |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
 | Valeur vide dans les listes des QComboBox |       |   OK   |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
 | Changer les couleurs par défaut des cadres |       |   OK   |   DL   | Les bonnes sont [là](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/10_creation_widgets.md#autres-groupes). |
 | Créer une icône pour la valeur courante des menus des QToolButton  |      |    OK    |   LL   | Finalement, pas de nouvelle icône. On utilise le logo de Plume. |
-| La petite flèche des QComboBox n'a pas le même aspect que celles des autres widgets ?  |   X   |        |   DL   | |
+| La petite flèche des QComboBox n'a pas le même aspect que celles des autres widgets ?  |       |   OK   |   DL   | |
 | `rdf:langString` au lieu de `xsd:string` dans le schéma SHACL pour distinguer les valeurs litérales qui appellent réellement une traduction  |       |   OK   |   LL   | |
 | Masquer les groupes de propriétés dont tous les enfants sont masqués (clé `'main widget type'` valant `None`)  |       |   OK   |   LL   | À confirmer, mais lancer `mDict[mParentWidget]['main widget'] = None` si `rowidx[mParentWidget] == 0` devrait faire l'affaire. |
 | Optimisation : remplacer les appels à `query` par les méthodes natives de rdflib partout où c'est possible |       |   OK   |   LL   | Spécialement lorsqu'il y a des arguments optionnels, leur traitement paraît spécialement coûteux. |
