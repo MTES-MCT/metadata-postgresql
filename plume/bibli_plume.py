@@ -478,7 +478,6 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
-       #mDicAutre["extExport"]       = ["turtle", "json-ld", "xml", "n3", "nt", "pretty-xml", "trig"]
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
               mSettings.setValue(key, value)
@@ -531,6 +530,17 @@ def returnAndSaveDialogParam(self, mAction):
        mDicUserSettings["translation"]             = "false"
        mDicUserSettings["langList"]                = ['fr', 'en']
        mDicUserSettings["geoideJSON"]              = "true"
+       #----
+       mDicUserSettings["preferedTemplate"]        = ""
+       mDicUserSettings["enforcePreferedTemplate"] = ""
+       mDicUserSettings["readHideBlank"]           = ""
+       mDicUserSettings["readHideUnlisted"]        = ""
+       mDicUserSettings["editHideUnlisted"]        = ""
+       mDicUserSettings["readOnlyCurrentLanguage"] = ""
+       mDicUserSettings["editOnlyCurrentLanguage"] = ""
+       mDicUserSettings["labelLengthLimit"]        = ""
+       mDicUserSettings["valueLengthLimit"]        = ""
+       mDicUserSettings["textEditRowSpan"]         = ""
        #----
        for key, value in mDicUserSettings.items():
            if not mSettings.contains(key) :
