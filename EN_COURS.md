@@ -43,7 +43,7 @@
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Les doubles clics sur une couche n'ont pas d'effet (pour ouvrir la fenêtre des propriétés dans le panneau des couches ou pour charger une couche depuis l'explorateur) |       |   OK   |   DL   | Semble directement lié au temps de chargement des métadonnées. Les améliorations de performance ont résolu complètement le problème chez DL, partiellement chez LL. |
-| ToolTips sur les QLabel ?  |   X   |        |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
+| ToolTips sur les QLabel ?  |       |   OK   |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
 | Widget date et time à revoir ou pas       |   X   |        |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
 | Valeur vide dans les listes des QComboBox |       |   OK   |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
 | Changer les couleurs par défaut des cadres |       |   OK   |   DL   | Les bonnes sont [là](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/10_creation_widgets.md#autres-groupes). |
