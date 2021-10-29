@@ -2407,43 +2407,6 @@ class TestRDFUtils(unittest.TestCase):
             len(search_keys(d, "dcat:distribution", 'group of properties')), 2
             )
 
-    # propriété hors template,
-    # avec valeur d'origine manuelle (sinon < manuel > ne sera
-    # même pas dans la liste des sources)
-    def test_wd_add_6(self):
-        g = Graph()
-        g.add( (
-            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
-            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-            URIRef("http://www.w3.org/ns/dcat#Dataset")
-            ) )
-        b = BNode()
-        g.add( (
-            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
-            URIRef("http://purl.org/dc/terms/accessRights"),
-            b
-            ) )
-        g.add( (
-            b,
-            URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
-            Literal("Mention test.", lang='fr')
-            ) )
-        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
-            template={}, mode='edit')
-        populate_widgets(d)
-        k = search_keys(d, 'dct:accessRights', 'group of properties')[0]
-        a = d.change_source(k, "Droits d'accès (UE)")
-        execute_pseudo_actions(d, a)
-        # NB : jusque-là, reproduit test_wd_change_source_2, donc on
-        # ne fait pas de contrôle du résultat
-        k = search_keys(d, 'dct:accessRights', 'plus button')[0]
-        a = d.add(k)
-        rdf_utils_debug.execute_pseudo_actions(d, a)
-        self.assertIsNone(check_rows(d, populated=True))
-        self.assertIsNone(check_hidden_branches(d, populated=True))
-        self.assertIsNone(check_buttons(d, populated=True))
-
-
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
     def test_wd_add_drop_1(self):
@@ -2618,6 +2581,49 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_buttons(d, populated=True))
         lk = search_keys(d, 'dct:accessRights', 'edit')
         self.assertEqual(len(lk), 1)
+
+
+    # propriété hors template,
+    # avec valeur d'origine manuelle (sinon < manuel > ne sera
+    # même pas dans la liste des sources)
+    def test_wd_add_drop_7(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
+            Literal("Mention test.", lang='fr')
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        populate_widgets(d)
+        k = search_keys(d, 'dct:accessRights', 'group of properties')[0]
+        a = d.change_source(k, "Droits d'accès (UE)")
+        execute_pseudo_actions(d, a)
+        # NB : jusque-là, reproduit test_wd_change_source_2, donc on
+        # ne fait pas de contrôle du résultat
+        k = search_keys(d, 'dct:accessRights', 'plus button')[0]
+        a = d.add(k)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        k = search_keys(d, 'dct:accessRights', 'edit')[0]
+        a = d.drop(k)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
 
     # à compléter !
 
@@ -2854,7 +2860,6 @@ class TestRDFUtils(unittest.TestCase):
             (1, (3, (3, (0,))))
             )
     
-    # cas d'une clé M
     def test_replace_ancestor_5(self):
         self.assertEqual(
             rdf_utils.replace_ancestor((2, (3, (0, )), 'M'), (3, (0, )), (4, (0, ))),
@@ -2862,11 +2867,15 @@ class TestRDFUtils(unittest.TestCase):
             )
 
     def test_replace_ancestor_7(self):
-        with self.assertRaisesRegex(ValueError, r'replace\snon[-]M\s'):
+        with self.assertRaisesRegex(
+            rdf_utils.ForbiddenOperation, r'replace\snon[-]M\s'
+            ):
             rdf_utils.replace_ancestor((2, (1, (0,))), (1, (0,)), (3, (0, ), 'M'))
 
     def test_replace_ancestor_8(self):
-        with self.assertRaisesRegex(ValueError, r'replace\sM\s'):
+        with self.assertRaisesRegex(
+            rdf_utils.ForbiddenOperation, r'replace\sM\s'
+            ):
             rdf_utils.replace_ancestor((2, (1, (0,), 'M')), (1, (0,), 'M'), (3, (0, )))
 
     def test_replace_ancestor_9(self):
@@ -2877,6 +2886,16 @@ class TestRDFUtils(unittest.TestCase):
                 (2, (0, (1,)))
                 ),
             (0, (2, (2, (0, (1,))), 'M'))
+            )
+
+    def test_replace_ancestor_10(self):
+        self.assertEqual(
+            rdf_utils.replace_ancestor(
+                (0, (2, (0, (0, (1,)), 'M'))),
+                (0, (0, (1,)), 'M'),
+                (2, (0, (1,)), 'M')
+                ),
+            (0, (2, (2, (0, (1,)), 'M')))
             )
     
     
