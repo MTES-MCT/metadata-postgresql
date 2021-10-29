@@ -9,7 +9,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtQuick
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
                              QDockWidget, QTreeView, QGridLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, 
-                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator)
+                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle)
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
 
@@ -179,7 +179,7 @@ class Ui_Dialog_plume(object):
         self.shape       = bibli_plume.returnObjetShape()
         self.translation = bibli_plume.returnObjetTranslation(self)
         #-
-        self.displayToolBar(*self.listIconToolBar)    
+        self.displayToolBar(*self.listIconToolBar) 
     #= Fin setupUi
 
     #==========================
@@ -490,7 +490,6 @@ class Ui_Dialog_plume(object):
 
     #==========================
     def closeEvent(self, event):
-        print("DOCK DIALOG " + str(event))
 
         try :
            if hasattr(self, 'mConnectEnCours') :
@@ -884,14 +883,11 @@ class MONDOCK(QDockWidget):
 
     #==========================
     def event(self, event):
-        print("DOCK event " + str(event))
         event.accept()
         return
 
     #==========================
     def closeEvent(self, event):
-        print(mDialog.ihm)
-        print("DOCK closeEvent " + str(event))
         try :
            if hasattr(self, 'mConnectEnCours') :
               self.mConnectEnCours.close()

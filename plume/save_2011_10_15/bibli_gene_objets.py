@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle) 
+from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -14,13 +14,11 @@ from .bibli_plume import *
 from .bibli_rdf import rdf_utils
                      
 #==================================================
-def generationObjets(self, _keyObjet, _valueObjet) :
+def generationObjets(self, _keyObjet, _valueObjet, _mParent = None) :
     _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
-    _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
-    _iconQComboBox = _iconQComboBox.replace("\\","/")
-    _iconSources               = _pathIcons + "/source_button.svg"
-    _iconSourcesSelect         = _pathIcons + "/source_button.png"
-    _iconSourcesVierge         = _pathIcons + "/vierge.png"
+    _iconSources          = _pathIcons + "/source_button.svg"
+    _iconSourcesSelect    = _pathIcons + "/source_button.png"
+    _iconSourcesVierge    = _pathIcons + "/vierge.png"
     _iconPlus                  = _pathIcons + "/plus_button.svg"
     _iconPlusTempGoProperties  = _pathIcons + "/color_button_Plus_GoProperties.svg"
     _iconPlusTempGoValues      = _pathIcons + "/color_button_Plus_GoValues.svg"
@@ -32,20 +30,13 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     _mListeIconsButtonPlusMinus = [ _iconPlusTempGoProperties, _iconPlusTempGoValues,  _iconPlusTempTgroup, \
                                    _iconMinusTempGoProperties, _iconMinusTempGoValues, _iconMinusTempTgroup ]
 
-    #---------------------------
     # Gestion des langues
-    _language = self.language
-    _langList = self.langList
-
-    #---------------------------
-    #Pour Gestion et Génération à la volée des onglets 
-    if (rdf_utils.is_root(_keyObjet) and _valueObjet['main widget type'] == "QGroupBox") : 
-       self.mFirst = rdf_utils.is_root(_keyObjet)
+    _language = 'fr'
+    _langList = ['fr', 'en']
     #---------------------------
     # Gestion du Parent
     if self.mFirst :
-       #ICI Gestion et Génération à la volée des onglets 
-       _mParentEnCours = gestionOnglets(self, _keyObjet, _valueObjet)
+       _mParentEnCours = _mParent
        #- Create button color
        if self.mFirstColor : writeColorIcon(self, _iconPlus, _iconMinus, _mListeIconsButtonPlusMinus) 
     else :
@@ -97,7 +88,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           if valueExiste('label', _valueObjet) :_mObjetGroupBox.setTitle(_valueObjet['label']) 
        #Tooltip                        
        if valueExiste('help text', _valueObjet) : _mObjetGroupBox.setToolTip(_valueObjet['help text'])                                
-
+       if self.mFirst : self.groupBoxPrincipal = _mObjetGroupBox
        self.mFirst = False
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetGroupBox, 'grid widget' : _mObjet})
@@ -116,9 +107,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           _mObjetQSaisie.setStyleSheet("QTextEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        elif _valueObjet['main widget type'] == "QComboBox" :
           _mObjetQSaisie = QtWidgets.QComboBox()
-          _mObjetQSaisie.setStyleSheet("QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
-                                        QComboBox::drop-down {border: 0px;}\
-                                        QComboBox::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+          _mObjetQSaisie.setStyleSheet("QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        _mObjetQSaisie.setObjectName(str(_keyObjet))
        #--                        
        #Masqué /Visible Générale                               
@@ -132,15 +121,9 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        else :   
           _mObjetQSaisie.setMinimumSize(QtCore.QSize(100, 23))
 
-       if _valueObjet['main widget type'] in ("QLineEdit") :
+       if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
           #Valeur                        
           _mObjetQSaisie.setText(_valueObjet['value'])
-       elif _valueObjet['main widget type'] in ("QTextEdit") :
-          #Valeur  
-          _mObjetQSaisie.setAcceptRichText(True)                      
-          _mObjetQSaisie.setPlainText(_valueObjet['value'])
-
-       if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
           #Lecture seule                        
           _mObjetQSaisie.setEnabled(False if _valueObjet['read only'] else True)
           #Masque valeur fictive                        
@@ -175,8 +158,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #========== 
        #QCOMBOBOX                        
        if _valueObjet['main widget type'] in ("QComboBox") :
-          _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source'], self.vocabulary, language=_language)
-          _thesaurus.insert(0, "")
+          _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source'], self._g_vocabulary, language=_language)
           #print(_thesaurus)
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
           _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
@@ -191,28 +173,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQSaisie})
     # == QLINEEDIT / QTEXTEDIT / QCOMBOBOX
-    #---------------------------
-    #---------------------------
-    # == QLABEL
-    elif _valueObjet['main widget type'] in ("QLabel") :
-       #--                        
-       _editStyle = self.editStyle             #style saisie
-       _mObjetQLabel = QtWidgets.QLabel()
-       _mObjetQLabel.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
-       _mObjetQLabel.setObjectName(str(_keyObjet))
-       #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQLabel.setVisible(False)
-       #--                        
-       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan)
-       #Valeur                        
-       _mObjetQLabel.setText(_valueObjet['value']) 
-       #Tooltip                        
-       if valueExiste('help text', _valueObjet) : _mObjetQLabel.setToolTip(_valueObjet['help text'])
-       #--                        
-       _mObjetQLabel.setWordWrap(True)
-       _mObjetQLabel.setOpenExternalLinks(True)
-    # == QLABEL
     #---------------------------
     #---------------------------
     # == QDATEEDIT
@@ -232,17 +192,9 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignLeft)
         #Valeur 
-       if valueExiste('value', _valueObjet) :
-          try : 
-            _valueDate = tuple(map(int, _valueObjet['value'].split('-')))                      
-            _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
-          except :
-            # Is QDateTimeEdit
-            try : 
-              _valueDate = tuple(map(int, _valueObjet['value'][0:10].split('-')))                      
-              _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
-            except :
-              pass  
+       if valueExiste('value', _valueObjet) : 
+          _valueDate = tuple(map(int, _valueObjet['value'].split('-')))                      
+          _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
        else :
           _mObjetQDateEdit.setDateTime(QDateTime.currentDateTime())
        #Lecture seule                        
@@ -269,7 +221,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQCheckBox, row, column, rowSpan, columnSpan)
-       _mObjetQCheckBox.setChecked(True if str(_valueObjet['value']).lower() == 'true' else False)       
+       _mObjetQCheckBox.setChecked(True if _valueObjet['value'] else False)       
        #Lecture seule                        
        _mObjetQCheckBox.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -349,7 +301,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #=============================================================================
 
     # == QLABEL
-    _mObjetQLabelEtiquette = generationLabel(self, _keyObjet, _valueObjet, _mParentEnCours)
+    _mObjetQLabel = generationLabel(self, _keyObjet, _valueObjet, _mParentEnCours)
     # == QLABEL
 
     #---------------------------
@@ -382,14 +334,12 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #---------------------------
     # == QTOOLBUTTON  MULTIPLE SOURCES
     if _valueObjet['multiple sources'] :
-       _editStyle = self.editStyle             #style saisie
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setIcon(QIcon(_iconSources))
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['sources'] :
@@ -404,7 +354,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mObjetQMenuItem.setIcon(_mObjetQMenuIcon)
            _mObjetQMenu.addAction(_mObjetQMenuItem)
            #- Actions
-           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, _keyObjet, _valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language))
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, _keyObjet, _valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge))
            _mListActions.append(_mObjetQMenuItem)
        
        _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
@@ -428,15 +378,13 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #---------------------------
     # == QTOOLBUTTON  AUTHORIZED LANGUAGES
     if _valueObjet['authorized languages'] :
-       _editStyle = self.editStyle             #style saisie
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setText(_valueObjet['language value'])
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px;}")
-       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px; border-style:" + _editStyle  + "; border-width: 0px;}")
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px;}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['authorized languages'] :
@@ -549,10 +497,9 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
     #- Nouveaux objets à créer avec les nouvelles clefs          
     for key in ret['new keys'] :
         mParent, self.mFirst = self.mDicObjetsInstancies.parent_grid(key), False
-        self.mFirst = False
         value = self.mDicObjetsInstancies[key]
         if value['main widget type'] != None :
-           generationObjets(self, key, value)
+           generationObjets(self, key, value, mParent)
         else :
            pass
     #- Afficher          
@@ -577,10 +524,9 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
     #- Regénération du Menu 
     regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
     return
-
 #==================================================
 # Traitement action sur QToolButton avec Menu
-def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language):
+def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['switch source menu'].sender()
     #maj Source 
     ret = self.mDicObjetsInstancies.change_source(__keyObjet, _selectItem.text() )
@@ -603,12 +549,10 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
            elem.setVisible(False)
         except : 
            pass   
-    #- Maj QComboBox
+    #- Maj QComboBox 
     for elem in ret['concepts list to update'] : 
         __valueObjet = self.mDicObjetsInstancies[elem]
-        _thesaurus = rdf_utils.build_vocabulary(__valueObjet['current source'], self.vocabulary, language=_language)
-        _thesaurus.insert(0, "")
-        __valueObjet['main widget'].clear()
+        _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source'], self._g_vocabulary, language=_language)
         __valueObjet['main widget'].addItems(_thesaurus)
 
     #---------------------------------------------
@@ -638,7 +582,7 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
 
            _mObjetQMenu.addAction(_mObjetQMenuItem)
            #- Actions
-           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, mKeyQMenuUpdate, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language))
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, mKeyQMenuUpdate, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge))
            _mListActions.append(_mObjetQMenuItem)
     
        __valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].MenuButtonPopup)
@@ -685,46 +629,6 @@ def regenerationMenu(self, _ret, __valueObjet, _language, _langList) :
        #Dict des objets instanciés
        __valueObjet.update({'language actions' : _mListActions}) 
     return
-
-#==========================
-def gestionOnglets(self, _key, _value):
-    #--------------------------
-    tab_widget_Onglet = QWidget()
-    tab_widget_Onglet.setObjectName(str(_key))
-    labelTabOnglet = str(_value['label'])
-    self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
-    #==========================     
-    #Zone affichage Widgets
-    zoneWidgetsGroupBox = QtWidgets.QGroupBox(tab_widget_Onglet)
-    zoneWidgetsGroupBox.setStyleSheet("QGroupBox {   \
-                font-family: Serif ;   \
-                border-style: outset;    \
-                border-width: 0px;       \
-                border-radius: 10px;     \
-                border-color: red;      \
-                font: bold 11px;     \
-                padding: 6px;        \
-                }")
-
-    x, y = 0, 0
-    larg, haut =  self.tabWidget.width()- 5, self.tabWidget.height()-5
-    zoneWidgetsGroupBox.setGeometry(QtCore.QRect(x, y, larg, haut))
-    #--            
-    zoneWidgets = QtWidgets.QGridLayout()
-    zoneWidgets.setContentsMargins(0, 0, 0, 0)
-    zoneWidgetsGroupBox.setLayout(zoneWidgets )
-    zoneWidgets.setObjectName("zoneWidgets" + str(_key))
-    #--            
-    scroll_bar = QtWidgets.QScrollArea(tab_widget_Onglet) 
-    scroll_bar.setWidgetResizable(True)
-    scroll_bar.setGeometry(QtCore.QRect(x, y, larg, haut))
-    scroll_bar.setMinimumWidth(50)
-    scroll_bar.setWidget(zoneWidgetsGroupBox)
-    #--  
-    #For resizeIhm 
-    self.listeResizeIhm.append(zoneWidgetsGroupBox)             
-    self.listeResizeIhm.append(scroll_bar)             
-    return zoneWidgets
 
 #==================================================
 # write Color Button SVG
@@ -789,26 +693,26 @@ def apparence_mObjetQToolButton(self, __keyObjet, __iconSources, __Text):
 #==================================================
 # Génération des QLabel
 def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
-    __mObjetQLabelEtiquette = None
+    __mObjetQLabel = None
     # == QLABEL
     if __valueObjet['label'] and __valueObjet['object'] == 'edit' :
        _labelBackGround  = self.labelBackGround   #Fond Qlabel
        #--                        
-       __mObjetQLabelEtiquette = QtWidgets.QLabel()
-       __mObjetQLabelEtiquette.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + _labelBackGround  +";}")
-       __mObjetQLabelEtiquette.setObjectName("label_" + str(__keyObjet))
+       __mObjetQLabel = QtWidgets.QLabel()
+       __mObjetQLabel.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + _labelBackGround  +";}")
+       __mObjetQLabel.setObjectName("label_" + str(__keyObjet))
        #Masqué /Visible Générale                               
-       if (__valueObjet['hidden'] or __valueObjet['hidden M']) : __mObjetQLabelEtiquette.setVisible(False)
+       if (__valueObjet['hidden'] or __valueObjet['hidden M']) : __mObjetQLabel.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(__keyObjet, 'label widget')
-       __mParentEnCours.addWidget(__mObjetQLabelEtiquette, row, column, rowSpan, columnSpan)
+       __mParentEnCours.addWidget(__mObjetQLabel, row, column, rowSpan, columnSpan)
        #Valeur                        
-       __mObjetQLabelEtiquette.setText(__valueObjet['label']) 
-       self.mDicObjetsInstancies[__keyObjet].update({'label widget' : __mObjetQLabelEtiquette})
-       __mObjetQLabelEtiquette.setMaximumSize(QtCore.QSize(self.tabWidget.width(), 18))
+       __mObjetQLabel.setText(__valueObjet['label']) 
+       self.mDicObjetsInstancies[__keyObjet].update({'label widget' : __mObjetQLabel})
+       __mObjetQLabel.setMaximumSize(QtCore.QSize(self.tabWidget.width(), 18))
 
     # == QLABEL
-    return __mObjetQLabelEtiquette
+    return __mObjetQLabel
 
 #==================================================
 # Retourne si la valeur n'est pas nulle ou égale à "" : Clé et dictionnaire des widgets
