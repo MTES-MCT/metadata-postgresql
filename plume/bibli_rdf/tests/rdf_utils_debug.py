@@ -327,7 +327,9 @@ def check_hidden_branches(widgetsdict, populated=False):
     - 'should be hidden (widget)' : le pseudo-widget aurait dû être masqué ;
     - 'should not be hidden (widget)' : le pseudo-widget n'aurait pas dû être masqué ;
     - "value should have been cleaned (widget)" : les valeurs renseignés dans les
-    widgets de saisie des racines de branches masquées sont supposées être effacées.
+    widgets de saisie des racines de branches masquées sont supposées être effacées ;
+    - "should not have been created (widget)" : pseudo-widget dans une branche
+    fantôme ('main widget type' nuls).
     """
     issues = {}
     n = 0
@@ -337,18 +339,18 @@ def check_hidden_branches(widgetsdict, populated=False):
     ghosts = []
     
     for k, v in widgetsdict.items():
-    
-        if v['main widget type'] is None:
-            continue
         
         if v['object'] == 'group of properties' and v['main widget type'] is None:
         # groupes propriétés présumés vides, qui ne seront donc pas créés
             notcreated.append(k)
+            
+        if v['main widget type'] is None:
+            continue
         
-        if v['object'] == 'group of properties' and v['main widget type']:
+        if v['object'] == 'group of properties':
             ghosts.append(k)
             
-        if not rdf_utils.is_root(k) and v['main widget type'] and k[1] in ghosts:
+        if not rdf_utils.is_root(k) and k[1] in ghosts:
             ghosts.remove(k[1])
         
         if any([rdf_utils.is_ancestor(a, k) for a in notcreated]):
@@ -356,6 +358,15 @@ def check_hidden_branches(widgetsdict, populated=False):
             if v['main widget type']:
                 issues.update({ n: (k, v['object'], "widget to create in a ghost group of properties") })
                 n += 1
+                
+            if populated:
+                for e in ('main widget', 'minus widget', 'language widget',
+                    'label widget', 'grid widget', 'switch source widget'):
+                    if v[e]:
+                        issues.update({ n: (k, e, 'should not have been created (widget)') })
+                        n += 1
+
+            continue
         
         if any([rdf_utils.is_ancestor(a, k) for a in hidden]):
         # cas du descendant d'une branche déjà identifiée
@@ -386,7 +397,7 @@ def check_hidden_branches(widgetsdict, populated=False):
                     if v[e] and not v['hidden'] \
                         and not (e == 'minus widget' and v['hide minus button']) \
                         and not v[e][1]:
-                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        issues.update({ n: (k, e, 'should not be hidden (widget)') })
                         n += 1
   
             continue
@@ -403,7 +414,7 @@ def check_hidden_branches(widgetsdict, populated=False):
                     if v[e] and not v['hidden'] \
                         and not (e == 'minus widget' and v['hide minus button']) \
                         and not v[e][1]:
-                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        issues.update({ n: (k, e, 'should not be hidden (widget)') })
                         n += 1
                         
             continue
@@ -422,7 +433,7 @@ def check_hidden_branches(widgetsdict, populated=False):
                     if v[e] and not v['hidden'] \
                         and not (e == 'minus widget' and v['hide minus button']) \
                         and not v[e][1]:
-                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        issues.update({ n: (k, e, 'should not be hidden (widget)') })
                         n += 1
                         
             continue
@@ -439,7 +450,7 @@ def check_hidden_branches(widgetsdict, populated=False):
                     if v[e] and not v['hidden'] \
                         and not (e == 'minus widget' and v['hide minus button']) \
                         and not v[e][1]:
-                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        issues.update({ n: (k, e, 'should not be hidden (widget)') })
                         n += 1
                         
             continue
@@ -450,6 +461,8 @@ def check_hidden_branches(widgetsdict, populated=False):
             if not v['hidden M']:
                 issues.update({ n: (k, v['object'], "none of the M twins is hidden M") })
                 n += 1
+            else:
+                hidden.append(k)
                 
             if populated:
                 for e in ('main widget', 'minus widget', 'language widget',
@@ -469,6 +482,7 @@ def check_hidden_branches(widgetsdict, populated=False):
             
         if v['hidden M']:
             hidden.append(k)
+
             if populated:
                 for e in ('main widget', 'minus widget', 'language widget',
                     'label widget', 'grid widget', 'switch source widget'):
@@ -488,7 +502,7 @@ def check_hidden_branches(widgetsdict, populated=False):
                     if v[e] and not v['hidden'] \
                         and not (e == 'minus widget' and v['hide minus button']) \
                         and not v[e][1]:
-                        issues.update({ n: (k, e, 'should be not hidden (widget)') })
+                        issues.update({ n: (k, e, 'should not be hidden (widget)') })
                         n += 1
 
     for g in ghosts:
