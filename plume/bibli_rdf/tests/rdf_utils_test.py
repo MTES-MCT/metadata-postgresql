@@ -1934,7 +1934,7 @@ class TestRDFUtils(unittest.TestCase):
 
 
     # idem, avec une propriété qui n'admettait qu'une source en
-    # plus de < manuel >
+    # plus de < manuel > -> pas de bouton de changement de source
     def test_build_dict_25(self):
         g = Graph()
         g.add( (
@@ -1961,6 +1961,43 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(len(lkm), 0)
         self.assertFalse('< manuel >' in d[k]['sources'])
         self.assertTrue(not d[k]['multiple sources'])
+        self.assertIsNone(check_rows(d))
+        self.assertIsNone(check_hidden_branches(d))
+        self.assertIsNone(check_buttons(d))
+
+
+    # propriété multi-source hors template avec valeur manuelle
+    def test_build_dict_26(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
+            Literal("Mention test.", lang='fr')
+            ) )
+        
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        k = search_keys(d, 'dct:accessRights', 'edit')[0]
+        self.assertIsNotNone(d[k]['main widget type'])
+        self.assertIsNone(d[k]['current source'])
+        self.assertTrue(d[k]['hidden M'])
+        self.assertTrue('< manuel >' in d[k]['sources'])
+        km = search_keys(d, 'dct:accessRights', 'group of properties')[0]
+        self.assertIsNotNone(d[km]['main widget type'])
+        self.assertEqual(d[km]['current source'], '< manuel >')
+        self.assertTrue(not d[km]['hidden M'])
+        self.assertTrue('< manuel >' in d[km]['sources'])
         self.assertIsNone(check_rows(d))
         self.assertIsNone(check_hidden_branches(d))
         self.assertIsNone(check_buttons(d))
@@ -2045,13 +2082,46 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[self.lck]['current source'], s)
         self.assertIsNone(d[self.lck_m]['current source'])
 
+    # propriété hors template,
+    # avec valeur d'origine manuelle (sinon < manuel > ne sera
+    # même pas dans la liste des sources)
+    def test_wd_change_source_2(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
+            Literal("Mention test.", lang='fr')
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        populate_widgets(d)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        k = search_keys(d, 'dct:accessRights', 'group of properties')[0]
+        
+        a = d.change_source(k, "Droits d'accès (UE)")
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))       
+
     # changement de thésaurus
 
     # ancienne source non référencée
 
     # source inconnue
-
-    # une seule source
 
     # la source ne change pas
 
@@ -2336,7 +2406,44 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(
             len(search_keys(d, "dcat:distribution", 'group of properties')), 2
             )
-        
+
+    # propriété hors template,
+    # avec valeur d'origine manuelle (sinon < manuel > ne sera
+    # même pas dans la liste des sources)
+    def test_wd_add_6(self):
+        g = Graph()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        b = BNode()
+        g.add( (
+            URIRef("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            b
+            ) )
+        g.add( (
+            b,
+            URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
+            Literal("Mention test.", lang='fr')
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary,
+            template={}, mode='edit')
+        populate_widgets(d)
+        k = search_keys(d, 'dct:accessRights', 'group of properties')[0]
+        a = d.change_source(k, "Droits d'accès (UE)")
+        execute_pseudo_actions(d, a)
+        # NB : jusque-là, reproduit test_wd_change_source_2, donc on
+        # ne fait pas de contrôle du résultat
+        k = search_keys(d, 'dct:accessRights', 'plus button')[0]
+        a = d.add(k)
+        rdf_utils_debug.execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+
+
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
     def test_wd_add_drop_1(self):
@@ -2755,10 +2862,14 @@ class TestRDFUtils(unittest.TestCase):
             )
 
     def test_replace_ancestor_7(self):
-        with self.assertRaisesRegex(ValueError, r'^M\s'):
+        with self.assertRaisesRegex(ValueError, r'replace\snon[-]M\s'):
             rdf_utils.replace_ancestor((2, (1, (0,))), (1, (0,)), (3, (0, ), 'M'))
 
     def test_replace_ancestor_8(self):
+        with self.assertRaisesRegex(ValueError, r'replace\sM\s'):
+            rdf_utils.replace_ancestor((2, (1, (0,), 'M')), (1, (0,), 'M'), (3, (0, )))
+
+    def test_replace_ancestor_9(self):
         self.assertEqual(
             rdf_utils.replace_ancestor(
                 (0, (2, (0, (0, (1,))), 'M')),
