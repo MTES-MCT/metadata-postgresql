@@ -301,7 +301,7 @@ class WidgetsDict(dict):
             "widgets to move": []
             }
         l = []
-        n = self.count_siblings(key)
+        n = self.count_siblings(key, visibleOnly=True)
         
         language = self[key]['language value']
         
