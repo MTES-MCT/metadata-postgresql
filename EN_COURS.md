@@ -1,5 +1,5 @@
 # À faire ou en cours
-![Logo](plume/flyers/plume1.png)
+![Logo](plume/flyers/plume1.png) PLUME NOUS SOUHAITE LA BIENVENUE !!
         
 ## Plume version 1.0
 
