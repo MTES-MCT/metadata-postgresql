@@ -557,7 +557,7 @@ class WidgetsDict(dict):
                 if self[k]['hide minus button']:
                     self[k]['hide minus button'] = False
                     w = self[k]['minus widget']
-                    if w:
+                    if w and not self[k]['hidden M']:
                         d["widgets to show"].append(w)
                 
                 # dans le cas d'un ajout de traduction,
@@ -589,7 +589,8 @@ class WidgetsDict(dict):
                     # dans les autres groupes, on ne garde que les boutons
                     # et le groupe ou widget placé sur la première ligne
                     # de la grille
-                    newkey = replace_ancestor(k, cr, (n, key[1]))
+                    kr = (n, key[1]) if len(cr) == 2 else (n, key[1], 'M')
+                    newkey = replace_ancestor(k, cr, kr)
                     self.update( { newkey: self.clean_copy(k) } )
                     
                     # clean_copy se charge de réinitialiser les noeuds
@@ -3255,7 +3256,7 @@ def is_ancestor(key1, key2):
         return is_ancestor(key1, key2[1])
 
 
-def replace_ancestor(key, old_ancestor, new_ancestor):
+def replace_ancestor(key, old_ancestor, new_ancestor, mKey=None):
     """Réécrit la clé key, en remplaçant un de ses ancêtres.
     
     ARGUMENTS
@@ -3265,6 +3266,8 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
     (WidgetsDict), présumée être une clé ancêtre de key.
     - new_ancestor (tuple) : clé d'un dictionnaire de widgets
     (WidgetsDict) à substituer à old_ancestor.
+    
+    mKey sert uniquement aux appels récursifs de la fonction.
     
     old_ancestor et new_ancestor doivent appartenir à la
     même génération.
@@ -3280,20 +3283,30 @@ def replace_ancestor(key, old_ancestor, new_ancestor):
     >>> rdf_utils.replace_ancestor((2, (3, (0, )), 'M'), (3, (0, )), (4, (0, )))
     (2, (4, (0,)), 'M')
     """
-    
-    if not is_ancestor(old_ancestor, key):
+    if mKey is None:
+        if is_older(old_ancestor, new_ancestor) or is_older(new_ancestor, old_ancestor):
+            raise ValueError("Keys {} and {} don't belong to the same generation.".format(
+                    old_ancestor, new_ancestor))
+        if len(old_ancestor) == 3 and len(new_ancestor) == 2:
+            raise ForbiddenOperation("You shouldn't replace M widget" \
+                "{} by non-M widget {}.".format(old_ancestor, new_ancestor))
+        if len(old_ancestor) == 2 and len(new_ancestor) == 3:
+            raise ForbiddenOperation("You shouldn't replace non-M widget" \
+                "{} by M widget {}.".format(old_ancestor, new_ancestor))
+        mKey = key
+        # mémorisation de la clé initiale, juste pour les messages d'erreur
+        # on travaille sur mKey
+        
+    if is_root(mKey) or is_older(mKey, old_ancestor):
         raise ValueError("Key {} is not {}'s ancestor.".format(old_ancestor, key))
         
-    if is_older(old_ancestor, new_ancestor) or is_older(new_ancestor, old_ancestor):
-        raise ValueError("Keys {} and {} don't belong to the same generation.".format(
-                old_ancestor, new_ancestor))
-
-    if len(new_ancestor) == 3:
-        raise ValueError("M keys aren't allowed as ancestor.")
-
-    t = re.sub(re.escape(str(old_ancestor)) + r"([)]*(:?[,]\s[']M['][)]+)?)$", str(new_ancestor) + '\g<1>', str(key))
-
-    return eval(t)
+    if mKey[1] == old_ancestor:
+        return (mKey[0], new_ancestor, mKey[2]) if len(mKey) == 3 else (mKey[0], new_ancestor)
+    
+    if len(mKey) == 3:
+        return (mKey[0], replace_ancestor(key, old_ancestor, new_ancestor, mKey[1]), mKey[2])
+    else:
+        return (mKey[0], replace_ancestor(key, old_ancestor, new_ancestor, mKey[1]))
     
 
 def export_metagraph(metagraph, shape, filepath, format=None):
