@@ -3,7 +3,7 @@
 ![Logo](plume/flyers/plume1.png) 
        
 ## Plume version 1.0
-| PLUME NOUS SOUHAITE LA BIENVENUE !! | 
+| PLUME NOUS SOUHAITE LA BIENVENUE | 
 ### Fonctionnalités majeures à implémenter
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
