@@ -10,7 +10,9 @@ import json
 from pathlib import Path
 
 from plume.bibli_rdf import rdf_utils, __path__
-from plume.bibli_rdf.tests import rdf_utils_debug
+from plume.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
+    populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
+    check_hidden_branches, check_buttons
 
 # schéma SHACL qui décrit les métadonnées communes
 shape = rdf_utils.load_shape()
@@ -45,7 +47,7 @@ d = rdf_utils.build_dict(g, shape, vocabulary, translation=True, columns=columns
 #d = rdf_utils.build_dict(Graph(), shape, vocabulary, template=template)
 #d = rdf_utils.build_dict(g, shape, vocabulary, template=template, editHideUnlisted=True, translation=True)
 
-rdf_utils_debug.populate_widgets(d)
+populate_widgets(d)
 
 
 
