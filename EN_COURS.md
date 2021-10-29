@@ -1,6 +1,9 @@
-# À faire ou en cours
-![Logo](plume/flyers/plume1.png)
-        
+
+# PLUME NOUS SOUHAITE LA BIENVENUE !!
+
+## À faire ou en cours
+![Logo](plume/flyers/plume1.png) 
+       
 ## Plume version 1.0
 
 ### Fonctionnalités majeures à implémenter
@@ -33,14 +36,14 @@
 | Récupération des UUID GéoIDE       |   X   |        |   DL   | L'argument `data` de `build_dict()` sert maintenant à quelque chose ! La [documentation](/__doc__/05_generation_dictionnaire_widgets.md#data--les-métadonnées-calculées) explique comment l'utiliser pour passer l'identifiant GéoIDE à `build_dict()`. |
 | Mécanisme de copier/coller de fiche complète |       |   OK   |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#copier--coller-dune-fiche-complète) |
 | Consolidation de la gestion des paramètres utilisateurs  |      |   OK   |   DL   | Comme évoqué [ici](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/20_parametres_utilisateur.md), il s'agit de ne plus créer de valeur par défaut pour certains paramètres. |
-| Nouvelle gestion des paramètres utilisateurs   |   X    |        |   DL   | Il s'agit à l'ouverture de Plume, de créer les paramètres utilisateurs (Sous section + nom du paramètre) dans le QGIS3.ini sans valeur. Pour que le paramètre soit pris en compte dans les process de Plume, l'utilisateur, n'aura plus qu'à saisir une valeur sans se soucier de la syntaxe  |
+| Nouvelle gestion des paramètres utilisateurs   |        |   OK   |   DL   | Il s'agit à l'ouverture de Plume, de créer les paramètres utilisateurs (Sous section + nom du paramètre) dans le QGIS3.ini sans valeur. Pour que le paramètre soit pris en compte dans les process de Plume, l'utilisateur, n'aura plus qu'à saisir une valeur sans se soucier de la syntaxe  |
 
 ### Anomalies et bricoles
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Les doubles clics sur une couche n'ont pas d'effet (pour ouvrir la fenêtre des propriétés dans le panneau des couches ou pour charger une couche depuis l'explorateur) |       |   OK   |   DL   | Semble directement lié au temps de chargement des métadonnées. Les améliorations de performance ont résolu complètement le problème chez DL, partiellement chez LL. |
-| ToolTips sur les QLabel ?  |   X   |        |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
+| ToolTips sur les QLabel ?  |       |   OK   |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
 | Widget date et time à revoir ou pas       |   X   |        |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
 | Valeur vide dans les listes des QComboBox |       |   OK   |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
 | Changer les couleurs par défaut des cadres |       |   OK   |   DL   | Les bonnes sont [là](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/10_creation_widgets.md#autres-groupes). |

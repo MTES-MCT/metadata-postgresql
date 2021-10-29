@@ -114,7 +114,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           _mObjetQSaisie.setStyleSheet("QTextEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        elif _valueObjet['main widget type'] == "QComboBox" :
           _mObjetQSaisie = QtWidgets.QComboBox()
-          _mObjetQSaisie.setStyleSheet("QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
+          #_mObjetQSaisie.setStyleSheet("QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} QComboBox::down-arrow {border : 5px solid; border-color : red green blue yellow;}") 
+          _mObjetQSaisie.setStyleSheet("QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;}") 
        _mObjetQSaisie.setObjectName(str(_keyObjet))
        #--                        
        #Masqué /Visible Générale                               
@@ -376,12 +377,14 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #---------------------------
     # == QTOOLBUTTON  MULTIPLE SOURCES
     if _valueObjet['multiple sources'] :
+       _editStyle = self.editStyle             #style saisie
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setIcon(QIcon(_iconSources))
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['sources'] :
@@ -420,13 +423,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #---------------------------
     # == QTOOLBUTTON  AUTHORIZED LANGUAGES
     if _valueObjet['authorized languages'] :
+       _editStyle = self.editStyle             #style saisie
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setText(_valueObjet['language value'])
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px;}")
+       #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px;}")
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px; border-style:" + _editStyle  + "; border-width: 0px;}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['authorized languages'] :
