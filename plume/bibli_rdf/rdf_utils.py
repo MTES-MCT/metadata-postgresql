@@ -792,7 +792,7 @@ class WidgetsDict(dict):
                     d["widgets to hide"].append(w)
                 
                 w = self[mkey][e]
-                if w:
+                if w and (e != 'minus widget' or not self[mkey]['hide minus button']):
                     d["widgets to show"].append(w)
 
             kshow = mkey
@@ -824,7 +824,7 @@ class WidgetsDict(dict):
                     d["widgets to hide"].append(w)
                 
                 w = self[ukey][e]
-                if w:
+                if w and (e != 'minus widget' or not self[ukey]['hide minus button']):
                     d["widgets to show"].append(w)
 
             khide = key
