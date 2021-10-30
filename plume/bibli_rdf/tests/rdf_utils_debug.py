@@ -35,8 +35,7 @@ def search_keys(widgetsdict, path, object):
     return l
     
 
-
-def check_unchanged(metagraph, shape, vocabulary, language="fr", **args):
+def check_unchanged(metagraph, shape, vocabulary, **args):
     """Check if given graph is preserved through widget dictionnary serialization.
     
     ARGUMENTS
@@ -47,8 +46,6 @@ def check_unchanged(metagraph, shape, vocabulary, language="fr", **args):
     de métadonnées communes.
     - vocabulary (rdflib.Graph) : graphe réunissant le vocabulaire de toutes
     les ontologies pertinentes.
-    - [optionnel] language (str) : langue principale de rédaction des métadonnées
-    (paramètre utilisateur). Français ("fr") par défaut.
     - [optionnel] args (dict) peut contenir tout autre paramètre à passer à build_dict()
     sous forme clé/valeur.
     
@@ -77,15 +74,16 @@ def check_unchanged(metagraph, shape, vocabulary, language="fr", **args):
     kw = {
         "metagraph": metagraph,
         "shape": shape,
-        "vocabulary": vocabulary,
-        "language": language
+        "vocabulary": vocabulary
         }
         
     for a in args:
         kw.update({ a: args[a] })
     
     d = rdf_utils.build_dict(**kw)
-    g = d.build_graph(vocabulary, language)
+    g = d.build_graph(vocabulary, bypass=True)
+    # avec bypass, parce que check_unchanged peut être appliqué sur
+    # des dictionnaires créés avec mode='read' et preserve=True
     
     for n, u in shape.namespace_manager.namespaces():
         g.namespace_manager.bind(n, u, override=True, replace=True)
@@ -856,4 +854,24 @@ def write_pseudo_widget(widgetsdict, key, value):
     
     widgetsdict[key]['main widget'][3] = value
     
+
+
+
+def execute_random_action(widgetsdict):
+    """Exécute une action choisie au hasard sur le dictionnaire de widgets.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict, nécessairement avec mode='edit', sans quoi aucune
+    action ne pourra être réalisée.
+    
+    RESULTAT
+    --------
+    Un tuple avec :
+    [0] résultat de l'action (list), tel que renvoyé par les méthodes add(),
+    drop(), change_source() et change_language() ;
+    [1] une description litérale (str) de l'action réalisée.
+    """
+    pass
 
