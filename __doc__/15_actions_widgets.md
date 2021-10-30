@@ -29,11 +29,9 @@ Lors de l'activation du bouton, il faudra commencer par exécuter la commande de
 
 ```python
 
-r = widgetsdict.add(key, language, langList)
+r = widgetsdict.add(key)
 
 ```
-
-*`language` et `langList` sont les paramètres utilisateur qui spécifient réciproquement la langue principale de saisie et la liste des langues autorisées pour les traductions. Ils prennent des valeurs identiques pour tous les boutons "plus" et celles-ci peuvent être considérées comme fixes pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.*
 
 ### ... puis du formulaire
 
@@ -82,11 +80,9 @@ Lors de l'activation du bouton, il faudra commencer par exécuter la commande de
 
 ```python
 
-r = widgetsdict.drop(key, langList)
+r = widgetsdict.drop(key)
 
 ```
-
-*`langList` est le paramètre utilisateur qui spécifie la liste des langues autorisées pour les traductions. Il prend une valeur identique pour tous les boutons "moins" et celle-ci peut être considérée comme fixe pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.*
 
 ### ... puis du formulaire
 
@@ -193,11 +189,9 @@ Quand l'utilisateur sélectionne une nouvelle langue `new_language` dans le menu
 
 ```python
 
-r = widgetsdict.change_language(key, new_language, langList)
+r = widgetsdict.change_language(key, new_language)
 
 ```
-
-*`langList` est le paramètre utilisateur qui spécifie la liste des langues autorisées pour les traductions. Il prend une valeur identique pour tous les boutons de sélection de la langue et celle-ci peut être considérée comme fixe pour toute la durée de la saisie, dans la mesure où tout changement nécessiterait de regénérer intrégralement le dictionnaire des widgets et, par suite, le formulaire.*
 
 
 ### ... puis du formulaire
