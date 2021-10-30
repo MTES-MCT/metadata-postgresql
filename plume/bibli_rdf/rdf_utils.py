@@ -30,7 +30,102 @@ from plume.bibli_rdf import __path__
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
+    
+    ATTRIBUTS
+    ---------
+    Les attributs du dictionnaire de widgets rappellent le paramétrage
+    utilisé à sa création.
+    
+    - mode (str) : 'edit' pour un dictionnaire produit pour l'édition,
+    'read' pour un dictionnaire produit uniquement pour la consultation.
+    Certaines méthodes ne peuvent être utilisées que sur un
+    dictionnaire dont l'attribut mode vaut 'edit'.
+    
+    - translation (bool) : True pour un dictionnaire comportant des
+    fonctionnalités de traduction, False sinon.
+    Certaines méthodes ne peuvent être utilisées que sur un dictionnaire
+    dont l'attribut translation vaut True.
+    
+    - language (str) : langue principale déclarée lors de la création du
+    dictionnaire. language est nécessairement l'un des éléments de langList
+    ci-après.
+    
+    - langList (list): liste des langues autorisées pour les traductions,
+    telles que déclarées lors de la génération du dictionnaire.
     """
+    
+    def __init__(self, mode, translation, language, langList):
+        """Création d'un dictionnaire de widgets vide.
+        
+        ARGUMENTS
+        ---------
+        - mode (str) : indique si le dictionnaire est généré pour le mode édition
+        ('edit'), le mode lecture ('read').
+        Le mode détermine les actions pouvant être exécutées sur le dictionnaire.
+        - translation (bool) : paramètre utilisateur qui indique si les widgets de
+        traduction doivent être affichés. Sa valeur contribue à déterminer les actions
+        pouvant être exécutées sur le dictionnaire.
+        - language (str) : langue principale de rédaction des métadonnées
+        (paramètre utilisateur). Elle influe sur certaines valeurs du dictionnaire et
+        la connaître est nécessaire à l'exécution de certaines actions.
+        - langList (list) : liste des langues autorisées pour les traductions. Certaines
+        valeurs du dictionnaire dépendent de cette liste, et la connaître est nécessaire
+        à l'exécution de certaines actions.
+        
+        RESULTAT
+        --------
+        Un dictionnaire de widgets (WidgetsDict) vide.
+        """
+        if mode in ('edit', 'read'):
+            # 'search' n'est pas accepté pour le moment
+            self.mode = mode
+        else:
+            raise ValueError("mode should be either 'edit' or 'read'.")
+        
+        if isinstance(translation, bool):
+            self.translation = translation
+        else:
+            raise TypeError("translation should be a boolean.")
+            
+        if isinstance(language, str):
+            self.language = language
+        else:
+            raise TypeError("language should be a string.")
+            
+        if not isinstance(langList, list):
+            raise TypeError("langList should be a list.")
+        elif not language in langList:
+            raise ValueError("language should be in langList.")
+        else:
+            self.langList = langList
+
+
+    def copy(self):
+        """Renvoie une copie (non liée) du dictionnaire de widgets.
+        
+        Cette méthode remplace la méthode copy() de la la classe dict().
+        
+        ARGUMENTS
+        ---------
+        Néant.
+        
+        RESULTAT
+        --------
+        Une copie non liée / shallow copy du dictionnaire de widgets
+        (WidgetsDict).
+        """
+        d = WidgetsDict(
+            mode=self.mode,
+            translation=self.translation,
+            language=self.language,
+            langList=self.langList.copy()
+            )
+            
+        for k, v in self.items():
+            d.update({k: v})
+        
+        return d  
+
     
     def count_siblings(self, key, restrict=True, visibleOnly=False):
         """Renvoie le nombre de clés de même parent que key.
@@ -128,18 +223,19 @@ class WidgetsDict(dict):
                     return self[key]['node']
 
 
-    def clean_copy(self, key, language='fr', langList=['fr', 'en']):
+    def clean_copy(self, key, language=None, langList=None):
         """Renvoie une copie nettoyée du dictionnaire interne de la clé key.
         
         ARGUMENTS
         ---------
         - key (tuple) : clé du dictionnaire de widgets (WidgetsDict).
         - [optionnel] language (str) : langue de la nouvelle valeur.
-        Français ("fr") par défaut.
-        La valeur de language doit être incluse dans langList ci-après.
-        - [optionnel] langList (list) : liste des langues autorisées pour
-        les traductions (str). Par défaut français et anglais, soit
-        ['fr', 'en'].
+        Par défaut, la fonction utilise l'attribut language du dictionnaire.
+        La valeur de language est supposée incluse dans langList ci-après
+        (pas de contrôle).
+        - [optionnel] langList (list) : la liste des langues autorisées
+        pour les traductions. Par défaut, la fonction utilise l'attribut
+        langList du dictionnaire.
 
         RESULTAT
         --------
@@ -158,6 +254,11 @@ class WidgetsDict(dict):
         "hidden M" est par contre conservée en l'état ;
         - la clé "node", si elle n'était pas vide, reçoit un nouveau noeud vide.
         """
+
+        if language is None:
+            language = self.language
+        if langList is None:
+            langList = self.langList
         
         d = self[key].copy()
         
@@ -176,11 +277,12 @@ class WidgetsDict(dict):
             
             'value' : d['default value'],
             'language value' : language if d['language value'] else None,
-            'authorized languages' : langList.copy() if ( d['authorized languages'] \
-                                     and langList is not None ) else None,
-            'sources' : d['sources'].copy() if d['sources'] is not None else None,
-            'hidden' : len(langList) == 1 if ( langList is not None
-                and d['object'] == 'translation button' ) else None,
+            'authorized languages' : langList.copy() if d['authorized languages'] \
+                is not None else None,
+            'sources' : d['sources'].copy() if d['sources'] is not None \
+                else None,
+            'hidden' : len(langList) == 1 if (
+                d['object'] == 'translation button' ) else None,
                 
             'node': BNode() if d['node'] else None
             })
@@ -222,7 +324,7 @@ class WidgetsDict(dict):
                 return self[key[1]]['grid widget']
 
 
-    def drop(self, key, langList=['fr', 'en']):
+    def drop(self, key):
         """Supprime du dictionnaire un enregistrement et, en cascade, tous ses descendants.
         
         Cette fonction est à utiliser suite à l'activation par l'utilisateur
@@ -234,9 +336,6 @@ class WidgetsDict(dict):
         ARGUMENTS
         ---------
         - key (tuple) : une clé du dictionnaire de widgets.
-        - [optionnel] langList (list) : paramètre utilisateur, liste des
-        langues autorisées pour les traductions (str). Par défaut
-        français et anglais, soit ['fr', 'en'].
         
         RESULTAT
         --------
@@ -279,6 +378,8 @@ class WidgetsDict(dict):
         >>> d[(2,(0,))]['row']
         2
         """
+        if self.mode == 'read':
+            raise ForbiddenOperation("You can't remove widgets in reading mode.")
         
         if len(key) < 2:
             raise ForbiddenOperation("This is the tree root, you can't cut it !")
@@ -366,7 +467,7 @@ class WidgetsDict(dict):
                     # si le bouton (de traduction) était masqué et que
                     # la langue de l'enregistrement à supprimer est bien
                     # dans la liste des langues autorisées, on le "démasque"
-                    if g == 'translation group' and self[k]['hidden'] and language in langList:
+                    if g == 'translation group' and self[k]['hidden'] and language in self.langList:
                         self[k]['hidden'] = False
                         w = self[k]['main widget']
                         if w:
@@ -384,7 +485,7 @@ class WidgetsDict(dict):
                         if w:
                                 d["widgets to hide"].append(w)
                      
-                    if g == 'translation group' and language in langList:
+                    if g == 'translation group' and language in self.langList:
                         # on ajoute language aux listes de langues
                         # disponibles des frères et soeurs
                         if not language in self[k]['authorized languages']:
@@ -398,7 +499,7 @@ class WidgetsDict(dict):
         return d
    
 
-    def add(self, key, language='fr', langList=['fr', 'en']):
+    def add(self, key):
         """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
         
         Cette fonction est à utiliser après activation d'un bouton plus
@@ -410,12 +511,6 @@ class WidgetsDict(dict):
         - key (tuple) : une clé du dictionnaire de widgets, et plus
         précisément la clé du bouton qui vient d'être activé par
         l'utilisateur.
-        - [optionnel] language (str) : langue principale de rédaction des
-        métadonnées (paramètre utilisateur). Français ("fr") par défaut.
-        La valeur de language doit être incluse dans langList ci-après.
-        - [optionnel] langList (list) : paramètre utilisateur, liste des
-        langues autorisées pour les traductions (str). Par défaut
-        français et anglais, soit ['fr', 'en'].
         
         RESULTAT
         --------
@@ -445,6 +540,10 @@ class WidgetsDict(dict):
         --------
         >>> d.add((1, (0, (0,))))
         """
+        if self.mode == 'read':
+            raise ForbiddenOperation("You can't add widgets in reading mode.")
+        
+        language = self.language
         
         d = {
             "widgets to show": [],
@@ -500,7 +599,7 @@ class WidgetsDict(dict):
                     d["widgets to hide"].append(w)
                     
         else:
-            mLangList = langList.copy()
+            mLangList = self.langList.copy()
         
         k1 = (n, key[1]) if len(c) == 2 else (n, key[1], 'M')
         k2 = (n, key[1], 'M') if len(c) == 2 else (n, key[1])
@@ -603,7 +702,7 @@ class WidgetsDict(dict):
         return d
 
 
-    def change_language(self, key, new_language, langList=['fr', 'en']):
+    def change_language(self, key, new_language):
         """Change la langue sélectionnée pour une clé.
         
         ARGUMENTS
@@ -612,9 +711,6 @@ class WidgetsDict(dict):
         précisément la clé pour laquelle l'utilisateur vient de
         choisir une nouvelle langue.
         - new_language (str) : la nouvelle langue.
-        - [optionnel] langList (list) : paramètre utilisateur, liste des
-        langues autorisées pour les traductions (str). Par défaut
-        français et anglais, soit ['fr', 'en'].
         
         RESULTAT
         --------
@@ -630,6 +726,8 @@ class WidgetsDict(dict):
         Pour déclarer que le libellée de la donnée est en anglais :
         >>> d.change_language((0, (0, (0,))), 'en')
         """
+        if self.mode == 'read':
+            raise ForbiddenOperation("You can't change a widget's language in reading mode.")
         
         if not self[key]['object'] == 'edit' \
             or not self[key]['data type'] in (
@@ -653,7 +751,7 @@ class WidgetsDict(dict):
         if new_language == old_language:
             return d
         
-        b = old_language and old_language in langList
+        b = old_language and old_language in self.langList
         if ( not b ) and old_language in self[key]['authorized languages']:
             self[key]['authorized languages'].remove(old_language)
             # si la langue de fait n'était pas autorisée,
@@ -728,6 +826,9 @@ class WidgetsDict(dict):
         >>> d.change_source((3, (0, (11, (0,)))), "< manuel >")
         """
         
+        if self.mode == 'read':
+            raise ForbiddenOperation("You can't change a widget's source in reading mode.")
+        
         d = {
             "concepts list to update" : [],
             "widgets to empty" : [],
@@ -774,6 +875,7 @@ class WidgetsDict(dict):
                 raise RuntimeError("Manuel mode doesn't seem implemented for key {} (M key not found).".format(key))
             
             self[key]['current source'] = None
+            self[key]['current source URI'] = None
             self[mkey]['current source'] = source
             d["switch source menu to update"].append(mkey)
             
@@ -808,6 +910,8 @@ class WidgetsDict(dict):
             
             self[key]['current source'] = None
             self[ukey]['current source'] = source
+            self[ukey]['current source URI'] = self[ukey]['sources URI'][source]
+            
             d["switch source menu to update"].append(ukey)
             
             # NB : on ne supprime pas les valeurs des branches M masquées, pour
@@ -836,6 +940,8 @@ class WidgetsDict(dict):
         else:
             # cas d'un simple changement de thésaurus
             self[key]['current source'] = source
+            self[key]['current source URI'] = self[key]['sources URI'][source]
+            
             if not key in d["switch source menu to update"]:
                 d["switch source menu to update"].append(key)
             
@@ -913,21 +1019,24 @@ class WidgetsDict(dict):
         self[key]['value'] = value
 
 
-    def build_graph(self, vocabulary, language="fr"):
+    def build_graph(self, vocabulary, bypass=False):
         """Return a RDF graph build from given widgets dictionary.
 
         ARGUMENTS
         ---------
-        - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de toutes
-        les ontologies pertinentes.
-        - [optionnel] language (str) : langue principale de rédaction des métadonnées
-        (paramètre utilisateur, en l'état où il se trouve à l'issue de la saisie).
-        Français ("fr") par défaut.
+        - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire
+        de toutes les ontologies pertinentes.
+        - bypass (bool) : à mettre à True pour exécuter la fonction
+        sur un dictionnaire dont le mode est 'read', sinon elle renvoie
+        une erreur.
 
         RESULTAT
         --------
         Un graphe RDF de métadonnées (rdflib.graph.Graph).
         """
+        if not bypass and self.mode == 'read':
+            raise ForbiddenOperation("You can't generate a graph " \
+                "from a reading mode widgetsdict.")
 
         graph = Graph()
         mem = None
@@ -1006,15 +1115,14 @@ class WidgetsDict(dict):
                     elif d['transform'] == 'phone':
                         mObject = owlthing_from_tel(d['value']) 
                         
-                    elif not d['current source'] in (None, '< URI >', '< non répertorié >'):
-                        c = concept_from_value(d['value'], d['current source'], vocabulary, language)
+                    elif not d['current source URI'] in (None, '< URI >', '< non répertorié >'):
+                        mObject = concept_from_value(d['value'], d['current source URI'], vocabulary,
+                            self.language, strict=False)
                         
-                        if c == (None, None):
-                            raise ValueError( "'{}' isn't referenced as a label in scheme '{}' for language '{}'.".format(
-                                d['value'], d['current source'], language )
-                                ) 
-                        else:
-                            mObject = c[0]
+                        if mObject is None:
+                            raise ValueError( "'{}' isn't referenced as a label in scheme '{}' for any language.".format(
+                                d['value'], d['current source'] )
+                                )
                         
                     else:
                         f = forbidden_char(d['value'])                
@@ -1180,7 +1288,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     preserve=False,
     mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
     mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
-    mShallowTemplate=None, mTemplateEmpty=None, mHidden=None, mHideM=None,
+    mShallowTemplate=None, mTemplateEmpty=None, mGhost=None, mHiddenM=None,
     mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None,
     idx=None, rowidx=None, mVSources=None):
     """Return a dictionary with relevant informations to build a metadata update form. 
@@ -1259,7 +1367,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     (utilisé si non défini par shape ou template). 6 par défaut.
     - [optionnel] preserve (bool) : indique si les valeurs doivent être préservées. Inhibe
     certaines transformation réalisées en mode lecture, notamment pour présenter des
-    hyperliens à l'utilisateur. Valeur par défaut False. preserve n'est pas un paramètre
+    hyperliens à l'utilisateur, ainsi que la transcription automatique de l'identifiant dans la
+    propriété dct:identifier. Valeur par défaut False. preserve n'est pas un paramètre
     utilisateur, il sert pour la recette.
 
     Les autres arguments sont uniquement utilisés lors des appels récursifs de la fonction
@@ -1269,8 +1378,11 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     --------
     Un dictionnaire (WidgetsDict) avec autant de clés que de widgets à empiler verticalement
     (avec emboîtements). Les valeurs associées aux clés sont elles mêmes des dictionnaires,
-    contenant les informations utiles à la création des widgets + des clés pour le
-    stockage des futurs widgets.
+    dit "dictionnaires internes", contenant les informations utiles à la création des widgets
+    + des clés pour le stockage des futurs widgets.
+    
+    Les attributs mode, translation, language et langList du dictionnaire de widgets sont
+    les arguments de même nom fournis à build_dict (ou leurs valeurs par défaut).
 
     La clé du dictionnaire externe est un tuple formé :
     [0] d'un index, qui garantit l'unicité de la clé.
@@ -1286,7 +1398,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     
     - 'object' : classification des éléments du dictionnaire. "group of values" ou
     "group of properties" ou "translation group" ou "edit" ou "plus button" ou "translation button".
-    Les "translation group" et "translation button" ne peuvent exister que si l'argument
+    Les "translation group" et "translation button" ne peuvent exister que si l'attribut
     "translation" vaut True.
 
     Les clés 'X widget' ci-après ont vocation à accueillir les futurs widgets (qui ne sont pas
@@ -1459,68 +1571,71 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         # l'utilisateur sous dct:identifier (sauf en mode lecture
         # quand l'identifiant n'existe pas encore, car celui qui serait
         # régénéré en cas de bascule en mode édition serait différent)
-        if not (mode == 'read' and mGraphEmpty and not mDataIdentifier):
+        if not (mode == 'read' and mGraphEmpty and not mDataIdentifier) \
+            and not preserve:
             mData.update({
                 'dct:identifier': [strip_uuid(mDataIdentifier or mParentNode)]
                 })
 
         # coquille de dictionnaire pour les attributs des widgets
         mWidgetDictTemplate = {
-            'object' : None,
+            'object': None,
             
-            'main widget' : None,
-            'grid widget' : None,
-            'label widget' : None,
-            'minus widget' : None,
-            'language widget' : None,
-            'switch source widget' : None,
+            'main widget': None,
+            'grid widget': None,
+            'label widget': None,
+            'minus widget': None,
+            'language widget': None,
+            'switch source widget': None,
 
-            'switch source menu' : None,
-            'switch source actions' : None,
-            'language menu' : None,
-            'language actions' : None,
+            'switch source menu': None,
+            'switch source actions': None,
+            'language menu': None,
+            'language actions': None,
             
-            'main widget type' : None,
-            'row' : None,
-            'row span' : None,              
-            'label' : None,
-            'label row' : None,
-            'help text' : None,
-            'value' : None,
+            'main widget type': None,
+            'row': None,
+            'row span': None,              
+            'label': None,
+            'label row': None,
+            'help text': None,
+            'value': None,
             'language value': None,
-            'placeholder text' : None,
-            'input mask' : None,
-            'is mandatory' : None,
-            'has minus button' : None,
+            'placeholder text': None,
+            'input mask': None,
+            'is mandatory': None,
+            'has minus button': None,
             'hide minus button': None,
-            'regex validator pattern' : None,
-            'regex validator flags' : None,
-            'type validator' : None,
+            'regex validator pattern': None,
+            'regex validator flags': None,
+            'type validator': None,
             'multiple sources': None,
-            'sources' : None,
-            'current source' : None,
-            'authorized languages' : None,
-            'read only' : None,
-            'hidden' : None,
-            'hidden M' : None,
+            'sources': None,
+            'current source': None,
+            'authorized languages': None,
+            'read only': None,
+            'hidden': None,
+            'hidden M': None,
             
-            'default value' : None,
-            'multiple values' : None,
-            'node kind' : None,
-            'data type' : None,
-            'ontology' : None,
-            'transform' : None,
-            'class' : None,
-            'path' : None,
-            'subject' : None,
-            'predicate' : None,
-            'node' : None,
-            'default widget type' : None,
-            'one per language' : None,
-            'next child' : None,
-            'shape order' : None,
-            'template order' : None,
-            'do not save' : None
+            'default value': None,
+            'multiple values': None,
+            'node kind': None,
+            'data type': None,
+            'ontology': None,
+            'transform': None,
+            'class': None,
+            'path': None,
+            'subject': None,
+            'predicate': None,
+            'node': None,
+            'default widget type': None,
+            'one per language': None,
+            'next child': None,
+            'shape order': None,
+            'template order': None,
+            'do not save': None,
+            'sources URI': None,
+            'current source URI': None
             }
             
         # utilitaires pour la récupération des informations
@@ -1561,7 +1676,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
         # on initialise le dictionnaire avec les groupes racines,
         # qui correspondent aux onglets du formulaire :
-        mDict = {}
+        mDict = WidgetsDict(mode=mode, translation=translation,
+            language=language, langList=langList)
         n = 0
         for label, key in mTemplateTabs.items():        
             mDict.update( { key : mWidgetDictTemplate.copy() } )
@@ -1618,13 +1734,14 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         mProperty = p['property']
         mKind = p['kind'].n3(nsm)
         mNPath = ( mPath + " / " if mPath else '') + mProperty.n3(nsm)
-        mSources = None
+        mSources = {}
         mDefault = None
         mDefaultBrut = None
         mDefaultSource = None
+        mDefaultSourceURI = None
         mDefaultPage = None
         mLangList = None
-        mNHidden = mHidden or False
+        mNGhost = mGhost or False
         mOneLanguage = None
         values = None
         
@@ -1667,11 +1784,11 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             (mode == 'read' and readHideUnlisted) ) \
             and not mTemplateEmpty and not ( mNPath in template ) \
             and not ( p['min'] and int(p['min']) > 0 ):
-            mNHidden = True
+            mNGhost = True
         
         values = values or [ None ]
         
-        if not mNHidden and ( mNPath in mShallowTemplate ):
+        if not mNGhost and ( mNPath in mShallowTemplate ):
             t = mShallowTemplate[mNPath]
             mShallowTemplate[mNPath].update( { 'done' : True } )
             
@@ -1688,7 +1805,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             
         else:
             t = dict()
-            if not mNHidden and not mTemplateEmpty \
+            if not mNGhost and not mTemplateEmpty \
                 and is_root(mParent):
                 # les métadonnées hors modèle non masquées
                 # de premier niveau iront dans un onglet "Autres".
@@ -1717,7 +1834,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     rowidx.update({ mParent: 0 })
 
 
-        if mNHidden:
+        if mNGhost:
             # cas d'une catégorie qui ne sera pas affichée à l'utilisateur, car
             # absente du template, mais pour laquelle une valeur était renseignée
             # et qu'il s'agit de ne pas perdre
@@ -1741,36 +1858,65 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if mKind in ("sh:BlankNodeOrIRI", "sh:IRI") and p['ontologies']:
 
                 for s in p['ontologies']:
-                    mSources = ( mSources or [] ) + [ str(o) for o in vocabulary.objects(
+                    lt = [ o for o in vocabulary.objects(
                         s, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
-                        ) if o.language == language ]
+                        ) ]
+                    st = pick_translation(lt, language) if lt else None
+                    if st:
+                        mSources.update({ s: str(st) })
+                        # si t vaut None, c'est que le thésaurus n'est pas
+                        # référencé dans vocabulary, dans ce cas, on l'exclut
                         
-                if mSources == []:
-                    mSources = None
+            # propriété qui admet à la fois des valeurs manuelles (noeuds vides)
+            # et des IRI
+            if mKind == 'sh:BlankNodeOrIRI':
+                if not mSources:
+                    mSources.update({ "< URI >": "< URI >" })
+                mSources.update({ "< manuel >": "< manuel >" })
+
 
             # traitement de la valeur par défaut :
             if t.get('default value'):
                 mDefault = t.get('default value')
                 if mSources:
-                    mDefaultBrut = concept_from_value(mDefault, None, vocabulary, language)[0]
-                    mDefault, mDefaultSource, mDefaultPage = value_from_concept(
-                        mDefaultBrut, vocabulary, language, getpage=True
+                    mDefaultBrut, mDefaultSourceURI = concept_from_value(
+                        mDefault, None, vocabulary, language
                         )
+                    # si elle est issue d'un thésaurus, la valeur par défaut n'est appliquée que
+                    # si sa langue coïncide avec la langue principale de saisie des métadonnées
+                    # (sinon mDefaultBrut vaut None, ici)
+                    if mDefaultBrut:
+                        mDefaultSource = mSources.get(mDefaultSourceURI)
+                        mDefaultPage = value_from_concept(
+                            mDefaultBrut, vocabulary, language, getpage=True, getschemeStr=False,
+                            getconceptStr=False, getschemeIRI=False
+                            )
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
-                    if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
-                        mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = None
+                    if mDefault is None or mDefaultBrut is None or mDefaultSource is None:
+                        mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = mDefaultSourceURI = None
                 elif mKind in ("sh:BlankNodeOrIRI", "sh:IRI") and forbidden_char(mDefault) is None:
                     mDefaultBrut = URIRef(mDefault)
                     
             elif p['default']:
                 mDefaultBrut = p['default']
                 if mSources:
-                    mDefault, mDefaultSource, mDefaultPage = value_from_concept(
-                        mDefaultBrut, vocabulary, language, getpage=True
+                    mDefault, mDefaultPage, mDefaultSourceURI = value_from_concept(
+                        mDefaultBrut, vocabulary, language, getpage=True, getschemeIRI=True,
+                        getschemeStr=False, getconceptStr=True, strict=True
                         )
+                    mDefaultSource = mSources.get(mDefaultSourceURI)
+                    # si elle est issue d'un thésaurus, la valeur par défaut n'est appliquée que
+                    # s'il existe des labels pour la source et le concept dans la langue principale
+                    # de saisie (sinon le triple ci-avant est (None, None, None), grâce à strict=True)
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
-                    if mDefault is None or mDefaultBrut is None or not mDefaultSource in mSources:
-                        mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = None
+                    if mDefault is None or mDefaultBrut is None or mDefaultSource is None:
+                        mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = mDefaultSourceURI = None
+                elif mKind == 'sh:Literal' and p['type'].n3(nsm) == 'rdf:langString' \
+                    and (not isinstance(p['default'], Literal) \
+                    or not p['default'].language == language):
+                    # une valeur par défaut litérale qui n'est pas dans la langue principale de saisie
+                    # n'est pas conservée
+                    mDefaultBrut = None
             
             # si seules les métadonnées dans la langue
             # principale doivent être affichées et qu'aucune valeur n'est
@@ -1804,7 +1950,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'row' : rowidx[mParent],
                     'label' : t.get('label', None) or str(p['name']),
                     'help text' : t.get('help text', None) or ( str(p['descr']) if p['descr'] else None ),
-                    'hidden M' : mHideM,
+                    'hidden M' : mHiddenM,
                     'path' : mNPath,
                     'shape order' : int(p['order']) if p['order'] is not None else None,
                     'template order' : int(t.get('order')) if t.get('order') is not None else None
@@ -1832,8 +1978,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             
             mValue = None
             mCurSource = None
+            mCurSourceURI = None
             mVSources = mSources.copy() if mSources is not None else None
-            mVHideM = None
+            mVHiddenM = None
             mVLangList = mLangList.copy() if mLangList is not None else None
             mLanguage = ( ( mValueBrut.language if isinstance(mValueBrut, Literal) else None ) or language ) if (
                         mKind == 'sh:Literal' and p['type'].n3(nsm) == 'rdf:langString' ) else None
@@ -1845,8 +1992,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if mKind in ( 'sh:BlankNode', 'sh:BlankNodeOrIRI' ) and (
                     not readHideBlank or not mode == 'read' or isinstance(mValueBrut, BNode) ):
 
-                # cas d'une branche masquée
-                if mNHidden and isinstance(mValueBrut, BNode):
+                # cas d'une branche fantôme
+                if mNGhost and isinstance(mValueBrut, BNode):
                     
                     mNode = mValueBrut
                     mWidget = ( idx[mParent], mParent )
@@ -1864,19 +2011,18 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     idx.update( { mWidget : 0 } )
 
                 # branche visible
-                elif not mNHidden:
+                elif not mNGhost:
                 
                     mNGraphEmpty = mGraphEmpty or mValueBrut is None              
                     mNode = mValueBrut if isinstance(mValueBrut, BNode) else BNode()
 
                     if mKind == 'sh:BlankNodeOrIRI':
-                        mVSources = ( mVSources + [ "< manuel >" ] ) if mVSources else [ "< URI >", "< manuel >" ]
                         mCurSource = "< manuel >" if isinstance(mValueBrut, BNode) else None
                     
                     # cas d'un double M quand la source "< manuel >" n'est pas sélectionnée
                     # on voudra créer les widgets, mais ils ne seront affichés que si
                     # l'utilisateur bascule sur "< manuel >".
-                    mVHideM = mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None )
+                    mVHiddenM = mHiddenM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None )
 
                     mWidget = ( idx[mParent], mParent, 'M' ) if mKind == 'sh:BlankNodeOrIRI' else ( idx[mParent], mParent )
                     mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
@@ -1898,8 +2044,8 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         'node' : mNode,
                         'multiple sources' : mKind == 'sh:BlankNodeOrIRI' and mode == 'edit',
                         'current source' : mCurSource,
-                        'sources' : mVSources if mode == 'edit' else None,
-                        'hidden M' : mVHideM,
+                        'sources' : [v for v in mVSources.values()] if mode == 'edit' else None,
+                        'hidden M' : mVHiddenM,
                         'shape order' : int(p['order']) if p['order'] is not None else None,
                         'template order' : int(t.get('order')) if t.get('order') is not None else None
                         } )
@@ -1914,7 +2060,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     idx.update( { mWidget : 0 } )
                     rowidx.update( { mWidget : 0 } )
 
-                if not mNHidden or isinstance(mValueBrut, BNode):              
+                if not mNGhost or isinstance(mValueBrut, BNode):              
                     build_dict(
                         metagraph, shape, vocabulary, template=template, templateTabs=templateTabs,
                         columns=columns, data=data, mode=mode, readHideBlank=readHideBlank,
@@ -1928,7 +2074,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
                         mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
-                        mHidden=mNHidden, mHideM=mVHideM, mTemplateTabs=mTemplateTabs,
+                        mGhost=mNGhost, mHiddenM=mVHiddenM, mTemplateTabs=mTemplateTabs,
                         mData=mData, mPropMap=mPropMap, mPropTemplate=mPropTemplate,
                         idx=idx, rowidx=rowidx, mVSources=mVSources
                         )
@@ -1939,12 +2085,12 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if not ( mKind == 'sh:BlankNode' \
                 or ( mode == 'read' and isinstance(mValueBrut, BNode) ) ):
                       
-                # cas d'une valeur appartenant à une branche masquée
+                # cas d'une valeur appartenant à une branche fantôme
                 # ou d'une traduction dans une langue qui n'est pas
                 # supposée être affichée (c'est à dire toute autre
                 # langue que celle qui a été demandée ou la langue
                 # de substitution fournie par mOneLanguage)
-                if mNHidden or ( \
+                if mNGhost or ( \
                     ( ( mode == 'read' and readOnlyCurrentLanguage ) \
                         or ( mode == 'edit' and editOnlyCurrentLanguage and not translation ) ) \
                     and isinstance(mValueBrut, Literal) \
@@ -1981,16 +2127,22 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 # ontologie : on récupère le label à afficher
                 if mVSources:
                     if isinstance(mValueBrut, URIRef) \
-                        and not mVSources == [ "< URI >", "< manuel >" ]:                    
-                        mValue, mCurSource, mPage = value_from_concept(
-                            mValueBrut, vocabulary, language, getpage = True
-                            )  
-                        if mValue is None or not mCurSource in mVSources:
+                        and any(not k in ("< URI >", "< manuel >") for k in mVSources.keys()):
+                        mValue, mPage, mCurSourceURI = value_from_concept(
+                            mValueBrut, vocabulary, language, getpage=True, getschemeStr=False,
+                            getschemeIRI=True, getconceptStr=True
+                            )
+                            # pourrait renvoyer une valeur dans une autre langue
+                            # que language, mais on retrouvera la même dans la liste
+                            # obtenue avec build_vocabulary()
+                        mCurSource = mSources.get(mCurSourceURI)
+                        if mValue is None or not mCurSourceURI in mVSources:
                             mCurSource = '< non répertorié >'
-                            mVSources.append(mCurSource)
+                            mVSources.update({mCurSource : mCurSource})
 
                     elif mGraphEmpty and ( mValueBrut is None ):
                         mCurSource = mDefaultSource
+                        mCurSourceURI = mDefaultSourceURI
                         # dans le cas d'un graphe vide,
                         # on s'assure que la valeur par défaut, s'il y en a une,
                         # est associée à la bonne source
@@ -2003,15 +2155,21 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                             mCurSource = "< URI >"
                         elif mValueBrut:
                             mCurSource = '< non répertorié >'
-                            mVSources.append(mCurSource)
+                            mVSources.update({mCurSource : mCurSource})
                         else:
-                            mCurSource = mVSources[0]
+                            # pas de valeur, on prend la première source
+                            # répertorié
+                            for sk, sv in mVSources.items():
+                                mCurSourceURI = sk
+                                mCurSource = sv
+                                break
 
                     elif mCurSource == "< manuel >":
                         # la saisie est faite sur le noeud vide
                         # c'est à lui de porter le nom de la source
                         # courante
                         mCurSource = None
+                        mCurSourceURI = None # devrait déjà être le cas
                         
                     if mode == 'read':
                         mVSources = None
@@ -2033,7 +2191,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mDefaultBrut is not None:
                     mDefault = mDefault or str(mDefaultBrut)
                     
-                if mGraphEmpty and not mValueBrut:
+                if mGraphEmpty and ( mValueBrut is None ):
                     # NB : la condition sur mValueBrut est nécessaire,
                     # car on peut avoir des valeurs issues de data
                     # dans un graphe vide
@@ -2120,11 +2278,13 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         else None )),
                     'multiple sources' : len(mVSources) > 1 if mVSources and mode == 'edit' else False,
                     'current source' : mCurSource,
-                    'sources' : sorted(mVSources) if mVSources else None,
+                    'current source URI': mCurSourceURI,
+                    'sources' : sorted([sv for sv in mVSources.values()]) if mVSources else None,
+                    'sources URI': { v: k for k, v in mSources.items() },
                     'one per language' : multilingual,
                     'authorized languages' : sorted(mVLangList) if ( mode == 'edit' and mVLangList ) else None,
                     'read only' : ( mode == 'read' ) or t.get('read only', False),
-                    'hidden M' : mHideM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None ),
+                    'hidden M' : mHiddenM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None ),
                     'shape order' : int(p['order']) if p['order'] is not None else None,
                     'template order' : int(t.get('order')) if t.get('order') is not None else None
                     } )
@@ -2145,7 +2305,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     mDict[mParent]['main widget type'] = None
                 rowidx[mParent[1]] -= 1
                 
-            elif not mNHidden and mode == 'edit' and \
+            elif not mNGhost and mode == 'edit' and \
                 ( ( multilingual and translation and mVLangList and len(mVLangList) > 1 ) \
                 or multiple ):
                 
@@ -2157,7 +2317,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'main widget type' : 'QToolButton',
                     'row' : rowidx[mParent],
                     'next child' : idx[mParent] + 1,
-                    'hidden M' : mHideM,
+                    'hidden M' : mHiddenM,
                     'hidden' :  len(mVLangList) == 1 if multilingual else None,
                     'path' : mNPath,
                     'help text': 'Ajouter une traduction' if multilingual \
@@ -2404,7 +2564,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     
     if mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
     
-        mNHidden = (mode == 'edit' and editHideUnlisted) or \
+        mNGhost = (mode == 'edit' and editHideUnlisted) or \
             (mode == 'read' and readHideUnlisted)
 
         dpv = dict()
@@ -2426,7 +2586,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
             mParent = mParentWidget
             
-            if not mNHidden:
+            if not mNGhost:
                 # dès lors qu'on les affiche, les catégories non
                 # référencées vont toujours dans l'onglet "Autres". 
                 # s'il n'existait pas encore, on le crée :
@@ -2456,7 +2616,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             # cas d'un groupe de valeurs
             if len(dpv[p]) > 1:
             
-                if mNHidden:
+                if mNGhost:
                     # si les catégories non répertoriées ne
                     # doivent pas être affichées
                     mWidget = ( idx[mParent], mParent )
@@ -2498,7 +2658,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mLanguage = ( v.language if isinstance(v, Literal) else None ) \
                     if mType.n3(nsm) in ('xsd:string', 'rdf:langString') else None
                             
-                if mNHidden:
+                if mNGhost:
                     # si les catégories non répertoriées ne
                     # doivent pas être affichées
                     mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
@@ -2587,7 +2747,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if len(mParentWidget) == 2:
                 rowidx[mParentWidget[1]] -= 1
             elif mVSources and '< manuel >' in mVSources:
-                mVSources.remove('< manuel >')
+                del mVSources['< manuel >']
             
         else:
             # si l'enregistrement a des descendants (cas de stockage
@@ -2601,7 +2761,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if len(mParentWidget) == 2:
                 rowidx[mParentWidget[1]] -= 1
             elif mVSources and '< manuel >' in mVSources:
-                mVSources.remove('< manuel >')
+                del mVSources['< manuel >']
         
     elif mTargetClass == URIRef("http://www.w3.org/ns/dcat#Dataset"):
         # contrôle des onglets non utilisés
@@ -2609,7 +2769,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if (not t in rowidx) or rowidx[t] == 0:
                 mDict[t]['main widget type'] = None
 
-    return WidgetsDict(mDict)
+    return mDict
 
 
 def update_pg_description(description, metagraph, geoideJSON=False):
@@ -2859,38 +3019,48 @@ def build_vocabulary(schemeStr, vocabulary, language="fr"):
     return []
 
 
-def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
+def concept_from_value(conceptStr, schemeIRI, vocabulary, language='fr', strict=True):
     """Return a skos:Concept IRI matching given label.
 
     ARGUMENTS
     ---------
     - conceptStr (str) : chaîne de caractères présumée correspondre au libellé d'un
     concept.
-    - schemeStr (str) : chaîne de caractères présumée correspondre au libellé de
-    l'ensemble qui référence ce concept. Si schemeStr n'est pas spécifié, la fonction
-    effectuera la recherche dans tous les ensembles disponibles. En cas de
-    correspondance multiple, elle renvoie arbitrairement un des résultats.
+    - schemeIRI (URIRef) : IRI de l'ensemble qui référence ce concept.
+    Si schemeIRI n'est pas spécifié, la fonction effectuera la recherche dans tous les
+    ensembles disponibles. En cas de correspondance multiple, elle renvoie arbitrairement
+    un des résultats.
     - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de tous les
     ensembles à considérer.
-    - [optionnel] language (str) : langue présumée de strValue et schemeStr.
-    Français par défaut.
+    - [optionnel] language (str) : langue présumée de strValue. Français par défaut.
+    - [optionnel] strict (bool) : si True, la fonction renverra None plutôt que
+    d'aller chercher une correspondance dans une autre langue que language. True par
+    défaut.
 
     RESULTAT
     --------
-    Un tuple formé comme suit :
+    Si schemeIRI n'est pas fourni en argument, un tuple formé comme suit :
     [0] est l'IRI du terme (rdflib.term.URIRef).
     [1] est l'IRI de l'ensemble (rdflib.term.URIRef).
+    Sinon, la fonction renvoie seulement l'IRI du concept.
+    
+    Si strict vaut False et que schemeIRI est fourni, alors si la fonction échoue à
+    trouver un label correspond dans la langue langage, elle examinera les labels du
+    concept en français, puis dans toutes les langues jusqu'à en trouver un qui
+    corresponde.
 
     EXEMPLES
     --------
-    >>> rdf_utils.concept_from_value("Domaine public", "Types de licence (UE)", vocabulary)
-    (rdflib.term.URIRef('http://purl.org/adms/licencetype/PublicDomain'), rdflib.term.URIRef('http://purl.org/adms/licencetype/1.1'))
+    >>> rdf_utils.concept_from_value("Domaine public", URIRef('http://purl.org/adms/licencetype/1.1'), vocabulary)
+    rdflib.term.URIRef('http://purl.org/adms/licencetype/PublicDomain')
         
     >>> rdf_utils.concept_from_value("Transports", None, vocabulary)
     (rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme/TRAN'), rdflib.term.URIRef('http://publications.europa.eu/resource/authority/data-theme'))
-    """    
-    if schemeStr in ('< non répertorié >', '< manuel >', '< URI >'):
-        return None, None
+    """
+    conceptIRI = None
+    
+    if schemeIRI in ('< non répertorié >', '< manuel >', '< URI >'):
+        return None
 
     # IRI des concepts dont le label est conceptStr :
     concepts = [ s for s in vocabulary.subjects(
@@ -2898,41 +3068,70 @@ def concept_from_value(conceptStr, schemeStr, vocabulary, language='fr'):
         Literal(conceptStr, lang=language)
         ) ]
         
-    if not concepts:
-        return None, None
+    if not concepts:   
+        if not schemeIRI:
+            return None, None
+        if strict:
+            return None
         
-    if schemeStr is None:
+        # en français
+        if not language == 'fr':
+            concepts = [ s for s in vocabulary.subjects(
+                URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
+                Literal(conceptStr, lang='fr')
+                ) ]
+        
+        if not concepts:
+            # dans les autres langues, on récupère tous les concepts
+            # du thésaurus et on boucle sur leurs labels
+            candidats = [ s for s in vocabulary.subjects(
+                URIRef("http://www.w3.org/2004/02/skos/core#inScheme"),
+                schemeIRI
+                ) ]
+            for c in candidats:
+                candidat_labels = [ o for o in vocabulary.objects(
+                    c, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+                    ) ]
+                for l in candidat_labels:
+                    if str(l) == conceptStr:
+                        conceptIRI = c
+                        return conceptIRI
+    
+            return None
+
+    if not schemeIRI:
         # choix arbitraire d'un concept dans la liste :
         conceptIRI = concepts[0]
+        
         # IRI de l'ensemble dont fait partie le concept :
         schemeIRI = vocabulary.value(
             conceptIRI,
             URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
             )
+        
         if schemeIRI:
             # NB : cette condition est en principe inutile. Si
             # vocabulary a été correctement contrôlé, inScheme
             # sera présent sur tous les concepts
             return conceptIRI, schemeIRI
+        else:
+            return None, None
 
     for conceptIRI in concepts:
         # IRI de l'ensemble dont fait partie le concept :
-        schemeIRI = vocabulary.value(
+        schemeIRIBis = vocabulary.value(
             conceptIRI,
             URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
             )
-        # label de l'ensemble :
-        labels = [ str(o) for o in vocabulary.objects(
-            schemeIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
-            ) if o.language == language ]
         # ... et on le garde s'il coïncide avec schemeStr :
-        if labels and labels[0] == schemeStr:
-            return conceptIRI, schemeIRI
+        if schemeIRI == schemeIRIBis:
+            return conceptIRI
         
-    return ( None, None )
+    return None
 
 
-def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False):
+def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False,
+    getschemeStr=True, getschemeIRI=False, getconceptStr=True, strict=False):
     """Return the skos:prefLabel strings matching given conceptIRI and its scheme.
 
     ARGUMENTS
@@ -2944,20 +3143,34 @@ def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False):
     - [optionnel] language (str) : langue attendue pour le libellé résultant.
     Français par défaut.
     - [optionnel] getpage (bool) : True si la fonction doit également
-    récupérer l'eventuelle page web (foaf:page) associée au concept.
+    récupérer l'eventuelle page web (foaf:page) associée au concept. False par défaut.
+    - [optionnel] getschemeStr (bool) : True si la fonction doit récupérer le label de
+    l'ensemble dont fait partie le concept. True par défaut.
+    - [optionnel] getschemeIRI (bool) : True si la fonction doit récupérer l'objet
+    URIRef identifiant l'ensemble dont fait partie de le concept. False par défaut.
+    - [optionnel] getconceptStr (bool) : True si la fonction doit renvoyer le
+    label du concept. True par défaut.
+    - [optionnel] strict (bool) : si True, la fonction ne renverra pas de valeurs
+    qui ne seraient pas dans la langue demandée. False par défaut.
 
     RESULTAT
     --------
-    Un tuple contenant deux chaînes de caractères :
-    [0] est le libellé du concept (str).
-    [1] est le nom de l'ensemble (str).
-    Si getpage vaut True, un troisième élément est ajouté :
-    [2] l'IRI (rdflib.term.URIRef) de la page web associée.
+    Un tuple contenant zéro à quatre chaînes de caractères :
+    [0] est le libellé du concept (str), si getconceptStr vaut True.
+    [1] est le nom de l'ensemble (str), si getschemeStr vaut True.
+    [2] l'IRI (rdflib.term.URIRef) de la page web associée, si existe et si
+    getpage vaut True, sinon None.
+    [3] l'IRI de l'ensemble (rdflib.term.URIRef), si getschemeIRI vaut True.
+    Les éléments seront toujours dans cet ordre, mais ne seront pas présents
+    si le paramétrage ne les prévoyait pas.
     
-    (None, None) si l'IRI n'est pas répertorié.
+    Un tuple de None si l'IRI n'est pas répertorié.
     
-    Si aucune valeur n'est disponible pour la langue spécifiée, la fonction retournera
-    la traduction française (si elle existe), ou à défaut la première traduction venue.
+    Si aucune valeur n'est disponible pour la langue spécifiée et que strict
+    ne vaut pas True, la fonction retournera la traduction française
+    (si elle existe), ou à défaut la première traduction venue.
+    Si strict vaut True, la fonction renvoie un tuple de None s'il
+    n'existe pas de label pour le concept dans la langue demandée.
     
     EXEMPLES
     --------
@@ -2975,47 +3188,66 @@ def value_from_concept(conceptIRI, vocabulary, language="fr", getpage=False):
     >>> rdf_utils.value_from_concept(u, vocabulary, 'es')
     ('Transports', 'Thèmes de données (UE)')
     """
+    d = {}
+    if getconceptStr:
+        d.update({ 'conceptStr': None })
+    if getschemeStr:
+        d.update({ 'schemeStr': None })
+    if getpage:
+        d.update({ 'page': None })
+    if getschemeIRI:
+        d.update({ 'schemeIRI': None })
     
-    # labels du concept dans toutes les langues :
-    labels = [ o for o in vocabulary.objects(
-        conceptIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
-        ) ]
+    if getconceptStr:
+        # labels du concept dans toutes les langues :
+        labels = [ o for o in vocabulary.objects(
+            conceptIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+            ) ]
 
-    if not labels:
-        # concept non référencé
-        return (None, None, None) if getpage else (None, None)
+        if not labels:
+            # concept non référencé
+            return tuple([None for v in d.values()])
         
-    conceptStr = str(pick_translation(labels, language))
-    
-    schemeIRI = vocabulary.value(
-        conceptIRI, URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
-        )
-    
-    if schemeIRI is None:
-        # NB : cette condition est en principe inutile. Si
-        # vocabulary a été correctement contrôlé, inScheme
-        # sera présent sur tous les concepts
-        return (None, None, None) if getpage else (None, None)
-    
-    # labels de l'ensemble dans toutes les langues :
-    slabels = [ o for o in vocabulary.objects(
-        schemeIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
-        ) ]
+        t = pick_translation(labels, language)
         
-    if not slabels:
-        # NB : ne devrait jamais arriver. Tout ensemble
-        # référencé a au moins un label
-        return (None, None, None) if getpage else (None, None)
+        if strict and not t.language == language:
+            return tuple([v for v in d.values()])
         
-    schemeStr = str(pick_translation(slabels, language))
+        d['conceptStr'] = str(t)
+    
+    if getschemeStr or getschemeIRI:
+        schemeIRI = vocabulary.value(
+            conceptIRI, URIRef("http://www.w3.org/2004/02/skos/core#inScheme")
+            )
+        
+        if schemeIRI is None:
+            # NB : cette condition est en principe inutile. Si
+            # vocabulary a été correctement contrôlé, inScheme
+            # sera présent sur tous les concepts
+            return tuple([None for v in d.values()])
+        
+        if getschemeIRI:
+            d['schemeIRI'] = schemeIRI
+        
+        if getschemeStr:
+            # labels de l'ensemble dans toutes les langues :
+            slabels = [ o for o in vocabulary.objects(
+                schemeIRI, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+                ) ]
+                
+            if not slabels:
+                # NB : ne devrait jamais arriver. Tout ensemble
+                # référencé a au moins un label
+                return tuple([None for v in d.values()])
+            
+            d['schemeStr'] = str(pick_translation(slabels, language))
     
     if getpage:
-        page = vocabulary.value(
-            conceptIRI, URIRef("http://xmlns.com/foaf/0.1/#page")
+        d['page'] = vocabulary.value(
+            conceptIRI, URIRef("http://xmlns.com/foaf/0.1/page")
             )
-        return conceptStr, schemeStr, page
 
-    return conceptStr, schemeStr
+    return tuple([v for v in d.values()])
     
 
 def email_from_owlthing(thingIRI):
