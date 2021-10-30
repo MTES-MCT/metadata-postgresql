@@ -66,6 +66,22 @@ class TestRDFUtils(unittest.TestCase):
         populate_widgets(self.widgetsdict)
 
 
+    ### FONCTION WidgetsDict.copy
+    ### -------------------------
+
+    def test_wd_copy_1(self):
+        do = rdf_utils.WidgetsDict(mode='edit', translation=True,
+            language='it', langList=['fr', 'it'])
+        do.update({'key1': 'value1', 'key2': 'value2'})
+        dc = do.copy()
+        self.assertEqual(len(dc), 2)
+        self.assertEqual(dc['key1'], 'value1')
+        self.assertEqual(dc.mode, 'edit')
+        dc['key1'] = 'notvalue1'
+        self.assertEqual(do['key1'], 'value1')
+        self.assertEqual(dc['key1'], 'notvalue1')
+
+
     ### FONCTION export_format_from_extension
     ### -------------------------------------
 
@@ -1785,7 +1801,7 @@ class TestRDFUtils(unittest.TestCase):
             data={ "dct:identifier": ["479fd670-32c5-4ade-a26d-0268b0cexxxx"] }
             )
         self.assertIsNone(check_rows(d))
-        g1 = d.build_graph(self.vocabulary)
+        g1 = d.build_graph(self.vocabulary, bypass=True)
         g1_id = rdf_utils.get_datasetid(g1)
         self.assertEqual(
             rdf_utils.strip_uuid(g1_id),
@@ -2010,7 +2026,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # passage en mode manuel
     def test_wd_change_source_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         s = [x for x in d[self.lck]['sources'] if x != '< manuel >'][0]
         
         d.update_value(self.lck, "https://ma_licence")
@@ -2118,6 +2134,47 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_buttons(d, populated=True))       
 
     # changement de thésaurus
+    def test_wd_change_source_3(self):
+        g = Graph()
+        g.add( (
+            URIRef('urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e'),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/"\
+                   "LimitationsOnPublicAccess/noLimitations")
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary)
+        populate_widgets(d)
+        k = search_keys(d, "dct:accessRights", "edit")[0]
+        self.assertEqual(
+            len(d[k]['sources']), 4
+            )
+        self.assertTrue(
+            all(s in d[k]['sources URI'] for s in d[k]['sources'])
+            )
+        
+        a = d.change_source(k, "Restrictions d'accès en application "\
+            "du Code des relations entre le public et l'administration")
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        self.assertEqual(
+            d[k]['current source'],
+            "Restrictions d'accès en application " \
+            "du Code des relations entre le public et l'administration"
+            )
+        self.assertEqual(
+            d[k]['current source URI'],
+            URIRef("http://snum.scenari-community.org/Metadata/" \
+            "Vocabulaire/#CrpaAccessLimitations")
+            )
+            
+            
 
     # ancienne source non référencée
 
@@ -2147,7 +2204,7 @@ class TestRDFUtils(unittest.TestCase):
     
     # groupe de propriétés masqué
     def test_wd_order_keys_5(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.change_source(self.lck, '< manuel >')
         d.update_value(self.lck_m_txt, "Non vide")
         d.change_source(self.lck_m, 'Licences admises pour les informations publiques des administrations françaises')
@@ -2155,7 +2212,7 @@ class TestRDFUtils(unittest.TestCase):
     
     # groupe de propriétés non masqué
     def test_wd_order_keys_6(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.change_source(self.lck, '< manuel >')
         d.update_value(self.lck_m_txt, "Non vide")
         self.assertEqual(
@@ -2261,6 +2318,28 @@ class TestRDFUtils(unittest.TestCase):
                 mode = 'read', preserve = True
                 )
             )
+
+    # valeur issue d'un thésaurus avec traductions
+    # manquantes pour la langue demandée
+    def test_wd_build_graph_8(self):
+        g = Graph()
+        g.add( (
+            URIRef('urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e'),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations")
+            ) )
+        self.assertTrue(
+            check_unchanged(
+                g, self.shape, self.vocabulary,
+                language='it', langList=['fr', 'en', 'it'], preserve=True
+                )
+            )        
+
     
     # à compléter !
 
@@ -2285,7 +2364,7 @@ class TestRDFUtils(unittest.TestCase):
     ### ---------------------------------
 
     def test_wd_replace_uuid_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         g = d.build_graph(self.vocabulary)
         l_id = [s for s in g.subjects(
@@ -2300,7 +2379,7 @@ class TestRDFUtils(unittest.TestCase):
                     )
 
     def test_wd_replace_uuid_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         idk = search_keys(d, "dct:identifier", "edit")
         self.assertEqual(
@@ -2320,32 +2399,32 @@ class TestRDFUtils(unittest.TestCase):
     ### ---------------------------------------------
 
     def test_wd_drop_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'outside.of.a.group'):
             d.drop(self.mdk)        
 
     def test_wd_drop_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'last.of.its.kind'):
             d.drop(self.tck)
 
     def test_wd_drop_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'root'):
             d.drop((0,))
 
     def test_wd_add_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'root'):
             d.add((0,))
 
     def test_wd_add_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(ValueError, 'plus.button'):
             d.add(self.lgk)
 
     def test_wd_add_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.add(self.ttk_plus)
         d.add(self.ttk_plus)
         # trois langues, donc trois traductions max et
@@ -2355,7 +2434,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # ajout d'un groupe de propriétés
     def test_wd_add_4(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
         a = d.add(dbk_plus)
         llck_label = search_keys(d, "dcat:distribution / dct:license / rdfs:label", 'edit')
@@ -2389,7 +2468,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # ajout d'un groupe de propriétés + sauvegarde
     def test_wd_add_5(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
         a = d.add(dbk_plus)
         execute_pseudo_actions(d, a)
@@ -2444,7 +2523,7 @@ class TestRDFUtils(unittest.TestCase):
     # ajout/suppression d'un widget de saisie
     # occupant plusieurs lignes
     def test_wd_add_drop_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         dsk_plus = search_keys(d, 'dct:description', 'translation button')[0]
         d.add(dsk_plus)
         e = check_rows(d)
@@ -2465,7 +2544,7 @@ class TestRDFUtils(unittest.TestCase):
     # ajout/suppression de widgets dans
     # un groupe de valeurs
     def test_wd_add_drop_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         kwk_plus = search_keys(d, 'dcat:keyword', 'plus button')[0]
         d.add(kwk_plus)
         d.add(kwk_plus)
@@ -2632,7 +2711,7 @@ class TestRDFUtils(unittest.TestCase):
     ### ------------------------------------
 
     def test_wd_change_language_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         
         a = d.add(self.ttk_plus)
         execute_pseudo_actions(d, a)
@@ -2653,25 +2732,25 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[a["new keys"][0]]['authorized languages'], ['en', 'it'])
 
     def test_wd_change_language_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'authorized.language'):
             d.change_language(self.ttk, 'es')
 
     def test_wd_change_language_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'but.a.string'):
             d.change_language(self.mdk, 'en')
 
     # la nouvelle langue est identique à l'ancienne :
     def test_wd_change_language_4(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         c = d.change_language(self.ttk, 'fr')
         self.assertEqual(c["language menu to update"], [])
         self.assertEqual(c["widgets to hide"], [])
         
     # cas d'une langue de fait non autorisée :
     def test_wd_change_language_5(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         # modification manuelle de la langue
         d[self.ttk]['language value'] = 'es'
         d[self.ttk]['authorized languages'].append('es')
@@ -2689,7 +2768,7 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'it'])
         self.assertEqual(d[self.ttk]['authorized languages'], ['es', 'it'])
         
-        c = d.change_language(self.ttk, 'it', langList=['en', 'fr', 'it'])
+        c = d.change_language(self.ttk, 'it')
         self.assertEqual(d[self.ttk]['language value'], 'it')
         self.assertEqual(d[a1["new keys"][0]]['language value'], 'en')
         self.assertEqual(d[a2["new keys"][0]]['language value'], 'fr')
@@ -2783,7 +2862,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # la valeur est-elle bien réinitialisée ?
     def test_wd_clean_copy_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d[self.lgk]['value'] = 'italien'
         c = d.clean_copy(self.lgk)
         self.assertEqual(c['value'], 'français')
@@ -2936,15 +3015,24 @@ class TestRDFUtils(unittest.TestCase):
 
     def test_concept_from_value_1(self):
         self.assertEqual(
-            rdf_utils.concept_from_value("Domaine public", "Types de licence (UE)", self.vocabulary),
-            (URIRef('http://purl.org/adms/licencetype/PublicDomain'), URIRef('http://purl.org/adms/licencetype/1.1'))
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
             )
 
     # dans une autre langue :
     def test_concept_from_value_2(self):
         self.assertEqual(
-            rdf_utils.concept_from_value("Public domain", "Licence type (EU)", self.vocabulary, language="en"),
-            (URIRef('http://purl.org/adms/licencetype/PublicDomain'), URIRef('http://purl.org/adms/licencetype/1.1'))
+            rdf_utils.concept_from_value(
+                "Public domain",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language="en"
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
             )
  
     # sans conceptScheme :
@@ -2956,24 +3044,50 @@ class TestRDFUtils(unittest.TestCase):
 
     # conceptScheme inconnu :
     def test_concept_from_value_4(self):
-        self.assertEqual(
-            rdf_utils.concept_from_value("Domaine public", "N'existe pas", self.vocabulary),
-            (None, None)
+        self.assertIsNone(
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef("http://chose"),
+                self.vocabulary
+                )
             )
     
     # concept inconnu :
     def test_concept_from_value_5(self):
-        self.assertEqual(
-            rdf_utils.concept_from_value("N'existe pas", "Types de licence (UE)", self.vocabulary),
-            (None, None)
+        self.assertIsNone(
+            rdf_utils.concept_from_value(
+                "N'existe pas",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary
+                )
             )
             
     # langue inconnue :
     def test_concept_from_value_6(self):
-        self.assertEqual(
-            rdf_utils.concept_from_value("Domaine public", "Types de licence (UE)", self.vocabulary, language='it'),
-            (None, None)
+        self.assertIsNone(
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language='it'
+                )
             )
+
+    # langue inconnue avec strict valant False:
+    def test_concept_from_value_7(self):
+        self.assertEqual(
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language='it',
+                strict=None
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
+            )
+
+    # il faudrait tester aussi le cas où il n'existait
+    # pas de traduction française
 
 
     ### FONCTION value_from_concept
@@ -2981,29 +3095,71 @@ class TestRDFUtils(unittest.TestCase):
     
     def test_value_from_concept_1(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/PublicDomain'), self.vocabulary),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary
+                ),
             ("Domaine public", "Types de licence (UE)")
             )
     
     # autre langue :
     def test_value_from_concept_2(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/PublicDomain'), self.vocabulary, language='en'),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary,
+                language='en'
+                ),
             ("Public domain", "Licence type (EU)")
             )
     
     # URI non répertoriée :
-    def test_value_from_concept_1(self):
+    def test_value_from_concept_3(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/Chose'), self.vocabulary),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/Chose'),
+                self.vocabulary
+                ),
             (None, None)
             )
     
     # pas de valeur pour la langue :
-    def test_value_from_concept_1(self):
+    def test_value_from_concept_4(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/PublicDomain'), self.vocabulary, language='it'),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary,
+                language='it'
+                ),
             ("Domaine public", "Types de licence (UE)")
+            )
+
+    # pas de valeur pour la langue - avec strict :
+    def test_value_from_concept_5(self):
+        self.assertEqual(
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary,
+                language='it',
+                strict=True
+                ),
+            (None, None)
+            )
+
+    # avec récupération de la page web associée :
+    def test_value_from_concept_6(self):
+        self.assertEqual(
+            rdf_utils.value_from_concept(
+                URIRef('http://snum.scenari-community.org/Metadata/'\
+                       'Vocabulaire/#CrpaAccessLimitations-311-2-a1'),
+                self.vocabulary,
+                getpage=True
+                ),
+            ("Communicable à la discrétion de l'administration - " \
+             "document non achevé (CRPA, L311-2 §1)",
+             "Restrictions d'accès en application du Code des relations " \
+             "entre le public et l'administration",
+             URIRef("https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700"))
             )
 
 
@@ -3233,7 +3389,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3272,7 +3428,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3307,7 +3463,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA></METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3342,7 +3498,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA></METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3387,7 +3543,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3430,7 +3586,7 @@ class TestRDFUtils(unittest.TestCase):
 ]
 </METADATA>
 """
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3464,7 +3620,7 @@ class TestRDFUtils(unittest.TestCase):
 ]
 </METADATA>
 """
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3499,7 +3655,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3530,7 +3686,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3561,7 +3717,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3592,7 +3748,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>Suite."""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3623,7 +3779,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>Suite."""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3655,7 +3811,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>Suite."""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3690,7 +3846,7 @@ class TestRDFUtils(unittest.TestCase):
 ]
 </METADATA>
 """
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
