@@ -14,7 +14,7 @@
 | DockWidget vs Windows              |        |   Ok   |   DL   | |
 | Formulaire à la volée              |        |   Ok   |   DL   | |
 | QtabWidget (gestion des onglets)   |        |   Ok   |   DL   | |
-| Installation de l'extension de PLUME |   X    |        |   DL   | Il s'agit de proposer dnas l'interface de Asgard Manager, l'installation et les mises à jour de l'extension de PLUME pour l'ADL |
+| Installation de l'extension de PLUME |   X    |        |   DL   | Il s'agit de proposer dans l'interface de Asgard Manager, l'installation et les mises à jour de l'extension de PLUME pour l'ADL |
 | Import de la bibliothèque RDFLIB   |   X    |        |   DL   | |
 | Compléter le schéma SHACL          |   X    |        |   LL   | + thésaurus manquants |
 | Outillage de l'import de métadonnées GéoIDE Catalogue |   X    |        |   LL   | En attente retour de Luc Boyer sur la documentation de l'API. |
