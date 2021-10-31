@@ -223,7 +223,7 @@ class WidgetsDict(dict):
                     return self[key]['node']
 
 
-    def clean_copy(self, key, language=None, langList=None):
+    def clean_copy(self, key, language=None, langList=None, novalue=False):
         """Renvoie une copie nettoyée du dictionnaire interne de la clé key.
         
         ARGUMENTS
@@ -236,6 +236,8 @@ class WidgetsDict(dict):
         - [optionnel] langList (list) : la liste des langues autorisées
         pour les traductions. Par défaut, la fonction utilise l'attribut
         langList du dictionnaire.
+        - [optionnel] novalue (bool) : si True, la fonction n'utilise pas les
+        valeurs par défaut pour peupler la copie.
 
         RESULTAT
         --------
@@ -246,7 +248,8 @@ class WidgetsDict(dict):
         ce n'est que :
         - les clés supposées contenir des widgets, actions et menus sont
         vides ;
-        - la clé "value" est remise à la valeur par défaut ;
+        - la clé "value" est remise à la valeur par défaut (ou vide si
+        novalue) ;
         - la clé "language value" vaudra language et "authorized languages"
         vaudra langList (s'il y avait lieu de spécifier une langue) ;
         - la clé "hidden" est réinitialisée (ne vaudra jamais True sauf si
@@ -262,6 +265,14 @@ class WidgetsDict(dict):
         
         d = self[key].copy()
         
+        if d['sources'] is not None:
+            mSources = d['sources'].copy()
+            if '< non répertorié >' in mSources:
+                mSources.remove('< non répertorié >')
+        else:
+            mSources = None
+        
+        
         d.update({
             'main widget' : None,
             'grid widget' : None,
@@ -275,12 +286,18 @@ class WidgetsDict(dict):
             'language menu' : None,
             'language actions' : None,
             
-            'value' : d['default value'],
+            'main widget type': d['default widget type'] if d['main widget type'] \
+                and d['default widget type'] else d['main widget type'],
+            'value' : d['default value'] if not novalue else None,
             'language value' : language if d['language value'] else None,
             'authorized languages' : langList.copy() if d['authorized languages'] \
                 is not None else None,
-            'sources' : d['sources'].copy() if d['sources'] is not None \
-                else None,
+            'sources' : mSources,
+            'multiple sources': len(mSources) > 1 if mSources \
+                and self.mode == 'edit' else None,
+            'current source': d['default source'] if d['current source'] else None,
+            'current source URI': d['sources URI'][d['default source']] \
+                if d['current source'] and d['default source'] else None,
             'hidden' : len(langList) == 1 if (
                 d['object'] == 'translation button' ) else None,
                 
@@ -605,13 +622,17 @@ class WidgetsDict(dict):
         k2 = (n, key[1], 'M') if len(c) == 2 else (n, key[1])
         cm = (c[0], c[1], 'M') if len(c) == 2 else (c[0], c[1])
         
-        self.update( { k1: self.clean_copy(c, language, mLangList) } )
+        self.update( { k1: self.clean_copy(c, language, mLangList, novalue=True) } )
+        # on utilise le paramètre novalue de clean_copy, parce que si
+        # l'utilisateur ajoute une valeur dans un groupe, ce n'est pas
+        # pour se retrouver avec un widget déjà rempli (le novalue=False
+        # a par contre tout son sens avec les descendants d'un double M)
         self[k1]['row'] = r
         d['new keys'].append(k1)
         
         # cas d'un enregistrement avec un double M
         if cm in self and self[cm]['main widget type']:
-            self.update( { k2: self.clean_copy(cm, language, mLangList) } )  
+            self.update( { k2: self.clean_copy(cm, language, mLangList, novalue=True) } )  
             self[k2]['row'] = r
             d['new keys'].append(k2)
         else:
@@ -910,7 +931,12 @@ class WidgetsDict(dict):
             
             self[key]['current source'] = None
             self[ukey]['current source'] = source
-            self[ukey]['current source URI'] = self[ukey]['sources URI'][source]
+            if self[ukey]['sources URI']:
+                self[ukey]['current source URI'] = self[ukey]['sources URI'][source]
+                # provoquerait une erreur si 'source' n'était pas référencé dans
+                # 'sources URI', mais ne devrait jamais arriver dès lors que
+                # 'sources URI' existe (ce qui exclut de facto le cas < manuel >
+                # + < URI >).
             
             d["switch source menu to update"].append(ukey)
             
@@ -1494,6 +1520,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     antérieurement saisie n'apparaît dans aucune ontologie associée à la catégorie, None si le
     widget n'est pas utilisé. La liste des termes autorisés par la source n'est pas directement
     stockée dans le dictionnaire, mais peut être obtenue via la fonction build_vocabulary.
+    - 'current source URI' : IRI correspondant à 'current source'.
     - 'read only'* : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
     l'utilisateur. En mode lecture, 'read only' vaut toujours True.
     - 'hidden' : booléen. Si True, le widget principal doit être masqué. Concerne
@@ -1508,7 +1535,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     'transform', 'default widget type', 'one per language', 'next child' (indice à utiliser si un
     enregistrement est ajouté au groupe), 'multiple values'* (la catégorie est-elle
     censée admettre plusieurs valeurs ?), 'order shape', 'order template'* (ordre des catégories, cette
-    clé s'appelle simplement "order" dans le template), 'do not save'.
+    clé s'appelle simplement "order" dans le template), 'do not save', 'sources URI', 'default source'.
 
     * ces clés apparaissent aussi dans le dictionnaire interne de template.
     ** le dictionnaire interne de template contient également une clé 'data type', mais dont les
@@ -1538,13 +1565,17 @@ def build_dict(metagraph, shape, vocabulary, template=None,
         mGraphEmpty = ( len(metagraph) == 0 )
         mTemplateEmpty = ( template is None )
         
-        # on travaille sur une copie du template pour pouvoir supprimer les catégories
-        # au fur et à mesure de leur traitement par la première itération (sur les
-        # catégories communes). À l'issue de celle-ci, ne resteront donc dans le
-        # dictionnaire que les catégories locales.
-        mShallowTemplate = template.copy() if template else dict()
+        # on travaille sur une copie du template pour pouvoir marquer les catégories
+        # comme traitées au fur et à mesure de leur traitement par l'itération
+        # sur les catégories communes. À l'issue de celle-ci, ne resteront donc "non
+        # traitées" que les catégories locales.
+        mShallowTemplate = dict()
+        if template:
+            for tk, tv in template.items():
+                mShallowTemplate.update({ tk: tv.copy() })
 
-        # même logique pour data
+        # même logique pour data, si ce n'est que les valeurs sont
+        # carrément supprimées.
         mData = data.copy() if data else dict()
 
         # récupération de l'identifiant
@@ -1618,6 +1649,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             'hidden M': None,
             
             'default value': None,
+            'default source': None,
             'multiple values': None,
             'node kind': None,
             'data type': None,
@@ -1866,31 +1898,27 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         mSources.update({ s: str(st) })
                         # si t vaut None, c'est que le thésaurus n'est pas
                         # référencé dans vocabulary, dans ce cas, on l'exclut
-                        
-            # propriété qui admet à la fois des valeurs manuelles (noeuds vides)
-            # et des IRI
-            if mKind == 'sh:BlankNodeOrIRI':
-                if not mSources:
-                    mSources.update({ "< URI >": "< URI >" })
-                mSources.update({ "< manuel >": "< manuel >" })
-
 
             # traitement de la valeur par défaut :
-            if t.get('default value'):
-                mDefault = t.get('default value')
+            mDefault = t.get('default value') or None
+            if mDefault:
                 if mSources:
-                    mDefaultBrut, mDefaultSourceURI = concept_from_value(
-                        mDefault, None, vocabulary, language
-                        )
-                    # si elle est issue d'un thésaurus, la valeur par défaut n'est appliquée que
-                    # si sa langue coïncide avec la langue principale de saisie des métadonnées
-                    # (sinon mDefaultBrut vaut None, ici)
-                    if mDefaultBrut:
-                        mDefaultSource = mSources.get(mDefaultSourceURI)
-                        mDefaultPage = value_from_concept(
-                            mDefaultBrut, vocabulary, language, getpage=True, getschemeStr=False,
-                            getconceptStr=False, getschemeIRI=False
+                    for s in mSources:
+                        # comme on ne sait pas de quel thésaurus provient le concept
+                        # on les teste tous jusqu'à trouver le bon
+                        mDefaultBrut = concept_from_value(
+                            mDefault, s, vocabulary, language, strict=False
                             )
+                        if mDefaultBrut:
+                            mDefaultSourceURI = s
+                            mDefaultSource = mSources.get(mDefaultSourceURI)
+                            mDefault, mDefaultPage = value_from_concept(
+                                mDefaultBrut, vocabulary, language, getpage=True,
+                                getschemeStr=False, getschemeIRI=False, getconceptStr=True
+                                )
+                            # NB : on retourne chercher mDefault, car la langue de la valeur
+                            # du template n'était pas nécessairement la bonne
+                            break
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
                     if mDefault is None or mDefaultBrut is None or mDefaultSource is None:
                         mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = mDefaultSourceURI = None
@@ -1902,21 +1930,25 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mSources:
                     mDefault, mDefaultPage, mDefaultSourceURI = value_from_concept(
                         mDefaultBrut, vocabulary, language, getpage=True, getschemeIRI=True,
-                        getschemeStr=False, getconceptStr=True, strict=True
+                        getschemeStr=False, getconceptStr=True
                         )
                     mDefaultSource = mSources.get(mDefaultSourceURI)
-                    # si elle est issue d'un thésaurus, la valeur par défaut n'est appliquée que
-                    # s'il existe des labels pour la source et le concept dans la langue principale
-                    # de saisie (sinon le triple ci-avant est (None, None, None), grâce à strict=True)
                     # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
                     if mDefault is None or mDefaultBrut is None or mDefaultSource is None:
                         mDefault = mDefaultBrut = mDefaultSource = mDefaultPage = mDefaultSourceURI = None
                 elif mKind == 'sh:Literal' and p['type'].n3(nsm) == 'rdf:langString' \
                     and (not isinstance(p['default'], Literal) \
                     or not p['default'].language == language):
-                    # une valeur par défaut litérale qui n'est pas dans la langue principale de saisie
-                    # n'est pas conservée
+                    # une valeur par défaut litérale qui n'est pas dans la langue
+                    # principale de saisie n'est pas conservée
                     mDefaultBrut = None
+                    
+            # propriété qui admet à la fois des valeurs manuelles (noeuds vides)
+            # et des IRI
+            if mKind == 'sh:BlankNodeOrIRI':
+                if not mSources:
+                    mSources.update({ "< URI >": "< URI >" })
+                mSources.update({ "< manuel >": "< manuel >" })
             
             # si seules les métadonnées dans la langue
             # principale doivent être affichées et qu'aucune valeur n'est
@@ -2208,17 +2240,9 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     mValue = mValue or str(mValueBrut)
 
                 mWidgetType = t.get('main widget type', None) or str(p['widget']) or "QLineEdit"
-                mDefaultWidgetType = mWidgetType
-                
+                 
                 mLabelRow = None
 
-                if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit \
-                    or mValue.count("\n") > 0 ):
-                    mWidgetType = 'QTextEdit'
-                    # on fait apparaître un QTextEdit à la place du QLineEdit quand
-                    # la longueur du texte dépasse le seuil valueLengthLimit ou
-                    # s'il contient des retours à la ligne, et que ce n'est pas un IRI
-                
                 if mWidgetType == "QComboBox" and ( ( not mVSources ) \
                     or '< URI >' in mVSources ):
                     mWidgetType = "QLineEdit"
@@ -2226,6 +2250,20 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     # pour les URI, mais on est dans un cas où, pour on ne sait quelle
                     # raison, aucun thésaurus n'est disponible. Dans ce cas on affiche
                     # un QLineEdit à la place.
+                    
+                mDefaultWidgetType = mWidgetType
+                
+                if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit \
+                    or mValue.count("\n") > 0 ):
+                    mWidgetType = 'QTextEdit'
+                    # on fait apparaître un QTextEdit à la place du QLineEdit quand
+                    # la longueur du texte dépasse le seuil valueLengthLimit ou
+                    # s'il contient des retours à la ligne, et que ce n'est pas un IRI
+                    
+                if mDefaultWidgetType == "QLineEdit" and mDefault and ( len(mDefault) > valueLengthLimit \
+                    or mDefault.count("\n") > 0 ):
+                    mDefaultWidgetType = 'QTextEdit'
+                    # idem avec le widget par défaut et la valeur par défaut
                 
                 if mLabel and ( mWidgetType == 'QTextEdit' or len(mLabel) > labelLengthLimit ):
                     mLabelRow = rowidx[mParent]
@@ -2263,6 +2301,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     'regex validator pattern' : str(p['pattern']) if p['pattern'] and mode == 'edit' else None,
                     'regex validator flags' : str(p['flags']) if p['flags'] and mode == 'edit' else None,
                     'default value' : mDefault,
+                    'default source' : mDefaultSource,
                     'multiple values' : multiple,
                     'node kind' : mKind,
                     'data type' : p['type'],
@@ -2652,11 +2691,14 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
                 mValue = str(v)
                 
-                mType = ( v.datatype if isinstance(v, Literal) else None ) or URIRef("http://www.w3.org/2001/XMLSchema#string")
+                mType = None
+                if isinstance(v, Literal):
+                    mType = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#langString') \
+                        if v.language else v.datatype
+                mType = mType or URIRef("http://www.w3.org/2001/XMLSchema#string")
                 # NB : pourrait ne pas être homogène pour toutes les valeurs d'une même catégorie
                 
-                mLanguage = ( v.language if isinstance(v, Literal) else None ) \
-                    if mType.n3(nsm) in ('xsd:string', 'rdf:langString') else None
+                mLanguage = v.language if mType.n3(nsm) == 'rdf:langString' else None
                             
                 if mNGhost:
                     # si les catégories non répertoriées ne
@@ -2954,69 +2996,74 @@ def metagraph_from_pg_description(description, shape):
     return g
 
 
-def build_vocabulary(schemeStr, vocabulary, language="fr"):
+def build_vocabulary(schemeIRI, vocabulary, language="fr", value=None):
     """List all concept labels from given scheme.
 
     ARGUMENTS
     ---------
-    - schemeStr (str) : nom de l'ensemble dont on veut lister les concepts.
+    - schemeIRI (URIRef) : IRI de l'ensemble dont on veut lister les concepts.
     - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de tous
     les ensembles à considérer.
     - [optionnel] language (str) : langue attendue pour les libellés des concepts.
-    schemeStr doit être donné dans cette même langue. Français par défaut.
+    Français par défaut.
+    - [optionnel] value (str) : un terme supposé être dans la liste. Cet argument
+    ne sert que dans le cas d'un schemeIRI (qui n'est alors pas un IRI) valant
+    '< non répertorié >', car la fonction renvoie alors une liste contenant 
+    seulement une chaîne de caractères vides et la valeur en question.
 
     RESULTAT
     --------
     Liste (list) contenant les libellés (str) des termes du thésaurus, triés par
     ordre alphabétique selon la locale de l'utilisateur.
     
-    Renvoie une liste vide si le thésaurus n'est pas référencé ou s'il n'a aucun
-    terme pour la langue considérée.
+    La fonction rajoute systématiquement une chaîne de caractères vide en première
+    position de la liste.
 
     EXEMPLES
     --------
-    >>> build_vocabulary("Thème de données (UE)", vocabulary)
-    ['Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
+    >>> rdf_utils.build_vocabulary(
+    ...    URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+    ...    vocabulary
+    ...    )
+    ['', 'Agriculture, pêche, sylviculture et alimentation', 'Données provisoires',
     'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement',
     'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique',
     'Population et société', 'Questions internationales', 'Régions et villes', 'Santé',
     'Science et technologie', 'Transports']
     """
-    if schemeStr in ('< non répertorié >', '< manuel >', '< URI >'):
-        return []
+    if schemeIRI == '< non répertorié >':
+        return ['', value] if value else ['']
     
-    schemeIRI = None
-    
-    for s in vocabulary.subjects(
-        URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-        Literal(schemeStr, lang=language)
-        ):
-        schemeIRI = s
-        break
-
-    if schemeIRI is None:
-        return []
+    if not isinstance(schemeIRI, URIRef):
+        raise ForbiddenOperation(
+            "Can't generate a concept list from non-URIRef source '{}'.".format(schemeIRI)
+            )
     
     concepts = [ c for c in vocabulary.subjects(
         URIRef("http://www.w3.org/2004/02/skos/core#inScheme"),
-        schemeIRI ) ]
+        schemeIRI ) ] 
 
+    labels = []
     if concepts:
-        labels = []
+        
         for c in concepts:
-            labels += [ str(o) for o in vocabulary.objects(
+            clabels = [ o for o in vocabulary.objects(
                 c, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
-                ) if o.language == language ]
+                ) ]
+            if clabels:
+                t = pick_translation(clabels, language)
+                labels.append(str(t))
 
         if labels:
             setlocale(LC_COLLATE, "")
 
-            return sorted(
+            labels = sorted(
                 labels,
                 key=lambda x: strxfrm(x)
                 )
-   
-    return []
+                
+    labels.insert(0, '')
+    return labels
 
 
 def concept_from_value(conceptStr, schemeIRI, vocabulary, language='fr', strict=True):
