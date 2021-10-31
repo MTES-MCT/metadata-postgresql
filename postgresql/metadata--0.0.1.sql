@@ -366,9 +366,9 @@ INSERT INTO z_metadata.meta_categorie (
     ('shared', 'dcat:distribution / dct:license / rdfs:label', false, 'Termes', 'rdf:langString', 'QTextEdit', NULL, NULL, NULL, NULL, NULL, true, false, 2),
     ('shared', 'dcat:landingPage', false, 'Page internet', NULL, 'QLineEdit', NULL, 'URL de la fiche de métadonnées sur internet.', NULL, NULL, NULL, true, false, 60),
     ('shared', 'foaf:page', false, 'Ressource associée', NULL, 'QLineEdit', NULL, 'Chemin d''une page internet ou d''un document en rapport avec les données.', NULL, NULL, NULL, true, false, 61),
-    ('shared', 'dct:language', false, 'Langue des données', NULL, 'QComboBox', NULL, NULL, 'http://publications.europa.eu/resource/authority/language/FRA', NULL, NULL, true, false, 80),
+    ('shared', 'dct:language', false, 'Langue des données', NULL, 'QComboBox', NULL, NULL, 'français', NULL, NULL, true, false, 80),
     ('shared', 'snum:relevanceScore', false, 'Score', 'xsd:integer', 'QLineEdit', NULL, 'plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche.', NULL, NULL, NULL, false, false, 81),
-    ('shared', 'dct:type', false, 'Type de jeu de données', NULL, 'QComboBox', NULL, NULL, 'http://publications.europa.eu/resource/authority/dataset-type/GEOSPATIAL', NULL, NULL, false, false, 82),
+    ('shared', 'dct:type', false, 'Type de jeu de données', NULL, 'QComboBox', NULL, NULL, NULL, NULL, NULL, false, false, 82),
     ('shared', 'dct:identifier', false, 'Identifiant interne', 'xsd:string', 'QLineEdit', NULL, NULL, NULL, NULL, NULL, false, false, 83),
     ('shared', 'adms:identifier', false, 'Autre identifiant', NULL, 'QLineEdit', NULL, NULL, NULL, NULL, NULL, true, false, 84) ;
 
