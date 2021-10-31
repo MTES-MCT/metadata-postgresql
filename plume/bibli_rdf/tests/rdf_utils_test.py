@@ -13,7 +13,7 @@ from pathlib import Path
 from plume.bibli_rdf import rdf_utils, __path__
 from plume.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
     populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
-    check_hidden_branches, check_buttons
+    check_hidden_branches, check_buttons, copy_metagraph
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -1485,7 +1485,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=False,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')[0]
         self.assertEqual(d[ttk[1]]['label'], "Autres")
@@ -1507,7 +1507,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=True,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')[0]
         self.assertEqual(d[ttk[1]]['label'], "Autres")
@@ -1567,7 +1567,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=False,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1587,7 +1587,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=True,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1607,7 +1607,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=False,
             readHideBlank=False
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1627,7 +1627,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=True,
             readHideBlank=False
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1667,7 +1667,7 @@ class TestRDFUtils(unittest.TestCase):
             vocabulary=self.vocabulary,
             mode='read'
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         for k, v in d.items():
             with self.subTest(key=k):
@@ -1708,7 +1708,7 @@ class TestRDFUtils(unittest.TestCase):
             mode='read',
             template=template
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         for k, v in d.items():
             with self.subTest(key=k):
@@ -1734,7 +1734,7 @@ class TestRDFUtils(unittest.TestCase):
             mode='read',
             readHideUnlisted=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         self.assertFalse(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
             for k, v in d.items()]))
@@ -1748,7 +1748,7 @@ class TestRDFUtils(unittest.TestCase):
             mode='read',
             readHideUnlisted=False
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         self.assertTrue(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
             for k, v in d.items()]))
@@ -2017,6 +2017,124 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_rows(d))
         self.assertIsNone(check_hidden_branches(d))
         self.assertIsNone(check_buttons(d))
+
+    # valeur par défaut à exclure (venant de shape,
+    # cas d'un Literal dans la mauvaise langue)
+    def test_build_dict_27(self):
+        sh = copy_metagraph(self.shape)
+        b = [ o for o in sh.objects(
+            URIRef("http://snum.scenari-community.org/Metadata/Vocabulaire/#DatasetShape"),
+            URIRef("http://www.w3.org/ns/shacl#property")
+            ) if sh.value(o, URIRef("http://www.w3.org/ns/shacl#path")) \
+              == URIRef("http://purl.org/dc/terms/title")][0]
+        sh.add((
+            b,
+            URIRef("http://www.w3.org/ns/shacl#defaultValue"),
+            Literal("My title", lang='en')
+            ))
+        d = rdf_utils.build_dict(
+            Graph(), sh, self.vocabulary
+            )
+        k = search_keys(d, "dct:title", "edit")[0]
+        self.assertIsNone(d[k]['value'])
+        d = rdf_utils.build_dict(
+            Graph(), sh, self.vocabulary, language='en'
+            )
+        k = search_keys(d, "dct:title", "edit")[0]
+        self.assertEqual(d[k]['value'], 'My title')
+
+    # valeur par défaut issue d'un thésaurus, venant de shape,
+    # pour laquelle il n'existe pas de traduction dans la
+    # langue demandée -> meilleure traduction
+    def test_build_dict_28(self):
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary, language='it',
+            langList=['fr', 'it']
+            )
+        k = search_keys(d, 'dct:language', 'edit')[0]
+        self.assertEqual(d[k]['value'], 'français')
+        self.assertEqual(
+            d[k]['current source'],
+            "Langues (UE)"
+            )
+        self.assertEqual(
+            d[k]['current source URI'],
+            URIRef("http://publications.europa.eu/resource/authority/language")
+            )
+        
+    # valeur par défaut issue d'un thésaurus, venant de template,
+    # pour laquelle il n'existe pas de traduction dans la
+    # langue demandée -> meilleure traduction
+    def test_build_dict_29(self):
+        template = { 'dcat:theme': {
+            'default value' : "Administrative units"
+            } }
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary, language='it',
+            langList=['fr', 'it'], template=template
+            )
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        self.assertEqual(d[k]['value'], "Unités administratives")
+        self.assertEqual(
+            d[k]['current source'],
+            "Thème INSPIRE (UE)"
+            )
+        self.assertEqual(
+            d[k]['current source URI'],
+            URIRef("https://inspire.ec.europa.eu/theme")
+            )
+
+    # valeur par défaut issue d'un thésaurus, venant de shape
+    # et qui n'existe pas -> exclue
+    def test_build_dict_30(self):
+        sh = copy_metagraph(self.shape)
+        b = [ o for o in sh.objects(
+            URIRef("http://snum.scenari-community.org/Metadata/Vocabulaire/#DatasetShape"),
+            URIRef("http://www.w3.org/ns/shacl#property")
+            ) if sh.value(o, URIRef("http://www.w3.org/ns/shacl#path")) \
+              == URIRef("http://www.w3.org/ns/dcat#theme")][0]
+        sh.add((
+            b,
+            URIRef("http://www.w3.org/ns/shacl#defaultValue"),
+            URIRef("http://chose")
+            ))
+        d = rdf_utils.build_dict(
+            Graph(), sh, self.vocabulary
+            )
+        k = search_keys(d, "dcat:theme", "edit")[0]
+        self.assertIsNone(d[k]['value'])
+        # current source et son URI sont choisies au hasard
+        self.assertIsNotNone(d[k]['current source'])
+        self.assertIsNotNone(d[k]['current source URI'])
+
+    # valeur par défaut issue d'un thésaurus, venant de template
+    # et qui n'existe pas -> exclue
+    def test_build_dict_31(self):
+        template = { 'dcat:theme': {
+            'default value' : "Chose"
+            } }
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            template=template
+            )
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        self.assertIsNone(d[k]['value'])
+        # current source et son URI sont choisies au hasard
+        self.assertIsNotNone(d[k]['current source'])
+        self.assertIsNotNone(d[k]['current source URI'])
+
+    # préservation de template
+    def test_build_dict_32(self):
+        template = { 'dct:title': {}, 'dcat:theme': {} }
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            template=template
+            )
+        self.assertEqual(
+            template,
+            { 'dct:title': {}, 'dcat:theme': {} }
+            )
+
     
     # à compléter !
 
@@ -2486,6 +2604,63 @@ class TestRDFUtils(unittest.TestCase):
             len(search_keys(d, "dcat:distribution", 'group of properties')), 2
             )
 
+    # application des valeurs par défaut
+    def test_wd_add_6(self):
+        template = {
+            'dcat:distribution': {},
+            'dcat:distribution / dct:license': {
+                'default value': "Licence Ouverte version 2.0"
+                },
+            'dcat:distribution / dct:license / rdfs:label': {
+                'default value': "Valeur par défaut..."
+                },
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                }
+            }
+        d = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dcat:distribution / dct:license', 'edit')[0]
+        self.assertEqual(d[k]['value'], "Licence Ouverte version 2.0")
+        b = search_keys(d, 'dcat:distribution', 'plus button')[0]
+        d.add(b)
+        nk = [e for e in search_keys(d, 'dcat:distribution / dct:license', 'edit') \
+            if e != k][0]
+        # la valeur par défaut doit être appliquée sur les branches créées
+        self.assertEqual(d[nk]['value'], "Licence Ouverte version 2.0")
+        
+        d.change_source(k, "< manuel >")
+        d.add(b)
+        nk2 = [e for e in search_keys(d, 'dcat:distribution / dct:license', 'edit') \
+            if not e in (k, nk)][0]
+        # ... même si elles sont masquées
+        self.assertTrue(d[nk2]['hidden M'])
+        self.assertEqual(d[nk2]['value'], "Licence Ouverte version 2.0")
+
+        lnk3 = search_keys(d, 'dcat:distribution / dct:license / rdfs:label', 'edit')
+        for nk3 in lnk3:
+            self.assertEqual(
+                d[nk3]['value'],
+                "Valeur par défaut..."
+                )
+              
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        d.change_source(k, "Thème INSPIRE (UE)")
+        d.update_value(k, 'Habitats et biotopes')
+        b = search_keys(d, 'dcat:theme', 'plus button')[0]
+        d.add(b)
+        nk = [e for e in search_keys(d, 'dcat:theme', 'edit') if e != k][0]
+        # dans le groupe contenant le bouton,
+        # on revient à la source par défaut
+        self.assertEqual(d[nk]['current source'], "Thème de données (UE)")
+        self.assertEqual(
+            d[nk]['current source URI'],
+            URIRef('http://publications.europa.eu/resource/authority/data-theme')
+            )
+        # par contre la valeur reste vide
+        self.assertIsNone(d[nk]['value'])
+
+
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
     def test_wd_add_drop_1(self):
@@ -2876,7 +3051,60 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_clean_copy_4(self):
         c = self.widgetsdict.clean_copy(self.lgk, language='en')
         self.assertIsNone(c['language value'])
-    
+
+    # application de la valeur par défaut
+    def test_wd_clean_copy_5(self):
+        template = {
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                }
+            }
+        d = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        d.change_source(k, "Thème INSPIRE (UE)")
+        d.update_value(k, 'Habitats et biotopes')
+        c = d.clean_copy(k)
+        self.assertEqual(c['current source'], "Thème de données (UE)")
+        self.assertEqual(
+            c['current source URI'],
+            URIRef('http://publications.europa.eu/resource/authority/data-theme')
+            )
+        self.assertEqual(c['value'], "Gouvernement et secteur public")
+
+    # pas de valeur par défaut quand novalue
+    def test_wd_clean_copy_6(self):
+        template = {
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                }
+            }
+        d = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        c = d.clean_copy(k, novalue=True)
+        self.assertEqual(c['current source'], "Thème de données (UE)")
+        self.assertEqual(
+            c['current source URI'],
+            URIRef('http://publications.europa.eu/resource/authority/data-theme')
+            )
+        self.assertIsNone(c['value'])
+
+    # valeur par défaut XXL
+    def test_wd_clean_copy_7(self):
+        template = {
+            'dct:title': {
+                'default value' : "Valeur par défaut...\n...sur plusieurs lignes"
+                }
+            }
+        d = rdf_utils.build_dict(self.metagraph, self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dct:title', 'edit')[0]
+        self.assertEqual(d[k]['main widget type'], 'QLineEdit')
+        c = d.clean_copy(k)
+        self.assertEqual(c['main widget type'], 'QTextEdit')
+        self.assertEqual(c['value'], "Valeur par défaut...\n...sur plusieurs lignes")
+        
 
     ### FONCTION is_older
     ### ----------------
@@ -3073,7 +3301,8 @@ class TestRDFUtils(unittest.TestCase):
                 )
             )
 
-    # langue inconnue avec strict valant False:
+    # langue inconnue avec strict valant False
+    # la valeur est la traduction française
     def test_concept_from_value_7(self):
         self.assertEqual(
             rdf_utils.concept_from_value(
@@ -3081,14 +3310,46 @@ class TestRDFUtils(unittest.TestCase):
                 URIRef('http://purl.org/adms/licencetype/1.1'),
                 self.vocabulary,
                 language='it',
-                strict=None
+                strict=False
                 ),
             URIRef('http://purl.org/adms/licencetype/PublicDomain')
             )
 
-    # il faudrait tester aussi le cas où il n'existait
-    # pas de traduction française
+    # langue inconnue avec strict valant False
+    # la valeur n'est pas la traduction française
+    def test_concept_from_value_8(self):
+        self.assertEqual(
+            rdf_utils.concept_from_value(
+                "Public domain",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language='it',
+                strict=False
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
+            )
 
+    # langue inconnue, strict vaut False, et
+    # il n'existait pas de traduction française
+    def test_concept_from_value_9(self):
+        voc = Graph()
+        t = """@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en ."""
+        voc.parse(data=t)
+        self.assertEqual(
+            rdf_utils.concept_from_value(
+                "Science and technology",
+                URIRef('http://publications.europa.eu/resource/authority/data-theme'),
+                self.vocabulary,
+                language='it',
+                strict=False
+                ),
+            URIRef('http://publications.europa.eu/resource/authority/data-theme/TECH')
+            )
+        
 
     ### FONCTION value_from_concept
     ### ---------------------------
@@ -3161,6 +3422,28 @@ class TestRDFUtils(unittest.TestCase):
              "entre le public et l'administration",
              URIRef("https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700"))
             )
+
+    # pas de valeur pour la langue, et il n'existe pas
+    # de traduction française
+    def test_value_from_concept_7(self):
+        voc = Graph()
+        t = """@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en .
+
+<http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
+    skos:prefLabel "Data theme (EU)"@en ."""
+        voc.parse(data=t)
+        self.assertEqual(
+            rdf_utils.value_from_concept(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme/TECH"),
+                voc
+                ),
+            ("Science and technology", "Data theme (EU)")
+            )
+        
 
 
     ### FONCTION email_from_owlthing
@@ -3861,22 +4144,29 @@ class TestRDFUtils(unittest.TestCase):
     # pas de vocabulaire :
     def test_build_vocabulary_1(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Thème de données (UE)", Graph()),
-            []
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                Graph()
+                ),
+            ['']
             )
 
-    # ensemble non renseigné :
+    # ensemble non renseigné ou qui n'est pas un IRI
+    # (hors cas de '< non répertorié >') :
     def test_build_vocabulary_2(self):
-        self.assertEqual(
-            rdf_utils.build_vocabulary("", self.vocabulary),
-            []
-            )
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'URIRef'):
+            rdf_utils.build_vocabulary(None, self.vocabulary)
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'URIRef'):
+            rdf_utils.build_vocabulary("< URI >", self.vocabulary)
 
     # cas normal :
     def test_build_vocabulary_3(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Thème de données (UE)", self.vocabulary),
-            ['Agriculture, pêche, sylviculture et alimentation',
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                self.vocabulary
+                ),
+            ['', 'Agriculture, pêche, sylviculture et alimentation',
             'Économie et finances', 'Éducation, culture et sport', 'Énergie',
             'Environnement', 'Gouvernement et secteur public',
             'Justice, système juridique et sécurité publique',
@@ -3888,34 +4178,105 @@ class TestRDFUtils(unittest.TestCase):
     # ensemble inconnu :
     def test_build_vocabulary_4(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Ensemble inconnu", self.vocabulary),
-            []
+            rdf_utils.build_vocabulary(
+                URIRef("https://www.postgresql.org/docs/10/index.html"),
+                self.vocabulary
+                ),
+            ['']
             )
 
     # autre langue (connue et utilisée pour le nom de l'ensemble) :
     def test_build_vocabulary_5(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='en'),
-            ['Agriculture, fisheries, forestry and food', 'Economy and finance',
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                self.vocabulary,
+                language='en'
+                ),
+            ['', 'Agriculture, fisheries, forestry and food', 'Economy and finance',
             'Education, culture and sport', 'Energy', 'Environment',
             'Government and public sector', 'Health', 'International issues',
             'Justice, legal system and public safety', 'Population and society',
             'Regions and cities', 'Science and technology', 'Transport']
             )
 
-    # autre langue (inconnue) :
+    # autre langue (inconnue + il existe des traductions françaises) :
     def test_build_vocabulary_6(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='it'),
-            []
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                self.vocabulary,
+                language='it'
+                ),
+            ['', 'Agriculture, pêche, sylviculture et alimentation',
+            'Économie et finances', 'Éducation, culture et sport', 'Énergie',
+            'Environnement', 'Gouvernement et secteur public',
+            'Justice, système juridique et sécurité publique',
+            'Population et société', 'Questions internationales',
+            'Régions et villes', 'Santé', 'Science et technologie',
+            'Transports']
             )
 
-    # le nom de l'ensemble n'est pas dans la langue indiquée :
-    def test_build_vocabulary_6(self):
+    # ensemble '< non répertorié >' :
+    def test_build_vocabulary_7(self):
+        # avec argument value
         self.assertEqual(
-            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='fr'),
-            []
+            rdf_utils.build_vocabulary(
+                '< non répertorié >',
+                self.vocabulary,
+                value='Ma valeur'
+                ),
+            ['', 'Ma valeur']
             )
+        # sans argument value
+        self.assertEqual(
+            rdf_utils.build_vocabulary(
+                '< non répertorié >',
+                self.vocabulary
+                ),
+            ['']
+            )
+
+    # cohérence de build_vocabulary et value_from_concept
+    # lorsqu'il n'y a pas de traduction dans la langue demandée
+    def test_build_vocabulary_8(self):
+        voc = Graph()
+        t = """@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/SOCI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Population and society"@en,
+        "Population et société"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en .
+
+<http://publications.europa.eu/resource/authority/data-theme/TRAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Transport"@en,
+        "Transports"@fr,
+        "Trasporto"@it .
+
+<http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
+    skos:prefLabel "Data theme (EU)"@en,
+        "Thème de données (UE)"@fr ."""
+        voc.parse(data=t)
+        lvoc = rdf_utils.build_vocabulary(
+            URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+            voc, language='it'
+            )
+        self.assertEqual(len(lvoc), 4)
+        for u in (
+            URIRef("http://publications.europa.eu/resource/authority/data-theme/SOCI"),
+            URIRef("http://publications.europa.eu/resource/authority/data-theme/TECH"),
+            URIRef("http://publications.europa.eu/resource/authority/data-theme/TRAN")
+            ):
+            with self.subTest(IRI = u):
+                t, = rdf_utils.value_from_concept(
+                    u, voc, language='it', getschemeStr=False
+                    )
+                self.assertTrue(t in lvoc)
 
 
     ### F0NCTION is_valid_minipath
