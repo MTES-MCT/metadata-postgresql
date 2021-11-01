@@ -13,7 +13,8 @@ from pathlib import Path
 from plume.bibli_rdf import rdf_utils, __path__
 from plume.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
     populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
-    check_hidden_branches, check_buttons, copy_metagraph
+    check_hidden_branches, check_buttons, check_languages, check_sources, \
+    check_everything, copy_metagraph
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -2660,6 +2661,43 @@ class TestRDFUtils(unittest.TestCase):
         # par contre la valeur reste vide
         self.assertIsNone(d[nk]['value'])
 
+    # l'élément de référence pour l'ajout est une branche
+    # avec des groupes de valeurs contenant plusieurs
+    # valeurs
+    def test_wd_add_7(self):
+        d = rdf_utils.build_dict(
+            self.metagraph, self.shape, self.vocabulary
+            )
+        populate_widgets(d)
+        p1 = search_keys(d, 'prov:qualifiedAttribution', 'plus button')[0]
+        p2 = search_keys(d, 'prov:qualifiedAttribution / dcat:hadRole', 'plus button')[0]
+        self.assertTrue(rdf_utils.is_ancestor(p1[1], d.child(p2[1])))
+        a = d.add(p2)
+        execute_pseudo_actions(d, a)
+        a = d.add(p1)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+
+    # l'élément de référence pour l'ajout est une branche
+    # avec des groupes de traductions contenant plusieurs
+    # valeurs
+    def test_wd_add_8(self):
+        d = rdf_utils.build_dict(
+            self.metagraph, self.shape, self.vocabulary,
+            translation=True, langList=['fr', 'en']
+            )
+        populate_widgets(d)
+        p1 = search_keys(d, 'dct:provenance', 'plus button')[0]
+        p2 = search_keys(d, 'dct:provenance / rdfs:label', 'translation button')[0]
+        self.assertTrue(rdf_utils.is_ancestor(p1[1], d.child(p2[1])))
+        a = d.add(p2)
+        execute_pseudo_actions(d, a)
+        a = d.add(p1)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        self.assertIsNone(check_languages(d, populated=True))
 
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
