@@ -64,10 +64,12 @@ class WidgetsDict(dict):
         Le mode détermine les actions pouvant être exécutées sur le dictionnaire.
         - translation (bool) : paramètre utilisateur qui indique si les widgets de
         traduction doivent être affichés. Sa valeur contribue à déterminer les actions
-        pouvant être exécutées sur le dictionnaire.
+        pouvant être exécutées sur le dictionnaire. translation ne peut valoir
+        True que si le mode est 'edit'.
         - language (str) : langue principale de rédaction des métadonnées
         (paramètre utilisateur). Elle influe sur certaines valeurs du dictionnaire et
-        la connaître est nécessaire à l'exécution de certaines actions.
+        la connaître est nécessaire à l'exécution de certaines actions. language soit
+        impérativement être l'un des éléments de langList.
         - langList (list) : liste des langues autorisées pour les traductions. Certaines
         valeurs du dictionnaire dépendent de cette liste, et la connaître est nécessaire
         à l'exécution de certaines actions.
@@ -82,10 +84,12 @@ class WidgetsDict(dict):
         else:
             raise ValueError("mode should be either 'edit' or 'read'.")
         
-        if isinstance(translation, bool):
-            self.translation = translation
+        if not isinstance(translation, bool):
+            raise TypeError("translation should be a boolean.")    
+        elif translation and mode != 'edit':
+            raise ValueError("translation can't be True in 'read' mode.")
         else:
-            raise TypeError("translation should be a boolean.")
+            self.translation = translation
             
         if isinstance(language, str):
             self.language = language
@@ -255,7 +259,9 @@ class WidgetsDict(dict):
         - la clé "hidden" est réinitialisée (ne vaudra jamais True sauf si
         la liste des langues autorisées ne contient qu'une langue). À noter que
         "hidden M" est par contre conservée en l'état ;
-        - la clé "node", si elle n'était pas vide, reçoit un nouveau noeud vide.
+        - la clé "node", si elle n'était pas vide, reçoit un nouveau noeud vide ;
+        - la clé 'hide minus button' vaudra toujours True si 'has minus button'
+        vaut True.
         """
 
         if language is None:
@@ -300,6 +306,7 @@ class WidgetsDict(dict):
                 if d['current source'] and d['default source'] else None,
             'hidden' : len(langList) == 1 if (
                 d['object'] == 'translation button' ) else None,
+            'hide minus button': True if d['has minus button'] else None,
                 
             'node': BNode() if d['node'] else None
             })
@@ -711,12 +718,31 @@ class WidgetsDict(dict):
                     # de la grille
                     kr = (n, key[1]) if len(cr) == 2 else (n, key[1], 'M')
                     newkey = replace_ancestor(k, cr, kr)
+                    
+                    # on prend soin d'exclure les descendants de groupes
+                    # de propriétés non reproduits, car ils étaient
+                    # dans un groupe de valeurs, et pas son premier membre
+                    if not newkey[1] in self:
+                        continue
+                    
                     self.update( { newkey: self.clean_copy(k) } )
                     
                     # clean_copy se charge de réinitialiser les noeuds
                     # vides objets, par contre il faut maintenant récupérer
                     # le bon sujet pour chaque triple
                     self[newkey]['subject'] = self.retrieve_subject(newkey[1])
+                    
+                    # les boutons plus et boutons de traduction se trouvent
+                    # nécessairement sous l'unique élément du groupe.
+                    if self[newkey]['object'] in ('plus button', 'translation button'):
+                        self[newkey]['row'] = self[self.child(k[1], visibleOnly=False) \
+                            ]['row span'] or 1
+                        # NB1 : on va bien chercher child(k[1]) et pas child(newkey[1]),
+                        # car on ne maîtrise pas l'ordre de création des objets d'une
+                        # même génération. Le bouton peut être créé en premier.
+                        # NB2 : avec visibleOnly=False, parce que le groupe peut être
+                        # entièrement masqué. Tomber sur un double M n'est pas gênant
+                        # puisqu'il aura les mêmes row et rowspan que son jumeau.
                     
                     d['new keys'].append(newkey)
                     
@@ -2254,14 +2280,16 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mDefaultWidgetType = mWidgetType
                 
                 if mWidgetType == "QLineEdit" and mValue and ( len(mValue) > valueLengthLimit \
-                    or mValue.count("\n") > 0 ):
+                    or mValue.count("\n") > 0 ) and not mVSources:
                     mWidgetType = 'QTextEdit'
                     # on fait apparaître un QTextEdit à la place du QLineEdit quand
                     # la longueur du texte dépasse le seuil valueLengthLimit ou
                     # s'il contient des retours à la ligne, et que ce n'est pas un IRI
+                    # on exclut les valeurs avec sources, car il est essentiel de maîtriser
+                    # leur rowSpan, particulièrement quand il y a un jumeau M.
                     
                 if mDefaultWidgetType == "QLineEdit" and mDefault and ( len(mDefault) > valueLengthLimit \
-                    or mDefault.count("\n") > 0 ):
+                    or mDefault.count("\n") > 0 ) and not mVSources:
                     mDefaultWidgetType = 'QTextEdit'
                     # idem avec le widget par défaut et la valeur par défaut
                 
