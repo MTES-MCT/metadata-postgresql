@@ -1,6 +1,7 @@
 __save__/
 __pycache__/
 __archives__/
+__log__/
 TO_DO.txt
 *.zip
 test_export_*
