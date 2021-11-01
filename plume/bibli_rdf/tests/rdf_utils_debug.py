@@ -3,8 +3,11 @@
 from rdflib import Graph, Namespace, Literal, BNode, URIRef
 from rdflib.compare import isomorphic
 from random import randrange
+from time import gmtime, strftime
+from json import load
 
 from plume.bibli_rdf import rdf_utils
+from plume import __path__
 
 
 def search_keys(widgetsdict, path, object):
@@ -21,7 +24,7 @@ def search_keys(widgetsdict, path, object):
     (groupe de propriétés), "translation group" (groupe de traduction),
     "plus button" (bouton plus) et "translation button" (bouton de traduction).
     
-    RESULAT
+    RESULTAT
     -------
     Une liste des clés du dictionnaire de widgets pointant sur des objets
     du type demandé pour le chemin considéré.
@@ -47,8 +50,7 @@ def check_unchanged(metagraph, shape, vocabulary, **args):
     de métadonnées communes.
     - vocabulary (rdflib.Graph) : graphe réunissant le vocabulaire de toutes
     les ontologies pertinentes.
-    - [optionnel] args (dict) peut contenir tout autre paramètre à passer à build_dict()
-    sous forme clé/valeur.
+    - [optionnel] **args : tout autre paramètre nommé à passer à build_dict().
     
     Attention : dans les arguments de build_dict(), mode='read' devra toujours être
     accompagné de preserve=True, sans quoi le résultat sera le plus souvent négatif,
@@ -65,11 +67,11 @@ def check_unchanged(metagraph, shape, vocabulary, **args):
     
     EXEMPLES
     --------
-    >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary)
+    >>> rdf_utils_debug.check_unchanged(g, shape, vocabulary)
     
     Avec un paramètre supplémentaire :
-    >>> rdf_utils_debug.check_unchanged(g, g_shape, g_vocabulary,
-    ...     args={"template": d_template})   
+    >>> rdf_utils_debug.check_unchanged(g, shape, vocabulary,
+    ...     template=template)   
     """
     
     kw = {
@@ -120,16 +122,47 @@ def check_buttons(widgetsdict, populated=False):
     - 'should not be hidden (widget)' : le pseudo-widget n'aurait pas dû être masqué ;
     - 'should have been created (widget)' : le pseudo-widget aurait dû être créé ;
     - 'should not have been created (widget)' : le pseudo-widget n'aurait pas dû être créé.
-    
-    NB. Cette fonction est faite pour des dictionnaires construits pour le mode édition.
-    Il n'est pas supposé y avoir de boutons plus et moins en mode lecture.
     """
     issues = {}
     n = 0
     
+    # en mode lecture
+    # il n'est supposé y avoir aucun bouton
+    if widgetsdict.mode == 'read':
+        
+        for k, v in widgetsdict.items():
+        
+            if v['object'] in ('plus button', 'translation button'):
+                issues.update({ n: (k, v[object], 'should not have been created (keys)') })
+                n += 1
+            
+            if v['has minus button']:
+                issues.update({ n: (k, 'minus button', 'should not have been created (keys)') })
+                n += 1
+            
+            if populated and v['minus widget']:
+                issues.update({ n: (k, 'minus button', 'should not have been created (widget)') })
+                n += 1
+                
+        return issues if issues else None
+    
+    # en mode édition
     for k, v in widgetsdict.items():
     
-        if rdf_utils.is_root(k):
+        if rdf_utils.is_root(k) or v['main widget type'] is None:
+            
+            if v['object'] in ('plus button', 'translation button'):
+                issues.update({ n: (k, v[object], 'should not have been created (keys)') })
+                n += 1
+            
+            if v['has minus button']:
+                issues.update({ n: (k, 'minus button', 'should not have been created (keys)') })
+                n += 1
+            
+            if populated and v['minus widget']:
+                issues.update({ n: (k, 'minus button', 'should not have been created (widget)') })
+                n += 1
+                
             continue
     
         if v['object'] in ('edit', 'group of properties') \
@@ -667,7 +700,6 @@ def check_languages(widgetsdict, populated=False):
     - "not a langString but 'language value' isn't None".
     - "not a langString but 'authorized languages' isn't None".
     - "'language' is not in 'authorized language'".
-    - "value from langList missing from 'authorized language'".
     - "value from 'authorized language' missing from langList" (hors cas où
     la valeur excédentaire est 'language value').
     - "no translation button in translation group".
@@ -675,6 +707,9 @@ def check_languages(widgetsdict, populated=False):
     - "repeated language in translation group" : deux clés avec le même
     'language value' dans un groupe de traduction.
     - "authorized language that's already used".
+    - "unused language from langList missing from 'authorized language'" : cas
+    d'une langue de langList qui n'est utilisée par aucune valeur du groupe
+    et n'apparait pourtant pas dans 'authorized language'.
     - "translation button should be hidden (key)" : cas où il ne reste plus qu'un
     language autorisé pour chaque valeur existante du groupe de traduction.
     - "translation button should not be hidden (key)".
@@ -691,6 +726,16 @@ def check_languages(widgetsdict, populated=False):
     - "translation button should be hidden (widget)" : cas où il ne reste plus qu'un
     language autorisé pour chaque valeur existante du groupe de traduction.
     - "translation button should not be hidden (widget)".
+
+    Cas particulier des branches fantômes :
+    - "'authorized languages' should be None on ghost branches".
+    - "there should be no translation group on ghost branches".
+    - "there should be no translation button on ghost branches".
+
+    et dans le cas d'un dictionnaire peuplé de pseudo-widgets :
+    - "no language widget should be created on ghost branches (widget)".
+    - "no language action should be created on ghost branches (widget)".
+    - "no language menu should be created on ghost branches (widget)".
     """
     issues = {}
     n = 0
@@ -711,7 +756,7 @@ def check_languages(widgetsdict, populated=False):
                 if not v['language value']:
                     issues.update( { n : (k, "langString without 'language value'") } )
                     n += 1
-                elif v['value'] is None and v['language value'] != language:
+                elif v['value'] is None and v['language value'] != widgetsdict.language:
                     issues.update( { n : (k, "None langString value whose 'language value' isn't 'language'") } )
                     n += 1
             # sinon, il n'est pas supposé y avoir d'informations sur la langue
@@ -744,9 +789,37 @@ def check_languages(widgetsdict, populated=False):
     
     
     for k, v in widgetsdict.items():
-        
+
+        # branche fantôme
+        if not v['main widget type']:
+
+            if v['authorized languages']:
+                issues.update( { n : (k, "'authorized languages' should be None on ghost branches") } )
+                n += 1
+
+            if populated:
+                if v['language widget']:
+                    issues.update( { n : (k, "no language widget should be created " \
+                        "on ghost branches (widget)") } )
+                    n += 1
+                if v['language actions']:
+                    issues.update( { n : (k, "no language action should be created " \
+                        "on ghost branches (widget)") } )
+                    n += 1
+                if v['language menu']:
+                    issues.update( { n : (k, "no language menu should be created " \
+                        "on ghost branches (widget)") } )
+                    n += 1
+
+            if v['object'] == 'translation group':
+                issues.update( { n : (k, "there should be no translation group on ghost branches") } )
+                n += 1
+            if v['object'] == 'translation button':
+                issues.update( { n : (k, "there should be no translation button on ghost branches") } )
+                n += 1
+            
         # Literal admettant une langue
-        if v['node kind'] == 'sh:Literal' and v['data type'] == langString:
+        elif v['node kind'] == 'sh:Literal' and v['data type'] == langString:
         
             if not v['authorized languages']:
                 issues.update( { n : (k, "missing value for 'authorized languages'") } )
@@ -754,14 +827,11 @@ def check_languages(widgetsdict, populated=False):
             if not v['language value']:
                 issues.update( { n : (k, "langString without 'language value'") } )
                 n += 1
-            if not v['language value'] in v['authorized languages']:
+            if v['authorized languages'] and not v['language value'] in v['authorized languages']:
                 issues.update( { n : (k, "'language' is not in 'authorized language'") } )
                 n += 1
-            if any([not l in v['authorized languages'] for l in widgetsdict.langList]):
-                issues.update( { n : (k, "value from langList missing from 'authorized language'") } )
-                n += 1
-            if any([not l in widgetsdict.langList and not l == v['language value'] \
-                for l in v['authorized languages']]):
+            if v['authorized languages'] and any([not l in widgetsdict.langList \
+                and not l == v['language value'] for l in v['authorized languages']]):
                 issues.update( { n : (k, "value from 'authorized language' missing from langList") } )
                 n += 1
         
@@ -829,9 +899,14 @@ def check_languages(widgetsdict, populated=False):
                             n += 1
                         else:
                             lu2.append(cv['language value'])
-                        if any([l in lu and not l==cv['language value'] \
+                        if cv['authorized languages'] and any([l in lu and not l==cv['language value'] \
                             for l in cv['authorized languages']]):
                             issues.update( { n : (ck, "authorized language that's already used") } )
+                            n += 1
+                        if cv['authorized languages'] and any([not l in lu and \
+                            not l in cv['authorized languages'] for l in widgetsdict.langList]):
+                            issues.update( { n : (ck, "unused language from langList missing from " \
+                                                  "'authorized language'") } )
                             n += 1
                 
                 if not bk:
@@ -915,7 +990,46 @@ def check_sources(widgetsdict, populated=False):
 
 
 def check_everything(widgetsdict, populated=False):
-    pass
+    """Lance toutes les fonctions de contrôle de dictionnaire de widget.
+    
+    ARGUMENTS
+    ---------
+    - widgetsdict (WidgetsDict) : dictionnaire obtenu par exécution de la
+    fonction build_dict.
+    - populated (bool) : True si le dictionnaire a été peuplé de pseudo-widgets
+    avec la populate_widgets(). Dans ce cas, les fonctions de contrôle vérifieront
+    aussi que les clés '... widget' sont remplies comme il le faut.
+    
+    RESULTAT
+    --------
+    Si au moins une fonction de contrôle détecte des anomalies, un dictionnaire
+    dont les clés sont les noms des fonctions de contrôle qui ont renvoyé
+    un résultat et les valeurs les résultats en question.
+    """
+    d = {}
+    
+    res = check_buttons(widgetsdict, populated=populated)
+    if res:
+        d.update({ "check_buttons": res })
+    
+    res = check_rows(widgetsdict, populated=populated)
+    if res:
+        d.update({ "check_rows": res })
+   
+    res = check_hidden_branches(widgetsdict, populated=populated)
+    if res:
+        d.update({ "check_hidden_branches": res })
+    
+    res = check_languages(widgetsdict, populated=populated)
+    if res:
+        d.update({ "check_languages": res })
+    
+    res = check_sources(widgetsdict, populated=populated)
+    if res:
+        d.update({ "check_sources": res })
+    
+    if d:
+        return d
 
 
 def populate_widgets(widgetsdict):
@@ -1167,8 +1281,221 @@ def copy_metagraph(metagraph):
     return g
 
 
-def random_widgetsdict():
-    pass
+def random_widgetsdict(**args):
+    """Génère un dictionnaire de widgets avec un paramétrage aléatoire.
+    
+    ARGUMENTS
+    ---------
+    - [optionnel] **args : un paramètre (nommé) imposé pour build_dict().
+    
+    RESULTAT
+    --------
+    Un tuple dont le premier élément est le dictionnaire de widgets
+    (WidgetsDict) et le second la retranscription de la commande lancée (str).
+    
+    EXEMPLES
+    --------
+    Pour que le dictionnaire soit nécessairement en mode édition avec
+    traduction activée :
+    >>> random_widgetsdict(mode='edit', translation=True)
+    """
+    d = {
+        'metagraph': args['metagraph'] if 'metagraph' in args \
+            else [1, 2, 3, 4][randrange(4)],
+            
+        'shape': args.get('shape') or rdf_utils.load_shape(),
+        
+        'vocabulary': args.get('vocabulary') \
+            or rdf_utils.load_vocabulary(),
+            
+        'template': args['template'] if 'template' in args else [
+            None, {}, 'template_basique', 'template_classique',
+            'template_donnee_externe', 'build-in template'
+            ][randrange(6)],
+        
+        'templateTabs': None,
+        # 'templateTabs' est implémenté ensuite, car dépend de template
+        
+        'columns': args['columns'] if 'columns' in args else [
+            None,
+            [],
+            [
+                ("champ 1", "description champ 1"),
+                ("champ 2", "description champ 2"),
+                ("champ 3", "description champ 3")
+                ]
+            ][randrange(3)],
+            
+        'data': args['data'] if 'data' in args else [
+            None,
+            {},
+            {
+                'dct:modified' : ['2021-08-31'],
+                'snum:relevanceScore' : [100]
+                }
+            ][randrange(3)],
+            
+        'mode': args.get('mode') or ['edit', 'read'][randrange(2)],
+        
+        'readHideBlank': args['readHideBlank'] \
+            if 'readHideBlank' in args \
+            else [True, False][randrange(2)],
+            
+        'readHideUnlisted': args['readHideUnlisted'] \
+            if 'readHideUnlisted' in args \
+            else [True, False][randrange(2)],
+            
+        'editHideUnlisted': args['editHideUnlisted'] \
+            if 'editHideUnlisted' in args \
+            else [True, False][randrange(2)],
+        
+        'language': None,
+        # 'language' est implémenté ensuite, car dépend de langList
+        
+        'translation': None,
+        # 'translation' est implémenté ensuite, car dépend de mode
+        
+        'langList': args.get('langList') or [
+            ['fr', 'en'],
+            ['fr', 'en', 'it', 'de'],
+            ['en', 'it', 'de'],
+            ['fr']
+            ][randrange(4)],
+            
+        'readOnlyCurrentLanguage': args['readOnlyCurrentLanguage'] \
+            if 'readOnlyCurrentLanguage' in args \
+            else [True, False][randrange(2)],
+            
+        'editOnlyCurrentLanguage': args['editOnlyCurrentLanguage'] \
+            if 'editOnlyCurrentLanguage' in args \
+            else [True, False][randrange(2)]
+            
+        # les paramètres 'labelLengthLimit', 'valueLengthLimit'
+        # et 'textEditRowSpan' ne sont pas considérés, car
+        # leur influence sur la structure du dictionnaire est
+        # négligeable
+        }
+
+    d['language'] = args.get('language') \
+        or d['langList'][randrange(len(d['langList']))]
+        # si le paramètre est fourni, il pourrait ne pas
+        # être dans langList. On laisse build_dict
+        # générer l'erreur.
+        
+    d['translation'] = args['translation'] \
+        if 'translation' in args else \
+        ( False if d['mode'] != 'edit' \
+        else [True, False][randrange(2)] )
+        # si le paramètre est fourni, il pourrait ne pas
+        # être cohérent avec le mode. On laisse build_dict
+        # générer l'erreur.
+        
+    # on pré-génère la transcription maintenant, tant que metagraph
+    # et template sont encore numérotés.
+    lit = "build_dict(\n    metagraph = {{}}," \
+        "\n    shape = shape,\n    vocabulary = vocabulary," \
+        "\n    template = {{}}," \
+        "\n    templateTabs = {{}},\n    {}\n    )".format(
+        ",\n    ".join([
+            "{} = {}".format(k, repr(v).replace('{', '{{').replace('}', '}}')) \
+                for k, v in d.items() if not k in ('shape', 'vocabulary',
+                'metagraph', 'template', 'templateTabs') 
+            ])
+        )
+
+    if d['metagraph'] == 1:
+        d['metagraph'] = Graph()
+        litMetagraph = 'Graph()'
+    elif d['metagraph'] == 2:
+        d['metagraph'] = rdf_utils.metagraph_from_file(
+            __path__[0] + r'\bibli_rdf\exemples\exemple_dataset_1.ttl'
+            )
+        litMetagraph = 'exemple_dataset_1.ttl'
+    elif d['metagraph'] == 3:
+        d['metagraph'] = rdf_utils.metagraph_from_file(
+            __path__[0] + r'\bibli_rdf\exemples\exemple_dataset_2.ttl'
+            )
+        litMetagraph = 'exemple_dataset_2.ttl'
+    elif d['metagraph'] == 4:
+        raw_metagraph = rdf_utils.metagraph_from_file(
+            __path__[0] + r'\bibli_rdf\tests\samples\dcat_eurostat_bilan_nutritif_brut_terre_agricole.jsonld'
+            )
+        d['metagraph'] = rdf_utils.clean_metagraph(raw_metagraph, d['shape'])
+        litMetagraph = 'dcat_eurostat_bilan_nutritif_brut_terre_agricole.jsonld'
+    else:
+        litMetagraph = repr(d['metagraph'])
+
+    # les templates 3, 4 et 5 sont les trois modèles pré-définis
+    # de l'extension PG metadata, exportés en JSON dans
+    # plume\bibli_pg\admin\export grâce à la fonction
+    # export_sample_templates de template_admin.
+    if d['template'] in ('template_basique', 'template_classique',
+        'template_donnee_externe'):
+        with open(r'{}\bibli_pg\admin\export\{}.json'.format(
+            __path__[0], d['template']
+            ), encoding='utf-8') as src:
+            tpl_json = load(src)
+            litTemplate = '{}.json [template]'.format(d['template'])
+            litTemplateTabs = '{}.json [templateTabs]'.format(d['template'])
+            d['template'] = tpl_json['template']
+            d['templateTabs'] = tpl_json['templateTabs']
+            
+    # le template 6 est un modèle sur-mesure plus vicieux
+    elif d['template'] == 'build-in template':
+        litTemplate = 'build-in template [template]'
+        litTemplateTabs = 'build-in template [templateTabs]'
+        d['templateTabs'] = {
+            "Onglet n°1": (0,),
+            "Onglet n°2": (1,),
+            "Onglet n°3": (2,)
+            }
+        d['template'] = {
+            "dct:title": {
+                "order": 1
+                },
+            "dcat:contactPoint": {
+                "tab name": "Onglet n°3"
+                },
+            "dcat:contactPoint / vcard:fn": {
+                "default value": "Pôle SIG"
+                },
+            "dcat:contactPoint / vcard:hasEmail": {
+                "default value": "sig-contact@developpement-durable.gouv.fr",
+                "read only": True,
+                "tab name": "Onglet n°4"
+                },
+            "dcat:keyword": {
+                "tab name": "Onglet n°4"
+                },
+            "uuid:218c1245-6ba7-4163-841e-476e0d5582af" : {
+                "label": "notes ADL",
+                "data type": "xsd:string",
+                "main widget type": "QTextEdit",
+                "order": 3
+                },
+            'dcat:distribution': {},
+            'dcat:distribution / dct:license': {
+                'default value': "Licence Ouverte version 2.0"
+                },
+            'dcat:distribution / dct:license / rdfs:label': {
+                'default value': "Valeur par défaut..."
+                },
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                },
+            'dct:accessRights': {}
+            }
+
+    else:
+        litTemplate = repr(d['template'])
+        litTemplateTabs = repr(d['templateTabs'])
+
+    lit = lit.format(litMetagraph, litTemplate, \
+        litTemplateTabs)
+    widgetsdict = rdf_utils.build_dict(**d)
+    
+    return widgetsdict, lit
+
 
 def random_action(widgetsdict):
     """Exécute une action aléatoire sur le dictionnaire de widgets.
@@ -1259,3 +1586,137 @@ def random_action(widgetsdict):
         res = (key, val)
         
     return res, method, lit
+
+
+def random_wd_test_suite(nTargets=20, nActions=200, log=True,
+    verbose=True, populated=True):
+    """Recette aléatoire de build_dict() et des méthodes d'actions de la classe WidgetsDict.
+    
+    ARGUMENTS
+    ---------
+    - nTargets (int) : nombre de dictionnaires de widgets à créer
+    successivement. 20 par défaut.
+    - nActions (int) : nombre d'actions à effectuer par dictionnaire.
+    200 par défaut.
+    - log (bool) : les actions réalisées doivent-elles être retranscrites
+    dans un fichier de log ? True par défaut.
+    - verbose (bool) : les actions réalisées doivent-elles être imprimées
+    dans la console ? True par défaut.
+    - populated (bool) : True si les dictionnaires doivent êtres peuplés
+    de pseudo-widgets avec la populate_widgets(). Dans ce cas, la recette
+    vérifie aussi que les clés '... widget' sont remplies comme il le faut.
+    True par défaut.
+    
+    RESULTAT
+    --------
+    Rien si la recette s'est déroulé sans qu'aucun problème ne soit détecté.
+    À chaque itération, la fonction génère un dictionnaire de widgets en
+    mode édition avec un paramétrage semi-aléatoire grâce à
+    random_widgetsdict(), puis lance random_action() pour simuler des actions
+    de l'utilisateur sur ce dictionnaire. Si ce dernier est peuplé de pseudo-
+    widgets, la fonction utilise execute_random_actions() pour répercuter
+    ces actions sur eux. Après chaque action, check_everything() est exécuté
+    pour détecter des anomalies éventuelles.
+    
+    Si check_everything() renvoie un résultat non nul, random_wd_tests_suite()
+    s'arrête et renvoie ce résultat. Si une action produit une erreur,
+    random_wd_tests_suite() s'arrête et renvoie l'erreur.
+    
+    Les logs sont écrits dans le fichier
+    /__log__/random_wd_tests_suite_log_[timestamp].txt. Ils contiennent toutes
+    les commandes exécutées successivement et, le cas échéant, les anomalies ou
+    l'erreur qui ont conclu la recette.
+    """
+    ending = None
+    logfile = r'{}\bibli_rdf\tests\__log__\random_wd_tests_suite_log_{}.txt'.format(
+        __path__[0], strftime("%Y%m%d%H%M%S", gmtime())
+        )
+    shape = rdf_utils.load_shape()
+    vocabulary = rdf_utils.load_vocabulary()
+    
+    while nTargets > 0:
+    
+        nTargets -= 1
+        d = None
+        lit = None
+    
+        # génération d'un dictionnaire de widgets
+        try:
+            d, lit = random_widgetsdict(shape=shape,
+                vocabulary=vocabulary, mode='edit')
+                # on force le mode édition pour pouvoir exécuter des actions
+                # shape et vocabulary sont passés en arguments pour
+                # éviter à random_widgetsdict de les générer à chaque itération
+        except Exception as err:
+            ending = "!ERROR! Widgetsdict generation failure :\n{}".format(err)
+            break
+    
+        if log:
+            # retranscription de la commande de génération
+            # du dictionnaire
+            with open(logfile, 'a') as dest:
+                dest.write("\n{}\n".format(lit))
+        if verbose:
+            print("\n{}".format(lit))
+        
+        # premier contrôle
+        try:
+            if populated:
+                populate_widgets(d)
+            anom = check_everything(d, populated=populated)
+        except Exception as err:
+            ending = "!ERROR! Control failure :\n{}".format(err)
+            break
+        
+        if anom:
+            ending = "!ANOMALY! Something wrong was detected :\n{}".format(anom)
+            break
+        
+        # actions
+        mNAction = nActions
+        while mNAction > 0:
+        
+            mNAction -= 1
+            res = None
+            method = None
+            lit = None
+            
+            # exécution de l'action
+            try:
+                res, method, lit = random_action(d)
+            except Exception as err:
+                ending = "!ERROR! Action failure :\n{}".format(err)
+                break
+                
+            if log:
+                # retranscription de la commande d'action
+                with open(logfile, 'a') as dest:
+                    dest.write("{}\n".format(lit))
+            if verbose:
+                print("{}".format(lit))
+        
+            # contrôle
+            try:
+                if populated:
+                    if method == 'update_value':
+                        write_pseudo_widget(d, res[0], res[1])
+                    else:
+                        execute_pseudo_actions(d, res)
+                anom = check_everything(d, populated=populated)
+            except Exception as err:
+                ending = "!ERROR! Control failure :\n{}".format(err)
+                break
+            
+            if anom:
+                ending = "!ANOMALY! Something wrong was detected :\n{}".format(anom)
+                break
+          
+    if ending:
+        if log:
+            with open(logfile, 'a') as dest:
+                dest.write("{}\n".format(ending))
+        if verbose:
+            print("{}".format(ending))
+    
+    return ending
+    
