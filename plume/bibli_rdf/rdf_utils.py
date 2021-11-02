@@ -278,6 +278,18 @@ class WidgetsDict(dict):
         else:
             mSources = None
         
+        if d['current source'] is None:
+            mCurSource = None
+            mCurSourceURI = None
+        if d['current source'] == '< manuel >':
+            mCurSource = '< manuel >'
+            mCurSourceURI = None
+        elif d['default source']:
+            mCurSource = d['default source']
+            mCurSourceURI = d['sources URI'][d['default source']]
+        else:
+            mCurSource = d['current source']
+            mCurSourceURI = d['current source URI']
         
         d.update({
             'main widget' : None,
@@ -301,11 +313,11 @@ class WidgetsDict(dict):
             'sources' : mSources,
             'multiple sources': len(mSources) > 1 if mSources \
                 and self.mode == 'edit' else None,
-            'current source': d['default source'] or d['current source'] \
-                if d['current source'] else None,
-            'current source URI': ( d['sources URI'][d['default source']] if \
-                d['default source'] else d['current source URI'] ) \
-                if d['current source URI'] else None,
+                # réinitialisé parce qu'on a expurgé les potentiels
+                # '< non répertoriés >' qui pouvaient rendre multi-sources
+                # des propriétés qui n'auraient pas dû l'être
+            'current source': mCurSource,
+            'current source URI': mCurSourceURI,
             'hidden' : len(langList) == 1 if (
                 d['object'] == 'translation button' ) else None,
             'hide minus button': True if d['has minus button'] else None,
