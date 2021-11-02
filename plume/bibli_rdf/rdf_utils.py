@@ -301,7 +301,8 @@ class WidgetsDict(dict):
             'sources' : mSources,
             'multiple sources': len(mSources) > 1 if mSources \
                 and self.mode == 'edit' else None,
-            'current source': d['default source'] if d['current source'] else None,
+            'current source': d['default source'] or d['current source'] \
+                if d['current source'] else None,
             'current source URI': ( d['sources URI'][d['default source']] if \
                 d['default source'] else d['current source URI'] ) \
                 if d['current source URI'] else None,
