@@ -10,7 +10,7 @@ from plume.bibli_rdf import rdf_utils
 from plume import __path__
 
 
-def search_keys(widgetsdict, path, object):
+def search_keys(widgetsdict, path, object, visibleOnly=False):
     """Look up for WidgetsDict keys matching given object and path.
     
     ARGUMENTS
@@ -23,6 +23,8 @@ def search_keys(widgetsdict, path, object):
     saisie), "group of values" (groupe de valeurs), "group of properties"
     (groupe de propriétés), "translation group" (groupe de traduction),
     "plus button" (bouton plus) et "translation button" (bouton de traduction).
+    - visibleOnly (bool) : si True, la fonction ne renvoie que les clés non
+    masquées. False par défaut.
     
     RESULTAT
     -------
@@ -32,8 +34,8 @@ def search_keys(widgetsdict, path, object):
     l = []
     
     for k, v in widgetsdict.items():
-        if v['path'] == path:
-            if v['object'] == object:
+        if v['path'] == path and v['object'] == object and (not visibleOnly \
+            or v['main widget type'] and not v['hidden'] and not v['hidden M']):
                 l.append(k)
                 
     return l
