@@ -12,7 +12,7 @@ from pathlib import Path
 from plume.bibli_rdf import rdf_utils, __path__
 from plume.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
     populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
-    check_hidden_branches, check_buttons
+    check_hidden_branches, check_buttons, check_languages, random_action
 
 # schéma SHACL qui décrit les métadonnées communes
 shape = rdf_utils.load_shape()

@@ -315,27 +315,55 @@ widgetsdict[key]['main widget'].setValidator(
 
 ### Paramètres spécifiques aux widgets QComboBox
 
-- Pour obtenir la **liste des termes** à afficher dans le QComboBox, on utilisera la fonction `build_vocabulary()`. La clé `'current source'` contient le nom du thésaurus à utiliser.
+#### Liste des termes
+
+Pour obtenir la **liste des termes** à afficher dans le QComboBox, on utilisera la fonction `build_vocabulary()`. La clé `'current source URI'` contient l'IRI du thésaurus à utiliser.
+
+Le temps d'exécution de `build_vocabulary()` n'est pas négligeable. En outre, les formulaires réutiliseront souvent les mêmes listes de termes, et il serait donc d'autant plus regrettable de devoir les recalculer. Par souci d'optimisation, on collectera donc les listes déjà constituées dans un dictionnaire, ci-après `thesaurusCollection`.
+
+Les clés de `thesaurusCollection` sont des tuples avec :
+- `[0]` l'IRI du thésaurus ;
+- `[1]` la langue.
 
 ```python
 
-thesaurus = build_vocabulary(widgetsdict[key]['current source'], vocabulary, language)
+schemeIRI = widgetsdict[key]['current source URI']
+
+# récupération de la liste si déjà constituée
+thesaurus = thesaurusCollection.get((schemeIRI, language))
+
+if thesaurus is None:
+    # sinon, construction de la liste
+    thesaurus = build_vocabulary(
+        schemeIRI,
+        vocabulary,
+        language=language,
+        value=widgetsdict[key]['value']
+        )
+    # ... et mémorisation dans thesaurusCollection
+    if not schemeIRI == '< non répertorié >':
+        thesaurusCollection.update({
+            (schemeIRI, language) : thesaurus
+            })
 
 ```
 
 *`language` est le paramètre utilisateur qui spécifie la langue principale de saisie des métadonnées, qui est également la langue dans laquelle seront affichés les termes des QComboBox. Cf. [Paramètres utilisateur](/__doc__/20_parametres_utilisateur.md).*
 *`vocabulary` est le graphe qui répertorie les termes de tous les thésaurus, importé via la fonction `rdf_utils.load_vocabulary()`. Cf. [Génération du dictionnaire de widgets](/__doc__/05_generation_dictionnaire_widgets.md) pour plus de détails.*
 
-- Comme les QTextEdit et QLineEdit, les widgets QComboBox peuvent afficher une **valeur fictive** fournie par la clé `'placeholder text'`. Celle-ci sera généralement renseignée car, si ni le schéma des métadonnées communes ni le modèle local ne fournissent de texte fictif, c'est le nom du thésaurus courant qui sera affiché.
+À noter que les listes renvoyées par `build_vocabulary()` présentent toujours une chaîne de caractères vide `''` en première position, pour représenter une absence de valeur. Lors de la sauvegarde, elles sont traitées comme des `None`.
 
+Autant que possible - considérant la quantité de termes dans certains thésaurus - les QComboBox devraient afficher une ligne de saisie avec **auto-complétion**. Il est par contre important qu'ils **ne permettent pas d'entrer d'autres valeurs que celles des thésaurus**.
+
+#### Placeholder
+
+Comme les QTextEdit et QLineEdit, les widgets QComboBox peuvent afficher une **valeur fictive** fournie par la clé `'placeholder text'`. Celle-ci sera généralement renseignée car, si ni le schéma des métadonnées communes ni le modèle local ne fournissent de texte fictif, c'est le nom du thésaurus courant qui sera affiché.
 
 ```python
 
 widgetsdict[key]['main widget'].setPlaceholderText(widgetsdict[key]['placeholder text'])
 
 ```
-
-Autant que possible - considérant la quantité de termes dans certains thésaurus - les QComboBox devraient afficher une ligne de saisie avec **auto-complétion**. Il est par contre important qu'ils **ne permettent pas d'entrer d'autres valeurs que celles des thésaurus**.
 
 
 ### Paramètres spécifiques aux widgets QLabel

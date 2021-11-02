@@ -298,7 +298,7 @@ tpl_label = template_utils.search_template(metagraph, templates)
 
 ```
 
-*`metagraph` est le graphe contenant les métadonnées de la table ou vue considérée. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#metagraph--le-graphe-des-métadonnées-pré-existantes).*
+*`metagraph` est le graphe contenant les métadonnées de la table ou vue considérée. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes).*
 
 Il est tout à possible que la fonction `search_template()` ne renvoie rien, d'autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d'application automatique des modèles. Dans ce cas, on utilisera le "modèle préféré" (`preferedTemplate`) désigné dans les paramètres de configuration de l'utilisateur -- sous réserve qu'il soit défini et fasse bien partie de `templateLabels` -- ou, à défaut, aucun modèle (`template` et `templateTabs` valent `None`).
 
@@ -344,7 +344,7 @@ template = template_utils.build_template(categories)
 
 ```
 
-Le dictionnaire ainsi obtenu peut être passé dans l'argument `template` de la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#template--le-modèle-de-formulaire).
+Le dictionnaire ainsi obtenu peut être passé dans l'argument `template` de la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#template--le-modèle-de-formulaire).
 
 Concrètement, `template` est un dictionnaire dont la structure est similaire à celle des `WidgetsDict`, si ce n'est que :
 - ses clés sont des chemins SPARQL identifiant des catégories de métadonnées. Par exemple `dcat:contactPoint / vcard:hasEmail` pour l'adresse mél du point de contact ;
@@ -376,7 +376,7 @@ conn.close()
 
 ### Génération de *templateTabs*
 
-La fonction `build_template_tabs()` permet de transformer la liste brute `tabs` renvoyée par `query_template_tabs()` en un dictionnaire qui pourra être fourni en argument à la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widget.md#templatetabs--la-liste-des-onglets).
+La fonction `build_template_tabs()` permet de transformer la liste brute `tabs` renvoyée par `query_template_tabs()` en un dictionnaire qui pourra être fourni en argument à la fonction `build_dict()`. Cf. [Génération du dictionnaire des widgets](/__doc__/05_generation_dictionnaire_widgets.md#templatetabs--la-liste-des-onglets).
 
 ```python
 

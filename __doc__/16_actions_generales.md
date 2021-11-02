@@ -103,11 +103,11 @@ if not ( widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M'] ):
 
 ```python
 
-new_metagraph = widgetsdict.build_graph(vocabulary, language)
+new_metagraph = widgetsdict.build_graph(vocabulary)
 
 ```
 
-*`vocabulary` est la compilation de thésaurus qui a servi à créer le dictionnaire de widgets. `language` est le paramètre utilisateur correspondant à la langue principale de saisie des métadonnées.*
+*`vocabulary` est la compilation de thésaurus qui a servi à créer le dictionnaire de widgets.*
 
 3. Créer une version actualisée du descriptif PostgreSQL de l'objet.
 

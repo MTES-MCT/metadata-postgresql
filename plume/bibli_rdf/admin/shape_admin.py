@@ -8,7 +8,7 @@ from rdflib.namespace import NamespaceManager
 from psycopg2 import sql
 import re, psycopg2
 
-from plume.bibli_rdf.rdf_utils import load_shape
+from plume.bibli_rdf.rdf_utils import load_shape, load_vocabulary, value_from_concept
 
 
 def check_shape(shape, vocabulary, mIssues=None, mShape=None):
@@ -301,6 +301,7 @@ def table_from_shape(
         mList = []
     
     shape = load_shape()
+    vocabulary = load_vocabulary()
     
     nsm = mNSManager or shape.namespace_manager
 
@@ -351,6 +352,12 @@ def table_from_shape(
 
         mKind = d['kind'].n3(nsm)
         mNPath = ( mPath + " / " if mPath else '') + d['property'].n3(nsm)
+        
+        mDefault = None
+        if d['default']:
+            mDefault, = value_from_concept(
+                d['default'], vocabulary, getschemeStr=False
+                )
             
         mList.append((
             'shared',
@@ -361,7 +368,7 @@ def table_from_shape(
             str(d['widget']) if d['widget'] else None,
             int(d['rowspan']) if d['rowspan'] else None,
             str(d['descr']) if d['descr'] else None,
-            str(d['default']) if d['default'] else None,
+            mDefault,
             str(d['placeholder']) if d['placeholder'] else None,
             str(d['mask']) if d['mask'] else None,
             int(d['max']) > 1 if d['max'] is not None else True,

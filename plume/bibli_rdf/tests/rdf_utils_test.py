@@ -13,7 +13,8 @@ from pathlib import Path
 from plume.bibli_rdf import rdf_utils, __path__
 from plume.bibli_rdf.tests.rdf_utils_debug import check_unchanged, \
     populate_widgets, search_keys, check_rows, execute_pseudo_actions, \
-    check_hidden_branches, check_buttons
+    check_hidden_branches, check_buttons, check_languages, check_sources, \
+    check_everything, copy_metagraph
 
 
 class TestRDFUtils(unittest.TestCase):
@@ -64,6 +65,22 @@ class TestRDFUtils(unittest.TestCase):
 
         # création de pseudo-widgets
         populate_widgets(self.widgetsdict)
+
+
+    ### FONCTION WidgetsDict.copy
+    ### -------------------------
+
+    def test_wd_copy_1(self):
+        do = rdf_utils.WidgetsDict(mode='edit', translation=True,
+            language='it', langList=['fr', 'it'])
+        do.update({'key1': 'value1', 'key2': 'value2'})
+        dc = do.copy()
+        self.assertEqual(len(dc), 2)
+        self.assertEqual(dc['key1'], 'value1')
+        self.assertEqual(dc.mode, 'edit')
+        dc['key1'] = 'notvalue1'
+        self.assertEqual(do['key1'], 'value1')
+        self.assertEqual(dc['key1'], 'notvalue1')
 
 
     ### FONCTION export_format_from_extension
@@ -1469,7 +1486,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=False,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')[0]
         self.assertEqual(d[ttk[1]]['label'], "Autres")
@@ -1491,7 +1508,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=True,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')[0]
         self.assertEqual(d[ttk[1]]['label'], "Autres")
@@ -1551,7 +1568,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=False,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1571,7 +1588,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=True,
             readHideBlank=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1591,7 +1608,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=False,
             readHideBlank=False
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1611,7 +1628,7 @@ class TestRDFUtils(unittest.TestCase):
             readHideUnlisted=True,
             readHideBlank=False
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         ttk = search_keys(d, "dct:title", 'edit')
         self.assertEqual(ttk, [])
@@ -1651,7 +1668,7 @@ class TestRDFUtils(unittest.TestCase):
             vocabulary=self.vocabulary,
             mode='read'
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         for k, v in d.items():
             with self.subTest(key=k):
@@ -1692,7 +1709,7 @@ class TestRDFUtils(unittest.TestCase):
             mode='read',
             template=template
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         for k, v in d.items():
             with self.subTest(key=k):
@@ -1718,7 +1735,7 @@ class TestRDFUtils(unittest.TestCase):
             mode='read',
             readHideUnlisted=True
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         self.assertFalse(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
             for k, v in d.items()]))
@@ -1732,7 +1749,7 @@ class TestRDFUtils(unittest.TestCase):
             mode='read',
             readHideUnlisted=False
             )
-        e = check_rows(d, mode='read')
+        e = check_rows(d)
         self.assertIsNone(e)
         self.assertTrue(any([(rdf_utils.is_root(k) and v['label'] == "Autres") \
             for k, v in d.items()]))
@@ -1785,7 +1802,7 @@ class TestRDFUtils(unittest.TestCase):
             data={ "dct:identifier": ["479fd670-32c5-4ade-a26d-0268b0cexxxx"] }
             )
         self.assertIsNone(check_rows(d))
-        g1 = d.build_graph(self.vocabulary)
+        g1 = d.build_graph(self.vocabulary, bypass=True)
         g1_id = rdf_utils.get_datasetid(g1)
         self.assertEqual(
             rdf_utils.strip_uuid(g1_id),
@@ -2001,6 +2018,124 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_rows(d))
         self.assertIsNone(check_hidden_branches(d))
         self.assertIsNone(check_buttons(d))
+
+    # valeur par défaut à exclure (venant de shape,
+    # cas d'un Literal dans la mauvaise langue)
+    def test_build_dict_27(self):
+        sh = copy_metagraph(self.shape)
+        b = [ o for o in sh.objects(
+            URIRef("http://snum.scenari-community.org/Metadata/Vocabulaire/#DatasetShape"),
+            URIRef("http://www.w3.org/ns/shacl#property")
+            ) if sh.value(o, URIRef("http://www.w3.org/ns/shacl#path")) \
+              == URIRef("http://purl.org/dc/terms/title")][0]
+        sh.add((
+            b,
+            URIRef("http://www.w3.org/ns/shacl#defaultValue"),
+            Literal("My title", lang='en')
+            ))
+        d = rdf_utils.build_dict(
+            Graph(), sh, self.vocabulary
+            )
+        k = search_keys(d, "dct:title", "edit")[0]
+        self.assertIsNone(d[k]['value'])
+        d = rdf_utils.build_dict(
+            Graph(), sh, self.vocabulary, language='en'
+            )
+        k = search_keys(d, "dct:title", "edit")[0]
+        self.assertEqual(d[k]['value'], 'My title')
+
+    # valeur par défaut issue d'un thésaurus, venant de shape,
+    # pour laquelle il n'existe pas de traduction dans la
+    # langue demandée -> meilleure traduction
+    def test_build_dict_28(self):
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary, language='it',
+            langList=['fr', 'it']
+            )
+        k = search_keys(d, 'dct:language', 'edit')[0]
+        self.assertEqual(d[k]['value'], 'français')
+        self.assertEqual(
+            d[k]['current source'],
+            "Langues (UE)"
+            )
+        self.assertEqual(
+            d[k]['current source URI'],
+            URIRef("http://publications.europa.eu/resource/authority/language")
+            )
+        
+    # valeur par défaut issue d'un thésaurus, venant de template,
+    # pour laquelle il n'existe pas de traduction dans la
+    # langue demandée -> meilleure traduction
+    def test_build_dict_29(self):
+        template = { 'dcat:theme': {
+            'default value' : "Administrative units"
+            } }
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary, language='it',
+            langList=['fr', 'it'], template=template
+            )
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        self.assertEqual(d[k]['value'], "Unités administratives")
+        self.assertEqual(
+            d[k]['current source'],
+            "Thème INSPIRE (UE)"
+            )
+        self.assertEqual(
+            d[k]['current source URI'],
+            URIRef("https://inspire.ec.europa.eu/theme")
+            )
+
+    # valeur par défaut issue d'un thésaurus, venant de shape
+    # et qui n'existe pas -> exclue
+    def test_build_dict_30(self):
+        sh = copy_metagraph(self.shape)
+        b = [ o for o in sh.objects(
+            URIRef("http://snum.scenari-community.org/Metadata/Vocabulaire/#DatasetShape"),
+            URIRef("http://www.w3.org/ns/shacl#property")
+            ) if sh.value(o, URIRef("http://www.w3.org/ns/shacl#path")) \
+              == URIRef("http://www.w3.org/ns/dcat#theme")][0]
+        sh.add((
+            b,
+            URIRef("http://www.w3.org/ns/shacl#defaultValue"),
+            URIRef("http://chose")
+            ))
+        d = rdf_utils.build_dict(
+            Graph(), sh, self.vocabulary
+            )
+        k = search_keys(d, "dcat:theme", "edit")[0]
+        self.assertIsNone(d[k]['value'])
+        # current source et son URI sont choisies au hasard
+        self.assertIsNotNone(d[k]['current source'])
+        self.assertIsNotNone(d[k]['current source URI'])
+
+    # valeur par défaut issue d'un thésaurus, venant de template
+    # et qui n'existe pas -> exclue
+    def test_build_dict_31(self):
+        template = { 'dcat:theme': {
+            'default value' : "Chose"
+            } }
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            template=template
+            )
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        self.assertIsNone(d[k]['value'])
+        # current source et son URI sont choisies au hasard
+        self.assertIsNotNone(d[k]['current source'])
+        self.assertIsNotNone(d[k]['current source URI'])
+
+    # préservation de template
+    def test_build_dict_32(self):
+        template = { 'dct:title': {}, 'dcat:theme': {} }
+        d = rdf_utils.build_dict(
+            Graph(), self.shape, self.vocabulary,
+            template=template
+            )
+        self.assertEqual(
+            template,
+            { 'dct:title': {}, 'dcat:theme': {} }
+            )
+
     
     # à compléter !
 
@@ -2010,7 +2145,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # passage en mode manuel
     def test_wd_change_source_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         s = [x for x in d[self.lck]['sources'] if x != '< manuel >'][0]
         
         d.update_value(self.lck, "https://ma_licence")
@@ -2118,6 +2253,47 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_buttons(d, populated=True))       
 
     # changement de thésaurus
+    def test_wd_change_source_3(self):
+        g = Graph()
+        g.add( (
+            URIRef('urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e'),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/"\
+                   "LimitationsOnPublicAccess/noLimitations")
+            ) )
+        d = rdf_utils.build_dict(g, self.shape, self.vocabulary)
+        populate_widgets(d)
+        k = search_keys(d, "dct:accessRights", "edit")[0]
+        self.assertEqual(
+            len(d[k]['sources']), 4
+            )
+        self.assertTrue(
+            all(s in d[k]['sources URI'] for s in d[k]['sources'])
+            )
+        
+        a = d.change_source(k, "Restrictions d'accès en application "\
+            "du Code des relations entre le public et l'administration")
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_hidden_branches(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        self.assertEqual(
+            d[k]['current source'],
+            "Restrictions d'accès en application " \
+            "du Code des relations entre le public et l'administration"
+            )
+        self.assertEqual(
+            d[k]['current source URI'],
+            URIRef("http://snum.scenari-community.org/Metadata/" \
+            "Vocabulaire/#CrpaAccessLimitations")
+            )
+            
+            
 
     # ancienne source non référencée
 
@@ -2147,7 +2323,7 @@ class TestRDFUtils(unittest.TestCase):
     
     # groupe de propriétés masqué
     def test_wd_order_keys_5(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.change_source(self.lck, '< manuel >')
         d.update_value(self.lck_m_txt, "Non vide")
         d.change_source(self.lck_m, 'Licences admises pour les informations publiques des administrations françaises')
@@ -2155,7 +2331,7 @@ class TestRDFUtils(unittest.TestCase):
     
     # groupe de propriétés non masqué
     def test_wd_order_keys_6(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.change_source(self.lck, '< manuel >')
         d.update_value(self.lck_m_txt, "Non vide")
         self.assertEqual(
@@ -2261,6 +2437,28 @@ class TestRDFUtils(unittest.TestCase):
                 mode = 'read', preserve = True
                 )
             )
+
+    # valeur issue d'un thésaurus avec traductions
+    # manquantes pour la langue demandée
+    def test_wd_build_graph_8(self):
+        g = Graph()
+        g.add( (
+            URIRef('urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e'),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/ns/dcat#Dataset")
+            ) )
+        g.add( (
+            URIRef("urn:uuid:f944c4b2-2a3d-4528-ab30-3514b1c1684e"),
+            URIRef("http://purl.org/dc/terms/accessRights"),
+            URIRef("http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations")
+            ) )
+        self.assertTrue(
+            check_unchanged(
+                g, self.shape, self.vocabulary,
+                language='it', langList=['fr', 'en', 'it'], preserve=True
+                )
+            )        
+
     
     # à compléter !
 
@@ -2285,7 +2483,7 @@ class TestRDFUtils(unittest.TestCase):
     ### ---------------------------------
 
     def test_wd_replace_uuid_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         g = d.build_graph(self.vocabulary)
         l_id = [s for s in g.subjects(
@@ -2300,7 +2498,7 @@ class TestRDFUtils(unittest.TestCase):
                     )
 
     def test_wd_replace_uuid_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         idk = search_keys(d, "dct:identifier", "edit")
         self.assertEqual(
@@ -2320,32 +2518,32 @@ class TestRDFUtils(unittest.TestCase):
     ### ---------------------------------------------
 
     def test_wd_drop_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'outside.of.a.group'):
             d.drop(self.mdk)        
 
     def test_wd_drop_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'last.of.its.kind'):
             d.drop(self.tck)
 
     def test_wd_drop_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'root'):
             d.drop((0,))
 
     def test_wd_add_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'root'):
             d.add((0,))
 
     def test_wd_add_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(ValueError, 'plus.button'):
             d.add(self.lgk)
 
     def test_wd_add_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.add(self.ttk_plus)
         d.add(self.ttk_plus)
         # trois langues, donc trois traductions max et
@@ -2355,7 +2553,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # ajout d'un groupe de propriétés
     def test_wd_add_4(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
         a = d.add(dbk_plus)
         llck_label = search_keys(d, "dcat:distribution / dct:license / rdfs:label", 'edit')
@@ -2389,7 +2587,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # ajout d'un groupe de propriétés + sauvegarde
     def test_wd_add_5(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         dbk_plus = search_keys(d, "dcat:distribution", 'plus button')[0]
         a = d.add(dbk_plus)
         execute_pseudo_actions(d, a)
@@ -2406,6 +2604,100 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(
             len(search_keys(d, "dcat:distribution", 'group of properties')), 2
             )
+
+    # application des valeurs par défaut
+    def test_wd_add_6(self):
+        template = {
+            'dcat:distribution': {},
+            'dcat:distribution / dct:license': {
+                'default value': "Licence Ouverte version 2.0"
+                },
+            'dcat:distribution / dct:license / rdfs:label': {
+                'default value': "Valeur par défaut..."
+                },
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                }
+            }
+        d = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dcat:distribution / dct:license', 'edit')[0]
+        self.assertEqual(d[k]['value'], "Licence Ouverte version 2.0")
+        b = search_keys(d, 'dcat:distribution', 'plus button')[0]
+        d.add(b)
+        nk = [e for e in search_keys(d, 'dcat:distribution / dct:license', 'edit') \
+            if e != k][0]
+        # la valeur par défaut doit être appliquée sur les branches créées
+        self.assertEqual(d[nk]['value'], "Licence Ouverte version 2.0")
+        
+        d.change_source(k, "< manuel >")
+        d.add(b)
+        nk2 = [e for e in search_keys(d, 'dcat:distribution / dct:license', 'edit') \
+            if not e in (k, nk)][0]
+        # ... même si elles sont masquées
+        self.assertTrue(d[nk2]['hidden M'])
+        self.assertEqual(d[nk2]['value'], "Licence Ouverte version 2.0")
+
+        lnk3 = search_keys(d, 'dcat:distribution / dct:license / rdfs:label', 'edit')
+        for nk3 in lnk3:
+            self.assertEqual(
+                d[nk3]['value'],
+                "Valeur par défaut..."
+                )
+              
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        d.change_source(k, "Thème INSPIRE (UE)")
+        d.update_value(k, 'Habitats et biotopes')
+        b = search_keys(d, 'dcat:theme', 'plus button')[0]
+        d.add(b)
+        nk = [e for e in search_keys(d, 'dcat:theme', 'edit') if e != k][0]
+        # dans le groupe contenant le bouton,
+        # on revient à la source par défaut
+        self.assertEqual(d[nk]['current source'], "Thème de données (UE)")
+        self.assertEqual(
+            d[nk]['current source URI'],
+            URIRef('http://publications.europa.eu/resource/authority/data-theme')
+            )
+        # par contre la valeur reste vide
+        self.assertIsNone(d[nk]['value'])
+
+    # l'élément de référence pour l'ajout est une branche
+    # avec des groupes de valeurs contenant plusieurs
+    # valeurs
+    def test_wd_add_7(self):
+        d = rdf_utils.build_dict(
+            self.metagraph, self.shape, self.vocabulary
+            )
+        populate_widgets(d)
+        p1 = search_keys(d, 'prov:qualifiedAttribution', 'plus button')[0]
+        p2 = search_keys(d, 'prov:qualifiedAttribution / dcat:hadRole', 'plus button')[0]
+        self.assertTrue(rdf_utils.is_ancestor(p1[1], d.child(p2[1])))
+        a = d.add(p2)
+        execute_pseudo_actions(d, a)
+        a = d.add(p1)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+
+    # l'élément de référence pour l'ajout est une branche
+    # avec des groupes de traductions contenant plusieurs
+    # valeurs
+    def test_wd_add_8(self):
+        d = rdf_utils.build_dict(
+            self.metagraph, self.shape, self.vocabulary,
+            translation=True, langList=['fr', 'en']
+            )
+        populate_widgets(d)
+        p1 = search_keys(d, 'dct:provenance', 'plus button')[0]
+        p2 = search_keys(d, 'dct:provenance / rdfs:label', 'translation button')[0]
+        self.assertTrue(rdf_utils.is_ancestor(p1[1], d.child(p2[1])))
+        a = d.add(p2)
+        execute_pseudo_actions(d, a)
+        a = d.add(p1)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_rows(d, populated=True))
+        self.assertIsNone(check_buttons(d, populated=True))
+        self.assertIsNone(check_languages(d, populated=True))
 
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
@@ -2444,7 +2736,7 @@ class TestRDFUtils(unittest.TestCase):
     # ajout/suppression d'un widget de saisie
     # occupant plusieurs lignes
     def test_wd_add_drop_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         dsk_plus = search_keys(d, 'dct:description', 'translation button')[0]
         d.add(dsk_plus)
         e = check_rows(d)
@@ -2465,7 +2757,7 @@ class TestRDFUtils(unittest.TestCase):
     # ajout/suppression de widgets dans
     # un groupe de valeurs
     def test_wd_add_drop_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         kwk_plus = search_keys(d, 'dcat:keyword', 'plus button')[0]
         d.add(kwk_plus)
         d.add(kwk_plus)
@@ -2632,7 +2924,7 @@ class TestRDFUtils(unittest.TestCase):
     ### ------------------------------------
 
     def test_wd_change_language_1(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         
         a = d.add(self.ttk_plus)
         execute_pseudo_actions(d, a)
@@ -2653,25 +2945,25 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[a["new keys"][0]]['authorized languages'], ['en', 'it'])
 
     def test_wd_change_language_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'authorized.language'):
             d.change_language(self.ttk, 'es')
 
     def test_wd_change_language_3(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'but.a.string'):
             d.change_language(self.mdk, 'en')
 
     # la nouvelle langue est identique à l'ancienne :
     def test_wd_change_language_4(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         c = d.change_language(self.ttk, 'fr')
         self.assertEqual(c["language menu to update"], [])
         self.assertEqual(c["widgets to hide"], [])
         
     # cas d'une langue de fait non autorisée :
     def test_wd_change_language_5(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         # modification manuelle de la langue
         d[self.ttk]['language value'] = 'es'
         d[self.ttk]['authorized languages'].append('es')
@@ -2689,7 +2981,7 @@ class TestRDFUtils(unittest.TestCase):
         self.assertEqual(d[a1["new keys"][0]]['authorized languages'], ['en', 'it'])
         self.assertEqual(d[self.ttk]['authorized languages'], ['es', 'it'])
         
-        c = d.change_language(self.ttk, 'it', langList=['en', 'fr', 'it'])
+        c = d.change_language(self.ttk, 'it')
         self.assertEqual(d[self.ttk]['language value'], 'it')
         self.assertEqual(d[a1["new keys"][0]]['language value'], 'en')
         self.assertEqual(d[a2["new keys"][0]]['language value'], 'fr')
@@ -2783,7 +3075,7 @@ class TestRDFUtils(unittest.TestCase):
 
     # la valeur est-elle bien réinitialisée ?
     def test_wd_clean_copy_2(self):
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d[self.lgk]['value'] = 'italien'
         c = d.clean_copy(self.lgk)
         self.assertEqual(c['value'], 'français')
@@ -2797,7 +3089,60 @@ class TestRDFUtils(unittest.TestCase):
     def test_wd_clean_copy_4(self):
         c = self.widgetsdict.clean_copy(self.lgk, language='en')
         self.assertIsNone(c['language value'])
-    
+
+    # application de la valeur par défaut
+    def test_wd_clean_copy_5(self):
+        template = {
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                }
+            }
+        d = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        d.change_source(k, "Thème INSPIRE (UE)")
+        d.update_value(k, 'Habitats et biotopes')
+        c = d.clean_copy(k)
+        self.assertEqual(c['current source'], "Thème de données (UE)")
+        self.assertEqual(
+            c['current source URI'],
+            URIRef('http://publications.europa.eu/resource/authority/data-theme')
+            )
+        self.assertEqual(c['value'], "Gouvernement et secteur public")
+
+    # pas de valeur par défaut quand novalue
+    def test_wd_clean_copy_6(self):
+        template = {
+            'dcat:theme': {
+                'default value' : "Gouvernement et secteur public"
+                }
+            }
+        d = rdf_utils.build_dict(Graph(), self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dcat:theme', 'edit')[0]
+        c = d.clean_copy(k, novalue=True)
+        self.assertEqual(c['current source'], "Thème de données (UE)")
+        self.assertEqual(
+            c['current source URI'],
+            URIRef('http://publications.europa.eu/resource/authority/data-theme')
+            )
+        self.assertIsNone(c['value'])
+
+    # valeur par défaut XXL
+    def test_wd_clean_copy_7(self):
+        template = {
+            'dct:title': {
+                'default value' : "Valeur par défaut...\n...sur plusieurs lignes"
+                }
+            }
+        d = rdf_utils.build_dict(self.metagraph, self.shape, self.vocabulary,
+            template=template)
+        k = search_keys(d, 'dct:title', 'edit')[0]
+        self.assertEqual(d[k]['main widget type'], 'QLineEdit')
+        c = d.clean_copy(k)
+        self.assertEqual(c['main widget type'], 'QTextEdit')
+        self.assertEqual(c['value'], "Valeur par défaut...\n...sur plusieurs lignes")
+        
 
     ### FONCTION is_older
     ### ----------------
@@ -2936,15 +3281,24 @@ class TestRDFUtils(unittest.TestCase):
 
     def test_concept_from_value_1(self):
         self.assertEqual(
-            rdf_utils.concept_from_value("Domaine public", "Types de licence (UE)", self.vocabulary),
-            (URIRef('http://purl.org/adms/licencetype/PublicDomain'), URIRef('http://purl.org/adms/licencetype/1.1'))
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
             )
 
     # dans une autre langue :
     def test_concept_from_value_2(self):
         self.assertEqual(
-            rdf_utils.concept_from_value("Public domain", "Licence type (EU)", self.vocabulary, language="en"),
-            (URIRef('http://purl.org/adms/licencetype/PublicDomain'), URIRef('http://purl.org/adms/licencetype/1.1'))
+            rdf_utils.concept_from_value(
+                "Public domain",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language="en"
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
             )
  
     # sans conceptScheme :
@@ -2956,55 +3310,178 @@ class TestRDFUtils(unittest.TestCase):
 
     # conceptScheme inconnu :
     def test_concept_from_value_4(self):
-        self.assertEqual(
-            rdf_utils.concept_from_value("Domaine public", "N'existe pas", self.vocabulary),
-            (None, None)
+        self.assertIsNone(
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef("http://chose"),
+                self.vocabulary
+                )
             )
     
     # concept inconnu :
     def test_concept_from_value_5(self):
-        self.assertEqual(
-            rdf_utils.concept_from_value("N'existe pas", "Types de licence (UE)", self.vocabulary),
-            (None, None)
+        self.assertIsNone(
+            rdf_utils.concept_from_value(
+                "N'existe pas",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary
+                )
             )
             
     # langue inconnue :
     def test_concept_from_value_6(self):
-        self.assertEqual(
-            rdf_utils.concept_from_value("Domaine public", "Types de licence (UE)", self.vocabulary, language='it'),
-            (None, None)
+        self.assertIsNone(
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language='it'
+                )
             )
 
+    # langue inconnue avec strict valant False
+    # la valeur est la traduction française
+    def test_concept_from_value_7(self):
+        self.assertEqual(
+            rdf_utils.concept_from_value(
+                "Domaine public",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language='it',
+                strict=False
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
+            )
+
+    # langue inconnue avec strict valant False
+    # la valeur n'est pas la traduction française
+    def test_concept_from_value_8(self):
+        self.assertEqual(
+            rdf_utils.concept_from_value(
+                "Public domain",
+                URIRef('http://purl.org/adms/licencetype/1.1'),
+                self.vocabulary,
+                language='it',
+                strict=False
+                ),
+            URIRef('http://purl.org/adms/licencetype/PublicDomain')
+            )
+
+    # langue inconnue, strict vaut False, et
+    # il n'existait pas de traduction française
+    def test_concept_from_value_9(self):
+        voc = Graph()
+        t = """@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en ."""
+        voc.parse(data=t)
+        self.assertEqual(
+            rdf_utils.concept_from_value(
+                "Science and technology",
+                URIRef('http://publications.europa.eu/resource/authority/data-theme'),
+                self.vocabulary,
+                language='it',
+                strict=False
+                ),
+            URIRef('http://publications.europa.eu/resource/authority/data-theme/TECH')
+            )
+        
 
     ### FONCTION value_from_concept
     ### ---------------------------
     
     def test_value_from_concept_1(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/PublicDomain'), self.vocabulary),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary
+                ),
             ("Domaine public", "Types de licence (UE)")
             )
     
     # autre langue :
     def test_value_from_concept_2(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/PublicDomain'), self.vocabulary, language='en'),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary,
+                language='en'
+                ),
             ("Public domain", "Licence type (EU)")
             )
     
     # URI non répertoriée :
-    def test_value_from_concept_1(self):
+    def test_value_from_concept_3(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/Chose'), self.vocabulary),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/Chose'),
+                self.vocabulary
+                ),
             (None, None)
             )
     
     # pas de valeur pour la langue :
-    def test_value_from_concept_1(self):
+    def test_value_from_concept_4(self):
         self.assertEqual(
-            rdf_utils.value_from_concept(URIRef('http://purl.org/adms/licencetype/PublicDomain'), self.vocabulary, language='it'),
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary,
+                language='it'
+                ),
             ("Domaine public", "Types de licence (UE)")
             )
+
+    # pas de valeur pour la langue - avec strict :
+    def test_value_from_concept_5(self):
+        self.assertEqual(
+            rdf_utils.value_from_concept(
+                URIRef('http://purl.org/adms/licencetype/PublicDomain'),
+                self.vocabulary,
+                language='it',
+                strict=True
+                ),
+            (None, None)
+            )
+
+    # avec récupération de la page web associée :
+    def test_value_from_concept_6(self):
+        self.assertEqual(
+            rdf_utils.value_from_concept(
+                URIRef('http://snum.scenari-community.org/Metadata/'\
+                       'Vocabulaire/#CrpaAccessLimitations-311-2-a1'),
+                self.vocabulary,
+                getpage=True
+                ),
+            ("Communicable à la discrétion de l'administration - " \
+             "document non achevé (CRPA, L311-2 §1)",
+             "Restrictions d'accès en application du Code des relations " \
+             "entre le public et l'administration",
+             URIRef("https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700"))
+            )
+
+    # pas de valeur pour la langue, et il n'existe pas
+    # de traduction française
+    def test_value_from_concept_7(self):
+        voc = Graph()
+        t = """@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en .
+
+<http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
+    skos:prefLabel "Data theme (EU)"@en ."""
+        voc.parse(data=t)
+        self.assertEqual(
+            rdf_utils.value_from_concept(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme/TECH"),
+                voc
+                ),
+            ("Science and technology", "Data theme (EU)")
+            )
+        
 
 
     ### FONCTION email_from_owlthing
@@ -3233,7 +3710,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3272,7 +3749,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3307,7 +3784,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA></METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3342,7 +3819,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA></METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3387,7 +3864,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3430,7 +3907,7 @@ class TestRDFUtils(unittest.TestCase):
 ]
 </METADATA>
 """
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3464,7 +3941,7 @@ class TestRDFUtils(unittest.TestCase):
 ]
 </METADATA>
 """
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3499,7 +3976,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3530,7 +4007,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3561,7 +4038,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>"""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3592,7 +4069,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>Suite."""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3623,7 +4100,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>Suite."""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3655,7 +4132,7 @@ class TestRDFUtils(unittest.TestCase):
   }
 ]
 </METADATA>Suite."""
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3690,7 +4167,7 @@ class TestRDFUtils(unittest.TestCase):
 ]
 </METADATA>
 """
-        d = rdf_utils.WidgetsDict(self.widgetsdict.copy())
+        d = self.widgetsdict.copy()
         d.replace_uuid("urn:uuid:c41423cc-fb59-443f-86f4-72592a4f6778")
         d[self.mdk]['value'] = "2020-08-03"
         d[self.lgk]['value'] = None
@@ -3705,22 +4182,29 @@ class TestRDFUtils(unittest.TestCase):
     # pas de vocabulaire :
     def test_build_vocabulary_1(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Thème de données (UE)", Graph()),
-            []
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                Graph()
+                ),
+            ['']
             )
 
-    # ensemble non renseigné :
+    # ensemble non renseigné ou qui n'est pas un IRI
+    # (hors cas de '< non répertorié >') :
     def test_build_vocabulary_2(self):
-        self.assertEqual(
-            rdf_utils.build_vocabulary("", self.vocabulary),
-            []
-            )
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'URIRef'):
+            rdf_utils.build_vocabulary(None, self.vocabulary)
+        with self.assertRaisesRegex(rdf_utils.ForbiddenOperation, 'URIRef'):
+            rdf_utils.build_vocabulary("< URI >", self.vocabulary)
 
     # cas normal :
     def test_build_vocabulary_3(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Thème de données (UE)", self.vocabulary),
-            ['Agriculture, pêche, sylviculture et alimentation',
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                self.vocabulary
+                ),
+            ['', 'Agriculture, pêche, sylviculture et alimentation',
             'Économie et finances', 'Éducation, culture et sport', 'Énergie',
             'Environnement', 'Gouvernement et secteur public',
             'Justice, système juridique et sécurité publique',
@@ -3732,34 +4216,105 @@ class TestRDFUtils(unittest.TestCase):
     # ensemble inconnu :
     def test_build_vocabulary_4(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Ensemble inconnu", self.vocabulary),
-            []
+            rdf_utils.build_vocabulary(
+                URIRef("https://www.postgresql.org/docs/10/index.html"),
+                self.vocabulary
+                ),
+            ['']
             )
 
     # autre langue (connue et utilisée pour le nom de l'ensemble) :
     def test_build_vocabulary_5(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='en'),
-            ['Agriculture, fisheries, forestry and food', 'Economy and finance',
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                self.vocabulary,
+                language='en'
+                ),
+            ['', 'Agriculture, fisheries, forestry and food', 'Economy and finance',
             'Education, culture and sport', 'Energy', 'Environment',
             'Government and public sector', 'Health', 'International issues',
             'Justice, legal system and public safety', 'Population and society',
             'Regions and cities', 'Science and technology', 'Transport']
             )
 
-    # autre langue (inconnue) :
+    # autre langue (inconnue + il existe des traductions françaises) :
     def test_build_vocabulary_6(self):
         self.assertEqual(
-            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='it'),
-            []
+            rdf_utils.build_vocabulary(
+                URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+                self.vocabulary,
+                language='it'
+                ),
+            ['', 'Agriculture, pêche, sylviculture et alimentation',
+            'Économie et finances', 'Éducation, culture et sport', 'Énergie',
+            'Environnement', 'Gouvernement et secteur public',
+            'Justice, système juridique et sécurité publique',
+            'Population et société', 'Questions internationales',
+            'Régions et villes', 'Santé', 'Science et technologie',
+            'Transports']
             )
 
-    # le nom de l'ensemble n'est pas dans la langue indiquée :
-    def test_build_vocabulary_6(self):
+    # ensemble '< non répertorié >' :
+    def test_build_vocabulary_7(self):
+        # avec argument value
         self.assertEqual(
-            rdf_utils.build_vocabulary("Data theme (EU)", self.vocabulary, language='fr'),
-            []
+            rdf_utils.build_vocabulary(
+                '< non répertorié >',
+                self.vocabulary,
+                value='Ma valeur'
+                ),
+            ['', 'Ma valeur']
             )
+        # sans argument value
+        self.assertEqual(
+            rdf_utils.build_vocabulary(
+                '< non répertorié >',
+                self.vocabulary
+                ),
+            ['']
+            )
+
+    # cohérence de build_vocabulary et value_from_concept
+    # lorsqu'il n'y a pas de traduction dans la langue demandée
+    def test_build_vocabulary_8(self):
+        voc = Graph()
+        t = """@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/SOCI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Population and society"@en,
+        "Population et société"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en .
+
+<http://publications.europa.eu/resource/authority/data-theme/TRAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Transport"@en,
+        "Transports"@fr,
+        "Trasporto"@it .
+
+<http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
+    skos:prefLabel "Data theme (EU)"@en,
+        "Thème de données (UE)"@fr ."""
+        voc.parse(data=t)
+        lvoc = rdf_utils.build_vocabulary(
+            URIRef("http://publications.europa.eu/resource/authority/data-theme"),
+            voc, language='it'
+            )
+        self.assertEqual(len(lvoc), 4)
+        for u in (
+            URIRef("http://publications.europa.eu/resource/authority/data-theme/SOCI"),
+            URIRef("http://publications.europa.eu/resource/authority/data-theme/TECH"),
+            URIRef("http://publications.europa.eu/resource/authority/data-theme/TRAN")
+            ):
+            with self.subTest(IRI = u):
+                t, = rdf_utils.value_from_concept(
+                    u, voc, language='it', getschemeStr=False
+                    )
+                self.assertTrue(t in lvoc)
 
 
     ### F0NCTION is_valid_minipath
