@@ -302,8 +302,9 @@ class WidgetsDict(dict):
             'multiple sources': len(mSources) > 1 if mSources \
                 and self.mode == 'edit' else None,
             'current source': d['default source'] if d['current source'] else None,
-            'current source URI': d['sources URI'][d['default source']] \
-                if d['current source'] and d['default source'] else None,
+            'current source URI': ( d['sources URI'][d['default source']] if \
+                d['default source'] else d['current source URI'] ) \
+                if d['current source URI'] else None,
             'hidden' : len(langList) == 1 if (
                 d['object'] == 'translation button' ) else None,
             'hide minus button': True if d['has minus button'] else None,
