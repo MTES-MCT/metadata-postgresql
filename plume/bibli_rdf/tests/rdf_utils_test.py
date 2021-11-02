@@ -2699,6 +2699,48 @@ class TestRDFUtils(unittest.TestCase):
         self.assertIsNone(check_buttons(d, populated=True))
         self.assertIsNone(check_languages(d, populated=True))
 
+    # ajout sur une propriété multi-sources
+    def test_wd_add_9(self):
+        d = rdf_utils.build_dict(
+            self.metagraph_empty, self.shape, self.vocabulary
+            )
+        populate_widgets(d)
+        k = search_keys(d, 'dct:accessRights', 'group of values')[0]
+        c1 = d.child(k)
+        p = search_keys(d, 'dct:accessRights', 'plus button')[0]
+        self.assertEqual(
+            d[c1]['object'], 'edit'
+            )
+        
+        a = d.add(p)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_everything(d, populated=True))
+        c1 = d.child(k) # ne devrait pas avoir changé, mais au cas où
+        c2 = [e for e in search_keys(d, 'dct:accessRights', 'edit') \
+            if e != c1][0]
+        self.assertIsNotNone(d[c2]['current source'])
+        self.assertIsNotNone(d[c2]['current source URI'])
+        
+        a = d.change_source(c1, '< manuel >')
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_everything(d, populated=True))
+        # c1 est maintenant masqué, donc n'a plus de source courante
+        self.assertIsNone(d[c1]['current source'])
+        self.assertIsNone(d[c1]['current source URI'])
+        c1b = d.child(k) # a changé -> double M
+        self.assertEqual(d[c1b]['current source'], '< manuel >')
+        self.assertIsNone(d[c1b]['current source URI'])
+        
+        a = d.add(p)
+        execute_pseudo_actions(d, a)
+        self.assertIsNone(check_everything(d, populated=True))
+        c3 = [e for e in search_keys(d, 'dct:accessRights', \
+            'group of properties', visibleOnly=True) \
+            if e != c1b][0]
+        self.assertEqual(d[c3]['current source'], '< manuel >')
+        self.assertIsNone(d[c3]['current source URI'])
+
+
     # ajout/suppression d'une traduction
     # contrôle du résultat dans le dictionnaire de widgets
     def test_wd_add_drop_1(self):
