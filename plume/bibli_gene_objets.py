@@ -173,9 +173,33 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           _mObjetQSaisie.setValidator(QRegularExpressionValidator(re),_mObjetQSaisie)
        
        #========== 
+       #QCOMBOBOX 
+       if _valueObjet['main widget type'] in ("QComboBox") :
+          schemeIRI = _valueObjet['current source URI']
+          # récupération de la liste si déjà constituée
+          _thesaurus = self.thesaurusCollection.get((schemeIRI, _language))
+          if _thesaurus is None:
+             # sinon, construction de la liste
+             _thesaurus = rdf_utils.build_vocabulary(schemeIRI, self.vocabulary, _language, value=_valueObjet['value'])
+             # mémorisation dans thesaurusCollection
+             if not schemeIRI == '< non répertorié >':
+                self.thesaurusCollection.update( { (schemeIRI, _language) : _thesaurus } )
+            
+          #print(_thesaurus)
+          if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
+          _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
+          _mObjetQSaisie.setEditable(True)
+          #-
+          mCompleter = QCompleter(_thesaurus, self)
+          mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+          #mCompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+          _mObjetQSaisie.setCompleter(mCompleter)
+       #==========
+       """
+       #OLD A SUPPRIMER 
        #QCOMBOBOX                        
        if _valueObjet['main widget type'] in ("QComboBox") :
-          _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source'], self.vocabulary, language=_language)
+          _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source URI'], self.vocabulary, language=_language)
           _thesaurus.insert(0, "")
           #print(_thesaurus)
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
@@ -187,6 +211,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           #mCompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
           _mObjetQSaisie.setCompleter(mCompleter)
        #========== 
+       """
                                           
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQSaisie})
@@ -474,7 +499,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, _language, _langList):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['language menu'].sender()
     #maj Source 
-    ret = self.mDicObjetsInstancies.change_language(__keyObjet,  _selectItem.text(), _langList )
+    ret = self.mDicObjetsInstancies.change_language(__keyObjet,  _selectItem.text() )
     #---------------------------------------------
     self.mDicObjetsInstancies[__keyObjet]['language widget'].setText(__valueObjet['language value']) 
     #---------------------------------------------
@@ -497,7 +522,7 @@ def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, 
 # Traitement action sur QToolButton Moins
 def action_mObjetQToolButton_Minus(self, __keyObjet, __valueObjet, _language, _langList):
     #Mise à jour du dictionnaire des widgets 
-    ret = self.mDicObjetsInstancies.drop(__keyObjet, langList=_langList)
+    ret = self.mDicObjetsInstancies.drop(__keyObjet)
 
     #- Supprimer Widget        
     for elem in ret['widgets to delete'] :
@@ -544,7 +569,7 @@ def action_mObjetQToolButton_Minus(self, __keyObjet, __valueObjet, _language, _l
 # Traitement action sur QToolButton Plus et Translation
 def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _language, _langList):
     #Mise à jour du dictionnaire des widgets 
-    ret = self.mDicObjetsInstancies.add(__keyObjet, language=_language, langList=_langList)
+    ret = self.mDicObjetsInstancies.add(__keyObjet)
     
     #- Nouveaux objets à créer avec les nouvelles clefs          
     for key in ret['new keys'] :
@@ -606,8 +631,16 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
     #- Maj QComboBox
     for elem in ret['concepts list to update'] : 
         __valueObjet = self.mDicObjetsInstancies[elem]
-        _thesaurus = rdf_utils.build_vocabulary(__valueObjet['current source'], self.vocabulary, language=_language)
-        _thesaurus.insert(0, "")
+        schemeIRI = __valueObjet['current source URI']
+        # récupération de la liste si déjà constituée
+        _thesaurus = self.thesaurusCollection.get((schemeIRI, _language))
+        if _thesaurus is None:
+           # sinon, construction de la liste
+           _thesaurus = rdf_utils.build_vocabulary(schemeIRI, self.vocabulary, _language, value=__valueObjet['value'])
+           # mémorisation dans thesaurusCollection
+           if not schemeIRI == '< non répertorié >':
+              self.thesaurusCollection.update( { (schemeIRI, _language) : _thesaurus } )
+        
         __valueObjet['main widget'].clear()
         __valueObjet['main widget'].addItems(_thesaurus)
 

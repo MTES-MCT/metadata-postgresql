@@ -46,6 +46,8 @@ class Ui_Dialog_plume(object):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
         #--
+        self.thesaurusCollection = {} # nécessaire pour première instance  (Stockage des thésaurus)
+        #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
         self.lScreenDialog, self.hScreenDialog = int(self.mDic_LH["dialogLargeur"]), int(self.mDic_LH["dialogHauteur"])
@@ -373,6 +375,7 @@ class Ui_Dialog_plume(object):
                  self.oldMetagraph  = self.metagraph
                  self.saveMetaGraph = False
                  self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+                 self.data       = bibli_plume.returnObjetData(self)
                  self.mode = "read"
                  #-
                  self.displayToolBar(*self.listIconToolBar)
@@ -412,11 +415,12 @@ class Ui_Dialog_plume(object):
             if self.connectBaseOKorKO[0] :
                self.afficheNoConnections("hide")
                #-
-               self.comment = bibli_plume.returnObjetComment(self, self.schema, self.table)
+               self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
                self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
                self.oldMetagraph  = self.metagraph
                self.saveMetaGraph = False
-               self.columns = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+               self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+               self.data       = bibli_plume.returnObjetData(self)
                self.mode = "read"
                #-
                self.displayToolBar(*self.listIconToolBar)

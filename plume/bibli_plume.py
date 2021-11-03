@@ -187,6 +187,12 @@ def returnObjetColumns(self, _schema, _table) :
     return columns 
 
 #==================================================
+def returnObjetData(self) :
+    geoide_id = rdf_utils.get_geoide_json_uuid(self.comment)
+    data = { 'dct:identifier': [geoide_id] } if geoide_id else None
+    return data 
+
+#==================================================
 def returnObjetTranslation(self) :
     #**********************
     # Mode  True False
@@ -234,6 +240,9 @@ def returnObjetsMeta(self, _schema, _table) :
     if self.templateTabs  is not None:
        kwa.update({ 'templateTabs': self.templateTabs })
     #--
+    if self.data is not None:
+       kwa.update({ 'data': self.data })
+    #--
     if self.mode is not None:
        kwa.update({ 'mode': self.mode })
     #--
@@ -271,7 +280,7 @@ def saveMetaIhm(self, _schema, _table) :
               self.mDicObjetsInstancies.update_value(_keyObjet, value)
     #-    
     #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
-    self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary, language=_language) 
+    self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary) 
     self.oldMetagraph  = self. metagraph
     #-    
     #Créer une version actualisée du descriptif PostgreSQL de l'objet. 
@@ -564,7 +573,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.1"
+def returnVersion() : return "version 0.2.2"
 
 #==================================================
 #Execute Pdf 
