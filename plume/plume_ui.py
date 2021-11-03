@@ -295,6 +295,38 @@ class Ui_Dialog_plume(object):
     #==========================
 
     #==========================
+    # == Gestion des actions du bouton Changement des langues
+    def  clickButtonsChoiceLanguages(self):
+        mItem = self.mMenuBarDialog.sender().objectName()
+        #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+        if mItem == "" : 
+           self.language, mItem = "fr", "fr" 
+        if mItem not in self.langList : self.langList.append(mItem)  
+        #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+        self.plumeChoiceLang.setText(mItem)
+        mDicUserSettings        = {}
+        mSettings = QgsSettings()
+        mSettings.beginGroup("PLUME")
+        mSettings.beginGroup("UserSettings")
+        #Ajouter si autre param
+        mDicUserSettings["language"] = mItem
+        mDicUserSettings["langList"] = self.langList
+        #----
+        for key, value in mDicUserSettings.items():
+            mSettings.setValue(key, value)
+        #======================
+        mSettings.endGroup()
+        mSettings.endGroup()
+        #----
+        #Regénération du dictionnaire    
+        self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+        #-
+        self.displayToolBar(*self.listIconToolBar)
+        return
+    # == Gestion des actions du bouton Changement des langues
+    #==========================
+
+    #==========================
     #Génération à la volée 
     #Dict des objets instanciés
     def generationALaVolee(self, _dict):
@@ -594,6 +626,7 @@ class Ui_Dialog_plume(object):
         self.plumePaste.setEnabled(False)
         self.plumeTemplate.setEnabled(False)
         self.plumeTranslation.setEnabled(False)
+        self.plumeChoiceLang.setEnabled(False)
 
         #====================
         #====================
@@ -637,6 +670,7 @@ class Ui_Dialog_plume(object):
            self.plumePaste.setEnabled(True if (self.copyMetagraph != None and self.mode == "edit") else False)
            self.plumeTemplate.setEnabled(r)
            self.plumeTranslation.setEnabled(True if self.mode == "edit" else False)
+           self.plumeChoiceLang.setEnabled(r)
            #Mode edition avec les droits
            if r == True and self.mode == 'read' : 
               self.plumeSave.setEnabled(False)
@@ -727,7 +761,7 @@ class Ui_Dialog_plume(object):
     def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesHelp ):
         #Menu Dialog
         self.mMenuBarDialog = QMenuBar(self)
-        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 360, 20))
+        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 400, 20))
         _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
         #--
         mText = QtWidgets.QApplication.translate("plume_main", "Edition") 
@@ -836,15 +870,39 @@ class Ui_Dialog_plume(object):
         self.plumeTranslation.setToolTip(self.mTextToolTipNon)
         self.plumeTranslation.setGeometry(QtCore.QRect(270,0,18,18))
         self.plumeTranslation.clicked.connect(self.clickButtonsActions)
+        #====================
+        #--QToolButton LANGUAGE                                               
+        self.plumeChoiceLang = QtWidgets.QToolButton(self.mMenuBarDialog)
+        self.plumeChoiceLang.setObjectName("plumeChoiceLang")
+        self.plumeChoiceLang.setText(self.language)
+        self.mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Modifier la langue principale des métadonnées.") 
+        self.plumeChoiceLang.setToolTip(self.mTextToolTip)
+        self.plumeChoiceLang.setGeometry(QtCore.QRect(290,0,40,18))
+        if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { border: 0px solid black;}")  
+        #MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        _editStyle = self.editStyle             #style saisie
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
-        #------------
+        for elemQMenuItem in self.langList :
+            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+            _mObjetQMenuItem.setText(elemQMenuItem)
+            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+            _mObjetQMenu.addAction(_mObjetQMenuItem)
+            #- Actions
+            _mObjetQMenuItem.triggered.connect(self.clickButtonsChoiceLanguages)
+       
+        self.plumeChoiceLang.setPopupMode(self.plumeChoiceLang.MenuButtonPopup)
+        self.plumeChoiceLang.setMenu(_mObjetQMenu)
+        #--QToolButton LANGUAGE                                               
+        #====================
         mText = QtWidgets.QApplication.translate("plume_main", "Customization of the IHM") 
         self.paramColor = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.paramColor.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.paramColor.setIcon(QIcon(_iconSourcesParam))
         self.paramColor.setObjectName(mText)
         self.paramColor.setToolTip(mText)
-        self.paramColor.setGeometry(QtCore.QRect(300,0,18,18))
+        self.paramColor.setGeometry(QtCore.QRect(340,0,18,18))
         self.paramColor.clicked.connect(self.clickColorDialog)
         #--
         mText = QtWidgets.QApplication.translate("plume_main", "Help") 
@@ -853,7 +911,7 @@ class Ui_Dialog_plume(object):
         self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
         self.plumeHelp.setObjectName(mText)
         self.plumeHelp.setToolTip(mText)
-        self.plumeHelp.setGeometry(QtCore.QRect(330,0,18,18))
+        self.plumeHelp.setGeometry(QtCore.QRect(360,0,18,18))
         self.plumeHelp.clicked.connect(self.myHelpAM)
         #------------
         return

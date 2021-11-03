@@ -329,12 +329,7 @@ def executeSql(pointeur, _mKeySql, optionRetour = None) :
       print("err.pgcode = %s" %(zMessError_Code))
       print("err.pgerror = %s" %(zMessError_Erreur))
       zMessError_Erreur = cleanMessError(zMessError_Erreur)
-      mListeErrorCode = ["42501", "P0000", "P0001", "P0002", "P0003", "P0004"] 
-      if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur PLUME
-         mTypeErreur = "plumeGEREE" if dicExisteExpRegul(self, 'Search_0', zMessError_Erreur) else "plumeNONGEREE"
-      else : 
-         mTypeErreur = "plume"
-
+      mTypeErreur = "plume"
       dialogueMessageError(mTypeErreur, zMessError_Erreur )
       pointeurBase.close()   
       #-------------
@@ -557,6 +552,13 @@ def returnAndSaveDialogParam(self, mAction):
            else :
               mDicUserSettings[key] = mSettings.value(key)           
        #----
+       #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+       if mDicUserSettings["language"] not in mDicUserSettings["langList"] : 
+          mDicUserSettings["langList"].append(mDicUserSettings["language"])
+          # Je re sauvegarde langList  
+          mSettings.setValue("langList", mDicUserSettings["langList"])
+       #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+       
        mDicAutre = {**mDicAutre, **mDicUserSettings}          
        # liste des Paramétres UTILISATEURS
        #======================
@@ -573,7 +575,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.2"
+def returnVersion() : return "version 0.2.3"
 
 #==================================================
 #Execute Pdf 

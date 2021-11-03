@@ -14,14 +14,15 @@ class Ui_Dialog(object):
         self.mTypeErreur = mTypeErreur
         Dialog.setObjectName("Dialog")
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0,520,350).size()).expandedTo(Dialog.minimumSizeHint()))
-        iconSource = bibli_plume.getThemeIcon("plume.png")
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
         #----------
         self.labelImage = QtWidgets.QLabel(Dialog)
         if self.mTypeErreur == "plume" :
-           myPath = os.path.dirname(__file__)+"\\icons\\general\\erreur_normale_plume.png"
+           myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
         myDefPath = myPath.replace("\\","/");
         carIcon = QtGui.QImage(myDefPath)
         self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
