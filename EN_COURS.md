@@ -32,7 +32,8 @@
 | Import                             |       |   OK   |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#import-de-métadonnées-depuis-un-fichier) |
 | Choix du modèle                    |       |   OK   |   DL   | |
 | Activation du mode traduction      |       |   OK   |   DL   | |
-| Création d'un menu type QToolButton |   X   |        |   DL   | Il s'agit de créer un menu type QToolButton/QMenu dans la barre de menu afin d'alléger la dite barre d'icone |
+| Création d'un menu type QToolButton/QMenu |   X   |        |   DL   | Il s'agit de créer un menu type QToolButton/QMenu dans la barre de menu afin d'alléger ladite barre d'icone (Les items du menu de ce bouton serait "Aide / A propos" dans un premier temps |
+| Création d'une boite de dialogue A propos |   X   |        |   DL   | Création d'une boite de dialogue A propos type de celle de Asgard Manager |
 | Choix de la langue principale      |   X   |        |   DL   | Décrit dans [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées) |
 | Génération petit JSON GéoIDE       |       |   OK   |   DL   | Petite adaptation à faire à l'étape 3 du [processus de sauvegarde](/__doc__/16_actions_generales.md#sauvegarde). Il s'agit de passer un paramètre supplémentaire à `update_pg_description()` + gestion du [paramètre utilisateur](/__doc__/20_parametres_utilisateurs.md) correspondant (`geoideJSON`). |
 | Récupération des UUID GéoIDE       |       |    OK  |   DL   | L'argument `data` de `build_dict()` sert maintenant à quelque chose ! La [documentation](/__doc__/05_generation_dictionnaire_widgets.md#data--les-métadonnées-calculées) explique comment l'utiliser pour passer l'identifiant GéoIDE à `build_dict()`. |
