@@ -21,6 +21,7 @@ from . import bibli_gene_objets
 from .bibli_gene_objets import *
 #
 from . import docolorbloc
+from . import doabout
 
 from qgis.core import *
 from qgis.gui import *
@@ -99,18 +100,20 @@ class Ui_Dialog_plume(object):
         #for test param user
         #---
         _pathIcons = os.path.dirname(__file__) + "/icons/general"
-        _iconSourcesRead         = _pathIcons + "/read.svg"
-        _iconSourcesEmpty        = _pathIcons + "/empty.svg"
-        _iconSourcesExport       = _pathIcons + "/export.svg"
-        _iconSourcesImport       = _pathIcons + "/import.svg"
-        _iconSourcesCopy         = _pathIcons + "/copy_all.svg"
-        _iconSourcesPaste        = _pathIcons + "/paste_all.svg"
-        _iconSourcesSave         = _pathIcons + "/save.svg"
-        _iconSourcesTemplate     = _pathIcons + "/template.svg"
-        _iconSourcesTranslation  = _pathIcons + "/translation.svg"
-        _iconSourcesHelp         = _pathIcons + "/info.svg"
-        _iconSourcesParam        = _pathIcons + "/configuration.svg"
-        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesHelp ]
+        _iconSourcesRead          = _pathIcons + "/read.svg"
+        _iconSourcesEmpty         = _pathIcons + "/empty.svg"
+        _iconSourcesExport        = _pathIcons + "/export.svg"
+        _iconSourcesImport        = _pathIcons + "/import.svg"
+        _iconSourcesCopy          = _pathIcons + "/copy_all.svg"
+        _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
+        _iconSourcesSave          = _pathIcons + "/save.svg"
+        _iconSourcesTemplate      = _pathIcons + "/template.svg"
+        _iconSourcesTranslation   = _pathIcons + "/translation.svg"
+        _iconSourcesParam         = _pathIcons + "/configuration.svg"
+        _iconSourcesInterrogation = _pathIcons + "/info.svg"
+        _iconSourcesHelp          = _pathIcons + "/assistance.png"
+        _iconSourcesAbout         = _pathIcons + "/about.png"
+        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         Dialog.setWindowTitle("PLUME (Metadata storage in PostGreSQL)")
@@ -585,6 +588,12 @@ class Ui_Dialog_plume(object):
         d = docolorbloc.Dialog()
         d.exec_()
         return
+
+    #==========================
+    def clickAbout(self):
+        d = doabout.Dialog()
+        d.exec_()
+        return
         
     #==========================
     def afficheNoConnections(self, action = ""):
@@ -615,7 +624,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
-    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam):
+    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout):
         #-- Désactivation
         self.plumeEdit.setEnabled(False)
         self.plumeSave.setEnabled(False)
@@ -758,8 +767,8 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setMenu(self._mObjetQMenuExport)
         return
     #==========================
-    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesHelp ):
-        #Menu Dialog
+    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ):
+        #Menu Dialog                                                                                                                                                                
         self.mMenuBarDialog = QMenuBar(self)
         self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 400, 20))
         _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
@@ -856,7 +865,6 @@ class Ui_Dialog_plume(object):
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         self._mObjetQMenu = _mObjetQMenu
-        #self.plumeTemplate.clicked.connect(self.clickButtonsActions)
         #--QToolButton TEMPLATE                                               
         #====================
         #--
@@ -904,16 +912,47 @@ class Ui_Dialog_plume(object):
         self.paramColor.setToolTip(mText)
         self.paramColor.setGeometry(QtCore.QRect(340,0,18,18))
         self.paramColor.clicked.connect(self.clickColorDialog)
-        #--
+        #====================
+        #--QToolButton POINT ?                                               
+        self.plumeInterrogation = QtWidgets.QToolButton(self.mMenuBarDialog)
+        self.plumeInterrogation.setObjectName("plumeInterrogation")
+        self.mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Aide / À propos") 
+        self.plumeInterrogation.setIcon(QIcon(_iconSourcesInterrogation))
+        self.plumeInterrogation.setToolTip(self.mTextToolTip)
+        self.plumeInterrogation.setGeometry(QtCore.QRect(360,0,40,18))
+        if self.toolBarDialog == "picture" : self.plumeInterrogation.setStyleSheet("QToolButton { border: 0px solid black;}")  
+        #MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        _mObjetQMenu.setToolTipsVisible(True)
+        _editStyle = self.editStyle             #style saisie
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        #------------
+        #-- Aide
         mText = QtWidgets.QApplication.translate("plume_main", "Help") 
-        self.plumeHelp = QtWidgets.QPushButton(self.mMenuBarDialog)
-        if self.toolBarDialog == "picture" : self.plumeHelp.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
-        self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
+        self.plumeHelp = QAction("Help",self.plumeInterrogation)
+        self.plumeHelp.setText(mText)
+        #self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
         self.plumeHelp.setObjectName(mText)
         self.plumeHelp.setToolTip(mText)
-        self.plumeHelp.setGeometry(QtCore.QRect(360,0,18,18))
-        self.plumeHelp.clicked.connect(self.myHelpAM)
+        self.plumeHelp.triggered.connect(self.myHelpAM)
+        _mObjetQMenu.addAction(self.plumeHelp)
+        #-- Aide
+        _mObjetQMenu.addSeparator()
+        #-- About
+        mText = QtWidgets.QApplication.translate("plume_main", "About") 
+        self.plumeAbout = QAction("About",self.plumeInterrogation)
+        self.plumeAbout.setText(mText)
+        #self.plumeAbout.setIcon(QIcon(_iconSourcesAbout))
+        self.plumeAbout.setObjectName(mText)
+        self.plumeAbout.setToolTip(mText)
+        self.plumeAbout.triggered.connect(self.clickAbout)
+        _mObjetQMenu.addAction(self.plumeAbout)
+        #-- About
         #------------
+        self.plumeInterrogation.setPopupMode(self.plumeInterrogation.MenuButtonPopup)
+        self.plumeInterrogation.setMenu(_mObjetQMenu)
+        #--QToolButton POINT ?                                               
+        #====================
         return
 
     #==========================

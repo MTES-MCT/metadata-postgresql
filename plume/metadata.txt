@@ -16,6 +16,8 @@ changelog:
                Version under Qgis 3.20
        ** Gestion des erreurs PostgreSQL revus pour ne gerer que celles specifiques a un soucis PP
        ** Gestion des UUID de GeoIDE via l objet Data du dictionnaire build_dict 
+       ** Nouveau bouton avec Menu (Doc. en ligne / A propos) 
+       ** Boite de dialogue *A Propos* 
     ==========================================================================
     ** 0.2.2 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.20
