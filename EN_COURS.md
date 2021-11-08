@@ -15,7 +15,7 @@
 | Formulaire à la volée              |        |   Ok   |   DL   | |
 | QtabWidget (gestion des onglets)   |        |   Ok   |   DL   | |
 | Installation de l'extension de PLUME |        |   OK   |   DL   | Il s'agit de proposer dans l'interface de Asgard Manager, l'installation et les mises à jour de l'extension de PLUME pour l'ADL |
-| Import de la bibliothèque RDFLIB   |        |   OK     |   DL   | Il s'agit de pouvoir vérifier et installer la bibliothèque RDFLIB de façon autonome (solution installation en local, pas besoin de connexion, PLUME est indépendantg et embarque la distibution et se charge de l'installation)| 
+| Import de la bibliothèque RDFLIB   |        |   OK     |   DL   | Il s'agit de pouvoir vérifier et installer la bibliothèque RDFLIB de façon autonome (solution : installation en local, pas besoin de connexion, PLUME est indépendant et embarque la distribution et se charge de l'installation)| 
 | Compléter le schéma SHACL          |   X    |        |   LL   | + thésaurus manquants |
 | Outillage de l'import de métadonnées GéoIDE Catalogue |   X    |        |   LL   | En attente retour de Luc Boyer sur la documentation de l'API. |
 | Documentation sous Scenari         |   X   |        |   LL / DL   | |
