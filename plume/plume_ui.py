@@ -37,6 +37,16 @@ from .bibli_rdf import rdf_utils
 from .bibli_pg  import pg_queries
 from .bibli_pg  import template_utils
 
+#==================================================
+#Gestion de la bibliothèque RDFLIB
+"""
+try : 
+  from rdflib import Graph
+except :
+  manageLibrary()
+"""
+#==================================================
+
 class Ui_Dialog_plume(object):
     def __init__(self):
         self.iface = qgis.utils.iface                         

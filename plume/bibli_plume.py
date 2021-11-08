@@ -18,9 +18,18 @@ from psycopg2 import sql
 import re, uuid
 import json
 from pathlib import Path
-from .bibli_pg  import pg_queries
-from .bibli_pg  import template_utils
-from .bibli_rdf import rdf_utils,  __path__
+try :
+   from .bibli_pg  import pg_queries
+except :
+   pass   
+try :
+   from .bibli_pg  import template_utils
+except :
+   pass   
+try :
+   from .bibli_rdf import rdf_utils,  __path__
+except :
+   pass   
 
 from qgis.gui import (QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel)
 from qgis.utils import iface
@@ -48,7 +57,7 @@ def dicListSql(mKeySql):
     mdicListSql['Fonction_Tests_SELECT'] = (""" SELECT * FROM "#schema#"."#table#"; """) 
 
     return  mdicListSql[mKeySql]
-
+    
 #==================================================
 def returnObjetVocabulary() :
     #**********************
@@ -575,7 +584,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.3"
+def returnVersion() : return "version 0.2.4"
 
 #==================================================
 #Execute Pdf 

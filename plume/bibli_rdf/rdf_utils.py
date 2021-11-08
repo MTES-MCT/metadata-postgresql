@@ -25,7 +25,21 @@ from json import dumps, loads
 import re, uuid
 
 from plume.bibli_rdf import __path__
-
+#==================================================
+#Gestion de la bibliothèque RDFLIB
+from ..bibli_install.bibli_install import manageLibrary
+try : 
+  from rdflib import Graph, Namespace, Literal, BNode, URIRef
+  from rdflib.namespace import NamespaceManager, split_uri
+  from rdflib.serializer import Serializer
+  from rdflib.util import from_n3
+except :
+  manageLibrary()
+  from rdflib import Graph, Namespace, Literal, BNode, URIRef
+  from rdflib.namespace import NamespaceManager, split_uri
+  from rdflib.serializer import Serializer
+  from rdflib.util import from_n3
+#==================================================
 
 
 class WidgetsDict(dict):
