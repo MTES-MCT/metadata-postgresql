@@ -10,7 +10,7 @@
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
 | ------------- | :-------------: | :---------: | :---------: |  --- |
-| Plume ne fonctionne qu'à partir de la version 3.10 et supérieure de Qgis |        |   Ok   |   DL/LL   | Le problème provient de la version de "psycopg2" qui est embarquée dans la version de Qgis (passage d'arguments) |* Qgis 3.4.5 = psycopg2 2.7.5 |* Qgis 3.10 = psycopg2 2.8.4 |* Qgis 3.20 = psycopg2 2.8.6||
+| Plume ne fonctionne qu'à partir de la version 3.10 et supérieure de Qgis |        |   Ok   |   DL/LL   | Le problème provient de la version de "psycopg2" qui est embarquée dans la version de Qgis (passage d'arguments) - Qgis 3.4.5 = psycopg2 2.7.5 - Qgis 3.10 = psycopg2 2.8.4 - Qgis 3.20 = psycopg2 2.8.6|
 ### Fonctionnalités majeures à implémenter
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
