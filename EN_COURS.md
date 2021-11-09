@@ -6,6 +6,12 @@
        
 ## Plume version 1.0
 
+### Warning versions
+
+|     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
+| ------------- | :-------------: | :---------: | :---------: |  --- |
+| Plume ne fonctionne qu'à partir de la version 3.10 et supérieure de Qgis<br><br>&#x1F600; |        |   Ok   |   DL/LL   | Le problème provient de la version de "psycopg2" qui est embarquée dans la version de Qgis (passage d'arguments) <br>-Qgis 3.4.5 = psycopg2 version 2.7.5 <br>-Qgis 3.10 = psycopg2 version 2.8.4<br>-Qgis 3.20 = psycopg2 version 2.8.6 |
+
 ### Fonctionnalités majeures à implémenter
 
 |     Quoi      |     A faire     |  Terminé   |  Qui   | Notes |
@@ -15,7 +21,7 @@
 | Formulaire à la volée              |        |   Ok   |   DL   | |
 | QtabWidget (gestion des onglets)   |        |   Ok   |   DL   | |
 | Installation de l'extension de PLUME |        |   OK   |   DL   | Il s'agit de proposer dans l'interface de Asgard Manager, l'installation et les mises à jour de l'extension de PLUME pour l'ADL |
-| Import de la bibliothèque RDFLIB   |   X    |        |   DL   | |
+| Import de la bibliothèque RDFLIB   |        |   OK     |   DL   | Il s'agit de pouvoir vérifier et installer la bibliothèque RDFLIB de façon autonome (solution : installation en local, pas besoin de connexion, PLUME est indépendant et embarque la distribution et se charge de l'installation)| 
 | Compléter le schéma SHACL          |   X    |        |   LL   | + thésaurus manquants |
 | Outillage de l'import de métadonnées GéoIDE Catalogue |   X    |        |   LL   | En attente retour de Luc Boyer sur la documentation de l'API. |
 | Documentation sous Scenari         |   X   |        |   LL / DL   | |
@@ -47,7 +53,7 @@
 | ------------- | :-------------: | :---------: | :---------: |  --- |
 | Les doubles clics sur une couche n'ont pas d'effet (pour ouvrir la fenêtre des propriétés dans le panneau des couches ou pour charger une couche depuis l'explorateur) |       |   OK   |   DL   | Semble directement lié au temps de chargement des métadonnées. Les améliorations de performance ont résolu complètement le problème chez DL, partiellement chez LL. |
 | ToolTips sur les QLabel ?  |       |   OK   |   DL   | Si c'est possible, bien sûr. Concernerait à la fois les QLabel qui donnent les noms des catégories (vu qu'ils ont tendance à occuper la moitié de l'espace...) et les QLabel utilisés pour les valeurs en mode lecture. Le texte est toujours dans la clé `'help text'`. |
-| Widget date et time à revoir ou pas       |   X   |        |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
+| Widget date et time à revoir ou pas       |       |   OK   |   DL   | Le principal sujet est de ne pas afficher de date quand aucune n'a été saisie (et qu'il n'est pas prévu d'avoir une valeur par défaut) |
 | Valeur vide dans les listes des QComboBox |       |   OK   |   DL   | Comme pour les QDateEdit, il s'agit de ne pas afficher de valeur (= la première de la liste) lorsqu'il n'y en a pas. |
 | Changer les couleurs par défaut des cadres |       |   OK   |   DL   | Les bonnes sont [là](https://github.com/MTES-MCT/metadata-postgresql/blob/main/__doc__/10_creation_widgets.md#autres-groupes). |
 | Créer une icône pour la valeur courante des menus des QToolButton  |      |    OK    |   LL   | Finalement, pas de nouvelle icône. On utilise le logo de Plume. |
