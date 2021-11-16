@@ -57,6 +57,26 @@ def dicListSql(mKeySql):
     mdicListSql['Fonction_Tests_SELECT'] = (""" SELECT * FROM "#schema#"."#table#"; """) 
 
     return  mdicListSql[mKeySql]
+
+#==================================================
+def listUserParam(self):
+    # liste des Paramétres UTILISATEURS
+    self.preferedTemplate        = self.mDic_LH["preferedTemplate"]                                       if ("preferedTemplate"        in self.mDic_LH and self.mDic_LH["preferedTemplate"] != "")        else None
+    self.enforcePreferedTemplate = (True if self.mDic_LH["enforcePreferedTemplate"] == "true" else False) if ("enforcePreferedTemplate" in self.mDic_LH and self.mDic_LH["enforcePreferedTemplate"] != "") else None
+    self.readHideBlank           = (True if self.mDic_LH["readHideBlank"]           == "true" else False) if ("readHideBlank"           in self.mDic_LH and self.mDic_LH["readHideBlank"] != "")           else None
+    self.readHideUnlisted        = (True if self.mDic_LH["readHideUnlisted"]        == "true" else False) if ("readHideUnlisted"        in self.mDic_LH and self.mDic_LH["readHideUnlisted"] != "")        else None
+    self.editHideUnlisted        = (True if self.mDic_LH["editHideUnlisted"]        == "true" else False) if ("editHideUnlisted"        in self.mDic_LH and self.mDic_LH["editHideUnlisted"] != "")        else None
+    self.language                = self.mDic_LH["language"]                                               if "language"                 in self.mDic_LH                                                    else "fr"
+    self.initTranslation         = self.mDic_LH["translation"]                                            if "translation"              in self.mDic_LH                                                    else "false" 
+    self.langList                = self.mDic_LH["langList"]                                               if "langList"                 in self.mDic_LH                                                    else ['fr', 'en']
+    self.geoideJSON              = (True if self.mDic_LH["geoideJSON"]              == "true" else False) if "geoideJSON"               in self.mDic_LH                                                    else True
+    self.readOnlyCurrentLanguage = (True if self.mDic_LH["readOnlyCurrentLanguage"] == "true" else False) if ("readOnlyCurrentLanguage" in self.mDic_LH and self.mDic_LH["readOnlyCurrentLanguage"] != "") else None
+    self.editOnlyCurrentLanguage = (True if self.mDic_LH["editOnlyCurrentLanguage"] == "true" else False) if ("editOnlyCurrentLanguage" in self.mDic_LH and self.mDic_LH["editOnlyCurrentLanguage"] != "") else None
+    self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]                                       if ("labelLengthLimit"        in self.mDic_LH and self.mDic_LH["labelLengthLimit"] != "")        else None
+    self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if ("valueLengthLimit"        in self.mDic_LH and self.mDic_LH["valueLengthLimit"] != "")        else None
+    self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if ("textEditRowSpan"         in self.mDic_LH and self.mDic_LH["textEditRowSpan"] != "")         else None
+    # liste des Paramétres UTILISATEURS
+    return 
     
 #==================================================
 def returnObjetVocabulary() :
@@ -584,7 +604,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.5"
+def returnVersion() : return "version 0.2.6"
 
 #==================================================
 #Execute Pdf 

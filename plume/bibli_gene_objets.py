@@ -14,43 +14,6 @@ from .bibli_plume import *
 from .bibli_rdf import rdf_utils
 
 #==================================================
-class MeQDateEdit(QgsDateTimeEdit):
-    '''QDateEdit personnalisé'''
-    def __init__(self, parent = None):
-        super(MeQDateEdit, self).__init__()
-        self.parent = parent
-        self.valeur = None
-        self.setFixedWidth(90)
-        self.dateChanged.connect(self.modifiedChange)
-        return
- 
-    def setValeur(self, valeur = None):
-        ''' Equivalent de setDate : si valeur est None met à jour self.valeur sinon utilise setDate '''
-        if valeur is not None or valeur == ""  or valeur == " ":
-            self.setDate(valeur)
-        else:
-            self.valeur = None
-            self.findChild(QLineEdit).setText(" ")  
-        return
- 
-    def contextMenuEvent(self, event):
-        ''' Active(désactive) le calendrier de mise à jour par clic droit '''
-        self.setCalendarPopup(not(self.calendarPopup()))    
-        return
- 
-    def modifiedChange(self):
-        ''' Met à jour 'valeur' quand on modifie la date avec setDate '''
-        self.valeur = self.date()
-        return
-        
-    def mouseDoubleClickEvent (self, event):
-        print('double-click')
-        self.valeur = None
-        self.findChild(QLineEdit).setText(" ")  
-        #return QtGui.QDateEdit().mouseDoubleClickEvent(event)                             
-        return
-
-#==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
     _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
     _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
