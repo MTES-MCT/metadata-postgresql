@@ -21,6 +21,7 @@ from . import bibli_gene_objets
 from .bibli_gene_objets import *
 #
 from . import docolorbloc
+from . import doabout
 
 from qgis.core import *
 from qgis.gui import *
@@ -36,6 +37,16 @@ from .bibli_rdf import rdf_utils
 from .bibli_pg  import pg_queries
 from .bibli_pg  import template_utils
 
+#==================================================
+#Gestion de la bibliothèque RDFLIB
+"""
+try : 
+  from rdflib import Graph
+except :
+  manageLibrary()
+"""
+#==================================================
+
 class Ui_Dialog_plume(object):
     def __init__(self):
         self.iface = qgis.utils.iface                         
@@ -45,6 +56,8 @@ class Ui_Dialog_plume(object):
     def setupUi(self, Dialog):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
+        #--
+        self.thesaurusCollection = {} # nécessaire pour première instance  (Stockage des thésaurus)
         #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
@@ -70,22 +83,8 @@ class Ui_Dialog_plume(object):
         self.lineQGroupBox    = self.mDic_LH["QGroupBoxLine"]      #trait QGroupBox
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]    #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
-        #---
         # liste des Paramétres UTILISATEURS
-        self.preferedTemplate        = self.mDic_LH["preferedTemplate"]                                       if ("preferedTemplate"        in self.mDic_LH and self.mDic_LH["preferedTemplate"] != "")        else None
-        self.enforcePreferedTemplate = (True if self.mDic_LH["enforcePreferedTemplate"] == "true" else False) if ("enforcePreferedTemplate" in self.mDic_LH and self.mDic_LH["enforcePreferedTemplate"] != "") else None
-        self.readHideBlank           = (True if self.mDic_LH["readHideBlank"]           == "true" else False) if ("readHideBlank"           in self.mDic_LH and self.mDic_LH["readHideBlank"] != "")           else None
-        self.readHideUnlisted        = (True if self.mDic_LH["readHideUnlisted"]        == "true" else False) if ("readHideUnlisted"        in self.mDic_LH and self.mDic_LH["readHideUnlisted"] != "")        else None
-        self.editHideUnlisted        = (True if self.mDic_LH["editHideUnlisted"]        == "true" else False) if ("editHideUnlisted"        in self.mDic_LH and self.mDic_LH["editHideUnlisted"] != "")        else None
-        self.language                = self.mDic_LH["language"]                                               if "language"                 in self.mDic_LH   else "fr"
-        self.initTranslation         = self.mDic_LH["translation"]                                            if "translation"              in self.mDic_LH   else "false" 
-        self.langList                = self.mDic_LH["langList"]                                               if "langList"                 in self.mDic_LH   else ['fr', 'en']
-        self.geoideJSON              = (True if self.mDic_LH["geoideJSON"]              == "true" else False) if "geoideJSON"               in self.mDic_LH   else True
-        self.readOnlyCurrentLanguage = (True if self.mDic_LH["readOnlyCurrentLanguage"] == "true" else False) if ("readOnlyCurrentLanguage" in self.mDic_LH and self.mDic_LH["readOnlyCurrentLanguage"] != "") else None
-        self.editOnlyCurrentLanguage = (True if self.mDic_LH["editOnlyCurrentLanguage"] == "true" else False) if ("editOnlyCurrentLanguage" in self.mDic_LH and self.mDic_LH["editOnlyCurrentLanguage"] != "") else None
-        self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]                                       if ("labelLengthLimit"        in self.mDic_LH and self.mDic_LH["labelLengthLimit"] != "")        else None
-        self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if ("valueLengthLimit"        in self.mDic_LH and self.mDic_LH["valueLengthLimit"] != "")        else None
-        self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if ("textEditRowSpan"         in self.mDic_LH and self.mDic_LH["textEditRowSpan"] != "")         else None
+        bibli_plume.listUserParam(self)
         # liste des Paramétres UTILISATEURS
         #for test param user
         """
@@ -97,18 +96,20 @@ class Ui_Dialog_plume(object):
         #for test param user
         #---
         _pathIcons = os.path.dirname(__file__) + "/icons/general"
-        _iconSourcesRead         = _pathIcons + "/read.svg"
-        _iconSourcesEmpty        = _pathIcons + "/empty.svg"
-        _iconSourcesExport       = _pathIcons + "/export.svg"
-        _iconSourcesImport       = _pathIcons + "/import.svg"
-        _iconSourcesCopy         = _pathIcons + "/copy_all.svg"
-        _iconSourcesPaste        = _pathIcons + "/paste_all.svg"
-        _iconSourcesSave         = _pathIcons + "/save.svg"
-        _iconSourcesTemplate     = _pathIcons + "/template.svg"
-        _iconSourcesTranslation  = _pathIcons + "/translation.svg"
-        _iconSourcesHelp         = _pathIcons + "/info.svg"
-        _iconSourcesParam        = _pathIcons + "/configuration.svg"
-        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesHelp ]
+        _iconSourcesRead          = _pathIcons + "/read.svg"
+        _iconSourcesEmpty         = _pathIcons + "/empty.svg"
+        _iconSourcesExport        = _pathIcons + "/export.svg"
+        _iconSourcesImport        = _pathIcons + "/import.svg"
+        _iconSourcesCopy          = _pathIcons + "/copy_all.svg"
+        _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
+        _iconSourcesSave          = _pathIcons + "/save.svg"
+        _iconSourcesTemplate      = _pathIcons + "/template.svg"
+        _iconSourcesTranslation   = _pathIcons + "/translation.svg"
+        _iconSourcesParam         = _pathIcons + "/configuration.svg"
+        _iconSourcesInterrogation = _pathIcons + "/info.svg"
+        _iconSourcesHelp          = _pathIcons + "/assistance.png"
+        _iconSourcesAbout         = _pathIcons + "/about.png"
+        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         Dialog.setWindowTitle("PLUME (Metadata storage in PostGreSQL)")
@@ -293,6 +294,38 @@ class Ui_Dialog_plume(object):
     #==========================
 
     #==========================
+    # == Gestion des actions du bouton Changement des langues
+    def  clickButtonsChoiceLanguages(self):
+        mItem = self.mMenuBarDialog.sender().objectName()
+        #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+        if mItem == "" : 
+           self.language, mItem = "fr", "fr" 
+        if mItem not in self.langList : self.langList.append(mItem)  
+        #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+        self.plumeChoiceLang.setText(mItem)
+        mDicUserSettings        = {}
+        mSettings = QgsSettings()
+        mSettings.beginGroup("PLUME")
+        mSettings.beginGroup("UserSettings")
+        #Ajouter si autre param
+        mDicUserSettings["language"] = mItem
+        mDicUserSettings["langList"] = self.langList
+        #----
+        for key, value in mDicUserSettings.items():
+            mSettings.setValue(key, value)
+        #======================
+        mSettings.endGroup()
+        mSettings.endGroup()
+        #----
+        #Regénération du dictionnaire    
+        self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+        #-
+        self.displayToolBar(*self.listIconToolBar)
+        return
+    # == Gestion des actions du bouton Changement des langues
+    #==========================
+
+    #==========================
     #Génération à la volée 
     #Dict des objets instanciés
     def generationALaVolee(self, _dict):
@@ -373,6 +406,7 @@ class Ui_Dialog_plume(object):
                  self.oldMetagraph  = self.metagraph
                  self.saveMetaGraph = False
                  self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+                 self.data       = bibli_plume.returnObjetData(self)
                  self.mode = "read"
                  #-
                  self.displayToolBar(*self.listIconToolBar)
@@ -412,11 +446,12 @@ class Ui_Dialog_plume(object):
             if self.connectBaseOKorKO[0] :
                self.afficheNoConnections("hide")
                #-
-               self.comment = bibli_plume.returnObjetComment(self, self.schema, self.table)
+               self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
                self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
                self.oldMetagraph  = self.metagraph
                self.saveMetaGraph = False
-               self.columns = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+               self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+               self.data       = bibli_plume.returnObjetData(self)
                self.mode = "read"
                #-
                self.displayToolBar(*self.listIconToolBar)
@@ -549,6 +584,12 @@ class Ui_Dialog_plume(object):
         d = docolorbloc.Dialog()
         d.exec_()
         return
+
+    #==========================
+    def clickAbout(self):
+        d = doabout.Dialog()
+        d.exec_()
+        return
         
     #==========================
     def afficheNoConnections(self, action = ""):
@@ -579,7 +620,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
-    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesHelp, _iconSourcesParam):
+    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout):
         #-- Désactivation
         self.plumeEdit.setEnabled(False)
         self.plumeSave.setEnabled(False)
@@ -590,6 +631,7 @@ class Ui_Dialog_plume(object):
         self.plumePaste.setEnabled(False)
         self.plumeTemplate.setEnabled(False)
         self.plumeTranslation.setEnabled(False)
+        self.plumeChoiceLang.setEnabled(False)
 
         #====================
         #====================
@@ -633,6 +675,7 @@ class Ui_Dialog_plume(object):
            self.plumePaste.setEnabled(True if (self.copyMetagraph != None and self.mode == "edit") else False)
            self.plumeTemplate.setEnabled(r)
            self.plumeTranslation.setEnabled(True if self.mode == "edit" else False)
+           self.plumeChoiceLang.setEnabled(r)
            #Mode edition avec les droits
            if r == True and self.mode == 'read' : 
               self.plumeSave.setEnabled(False)
@@ -720,10 +763,10 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setMenu(self._mObjetQMenuExport)
         return
     #==========================
-    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesHelp ):
-        #Menu Dialog
+    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ):
+        #Menu Dialog                                                                                                                                                                
         self.mMenuBarDialog = QMenuBar(self)
-        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 360, 20))
+        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 400, 20))
         _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
         #--
         mText = QtWidgets.QApplication.translate("plume_main", "Edition") 
@@ -818,7 +861,6 @@ class Ui_Dialog_plume(object):
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         self._mObjetQMenu = _mObjetQMenu
-        #self.plumeTemplate.clicked.connect(self.clickButtonsActions)
         #--QToolButton TEMPLATE                                               
         #====================
         #--
@@ -832,26 +874,81 @@ class Ui_Dialog_plume(object):
         self.plumeTranslation.setToolTip(self.mTextToolTipNon)
         self.plumeTranslation.setGeometry(QtCore.QRect(270,0,18,18))
         self.plumeTranslation.clicked.connect(self.clickButtonsActions)
+        #====================
+        #--QToolButton LANGUAGE                                               
+        self.plumeChoiceLang = QtWidgets.QToolButton(self.mMenuBarDialog)
+        self.plumeChoiceLang.setObjectName("plumeChoiceLang")
+        self.plumeChoiceLang.setText(self.language)
+        self.mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Modifier la langue principale des métadonnées.") 
+        self.plumeChoiceLang.setToolTip(self.mTextToolTip)
+        self.plumeChoiceLang.setGeometry(QtCore.QRect(290,0,40,18))
+        if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { border: 0px solid black;}")  
+        #MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        _editStyle = self.editStyle             #style saisie
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
-        #------------
+        for elemQMenuItem in self.langList :
+            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+            _mObjetQMenuItem.setText(elemQMenuItem)
+            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+            _mObjetQMenu.addAction(_mObjetQMenuItem)
+            #- Actions
+            _mObjetQMenuItem.triggered.connect(self.clickButtonsChoiceLanguages)
+       
+        self.plumeChoiceLang.setPopupMode(self.plumeChoiceLang.MenuButtonPopup)
+        self.plumeChoiceLang.setMenu(_mObjetQMenu)
+        #--QToolButton LANGUAGE                                               
+        #====================
         mText = QtWidgets.QApplication.translate("plume_main", "Customization of the IHM") 
         self.paramColor = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.paramColor.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.paramColor.setIcon(QIcon(_iconSourcesParam))
         self.paramColor.setObjectName(mText)
         self.paramColor.setToolTip(mText)
-        self.paramColor.setGeometry(QtCore.QRect(300,0,18,18))
+        self.paramColor.setGeometry(QtCore.QRect(340,0,18,18))
         self.paramColor.clicked.connect(self.clickColorDialog)
-        #--
+        #====================
+        #--QToolButton POINT ?                                               
+        self.plumeInterrogation = QtWidgets.QToolButton(self.mMenuBarDialog)
+        self.plumeInterrogation.setObjectName("plumeInterrogation")
+        self.mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Aide / À propos") 
+        self.plumeInterrogation.setIcon(QIcon(_iconSourcesInterrogation))
+        self.plumeInterrogation.setToolTip(self.mTextToolTip)
+        self.plumeInterrogation.setGeometry(QtCore.QRect(360,0,40,18))
+        if self.toolBarDialog == "picture" : self.plumeInterrogation.setStyleSheet("QToolButton { border: 0px solid black;}")  
+        #MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        _mObjetQMenu.setToolTipsVisible(True)
+        _editStyle = self.editStyle             #style saisie
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        #------------
+        #-- Aide
         mText = QtWidgets.QApplication.translate("plume_main", "Help") 
-        self.plumeHelp = QtWidgets.QPushButton(self.mMenuBarDialog)
-        if self.toolBarDialog == "picture" : self.plumeHelp.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
-        self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
+        self.plumeHelp = QAction("Help",self.plumeInterrogation)
+        self.plumeHelp.setText(mText)
+        #self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
         self.plumeHelp.setObjectName(mText)
         self.plumeHelp.setToolTip(mText)
-        self.plumeHelp.setGeometry(QtCore.QRect(330,0,18,18))
-        self.plumeHelp.clicked.connect(self.myHelpAM)
+        self.plumeHelp.triggered.connect(self.myHelpAM)
+        _mObjetQMenu.addAction(self.plumeHelp)
+        #-- Aide
+        _mObjetQMenu.addSeparator()
+        #-- About
+        mText = QtWidgets.QApplication.translate("plume_main", "About") 
+        self.plumeAbout = QAction("About",self.plumeInterrogation)
+        self.plumeAbout.setText(mText)
+        #self.plumeAbout.setIcon(QIcon(_iconSourcesAbout))
+        self.plumeAbout.setObjectName(mText)
+        self.plumeAbout.setToolTip(mText)
+        self.plumeAbout.triggered.connect(self.clickAbout)
+        _mObjetQMenu.addAction(self.plumeAbout)
+        #-- About
         #------------
+        self.plumeInterrogation.setPopupMode(self.plumeInterrogation.MenuButtonPopup)
+        self.plumeInterrogation.setMenu(_mObjetQMenu)
+        #--QToolButton POINT ?                                               
+        #====================
         return
 
     #==========================

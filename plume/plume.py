@@ -15,14 +15,11 @@ import os
 from . import doplume_ui
 from . import bibli_plume
 from .bibli_plume import *
-#from . import doabout
-
 
 class MainPlugin(object):
   def __init__(self, iface):
      self.name = "PLUME"
      self.iface = iface
-      
      # Generation de la traduction selon la langue choisie   
      overrideLocale = QSettings().value("locale/overrideFlag", False)
      localeFullName = QLocale.system().name() if not overrideLocale else QSettings().value("locale/userLocale", "")

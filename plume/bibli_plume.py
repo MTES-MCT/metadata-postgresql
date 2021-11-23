@@ -18,9 +18,18 @@ from psycopg2 import sql
 import re, uuid
 import json
 from pathlib import Path
-from .bibli_pg  import pg_queries
-from .bibli_pg  import template_utils
-from .bibli_rdf import rdf_utils,  __path__
+try :
+   from .bibli_pg  import pg_queries
+except :
+   pass   
+try :
+   from .bibli_pg  import template_utils
+except :
+   pass   
+try :
+   from .bibli_rdf import rdf_utils,  __path__
+except :
+   pass   
 
 from qgis.gui import (QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel)
 from qgis.utils import iface
@@ -49,6 +58,26 @@ def dicListSql(mKeySql):
 
     return  mdicListSql[mKeySql]
 
+#==================================================
+def listUserParam(self):
+    # liste des Paramétres UTILISATEURS
+    self.preferedTemplate        = self.mDic_LH["preferedTemplate"]                                       if ("preferedTemplate"        in self.mDic_LH and self.mDic_LH["preferedTemplate"] != "")        else None
+    self.enforcePreferedTemplate = (True if self.mDic_LH["enforcePreferedTemplate"] == "true" else False) if ("enforcePreferedTemplate" in self.mDic_LH and self.mDic_LH["enforcePreferedTemplate"] != "") else None
+    self.readHideBlank           = (True if self.mDic_LH["readHideBlank"]           == "true" else False) if ("readHideBlank"           in self.mDic_LH and self.mDic_LH["readHideBlank"] != "")           else None
+    self.readHideUnlisted        = (True if self.mDic_LH["readHideUnlisted"]        == "true" else False) if ("readHideUnlisted"        in self.mDic_LH and self.mDic_LH["readHideUnlisted"] != "")        else None
+    self.editHideUnlisted        = (True if self.mDic_LH["editHideUnlisted"]        == "true" else False) if ("editHideUnlisted"        in self.mDic_LH and self.mDic_LH["editHideUnlisted"] != "")        else None
+    self.language                = self.mDic_LH["language"]                                               if "language"                 in self.mDic_LH                                                    else "fr"
+    self.initTranslation         = self.mDic_LH["translation"]                                            if "translation"              in self.mDic_LH                                                    else "false" 
+    self.langList                = self.mDic_LH["langList"]                                               if "langList"                 in self.mDic_LH                                                    else ['fr', 'en']
+    self.geoideJSON              = (True if self.mDic_LH["geoideJSON"]              == "true" else False) if "geoideJSON"               in self.mDic_LH                                                    else True
+    self.readOnlyCurrentLanguage = (True if self.mDic_LH["readOnlyCurrentLanguage"] == "true" else False) if ("readOnlyCurrentLanguage" in self.mDic_LH and self.mDic_LH["readOnlyCurrentLanguage"] != "") else None
+    self.editOnlyCurrentLanguage = (True if self.mDic_LH["editOnlyCurrentLanguage"] == "true" else False) if ("editOnlyCurrentLanguage" in self.mDic_LH and self.mDic_LH["editOnlyCurrentLanguage"] != "") else None
+    self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]                                       if ("labelLengthLimit"        in self.mDic_LH and self.mDic_LH["labelLengthLimit"] != "")        else None
+    self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if ("valueLengthLimit"        in self.mDic_LH and self.mDic_LH["valueLengthLimit"] != "")        else None
+    self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if ("textEditRowSpan"         in self.mDic_LH and self.mDic_LH["textEditRowSpan"] != "")         else None
+    # liste des Paramétres UTILISATEURS
+    return 
+    
 #==================================================
 def returnObjetVocabulary() :
     #**********************
@@ -187,6 +216,12 @@ def returnObjetColumns(self, _schema, _table) :
     return columns 
 
 #==================================================
+def returnObjetData(self) :
+    geoide_id = rdf_utils.get_geoide_json_uuid(self.comment)
+    data = { 'dct:identifier': [geoide_id] } if geoide_id else None
+    return data 
+
+#==================================================
 def returnObjetTranslation(self) :
     #**********************
     # Mode  True False
@@ -234,6 +269,9 @@ def returnObjetsMeta(self, _schema, _table) :
     if self.templateTabs  is not None:
        kwa.update({ 'templateTabs': self.templateTabs })
     #--
+    if self.data is not None:
+       kwa.update({ 'data': self.data })
+    #--
     if self.mode is not None:
        kwa.update({ 'mode': self.mode })
     #--
@@ -271,7 +309,7 @@ def saveMetaIhm(self, _schema, _table) :
               self.mDicObjetsInstancies.update_value(_keyObjet, value)
     #-    
     #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
-    self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary, language=_language) 
+    self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary) 
     self.oldMetagraph  = self. metagraph
     #-    
     #Créer une version actualisée du descriptif PostgreSQL de l'objet. 
@@ -320,12 +358,7 @@ def executeSql(pointeur, _mKeySql, optionRetour = None) :
       print("err.pgcode = %s" %(zMessError_Code))
       print("err.pgerror = %s" %(zMessError_Erreur))
       zMessError_Erreur = cleanMessError(zMessError_Erreur)
-      mListeErrorCode = ["42501", "P0000", "P0001", "P0002", "P0003", "P0004"] 
-      if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur PLUME
-         mTypeErreur = "plumeGEREE" if dicExisteExpRegul(self, 'Search_0', zMessError_Erreur) else "plumeNONGEREE"
-      else : 
-         mTypeErreur = "plume"
-
+      mTypeErreur = "plume"
       dialogueMessageError(mTypeErreur, zMessError_Erreur )
       pointeurBase.close()   
       #-------------
@@ -548,6 +581,13 @@ def returnAndSaveDialogParam(self, mAction):
            else :
               mDicUserSettings[key] = mSettings.value(key)           
        #----
+       #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+       if mDicUserSettings["language"] not in mDicUserSettings["langList"] : 
+          mDicUserSettings["langList"].append(mDicUserSettings["language"])
+          # Je re sauvegarde langList  
+          mSettings.setValue("langList", mDicUserSettings["langList"])
+       #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+       
        mDicAutre = {**mDicAutre, **mDicUserSettings}          
        # liste des Paramétres UTILISATEURS
        #======================
@@ -564,7 +604,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.1"
+def returnVersion() : return "version 0.2.6"
 
 #==================================================
 #Execute Pdf 

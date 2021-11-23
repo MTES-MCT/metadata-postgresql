@@ -4,8 +4,14 @@ Fonctions pour l'import et la préparation du modèle de formulaire (template).
 """
 
 import re
-from rdflib import Graph
-
+#==================================================
+#Gestion de la bibliothèque RDFLIB
+from ..bibli_install.bibli_install import manageLibrary
+try : 
+  from rdflib import Graph
+except :
+  manageLibrary()
+  from rdflib import Graph
 
 def search_template(metagraph, templates):
     """Recherche le modèle de formulaire à utiliser.
