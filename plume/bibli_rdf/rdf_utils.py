@@ -1344,123 +1344,16 @@ class WidgetsDict(dict):
             return (self[key]['row'], 2, 1, 1)
   
 
-
-def build_dict(metagraph, shape, vocabulary, template=None,
-    templateTabs=None, columns=None, data=None, mode='edit',
-    readHideBlank=True, readHideUnlisted=True, editHideUnlisted=False,
-    language="fr", translation=False, langList=['fr', 'en'],
-    readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
-    labelLengthLimit=25, valueLengthLimit=65, textEditRowSpan=6,
-    preserve=False,
-    mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
-    mNSManager=None, mWidgetDictTemplate=None, mDict=None, mGraphEmpty=None,
-    mShallowTemplate=None, mTemplateEmpty=None, mGhost=None, mHiddenM=None,
-    mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None,
-    idx=None, rowidx=None, mVSources=None):
-    """Return a dictionary with relevant informations to build a metadata update form. 
-
-    ARGUMENTS
+class InternalDict(dict):
+    """Classe pour les dictionnaires internes.
+    
+    ATTRIBUTS
     ---------
-    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées, extrait du commentaire
-    d'un objet PostgreSQL.
-    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant les catégories
-    de métadonnées communes.
-    - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de toutes
-    les ontologies pertinentes.
-    - [optionnel] template (dict) : dictionnaire contenant les informations relatives au modèle
-    de formulaire à utiliser. Fournir un template permet : d'ajouter des métadonnées
-    locales aux catégories communes définies dans shape ; de restreindre les catégories
-    communes à afficher ; de substituer des paramètres locaux à ceux spécifiés par shape
-    (par exemple remplacer le nom à afficher pour la catégorie de métadonnée ou changer
-    le type de widget à utiliser). La forme de template est proche de celle du
-    dictionnaire résultant de la présente fonction (cf. plus loin) si ce n'est que ses
-    clés sont des chemins SPARQL identifiant des catégories de métadonnées et ses
-    dictionnaires internes ne comprennent que les clés marquées d'astéristiques. Certains
-    caractéristiques ne peuvent être définies que pour les catégories de métadonnées
-    locales : il n'est pas possible de changer 'data type' ni 'multiple values' pour une
-    catégorie commune.
-    - [optionnel] templateTabs (dict) : dictionnaire complémentaire à template, dont les
-    clés sont les noms des onglets du formulaire et les valeurs les futures clés
-    correspondant aux onglets dans le dictionnaire de widgets. L'ordre des clés dans le
-    dictionnaire sera l'ordre des onglets.
-    - [optionnel] columns (list) : liste de tuples formés de deux éléments, le premier
-    (str) pour le nom du champ, le second (str) pour son descriptif.
-    - [optionnel] data (dict) : un dictionnaire contenant des informations actualisées
-    à partir de sources externes (par exemple déduites des données) qui devront écraser
-    les valeurs présentes dans metagraph. Les clés du dictionnaire sont des chemins
-    SPARQL identifiant des catégories de métadonnées, ses valeurs sont des listes
-    contenant la ou les valeurs (str) à faire apparaître pour les catégories en question.
-    - [optionnel] mode (str) : indique si le formulaire est ouvert pour édition ('edit',
-    valeur par défaut), en lecture ('read') ou pour lancer une recherche ('search').
-    Le principal effet du mode lecture est la disparition des boutons, notamment les
-    "boutons plus" qui faisaient l'objet d'un enregistrement à part dans le dictionnaire.
-    ATTENTION !!! le mode recherche n'est pas encore implémenté, il renvoie le même
-    dictionnaire que le mode lecture.
-    - [optionnel] readHideBlank (bool) : paramètre utilisateur qui indique si les champs
-    vides doivent être masqués en mode lecture. True par défaut.
-    - [optionnel] readHideUnlisted (bool) : paramètre utilisateur qui indique si les
-    catégories hors template doivent être masquées en mode lecture. En l'absence de template,
-    si readHideUnlisted vaut True, seules les métadonnées communes seront visibles. True par défaut.
-    - [optionnel] editHideUnlisted (bool) : idem readHideUnlisted mais pour le mode édition.
-    False par défaut.
-    - [optionnel] language (str) : langue principale de rédaction des métadonnées
-    (paramètre utilisateur). Français ("fr") par défaut. La valeur de language doit être
-    incluse dans langList ci-après.
-    - [optionnel] translation (bool) : paramètre utilisateur qui indique si les widgets de
-    traduction doivent être affichés. False par défaut.
-    - [optionnel] langList (list) : paramètre utilisateur spécifiant la liste des langues
-    autorisées pour les traductions (str), par défaut français et anglais, soit ['fr', 'en'].
-    - [optionnel] readOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
-    en mode lecture, seules les métadonnées saisies dans la langue principale
-    (paramètre language) sont affichées. True par défaut.
-    À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
-    d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
-    existent, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
-    - [optionnel] editOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
-    en mode édition et lorsque le mode traduction est inactif, seules les métadonnées
-    saisies dans la langue principale (paramètre language) sont affichées. False par défaut.
-    À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
-    d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
-    existent, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
-    - [optionnel] labelLengthLimit (int) : nombre de caractères au-delà duquel le label sera
-    toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que
-    pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive. 25 par défaut.
-    - [optionnel] valueLengthLimit (int) : nombre de caractères au-delà duquel une valeur qui
-    aurait dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit.
-    Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la
-    valeur contient un retour à la ligne. 65 par défaut.
-    - [optionnel] textEditRowSpan (int) : nombre de lignes par défaut pour un widget QTextEdit
-    (utilisé si non défini par shape ou template). 6 par défaut.
-    - [optionnel] preserve (bool) : indique si les valeurs doivent être préservées. Inhibe
-    certaines transformation réalisées en mode lecture, notamment pour présenter des
-    hyperliens à l'utilisateur, ainsi que la transcription automatique de l'identifiant dans la
-    propriété dct:identifier. Valeur par défaut False. preserve n'est pas un paramètre
-    utilisateur, il sert pour la recette.
-
-    Les autres arguments sont uniquement utilisés lors des appels récursifs de la fonction
-    et ne doivent pas être renseignés manuellement.
-
-    RESULTAT
-    --------
-    Un dictionnaire (WidgetsDict) avec autant de clés que de widgets à empiler verticalement
-    (avec emboîtements). Les valeurs associées aux clés sont elles mêmes des dictionnaires,
-    dit "dictionnaires internes", contenant les informations utiles à la création des widgets
-    + des clés pour le stockage des futurs widgets.
+    Aucun.
     
-    Les attributs mode, translation, language et langList du dictionnaire de widgets sont
-    les arguments de même nom fournis à build_dict (ou leurs valeurs par défaut).
-
-    La clé du dictionnaire externe est un tuple formé :
-    [0] d'un index, qui garantit l'unicité de la clé.
-    [1] de la clé du groupe parent.
-    [2] dans quelques cas, la lettre M, indiquant que le widget est la version "manuelle" d'un
-    widget normalement abondé par un ou plusieurs thésaurus. Celui-ci a la même clé sans "M"
-    (même parent, même index, même placement dans la grille). Ces deux widgets sont
-    supposés être substitués l'un à l'autre dans la grille lorque l'utilisateur active ou
-    désactive le "mode manuel" (cf. 'switch source widget' ci-après)
-    
-
-    Description des clés des dictionnaires internes :
+    Un objet de classe InternalDict, ou "dictionnaire interne" est un dictionnaire
+    comportant les clés listées ci-après. Les valeurs des dictionnaires de widgets
+    (WidgetsDict) sont des dictionnaires internes.
     
     - 'object' : classification des éléments du dictionnaire. "group of values" ou
     "group of properties" ou "translation group" ou "edit" ou "plus button" ou "translation button".
@@ -1582,6 +1475,161 @@ def build_dict(metagraph, shape, vocabulary, template=None,
     valeurs sont des chaînes de catactères parmi 'string', 'boolean', 'decimal', 'integer', 'date',
     'time', 'dateTime', 'duration', 'float', 'double' (et non des objets de type URIRef).
     *** le chemin est la clé principale de template.
+    """
+    
+    def __init__(self):
+        """Génère un dictionnaire interne vierge.
+        
+        ARGUMENTS
+        ---------
+        Néant.
+        
+        RESULTAT
+        --------
+        Un dictionnaire interne (InternalDict) vide.
+        """
+        
+        keys = [
+            'object',
+            # stockage des widgets :
+            'main widget', 'grid widget', 'label widget', 'minus widget',
+            'language widget', 'switch source widget',
+            'switch source menu', 'switch source actions', 'language menu',
+            'language actions',
+            # paramétrage des widgets
+            'main widget type', 'row', 'row span', 'label', 'label row',
+            'help text', 'value', 'language value', 'placeholder text',
+            'input mask', 'is mandatory', 'has minus button', 'hide minus button',
+            'regex validator pattern', 'regex validator flags', 'type validator',
+            'multiple sources', 'sources', 'current source', 'current source URI',
+            'authorized languages', 'read only', 'hidden', 'hidden M',
+            # à l'usage des fonctions de rdf_utils
+            'default value', 'default source', 'multiple values', 'node kind',
+            'data type', 'ontology', 'transform', 'class', 'path', 'subject',
+            'predicate', 'node', 'default widget type', 'one per language',
+            'next child', 'shape order', 'template order', 'do not save',
+            'sources URI'
+            ]
+        
+        self.update({ k:None for k in keys })
+
+
+def build_dict(metagraph, shape, vocabulary, template=None,
+    templateTabs=None, columns=None, data=None, mode='edit',
+    readHideBlank=True, readHideUnlisted=True, editHideUnlisted=False,
+    language="fr", translation=False, langList=['fr', 'en'],
+    readOnlyCurrentLanguage=True, editOnlyCurrentLanguage=False,
+    labelLengthLimit=25, valueLengthLimit=65, textEditRowSpan=6,
+    preserve=False,
+    mPath=None, mTargetClass=None, mParentWidget=None, mParentNode=None,
+    mNSManager=None, mDict=None, mGraphEmpty=None,  mShallowTemplate=None,
+    mTemplateEmpty=None, mGhost=None, mHiddenM=None,
+    mTemplateTabs=None, mData=None, mPropMap=None, mPropTemplate=None,
+    idx=None, rowidx=None, mVSources=None):
+    """Return a dictionary with relevant informations to build a metadata update form. 
+
+    ARGUMENTS
+    ---------
+    - metagraph (rdflib.graph.Graph) : un graphe de métadonnées, extrait du commentaire
+    d'un objet PostgreSQL.
+    - shape (rdflib.graph.Graph) : schéma SHACL augmenté décrivant les catégories
+    de métadonnées communes.
+    - vocabulary (rdflib.graph.Graph) : graphe réunissant le vocabulaire de toutes
+    les ontologies pertinentes.
+    - [optionnel] template (dict) : dictionnaire contenant les informations relatives au modèle
+    de formulaire à utiliser. Fournir un template permet : d'ajouter des métadonnées
+    locales aux catégories communes définies dans shape ; de restreindre les catégories
+    communes à afficher ; de substituer des paramètres locaux à ceux spécifiés par shape
+    (par exemple remplacer le nom à afficher pour la catégorie de métadonnée ou changer
+    le type de widget à utiliser). La forme de template est proche de celle du
+    dictionnaire résultant de la présente fonction (cf. plus loin) si ce n'est que ses
+    clés sont des chemins SPARQL identifiant des catégories de métadonnées et ses
+    dictionnaires internes ne comprennent que les clés marquées d'astéristiques. Certains
+    caractéristiques ne peuvent être définies que pour les catégories de métadonnées
+    locales : il n'est pas possible de changer 'data type' ni 'multiple values' pour une
+    catégorie commune.
+    - [optionnel] templateTabs (dict) : dictionnaire complémentaire à template, dont les
+    clés sont les noms des onglets du formulaire et les valeurs les futures clés
+    correspondant aux onglets dans le dictionnaire de widgets. L'ordre des clés dans le
+    dictionnaire sera l'ordre des onglets.
+    - [optionnel] columns (list) : liste de tuples formés de deux éléments, le premier
+    (str) pour le nom du champ, le second (str) pour son descriptif.
+    - [optionnel] data (dict) : un dictionnaire contenant des informations actualisées
+    à partir de sources externes (par exemple déduites des données) qui devront écraser
+    les valeurs présentes dans metagraph. Les clés du dictionnaire sont des chemins
+    SPARQL identifiant des catégories de métadonnées, ses valeurs sont des listes
+    contenant la ou les valeurs (str) à faire apparaître pour les catégories en question.
+    - [optionnel] mode (str) : indique si le formulaire est ouvert pour édition ('edit',
+    valeur par défaut), en lecture ('read') ou pour lancer une recherche ('search').
+    Le principal effet du mode lecture est la disparition des boutons, notamment les
+    "boutons plus" qui faisaient l'objet d'un enregistrement à part dans le dictionnaire.
+    ATTENTION !!! le mode recherche n'est pas encore implémenté, il renvoie le même
+    dictionnaire que le mode lecture.
+    - [optionnel] readHideBlank (bool) : paramètre utilisateur qui indique si les champs
+    vides doivent être masqués en mode lecture. True par défaut.
+    - [optionnel] readHideUnlisted (bool) : paramètre utilisateur qui indique si les
+    catégories hors template doivent être masquées en mode lecture. En l'absence de template,
+    si readHideUnlisted vaut True, seules les métadonnées communes seront visibles. True par défaut.
+    - [optionnel] editHideUnlisted (bool) : idem readHideUnlisted mais pour le mode édition.
+    False par défaut.
+    - [optionnel] language (str) : langue principale de rédaction des métadonnées
+    (paramètre utilisateur). Français ("fr") par défaut. La valeur de language doit être
+    incluse dans langList ci-après.
+    - [optionnel] translation (bool) : paramètre utilisateur qui indique si les widgets de
+    traduction doivent être affichés. False par défaut.
+    - [optionnel] langList (list) : paramètre utilisateur spécifiant la liste des langues
+    autorisées pour les traductions (str), par défaut français et anglais, soit ['fr', 'en'].
+    - [optionnel] readOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
+    en mode lecture, seules les métadonnées saisies dans la langue principale
+    (paramètre language) sont affichées. True par défaut.
+    À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
+    d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
+    existent, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
+    - [optionnel] editOnlyCurrentLanguage (bool) : paramètre utilisateur qui indique si,
+    en mode édition et lorsque le mode traduction est inactif, seules les métadonnées
+    saisies dans la langue principale (paramètre language) sont affichées. False par défaut.
+    À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs
+    d'une langue arbitraire seront affichées. Par ailleurs, lorsque plusieurs traductions
+    existent, l'unique valeur affichée apparaîtra quoi qu'il arrive dans un groupe.
+    - [optionnel] labelLengthLimit (int) : nombre de caractères au-delà duquel le label sera
+    toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que
+    pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive. 25 par défaut.
+    - [optionnel] valueLengthLimit (int) : nombre de caractères au-delà duquel une valeur qui
+    aurait dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit.
+    Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la
+    valeur contient un retour à la ligne. 65 par défaut.
+    - [optionnel] textEditRowSpan (int) : nombre de lignes par défaut pour un widget QTextEdit
+    (utilisé si non défini par shape ou template). 6 par défaut.
+    - [optionnel] preserve (bool) : indique si les valeurs doivent être préservées. Inhibe
+    certaines transformation réalisées en mode lecture, notamment pour présenter des
+    hyperliens à l'utilisateur, ainsi que la transcription automatique de l'identifiant dans la
+    propriété dct:identifier. Valeur par défaut False. preserve n'est pas un paramètre
+    utilisateur, il sert pour la recette.
+
+    Les autres arguments sont uniquement utilisés lors des appels récursifs de la fonction
+    et ne doivent pas être renseignés manuellement.
+
+    RESULTAT
+    --------
+    Un dictionnaire (WidgetsDict) avec autant de clés que de widgets à empiler verticalement
+    (avec emboîtements). Les valeurs associées aux clés sont elles mêmes des dictionnaires,
+    dit "dictionnaires internes", contenant les informations utiles à la création des widgets
+    + des clés pour le stockage des futurs widgets.
+    
+    Les attributs mode, translation, language et langList du dictionnaire de widgets sont
+    les arguments de même nom fournis à build_dict (ou leurs valeurs par défaut).
+
+    La clé du dictionnaire externe est un tuple formé :
+    [0] d'un index, qui garantit l'unicité de la clé.
+    [1] de la clé du groupe parent.
+    [2] dans quelques cas, la lettre M, indiquant que le widget est la version "manuelle" d'un
+    widget normalement abondé par un ou plusieurs thésaurus. Celui-ci a la même clé sans "M"
+    (même parent, même index, même placement dans la grille). Ces deux widgets sont
+    supposés être substitués l'un à l'autre dans la grille lorque l'utilisateur active ou
+    désactive le "mode manuel" (cf. 'switch source widget' ci-après)
+    
+
+    Cf. InternalDict pour la description des clés des dictionnaires internes.
     
     EXEMPLES
     --------
@@ -1647,68 +1695,6 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             mData.update({
                 'dct:identifier': [strip_uuid(mDataIdentifier or mParentNode)]
                 })
-
-        # coquille de dictionnaire pour les attributs des widgets
-        mWidgetDictTemplate = {
-            'object': None,
-            
-            'main widget': None,
-            'grid widget': None,
-            'label widget': None,
-            'minus widget': None,
-            'language widget': None,
-            'switch source widget': None,
-
-            'switch source menu': None,
-            'switch source actions': None,
-            'language menu': None,
-            'language actions': None,
-            
-            'main widget type': None,
-            'row': None,
-            'row span': None,              
-            'label': None,
-            'label row': None,
-            'help text': None,
-            'value': None,
-            'language value': None,
-            'placeholder text': None,
-            'input mask': None,
-            'is mandatory': None,
-            'has minus button': None,
-            'hide minus button': None,
-            'regex validator pattern': None,
-            'regex validator flags': None,
-            'type validator': None,
-            'multiple sources': None,
-            'sources': None,
-            'current source': None,
-            'authorized languages': None,
-            'read only': None,
-            'hidden': None,
-            'hidden M': None,
-            
-            'default value': None,
-            'default source': None,
-            'multiple values': None,
-            'node kind': None,
-            'data type': None,
-            'ontology': None,
-            'transform': None,
-            'class': None,
-            'path': None,
-            'subject': None,
-            'predicate': None,
-            'node': None,
-            'default widget type': None,
-            'one per language': None,
-            'next child': None,
-            'shape order': None,
-            'template order': None,
-            'do not save': None,
-            'sources URI': None,
-            'current source URI': None
-            }
             
         # utilitaires pour la récupération des informations
         # contenues dans le schéma SHACL.
@@ -1752,7 +1738,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             language=language, langList=langList)
         n = 0
         for label, key in mTemplateTabs.items():        
-            mDict.update( { key : mWidgetDictTemplate.copy() } )
+            mDict.update( { key : InternalDict() } )
             mDict[key].update( {
                 'object' : 'group of properties',
                 'main widget type' : 'QGroupBox',
@@ -1886,7 +1872,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
                     mParent = (i,)
                     mTemplateTabs.update({ "Autres": mParent })
-                    mDict.update( { mParent : mWidgetDictTemplate.copy() } )
+                    mDict.update( { mParent : InternalDict() } )
                     mDict[mParent].update( {
                         'object' : 'group of properties',
                         'main widget type' : 'QGroupBox',
@@ -1916,7 +1902,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 # de valeurs (dans certains cas un groupe de traduction aurait été plus
                 # adapté, mais ça n'a pas d'importance) sans aucune autre propriété
                 mWidget = ( idx[mParent], mParent )
-                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                mDict.update( { mWidget : InternalDict() } )
                 mDict[mWidget].update( {
                     'object' : 'group of values'
                     } )
@@ -2015,7 +2001,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 # si la catégorie admet plusieurs valeurs ou traductions,
                 # on référence un widget de groupe
                 mWidget = ( idx[mParent], mParent )
-                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                mDict.update( { mWidget : InternalDict() } )
                 mDict[mWidget].update( {
                     'object' : 'translation group' if ( multilingual and translation ) else 'group of values',
                     'main widget type' : 'QGroupBox',
@@ -2069,7 +2055,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     
                     mNode = mValueBrut
                     mWidget = ( idx[mParent], mParent )
-                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict.update( { mWidget : InternalDict() } )
                     mDict[mWidget].update( {
                         'object' : 'group of properties',
                         'node kind' : mKind,
@@ -2097,7 +2083,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     mVHiddenM = mHiddenM or ( ( mCurSource is None ) if mKind == 'sh:BlankNodeOrIRI' else None )
 
                     mWidget = ( idx[mParent], mParent, 'M' ) if mKind == 'sh:BlankNodeOrIRI' else ( idx[mParent], mParent )
-                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict.update( { mWidget : InternalDict() } )
                     mDict[mWidget].update( {
                         'object' : 'group of properties',
                         'main widget type' : 'QGroupBox',
@@ -2144,7 +2130,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         textEditRowSpan=textEditRowSpan, preserve=preserve,
                         mPath=mNPath, mTargetClass=p['class'],
                         mParentWidget=mWidget,  mParentNode=mNode, mNSManager=mNSManager,
-                        mWidgetDictTemplate=mWidgetDictTemplate, mDict=mDict, mGraphEmpty=mNGraphEmpty,
+                        mDict=mDict, mGraphEmpty=mNGraphEmpty,
                         mShallowTemplate=mShallowTemplate, mTemplateEmpty=mTemplateEmpty,
                         mGhost=mNGhost, mHiddenM=mVHiddenM, mTemplateTabs=mTemplateTabs,
                         mData=mData, mPropMap=mPropMap, mPropTemplate=mPropTemplate,
@@ -2171,7 +2157,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     if isinstance(mValueBrut, BNode):
                         continue   
                         
-                    mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                    mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                     mDict[ ( idx[mParent], mParent ) ].update( {
                         'object' : 'edit',                      
                         'value' : mValueBrut,                        
@@ -2318,7 +2304,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 mRowSpan = ( t.get('row span', None) or ( int(p['rowspan']) if p['rowspan'] else textEditRowSpan ) ) \
                            if mWidgetType == 'QTextEdit' else None
 
-                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
@@ -2392,7 +2378,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 
                 # référencement d'un widget bouton pour ajouter une valeur
                 # si la catégorie en admet plusieurs
-                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'translation button' if multilingual else 'plus button',
                     'main widget type' : 'QToolButton',
@@ -2463,7 +2449,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             if len(values) > 1 or ( multiple and not ( mode == 'read' and readHideBlank ) ):
  
                 mWidget = ( idx[mParent], mParent )
-                mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                mDict.update( { mWidget : InternalDict() } )
                 mDict[mWidget].update( {
                     'object' : 'group of values',
                     'main widget type' : 'QGroupBox',
@@ -2511,7 +2497,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
                 mRowSpan = t.get('row span', textEditRowSpan) if mWidgetType == 'QTextEdit' else None
 
-                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'edit',
                     'main widget type' : mWidgetType,
@@ -2551,7 +2537,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
 
             if multiple and mode == 'edit':
 
-                mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                 mDict[ ( idx[mParent], mParent ) ].update( {
                     'object' : 'plus button',
                     'main widget type' : 'QToolButton',
@@ -2622,7 +2608,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
             mWidgetType = 'QTextEdit' if mode == 'edit' else 'QLabel'
 
             mWidget = ( idx[mParent], mParent )
-            mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+            mDict.update( { mWidget : InternalDict() } )
             mDict[ ( idx[mParent], mParent ) ].update( {
                 'object' : 'edit',
                 'main widget type' : mWidgetType,
@@ -2675,7 +2661,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     i = max([ k[0] for k in mTemplateTabs.values() ]) + 1
                     mParent = (i,)
                     mTemplateTabs.update({ "Autres": mParent })
-                    mDict.update( { mParent : mWidgetDictTemplate.copy() } )
+                    mDict.update( { mParent : InternalDict() } )
                     mDict[mParent].update( {
                         'object' : 'group of properties',
                         'main widget type' : 'QGroupBox',
@@ -2701,7 +2687,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                     # si les catégories non répertoriées ne
                     # doivent pas être affichées
                     mWidget = ( idx[mParent], mParent )
-                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict.update( { mWidget : InternalDict() } )
                     mDict[mWidget].update( {
                         'object' : 'group of values'
                         } )
@@ -2712,7 +2698,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 
                 else:
                     mWidget = ( idx[mParent], mParent )
-                    mDict.update( { mWidget : mWidgetDictTemplate.copy() } )
+                    mDict.update( { mWidget : InternalDict() } )
                     mDict[mWidget].update( {
                         'object' : 'group of values',
                         'main widget type' : 'QGroupBox',
@@ -2745,7 +2731,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                 if mNGhost:
                     # si les catégories non répertoriées ne
                     # doivent pas être affichées
-                    mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                    mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                     mDict[ ( idx[mParent], mParent ) ].update( {
                         'object' : 'edit',                      
                         'value' : mValue,                        
@@ -2776,7 +2762,7 @@ def build_dict(metagraph, shape, vocabulary, template=None,
                         if not mLanguage in ( langList or [] ) else langList.copy() \
                         ) if mLanguage and translation else None
 
-                    mDict.update( { ( idx[mParent], mParent ) : mWidgetDictTemplate.copy() } )
+                    mDict.update( { ( idx[mParent], mParent ) : InternalDict() } )
                     mDict[ ( idx[mParent], mParent ) ].update( {
                         'object' : 'edit',
                         'main widget type' : mWidgetType,
