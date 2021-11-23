@@ -4,14 +4,18 @@ Fonctions pour l'import et la préparation du modèle de formulaire (template).
 """
 
 import re
-#==================================================
-#Gestion de la bibliothèque RDFLIB
-from ..bibli_install.bibli_install import manageLibrary
-try : 
-  from rdflib import Graph
-except :
-  manageLibrary()
-  from rdflib import Graph
+
+try:
+    from rdflib import Graph
+except:
+    from plume.bibli_install.bibli_install import manageLibrary
+    # installe RDFLib si n'est pas déjà disponible
+    manageLibrary()
+    from rdflib import Graph
+    
+from plume.bibli_rdf.rdf_utils import uripath_from_sparqlpath, get_datasetid
+
+
 
 def search_template(metagraph, templates):
     """Recherche le modèle de formulaire à utiliser.
@@ -57,30 +61,30 @@ def search_template(metagraph, templates):
         
         # conditions sur les métadonnées
         if isinstance(t[2], dict):
+            u = get_datasetid(metagraph)
+            
             for e in t[2].values():
             
                 if isinstance(e, dict) and len(e) > 0:
                     b = True
                     
                     for k, v in e.items():
-                    
-                        q_gr = metagraph.query(
-                                """
-                                SELECT
-                                    ?value
-                                WHERE
-                                     {{ ?u a dcat:Dataset ;
-                                          {} ?value. }}
-                                """.format(k)
-                                )
-                         
-                        if v is not None and (
-                            len(q_gr) < 1
-                            or not any([str(o['value']).lower() == str(v).lower() for o in q_gr])
-                            ) or v is None and not len(q_gr) == 0:
+                        uri_path = uripath_from_sparqlpath(
+                            k, nsm = metagraph.namespace_manager, strict = False
+                            )
+                        if uri_path is None:
+                            b = False
+                            break
+                        
+                        if v is None:
+                            b = metagraph.value(u, uri_path) is None
+                        else:
+                            b = any(str(o).lower() == str(v).lower() for o in metagraph.objects(u, uri_path))
                             # comparaison avec conversion, qui ne tient
                             # pas compte du type ni de la langue ni de la casse
-                            b = False
+                            
+                        if not b:
+                            break
                             
                     if b:
                         r = t[0]
