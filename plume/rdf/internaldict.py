@@ -124,24 +124,23 @@ class InternalDict(dict):
     'transform', 'default widget type', 'one per language', 'next child' (indice à utiliser si un
     enregistrement est ajouté au groupe), 'multiple values'* (la catégorie est-elle
     censée admettre plusieurs valeurs ?), 'order shape', 'order template'* (ordre des catégories, cette
-    clé s'appelle simplement "order" dans le template), 'do not save', 'sources URI', 'default source'.
+    clé s'appelle simplement "order" dans le template), 'do not save', 'sources URI', 'default source',
+    'independant label'.
 
     * ces clés apparaissent aussi dans le dictionnaire interne de template.
     ** le dictionnaire interne de template contient également une clé 'data type', mais dont les
     valeurs sont des chaînes de catactères parmi 'string', 'boolean', 'decimal', 'integer', 'date',
     'time', 'dateTime', 'duration', 'float', 'double' (et non des objets de type URIRef).
     *** le chemin est la clé principale de template.
-    
     """
     
     def __init__(self):
-        """Crée un dictionnaire interne vierge.
+        """Génère un dictionnaire interne vierge.
         
         Returns
         -------
         InternalDict
             Un dictionnaire interne vide.
-        
         """
         
         keys = [
@@ -154,15 +153,16 @@ class InternalDict(dict):
             # paramétrage des widgets
             'main widget type', 'row', 'row span', 'label', 'label row',
             'help text', 'value', 'language value', 'placeholder text',
-            'input mask', 'is mandatory', 'has minus button',
+            'input mask', 'is mandatory', 'has minus button', 'hide minus button',
             'regex validator pattern', 'regex validator flags', 'type validator',
             'multiple sources', 'sources', 'current source', 'current source URI',
-            'authorized languages', 'read only',
+            'authorized languages', 'read only', 'hidden', 'hidden M',
             # à l'usage des fonctions de rdf_utils
             'default value', 'default source', 'multiple values', 'node kind',
             'data type', 'ontology', 'transform', 'class', 'path', 'subject',
             'predicate', 'node', 'default widget type', 'one per language',
-            'shape order', 'template order', 'sources URI'
+            'next child', 'shape order', 'template order', 'do not save',
+            'sources URI', 'independant label'
             ]
         
         self.update({ k:None for k in keys })
