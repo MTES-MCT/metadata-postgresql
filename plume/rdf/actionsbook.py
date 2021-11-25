@@ -13,6 +13,13 @@ Pour faciliter leur exploitation, les `ActionsBook` sont
 traduits en dictionnaires par la méthode `actionsbook_to_dict`
 de la classe `WidgetsDict`.
 
+Les listes des carnets d'actions contiennent par construction
+des informations inutiles (comme le fait de rendre visible le
+bouton moins annexé à un widget qui n'en a pas) ou redondantes
+(comme le fait de déplacer un widget qui n'a pas encore été créé).
+La consolidation est également du ressort de la méthode
+`actionsbook_to_dict`.
+
 """
 
 class ActionsBook:
