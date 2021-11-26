@@ -141,6 +141,48 @@ class WidgetsDict(dict):
             self[widgetkey]['hide minus button'] = widgetkey.hide_minus_button
 
 
+    def add(self, widgetkey):
+        """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
+        
+        Cette fonction est à utiliser après activation d'un bouton plus
+        (plus button) ou bouton de traduction (translation button) par
+        l'utilisateur.
+        
+        Parameters
+        ----------
+        widgetkey : WidgetKey
+            La clé du bouton plus ou bouton de traduction actionné par
+            l'utilisateur.
+        
+        Returns
+        -------
+        dict
+            Un dictionnaire ainsi constitué :
+            {
+            "widgets to show" : [liste des widgets masqués à afficher (QWidget)],
+            "widgets to hide" : [liste de widgets à masquer (QWidget)],
+            "widgets to move" : [liste de tuples - cf. ci-après],
+            "language menu to update" : [liste de clés (tuples) pour lesquelles
+            le menu des langues devra être régénéré],
+            "new keys" : [liste des nouvelles clés du dictionnaire (tuple)]
+            }
+            
+            Pour toutes les clés listées sous "new keys", il sera nécessaire de
+            générer les widgets, actions et menus, comme à la création initiale
+            du dictionnaire.
+            
+            Les tuples de la clé "widgets to move" sont formés comme suit :
+            [0] la grille (QGridLayout) où un widget doit être déplacé.
+            [1] le widget en question (QWidget).
+            [2] son nouveau numéro de ligne / row (int).
+            [3] son numéro de colonne / column (int).
+            [4] le nombre de lignes occupées / rowSpan (int).
+            [5] le nombre de colonnes occupées / columnSpan (int).
+        
+        """
+        ## TODO
+
+
     def dictisize_actionsbook(self, actionsbook):
         """Traduit un carnet d'actions en dictionnaire.
         
