@@ -1,7 +1,8 @@
 """Dictionnaires de widgets.
 """
 
-from plume.rdf.widgetkey import WidgetKey
+from plume.rdf.widgetkey import WidgetKey, EditKey, GroupOfPropertiesKey, \
+    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey
 from plume.rdf.internalkey import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
@@ -59,6 +60,9 @@ class WidgetsDict(dict):
             Liste des langues autorisées pour les traductions. Certaines
             valeurs du dictionnaire dépendent de cette liste, et la connaître est
             nécessaire à l'exécution de certaines actions.
+        root : GroupOfPropertiesKey
+            La clé racine du dictionnaire, dont toutes les autres sont des
+            descendantes.
         
         Returns
         -------
@@ -89,6 +93,8 @@ class WidgetsDict(dict):
             raise ValueError("language should be in langList.")
         else:
             self.langList = langList
+            
+        self.root = None
 
 
     def parent_grid(self, widgetkey):
@@ -121,27 +127,27 @@ class WidgetsDict(dict):
         if not widgetkey in self:
             raise KeyError("La clé '{}' n'est pas référencée.".format(widgetkey))
         
-        if widgetkey.row:
+        if not widgetkey.is_ghost:
             if self[widgetkey]['independant label']:
                 self[widgetkey]['label row'] = widgetkey.row
                 self[widgetkey]['row'] = widgetkey.row + 1
             else:
                 self[widgetkey]['row'] = widgetkey.row
         
-        if widgetkey.available_languages:
+        if isinstance(widgetkey, TranslationGroupKey):
             self[widgetkey]['authorized language'] = widgetkey.available_languages.copy()
             if not self[widgetkey]['language value'] in widgetkey.available_languages:
                 self[widgetkey]['authorized language'].append(self[widgetkey]['language value'])
          
         self[widgetkey]['hidden M'] = widgetkey.hidden_m
-        self[widgetkey]['hidden'] = widgetkey.hidden_b
-        self[widgetkey]['do not save'] = widgetkey.do_not_save
+        if isinstance(widgetkey, PlusButtonKey):
+            self[widgetkey]['hidden'] = widgetkey.hidden_b
         
-        if self[widgetkey]['has minus button']:
-            self[widgetkey]['hide minus button'] = widgetkey.hide_minus_button
+        if isinstance(widgetkey, GroupOfValuesKey):
+            self[widgetkey]['hide minus button'] = widgetkey.is_single_child
 
 
-    def add(self, widgetkey):
+    def add(self, buttonkey):
         """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
         
         Cette fonction est à utiliser après activation d'un bouton plus
@@ -150,7 +156,7 @@ class WidgetsDict(dict):
         
         Parameters
         ----------
-        widgetkey : WidgetKey
+        buttonkey : PlusButtonKey
             La clé du bouton plus ou bouton de traduction actionné par
             l'utilisateur.
         
