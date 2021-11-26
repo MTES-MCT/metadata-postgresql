@@ -1,6 +1,7 @@
 
 import unittest
-from plume.rdf.widgetkey import WidgetKey
+from plume.rdf.widgetkey import WidgetKey, EditKey, GroupOfPropertiesKey, \
+    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey
 
 class WidgetKeyTestCase(unittest.TestCase):
     
@@ -8,65 +9,67 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Initialisation d'une clé racine.
         
         """
-        rootkey = WidgetKey(kind='group of properties')
+        rootkey = GroupOfPropertiesKey()
         self.assertTrue(rootkey.is_root)
         
     def test_group_of_values(self):
         """Gestion des lignes dans un groupe de valeurs.
         
         """
-        rootkey = WidgetKey(kind='group of values')
+        rootkey = GroupOfPropertiesKey()
+        groupkey = GroupOfValuesKey(parent=rootkey)
         
-        pluskey = WidgetKey(parent=rootkey, kind='plus button')
-        self.assertTrue(pluskey in rootkey.children)
+        pluskey = PlusButtonKey(parent=groupkey)
+        self.assertFalse(pluskey in groupkey.children)
         self.assertEqual(pluskey.row, 0)
-        self.assertEqual(rootkey.button, pluskey)
+        self.assertEqual(groupkey.button, pluskey)
         
-        valkey1 = WidgetKey(parent=rootkey, kind='group of properties')
-        self.assertTrue(valkey1 in rootkey.children)
+        valkey1 = GroupOfPropertiesKey(parent=groupkey)
+        self.assertTrue(valkey1 in groupkey.children)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(pluskey.row, 1)
-        self.assertFalse(pluskey.hidden_b)
-        self.assertTrue(valkey1.hide_minus_button)
+        self.assertFalse(pluskey.is_hidden_b)
+        self.assertTrue(valkey1.is_single_child)
         
-        valkey2 = WidgetKey(parent=rootkey, kind='edit', rowspan=3)
+        valkey2 = EditKey(parent=groupkey, rowspan=3)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(valkey2.row, 1)
         self.assertEqual(pluskey.row, 4)
-        self.assertFalse(pluskey.hidden_b)
-        self.assertFalse(valkey1.hide_minus_button)
-        self.assertFalse(valkey2.hide_minus_button)
+        self.assertFalse(pluskey.is_hidden_b)
+        self.assertFalse(valkey1.is_single_child)
+        self.assertFalse(valkey2.is_single_child)
 
 
     def test_translation_group(self):
         """Gestion des lignes et des langues dans un groupe de traduction.
 
         """
-        rootkey = WidgetKey(
-            kind='translation group',
+        rootkey = GroupOfPropertiesKey()
+        groupkey = TranslationGroupKey(
+            parent=rootkey,
             available_languages=['fr', 'en', 'it']
             )
-        transkey = WidgetKey(parent=rootkey, kind='translation button')
-        self.assertTrue(transkey in rootkey.children)
+        transkey = TranslationButtonKey(parent=groupkey)
+        self.assertFalse(transkey in groupkey.children)
         self.assertEqual(transkey.row, 0)
-        self.assertEqual(rootkey.button, transkey)
+        self.assertEqual(groupkey.button, transkey)
 
-        valkey1 = WidgetKey(parent=rootkey, kind='edit', rowspan=3,
+        valkey1 = EditKey(parent=groupkey, rowspan=3,
             widget_language='fr')
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(transkey.row, 3)
-        self.assertEqual(rootkey.available_languages, ['en', 'it'])
-        self.assertFalse(transkey.hidden_b)
-        self.assertTrue(valkey1.hide_minus_button)
+        self.assertEqual(groupkey.available_languages, ['en', 'it'])
+        self.assertFalse(transkey.is_hidden_b)
+        self.assertTrue(valkey1.is_single_child)
 
-        valkey2 = WidgetKey(parent=rootkey, kind='edit', rowspan=2,
+        valkey2 = EditKey(parent=groupkey, rowspan=2,
             widget_language='en')
-        valkey3 = WidgetKey(parent=rootkey, kind='edit', rowspan=1,
+        valkey3 = EditKey(parent=groupkey, rowspan=1,
             widget_language='it')
         self.assertEqual(transkey.row, 6)
-        self.assertEqual(rootkey.available_languages, [])
-        self.assertTrue(transkey.hidden_b)
-        self.assertFalse(valkey1.hide_minus_button)
+        self.assertEqual(groupkey.available_languages, [])
+        self.assertTrue(transkey.is_hidden_b)
+        self.assertFalse(valkey1.is_single_child)
         
 
     def test_delated_computation(self):
