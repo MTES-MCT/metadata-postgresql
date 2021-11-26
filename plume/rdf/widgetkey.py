@@ -123,6 +123,37 @@ class WidgetKey:
     def __str__(self):
         return "WidgetKey {}".format(self.uuid)
 
+    def kill(self, actionsbook=None):
+        """Efface une clé de la mémoire de son parent.
+        
+        Parameters
+        ----------
+        actionsbook : ActionsBook, optional
+            Si présent, les actions à répercuter sur les widgets
+            seront tracées dans ce carnet d'actions.
+        
+        Notes
+        -----
+        Le cas échéant, la clé jumelle sera également effacée,
+        il n'y a donc pas lieu d'appeler deux fois cette méthode.
+        
+        Appliquer cette fonction sur une clé racine ne provoque
+        pas d'erreur, elle n'aura simplement aucun effet.
+        
+        """
+        if self.is_root:
+            return
+        
+        self.parent.children.remove(self)
+        
+        if isinstance(self, (EditKey, GroupOfPropertiesKey)) \
+            and self.m_twin:
+            self.parent.children.remove(self.m_twin)
+
+        self.parent.compute_rows(actionsbook)
+        if isinstance(self.parent, GroupOfValuesKey):
+            self.parent.compute_single_children(actionsbook)  
+
 
 class GroupKey(WidgetKey):
     """Clé de dictionnaire de widgets représentant un groupe.
@@ -170,35 +201,6 @@ class GroupKey(WidgetKey):
         
         if not no_computation:
             self.compute_rows(actionsbook) 
-    
-    def kill(self, actionsbook=None):
-        """Efface une clé de la mémoire de son parent.
-        
-        Parameters
-        ----------
-        actionsbook : ActionsBook, optional
-            Si présent, les actions à répercuter sur les widgets
-            seront tracées dans ce carnet d'actions.
-        
-        Notes
-        -----
-        Le cas échéant, la clé jumelle sera également effacée,
-        il n'y a donc pas lieu d'appeler deux fois cette méthode.
-        
-        Appliquer cette fonction sur une clé racine ne provoque
-        pas d'erreur, elle n'aura simplement aucun effet.
-        
-        """
-        if self.is_root:
-            return
-        
-        self.parent.remove(self)
-        if self.m_twin:
-            self.parent.remove(self.m_twin)
-
-        self.parent.compute_rows(actionsbook)
-        if isinstance(self.parent, GroupOfValuesKey):
-            self.parent.compute_single_children(actionsbook)  
     
     def real_children(self):
         """Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).
