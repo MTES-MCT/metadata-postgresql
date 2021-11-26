@@ -39,6 +39,12 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertFalse(valkey1.is_single_child)
         self.assertFalse(valkey2.is_single_child)
 
+        valkey1.kill()
+        self.assertFalse(valkey1 in groupkey.children)
+        self.assertTrue(valkey2.is_single_child)
+        self.assertEqual(valkey2.row, 0)
+        self.assertEqual(pluskey.row, 3)
+
 
     def test_translation_group(self):
         """Gestion des lignes et des langues dans un groupe de traduction.
@@ -70,7 +76,15 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(groupkey.available_languages, [])
         self.assertTrue(transkey.is_hidden_b)
         self.assertFalse(valkey1.is_single_child)
-        
+
+        valkey2.kill(widget_language='en')
+        self.assertFalse(valkey2 in groupkey.children)
+        self.assertEqual(groupkey.available_languages, ['en'])
+        self.assertFalse(transkey.is_hidden_b)
+        self.assertEqual(transkey.row, 4)
+        self.assertEqual(valkey3.row, 3)
+
+    
 
     def test_delated_computation(self):
         pass
