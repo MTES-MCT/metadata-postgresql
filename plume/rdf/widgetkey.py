@@ -76,7 +76,8 @@ class WidgetKey:
         rowspan : int, optional
             Nombre de lignes occupées par le ou les widgets portés par
             la clé. Si non spécifié, sera fixé à 0 si `is_ghost` vaut
-            True, sinon génère une erreur.
+            True, sinon à 1 pour tout ce qui n'est pas un widget de saisie.
+            Obligatoire pour un widget de saisie.
         actionsbook : ActionsBook, optional
             Si présent, les actions à répercuter sur les widgets
             seront tracées dans ce carnet d'actions.
@@ -101,6 +102,11 @@ class WidgetKey:
                 "être qu'un groupe de propriétés.")
         
         self.is_ghost = kwargs.get('is_ghost', False)
+        if self.is_ghost and not isinstance(self, (EditKey,
+            GroupOfPropertiesKey, GroupOfValuesKey)):
+            raise ForbiddenOperation(self, "Ce type de clé ne " \
+                "peut être un fantôme.")
+        
         self.is_hidden_m = kwargs.get('is_hidden_m', False)
         self.is_hidden_b = False
         
@@ -110,8 +116,17 @@ class WidgetKey:
             if not self.is_hidden_m and self.parent.is_hidden_m:
                 self.is_hidden_m = True
         
-        self.rowspan = 0 if self.is_ghost else kwargs.get('rowspan', 1)
+        if not self.is_ghost and isinstance(self, EditKey):
+            self.rowspan = kwargs.get('rowspan')
+            if self.rowspan is None:
+                raise MissingParameter('rowspan', self)
+        else:
+            self.rowspan = 0 if self.is_ghost else 1
         self.row = None
+        
+        if isinstance(self, (EditKey, GroupOfPropertiesKey)) \
+            and self.m_twin:
+            self.m_twin.register_m_twin(self)
         
         if not self.is_root:
             self.parent.register_child(self, **kwargs)
@@ -146,6 +161,9 @@ class WidgetKey:
         
         self.parent.children.remove(self)
         
+        if actionsbook:
+            actionsbook.drop.append(self)
+        
         if isinstance(self, (EditKey, GroupOfPropertiesKey)) \
             and self.m_twin:
             self.parent.children.remove(self.m_twin)
@@ -153,6 +171,87 @@ class WidgetKey:
         self.parent.compute_rows(actionsbook)
         if isinstance(self.parent, GroupOfValuesKey):
             self.parent.compute_single_children(actionsbook)  
+
+    def register_m_twin(self, m_twin_key):
+        """Référence une clé auprès de sa jumelle.
+        
+        Parameters
+        ----------
+        m_twin_key : EditKey or GroupOfPropertiesKey
+            La clé jumelle à déclarer.
+        
+        """
+        if self.is_root :
+            raise ForbiddenOperation(self, 'Une clé racine ne peut ' \
+                'pas avoir de jumelle.')
+        
+        if self.m_twin and self.m_twin != m_twin_key:
+            raise IntegrityBreach(self, 'Une autre jumelle est déjà' \
+                ' référencée.')
+        
+        if not isinstance(self, (EditKey, GroupOfPropertiesKey)):
+            raise ForbiddenOperation(self, 'Seul un widget de saisie ' \
+                'ou un groupe de propriétés peut avoir une clé jumelle.')
+        
+        if isinstance(self, GroupOfPropertiesKey) \
+            and not isinstance(m_twin_key, EditKey):
+            raise ForbiddenOperation(self, 'La clé jumelle devrait ' \
+                'être un widget de saisie.')
+        
+        if isinstance(self, EditKey) \
+            and not isinstance(m_twin_key, GroupOfPropertiesKey):
+            raise ForbiddenOperation(self, 'La clé jumelle devrait ' \
+                'être un groupe de propriétés.')
+        
+        if self.parent != m_twin_key.parent:
+            raise IntegrityBreach(self, 'La clé et sa jumelle ' \
+                'devraient avoir la même clé parent.')
+        
+        if not self.parent.is_hidden_m \
+            and self.is_hidden_m == m_twin_key.is_hidden_m:
+            raise IntegrityBreach(self, 'Une et une seule des clés ' \
+                'jumelles devrait être masquée (is_hidden_m).')
+        
+        if self.rowspan != m_twin_key.rowspan:
+            raise IntegrityBreach(self, "L'attribut rowspan devrait" \
+                ' être identique pour les deux clés jumelles.')
+        
+        self.m_twin = m_twin_key
+
+    def hide_m(self, actionsbook=None):
+        """Inverse la visibilité d'un couple de jumelles (et leurs descendantes).
+        
+        Parameters
+        ----------
+        actionsbook : ActionsBook, optional
+            Si présent, les actions à répercuter sur les widgets
+            seront tracées dans ce carnet d'actions.
+        
+        """
+        if not isinstance(self, (GroupOfPropertiesKey, EditKey)):
+            raise ForbiddenOperation('Cette méthode ne peut être ' \
+                "appliquée qu'à des clés de groupe de propriétés ou " \
+                'de widget de saisie.')
+        
+        if not self.m_twin:
+            raise IntegrityBreach(self, 'Pas de clé jumelle renseignée.')
+        self.m_twin._hide_m(actionsbook)
+        self._hide_m(actionsbook)   
+
+    def _hide_m(self, actionsbook):
+        self.is_hidden_m = not self.is_hidden_m
+        
+        if actionsbook and not self.is_hidden_m:
+            actionsbook.show.append(self)
+        elif actionsbook:
+            actionsbook.hide.append(self)
+        
+        if isinstance(self, GroupKey):
+            for child in self.real_children():
+                child._hide_m(actionsbook)
+                
+        if isinstance(self, GroupOfValuesKey) and self.button:
+            button._hide_m(actionsbook)
 
 
 class GroupKey(WidgetKey):
@@ -248,10 +347,11 @@ class GroupKey(WidgetKey):
                 child.row = n
                 if actionsbook:
                     actionsbook.move.append(child)
-                if isinstance(child, GroupOfPropertiesKey) and child.m_twin:
-                    child.m_twin.row = n
-                    if actionsbook:
-                        actionsbook.move.append(child.m_twin)
+            if isinstance(child, GroupOfPropertiesKey) \
+                and child.m_twin and child.m_twin.row != n:
+                child.m_twin.row = n
+                if actionsbook:
+                    actionsbook.move.append(child.m_twin)
             
             n += child.rowspan
             
@@ -282,6 +382,12 @@ class GroupOfPropertiesKey(GroupKey):
         self.is_single_child = None
         self.m_twin = kwargs.get('m_twin')
         super().__init__(**kwargs)
+        
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'group of properties'
 
     def register_child(self, child_key, **kwargs):
         """Référence une fille dans les clés du groupe.
@@ -299,70 +405,6 @@ class GroupOfPropertiesKey(GroupKey):
             raise ForbiddenOperation(child_key, 'Ce type de clé ne ' \
                 'peut pas être ajouté à un groupe de propriétés.')
         super().register_child(child_key, **kwargs)
-
-    def register_m_twin(self, m_twin_key):
-        """Référence une clé de widget de saisie auprès de sa jumelle groupe de propriétés.
-        
-        Parameters
-        ----------
-        m_twin_key : EditKey
-            La clé jumelle à déclarer.
-        """
-        if self.is_root :
-            raise ForbiddenOperation(self, 'Une clé racine ne peut ' \
-                'pas avoir de jumelle.')
-        
-        if self.m_twin and self.m_twin != m_twin_key:
-            raise IntegrityBreach(self, 'Une autre jumelle est déjà' \
-                ' référencée.')
-        
-        if not isinstance(m_twin_key, EditKey):
-            raise ForbiddenOperation(self, 'La clé jumelle devrait ' \
-                'être un widget de saisie.')
-        
-        if self.parent != m_twin_key.parent:
-            raise IntegrityBreach(self, 'La clé et sa jumelle ' \
-                'devraient avoir la même clé parent.')
-        
-        if not self.parent.is_hidden_m \
-            and self.is_hidden_m == self.m_twin_key.is_hidden_m:
-            raise IntegrityBreach(self, 'Une et une seule des clés ' \
-                'jumelles devrait être masquée (is_hidden_m).')
-        
-        if self.rowspan != m_twin_key.rowspan:
-            raise IntegrityBreach(self, "L'attribut rowspan devrait" \
-                ' être identique pour les deux clés jumelles.')
-        
-        self.m_twin = m_twin_key
-
-    def hide_m(self, actionsbook):
-        """Inverse la visibilité d'un couple de jumelles (et leurs descendantes).
-        
-        Parameters
-        ----------
-        actionsbook : ActionsBook, optional
-            Si présent, les actions à répercuter sur les widgets
-            seront tracées dans ce carnet d'actions.
-        
-        """
-        if not self.m_twin:
-            raise IntegrityBreach(self, "Pas de clé jumelle renseignée.")
-        self.m_twin._hide_m(actionsbook)
-        self._hide_m(actionsbook)   
-
-    def _hide_m(self, actionsbook):
-        self.is_hidden_m = not self.is_hidden_m
-        
-        if actionsbook and self.hidden_m:
-            actionsbook.show.append(self)
-        elif actionsbook:
-            actionsbook.hide.append(self)
-            
-        for child in self.real_children():
-            child._hide_m(actionsbook)
-            
-        if self.button:
-            button._hide_m(actionsbook)
 
 
 class GroupOfValuesKey(GroupKey):
@@ -384,6 +426,12 @@ class GroupOfValuesKey(GroupKey):
     def __init__(self, **kwargs):
         self.button = None
         super().__init__(**kwargs)
+        
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'group of values'
     
     def register_child(self, child_key, **kwargs):
         """Référence une fille dans les clés du groupe.
@@ -473,8 +521,12 @@ class GroupOfValuesKey(GroupKey):
         
         """
         n = super().compute_rows(actionsbook)
-        self.button.row = n
-        return n + 1
+        if self.button:
+            self.button.row = n
+            if actionsbook:
+                actionsbook.move.append(self.button)
+            n += 1
+        return n
 
     def compute_single_children(self, actionsbook=None):
         """Actualise l'attribut `is_single_child` des clés filles du groupe.
@@ -491,13 +543,13 @@ class GroupOfValuesKey(GroupKey):
         """
         true_children_count = sum([
             1 for c in self.children if not c.is_ghost and \
-            (not isinstance(self, GroupOfPropertiesKey) or not self.m_twin)
+            (not isinstance(c, GroupOfPropertiesKey) or not c.m_twin)
             ])
         
         for child in self.real_children():
             # boutons moins à afficher
             if true_children_count >= 2 \
-                and child.is_single_child:
+                and not child.is_single_child is False:
                 child.is_single_child = False
                 if actionsbook:
                     actionsbook.show_minus_button.append(child)
@@ -544,6 +596,12 @@ class TranslationGroupKey(GroupOfValuesKey):
         if self.available_languages is None:
             raise MissingParameter('available_languages', self)
         super().__init__(**kwargs)
+
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'translation group'
 
     def register_button(self, button_key, **kwargs):
         """Référence le bouton de traduction du groupe.
@@ -675,9 +733,13 @@ class EditKey(WidgetKey):
     def __init__(self, **kwargs):
         self.is_single_child = None
         self.m_twin = kwargs.get('m_twin')
-        if kwargs.get('rowspan') is None:
-            raise MissingParameter('rowspan', self)
         super().__init__(**kwargs)
+    
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'edit'
     
     def kill(self, widget_language=None, actionsbook=None):
         """Efface une clé de la mémoire de son parent.
@@ -702,10 +764,14 @@ class EditKey(WidgetKey):
 
 class PlusButtonKey(WidgetKey):
     """Clé de dictionnaire de widgets représentant un bouton plus.
-    """
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    
+    """   
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
         
+        """
+        return 'plus button'
+    
     def kill(self, actionsbook=None):
         """Efface une clé bouton de la mémoire de son parent.
         
@@ -729,4 +795,12 @@ class TranslationButtonKey(PlusButtonKey):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.is_hidden_b = not self.parent.available_languages
+
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'translation button'
+
+    
 
