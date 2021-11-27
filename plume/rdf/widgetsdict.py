@@ -97,6 +97,190 @@ class WidgetsDict(dict):
         self.root = None
 
 
+    def _build_dict(self, metagraph, shape, vocabulary, path, class_iri,
+        parent, subject, nsm, template_is_empty, shallow_template,
+        shallow_template_tabs, shallow_data, vsources):
+        
+        # identification de la forme du schéma SHACL qui décrit la
+        # classe cible :
+        shape_iri = shape.shape_iri_from_class(class_iri)
+        if not shape_iri:
+            raise IntegrityBreach("La class '{}' n'est pas répertoriée dans le " \
+                "schéma SHACL".format(class_iri))
+        
+        # ------ Boucle sur les catégories ------
+        for property_iri in shape.objects(
+            shape_iri,
+            URIRef("http://www.w3.org/ns/shacl#property")
+            ):
+            
+            # récupération des informations relatives
+            # à la catégorie dans le schéma SHACL
+            p = shape.read_property(shape_iri, property_iri)
+
+            cur_parent = parent
+            predicate = p['property']
+            kind = p['kind'].n3(nsm)
+            new_path = ( path + " / " if path else '') + predicate.n3(nsm)
+            sources = {}
+            default_value = None
+            default_brut = None
+            default_source = None
+            default_source_uri = None
+            default_page = None
+            is_ghost = parent.is_ghost or False
+            one_language = None
+            values = None
+            
+            multilingual = p['unilang'] and (str(p['unilang']).lower() == 'true') or False
+            multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
+                        
+            # ------ Récupération des valeurs ------
+            # cas d'une propriété dont les valeurs sont mises à
+            # jour à partir d'informations disponibles côté serveur
+            if shallow_data and new_path in shallow_data:
+                values = shallow_data[new_path].copy() or []
+                del shallow_data[new_path]
+                
+            # sinon, on extrait la ou les valeurs éventuellement
+            # renseignées dans le graphe pour cette catégorie
+            # et le sujet considéré
+            elif not metagraph.is_empty: 
+                values = [ o for o in metagraph.objects(subject, predicate) ]
+
+            # exclusion des catégories qui ne sont pas prévues par
+            # le modèle, ne sont pas considérées comme obligatoires
+            # par shape et n'ont pas de valeur renseignée
+            # les catégories obligatoires de shape sont affichées
+            # quoi qu'il arrive en mode édition
+            # les catégories sans valeur sont éliminées indépendemment
+            # du modèle en mode lecture quand readHideBlank vaut True
+            if values in ( None, [], [ None ] ) and (
+                ( self.readHideBlank and self.mode == 'read' ) \
+                or ( not template_is_empty and not ( new_path in shallow_template ) \
+                    and not ( self.mode == 'edit' and p['min'] and int(p['min']) > 0 ) ) \
+                ):
+                continue
+            # s'il y a une valeur, mais que
+            # read/editHideUnlisted vaut True et que la catégorie n'est
+            # pas prévue par le modèle, on poursuit le traitement
+            # pour ne pas perdre la valeur, mais on ne créera
+            # pas de widget. Les catégories obligatoires de shape sont
+            # affichées quoi qu'il arrive
+            elif ( (mode == 'edit' and self.editHideUnlisted) or \
+                (mode == 'read' and self.readHideUnlisted) ) \
+                and not template_is_empty and not ( new_path in shallow_template ) \
+                and not ( p['min'] and int(p['min']) > 0 ):
+                is_ghost = True
+            
+            values = values or [ None ]
+            
+            # ------ Extraction des informations du modèle et choix de l'onglet ------
+            if not is_ghost and (new_path in shallow_template):
+                t = shallow_template[new_path]
+                shallow_template[new_path].update({ 'done' : True })
+                
+                # choix du bon onglet (évidemment juste
+                # pour les catégories de premier niveau)
+                if cur_parent.parent.is_root:
+                    tab = t.get('tab name', None)
+                    if tab and tab in shallow_template_tabs:
+                        cur_parent = shallow_template_tabs[tab]
+            else:
+                t = dict()
+                if not is_ghost and cur_parent.parent.is_root and not template_is_empty:
+                    # les métadonnées hors modèle non masquées
+                    # de premier niveau iront dans un onglet "Autres".
+                    # S'il n'existe pas encore, on l'ajoute :
+                    if not "Autres" in shallow_template_tabs:
+                        cur_parent = GroupOfPropertiesKey(parent=cur_parent)
+                        shallow_template_tabs.update({ "Autres": cur_parent })
+                        self.update({ cur_parent : InternalDict() })
+                        self[cur_parent].update({
+                            'object' : widget.object(),
+                            'main widget type' : 'QGroupBox',
+                            'label' : 'Autres',
+                            'node' : subject,
+                            'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
+                            'shape order' : len(shallow_template_tabs) + 1,
+                            'do not save' : True
+                            })
+                    else:
+                        cur_parent = shallow_template_tabs["Autres"]  
+            
+            # ------ Sources / thésaurus ------
+            if not is_ghost and kind in ("sh:BlankNodeOrIRI", "sh:IRI") \
+                and p['ontologies']:
+
+                for s in p['ontologies']:
+                    lt = [ o for o in vocabulary.objects(
+                        s, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
+                        ) ]
+                    st = pick_translation(lt, self.language) if lt else None
+                    if st:
+                        sources.update({ s: str(st) })
+                        # si t vaut None, c'est que le thésaurus n'est pas
+                        # référencé dans vocabulary, dans ce cas, on l'exclut
+            
+            # ------ Valeur par défaut ------
+            if not is_ghost:
+                default_value = t.get('default value') or None
+                if default_value:
+                    if sources:
+                        for s in sources:
+                            # comme on ne sait pas de quel thésaurus provient le concept
+                            # on les teste tous jusqu'à trouver le bon
+                            default_brut = concept_from_value(
+                                default_value, s, vocabulary, self.language, strict=False
+                                )
+                            if default_brut:
+                                default_source_uri = s
+                                default_source = sources.get(default_source_uri)
+                                default_value, default_page = value_from_concept(
+                                    default_brut, vocabulary, self.language, getpage=True,
+                                    getschemeStr=False, getschemeIRI=False, getconceptStr=True
+                                    )
+                                # NB : on retourne chercher default_value, car la langue de la valeur
+                                # du template n'était pas nécessairement la bonne
+                                break
+                        # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
+                        if default_value is None or default_brut is None or default_source is None:
+                            default_value = default_brut = default_source = default_page = default_source_uri = None
+                    elif kind in ("sh:BlankNodeOrIRI", "sh:IRI") and forbidden_char(default_value) is None:
+                        default_brut = URIRef(default_value)
+                
+            #### TODO
+            
+            # ------ Multi-valeurs ------
+            if len(values) > 1 or (((self.translation and multilingual) or multiple)
+                and not (self.mode == 'read' and self.readHideBlank)):
+                
+                if self.translation and multilingual:
+                    widget = TranslationGroupKey(parent=cur_parent,
+                        available_languages=self.langList)
+                else:
+                    widget = GroupOfValuesKey(parent=cur_parent, is_ghost=is_ghost)
+                
+                self.update({ widget : InternalDict() })
+                if not is_ghost:
+                    self[widget].update({
+                        'object' : widget.object(),
+                        'main widget type' : 'QGroupBox',
+                        'label' : t.get('label') or str(p['name']),
+                        'help text' : t.get('help text') or (str(p['descr']) if p['descr'] else None),
+                        'path' : new_path,
+                        'shape order' : int(p['order']) if p['order'] is not None else None,
+                        'template order' : int(t.get('order')) if t.get('order') is not None else None
+                        })
+                        
+                cur_parent = widget
+                # les widgets de saisie référencés juste après auront
+                # ce groupe pour parent
+
+
+
+
+
     def parent_grid(self, widgetkey):
         """Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.
         
@@ -127,12 +311,14 @@ class WidgetsDict(dict):
         if not widgetkey in self:
             raise KeyError("La clé '{}' n'est pas référencée.".format(widgetkey))
         
-        if not widgetkey.is_ghost:
-            if self[widgetkey]['independant label']:
-                self[widgetkey]['label row'] = widgetkey.row
-                self[widgetkey]['row'] = widgetkey.row + 1
-            else:
-                self[widgetkey]['row'] = widgetkey.row
+        if widgetkey.is_ghost:
+            return
+        
+        if self[widgetkey]['independant label']:
+            self[widgetkey]['label row'] = widgetkey.row
+            self[widgetkey]['row'] = widgetkey.row + 1
+        else:
+            self[widgetkey]['row'] = widgetkey.row
         
         if isinstance(widgetkey, TranslationGroupKey):
             self[widgetkey]['authorized language'] = widgetkey.available_languages.copy()
@@ -207,4 +393,45 @@ class WidgetsDict(dict):
         """
         
         ## TODO
+
+
+def pick_translation(litlist, language):
+    """Renvoie l'élément de la liste correspondant à la langue désirée.
+    
+    Parameters
+    ----------
+    litlist : list of Literal
+        Une liste de Literal, présumés de type xsd:string.
+    language : str
+        La langue pour laquelle on cherche une traduction.
+    
+    Returns
+    -------
+    Literal
+        Un des éléments de la liste, qui peut être :
+        - le premier dont la langue est `language` ;
+        - à défaut, le dernier dont la langue est 'fr' ;
+        - à défaut, le premier de la liste.
+
+    """
+    if not litlist:
+        raise ForbiddenOperation('La liste ne contient aucune valeur.')
+    
+    val = None
+    
+    for l in litlist:
+        if l.language == language:
+            val = l
+            break
+        elif l.language == 'fr':
+            # à défaut de mieux, on gardera la traduction
+            # française
+            val = l
+            
+    if val is None:
+        # s'il n'y a ni la langue demandée ni traduction
+        # française, on prend la première valeur de la liste
+        val = litlist[0]
+        
+    return val
 
