@@ -23,7 +23,7 @@ La consolidation est également du ressort de la méthode
 """
 
 class ActionsBook:
-    """Classe pour les carnet d'actions.
+    """Classe pour les carnets d'actions.
     
     Attributes
     ----------
@@ -53,12 +53,13 @@ class ActionsBook:
     
     def __init__(self):
         self.show = []
-        self.show_minus = []
+        self.show_minus_button = []
         self.hide = []
-        self.hide_minus = []
+        self.hide_minus_button = []
         self.drop = []
         self.create = []
-        self.language = []
+        self.move = []
+        self.languages = []
         self.source = []
         self.thesaurus = []
 
