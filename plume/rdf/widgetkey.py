@@ -25,10 +25,18 @@ son parent et parfois de ses soeurs.
 
 """
 
-import uuid
+from uuid import uuid4
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
     UnknownParameterValue
 from plume.rdf.actionsbook import ActionsBook
+
+try:
+    from rdflib import URIRef, BNode, RDF
+except:
+    from plume.bibli_install.bibli_install import manageLibrary
+    # installe RDFLib si n'est pas déjà disponible
+    manageLibrary()
+    from rdflib import URIRef, BNode, RDF
 
 
 class WidgetKey:
@@ -36,12 +44,10 @@ class WidgetKey:
     
     Attributes
     ----------
-    uuid : str
+    uuid : UUID
         Identifiant unique de la clé.
     parent : WidgetKey
-        La clé parente. None pour une clé racine.
-    is_root : bool
-        True pour une clé racine, qui n'a pas de parent.
+        La clé parente. None pour une clé racine (`RootKey`).
     is_ghost : bool
         True pour une clé non matérialisée. Cet attribut est
         héréditaire.
@@ -93,13 +99,10 @@ class WidgetKey:
         WidgetKey
         
         """
-        self.uuid = str(uuid.uuid4())
+        self.uuid = uuid4()
         self.parent = kwargs.get('parent')
-        self.is_root = self.parent is None
-        
-        if self.is_root and not isinstance(self, GroupOfPropertiesKey):
-            raise ForbiddenOperation(self, 'La racine ne peut ' \
-                "être qu'un groupe de propriétés.")
+        if not self.parent:
+            raise MissingParameter('parent', self)
         
         self.is_ghost = kwargs.get('is_ghost', False)
         if self.is_ghost and not isinstance(self, (EditKey,
@@ -110,11 +113,10 @@ class WidgetKey:
         self.is_hidden_m = kwargs.get('is_hidden_m', False)
         self.is_hidden_b = False
         
-        if not self.is_root:
-            if not self.is_ghost and self.parent.is_ghost:
-                self.is_ghost = True
-            if not self.is_hidden_m and self.parent.is_hidden_m:
-                self.is_hidden_m = True
+        if not self.is_ghost and self.parent.is_ghost:
+            self.is_ghost = True
+        if not self.is_hidden_m and self.parent.is_hidden_m:
+            self.is_hidden_m = True
         
         if not self.is_ghost and isinstance(self, EditKey):
             self.rowspan = kwargs.get('rowspan')
@@ -128,8 +130,7 @@ class WidgetKey:
             and self.m_twin:
             self.m_twin.register_m_twin(self)
         
-        if not self.is_root:
-            self.parent.register_child(self, **kwargs)
+        self.parent.register_child(self, **kwargs)
         
         actionsbook = kwargs.get('actionsbook')
         if actionsbook:
@@ -156,7 +157,7 @@ class WidgetKey:
         pas d'erreur, elle n'aura simplement aucun effet.
         
         """
-        if self.is_root:
+        if isinstance(self, RootKey):
             return
         
         self.parent.children.remove(self)
@@ -181,7 +182,7 @@ class WidgetKey:
             La clé jumelle à déclarer.
         
         """
-        if self.is_root :
+        if isinstance(self, RootKey) :
             raise ForbiddenOperation(self, 'Une clé racine ne peut ' \
                 'pas avoir de jumelle.')
         
@@ -358,6 +359,112 @@ class GroupKey(WidgetKey):
         return n
 
 
+class RootKey(GroupKey):
+    """Clé de dictionnaire de widgets représentant la racine du graphe RDF.
+    
+    Outre ses attributs propres listés ci-après, `RootKey` hérite
+    des attributs de la classe `GroupKey`. Une clé racine n'a pas
+    de parent. Elle porte l'identifiant du jeu de données, dans
+    son attribut `object`.
+    
+    Attributes
+    ----------
+    node : URIRef
+        L'identifiant du jeu de données, qui sera le sujet des
+        triplets des enfants du groupe.
+    rdftype : URIRef
+        La classe de l'objet RDF décrit par le groupe racine.
+        Vaut toujours URIRef("http://www.w3.org/ns/dcat#Dataset").
+    
+    """
+    def __init__(self, datasetid, **kwargs):
+        """Crée une clé racine.
+        
+        Parameters
+        ----------
+        datasetid : URIRef
+            L'identifiant du graphe de métadonnées.
+        rdftype : URIRef
+            La classe de l'objet RDF décrit par le groupe.
+        
+        Returns
+        -------
+        GroupOfPropertiesKey
+        
+        """
+        if not isinstance(datasetid, URIRef):
+            raise TypeError('datasetid doit être de type URIRef.')
+        self.parent = None
+        self.node = datasetid
+        self.rdftype = URIRef("http://www.w3.org/ns/dcat#Dataset")
+        self.uuid = uuid4()
+        self.is_ghost = False
+        self.is_hidden_m = False
+        self.is_hidden_b = False
+        self.rowspan = 0
+        self.row = None
+        self.children = []
+        actionsbook = kwargs.get('actionsbook')
+        if actionsbook:
+            actionsbook.create.append(self)
+ 
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'root'
+
+    def register_child(self, child_key, **kwargs):
+        """Référence une fille dans les clés du groupe.
+        
+        Parameters
+        ----------
+        child_key : GroupKey or EditKey
+            La clé de la fille à déclarer.
+        **kwargs : dict
+            Autres paramètres, passés à la méthode `register_child`
+            de la classe `GroupKey`.
+        
+        """
+        if not isinstance(child_key, (GroupKey, EditKey)):
+            raise ForbiddenOperation(child_key, 'Ce type de clé ne ' \
+                'peut pas être ajouté au groupe racine.')
+        super().register_child(child_key, **kwargs)
+
+
+class TabKey(GroupKey):
+    """Clé de dictionnaire de widgets représentant un onglet.
+    
+    Les onglets doublent leur groupe de propriétés parent sans porter
+    aucune information sur la structure du graphe RDF.
+    
+    `TabKey` hérite des attributs de la classe `GroupKey`.
+    
+    """
+    def object(self):
+        """Renvoie une transcription littérale de la classe de la clé.
+        
+        """
+        return 'tab'
+
+    def register_child(self, child_key, **kwargs):
+        """Référence une fille dans les clés du groupe.
+        
+        Parameters
+        ----------
+        child_key : GroupKey or EditKey
+            La clé de la fille à déclarer.
+        **kwargs : dict
+            Autres paramètres, passés à la méthode `register_child`
+            de la classe `GroupKey`.
+        
+        """
+        if not isinstance(child_key, (GroupKey, EditKey)):
+            raise ForbiddenOperation(child_key, 'Ce type de clé ne ' \
+                'peut pas être ajouté à un onglet.')
+        super().register_child(child_key, **kwargs)
+
+
 class GroupOfPropertiesKey(GroupKey):
     """Clé de dictionnaire de widgets représentant un groupe de propriétés.
     
@@ -376,13 +483,58 @@ class GroupOfPropertiesKey(GroupKey):
     is_single_child : bool
         True si le parent est un groupe de valeurs et il n'y a qu'une
         seule valeur dans le groupe.
+    predicate : URIRef
+        Le prédicat représenté par le groupe de propriétés.
+    node : BNode
+        Le noeud vide objet du prédicat, qui est également le sujet des
+        triplets des enfants du groupe.
+    rdftype : URIRef
+        La classe de l'objet RDF décrit par le groupe.
     
     """
-    def __init__(self, **kwargs):
+    def __init__(self, rdftype, **kwargs):
+        """Crée une clé de groupe de propriétés.
+        
+        Parameters
+        ----------
+        m_twin : EditKey
+            Le cas échéant, une clé dite "jumelle", occupant la même
+            ligne de la grille. Cette information doit être fournie 
+            lorsque la clé a une jumelle et que celle-ci a déjà été
+            créée (donc toujours sur la seconde jumelle déclarée).
+        predicate : URIRef, optional
+            Le prédicat représenté par le groupe de propriétés. Dans
+            un groupe de valeurs, il sera déduit du prédicat
+            porté par le groupe, sinon il doit obligatoirement être
+            fourni.
+        node : BNode, optional
+            Le noeud vide objet du prédicat, qui est également le sujet
+            des triplets des enfants du groupe. Si non fourni, un nouveau
+            noeud vide est généré.
+        rdftype : URIRef
+            La classe de l'objet RDF décrit par le groupe.
+        
+        Returns
+        -------
+        GroupOfPropertiesKey
+        
+        """
         self.is_single_child = None
         self.m_twin = kwargs.get('m_twin')
+        
+        self.predicate = kwargs.get('predicate')
         super().__init__(**kwargs)
         
+        if not self.predicate:
+            raise MissingParameter('predicate')
+        self.rdftype = rdftype
+        node = kwargs.get('node')
+        
+        if node and isinstance(node, BNode):
+            self.node = node
+        else:
+            self.node = BNode()
+ 
     def object(self):
         """Renvoie une transcription littérale de la classe de la clé.
         
@@ -421,10 +573,15 @@ class GroupOfValuesKey(GroupKey):
     ----------
     button : PlusButtonKey
         Référence la clé qui représente le bouton du groupe.
+    predicate : URIRef
+        Le prédicat commun à toutes les valeurs du groupe.
     
     """
     def __init__(self, **kwargs):
         self.button = None
+        self.predicate = kwargs.get('predicate')
+        if not self.predicate:
+            raise MissingParameter('predicate')
         super().__init__(**kwargs)
         
     def object(self):
@@ -458,12 +615,12 @@ class GroupOfValuesKey(GroupKey):
         if isinstance(child_key, PlusButtonKey):
             self.register_button(child_key, **kwargs)
             return
-        
         if not isinstance(child_key, (EditKey, GroupOfPropertiesKey)):
             raise ForbiddenOperation(child_key, 'Ce type de clé ne ' \
                 'peut pas être ajouté à un groupe de valeur.')
         
         super().register_child(child_key, **kwargs)
+        child_key.predicate = self.predicate
         
         no_computation = kwargs.get('no_computation')
         actionsbook = kwargs.get('actionsbook')
@@ -630,8 +787,6 @@ class TranslationGroupKey(GroupOfValuesKey):
         ----------
         child_key : EditKey or TranslationButtonKey
             La clé de la fille à déclarer.
-        widget_language : str
-            Langue utilisée par le widget.
         **kwargs : dict
             Autres paramètres, passés à la méthode `register_child`
             de la classe `GroupOfValuesKey`.
@@ -644,38 +799,40 @@ class TranslationGroupKey(GroupOfValuesKey):
         if not isinstance(child_key, EditKey):
             raise ForbiddenOperation(child_key, 'Ce type de clé ne ' \
                 'peut pas être ajouté à un groupe de traduction.')
+        if child_key.value_type != RDF.langString:
+            raise ForbiddenOperation(child_key, 'Seul le type' \
+                ' rdf:langString est autorisé dans un groupe ' \
+                'de traduction.')
+        
         super().register_child(child_key, **kwargs)
         
-        widget_language = kwargs.get('widget_language')
-        if not widget_language:
-            raise MissingParameter('widget_language', child_key)
-        
         actionsbook = kwargs.get('actionsbook')
-        self.language_out(widget_language, actionsbook)
+        child_key.unauthorized_language = not self.language_out(
+            child_key.value_language, actionsbook)
 
-    def language_in(self, widget_language, actionsbook=None):
+    def language_in(self, value_language, actionsbook=None):
         """Ajoute une langue à la liste des langues disponibles.
         
         Parameters
         ----------
-        widget_language : str
+        value_language : str
             Langue redevenue disponible.
         actionsbook : ActionsBook, optional
             Si présent, les actions à répercuter sur les widgets
             seront tracées dans ce carnet d'actions.
         
         """        
-        if not widget_language:
-            raise MissingParameter('widget_language', self)
+        if not value_language:
+            raise MissingParameter('value_language', self)
         
-        if widget_language in self.available_languages:
+        if value_language in self.available_languages:
             raise IntegrityBreach(
                 self,
                 "La langue '{}' est déjà dans la liste" \
-                " des langues disponibles.".format(widget_language)
+                " des langues disponibles.".format(value_language)
                 )
         
-        self.available_languages.append(widget_language)
+        self.available_languages.append(value_language)
         if actionsbook:
             for child in self.real_children():
                 actionsbook.languages.append(child)
@@ -685,27 +842,31 @@ class TranslationGroupKey(GroupOfValuesKey):
             if actionsbook:
                 actionsbook.show.append(self.button)
 
-    def language_out(self, widget_language, actionsbook=None):
+    def language_out(self, value_language, actionsbook=None):
         """Retire une langue de la liste des langues disponibles.
         
         Parameters
         ----------
-        widget_language : str
-            Langue redevenue disponible.
+        value_language : str
+            Langue désormais non disponible.
         actionsbook : ActionsBook, optional
             Si présent, les actions à répercuter sur les widgets
             seront tracées dans ce carnet d'actions.
         
+        Returns
+        -------
+        bool
+            True si la langue retirée était bien disponible.
         """        
-        if not widget_language:
-            raise MissingParameter('widget_language', self)
+        if not value_language:
+            raise MissingParameter('value_language', self)
         
-        if not widget_language in self.available_languages:
-            return
+        if not value_language in self.available_languages:
+            return False
             # on admet que la langue ait pu ne pas se trouver
             # dans la liste (métadonnées importées, etc.)
         
-        self.available_languages.remove(widget_language)
+        self.available_languages.remove(value_language)
     
         if actionsbook:
             for child in self.real_children():
@@ -715,6 +876,8 @@ class TranslationGroupKey(GroupOfValuesKey):
             self.button.is_hidden_b = True
             if actionsbook:
                 actionsbook.hide.append(self.button)
+        
+        return True
 
 
 class EditKey(WidgetKey):
@@ -728,38 +891,170 @@ class EditKey(WidgetKey):
     is_single_child : bool
         True si le parent est un groupe de valeurs et il n'y a qu'une
         seule valeur dans le groupe.
+    predicate : URIRef
+        Le prédicat représenté par la clé.
+    value_type : URIRef
+        Le type (xsd:type) de l'objet du triplet. None si l'objet n'est
+        pas un Literal.
+    value_language : str
+        La langue de l'objet. None si l'objet n'est pas un Literal de
+        type rdf:langString. Obligatoirement renseigné dans un groupe
+        de traduction.
+    unauthorized_language : bool
+        True si la langue n'est pas autorisée. Cet attribut est calculé
+        automatiquement. Il vaudra True si, à l'initialisation de la
+        clé, la langue de l'objet n'était pas dans la liste des langues
+        disponibles du groupe de traduction parent. Vaut toujours False
+        si le parent n'est pas un groupe de traduction.
+    value_transform : str
+        Le cas échéant, la nature de la transformation appliquée à
+        l'objet.
+    do_not_save : bool
+        True pour une information qui ne devra pas être sauvegardée.
+    
+    Notes
+    -----
+    L'objet du triplet est porté par le dictionnaire interne
+    associé à la clé et non par la clé elle-même.
     
     """
     def __init__(self, **kwargs):
+        """Crée une clé de widget de saisie.
+        
+        Parameters
+        ----------
+        predicate : URIRef, optional
+            Le prédicat représenté par la clé. Dans un groupe de valeurs
+            ou groupe de traduction, il sera déduit du prédicat
+            porté par le groupe, sinon il doit obligatoirement être
+            fourni.
+        m_twin : GroupOfPropertiesKey, optional
+            Le cas échéant, une clé dite "jumelle", occupant la même
+            ligne de la grille. Cette information doit être fournie 
+            lorsque la clé a une jumelle et que celle-ci a déjà été
+            créée (donc toujours sur la seconde jumelle déclarée).
+        do_not_save : bool, default False
+            True pour une information qui ne devra pas être sauvegardée.
+        value_type : URIRef, optional
+            Le type (xsd:type) de l'objet du triplet. Si non renseigné
+            et que `value_language` est fourni, il sera considéré que
+            l'objet est de type rdf:langString, sinon il sera considéré que
+            les valeurs sont des URIRef.
+        value_language : str, optional
+            La langue de l'objet. Obligatoire pour un Literal de
+            type rdf:langString et a fortiori dans un groupe de traduction,
+            ignoré pour tous les autres types.
+        value_transform : str, optional
+            Le cas échéant, la nature de la transformation appliquée à
+            l'objet.
+        
+        Returns
+        -------
+        EditKey
+        
+        """
         self.is_single_child = None
         self.m_twin = kwargs.get('m_twin')
+        self.do_not_save = kwargs.get('do_not_save', False)
+        
+        self.value_transform = kwargs.get('value_transform')
+        self.value_type = kwargs.get('value_type')
+        value_language = kwargs.get('value_language')
+        
+        if value_language and not self.value_type:
+            self.value_type = RDF.langString
+            self.value_language = value_language
+        elif self.value_type == RDF.langString:
+            if not value_language:
+                raise MissingParameter('value_language')
+            self.value_language = value_language
+        else:
+            self.value_language = None            
+        
+        self.predicate = kwargs.get('predicate')
         super().__init__(**kwargs)
-    
+        if not self.predicate:
+            raise MissingParameter('predicate')
+
     def object(self):
         """Renvoie une transcription littérale de la classe de la clé.
         
         """
         return 'edit'
+       
+    def change_language(self, value_language, actionsbook=None):
+        """Déclare une nouvelle langue pour la clé.
+        
+        Parameters
+        ----------
+        value_language : str
+            Nouvelle langue.
+        actionsbook : ActionsBook, optional
+            Si présent, les actions à répercuter sur les widgets
+            seront tracées dans ce carnet d'actions.
+        
+        """
+        if not self.value_language:
+            raise ForbiddenOperation(self, 'Pas de langue attendue ' \
+                'pour cette clé.')
+        if isinstance(self.parent, TranslationGroupKey):
+            if not self.unauthorized_language:
+                self.parent.language_in(self.value_language)
+                # NB : on ne met pas actionsbook en argument de
+                # language_in, parce qu'il renverrait exactement
+                # les mêmes informations que language_out, exécuté
+                # juste après
+            self.unauthorized_language = not self.parent.language_out(
+                value_language, actionsbook)
+        self.value_language = value_language
     
-    def kill(self, widget_language=None, actionsbook=None):
+    def kill(self, actionsbook=None):
         """Efface une clé de la mémoire de son parent.
         
         Parameters
         ----------
-        widget_language : str, optional
-            Langue utilisée par le widget. Devrait toujours être
-            spécifiée pour une clé dont la clé parente est un
-            groupe de traduction, sauf si la langue en question
-            n'était pas autorisée, et ne doit donc pas être reversée
-            dans la liste des langues disponibles.
         actionsbook : ActionsBook, optional
             Si présent, les actions à répercuter sur les widgets
             seront tracées dans ce carnet d'actions.
         
         """
         super().kill(actionsbook)
-        if isinstance(self.parent, TranslationGroupKey) and widget_language:
-            self.parent.language_in(widget_language, actionsbook)
+        if isinstance(self.parent, TranslationGroupKey) \
+            and self.value_language and not self.unauthorized_language:
+            self.parent.language_in(self.value_language, actionsbook)
+
+    def parse_value(self, value):
+        """Prépare une valeur en vue de son enregistrement dans un graphe de métadonnées.
+        
+        Parameters
+        ----------
+        value : str
+            La valeur, exprimée sous la forme d'une chaîne de caractères.
+        
+        Returns
+        -------
+        Literal or URIRef
+        
+        """
+        if value in (None, ''):
+            return
+        if self.value_language:
+            return Literal(value, lang=self.value_language)
+        if self.value_type:
+            return Literal(value, datatype=self.value_type)
+        if self.value_transform == 'email':
+            return owlthing_from_email(value)
+        if self.value_transform == 'phone':
+            return owlthing_from_tel(value)
+        if self.value_source:
+            res = thesaurusCollection[self.value_source].parser(value)
+            if res:
+                return res
+        f = forbidden_char(value)
+        if f:
+            raise ForbiddenOperation(self, "Le caractère '{}' " \
+                "n'est pas autorisé dans un IRI.".format(f))
+        return URIRef(value)
 
 
 class PlusButtonKey(WidgetKey):
