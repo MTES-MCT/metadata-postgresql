@@ -34,6 +34,9 @@ class WidgetsDict(dict):
     langList : list of str
         Liste des langues autorisées pour les traductions, telles que
         déclarées lors de la génération du dictionnaire.
+    root : RootKey
+        La clé racine du dictionnaire, dont toutes les autres sont des
+        descendantes.
     
     """
     
@@ -60,9 +63,6 @@ class WidgetsDict(dict):
             Liste des langues autorisées pour les traductions. Certaines
             valeurs du dictionnaire dépendent de cette liste, et la connaître est
             nécessaire à l'exécution de certaines actions.
-        root : GroupOfPropertiesKey
-            La clé racine du dictionnaire, dont toutes les autres sont des
-            descendantes.
         
         Returns
         -------
