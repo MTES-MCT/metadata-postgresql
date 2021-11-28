@@ -1,7 +1,11 @@
 
 import unittest
+from uuid import uuid4
+from rdflib import URIRef, RDFS, DC, FOAF
+
 from plume.rdf.widgetkey import WidgetKey, EditKey, GroupOfPropertiesKey, \
-    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey
+    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
+    PlusButtonKey, RootKey
 from plume.rdf.actionsbook import ActionsBook
 
 class WidgetKeyTestCase(unittest.TestCase):
@@ -10,27 +14,29 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Initialisation d'une clé racine.
         
         """
-        rootkey = GroupOfPropertiesKey()
-        self.assertTrue(rootkey.is_root)
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
+        self.assertEqual(rootkey.rdftype, URIRef('http://www.w3.org/ns/dcat#Dataset'))
         
     def test_group_of_values(self):
         """Gestion des lignes dans un groupe de valeurs.
         
         """
-        rootkey = GroupOfPropertiesKey()
-        groupkey = GroupOfValuesKey(parent=rootkey)
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
+        groupkey = GroupOfValuesKey(parent=rootkey, predicate=DC.title)
         
         pluskey = PlusButtonKey(parent=groupkey)
         self.assertFalse(pluskey in groupkey.children)
         self.assertEqual(pluskey.row, 0)
         self.assertEqual(groupkey.button, pluskey)
         
-        valkey1 = GroupOfPropertiesKey(parent=groupkey)
+        valkey1 = GroupOfPropertiesKey(parent=groupkey,
+            predicate=DC.title, rdftype=RDFS.label)
         self.assertTrue(valkey1 in groupkey.children)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(pluskey.row, 1)
         self.assertFalse(pluskey.is_hidden_b)
         self.assertTrue(valkey1.is_single_child)
+        self.assertEqual(valkey1.predicate, DC.title)
         
         valkey2 = EditKey(parent=groupkey, rowspan=3)
         self.assertEqual(valkey1.row, 0)
@@ -39,6 +45,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertFalse(pluskey.is_hidden_b)
         self.assertFalse(valkey1.is_single_child)
         self.assertFalse(valkey2.is_single_child)
+        self.assertEqual(valkey2.predicate, DC.title)
 
         valkey1.kill()
         self.assertFalse(valkey1 in groupkey.children)
@@ -51,10 +58,11 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Gestion des lignes et des langues dans un groupe de traduction.
 
         """
-        rootkey = GroupOfPropertiesKey()
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
         groupkey = TranslationGroupKey(
             parent=rootkey,
-            available_languages=['fr', 'en', 'it']
+            available_languages=['fr', 'en', 'it'],
+            predicate=DC.title
             )
         transkey = TranslationButtonKey(parent=groupkey)
         self.assertFalse(transkey in groupkey.children)
@@ -62,60 +70,71 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(groupkey.button, transkey)
 
         valkey1 = EditKey(parent=groupkey, rowspan=3,
-            widget_language='fr')
+            value_language='fr', predicate=RDFS.label)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(transkey.row, 3)
         self.assertEqual(groupkey.available_languages, ['en', 'it'])
+        self.assertEqual(valkey1.predicate, DC.title)
         self.assertFalse(transkey.is_hidden_b)
         self.assertTrue(valkey1.is_single_child)
+        self.assertFalse(valkey1.unauthorized_language)
 
         valkey2 = EditKey(parent=groupkey, rowspan=2,
-            widget_language='en')
+            value_language='en')
         valkey3 = EditKey(parent=groupkey, rowspan=1,
-            widget_language='it')
+            value_language='it')
         self.assertEqual(transkey.row, 6)
         self.assertEqual(groupkey.available_languages, [])
         self.assertTrue(transkey.is_hidden_b)
         self.assertFalse(valkey1.is_single_child)
+        self.assertEqual(valkey2.predicate, DC.title)
 
-        valkey2.kill(widget_language='en')
+        valkey2.kill()
         self.assertFalse(valkey2 in groupkey.children)
         self.assertEqual(groupkey.available_languages, ['en'])
         self.assertFalse(transkey.is_hidden_b)
         self.assertEqual(transkey.row, 4)
         self.assertEqual(valkey3.row, 3)
 
-        valkey4 = EditKey(parent=groupkey, rowspan=2, widget_language='de')
+        valkey4 = EditKey(parent=groupkey, rowspan=2, value_language='de')
         self.assertTrue(valkey4 in groupkey.children)
+        self.assertTrue(valkey4.unauthorized_language)
         self.assertEqual(groupkey.available_languages, ['en'])
         self.assertFalse(transkey.is_hidden_b)
         valkey4.kill()
 
-        groupkey.language_in('it')
-        groupkey.language_out('en')
+        valkey3.change_language('en')
         self.assertEqual(groupkey.available_languages, ['it'])
         self.assertFalse(transkey.is_hidden_b)
+
+        valkey4 = EditKey(parent=groupkey, rowspan=2, value_language='de')
+        valkey4.change_language('it')
+        self.assertEqual(groupkey.available_languages, [])
+        self.assertTrue(transkey.is_hidden_b)
 
     
     def test_ghost(self):
         """Gestion des branches fantômes.
         
         """
-        rootkey = GroupOfPropertiesKey()
-        groupkey = GroupOfValuesKey(parent=rootkey, is_ghost=True)
-        editkey = EditKey(parent=rootkey, rowspan=2)
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
+        groupkey = GroupOfValuesKey(parent=rootkey, is_ghost=True,
+            predicate=DC.title)
+        editkey = EditKey(parent=rootkey, rowspan=2, predicate=DC.title)
         
         self.assertIsNone(groupkey.row)
         self.assertEqual(editkey.row, 0)
         
-        valkey1 = GroupOfPropertiesKey(parent=groupkey)
+        valkey1 = GroupOfPropertiesKey(parent=groupkey, rdftype=FOAF.Agent)
         self.assertTrue(valkey1 in groupkey.children)
         self.assertIsNone(valkey1.row)
         self.assertTrue(valkey1.is_ghost)
         self.assertIsNone(valkey1.is_single_child)
+        self.assertEqual(valkey1.predicate, DC.title)
 
         valkey2 = EditKey(parent=groupkey, is_ghost=False)
         self.assertTrue(valkey2.is_ghost)
+        self.assertEqual(valkey2.predicate, DC.title)
 
         groupkey.kill()
         self.assertFalse(groupkey in rootkey.children)
@@ -126,10 +145,11 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Gestion des jumelles.
         
         """
-        rootkey = GroupOfPropertiesKey()
-        groupkey = GroupOfValuesKey(parent=rootkey)
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
+        groupkey = GroupOfValuesKey(parent=rootkey, predicate=DC.title)
         buttonkey = PlusButtonKey(parent=groupkey)
-        valkey1 = GroupOfPropertiesKey(parent=groupkey, is_hidden_m=True)
+        valkey1 = GroupOfPropertiesKey(parent=groupkey, is_hidden_m=True,
+            rdftype=FOAF.Agent)
         valkey2 = EditKey(parent=groupkey, rowspan=1, m_twin=valkey1)
         valkey3 = EditKey(parent=groupkey, rowspan=3)
 
@@ -168,20 +188,22 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Calcul a posteriori des lignes et filles uniques.
         
         """
-        rootkey = GroupOfPropertiesKey()
-        groupkey1 = GroupOfValuesKey(parent=rootkey, no_computation=True)
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
+        groupkey1 = GroupOfValuesKey(parent=rootkey, predicate=DC.title,
+            no_computation=True)
         buttonkey1 = PlusButtonKey(parent=groupkey1, no_computation=True)
-        valkey1a = GroupOfPropertiesKey(parent=groupkey1, no_computation=True)
+        valkey1a = GroupOfPropertiesKey(parent=groupkey1, no_computation=True,
+            rdftype=FOAF.Agent)
         valkey1b = EditKey(parent=groupkey1, no_computation=True, rowspan=1,
             m_twin=valkey1a, is_hidden_m=True)
         valkey1c = EditKey(parent=groupkey1, no_computation=True, rowspan=3)
         groupkey2 = TranslationGroupKey(
-            parent=rootkey,
+            parent=rootkey, predicate=DC.title,
             available_languages=['fr', 'en', 'it']
             )
         buttonkey2 = TranslationButtonKey(parent=groupkey2, no_computation=True)
         valkey2 = EditKey(parent=groupkey2, no_computation=True, rowspan=2,
-            widget_language='en')
+            value_language='en')
         
         self.assertIsNone(valkey1a.row)
         self.assertIsNone(valkey1b.row)
@@ -213,20 +235,20 @@ class WidgetKeyTestCase(unittest.TestCase):
         
 
     def test_actionsbook(self):
-        rootkey = GroupOfPropertiesKey()
-        groupkey1 = GroupOfValuesKey(parent=rootkey)
+        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
+        groupkey1 = GroupOfValuesKey(parent=rootkey, predicate=DC.title)
         buttonkey1 = PlusButtonKey(parent=groupkey1)
-        valkey1a = GroupOfPropertiesKey(parent=groupkey1)
+        valkey1a = GroupOfPropertiesKey(parent=groupkey1, rdftype=FOAF.Agent)
         valkey1b = EditKey(parent=groupkey1, rowspan=1,
             m_twin=valkey1a, is_hidden_m=True)
         valkey1c = EditKey(parent=groupkey1, rowspan=3)
         groupkey2 = TranslationGroupKey(
-            parent=rootkey,
+            parent=rootkey, predicate=DC.title,
             available_languages=['fr', 'en', 'it']
             )
         buttonkey2 = TranslationButtonKey(parent=groupkey2)
         valkey2a = EditKey(parent=groupkey2, rowspan=2,
-            widget_language='en')
+            value_language='en')
         
         actionsbook = ActionsBook()
         valkey1d = EditKey(parent=groupkey1, rowspan=1, actionsbook=actionsbook)
@@ -252,7 +274,7 @@ class WidgetKeyTestCase(unittest.TestCase):
 
         actionsbook = ActionsBook()
         valkey2b = EditKey(parent=groupkey2, rowspan=2,
-            widget_language='fr', actionsbook=actionsbook)
+            value_language='fr', actionsbook=actionsbook)
         self.assertEqual(actionsbook.create, [valkey2b])
         self.assertEqual(actionsbook.drop, [])
         self.assertEqual(actionsbook.move, [valkey2b, buttonkey2])
@@ -264,7 +286,7 @@ class WidgetKeyTestCase(unittest.TestCase):
 
         actionsbook = ActionsBook()
         valkey2c = EditKey(parent=groupkey2, rowspan=2,
-            widget_language='it', actionsbook=actionsbook)
+            value_language='it', actionsbook=actionsbook)
         self.assertEqual(actionsbook.create, [valkey2c])
         self.assertEqual(actionsbook.drop, [])
         self.assertEqual(actionsbook.move, [valkey2c, buttonkey2])
@@ -275,7 +297,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.languages, [valkey2a, valkey2b, valkey2c])
 
         actionsbook = ActionsBook()
-        valkey2a.kill(widget_language='en', actionsbook=actionsbook)
+        valkey2a.kill(actionsbook=actionsbook)
         self.assertEqual(actionsbook.create, [])
         self.assertEqual(actionsbook.drop, [valkey2a])
         self.assertEqual(actionsbook.move, [valkey2b, valkey2c, buttonkey2])
@@ -286,8 +308,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.languages, [valkey2b, valkey2c])
 
         actionsbook = ActionsBook()
-        groupkey2.language_in('it')
-        groupkey2.language_out('en', actionsbook=actionsbook)
+        valkey2c.change_language('en', actionsbook=actionsbook)
         self.assertEqual(actionsbook.create, [])
         self.assertEqual(actionsbook.drop, [])
         self.assertEqual(actionsbook.move, [])
@@ -298,7 +319,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.languages, [valkey2b, valkey2c])
 
         actionsbook = ActionsBook()
-        valkey2b.kill(widget_language='en', actionsbook=actionsbook)
+        valkey2b.kill(actionsbook=actionsbook)
         self.assertEqual(actionsbook.create, [])
         self.assertEqual(actionsbook.drop, [valkey2b])
         self.assertEqual(actionsbook.move, [valkey2c, buttonkey2])
