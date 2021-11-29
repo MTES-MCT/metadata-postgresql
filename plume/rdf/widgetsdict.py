@@ -3,7 +3,7 @@
 
 from plume.rdf.widgetkey import WidgetKey, EditKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey
-from plume.rdf.internalkey import InternalDict
+from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
     UnknownParameterValue
@@ -320,6 +320,8 @@ class WidgetsDict(dict):
         else:
             self[widgetkey]['row'] = widgetkey.row
         
+        self[widgetkey]['rowspan'] = widgetkey.rowspan
+        
         if isinstance(widgetkey, TranslationGroupKey):
             self[widgetkey]['authorized language'] = widgetkey.available_languages.copy()
             if not self[widgetkey]['language value'] in widgetkey.available_languages:
@@ -329,9 +331,35 @@ class WidgetsDict(dict):
         if isinstance(widgetkey, PlusButtonKey):
             self[widgetkey]['hidden'] = widgetkey.hidden_b
         
-        if isinstance(widgetkey, GroupOfValuesKey):
+        if isinstance(widgetkey.parent, GroupOfValuesKey):
             self[widgetkey]['hide minus button'] = widgetkey.is_single_child
-
+        
+        # ------ sources ------
+        # l'attribut `sources` de widgetkey contient les IRI
+        # des thésaurus, il faut en déduire les libellés et ajouter les
+        # valeurs spéciales ('< manuel >', '< URI >', '< non référencé >')
+        # d'autant que de besoin.
+        # pour la source courante, si c'est un thésaurus, il faudra aller
+        # chercher les valeurs et le libellé de la source
+        if widgetkey.sources:
+            self[widgetkey]['sources'] = [Thesaurus.label((s, self.language)) \
+                for s in widgetkey.sources]
+        if isinstance(widgetkey, GroupOfPropertiesKey) and widgetkey.m_twin \
+            and not widgetkey.hidden_m:
+            self[widgetkey]['current source'] = '< manuel >'
+            self[widgetkey]['sources'] = self[widgetkey]['sources'] or ['< URI >']
+        elif isinstance(widgetkey, EditKey) and widgetkey.sources:
+            if widgetkey.hidden_m:
+                self[widgetkey]['current source'] = None
+            elif widgetkey.value_source:
+                self[widgetkey]['current source'] = Thesaurus.label(widgetkey.value_source)
+                self[widgetkey]['thesaurus values'] = Thesaurus.values(widgetkey.value_source)
+            else:
+                self[widgetkey]['current source'] = '< non référencé >'
+                self[widgetkey]['thesaurus values'] = ['', self[widgetkey]['value']] \
+                    if self[widgetkey]['value'] else ['']
+        if widgetkey.m_twin:
+            self[widgetkey]['sources'].insert(0, '< manuel >')
 
     def add(self, buttonkey):
         """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
