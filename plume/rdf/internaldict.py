@@ -109,7 +109,7 @@ class InternalDict(dict):
     antérieurement saisie n'apparaît dans aucune ontologie associée à la catégorie, None si le
     widget n'est pas utilisé. La liste des termes autorisés par la source n'est pas directement
     stockée dans le dictionnaire, mais peut être obtenue via la fonction build_vocabulary.
-    - 'current source URI' : IRI correspondant à 'current source'.
+    - 'thesaurus values' : le cas échéant, la liste des valeurs à afficher dans le QComboBox.
     - 'read only'* : booléen qui vaudra True si la métadonnée ne doit pas être modifiable par
     l'utilisateur. En mode lecture, 'read only' vaut toujours True.
     - 'hidden' : booléen. Si True, le widget principal doit être masqué. Concerne
@@ -156,7 +156,7 @@ class InternalDict(dict):
             'input mask', 'is mandatory', 'has minus button', 'hide minus button',
             'regex validator pattern', 'regex validator flags', 'type validator',
             'multiple sources', 'sources', 'current source', 'current source URI',
-            'authorized languages', 'read only', 'hidden', 'hidden M',
+            'thesaurus values', 'authorized languages', 'read only', 'hidden', 'hidden M',
             # à l'usage des fonctions de rdf_utils
             'default value', 'default source', 'multiple values', 'node kind',
             'data type', 'ontology', 'transform', 'class', 'path', 'subject',
