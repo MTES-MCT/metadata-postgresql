@@ -575,6 +575,9 @@ class GroupOfValuesKey(GroupKey):
         Référence la clé qui représente le bouton du groupe.
     predicate : URIRef
         Le prédicat commun à toutes les valeurs du groupe.
+    sources : list of URIRef, optional
+        Liste des sources de vocabulaire contrôlé pour les valeurs
+        du groupe, qui sert à construire son attribut `sources`.
     
     """
     def __init__(self, **kwargs):
@@ -582,6 +585,7 @@ class GroupOfValuesKey(GroupKey):
         self.predicate = kwargs.get('predicate')
         if not self.predicate:
             raise MissingParameter('predicate')
+        self.sources = kwargs.get('sources')
         super().__init__(**kwargs)
         
     def object(self):
@@ -621,6 +625,7 @@ class GroupOfValuesKey(GroupKey):
         
         super().register_child(child_key, **kwargs)
         child_key.predicate = self.predicate
+        child_key.sources = self.sources
         
         no_computation = kwargs.get('no_computation')
         actionsbook = kwargs.get('actionsbook')
@@ -752,6 +757,9 @@ class TranslationGroupKey(GroupOfValuesKey):
         self.available_languages = kwargs.get('available_languages')
         if self.available_languages is None:
             raise MissingParameter('available_languages', self)
+        if kwargs.get('sources'):
+            raise ForbiddenOperation('Les sources contrôlées ne sont ' \
+                'pas autorisées dans un groupe de traduction.')
         super().__init__(**kwargs)
 
     def object(self):
@@ -805,6 +813,12 @@ class TranslationGroupKey(GroupOfValuesKey):
                 'de traduction.')
         
         super().register_child(child_key, **kwargs)
+        
+        if kwargs.get('no_value'):
+            if not self.available_languages:
+                raise IntegrityBreach(child_key, 'Plus de langue ' \
+                    'disponible.')
+            child_key.language_value = self.available_languages[0]
         
         actionsbook = kwargs.get('actionsbook')
         child_key.unauthorized_language = not self.language_out(
@@ -893,6 +907,11 @@ class EditKey(WidgetKey):
         seule valeur dans le groupe.
     predicate : URIRef
         Le prédicat représenté par la clé.
+    sources : list of URIRef, optional
+        Liste des sources de vocabulaire contrôlé pour les valeurs
+        de la clé, qui sert à construire l'attribut `sources` de la clé.
+        Dans un groupe de valeurs, ce dernier est déduit de
+        l'attribut `sources` du groupe.
     value_type : URIRef
         Le type (xsd:type) de l'objet du triplet. None si l'objet n'est
         pas un Literal.
@@ -909,6 +928,8 @@ class EditKey(WidgetKey):
     value_transform : str
         Le cas échéant, la nature de la transformation appliquée à
         l'objet.
+    value_source : URIRef
+        La source utilisée par la valeur courante de la clé.
     do_not_save : bool
         True pour une information qui ne devra pas être sauvegardée.
     
@@ -928,6 +949,11 @@ class EditKey(WidgetKey):
             ou groupe de traduction, il sera déduit du prédicat
             porté par le groupe, sinon il doit obligatoirement être
             fourni.
+        sources : list of URIRef, optional
+            Liste des sources de vocabulaire contrôlé pour les valeurs
+            de la clé, qui sert à construire l'attribut `sources` de la clé.
+            Dans un groupe de valeurs, ce dernier est déduit de
+            l'attribut `sources` du groupe.
         m_twin : GroupOfPropertiesKey, optional
             Le cas échéant, une clé dite "jumelle", occupant la même
             ligne de la grille. Cette information doit être fournie 
@@ -940,13 +966,28 @@ class EditKey(WidgetKey):
             et que `value_language` est fourni, il sera considéré que
             l'objet est de type rdf:langString, sinon il sera considéré que
             les valeurs sont des URIRef.
+        value_transform : str, optional
+            Le cas échéant, la nature de la transformation appliquée à
+            l'objet.
+        no_value : bool, default False
+            True s'il n'y a actuellement aucune valeur associée à la clé.
+            Dans ce cas, `value_language` et `value_source` seront renseignés
+            automatiquement.
         value_language : str, optional
             La langue de l'objet. Obligatoire pour un Literal de
             type rdf:langString et a fortiori dans un groupe de traduction,
             ignoré pour tous les autres types.
-        value_transform : str, optional
-            Le cas échéant, la nature de la transformation appliquée à
-            l'objet.
+        value_source : tuple of URIRef and str
+            La source utilisée par la valeur courante de la clé, représentée
+            par un tuple dont le premier élément est l'IRI de la source et
+            le second la langue utilisée. Si la valeur fournie pour l'IRI
+            ne fait pas partie des sources autorisées, elle sera
+            silencieusement supprimée.
+        language : str, default 'fr'
+            Langue principale de saisie des métadonnées (à ne pas confondre
+            avec `value_language`). Cette information n'est utilisée que si
+            `no_value` vaut True, pour générer automatiquement `value_source`
+            s'il y a lieu.
         
         Returns
         -------
@@ -959,22 +1000,34 @@ class EditKey(WidgetKey):
         
         self.value_transform = kwargs.get('value_transform')
         self.value_type = kwargs.get('value_type')
+        no_value = kwargs.get('no_value')
         value_language = kwargs.get('value_language')
         
         if value_language and not self.value_type:
             self.value_type = RDF.langString
             self.value_language = value_language
         elif self.value_type == RDF.langString:
-            if not value_language:
+            if not value_language and not no_value:
                 raise MissingParameter('value_language')
             self.value_language = value_language
         else:
             self.value_language = None            
         
+        self.sources = kwargs.get('sources')
         self.predicate = kwargs.get('predicate')
+        # dans un groupe de valeurs, sources et predicate
+        # seront écrasés par les valeurs du groupe
         super().__init__(**kwargs)
         if not self.predicate:
             raise MissingParameter('predicate')
+        
+        value_source = kwargs.get('value_source')
+        if self.sources and no_value:
+            language = kwargs.get('language', 'fr')
+            self.value_source = (self.sources[0], language)
+        elif value_source and self.sources \
+            and value_source[0] in self.sources:
+            self.value_source = value_source
 
     def object(self):
         """Renvoie une transcription littérale de la classe de la clé.
@@ -1007,6 +1060,27 @@ class EditKey(WidgetKey):
             self.unauthorized_language = not self.parent.language_out(
                 value_language, actionsbook)
         self.value_language = value_language
+    
+    def change_source(self, value_source, actionsbook=None):
+        """Déclare une nouvelle source pour la clé.
+        
+        Parameters
+        ----------
+        value_source : tuple of URIRef and str
+            Nouvelle source. Tuple dont le premier élément est
+            l'IRI de la source, le second la langue.
+        actionsbook : ActionsBook, optional
+            Si présent, les actions à répercuter sur les widgets
+            seront tracées dans ce carnet d'actions.
+        
+        """
+        if self.sources 
+            and (not value_source or value_source[0] in self.sources) \
+            and value_sources != self.value_source:
+            self.value_source = value_source
+            if actionsbook:
+                actionsbook.sources.append(self)
+                actionsbook.thesaurus.append(self)
     
     def kill(self, actionsbook=None):
         """Efface une clé de la mémoire de son parent.
@@ -1047,7 +1121,7 @@ class EditKey(WidgetKey):
         if self.value_transform == 'phone':
             return owlthing_from_tel(value)
         if self.value_source:
-            res = thesaurusCollection[self.value_source].parser(value)
+            res = Thesaurus.values(self.value_source).parser(value)
             if res:
                 return res
         f = forbidden_char(value)
@@ -1098,4 +1172,27 @@ class TranslationButtonKey(PlusButtonKey):
         return 'translation button'
 
     
+def forbidden_char(anystr):
+    """Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.
+    
+    Parameters
+    ----------
+    anystr : str
+        La chaîne de caractères à tester.
+    
+    Returns
+    -------
+    str
+        Si la chaîne contient au moins un caractère interdit, l'un
+        de ces caractères.
+    
+    Example
+    -------
+    >>> forbidden_char('avec des espaces')
+    ' '
+    
+    """
+    r = re.search(r'([<>"\s{}|\\^`])', anystr)
+    return r[1] if r else None
+
 
