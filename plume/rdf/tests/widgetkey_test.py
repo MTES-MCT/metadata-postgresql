@@ -9,6 +9,23 @@ from plume.rdf.widgetkey import WidgetKey, EditKey, GroupOfPropertiesKey, \
 from plume.rdf.actionsbook import ActionsBook
 
 class WidgetKeyTestCase(unittest.TestCase):
+
+    def test_lang_attributes(self):
+        """Gestion des propriétés de classe, `langlist` et `main_language`.
+        
+        """
+        w = WidgetKey()
+        with self.assertRaises(MissingParameter):
+            w.langlist
+        with self.assertRaises(MissingParameter):
+            w.main_language
+        
+        WidgetKey.langlist = ['fr', 'en']
+        WidgetKey.main_language = 'it'
+        self.assertEqual(w.langlist, ['it', 'en', 'fr'])
+        
+        WidgetKey.langlist = ['de', 'en']
+        self.assertEqual(w.langlist, ['it', 'de', 'en'])
     
     def test_root_key(self):
         """Initialisation d'une clé racine.
