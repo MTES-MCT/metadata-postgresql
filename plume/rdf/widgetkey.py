@@ -86,6 +86,9 @@ class WidgetKey:
     is_single_child : bool
         *Propriété non modifiable manuellement*. True si le parent est un
         groupe de valeurs et il n'y a qu'une seule valeur dans le groupe.
+    has_minus_button : bool
+        *Propriété.* True si un bouton moins est associé à la clé
+        (potentiellement masqué, selon `is_single_child`).
     row : int
         *Propriété non modifiable manuellement.* L'indice de la ligne de la
         grille occupée par le widget porté par la clé. Vaut None pour une clé
@@ -104,11 +107,12 @@ class WidgetKey:
         un carnet vierge.
     kill()
         Efface la clé de la mémoire de son parent.
+    copy(parent, empty)
+        Copie une clé et, le cas échéant, la branche qui en descend.
     
     """
     
     _langlist = None
-    _main_language = None
     
     actionsbook = ActionsBook()
     """Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
@@ -149,7 +153,8 @@ class WidgetKey:
     def main_language(self):
         """Langue principale de saisie des métadonnées.
         
-        Cette propriété est commune à toutes les clés.
+        Cette propriété est commune à toutes les clés. Concrètement,
+        main_language est simplement la première valeur de `langlist`.
         
         Returns
         -------
@@ -161,9 +166,9 @@ class WidgetKey:
             Si la valeur de `main_language` n'est pas définie.
         
         """
-        if WidgetKey._main_language is None:
-            raise MissingParameter('main_language')
-        return WidgetKey._main_language
+        if not WidgetKey._langlist:
+            raise MissingParameter('langlist')
+        return WidgetKey._langlist[0]
   
     @main_language.setter
     def main_language(self, value):
@@ -183,14 +188,18 @@ class WidgetKey:
         -------
         >>> WidgetKey.main_language = 'fr'
         
+        Notes
+        -----
+        `main_language` n'étant jamais que la première valeur de `langlist`,
+        le principal effet de cette fonction est d'ajouter la langue à la
+        liste si besoin et de retrier la liste.
         """
         if value and WidgetKey._langlist and not value in WidgetKey._langlist:
             WidgetKey._langlist.append(value)
         if value and WidgetKey._langlist:
-            WidgetKey._langlist.sort(key= lambda x: (x != value, x))
             # langlist est trié de manière à ce que la langue principale
             # soit toujours le premier élément.
-        WidgetKey._main_language = value
+            WidgetKey._langlist.sort(key= lambda x: (x != value, x))
 
     @property
     def langlist(self):
@@ -218,8 +227,10 @@ class WidgetKey:
         
         Cette propriété est commune à toutes les clés.
         
-        Si la liste ne contient pas la langue principale de saisie,
-        celle-ci sera silencieusement ajoutée.
+        La première langue de la liste fait office de langue
+        principale de saisie, mais il est également possible
+        définir explicitement cette dernière, s'il n'est pas certains
+        que la liste est correctement triée.
         
         Parameters
         ----------
@@ -228,10 +239,6 @@ class WidgetKey:
         
         """
         WidgetKey._langlist = value
-        if WidgetKey._main_language:
-            WidgetKey.main_language = self.main_language
-            # assure la cohérence entre main_language et langlist
-            # et effectue le tri de la liste.
 
     def __init__(self, **kwargs):
         self._is_unborn = True
@@ -258,7 +265,21 @@ class WidgetKey:
         return
     
     def __str__(self):
-        return "WidgetKey {}".format(self.uuid)
+        return "{} {}".format(self.key_type, self.uuid)
+    
+    def __repr__(self):
+        return "{} {}".format(self.key_type, self.uuid)
+    
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'WidgetKey'
     
     @property
     def parent(self):
@@ -304,8 +325,8 @@ class WidgetKey:
             self._is_ghost = True
         if value.is_hidden_m:
             self._is_hidden_m = True
-        self._register(value)
         self._parent = value
+        self._register(value)
  
     def _validate_parent(self, parent):
         return isinstance(parent, GroupKey)
@@ -371,14 +392,29 @@ class WidgetKey:
             return
         old_value = self.is_hidden_m
         self._is_hidden_m = value
-        if WidgetKey.actionsbook and self.is_hidden_m \
-            and not old_value:
+        if WidgetKey.actionsbook and not value and old_value:
             WidgetKey.actionsbook.show.append(self)
-        elif WidgetKey.actionsbook and not self.is_hidden_m \
-            and old_value:
+        elif WidgetKey.actionsbook and value and not old_value:
             WidgetKey.actionsbook.hide.append(self)
         # pour les enfants et les boutons, cf. méthodes
         # de même nom des classes GroupKey et GroupOfValuesKey
+
+    @property
+    def has_minus_button(self):
+        """Un bouton moins est-il associé à la clé ?
+        
+        Returns
+        -------
+        bool
+        
+        Notes
+        -----
+        Cette propriété est définie sur la classe `WidgetKey`
+        pour simplifier les tests, mais seul son alter ego
+        de la classe `ObjectKey` présente un intérêt.
+        
+        """
+        return False
 
     @property
     def rowspan(self):
@@ -428,6 +464,74 @@ class WidgetKey:
         
         """
         return False if self.is_ghost else self._is_single_child
+
+    @property
+    def attr_to_copy(self):
+        """Attributs de la classe à prendre en compte pour la copie des clés.
+        
+        Cette propriété est un dictionnaire dont les clés sont les
+        noms des attributs contenant les informations nécessaire pour
+        dupliquer la clé et les valeurs sont des booléens qui indiquent
+        si la valeur serait à conserver pour créer une copie vide de la clé.
+        
+        Certains attributs sont volontairement exclus de cette liste, car
+        ils requièrent un traitement spécifique.
+        
+        Returns
+        -------
+        dict
+        
+        """
+        return { 'parent': True }
+
+    def copy(self, parent=None, empty=True):
+        """Renvoie une copie de la clé.
+        
+        Parameters
+        ----------
+        parent : GroupKey, optional
+            La clé parente. Si elle n'est pas spécifiée, il sera
+            considéré que le parent de la copie est le même que celui
+            de l'original.
+        empty : bool, default True
+            Crée-t-on une copie vide (cas d'un nouvel enregistrement
+            dans un groupe de valeurs ou de traduction) - True - ou
+            souhaite-t-on dupliquer une branche de l'arbre de clés
+            en préservant son contenu - False ?
+        
+        Returns
+        -------
+        WidgetKey
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Lorsque la méthode est explicitement appliquée à une clé
+            fantôme. Il est possible de copier des branches contenant
+            des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        Notes
+        -----
+        Cette méthode est complétée sur la classe `GroupKey` pour
+        copier également la branche descendant de la clé, sur
+        `GroupOfValuesKey` pour les boutons, et sur `ObjectKey`
+        pour la jumelle éventuelle. Elle utilise la propriété
+        `attr_to_copy`, qui liste les attributs non calculables
+        de chaque classe.
+        
+        """
+        if self.is_ghost:
+            raise ForbiddenOperation(self, 'La copie des clés fantômes ' \
+                "n'est pas autorisée.")
+        return self._copy(parent=parent, empty=empty)
+
+    def _copy(self, parent=None, empty=True):
+        d = self.attr_to_copy
+        kwargs = { k: getattr(self, k) for k in d.keys() \
+            if not empty or d[k] }
+        if parent:
+           kwargs['parent'] = parent
+        return type(self).__call__(**kwargs)
 
     def kill(self):
         """Efface une clé de la mémoire de son parent.
@@ -492,6 +596,35 @@ class ObjectKey(WidgetKey):
         self.is_hidden_m = kwargs.get('is_hidden_m', False)
     
     @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'ObjectKey'
+    
+    @property
+    def has_minus_button(self):
+        """Un bouton moins est-il associé à la clé ?
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété `with_minus_buttons` du
+        groupe parent. Sinon cette propriété vaut False quoi qu'il arrive.
+        
+        Returns
+        -------
+        bool
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.with_minus_buttons \
+                and not self.is_ghost
+        return False
+    
+    @property
     def predicate(self):
         """Prédicat représenté par la clé.
         
@@ -534,7 +667,7 @@ class ObjectKey(WidgetKey):
             if self.m_twin and value != self.m_twin.predicate:
                 value = self.m_twin.predicate
             if not value:
-                raise MissingParameter('value', self)
+                raise MissingParameter('predicate', self)
             self._predicate = value
 
     @property
@@ -637,6 +770,69 @@ class ObjectKey(WidgetKey):
         self._hide_m(value)
         self.m_twin._hide_m(not value)
 
+    @property
+    def attr_to_copy(self):
+        """Attributs de la classe à prendre en compte pour la copie des clés.
+        
+        Cette propriété est un dictionnaire dont les clés sont les
+        noms des attributs contenant les informations nécessaire pour
+        dupliquer la clé et les valeurs sont des booléens qui indiquent
+        si la valeur serait à conserver pour créer une copie vide de la clé.
+        
+        Certains attributs sont volontairement exclus de cette liste, car
+        ils requièrent un traitement spécifique.
+        
+        Returns
+        -------
+        dict
+        
+        """
+        return { 'parent': True, 'predicate': True }
+
+    def copy(self, parent=None, empty=True):
+        """Renvoie une copie de la clé.
+        
+        Dans le cas d'un couple de jumelles, cette méthode n'aura d'effet que
+        si elle est appliquée sur la clé `GroupOfPropertiesKey`. Elle
+        copie alors à la fois la clé et sa jumelle `ValueKey`.
+        
+        Parameters
+        ----------
+        parent : GroupKey, optional
+            La clé parente. Si elle n'est pas spécifiée, il sera
+            considéré que le parent de la copie est le même que celui
+            de l'original.
+        empty : bool, default True
+            Crée-t-on une copie vide (cas d'un nouvel enregistrement
+            dans un groupe de valeurs ou de traduction) - True - ou
+            souhaite-t-on dupliquer une branche de l'arbre de clés
+            en préservant son contenu - False ?
+        
+        Returns
+        -------
+        WidgetKey
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Lorsque la méthode est explicitement appliquée à une clé
+            fantôme. Il est possible de copier des branches contenant
+            des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        Notes
+        -----
+        La méthode n'est réécrite sur cette classe que pour exclure les
+        jumelles `ValueKey`. Cf. `GroupOfPropertiesKey.copy` pour le
+        mécanisme de copie des couples.
+        
+        """
+        if self.m_twin:
+            return
+            # NB: les objets de classe `GroupOfPropertiesKey`
+            # n'appellent pas cette méthode, donc cette
+            # condition exclut seulement les jumeaux `ValueKey`.
+        return super().copy(parent=parent, empty=empty)
+
     def kill(self):
         """Efface une clé de la mémoire de son parent.
         
@@ -689,12 +885,23 @@ class GroupKey(WidgetKey):
     
     """
     def _base_attributes(self, **kwargs):
-        self.children = []
+        self.children = ChildrenList()
     
     def _hide_m(self, value):
         super()._hide_m(value)
         for child in self.real_children():
             child._hide_m(value)
+    
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'GroupKey'
     
     def real_children(self):
         """Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).
@@ -749,6 +956,42 @@ class GroupKey(WidgetKey):
             n += child.rowspan 
         return n
 
+    def copy(self, parent=None, empty=True):
+        """Renvoie une copie de la clé.
+        
+        La branche descendante est également dupliquée.
+        
+        Parameters
+        ----------
+        parent : GroupKey, optional
+            La clé parente. Si elle n'est pas spécifiée, il sera
+            considéré que le parent de la copie est le même que celui
+            de l'original.
+        empty : bool, default True
+            Crée-t-on une copie vide (cas d'un nouvel enregistrement
+            dans un groupe de valeurs ou de traduction) - True - ou
+            souhaite-t-on dupliquer une branche de l'arbre de clés
+            en préservant son contenu - False ?
+        
+        Returns
+        -------
+        WidgetKey
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Lorsque la méthode est explicitement appliquée à une clé
+            fantôme. Il est possible de copier des branches contenant
+            des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        """
+        key = super().copy(parent=parent, empty=empty)
+        for c in self.real_children():
+            c.copy(parent=key, empty=empty)
+            if empty:
+                break
+        return key
+
 
 class TabKey(GroupKey):
     """Clé de dictionnaire de widgets représentant un onglet.
@@ -769,8 +1012,20 @@ class TabKey(GroupKey):
         fantôme est toujours un fantôme.
     
     """
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'TabKey'
+    
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         """
         return 'tab'
@@ -850,6 +1105,24 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             not isinstance(parent, TranslationGroupKey)
  
     @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'GroupOfPropertiesKey'
+ 
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
+        
+        """
+        return 'group of properties'
+ 
+    @property
     def rdftype(self):
         """La classe RDF du noeud.
         
@@ -889,12 +1162,63 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             if not value:
                 raise MissingParameter('rdftype', self)
             self._rdftype = value
- 
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
+
+    @property
+    def attr_to_copy(self):
+        """Attributs de la classe à prendre en compte pour la copie des clés.
+        
+        Cette propriété est un dictionnaire dont les clés sont les
+        noms des attributs contenant les informations nécessaire pour
+        dupliquer la clé et les valeurs sont des booléens qui indiquent
+        si la valeur serait à conserver pour créer une copie vide de la clé.
+        
+        Certains attributs sont volontairement exclus de cette liste, car
+        ils requièrent un traitement spécifique.
+        
+        Returns
+        -------
+        dict
         
         """
-        return 'group of properties'
+        return { 'parent': True, 'predicate': True, 'rdftype': True }
+
+    def copy(self, parent=None, empty=True):
+        """Renvoie une copie de la clé.
+        
+        La branche descendante est également dupliquée, ainsi que la
+        clé jumelle, le cas échéant.
+        
+        Parameters
+        ----------
+        parent : GroupKey, optional
+            La clé parente. Si elle n'est pas spécifiée, il sera
+            considéré que le parent de la copie est le même que celui
+            de l'original.
+        empty : bool, default True
+            Crée-t-on une copie vide (cas d'un nouvel enregistrement
+            dans un groupe de valeurs ou de traduction) - True - ou
+            souhaite-t-on dupliquer une branche de l'arbre de clés
+            en préservant son contenu - False ?
+        
+        Returns
+        -------
+        WidgetKey
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Lorsque la méthode est explicitement appliquée à une clé
+            fantôme. Il est possible de copier des branches contenant
+            des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        """
+        key = GroupKey.copy(self, parent=parent, empty=empty)
+        if self.m_twin:
+            parent = key.parent
+            twin_key = self.m_twin._copy(parent=parent, empty=empty)
+            key.m_twin = twin_key
+            key.is_hidden_m = self.is_hidden_m
+        return key
 
 
 class GroupOfValuesKey(GroupKey):
@@ -915,6 +1239,9 @@ class GroupOfValuesKey(GroupKey):
         True si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
+    has_minus_button : bool, default True
+        True si des boutons moins (non représentés par des clés) sont
+        supposés être associés aux clés du groupe.
     predicate : URIRef
         Le prédicat commun à toutes les valeurs du groupe.
     rdftype : URIRef, optional
@@ -932,9 +1259,12 @@ class GroupOfValuesKey(GroupKey):
     Attributes
     ----------
     button : PlusButtonKey
-        Référence la clé qui représente le bouton du groupe.
+        Référence la clé qui représente le bouton plus du groupe.
     predicate : URIRef
         *Propriété.* Prédicat commun à toutes les valeurs du groupe.
+    with_minus_buttons : bool, default True
+        True si des boutons moins (non représentés par des clés) sont
+        supposés être associés aux clés du groupe.
     rdftype : URIRef
         *Propriété.* Classe RDF commune à toutes les valeurs du groupe. Peut
         valoir None si le groupe ne contient pas de `GroupOfPropertiesKey`.
@@ -952,6 +1282,7 @@ class GroupOfValuesKey(GroupKey):
     def _base_attributes(self, **kwargs):
         super()._base_attributes(**kwargs)
         self.button = None
+        self.with_minus_buttons = kwargs.get('with_minus_buttons', True)
         self._predicate = None
         self._rdftype = None
         self._sources = None
@@ -965,6 +1296,17 @@ class GroupOfValuesKey(GroupKey):
         self.sources = kwargs.get('sources')
         self.xsdtype = kwargs.get('xsdtype')
         self.transform = kwargs.get('transform')
+    
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'GroupOfValuesKey'
     
     @property
     def predicate(self):
@@ -993,7 +1335,7 @@ class GroupOfValuesKey(GroupKey):
         
         """
         if not value:
-            raise MissingParameter('value', self)
+            raise MissingParameter('predicate', self)
         self._predicate = value
     
     @property
@@ -1123,8 +1465,9 @@ class GroupOfValuesKey(GroupKey):
     def _validate_parent(self, parent):
         return isinstance(parent, (GroupOfPropertiesKey, TabKey))
     
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         """
         return 'group of values'
@@ -1132,7 +1475,63 @@ class GroupOfValuesKey(GroupKey):
     def _hide_m(self, value):
         super()._hide_m(value)
         if self.button:
-            button._hide_m(value)
+            self.button._hide_m(value)
+
+    @property
+    def attr_to_copy(self):
+        """Attributs de la classe à prendre en compte pour la copie des clés.
+        
+        Cette propriété est un dictionnaire dont les clés sont les
+        noms des attributs contenant les informations nécessaire pour
+        dupliquer la clé et les valeurs sont des booléens qui indiquent
+        si la valeur serait à conserver pour créer une copie vide de la clé.
+        
+        Certains attributs sont volontairement exclus de cette liste, car
+        ils requièrent un traitement spécifique.
+        
+        Returns
+        -------
+        dict
+        
+        """
+        return { 'parent': True, 'predicate': True, 'rdftype': True,
+            'sources': True, 'xsdtype': True, 'transform': True,
+            'has_minus_button' : True }
+
+    def copy(self, parent=None, empty=True):
+        """Renvoie une copie de la clé.
+        
+        La branche descendante est également dupliquée, ainsi que le
+        bouton du groupe, le cas échéant.
+        
+        Parameters
+        ----------
+        parent : GroupKey, optional
+            La clé parente. Si elle n'est pas spécifiée, il sera
+            considéré que le parent de la copie est le même que celui
+            de l'original.
+        empty : bool, default True
+            Crée-t-on une copie vide (cas d'un nouvel enregistrement
+            dans un groupe de valeurs ou de traduction) - True - ou
+            souhaite-t-on dupliquer une branche de l'arbre de clés
+            en préservant son contenu - False ?
+        
+        Returns
+        -------
+        WidgetKey
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Lorsque la méthode est explicitement appliquée à une clé
+            fantôme. Il est possible de copier des branches contenant
+            des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        """
+        key = super().copy(parent=parent, empty=empty)
+        if self.button:
+            self.button.copy(parent=key, empty=empty)
+        return key
 
     def compute_rows(self):
         """Actualise les indices de ligne des filles du groupe.
@@ -1181,13 +1580,13 @@ class GroupOfValuesKey(GroupKey):
             # boutons moins à afficher
             if true_children_count >= 2 \
                 and not child.is_single_child is False:
-                child.is_single_child = False
+                child._is_single_child = False
                 if WidgetKey.actionsbook:
                     WidgetKey.actionsbook.show_minus_button.append(child)
             # boutons moins à masquer
             if true_children_count < 2 \
                 and not child.is_single_child:
-                child.is_single_child = True
+                child._is_single_child = True
                 if WidgetKey.actionsbook:
                     WidgetKey.actionsbook.hide_minus_button.append(child) 
 
@@ -1243,6 +1642,17 @@ class TranslationGroupKey(GroupOfValuesKey):
             raise ForbiddenOperation('Les groupes de traduction ne ' \
                 'peuvent pas être des fantômes.')
         self.available_languages = self.langlist.copy()
+
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'TranslationGroupKey'
 
     @property
     def rdftype(self):
@@ -1301,8 +1711,9 @@ class TranslationGroupKey(GroupOfValuesKey):
                 'pas autorisés dans les groupes fantômes.')
         return super()._validate_parent(parent)
 
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         """
         return 'translation group'
@@ -1314,16 +1725,8 @@ class TranslationGroupKey(GroupOfValuesKey):
         ----------
         value_language : str
             Langue redevenue disponible.
-        
-        Raises
-        ------
-        MissingParameter
-            Si aucune langue n'est spécifiée.
 
         """        
-        if not value_language:
-            raise MissingParameter('value_language', self)
-        
         if not value_language in self.langlist \
             or value_language in self.available_languages:
             return
@@ -1349,16 +1752,8 @@ class TranslationGroupKey(GroupOfValuesKey):
         ----------
         value_language : str
             Langue désormais non disponible.
-            
-        Raises
-        ------
-        MissingParameter
-            Si aucune langue n'est spécifiée.
         
         """        
-        if not value_language:
-            raise MissingParameter('value_language', self)
-        
         if not value_language in self.available_languages:
             return
             # on admet que la langue ait pu ne pas se trouver
@@ -1494,8 +1889,20 @@ class ValueKey(ObjectKey):
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
 
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'ValueKey'
+
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         """
         return 'edit'
@@ -1622,7 +2029,7 @@ class ValueKey(ObjectKey):
                     value = self.available_languages[0]
                 else:
                     raise IntegrityBreach(self, 'Plus de langue disponible.')
-            self.parent.language_in(self.value_language)
+            self.parent.language_in(self._value_language)
             self.parent.language_out(value)
         self._value_language = value
 
@@ -1804,6 +2211,28 @@ class ValueKey(ObjectKey):
         elif self.xsdtype == RDF.langString:
             self.langlist
 
+    @property
+    def attr_to_copy(self):
+        """Attributs de la classe à prendre en compte pour la copie des clés.
+        
+        Cette propriété est un dictionnaire dont les clés sont les
+        noms des attributs contenant les informations nécessaire pour
+        dupliquer la clé et les valeurs sont des booléens qui indiquent
+        si la valeur serait à conserver pour créer une copie vide de la clé.
+        
+        Certains attributs sont volontairement exclus de cette liste, car
+        ils requièrent un traitement spécifique.
+        
+        Returns
+        -------
+        dict
+        
+        """
+        return { 'parent': True, 'predicate': True, 'do_not_save': True,
+            'sources': True, 'xsdtype': True, 'transform': True,
+            'rowspan': True, 'value': False, 'value_language': False,
+            'value_source': False }
+
     def parse_value(self, value):
         """Prépare une valeur en vue de son enregistrement dans un graphe de métadonnées.
         
@@ -1842,9 +2271,21 @@ class PlusButtonKey(WidgetKey):
     """Clé de dictionnaire de widgets représentant un bouton plus.
     
     """
+    
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'PlusButtonKey'
 
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         """
         return 'plus button'
@@ -1873,6 +2314,25 @@ class TranslationButtonKey(PlusButtonKey):
     """Clé de dictionnaire de widgets représentant un bouton de traduction.
     
     """
+    
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'TranslationButtonKey'
+   
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
+        
+        """
+        return 'translation button'
+    
     @property
     def is_hidden_b(self):
         """La clé est-elle un bouton masqué ?
@@ -1882,16 +2342,10 @@ class TranslationButtonKey(PlusButtonKey):
         bool
         
         """
-        return not parent.available_languages
+        return not self.parent.available_languages
 
     def _validate_parent(self, parent):
         return isinstance(parent, TranslationGroupKey)
-
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
-        
-        """
-        return 'translation button'
 
 
 class RootKey(GroupKey):
@@ -1934,8 +2388,26 @@ class RootKey(GroupKey):
         self._is_hidden_b = False
         self._rowspan = 0
         self._row = None
-        self.children = []
+        self.children = ChildrenList()
  
+    @property
+    def key_type(self):
+        """Type de clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return 'RootKey'
+ 
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
+        
+        """
+        return 'root'
+    
     @property
     def parent(self):
         return None
@@ -1954,12 +2426,10 @@ class RootKey(GroupKey):
     @rdftype.setter
     def rdftype(self, value):
         return
- 
-    def object(self):
-        """Renvoie une transcription littérale de la classe de la clé.
-        
-        """
-        return 'root'
+
+    @property
+    def attr_to_copy(self):
+        return {}
 
     def kill(self):
         return
@@ -1981,12 +2451,21 @@ class ChildrenList(list):
         if value.rowspan:
             value.parent.compute_rows()
         value.parent.compute_single_children()
+        if not value._is_unborn and \
+            isinstance(value.parent, TranslationGroupKey) \
+            and isinstance(value, ValueKey):
+            # NB : à l'initialisation, `language_out` est
+            # exécuté par le setter de `value_language`.
+            value.parent.language_out(value.value_language)
         
     def remove(self, value):
-        super().append(value)
+        super().remove(value)
         if value.rowspan:
             value.parent.compute_rows()
         value.parent.compute_single_children()
+        if isinstance(value.parent, TranslationGroupKey) \
+            and isinstance(value, ValueKey):
+            value.parent.language_in(value.value_language)
 
     
 def forbidden_char(anystr):
