@@ -31,12 +31,12 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOpe
 from plume.rdf.actionsbook import ActionsBook
 
 try:
-    from rdflib import URIRef, BNode, Literal, RDF
+    from rdflib import URIRef, BNode, Literal, RDF, XSD
 except:
     from plume.bibli_install.bibli_install import manageLibrary
     # installe RDFLib si n'est pas déjà disponible
     manageLibrary()
-    from rdflib import URIRef, BNode, RDF
+    from rdflib import URIRef, BNode, Literal, RDF, XSD
 
 
 class WidgetKey:
@@ -54,6 +54,11 @@ class WidgetKey:
         True si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
+    order_idx : tuple of int, default (999,)
+        Indice(s) permettant le classement de la clé parmi ses soeurs dans
+        un groupe de propriétés. Les clés de plus petits indices seront les
+        premières. Cet argument sera ignoré si le groupe parent n'est pas
+        un groupe de propriétés.
     
     Attributes
     ----------
@@ -97,6 +102,9 @@ class WidgetKey:
         *Propriété non modifiable manuellement.* Nombre de lignes occupées
         par le ou les widgets portés par la clé, étiquette séparée comprise.
         Vaut 0 pour une clé fantôme.
+    order_idx : tuple of int
+        *Propriété.* Indice(s) permettant le classement de la clé parmi ses
+        soeurs. Les clés de plus petits indices seront les premières.
     
     Methods
     -------
@@ -248,10 +256,15 @@ class WidgetKey:
         self._is_ghost = kwargs.get('is_ghost', False)
         self._parent = None
         self._is_hidden_m = False
+        self._order_idx = None
         self._base_attributes(**kwargs)
         self._heritage(**kwargs)
         self._computed_attributes(**kwargs)
+        self.order_idx = kwargs.get('order_idx')
         self._is_unborn = False
+        if not self.no_computation:
+            self.parent.compute_rows()
+            self.parent.compute_single_children()
         if WidgetKey.actionsbook:
             WidgetKey.actionsbook.create.append(self)
 
@@ -269,6 +282,9 @@ class WidgetKey:
     
     def __repr__(self):
         return "{} {}".format(self.key_type, self.uuid)
+    
+    def __bool__(self):
+        return not self.is_ghost
     
     @property
     def key_type(self):
@@ -388,7 +404,7 @@ class WidgetKey:
         return self._is_hidden_m
 
     def _hide_m(self, value):
-        if self.is_ghost :
+        if not self:
             return
         old_value = self.is_hidden_m
         self._is_hidden_m = value
@@ -431,7 +447,7 @@ class WidgetKey:
         de la classe `ValueKey` présente un intérêt.
         
         """
-        return 0 if self.is_ghost else 1
+        return 0 if not self else 1
 
     @property
     def row(self):
@@ -447,7 +463,7 @@ class WidgetKey:
         lecture.
         
         """
-        return None if self.is_ghost else self._row
+        return None if not self else self._row
 
     @property
     def is_single_child(self):
@@ -463,7 +479,34 @@ class WidgetKey:
         uniquement en lecture.
         
         """
-        return False if self.is_ghost else self._is_single_child
+        return bool(self) and self._is_single_child
+
+    @property
+    def order_idx(self):
+        """Indice de classement de la clé parmi ses soeurs.
+        
+        Returns
+        -------
+        tuple of int
+        
+        """
+        return self._order_idx
+
+    @order_idx.setter
+    def order_idx(self, value):
+        """Définit l'indice de classement de la clé parmi ses soeurs.
+        
+        Parameters
+        ----------
+        value : tuple of int
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            self._order_idx = None
+        else:
+            self._order_idx = value or (999,)
+        if not self._is_unborn:
+            self.parent.compute_rows()
 
     @property
     def attr_to_copy(self):
@@ -520,7 +563,7 @@ class WidgetKey:
         de chaque classe.
         
         """
-        if self.is_ghost:
+        if not self:
             raise ForbiddenOperation(self, 'La copie des clés fantômes ' \
                 "n'est pas autorisée.")
         return self._copy(parent=parent, empty=empty)
@@ -620,8 +663,7 @@ class ObjectKey(WidgetKey):
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.with_minus_buttons \
-                and not self.is_ghost
+            return bool(self) and self.parent.with_minus_buttons
         return False
     
     @property
@@ -692,6 +734,10 @@ class ObjectKey(WidgetKey):
     def m_twin(self, value):
         """Définit la clé jumelle.
         
+        Les attributs `rowspan`, `predicate` and `is_hidden_m`, de la clé
+        sont silencieusement mis en cohérence / déduits de ceux de la clé
+        jumelle.
+        
         Parameters
         ----------
         value : ObjectKey
@@ -700,26 +746,23 @@ class ObjectKey(WidgetKey):
         Raises
         ------
         ForbiddenOperation
-            Si la clé jumelle n'est pas du bon type (`ValueKey` pour une
-            clé `GroupOfPropertiesKey` et inversement), si les deux clés
-            n'ont pas le même parent, si leur visibilité n'est pas correcte,
-            si elle n'ont pas la même valeur d'attribut `rowspan`, si l'une
-            d'elles est un fantôme.
+            Si la clé cible est un fantôme, si la clé jumelle n'est pas du bon
+            type (`ValueKey` pour une clé `GroupOfPropertiesKey` et inversement),
+            ou si les deux clés n'ont pas le même parent.
         
         """
         if not value:
+            # fait aussi tourner court toute tentative de désigner un
+            # fantôme comme jumeau.
             return
-        if self.is_ghost :
+        if not self :
             raise ForbiddenOperation(self, 'Un fantôme ne peut avoir ' \
                 'de clé jumelle.')
-        if value.is_ghost :
-            raise ForbiddenOperation(self, 'La clé jumelle ne peut pas ' \
-                'être un fantôme.')
         d = {ValueKey: GroupOfPropertiesKey, GroupOfPropertiesKey: ValueKey}
         if not isinstance(value, d[type(self)]):
             raise ForbiddenOperation(self, 'La clé jumelle devrait' \
                 ' être de type {}.'.format(d[type(self)]))
-        if not self.parent == value.parent:
+        if self.parent != value.parent:
             raise ForbiddenOperation(self, 'La clé et sa jumelle ' \
                 'devraient avoir la même clé parent.')
         self._m_twin = value
@@ -762,7 +805,7 @@ class ObjectKey(WidgetKey):
             True si la clé est masquée, False sinon.
         
         """
-        if self.parent.is_hidden_m or not self.m_twin:
+        if not self or self.parent.is_hidden_m or not self.m_twin:
             return
             # pas besoin de retoucher à la valeur
             # définie à l'initialisation ou héritée
@@ -912,7 +955,7 @@ class GroupKey(WidgetKey):
         
         """
         for child in self.children:
-            if not child.is_ghost:
+            if child:
                 yield child
     
     def compute_single_children(self):
@@ -921,9 +964,7 @@ class GroupKey(WidgetKey):
     def compute_rows(self):
         """Actualise les indices de ligne des filles du groupe.
         
-        Cette méthode devrait être systématiquement appliquée à
-        la clé parente après toute création ou effacement de clé.
-        Elle n'a pas d'effet dans un groupe fantôme, ou si la
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
         variable partagée `no_computation` vaut True.
         
         Returns
@@ -937,9 +978,14 @@ class GroupKey(WidgetKey):
         liste de l'attribut `children`.
         
         """
-        if self.is_ghost or WidgetKey.no_computation:
+        if not self or WidgetKey.no_computation:
             return
         n = 0
+        if not isinstance(self, GroupOfValuesKey):
+            # dans les groupes de valeurs, le premier entré
+            # reste toujours le premier ; dans les groupes de
+            # propriétés, on trie en fonction de `order_idx`
+            self.children.sort(key=lambda x: x.order_idx)
         for child in self.real_children():
             if isinstance(child, ValueKey) and child.m_twin:
                 continue
@@ -986,9 +1032,11 @@ class GroupKey(WidgetKey):
         
         """
         key = super().copy(parent=parent, empty=empty)
-        for c in self.real_children():
-            c.copy(parent=key, empty=empty)
-            if empty:
+        for child in self.real_children():
+            child.copy(parent=key, empty=empty)
+            if empty and isinstance(child, GroupOfValuesKey):
+                # dans un groupe de valeurs ou de traduction,
+                # seule la première fille est copiée
                 break
         return key
 
@@ -1012,6 +1060,10 @@ class TabKey(GroupKey):
         fantôme est toujours un fantôme.
     
     """
+    
+    def _validate_parent(self, parent):
+        return isinstance(parent, GroupOfPropertiesKey)
+    
     @property
     def key_type(self):
         """Type de clé.
@@ -1029,9 +1081,6 @@ class TabKey(GroupKey):
         
         """
         return 'tab'
-
-    def _validate_parent(self, parent):
-        return isinstance(parent, GroupOfPropertiesKey)
 
 
 class GroupOfPropertiesKey(GroupKey, ObjectKey):
@@ -1079,7 +1128,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Le noeud vide objet du prédicat, qui est également le sujet des
         triplets des enfants du groupe.
     rdftype : URIRef
-        La classe RDF du noeud.
+        *Propriété.* La classe RDF du noeud.
     
     """
     
@@ -1163,6 +1212,30 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
                 raise MissingParameter('rdftype', self)
             self._rdftype = value
 
+    def compute_rows(self):
+        """Actualise les indices de ligne des filles du groupe.
+        
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
+        variable partagée `no_computation` vaut True.
+        
+        Returns
+        -------
+        int
+            L'indice de la prochaine ligne disponible.
+        
+        Notes
+        -----
+        La méthode `compute_rows` de `GroupOfPropertiesKey` trie
+        les clés en fonction de leur attribut `order_idx` avant
+        de calculer les indices de ligne.
+        
+        """
+        if not self or WidgetKey.no_computation:
+            return
+        if not isinstance(self, GroupOfValuesKey):
+            self.children.sort(key=lambda x: x.order_idx)
+        return super().compute_rows()
+
     @property
     def attr_to_copy(self):
         """Attributs de la classe à prendre en compte pour la copie des clés.
@@ -1220,6 +1293,16 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             key.is_hidden_m = self.is_hidden_m
         return key
 
+    def kill(self):
+        """Efface une clé de la mémoire de son parent.
+        
+        Notes
+        -----
+        Cette méthode réoriente simplement la commande vers la
+        méthode `kill` de la classe `ObjectKey`.
+        
+        """
+        ObjectKey.kill(self)
 
 class GroupOfValuesKey(GroupKey):
     """Clé de dictionnaire de widgets représentant un groupe de valeurs.
@@ -1254,7 +1337,9 @@ class GroupOfValuesKey(GroupKey):
         Le cas échéant, la nature de la transformation appliquée aux
         objets du groupe.
     xsdtype : URIRef, optional
-        Le cas échéant, le type (xsd:type) des valeurs du groupe.
+        Le cas échéant, le type (xsd:type) des valeurs du groupe. La valeur
+        de ce paramètre est ignorée si `rdftype` est renseigné, sinon 
+        xsd:string fait office de valeur par défaut.
     
     Attributes
     ----------
@@ -1275,14 +1360,13 @@ class GroupOfValuesKey(GroupKey):
         *Propriété.* Le cas échéant, la nature de la transformation appliquée
         aux objets du groupe.
     xsdtype : URIRef, optional
-        *Propriété non modifiable après l'initialisation.* Le cas échéant,
-        le type (xsd:type) des valeurs du groupe.
+        *Propriété.* Le cas échéant, le type (xsd:type) des valeurs du groupe. 
     
     """
     def _base_attributes(self, **kwargs):
         super()._base_attributes(**kwargs)
         self.button = None
-        self.with_minus_buttons = kwargs.get('with_minus_buttons', True)
+        self._with_minus_buttons = None
         self._predicate = None
         self._rdftype = None
         self._sources = None
@@ -1291,11 +1375,15 @@ class GroupOfValuesKey(GroupKey):
         
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
+        self.with_minus_buttons = kwargs.get('with_minus_buttons', True)
         self.predicate = kwargs.get('predicate')
         self.rdftype = kwargs.get('rdftype')
         self.sources = kwargs.get('sources')
         self.xsdtype = kwargs.get('xsdtype')
         self.transform = kwargs.get('transform')
+    
+    def _validate_parent(self, parent):
+        return isinstance(parent, (GroupOfPropertiesKey, TabKey))
     
     @property
     def key_type(self):
@@ -1307,6 +1395,39 @@ class GroupOfValuesKey(GroupKey):
         
         """
         return 'GroupOfValuesKey'
+    
+    @property
+    def key_object(self):
+        """Transcription littérale du type de clé.
+        
+        """
+        return 'group of values'
+    
+    @property
+    def with_minus_buttons(self):
+        """Les filles du groupe sont-elles accompagnées de boutons moins ?
+        
+        Returns
+        -------
+        bool
+        
+        """
+        return self._with_minus_buttons
+    
+    @with_minus_buttons.setter
+    def with_minus_buttons(self, value):
+        """Détermine si les filles du groupe sont accompagnées de boutons moins.
+        
+        Assure que la propriété vaudra toujours False pour un groupe fantôme.
+        
+        Parameters
+        ----------
+        value : bool
+        
+        """
+        if not self:
+            self._with_minus_buttons = False
+        self._with_minus_buttons = value
     
     @property
     def predicate(self):
@@ -1371,6 +1492,8 @@ class GroupOfValuesKey(GroupKey):
             for child in self.children):
             raise MissingParameter('rdftype', self)
         self._rdftype = value
+        if not self._is_unborn:
+            self.xsdtype = self.xsdtype
     
     @property
     def sources(self):
@@ -1419,21 +1542,25 @@ class GroupOfValuesKey(GroupKey):
     def xsdtype(self, value):
         """Définit le type XSD commun aux valeurs du groupe.
         
+        `rdftype` prévaut sur `xsdtype` : si le premier est renseigné,
+        c'est que la valeur est un IRI ou un noeud vide, et le second
+        ne peut qu'être nul. Sinon, xsd:string est utilisé comme valeur
+        par défaut.
+        
         Parameters
         ----------
         value : URIRef
             Le type à déclarer.
         
-        Raises
-        ------
-        ForbiddenOperation
-            En cas de tentative de modification a posteriori.
-        
         """
-        if self.xsdtype :
-            raise ForbiddenOperation(self, 'Modifier a posteriori le ' \
-                "type XSD n'est pas permis.")
+        if self.rdftype:
+            value = None
+        elif not value:
+            value = XSD.string
         self._xsdtype = value
+        if not self._is_unborn:
+            for child in self.children:
+                child.value_language = child.value_language
     
     @property
     def transform(self):
@@ -1462,16 +1589,6 @@ class GroupOfValuesKey(GroupKey):
             return
         self._transform = value
     
-    def _validate_parent(self, parent):
-        return isinstance(parent, (GroupOfPropertiesKey, TabKey))
-    
-    @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
-        
-        """
-        return 'group of values'
-    
     def _hide_m(self, value):
         super()._hide_m(value)
         if self.button:
@@ -1496,7 +1613,7 @@ class GroupOfValuesKey(GroupKey):
         """
         return { 'parent': True, 'predicate': True, 'rdftype': True,
             'sources': True, 'xsdtype': True, 'transform': True,
-            'has_minus_button' : True }
+            'with_minus_buttons' : True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -1536,9 +1653,7 @@ class GroupOfValuesKey(GroupKey):
     def compute_rows(self):
         """Actualise les indices de ligne des filles du groupe.
         
-        Cette méthode devrait être systématiquement appliquée à
-        la clé parente après toute création ou effacement de clé.
-        Elle n'a pas d'effet dans un groupe fantôme, ou si la
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
         variable partagée `no_computation` vaut True.
             
         Returns
@@ -1547,7 +1662,7 @@ class GroupOfValuesKey(GroupKey):
             L'indice de la prochaine ligne disponible.
         
         """
-        if self.is_ghost or WidgetKey.no_computation:
+        if not self or WidgetKey.no_computation:
             return
         n = super().compute_rows()
         if self.button:
@@ -1561,13 +1676,11 @@ class GroupOfValuesKey(GroupKey):
     def compute_single_children(self):
         """Actualise l'attribut `is_single_child` des clés filles du groupe.
         
-        Cette méthode devrait être systématiquement appliquée à
-        la clé parente après toute création ou effacement de clé.
-        Elle n'a pas d'effet dans un groupe fantôme, ou si la
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
         variable partagée `no_computation` vaut True.
         
         """
-        if self.is_ghost or WidgetKey.no_computation :
+        if not self or WidgetKey.no_computation :
             return
         true_children_count = sum([
             1 for c in self.real_children() if not c.m_twin or \
@@ -1600,11 +1713,9 @@ class TranslationGroupKey(GroupOfValuesKey):
     groupe de traduction est d'y veiller.
     
     Outre ses attributs propres listés ci-après, `TranslationGroupKey`
-    hérite de tous les attributs de la classe `GroupOfValuesKey`.
-    
-    Il n'est pas permis d'avoir un groupe de traduction fantôme, y compris
-    par héritage (d'autant que de besoin, on utilisera des groupes de
-    valeurs à la place).
+    hérite de tous les attributs de la classe `GroupOfValuesKey`. La plupart
+    présentent toutefois peu d'intérêt, valant soit None, soit une valeur
+    fixe (rdf:langString pour `xsd:type`).
     
     Parameters
     ----------
@@ -1613,7 +1724,9 @@ class TranslationGroupKey(GroupOfValuesKey):
     is_ghost : bool, default False
         True si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
-        fantôme est toujours un fantôme.
+        fantôme est toujours un fantôme. Il n'est pas permis d'avoir un
+        groupe de traduction fantôme, y compris par héritage. Le cas échéant,
+        c'est un groupe de valeurs qui sera automatiquement créé à la place.
     predicate : URIRef
         Le prédicat commun à toutes les valeurs du groupe.
     
@@ -1636,11 +1749,18 @@ class TranslationGroupKey(GroupOfValuesKey):
     toujours None.
     
     """
+    def __new__(cls, **kwargs):
+        # crée un groupe de valeurs au lieu d'un groupe de
+        # traduction dans le cas d'un fantôme
+        parent = kwargs.get('parent')
+        if kwargs.get('is_ghost') or not parent:
+            # si `parent` n'était pas spécifié, il y aura de toute
+            # façon une erreur à l'initialisation
+            return GroupOfValuesKey.__call__(**kwargs)
+        return super().__new__(cls)
+    
     def _base_attributes(self, **kwargs):
         super()._base_attributes(**kwargs)
-        if kwargs.get('is_ghost'):
-            raise ForbiddenOperation('Les groupes de traduction ne ' \
-                'peuvent pas être des fantômes.')
         self.available_languages = self.langlist.copy()
 
     @property
@@ -1704,12 +1824,6 @@ class TranslationGroupKey(GroupOfValuesKey):
         
         """
         self._xsdtype = RDF.langString
-
-    def _validate_parent(self, parent):
-        if parent.is_ghost:
-            raise ForbiddenOperation('Les groupes de traduction ne sont ' \
-                'pas autorisés dans les groupes fantômes.')
-        return super()._validate_parent(parent)
 
     @property
     def key_object(self):
@@ -1809,15 +1923,23 @@ class ValueKey(ObjectKey):
         Le cas échéant, la nature de la transformation appliquée à
         l'objet. Si la clé appartient à un groupe de valeurs, c'est lui
         qui porte cette information, le cas échéant.
+    rdftype : URIRef, optional
+        Classe RDF de la clé-valeur, s'il s'agit d'un IRI. Si la clé appartient
+        à un groupe de valeurs, c'est lui qui porte cette information, le cas
+        échéant.
     xsdtype : URIRef, optional
-        Le type (xsd:type) de l'objet du triplet. Doit impérativement
+        Le type (xsd:type) de la clé-valeur, le cas échéant. Doit impérativement
         valoir rdf:langString pour que les informations sur les
         langues soient prises en compte. Si la clé appartient à un groupe de
         valeurs, c'est lui qui porte cette information, le cas échéant.
+        Dans le cas contraire, si `rdftype` n'est pas nul, il sera toujours
+        considéré que `xsdtype` l'est. Sinon, xsd:string est utilisé comme
+        valeur par défaut.
     do_not_save : bool, default False
         True pour une information qui ne devra pas être sauvegardée.
     value : Literal or URIRef, optional
-        La valeur mémorisée par la clé (objet du triplet RDF).
+        La valeur mémorisée par la clé (objet du triplet RDF). Une clé
+        fantôme ne sera effectivement créée que si une valeur est fournie.
     value_language : str, optional
         La langue de l'objet. Obligatoire pour un Literal de
         type rdf:langString et a fortiori dans un groupe de traduction,
@@ -1836,22 +1958,24 @@ class ValueKey(ObjectKey):
         *Propriété non modifiable.* Liste des langues disponibles pour
         les traductions.
     sources : list of URIRef
-        Liste des sources de vocabulaire contrôlé pour les valeurs
+        *Propriété.* Liste des sources de vocabulaire contrôlé pour les valeurs
         de la clé.
     value : Literal or URIRef
-        La valeur mémorisée par la clé (objet du triplet RDF).
+        *Propriété.* La valeur mémorisée par la clé (objet du triplet RDF).
+    rdftype : URIRef
+        *Propriété.* La classe RDF de la clé-valeur, si c'est un IRI.
     xsdtype : URIRef
-        Le type (xsd:type) de l'objet du triplet. None si l'objet n'est
-        pas un Literal.
+        *Propriété.* Le type (xsd:type) de la clé-valeur. None si
+        l'objet n'est pas un Literal.
     transform : {None, 'email', 'phone'}
-        Le cas échéant, la nature de la transformation appliquée à
+        *Propriété.* Le cas échéant, la nature de la transformation appliquée à
         l'objet.
     value_language : str
-        La langue de l'objet. None si l'objet n'est pas un Literal de
+        *Propriété.* La langue de l'objet. None si l'objet n'est pas un Literal de
         type rdf:langString. Obligatoirement renseigné dans un groupe
         de traduction.
     value_source : URIRef
-        La source utilisée par la valeur courante de la clé.
+        *Propriété.* La source utilisée par la valeur courante de la clé.
     do_not_save : bool
         True pour une information qui ne devra pas être sauvegardée.
     
@@ -1861,18 +1985,22 @@ class ValueKey(ObjectKey):
         Prépare une valeur en vue de son enregistrement dans un graphe
         de métadonnées.
     
-    Notes
-    -----
-    L'objet du triplet est porté par le dictionnaire interne
-    associé à la clé et non par la clé elle-même.
-    
     """
+    
+    def __new__(cls, **kwargs):
+        # inhibe la création de clés-valeurs fantôme sans
+        # valeur (ou sans parent)
+        if not kwargs.get('value') and (kwargs.get('is_ghost') \
+            or not kwargs.get('parent')):
+            return
+        return super().__new__(cls)
     
     def _base_attributes(self, **kwargs):
         super()._base_attributes(**kwargs)
         self.do_not_save = kwargs.get('do_not_save', False)
         self._rowspan = 0
         self._sources = None
+        self._rdftype = None
         self._xsdtype = None
         self._transform = None
         self._value = None
@@ -1883,6 +2011,7 @@ class ValueKey(ObjectKey):
         super()._computed_attributes(**kwargs)
         self.rowspan = kwargs.get('rowspan')
         self.sources = kwargs.get('sources')
+        self.rdftype = kwargs.get('rdftype')
         self.xsdtype = kwargs.get('xsdtype')
         self.transform = kwargs.get('transform')
         self.value = kwargs.get('value')
@@ -1934,14 +2063,15 @@ class ValueKey(ObjectKey):
             Le nombre de lignes.
         
         """
-        if self.m_twin and value != self.m_twin.rowspan:
-            value = self.m_twin.rowspan
-        if self.is_ghost:
+        if not self:
             value = 0
+        elif self.m_twin and value != self.m_twin.rowspan:
+            value = self.m_twin.rowspan
         elif not value:
             value = 1
         self._rowspan = value
-        self.parent.compute_rows()
+        if not self._is_unborn:
+            self.parent.compute_rows()
     
     @property
     def value(self):
@@ -1968,20 +2098,96 @@ class ValueKey(ObjectKey):
         value : URIRef or Literal
             La valeur.
         
-        Raises
-        ------
-        MissingParameter
-            Si aucune valeur n'est fournie pour un clé fantôme (qui ne
-            sert à rien d'autre qu'à mémoriser une valeur).
-        
         """
-        if self.is_ghost and not value:
-            raise MissingParameter('value', self)
         if not isinstance(value, (URIRef, Literal)):
             if self._is_unborn:
                 return
             self._value = self.parse_value(value)
         self._value = value
+
+    @property
+    def rdftype(self):
+        """La classe RDF de la clé-valeur.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        URIRef
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.rdftype
+        return self._rdftype
+
+    @rdftype.setter
+    def rdftype(self, value):
+        """Définit la classe RDF de la clé-valeur.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : URIRef
+            La classe RDF à déclarer.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            self._rdftype = value
+            if not self._is_unborn:
+                self.xsdtype = self.xsdtype
+
+    @property
+    def xsdtype(self):
+        """Renvoie le type de la valeur portée par la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        URIRef
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.xsdtype
+        return self._xsdtype
+    
+    @xsdtype.setter
+    def xsdtype(self, value):
+        """Définit le type de la valeur portée par la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        `rdftype` prévaut sur `xsdtype` : si le premier est renseigné,
+        c'est que la valeur est un IRI, et le second ne peut qu'être nul.
+        Sinon, xsd:string tient lieu de valeur par défaut.
+        
+        `xsdtype` prévaut sur `value_language` : si `value_language`
+        contient une langue mais que `xsdtype` n'est pas rdf:langString,
+        la langue sera silencieusement effacée.
+        
+        Parameters
+        ----------
+        value : URIRef
+            Le type à déclarer.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if self.rdftype:
+                value = None
+            elif not value:
+                value = XSD.string
+            self._xsdtype = value
+            if not self._is_unborn:
+                self.value_language = self.value_language
     
     @property
     def value_language(self):
@@ -2020,8 +2226,8 @@ class ValueKey(ObjectKey):
         
         """
         if self.xsdtype != RDF.langString:
-            return
-        if not value and isinstance(self.value, Literal):
+            value = None
+        elif not value and isinstance(self.value, Literal):
             value = self.value.language
         if isinstance(self.parent, TranslationGroupKey):
             if not value:
@@ -2032,54 +2238,6 @@ class ValueKey(ObjectKey):
             self.parent.language_in(self._value_language)
             self.parent.language_out(value)
         self._value_language = value
-
-    @property
-    def xsdtype(self):
-        """Renvoie le type de la valeur portée par la clé.
-        
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
-        
-        Returns
-        -------
-        URIRef
-        
-        """
-        if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.xsdtype
-        return self._xsdtype
-    
-    @xsdtype.setter
-    def xsdtype(self, value):
-        """Définit le type de la valeur portée par la clé.
-        
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
-        information est supposée être définie par la propriété de
-        même nom du groupe.
-        
-        `xsdtype` prévaut sur `value_language` : si `value_language`
-        contient une langue mais que `xsdtype` n'est pas rdf:langString,
-        la langue sera silencieusement effacée.
-        
-        Parameters
-        ----------
-        value : URIRef
-            Le type à déclarer.
-        
-        Raises
-        ------
-        ForbiddenOperation
-            En cas de tentative de modification a posteriori.
-        
-        """
-        if not isinstance(self.parent, GroupOfValuesKey):
-            if self.xsdtype :
-                raise ForbiddenOperation(self, 'Modifier a posteriori le ' \
-                    "type XSD n'est pas permis.")
-            if self.value_language and value != RDF.langString:
-                self.value_language = None
-            self._xsdtype = value
     
     @property
     def value_source(self):
@@ -2229,7 +2387,7 @@ class ValueKey(ObjectKey):
         
         """
         return { 'parent': True, 'predicate': True, 'do_not_save': True,
-            'sources': True, 'xsdtype': True, 'transform': True,
+            'sources': True, 'rdftype': True, 'xsdtype': True, 'transform': True,
             'rowspan': True, 'value': False, 'value_language': False,
             'value_source': False }
 
@@ -2248,14 +2406,14 @@ class ValueKey(ObjectKey):
         """
         if value in (None, ''):
             return
+        if self.value_transform == 'email':
+            value = owlthing_from_email(value)
+        if self.value_transform == 'phone':
+            value = owlthing_from_tel(value)
         if self.value_language:
             return Literal(value, lang=self.value_language)
         if self.xsdtype:
             return Literal(value, datatype=self.xsdtype)
-        if self.value_transform == 'email':
-            return owlthing_from_email(value)
-        if self.value_transform == 'phone':
-            return owlthing_from_tel(value)
         if self.value_source:
             res = Thesaurus.values(self.value_source).parser(value)
             if res:
@@ -2270,7 +2428,38 @@ class ValueKey(ObjectKey):
 class PlusButtonKey(WidgetKey):
     """Clé de dictionnaire de widgets représentant un bouton plus.
     
+    Il ne peut pas y avoir de bouton fantôme, de bouton dans un
+    groupe fantôme, de bouton sans parent, ou de bouton dont le
+    parent n'est pas un groupe valeurs ou de traduction. Dans 
+    tous ces cas, rien ne sera créé.
+    
+    En cas de tentative de création d'un bouton plus dans un
+    groupe de traduction, c'est automatiquement un bouton de
+    traduction - `TranslationButtonKey` - qui sera créé à la place.
+    
+    Les boutons héritent des attributs et méthodes de la classe
+    `WidgetKey`. Ils n'ont pas d'attributs propres.
+    
+    Parameters
+    ----------
+    parent : GroupKey
+        La clé parente. Ne peut pas être None.
+    is_ghost : bool, default False
+        True si la clé ne doit pas être matérialisée. À noter que quelle
+        que soit la valeur fournie à l'initialisation, une fille de clé
+        fantôme est toujours un fantôme. Tenter de créer un bouton plus
+        fantôme ne produira rien.
+    
     """
+    
+    def __new__(cls, **kwargs):
+        parent = kwargs.get('parent')
+        if kwargs.get('is_ghost') or not parent \
+            or not isinstance(parent, GroupOfValuesKey):
+            return
+        if isinstance(parent, TranslationGroupKey):
+            return TranslationButtonKey.__call__(**kwargs)
+        return super().__new__(cls)
     
     @property
     def key_type(self):
@@ -2313,7 +2502,33 @@ class PlusButtonKey(WidgetKey):
 class TranslationButtonKey(PlusButtonKey):
     """Clé de dictionnaire de widgets représentant un bouton de traduction.
     
+    En cas de tentative de création d'un bouton de traduction dans
+    un groupe de valeurs, c'est un bouton plus qui est créé à la place.
+    
+    Les boutons héritent des attributs et méthodes de la classe
+    `WidgetKey`. Ils n'ont pas d'attributs propres.
+    
+    Parameters
+    ----------
+    parent : TranslationGroupKey
+        La clé parente. Ne peut pas être None.
+    is_ghost : bool, default False
+        True si la clé ne doit pas être matérialisée. À noter que quelle
+        que soit la valeur fournie à l'initialisation, une fille de clé
+        fantôme est toujours un fantôme. Comme pour les boutons plus,
+        tenter de créer un bouton de traduction fantôme ne produira rien.
+    
     """
+    
+    def __new__(cls, **kwargs):
+        parent = kwargs.get('parent')
+        if kwargs.get('is_ghost') or not parent:
+            # inhibe la création de boutons fantômes ou sans
+            # parent
+            return
+        if not isinstance(parent, TranslationGroupKey):
+            return PlusButtonKey.__call__(**kwargs)
+        return super().__new__(cls)
     
     @property
     def key_type(self):
@@ -2448,21 +2663,20 @@ class ChildrenList(list):
     """
     def append(self, value):
         super().append(value)
-        if value.rowspan:
+        if value and not value._is_unborn:
             value.parent.compute_rows()
-        value.parent.compute_single_children()
-        if not value._is_unborn and \
-            isinstance(value.parent, TranslationGroupKey) \
-            and isinstance(value, ValueKey):
-            # NB : à l'initialisation, `language_out` est
-            # exécuté par le setter de `value_language`.
-            value.parent.language_out(value.value_language)
+            value.parent.compute_single_children()
+            if isinstance(value.parent, TranslationGroupKey) \
+                and isinstance(value, ValueKey):
+                # NB : à l'initialisation, `language_out` est
+                # exécuté par le setter de `value_language`.
+                value.parent.language_out(value.value_language)
         
     def remove(self, value):
         super().remove(value)
-        if value.rowspan:
+        if value:
             value.parent.compute_rows()
-        value.parent.compute_single_children()
+            value.parent.compute_single_children()
         if isinstance(value.parent, TranslationGroupKey) \
             and isinstance(value, ValueKey):
             value.parent.language_in(value.value_language)
