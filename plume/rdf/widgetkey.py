@@ -262,7 +262,7 @@ class WidgetKey:
         self._computed_attributes(**kwargs)
         self.order_idx = kwargs.get('order_idx')
         self._is_unborn = False
-        if not self.no_computation:
+        if self and self.parent and not self.no_computation:
             self.parent.compute_rows()
             self.parent.compute_single_children()
         if WidgetKey.actionsbook:
