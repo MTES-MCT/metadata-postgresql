@@ -5,7 +5,8 @@ from rdflib import URIRef, DC, RDFS
 
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.widgetkey import RootKey, ObjectKey, GroupOfPropertiesKey, \
-     TranslationGroupKey, ValueKey, WidgetKey, TranslationButtonKey
+     TranslationGroupKey, ValueKey, WidgetKey, TranslationButtonKey, \
+     GroupOfValuesKey
 
 class ActionsBookTestCase(unittest.TestCase):
 
@@ -14,8 +15,10 @@ class ActionsBookTestCase(unittest.TestCase):
 
         """
         r = RootKey()
-        g = ObjectKey(parent=r, is_ghost=True, predicate=DC.title)
-        w = ObjectKey(parent=r, predicate=DC.description)
+        g = ObjectKey(parent=r, is_ghost=True, predicate=DC.title,
+            path='dct:title')
+        w = ObjectKey(parent=r, predicate=DC.description,
+            path='dct:description')
         a = WidgetKey.unload_actionsbook()
         self.assertEqual(a.create, [r, w])
 
@@ -27,9 +30,11 @@ class ActionsBookTestCase(unittest.TestCase):
         WidgetKey.langlist = ['fr', 'en']
         g = GroupOfPropertiesKey(parent=r,
             rdftype=URIRef('http://purl.org/dc/terms/RightsStatement'),
-            predicate=URIRef('http://purl.org/dc/terms/accessRights'))
+            predicate=URIRef('http://purl.org/dc/terms/accessRights'),
+            path='dct:accessRights')
         m = ValueKey(parent=r, m_twin=g, is_hidden_m=False)
-        t = TranslationGroupKey(parent=g, predicate=RDFS.label)
+        t = TranslationGroupKey(parent=g, predicate=RDFS.label,
+            path='dct:accessRights / rdfs:label')
         b = TranslationButtonKey(parent=t)
         self.assertFalse(b.is_hidden_b)
         w1 = ValueKey(parent=t)
