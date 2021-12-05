@@ -94,17 +94,22 @@ class WidgetKey:
     has_minus_button : bool
         *Propriété.* True si un bouton moins est associé à la clé
         (potentiellement masqué, selon `is_single_child`).
+    independant_label : bool
+        *Propriété.* True si l'étiquette de la clé occupe sa propre ligne de la
+        grille.
     row : int
         *Propriété non modifiable manuellement.* L'indice de la ligne de la
         grille occupée par le widget porté par la clé. Vaut None pour une clé
         fantôme.
     rowspan : int
         *Propriété non modifiable manuellement.* Nombre de lignes occupées
-        par le ou les widgets portés par la clé, étiquette séparée comprise.
+        par le ou les widgets portés par la clé, étiquette séparée non comprise.
         Vaut 0 pour une clé fantôme.
     order_idx : tuple of int
         *Propriété.* Indice(s) permettant le classement de la clé parmi ses
         soeurs. Les clés de plus petits indices seront les premières.
+    path : str
+        *Propriété non modifiable manuellement.* Chemin SPARQL de la clé.
     
     Methods
     -------
@@ -403,7 +408,9 @@ class WidgetKey:
         """
         return self._is_hidden_m
 
-    def _hide_m(self, value):
+    def _hide_m(self, value, rec=False):
+        # pour les enfants et les boutons, cf. méthodes
+        # de même nom des classes GroupKey et GroupOfValuesKey
         if not self:
             return
         old_value = self.is_hidden_m
@@ -412,8 +419,17 @@ class WidgetKey:
             WidgetKey.actionsbook.show.append(self)
         elif WidgetKey.actionsbook and value and not old_value:
             WidgetKey.actionsbook.hide.append(self)
-        # pour les enfants et les boutons, cf. méthodes
-        # de même nom des classes GroupKey et GroupOfValuesKey
+
+    @property
+    def is_hidden(self):
+        """La clé est-elle masquée ?
+        
+        Cette propriété, qui synthétise `is_ghost`, `is_hidden_b` et
+        `is_hidden_m`, vaut True pour une clé masquée **ou fantôme**.
+        Elle permet de filtrer les clés non visibles.
+        
+        """
+        return not self or self.is_hidden_b or self.is_hidden_m
 
     @property
     def has_minus_button(self):
@@ -428,6 +444,41 @@ class WidgetKey:
         Cette propriété est définie sur la classe `WidgetKey`
         pour simplifier les tests, mais seul son alter ego
         de la classe `ObjectKey` présente un intérêt.
+        
+        """
+        return False
+
+    @property
+    def path(self):
+        """Chemin SPARQL de la clé.
+        
+        Returns
+        -------
+        str
+        
+        Notes
+        -----
+        Cette propriété sert aux recherches de clé. Elle est définie
+        sur la classe `WidgetKey` par commodité, mais ce sont ses
+        alter ego des classes `ObjectKey` et `GroupOfValuesKey` qui
+        présentent un intérêt.
+        
+        """
+        return None
+
+    @property
+    def independant_label(self):
+        """L'étiquette de la clé occupe-t-elle sa propre ligne de la grille ?
+        
+        Returns
+        -------
+        bool
+        
+        Notes
+        -----
+        Cette propriété est définie sur la classe `WidgetKey`
+        pour simplifier les tests, mais seul son alter ego
+        de la classe `ValueKey` présente un intérêt.
         
         """
         return False
@@ -612,8 +663,26 @@ class ObjectKey(WidgetKey):
         Prédicat représenté par la clé. Si la clé appartient à un groupe
         de valeurs, c'est lui qui porte cette information. Sinon, elle
         est obligatoire. À noter que si une jumelle est déclarée et que
-        le prédicat n'est pas renseigné ou pas cohérent avec celui du
-        jumeau, c'est celui du jumeau qui sera utilisé.
+        le prédicat n'est pas renseigné ou pas cohérent avec celui de
+        la jumelle, c'est celui de la jumelle qui sera utilisé.
+    path : str, optional
+        Chemin SPARQL de la métadonnée. Si la clé appartient à un groupe
+        de valeurs, c'est lui qui porte cette information. Sinon, elle
+        est obligatoire. À noter que si une jumelle est déclarée et que
+        le chemin n'est pas renseigné ou pas cohérent avec celui de
+        la jumelle, c'est celui de la jumelle qui sera utilisé.
+    label : str or Literal, optional
+        Etiquette de la clé (libellé de la catégorie de métadonnée
+        représentée par la clé). Cet argument est ignoré si la clé
+        appartient à un groupe de valeurs. Si une jumelle est déclarée et
+        que l'étiquette n'est pas renseignée ou pas cohérente avec celle de
+        la jumelle, c'est celle de la jumelle qui sera utilisée.
+    description : str or Literal, optional
+        Définition de la catégorie de métadonnée représentée par la clé.
+        Cet argument est ignoré si la clé appartient à un groupe de valeurs.
+        Si une jumelle est déclarée et que le descriptif n'est pas renseigné
+        ou pas cohérent avec celui de la jumelle, c'est celui de la jumelle
+        qui sera utilisé.
     m_twin : ObjectKey, optional
         Clé jumelle. Un couple de jumelle ne se déclare qu'une fois, sur
         la seconde clé créée.
@@ -625,18 +694,54 @@ class ObjectKey(WidgetKey):
     ----------
     predicate : URIRef
         *Propriété.* Prédicat représenté par la clé.
+    path : str
+        *Propriété.* Chemin SPARQL de la métadonnée.
+    label : str
+        *Propriété.* Etiquette de la clé (libellé de la catégorie de
+        métadonnée représentée par la clé). None pour une clé appartenant
+        à un groupe de valeurs, car c'est alors lui qui porte l'étiquette.
+    description : str
+        *Propriété.* Définition de la catégorie de métadonnée représentée
+        par la clé. None pour une clé appartenant à un groupe de valeurs,
+        car c'est alors lui qui porte cette information.
     m_twin : ObjectKey
         *Propriété.* Clé jumelle.
+    is_main_twin : bool
+        *Propriété.* La clé est-elle la clé de référence du couple de
+        jumelles ? Toujours False si la clé n'a pas de jumelle.
+        La clé visible est celle qui n'est pas masquée ou, si les
+        deux jumelles sont masquées, la jumelle de classe `ValueKey`.
+        La clé de référence est celle qui redeviendra visible si la
+        branche est démasquée en amont.
+    
+    Methods
+    -------
+    drop
+        Supprime une clé-objet d'un groupe de valeurs ou de traduction
+        et renvoie le carnet d'actions qui permettra de matérialiser
+        l'opération sur les widgets.
+    switch_twin
+        Change la visibilité d'un couple de jumelles et renvoie le
+        carnet d'actions qui permettra de matérialiser l'opération
+        sur les widgets.
     
     """    
     def _base_attributes(self, **kwargs):
         self._predicate = None
+        self._path = None
+        self._label = None
+        self._description = None
         self._m_twin = None
+        self._is_main_twin = None
     
     def _computed_attributes(self, **kwargs):
         self.m_twin = kwargs.get('m_twin')
         self.predicate = kwargs.get('predicate')
-        self.is_hidden_m = kwargs.get('is_hidden_m', False)
+        self.path = kwargs.get('path')
+        self.label = kwargs.get('label')
+        self.description = kwargs.get('description')
+        self.is_hidden_m = kwargs.get('is_hidden_m')
+        self.is_main_twin = kwargs.get('is_main_twin')
     
     @property
     def key_type(self):
@@ -711,6 +816,134 @@ class ObjectKey(WidgetKey):
             if not value:
                 raise MissingParameter('predicate', self)
             self._predicate = value
+
+    @property
+    def path(self):
+        """Chemin représenté par la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.path
+        return self._path
+
+    @path.setter
+    def path(self, value):
+        """Définit le chemin représenté par la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Si la clé a une jumelle dont le chemin est différent
+        de la valeur fournie, c'est ce chemin qui sera utilisé.
+        
+        Parameters
+        ----------
+        value : str
+            Le chemin à déclarer.
+        
+        Raises
+        ------
+        MissingParameter
+            Si `value` vaut None, cette information étant obligatoire.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if self.m_twin and value != self.m_twin.path:
+                value = self.m_twin.path
+            if not value:
+                raise MissingParameter('path', self)
+            self._path = value
+
+    @property
+    def label(self):
+        """Etiquette de la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode renvoie None, car l'étiquette est portée par le
+        groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._label
+    
+    @label.setter
+    def label(self, value):
+        """Définit l'étiquette de la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Si la clé a une jumelle dont l'étiquette est différente
+        de la valeur fournie, c'est cette étiquette qui sera utilisée.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le libellé de l'étiquette.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if self.m_twin and value != self.m_twin.label:
+                value = self.m_twin.label
+            if not value:
+                value = '???'
+            self._label = str(value)
+
+    @property
+    def description(self):
+        """Descriptif de la métadonnée représentée par la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode renvoie None, car l'étiquette est portée par le
+        groupe. Sinon, lorsqu'il n'y a ni étiquette, ni descriptif
+        mémorisé, cette propriété renvoie le chemin - `path`.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if self.value == '???' and not self._description:
+                return self.path
+            return self._description
+    
+    @description.setter
+    def description(self, value):
+        """Définit le descriptif de la métadonnée représentée par la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Si la clé a une jumelle dont le descriptif est différent
+        de la valeur fournie, c'est ce descriptif qui sera utilisé.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le descriptif.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey) and value:
+            if self.m_twin and value != self.m_twin.description:
+                value = self.m_twin.description
+            self._description = str(value)
 
     @property
     def m_twin(self):
@@ -810,8 +1043,58 @@ class ObjectKey(WidgetKey):
             # pas besoin de retoucher à la valeur
             # définie à l'initialisation ou héritée
             # du parent
-        self._hide_m(value)
-        self.m_twin._hide_m(not value)
+        if value is None:
+            value = False
+        self._hide_m(value, rec=False)
+        self.m_twin._hide_m(not value, rec=False)
+        if not self._is_unborn:
+            self.is_main_twin = not self.is_hidden_m
+            self.parent.compute_rows()
+
+    @property
+    def is_main_twin(self):
+        """La clé est-elle la jumelle de référence du couple ?
+        
+        Toujours False si la clé n'a pas de jumelle.
+        
+        Returns
+        -------
+        bool
+        
+        """
+        return self._is_main_twin
+
+    @is_main_twin.setter
+    def is_main_twin(self, value):
+        """Définit si la clé est la jumelle de référence du couple.
+        
+        Cette propriété n'est pas supposée être définie manuellement. Elle
+        ne peut d'ailleurs l'être que lorsque les deux jumelles appartiennent
+        à une branche masquée, sinon elle est déduite de `is_hidden_m`.
+        
+        Parameters
+        ----------
+        value : bool
+        
+        """
+        if not self.m_twin:
+            self._is_main_twin = False
+            return
+        if not self.is_hidden_m:
+            self._is_main_twin = True
+            self.m_twin._is_main_twin = False
+            return
+        if not self.m_twin.is_hidden_m:
+            self._is_main_twin = False
+            self.m_twin._is_main_twin = True
+            return
+        # reste le cas où les deux jumelles sont masquées,
+        # ce qui n'est supposé arriver que dans une branche
+        # masquée.
+        if value is None:
+            value = isinstance(self, ValueKey)
+        self._is_main_twin = value
+        self.m_twin._is_main_twin = not value   
 
     @property
     def attr_to_copy(self):
@@ -892,6 +1175,44 @@ class ObjectKey(WidgetKey):
             if WidgetKey.actionsbook:
                 WidgetKey.actionsbook.drop.append(m_twin)
 
+    def drop(self):
+        """Supprime une clé d'un groupe de valeur ou de traduction.
+        
+        Utiliser cette méthode sur une clé sans bouton moins n'a pas d'effet,
+        et le carnet d'actions renvoyé est vide.
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de répercuter sur les widgets
+            la suppresssion de la clé.
+        
+        """
+        if not self.has_minus_button:
+            return ActionsBook()
+        WidgetKey.clear_actionsbook()
+        self.kill()
+        return WidgetKey.unload_actionsbook()
+
+    def switch_twin(self):
+        """Change la visibilité d'un couple de jumelles.
+        
+        Utiliser cette méthode sur une clé non visible n'a pas d'effet,
+        et le carnet d'actions renvoyé est vide : cette méthode est
+        supposée être appliquée sur la jumelle visible du couple.
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de répercuter le changement
+            de source sur les widgets.
+        
+        """
+        if self.is_hidden:
+            return ActionsBook()
+        WidgetKey.clear_actionsbook()
+        self.is_hidden_m = True
+        return WidgetKey.unload_actionsbook()
 
 class GroupKey(WidgetKey):
     """Clé de dictionnaire de widgets représentant un groupe.
@@ -930,10 +1251,12 @@ class GroupKey(WidgetKey):
     def _base_attributes(self, **kwargs):
         self.children = ChildrenList()
     
-    def _hide_m(self, value):
-        super()._hide_m(value)
+    def _hide_m(self, value, rec=False):
+        super()._hide_m(value, rec=rec)
         for child in self.real_children():
-            child._hide_m(value)
+            child._hide_m(value, rec=True)
+        if value and not self._is_unborn:
+            self.compute_rows()
     
     @property
     def key_type(self):
@@ -987,18 +1310,15 @@ class GroupKey(WidgetKey):
             # propriétés, on trie en fonction de `order_idx`
             self.children.sort(key=lambda x: x.order_idx)
         for child in self.real_children():
-            if isinstance(child, ValueKey) and child.m_twin:
+            if isinstance(child, ObjectKey) and \
+                child.m_twin and not child.is_main_twin:
                 continue
-                # traitée ensuite avec sa jumelle
+            if child.independant_label:
+                n += 1
             if child.row != n:
                 child._row = n
                 if WidgetKey.actionsbook:
                     WidgetKey.actionsbook.move.append(child)
-            if isinstance(child, GroupOfPropertiesKey) \
-                and child.m_twin and child.m_twin.row != n:
-                child.m_twin._row = n
-                if WidgetKey.actionsbook:
-                    WidgetKey.actionsbook.move.append(child.m_twin)
             n += child.rowspan 
         return n
 
@@ -1058,8 +1378,16 @@ class TabKey(GroupKey):
         True si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
+    label : str or Literal
+        Etiquette de l'onglet.
     
     """
+    
+    def _base_attributes(self, **kwargs):
+        self._label = None
+        
+    def _computed_attributes(self, **kwargs):
+        self.label = kwargs.get('label')
     
     def _validate_parent(self, parent):
         return isinstance(parent, GroupOfPropertiesKey)
@@ -1082,6 +1410,36 @@ class TabKey(GroupKey):
         """
         return 'tab'
 
+    @property
+    def label(self):
+        """Etiquette de la clé.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._label
+    
+    @label.setter
+    def label(self, value):
+        """Définit l'étiquette de la clé.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le libellé de l'onglet.
+        
+        Raises
+        ------
+        MissingParameter
+            Si aucune valeur n'est fournie, cette information
+            étant obligatoire.
+        
+        """
+        if not value:
+            raise MissingParameter('label', self)
+        self._label = str(value)
 
 class GroupOfPropertiesKey(GroupKey, ObjectKey):
     """Clé de dictionnaire de widgets représentant un groupe de propriétés.
@@ -1236,6 +1594,11 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             self.children.sort(key=lambda x: x.order_idx)
         return super().compute_rows()
 
+    def _hide_m(self, value, rec=False):
+        if rec and value and self.m_twin and not self.is_main_twin:
+            return
+        super()._hide_m(value, rec=rec)
+
     @property
     def attr_to_copy(self):
         """Attributs de la classe à prendre en compte pour la copie des clés.
@@ -1326,7 +1689,15 @@ class GroupOfValuesKey(GroupKey):
         True si des boutons moins (non représentés par des clés) sont
         supposés être associés aux clés du groupe.
     predicate : URIRef
-        Le prédicat commun à toutes les valeurs du groupe.
+        Le prédicat commun à toutes les clés du groupe.
+    path : str
+        Le chemin SPARQL commun à toutes les clés du groupe.
+    label : str or Literal, optional
+        Etiquette du groupe (libellé de la catégorie de métadonnée dont
+        les filles du groupe sont les valeurs).
+    description : str or Literal, optional
+        Définition de la catégorie de métadonnée représentée par les clés
+        du groupe.
     rdftype : URIRef, optional
         La classe RDF commune à toutes les valeurs du groupe. Peut
         valoir None si le groupe ne contient pas de `GroupOfPropertiesKey`.
@@ -1347,6 +1718,14 @@ class GroupOfValuesKey(GroupKey):
         Référence la clé qui représente le bouton plus du groupe.
     predicate : URIRef
         *Propriété.* Prédicat commun à toutes les valeurs du groupe.
+    path : str
+        *Propriété.* Chemin SPARQL commun à toutes les clés du groupe.
+    label : str
+        *Propriété.* Etiquette du groupe (libellé de la catégorie de
+        métadonnée dont les filles du groupe sont les valeurs).
+    description : str
+        *Propriété.* Définition de la catégorie de métadonnée représentée
+        par les clés du groupe.
     with_minus_buttons : bool, default True
         True si des boutons moins (non représentés par des clés) sont
         supposés être associés aux clés du groupe.
@@ -1368,6 +1747,9 @@ class GroupOfValuesKey(GroupKey):
         self.button = None
         self._with_minus_buttons = None
         self._predicate = None
+        self._path = None
+        self._label = None
+        self._description = None
         self._rdftype = None
         self._sources = None
         self._xsdtype = None
@@ -1377,6 +1759,9 @@ class GroupOfValuesKey(GroupKey):
         super()._computed_attributes(**kwargs)
         self.with_minus_buttons = kwargs.get('with_minus_buttons', True)
         self.predicate = kwargs.get('predicate')
+        self.path = kwargs.get('path')
+        self.label = kwargs.get('label')
+        self.description = kwargs.get('description')
         self.rdftype = kwargs.get('rdftype')
         self.sources = kwargs.get('sources')
         self.xsdtype = kwargs.get('xsdtype')
@@ -1458,6 +1843,92 @@ class GroupOfValuesKey(GroupKey):
         if not value:
             raise MissingParameter('predicate', self)
         self._predicate = value
+    
+    @property
+    def path(self):
+        """Chemin commun à toutes les valeurs du groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._path
+
+    @path.setter
+    def path(self, value):
+        """Définit le chemin commun à toutes les valeurs du groupe.
+        
+        Parameters
+        ----------
+        value : str
+            Le chemin à déclarer.
+        
+        Raises
+        ------
+        MissingParameter
+            Si `value` vaut None, cette information étant obligatoire.
+        
+        """
+        if not value:
+            raise MissingParameter('path', self)
+        self._path = value
+    
+    @property
+    def label(self):
+        """Etiquette du groupe.
+        
+        Il s'agit du libellé de la métadonnée représentée par les
+        clés du groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._label
+    
+    @label.setter
+    def label(self, value):
+        """Définit l'étiquette du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le libellé de l'étiquette.
+        
+        """
+        if not value:
+            value = '???'
+        self._label = str(value)
+
+    @property
+    def description(self):
+        """Descriptif de la métadonnée représentée par les clés du groupe.
+        
+        Lorsqu'il n'y a ni étiquette, ni descriptif mémorisé, cette
+        propriété renvoie le chemin - `path`.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if self.value == '???' and not self._description:
+            return self.path
+        return self._description
+    
+    @description.setter
+    def description(self, value):
+        """Définit le descriptif de la métadonnée représentée par les clés du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le descriptif.
+        
+        """
+        self._description = str(value)
     
     @property
     def rdftype(self):
@@ -1589,10 +2060,10 @@ class GroupOfValuesKey(GroupKey):
             return
         self._transform = value
     
-    def _hide_m(self, value):
-        super()._hide_m(value)
+    def _hide_m(self, value, rec=False):
+        super()._hide_m(value, rec=rec)
         if self.button:
-            self.button._hide_m(value)
+            self.button._hide_m(value, rec=rec)
 
     @property
     def attr_to_copy(self):
@@ -1684,7 +2155,7 @@ class GroupOfValuesKey(GroupKey):
             return
         true_children_count = sum([
             1 for c in self.real_children() if not c.m_twin or \
-            not isinstance(c, GroupOfPropertiesKey)
+            c.is_main_twin
             ])
             # ne compte pas les fantômes ni les boutons et les
             # couples de jumelles ne comptent que pour 1
@@ -1753,7 +2224,7 @@ class TranslationGroupKey(GroupOfValuesKey):
         # crée un groupe de valeurs au lieu d'un groupe de
         # traduction dans le cas d'un fantôme
         parent = kwargs.get('parent')
-        if kwargs.get('is_ghost') or not parent:
+        if kwargs.get('is_ghost', False) or not parent:
             # si `parent` n'était pas spécifié, il y aura de toute
             # façon une erreur à l'initialisation
             return GroupOfValuesKey.__call__(**kwargs)
@@ -1900,11 +2371,13 @@ class ValueKey(ObjectKey):
         fantôme est toujours un fantôme.
     rowspan : int, optional
         Nombre de lignes occupées par le ou les widgets portés par la clé,
-        étiquette séparée comprise. À noter que si une jumelle est déclarée
+        étiquette séparée non comprise. À noter que si une jumelle est déclarée
         et que `rowspan` n'est pas renseigné ou pas cohérent avec celui du
         jumeau, c'est celui du jumeau qui sera utilisé. `rowspan` vaudra
         toujours 0 pour une clé fantôme. Si aucune valeur n'est fournie,
         une valeur par défaut de 1 est appliquée.
+    independant_label : bool, default False
+        True si l'étiquette de la clé occupe une ligne séparée de la grille.
     predicate : URIRef, optional
         Prédicat représenté par la clé. Si la clé appartient à un groupe
         de valeurs, c'est lui qui porte cette information. Sinon, elle
@@ -1981,6 +2454,12 @@ class ValueKey(ObjectKey):
     
     Methods
     -------
+    change_language(value_language)
+        Change la langue d'une clé-valeur et renvoie le carnet d'actions
+        qui permettra de matérialiser l'opération sur les widgets.
+    change_source(value_source)
+        Change la source d'une clé-valeur et renvoie le carnet d'actions
+        qui permettra de matérialiser l'opération sur les widgets.
     parse_value(value)
         Prépare une valeur en vue de son enregistrement dans un graphe
         de métadonnées.
@@ -1990,7 +2469,7 @@ class ValueKey(ObjectKey):
     def __new__(cls, **kwargs):
         # inhibe la création de clés-valeurs fantôme sans
         # valeur (ou sans parent)
-        if not kwargs.get('value') and (kwargs.get('is_ghost') \
+        if not kwargs.get('value') and (kwargs.get('is_ghost', False) \
             or not kwargs.get('parent')):
             return
         return super().__new__(cls)
@@ -1999,6 +2478,7 @@ class ValueKey(ObjectKey):
         super()._base_attributes(**kwargs)
         self.do_not_save = kwargs.get('do_not_save', False)
         self._rowspan = 0
+        self._independant_label = None
         self._sources = None
         self._rdftype = None
         self._xsdtype = None
@@ -2010,6 +2490,7 @@ class ValueKey(ObjectKey):
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
         self.rowspan = kwargs.get('rowspan')
+        self.independant_label = kwargs.get('independant_label')
         self.sources = kwargs.get('sources')
         self.rdftype = kwargs.get('rdftype')
         self.xsdtype = kwargs.get('xsdtype')
@@ -2350,6 +2831,48 @@ class ValueKey(ObjectKey):
                 self.value_source = self.value_source
     
     @property
+    def independant_label(self):
+        """L'étiquette de la clé occupe-t-elle sa propre ligne de la grille ?
+        
+        Returns
+        -------
+        bool
+        
+        """
+        return self._independant_label
+    
+    @independant_label.setter
+    def independant_label(self, value):
+        """Définit si l'étiquette de la clé occupe sa propre ligne de la grille.
+        
+        Cette propriété vaudra toujours False pour une clé fantôme ou
+        qui n'a pas d'étiquette.
+        
+        Parameters
+        ----------
+        value : bool
+        
+        """
+        if not self or not self.label:
+            self._independant_label = False
+        self._independant_label = value or False
+        if not self._is_unborn:
+            self.parent.compute_rows()
+    
+    @property
+    def label_row(self):
+        """Indice de ligne de l'étiquette de la clé.
+        
+        Returns
+        -------
+        int
+        
+        """
+        if not self.row:
+            return None
+        return ( self.row - 1 ) if self.independant_label else self.row 
+    
+    @property
     def available_languages(self):
         """Renvoie la liste des langues disponibles pour la clé.
         
@@ -2368,6 +2891,11 @@ class ValueKey(ObjectKey):
             return self.parent.available_languages
         elif self.xsdtype == RDF.langString:
             self.langlist
+
+    def _hide_m(self, value, rec=False):
+        if rec and value and self.m_twin and not self.is_main_twin:
+            return
+        super()._hide_m(value, rec=rec)
 
     @property
     def attr_to_copy(self):
@@ -2424,6 +2952,43 @@ class ValueKey(ObjectKey):
                 "n'est pas autorisé dans un IRI.".format(f))
         return URIRef(value)
 
+    def change_language(self, value_language):
+        """Change la langue d'une clé-valeur.
+        
+        Utiliser cette méthode sur une clé non visible n'a pas d'effet,
+        et le carnet d'actions renvoyé est vide.
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de répercuter le changement
+            de langue sur les widgets.
+        
+        """
+        if self.is_hidden:
+            return ActionsBook()
+        WidgetKey.clear_actionsbook()
+        self.language = value_language
+        return WidgetKey.unload_actionsbook()
+    
+    def change_source(self, value_source):
+        """Change la source d'une clé-valeur.
+        
+        Utiliser cette méthode sur une clé non visible n'a pas d'effet,
+        et le carnet d'actions renvoyé est vide.
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de répercuter le changement
+            de source sur les widgets.
+        
+        """
+        if self.is_hidden:
+            return ActionsBook()
+        WidgetKey.clear_actionsbook()
+        self.source = value_source
+        return WidgetKey.unload_actionsbook()
 
 class PlusButtonKey(WidgetKey):
     """Clé de dictionnaire de widgets représentant un bouton plus.
@@ -2432,10 +2997,6 @@ class PlusButtonKey(WidgetKey):
     groupe fantôme, de bouton sans parent, ou de bouton dont le
     parent n'est pas un groupe valeurs ou de traduction. Dans 
     tous ces cas, rien ne sera créé.
-    
-    En cas de tentative de création d'un bouton plus dans un
-    groupe de traduction, c'est automatiquement un bouton de
-    traduction - `TranslationButtonKey` - qui sera créé à la place.
     
     Les boutons héritent des attributs et méthodes de la classe
     `WidgetKey`. Ils n'ont pas d'attributs propres.
@@ -2450,15 +3011,20 @@ class PlusButtonKey(WidgetKey):
         fantôme est toujours un fantôme. Tenter de créer un bouton plus
         fantôme ne produira rien.
     
+    Methods
+    -------
+    add
+        Ajoute une clé vierge au groupe de valeurs ou de traduction
+        parent et renvoie le carnet d'actions qui permettra de
+        matérialiser l'opération sur les widgets.
+    
     """
     
     def __new__(cls, **kwargs):
         parent = kwargs.get('parent')
-        if kwargs.get('is_ghost') or not parent \
+        if kwargs.get('is_ghost', False) or not parent \
             or not isinstance(parent, GroupOfValuesKey):
             return
-        if isinstance(parent, TranslationGroupKey):
-            return TranslationButtonKey.__call__(**kwargs)
         return super().__new__(cls)
     
     @property
@@ -2480,10 +3046,25 @@ class PlusButtonKey(WidgetKey):
         return 'plus button'
         
     def _validate_parent(self, parent):
-        return isinstance(parent, GroupOfValuesKey)
+        return isinstance(parent, GroupOfValuesKey) \
+            and not isinstance(parent, TranslationGroupKey)
         
     def _register(self, parent):
         parent.button = self
+    
+    @property
+    def path(self):
+        """Chemin SPARQL du bouton.
+        
+        Le chemin SPARQL d'un bouton est simplement celui de son groupe
+        parent.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self.parent.path
     
     def kill(self):
         """Efface une clé bouton de la mémoire de son parent.
@@ -2498,6 +3079,28 @@ class PlusButtonKey(WidgetKey):
         """
         self.parent.button = None
 
+    def add(self):
+        """Ajoute une clé vierge dans le groupe parent du bouton.
+        
+        Utiliser cette méthode sur un bouton masqué n'a pas d'effet,
+        et le carnet d'actions renvoyé est vide. Il en irait de même
+        sur un groupe ne contenant aucune clé non fantôme.
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de répercuter sur les widgets
+            la création de la clé.
+        
+        """
+        if self.is_hidden:
+            return ActionsBook()
+        WidgetKey.clear_actionsbook()
+        for child in self.parent.real_children():
+            child.copy(parent=self.parent, empty=True)
+            break
+        return WidgetKey.unload_actionsbook()
+        
 
 class TranslationButtonKey(PlusButtonKey):
     """Clé de dictionnaire de widgets représentant un bouton de traduction.
@@ -2522,13 +3125,13 @@ class TranslationButtonKey(PlusButtonKey):
     
     def __new__(cls, **kwargs):
         parent = kwargs.get('parent')
-        if kwargs.get('is_ghost') or not parent:
+        if kwargs.get('is_ghost', False) or not parent:
             # inhibe la création de boutons fantômes ou sans
             # parent
             return
         if not isinstance(parent, TranslationGroupKey):
             return PlusButtonKey.__call__(**kwargs)
-        return super().__new__(cls)
+        return super().__new__(cls, **kwargs)
     
     @property
     def key_type(self):
