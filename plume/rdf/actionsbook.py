@@ -76,7 +76,7 @@ class NoGhostKeyList(list):
     
     """
     def append(self, value):
-        if not value.is_ghost and not value._is_unborn:
+        if value and not value._is_unborn:
             super().append(value)
 
 class VisibleKeyList(list):
@@ -92,8 +92,7 @@ class VisibleKeyList(list):
     
     """
     def append(self, value):
-        if not value.is_ghost and not value.is_hidden_b and \
-            not value.is_hidden_m and not value._is_unborn:
+        if not value.is_hidden and not value._is_unborn:
             super().append(value)
 
 class TrueMinusButtonKeyList(list):
@@ -112,8 +111,7 @@ class TrueMinusButtonKeyList(list):
     
     """
     def append(self, value):
-        if not value.is_ghost and not value.is_hidden_b and \
-            not value.is_hidden_m and not value._is_unborn \
+        if not value.is_hidden and not value._is_unborn \
             and value.has_minus_button:
             super().append(value)
 
