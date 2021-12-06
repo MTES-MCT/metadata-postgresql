@@ -1,12 +1,15 @@
 """Dictionnaires de widgets.
 """
+from rdflib.namespace import NamespaceManager
 
-from plume.rdf.widgetkey import WidgetKey, EditKey, GroupOfPropertiesKey, \
-    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey
+from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
+    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey, \
+    ObjectKey
 from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
     UnknownParameterValue
+from plume.rdf.thesaurus import Thesaurus
     
 
 class WidgetsDict(dict):
@@ -14,6 +17,32 @@ class WidgetsDict(dict):
     
     Les attributs du dictionnaire de widgets rappellent le paramétrage
     utilisé à sa création.
+    
+    Parameters
+    ----------
+    mode : {'edit', 'read'}
+        Indique si le dictionnaire est généré pour le mode édition
+        ('edit'), le mode lecture ('read'). Le mode détermine les actions
+        pouvant être exécutées sur le dictionnaire par la suite.
+    translation : bool
+        Paramètre utilisateur qui indique si les widgets de traduction
+        doivent être affichés. Sa valeur contribue à déterminer les actions
+        pouvant être exécutées sur le dictionnaire. `translation` ne peut valoir
+        True que si le `mode` est 'edit'.
+    language : str
+        Langue principale de rédaction des métadonnées (paramètre utilisateur).
+        Elle influe sur certaines valeurs du dictionnaire et la connaître est
+        nécessaire à l'exécution de certaines actions. `language` doit
+        impérativement être l'un des éléments de `langList` ci-après.
+    langList : list of str
+        Liste des langues autorisées pour les traductions. Certaines
+        valeurs du dictionnaire dépendent de cette liste, et la connaître est
+        nécessaire à l'exécution de certaines actions.
+    nsm : rdflib.namespace.NamespaceManager
+        Le gestionnaire d'espaces de nommage permettant de résoudre
+        tous les préfixes du dictionnaire. On pourra initialiser l'attribut
+        avec le gestionnaire du schéma SHACL, et le compléter ensuite
+        si besoin.
     
     Attributes
     ----------
@@ -37,38 +66,13 @@ class WidgetsDict(dict):
     root : RootKey
         La clé racine du dictionnaire, dont toutes les autres sont des
         descendantes.
+    nsm : rdflib.namespace.NamespaceManager
+        Le gestionnaire d'espaces de nommage permettant de résoudre
+        tous les préfixes du dictionnaire.
     
     """
     
-    def __init__(self, mode, translation, language, langList):
-        """Création d'un dictionnaire de widgets vide.
-        
-        Parameters
-        ----------
-        mode : {'edit', 'read'}
-            Indique si le dictionnaire est généré pour le mode édition
-            ('edit'), le mode lecture ('read'). Le mode détermine les actions
-            pouvant être exécutées sur le dictionnaire par la suite.
-        translation : bool
-            Paramètre utilisateur qui indique si les widgets de traduction
-            doivent être affichés. Sa valeur contribue à déterminer les actions
-            pouvant être exécutées sur le dictionnaire. `translation` ne peut valoir
-            True que si le `mode` est 'edit'.
-        language : str
-            Langue principale de rédaction des métadonnées (paramètre utilisateur).
-            Elle influe sur certaines valeurs du dictionnaire et la connaître est
-            nécessaire à l'exécution de certaines actions. `language` doit
-            impérativement être l'un des éléments de `langList` ci-après.
-        langList : list of str
-            Liste des langues autorisées pour les traductions. Certaines
-            valeurs du dictionnaire dépendent de cette liste, et la connaître est
-            nécessaire à l'exécution de certaines actions.
-        
-        Returns
-        -------
-        WidgetsDict
-            Un dictionnaire de widgets vide.
-        """
+    def __init__(self, mode, translation, language, langList, nsm):
         if mode in ('edit', 'read'):
             # 'search' n'est pas accepté pour le moment
             self.mode = mode
@@ -93,7 +97,8 @@ class WidgetsDict(dict):
             raise ValueError("language should be in langList.")
         else:
             self.langList = langList
-            
+        
+        self.nsm = nsm
         self.root = None
 
 
@@ -289,15 +294,15 @@ class WidgetsDict(dict):
         widgetkey : WidgetKey
             Une clé du dictionnaire de widgets.
         
-        RESULTAT
-        --------
+        Returns
+        -------
         QGridLayout
             Si la clé existe, que l'enregistrement a un parent et que la grille de
             celui-ci a été créée, ladite grille. Sinon None.
+        
         """
-        if not widgetkey.is_root:
+        if widgetkey.parent:
             return self[widgetkey.parent].get('grid widget')
-
 
     def internalize_widgetkey(self, widgetkey):
         """Retranscrit les attributs d'une clé dans le dictionnaire interne associé.
@@ -307,59 +312,83 @@ class WidgetsDict(dict):
         widgetkey : WidgetKey
             Une clé du dictionnaire de widgets.
         
-        """
+        """        
         if not widgetkey in self:
             raise KeyError("La clé '{}' n'est pas référencée.".format(widgetkey))
         
-        if widgetkey.is_ghost:
+        if not widgetkey:
             return
+   
+        internaldict = self[widgetkey]
         
-        if self[widgetkey]['independant label']:
-            self[widgetkey]['label row'] = widgetkey.row
-            self[widgetkey]['row'] = widgetkey.row + 1
-        else:
-            self[widgetkey]['row'] = widgetkey.row
+        internaldict['main widget type'] = self.widget_type(widgetkey)
+        internaldict['row'] = widgetkey.row
+        internaldict['row span'] = widgetkey.row_span
+        internaldict['hidden'] = widgetkey.is_hidden_b
+        internaldict['hidden M'] = widgetkey.is_hidden_m
         
-        self[widgetkey]['rowspan'] = widgetkey.rowspan
+        if isinstance(widgetkey, (GroupKey, ObjectKey)):
+            internaldict['label'] = widgetkey.label
+            internaldict['help text'] = widgetkey.description
         
-        if isinstance(widgetkey, TranslationGroupKey):
-            self[widgetkey]['authorized language'] = widgetkey.available_languages.copy()
-            if not self[widgetkey]['language value'] in widgetkey.available_languages:
-                self[widgetkey]['authorized language'].append(self[widgetkey]['language value'])
-         
-        self[widgetkey]['hidden M'] = widgetkey.hidden_m
-        if isinstance(widgetkey, PlusButtonKey):
-            self[widgetkey]['hidden'] = widgetkey.hidden_b
+        if isinstance(widgetkey, ValueKey):
+            internaldict['label row'] = widgetkey.label_row \
+                if widgetkey.independant_label else None
+            internaldict['language value'] = widgetkey.value_language
+            internaldict['authorized languages'] = widgetkey.available_languages.copy() \
+                if widgetkey.available_languages else None
+            if not widgetkey.value_language in widgetkey.available_languages:
+                internaldict['authorized languages'].insert(0, widgetkey.value_language)
+            internaldict['placeholder text'] = widgetkey.placeholder
+            internaldict['input mask'] = widgetkey.input_mask
+            internaldict['is mandatory'] = widgetkey.is_mandatory
+            internaldict['regex validator pattern'] = widgetkey.regex_validator
+            internaldict['regex validator flags'] = widgetkey.regex_validator_flags
+            internaldict['type validator'] = self.type_validator(widgetkey)
+            internaldict['read only'] = widgetkey.read_only
+            internaldict['value'] = self.str_value(widgetkey)
+            if widgetkey.sources:
+                internaldict['sources'] = [Thesaurus.label(s, widgetkey.main_language) \
+                    for s in widgetkey.sources]
+                if widgetkey.value_source:
+                    internaldict['current source'] = Thesaurus.label(
+                        (widgetkey.value_source, widgetkey.main_language))
+                    internaldict['thesaurus values'] = Thesaurus.values(
+                        (widgetkey.value_source, widgetkey.main_language))
+                if not internaldict['current source']:
+                    internaldict['current source'] = '< non référencé >'
+                    internaldict['sources'].insert(0, '< non référencé >')
         
-        if isinstance(widgetkey.parent, GroupOfValuesKey):
-            self[widgetkey]['hide minus button'] = widgetkey.is_single_child
+        if isinstance(widgetkey, ObjectKey):
+            internaldict['has minus button'] = widgetkey.has_minus_button
+            internaldict['hide minus button'] = widgetkey.has_minus_button \
+                and widgetkey.is_single_child
+            if widgetkey.m_twin:
+                internaldict['sources'] = internaldict['sources'] or ['< URI >']
+                internaldict['sources'].insert(0, '< manuel >')
+                if isinstance(widgetkey, ValueKey): 
+                    if not internaldict['current source']:
+                        internaldict['current source'] = '< URI >'
+                else:
+                    internaldict['current source'] = '< manuel >'
+
+    def dictisize_actionsbook(self, widgetkey, actionsbook):
+        """Traduit un carnet d'actions en dictionnaire.
         
-        # ------ sources ------
-        # l'attribut `sources` de widgetkey contient les IRI
-        # des thésaurus, il faut en déduire les libellés et ajouter les
-        # valeurs spéciales ('< manuel >', '< URI >', '< non référencé >')
-        # d'autant que de besoin.
-        # pour la source courante, si c'est un thésaurus, il faudra aller
-        # chercher les valeurs et le libellé de la source
-        if widgetkey.sources:
-            self[widgetkey]['sources'] = [Thesaurus.label((s, self.language)) \
-                for s in widgetkey.sources]
-        if isinstance(widgetkey, GroupOfPropertiesKey) and widgetkey.m_twin \
-            and not widgetkey.hidden_m:
-            self[widgetkey]['current source'] = '< manuel >'
-            self[widgetkey]['sources'] = self[widgetkey]['sources'] or ['< URI >']
-        elif isinstance(widgetkey, EditKey) and widgetkey.sources:
-            if widgetkey.hidden_m:
-                self[widgetkey]['current source'] = None
-            elif widgetkey.value_source:
-                self[widgetkey]['current source'] = Thesaurus.label(widgetkey.value_source)
-                self[widgetkey]['thesaurus values'] = Thesaurus.values(widgetkey.value_source)
-            else:
-                self[widgetkey]['current source'] = '< non référencé >'
-                self[widgetkey]['thesaurus values'] = ['', self[widgetkey]['value']] \
-                    if self[widgetkey]['value'] else ['']
-        if widgetkey.m_twin:
-            self[widgetkey]['sources'].insert(0, '< manuel >')
+        Parameters
+        ----------
+        widgetkey : WidgetKey
+            Une clé du dictionnaire de widgets.
+        actionsbook : ActionsBook
+            Le carnet d'actions à traduire.
+        
+        Returns
+        -------
+        dict
+        
+        """
+        
+        ## TODO
 
     def add(self, buttonkey):
         """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
@@ -402,64 +431,332 @@ class WidgetsDict(dict):
         """
         ## TODO
 
-
-    def dictisize_actionsbook(self, actionsbook):
-        """Traduit un carnet d'actions en dictionnaire.
-        
-        La fonction s'assure aussi d'éliminer les actions redondantes
-        ou inutiles.
+    def widget_type(self, widgetkey):
+        """Renvoie le type de widget adapté pour une clé.
         
         Parameters
         ----------
-        actionsbook : ActionsBook
-            Le carnet d'actions à traduire.
+        widgetkey : WidgetKey
+            Une clé de dictionnaire de widgets.
+        
+        """
+        if not widgetkey:
+            return
+        if isinstance(widgetkey, GroupKey):
+            return 'QGroupBox'
+        if isinstance(widgetkey, PlusButtonKey):
+            return 'QToolButton'
+        if widgetkey.xsdtype.n3(self.nsm) == 'xsd:boolean':
+            return 'QCheckBox'
+        if widgetkey.is_read_only:
+            return 'QLabel'
+        if not widgetkey.xsdtype:
+            if value_source:
+                return 'QComboBox'
+            else:
+                return 'QLineEdit'
+        if widgetkey.xsdtype.n3(self.nsm) in ('rdf:langString', 'xsd:string'):
+            if widgetkey.is_long_text:
+                return 'QTextEdit'
+            return 'QLineEdit'
+        d = {
+            'xsd:date': 'QDateEdit',
+            'xsd:dateTime': 'QDateTimeEdit',
+            'xsd:time': 'QTimeEdit',
+            'gsp:wktLiteral': 'QTextEdit'
+            }
+        return d.get(widgetkey.xsdtype.n3(self.nsm), 'QLineEdit')
+    
+    def type_validator(self, widgetkey):
+        """S'il y a lieu, renvoie le validateur adapté pour une clé.
+        
+        Parameters
+        ----------
+        widgetkey : WidgetKey
+            Une clé de dictionnaire de widgets.
+        
+        """
+        if not widgetkey:
+            return
+        d = {
+            'xsd:integer': 'QIntValidator',
+            'xsd:decimal': 'QDoubleValidator',
+            'xsd:float': 'QDoubleValidator',
+            'xsd:double': 'QDoubleValidator'
+            }
+        return d.get(widgetkey.xsdtype.n3(self.nsm))
+    
+    def register_value(self, widgetkey, value):
+        """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
+        
+        Parameters
+        ----------
+        widgetkey : ValueKey
+            Une clé de dictionnaire de widgets.
+        value : str
+            La valeur, exprimée sous la forme d'une chaîne de caractères.
+        
+        """
+        if widgetkey.is_read_only or not isinstance(widgetkey, ValueKey):
+            return
+        if not value:
+            widgetkey.value = None
+            return
+        if widgetkey.transform == 'email':
+            value = owlthing_from_email(value)
+        if widgetkey.transform == 'phone':
+            value = owlthing_from_tel(value)
+        if widgetkey.value_language:
+            widgetkey.value = Literal(value, lang=self.value_language)
+            return 
+        if widgetkey.xsdtype:
+            widgetkey.value = Literal(value, datatype=self.xsdtype)
+            return 
+        if widgetkey.value_source:
+            res = Thesaurus.concept_iri((widgetkey.value_source, \
+                widgetkey.main_language), value)
+            if res:
+                widgetkey.value = res
+                return
+        f = forbidden_char(value)
+        if f:
+            raise ForbiddenOperation(widgetkey, "Le caractère '{}' " \
+                "n'est pas autorisé dans un IRI.".format(f))
+        widgetkey.value = URIRef(value)
+    
+    def str_value(self, widgetkey):
+        """Renvoie la valeur d'une clé-valeur du dictionnaire de widgets sous forme d'une chaîne de caractères.
+        
+        Si la clé est en lecture seule, la fonction renvoie, s'il y a lieu,
+        un fragment HTML avec un hyperlien.
+        
+        Parameters
+        ----------
+        widgetkey : ValueKey
+            Une clé de dictionnaire de widgets.
         
         Returns
         -------
-        dict
+        str
         
         """
-        
-        ## TODO
+        value = widgetkey.value
+        if not value:
+            return
+        str_value = None
+        if widgetkey.transform == 'email':
+            str_value = email_from_owlthing(value)
+        elif widgetkey.transform == 'phone':
+            str_value = tel_from_owlthing(value)
+        elif widgetkey.value_source:
+            str_value = Thesaurus.concept_str((widgetkey.value_source, \
+                widgetkey.main_language), value)
+        else:
+            str_value = str(value)
+        if widgetkey.is_read_only:
+            if widgetkey.value_source:
+                str_value = text_with_link(
+                    str_value,
+                    Thesaurus.concept_link((widgetkey.value_source, \
+                        widgetkey.main_language), value) or value
+                    )
+            elif isinstance(value, URIRef):
+                str_value = text_with_link(str_value, value)
+        return str_value
 
-
-def pick_translation(litlist, language):
-    """Renvoie l'élément de la liste correspondant à la langue désirée.
+def forbidden_char(anystr):
+    """Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.
     
     Parameters
     ----------
-    litlist : list of Literal
-        Une liste de Literal, présumés de type xsd:string.
-    language : str
-        La langue pour laquelle on cherche une traduction.
+    anystr : str
+        La chaîne de caractères à tester.
     
     Returns
     -------
-    Literal
-        Un des éléments de la liste, qui peut être :
-        - le premier dont la langue est `language` ;
-        - à défaut, le dernier dont la langue est 'fr' ;
-        - à défaut, le premier de la liste.
-
+    str
+        Si la chaîne contient au moins un caractère interdit, l'un
+        de ces caractères.
+    
+    Example
+    -------
+    >>> forbidden_char('avec des espaces')
+    ' '
+    
     """
-    if not litlist:
-        raise ForbiddenOperation('La liste ne contient aucune valeur.')
+    r = re.search(r'([<>"\s{}|\\^`])', anystr)
+    return r[1] if r else None
+
+def text_with_link(anystr, anyiri):
+    """Génère un fragment HTML définissant un lien.
     
-    val = None
+    Parameters
+    ----------
+    anystr : str
+        La chaîne de caractères porteuse du lien.
+    anyiri : URIRef
+        Un IRI quelconque correspondant à la cible du lien.
     
-    for l in litlist:
-        if l.language == language:
-            val = l
-            break
-        elif l.language == 'fr':
-            # à défaut de mieux, on gardera la traduction
-            # française
-            val = l
-            
-    if val is None:
-        # s'il n'y a ni la langue demandée ni traduction
-        # française, on prend la première valeur de la liste
-        val = litlist[0]
-        
-    return val
+    Returns
+    -------
+    str
+        Une chaîne de caractère correspondant à un élément A,
+        qui sera interprétée par les widgets comme du texte riche.
+    
+    Examples
+    --------
+    >>> text_with_link(
+    ...     "Documentation de PostgreSQL 10",
+    ...     URIRef("https://www.postgresql.org/docs/10/index.html")
+    ...     )
+    '<A href="https://www.postgresql.org/docs/10/index.html">Documentation de PostgreSQL 10</A>'
+    
+    """
+    return """<a href="{}">{}</a>""".format(
+        escape(str(anyiri), quote=True),
+        escape(anystr, quote=True)
+        )
+    
+def email_from_owlthing(thing_iri):
+    """Renvoie la transcription sous forme de chaîne de caractères d'un IRI représentant une adresse mél.
+
+    Cette fonction très basique se contente de retirer le préfixe
+    "mailto:" s'il était présent.
+
+    Parameters
+    ----------
+    thing_iri : URIRef
+        Objet de type URIref supposé correspondre à une adresse
+        mél (classe RDF owl:Thing).
+
+    Returns
+    -------
+    str
+
+    Examples
+    --------
+    >>> email_from_owlthing(URIRef('mailto:jon.snow@the-wall.we'))
+    'jon.snow@the-wall.we'
+    
+    """
+    # à partir de Python 3.9
+    # str(thingIRI).removeprefix("mailto:") serait plus élégant
+    return re.sub('^mailto[:]', '', str(thing_iri))
+
+
+def owlthing_from_email(email_str):
+    """Construit un IRI valide à partir d'une chaîne de caractères représentant une adresse mél.
+
+    La fonction ne fait aucun contrôle de validité sur l'adresse si ce
+    n'est vérifier qu'elle ne contient aucun caractère interdit pour
+    un IRI.
+
+    Parameters
+    ----------
+    email_str : str
+        Une chaîne de caractère supposée correspondre à une adresse mél.
+
+    Returns
+    -------
+    URIRef
+        Un objet de type URIRef (rdflib.term.URIRef) respectant grosso
+        modo le schéma officiel des URI pour les adresses mél :
+        mailto:<email>.
+
+    Examples
+    --------
+    >>> owlthing_from_email('jon.snow@the-wall.we')
+    rdflib.term.URIRef('mailto:jon.snow@the-wall.we')
+    
+    """
+    email_str = re.sub('^mailto[:]', '', email_str)
+    f = forbidden_char(email_str)
+    if f:
+        raise ValueError(widgetkey, "Le caractère '{}' " \
+            "de l'adresse '{}' n'est pas autorisé dans " \
+            'un IRI.'.format(f, email_str))
+    if email_str:
+        return URIRef('mailto:' + email_str)
+
+def tel_from_owlthing(thing_iri):
+    """Renvoie la transcription sous forme de chaîne de caractères d'un IRI représentant un numéro de téléphone.
+
+    Contrairement à owlthing_from_tel, cette fonction très basique
+    ne standardise pas la forme du numéro de téléphone. Elle se contente
+    de retirer le préfixe "tel:" s'il était présent.
+
+    Parameters
+    ----------
+    thing_iri : URIRef
+        Objet de type URIref supposé correspondre à un numéro
+        de téléphone (classe RDF owl:Thing).
+
+    Returns
+    -------
+    str
+
+    Examples
+    --------
+    >>> tel_from_owlthing(URIRef('tel:+33-1-23-45-67-89'))
+    '+33-1-23-45-67-89'
+    
+    """
+    return re.sub('^tel[:]', '', str(thing_iri))
+
+def owlthing_from_tel(tel_str, add_fr_prefix=True):
+    """Construit un IRI valide à partir d'une chaîne de caractères représentant un numéro de téléphone.
+
+    Si le numéro semble être un numéro de téléphone français valide,
+    il est standardisé sous la forme <tel:+33-x-xx-xx-xx-xx>.
+
+    Parameters
+    ----------
+    tel_str : str
+        Une chaîne de caractère supposée correspondre à un numéro de téléphone.
+    add_fr_prefix : bool, default True
+        True si la fonction doit tenter de transformer les numéros de téléphone
+        français locaux ou présumés comme tels (un zéro suivi de neuf chiffres)
+        en numéros globaux ("+33" suivi des neuf chiffres). True par défaut.
+
+    Returns
+    -------
+    URIRef
+        Un objet de type URIRef (rdflib.term.URIRef) respectant grosso
+        modo le schéma officiel des URI pour les numéros de téléphone :
+        tel:<phonenumber>.
+
+    Examples
+    --------
+    >>> owlthing_from_tel('0123456789')
+    rdflib.term.URIRef('tel:+33-1-23-45-67-89')
+    
+    """
+    tel_str = re.sub('^tel[:]', '', tel_str)
+    red = re.sub(r'[.\s-]', '', tel_str)
+    tel = ''
+
+    if add_fr_prefix:
+        a = re.match(r'0(\d{9})$', red)
+        # numéro français local
+        if a:
+            red = '+33' + a[1]
+    
+    if re.match(r'[+]33\d{9}$', red):
+        # numéro français global
+        for i in range(len(red)):
+            if i == 3 or i > 2 and i%2 == 0:
+                tel = tel + "-" + red[i]
+            else:
+                tel = tel + red[i]
+    else:
+        tel = re.sub(r'(\d)\s(\d)', r'\1-\2', tel_str).strip(' ')
+        # les espaces entre les chiffres sont remplacés par des tirets,
+        # ceux en début et fin de chaine sont supprimés
+        f = forbidden_char(tel)
+        if f:
+            raise ValueError(widgetkey, "Le caractère '{}' " \
+                "du numéro de téléphone '{}' n'est pas autorisé dans " \
+                'un IRI.'.format(f, tel_str))
+    if tel:
+        return URIRef('tel:' + tel)
 
