@@ -26,17 +26,20 @@ son parent et parfois de ses soeurs.
 """
 
 from uuid import uuid4
-from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
-    UnknownParameterValue
-from plume.rdf.actionsbook import ActionsBook
 
 try:
-    from rdflib import URIRef, BNode, Literal, RDF, XSD
+    from rdflib import URIRef, BNode, Literal
 except:
     from plume.bibli_install.bibli_install import manageLibrary
     # installe RDFLib si n'est pas déjà disponible
     manageLibrary()
-    from rdflib import URIRef, BNode, Literal, RDF, XSD
+    from rdflib import URIRef, BNode, Literal
+from rdflib.namespace import RDF, XSD
+
+from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
+    UnknownParameterValue
+from plume.rdf.actionsbook import ActionsBook
+
 
 
 class WidgetKey:
@@ -72,7 +75,10 @@ class WidgetKey:
     main_language : str
         *Propriété de classe.* Langue principale de saisie des métadonnées.
     langlist : str
-        *Propriété de classe.* Liste des langues autorisées.
+        *Propriété de classe.* Liste des langues autorisées. Par défaut, cette
+        propriété vaut ['fr', 'en'], mais elle est supposée être actualisée
+        avant toute génération d'arbre de clés (et il n'est pas conseillé de
+        de la modifier tant qu'on ne change pas d'arbre).
     uuid : UUID
         *Attribut généré automatiquement.* Identifiant unique de la clé.
     parent : GroupKey
@@ -125,7 +131,7 @@ class WidgetKey:
     
     """
     
-    _langlist = None
+    _langlist = ['fr', 'en']
     
     actionsbook = ActionsBook()
     """Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
@@ -173,14 +179,7 @@ class WidgetKey:
         -------
         str
         
-        Raises
-        ------
-        MissingParameter
-            Si la valeur de `main_language` n'est pas définie.
-        
         """
-        if not WidgetKey._langlist:
-            raise MissingParameter('langlist')
         return WidgetKey._langlist[0]
   
     @main_language.setter
@@ -230,8 +229,6 @@ class WidgetKey:
             Si la valeur de `langlist` n'est pas définie.
         
         """
-        if WidgetKey._langlist is None:
-            raise MissingParameter('langlist')
         return WidgetKey._langlist
     
     @langlist.setter
@@ -250,7 +247,14 @@ class WidgetKey:
         value : list of str
             La liste des langues.
         
+        Raises
+        ------
+        MissingParameter
+            Si aucune valeur n'est fournie, ou si la liste est vide.
+            
         """
+        if not value:
+            raise MissingParameter('langlist')
         WidgetKey._langlist = value
 
     def __init__(self, **kwargs):
@@ -943,7 +947,10 @@ class ObjectKey(WidgetKey):
         if not isinstance(self.parent, GroupOfValuesKey) and value:
             if self.m_twin and value != self.m_twin.description:
                 value = self.m_twin.description
-            self._description = str(value)
+            if value:
+                self._description = str(value)
+            else:
+                self._description = None
 
     @property
     def m_twin(self):
@@ -1487,6 +1494,9 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         triplets des enfants du groupe.
     rdftype : URIRef
         *Propriété.* La classe RDF du noeud.
+    sources : list of URIRef
+        *Propriété non modifiable.* La liste de sources de la clé-valeur
+        jumelle.
     
     """
     
@@ -1569,6 +1579,20 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             if not value:
                 raise MissingParameter('rdftype', self)
             self._rdftype = value
+
+    @property
+    def sources(self):
+        """Le cas échéant, la liste des sources de la clé-valeur jumelle.
+
+        Cette propriété vaut toujours None pour une clé sans jumelle.
+        
+        Returns
+        -------
+        list of URIRef
+        
+        """
+        if self.m_twin:
+            return self.m_twin.sources
 
     def compute_rows(self):
         """Actualise les indices de ligne des filles du groupe.
@@ -1711,6 +1735,20 @@ class GroupOfValuesKey(GroupKey):
         Le cas échéant, le type (xsd:type) des valeurs du groupe. La valeur
         de ce paramètre est ignorée si `rdftype` est renseigné, sinon 
         xsd:string fait office de valeur par défaut.
+    placeholder : str or Literal, optional
+        Texte de substitution à utiliser pour les clés du groupe.
+    input_mask : str or Literal, optional
+        Masque de saisie à utiliser pour les clés du groupe.
+    is_mandatory : bool or Literal, default False
+        Ce groupe doit-il obligatoirement avoir une clé avec une valeur ?
+    is_read_only : bool or Literal, default False
+        Les valeurs des clés du groupe sont-elles en lecture seule ?
+    regex_validator : str, optional
+        Expression rationnelle de validation à utiliser pour les clés du
+        groupe.
+    regex_validator_flags : str, optional
+        Paramètres associés à l'expression rationnelle de validation des
+        clés du groupe.
     
     Attributes
     ----------
@@ -1740,6 +1778,22 @@ class GroupOfValuesKey(GroupKey):
         aux objets du groupe.
     xsdtype : URIRef, optional
         *Propriété.* Le cas échéant, le type (xsd:type) des valeurs du groupe. 
+    placeholder : str
+        *Propriété.* Texte de substitution à utiliser pour les clés du groupe.
+    input_mask : str
+        *Propriété.* Masque de saisie à utiliser pour les clés du groupe.
+    is_mandatory : bool
+        *Propriété.* Ce groupe doit-il obligatoirement avoir une clé avec une
+        valeur ?
+    is_read_only : bool
+        *Propriété.* Les valeurs des clés du groupe sont-elles en lecture
+        seule ?
+    regex_validator : str
+        *Propriété.* Expression rationnelle de validation à utiliser pour
+        les clés du groupe.
+    regex_validator_flags : str
+        *Propriété.* Paramètres associés à l'expression rationnelle de
+        validation des clés du groupe.
     
     """
     def _base_attributes(self, **kwargs):
@@ -1754,6 +1808,12 @@ class GroupOfValuesKey(GroupKey):
         self._sources = None
         self._xsdtype = None
         self._transform = None
+        self._placeholder = None
+        self._input_mask = None
+        self._is_mandatory = None
+        self._is_read_only = None
+        self._regex_validator = None
+        self._regex_validator_flags = None
         
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -1766,6 +1826,12 @@ class GroupOfValuesKey(GroupKey):
         self.sources = kwargs.get('sources')
         self.xsdtype = kwargs.get('xsdtype')
         self.transform = kwargs.get('transform')
+        self.placeholder = kwargs.get('placeholder')
+        self.input_mask = kwargs.get('input_mask')
+        self.is_mandatory = kwargs.get('is_mandatory')
+        self.is_read_only = kwargs.get('is_read_only')
+        self.regex_validator = kwargs.get('regex_validator')
+        self.regex_validator_flags = kwargs.get('regex_validator_flags')
     
     def _validate_parent(self, parent):
         return isinstance(parent, (GroupOfPropertiesKey, TabKey))
@@ -1928,7 +1994,10 @@ class GroupOfValuesKey(GroupKey):
             Le descriptif.
         
         """
-        self._description = str(value)
+        if value:
+            self._description = str(value)
+        else:
+            self._description = None
     
     @property
     def rdftype(self):
@@ -2060,6 +2129,157 @@ class GroupOfValuesKey(GroupKey):
             return
         self._transform = value
     
+    @property
+    def placeholder(self):
+        """Texte de substitution à utiliser pour les clés du groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._placeholder
+
+    @placeholder.setter
+    def placeholder(self, value):
+        """Définit le texte de substitution à utiliser pour les clés du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le texte de substitution à déclarer.
+        
+        """
+        if value:
+            self._placeholder = str(value)
+        else:
+            self._placeholder = None
+    
+    @property
+    def input_mask(self):
+        """Masque de saisie à utiliser pour les clés du groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._input_mask
+
+    @input_mask.setter
+    def input_mask(self, value):
+        """Définit le masque de saisie à utiliser pour les clés du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le masque de saisie à déclarer.
+        
+        """
+        if value:
+            self._input_mask = str(value)
+        else:
+            self._input_mask = None
+    
+    @property
+    def is_mandatory(self):
+        """Au moins une clé du groupe devra-t-elle obligatoirement recevoir une valeur ?
+        
+        Returns
+        -------
+        bool
+        
+        """
+        return self._is_mandatory
+
+    @is_mandatory.setter
+    def is_mandatory(self, value):
+        """Définit si au moins une clé du groupe doit obligatoirement recevoir une valeur.
+        
+        Parameters
+        ----------
+        value : bool or Literal
+        
+        """
+        if value is None:
+            value = False
+        self._is_mandatory = bool(value)
+    
+    @property
+    def is_read_only(self):
+        """Les valeurs des clés du groupe sont-elles en lecture seule ?
+        
+        Returns
+        -------
+        bool
+        
+        """
+        return self._is_read_only
+
+    @is_read_only.setter
+    def is_read_only(self, value):
+        """Définit si les valeurs des clés du groupe sont lecture seule.
+
+        Parameters
+        ----------
+        value : bool or Literal
+        
+        """
+        if value is None:
+            value = False
+        self._is_read_only = bool(value)
+    
+    @property
+    def regex_validator(self):
+        """Expression rationnelle de validation à utiliser pour les clés du groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._regex_validator
+
+    @regex_validator.setter
+    def regex_validator(self, value):
+        """Définit l'expression rationnelle de validation à utiliser pour les clés du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            L'expression rationnelle.
+        
+        """
+        if value:
+            self._regex_validator = str(value)
+        else:
+            self._regex_validator = None
+    
+    @property
+    def regex_validator_flags(self):
+        """Paramètres associés à l'expression rationnelle de validation des clés du groupe.
+        
+        Returns
+        -------
+        str
+        
+        """
+        return self._regex_validator_flags
+
+    @regex_validator_flags.setter
+    def regex_validator_flags(self, value):
+        """Définit les paramètres associés à l'expression rationnelle de validation des clés du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+        
+        """
+        if value:
+            self._regex_validator_flags = str(value)
+        else:
+            self._regex_validator_flags = None
+
     def _hide_m(self, value, rec=False):
         super()._hide_m(value, rec=rec)
         if self.button:
@@ -2371,11 +2591,9 @@ class ValueKey(ObjectKey):
         fantôme est toujours un fantôme.
     rowspan : int, optional
         Nombre de lignes occupées par le ou les widgets portés par la clé,
-        étiquette séparée non comprise. À noter que si une jumelle est déclarée
-        et que `rowspan` n'est pas renseigné ou pas cohérent avec celui du
-        jumeau, c'est celui du jumeau qui sera utilisé. `rowspan` vaudra
-        toujours 0 pour une clé fantôme. Si aucune valeur n'est fournie,
-        une valeur par défaut de 1 est appliquée.
+        étiquette séparée non comprise. `rowspan` vaudra toujours 0 pour une
+        clé fantôme. Si aucune valeur n'est fournie, une valeur par défaut de 1
+        est appliquée.
     independant_label : bool, default False
         True si l'étiquette de la clé occupe une ligne séparée de la grille.
     predicate : URIRef, optional
@@ -2396,6 +2614,30 @@ class ValueKey(ObjectKey):
         Le cas échéant, la nature de la transformation appliquée à
         l'objet. Si la clé appartient à un groupe de valeurs, c'est lui
         qui porte cette information, le cas échéant.
+    placeholder : str or Literal, optional
+        Texte de substitution à utiliser pour la clé. Si la clé appartient
+        à un groupe de valeurs, c'est lui qui porte cette information, le
+        cas échéant.
+    input_mask : str or Literal, optional
+        Masque de saisie à utiliser pour la clé. Si la clé appartient
+        à un groupe de valeurs, c'est lui qui porte cette information, le
+        cas échéant.
+    is_mandatory : bool or Literal, default False
+        Cette clé devra-t-elle obligatoirement recevoir une valeur ? Si la
+        clé appartient à un groupe de valeurs, c'est lui qui porte cette
+        information, le cas échéant.
+    is_read_only : bool or Literal, default False
+        La valeur de cette clé est-elle en lecture seule ? Si la clé appartient
+        à un groupe de valeurs, c'est lui qui porte cette information, le cas
+        échéant.
+    regex_validator : str, optional
+        Expression rationnelle de validation à utiliser pour la clé. Si la clé
+        appartient à un groupe de valeurs, c'est lui qui porte cette information,
+        le cas échéant.
+    regex_validator_flags : str, optional
+        Paramètres associés à l'expression rationnelle de validation de la clé.
+        Si la clé appartient à un groupe de valeurs, c'est lui qui porte cette
+        information, le cas échéant.
     rdftype : URIRef, optional
         Classe RDF de la clé-valeur, s'il s'agit d'un IRI. Si la clé appartient
         à un groupe de valeurs, c'est lui qui porte cette information, le cas
@@ -2421,6 +2663,12 @@ class ValueKey(ObjectKey):
         La source utilisée par la valeur courante de la clé. Si la valeur
         fournie pour l'IRI ne fait pas partie des sources autorisées, elle
         sera silencieusement supprimée.
+    is_long_text : bool, default False
+        Dans le cas d'une valeur de type xsd:string ou rdf:langString, indique
+        si le texte est présumé long (True) ou court (False, valeur par défaut).
+        Même dans un groupe de valeurs, cette propriété est définie indépendamment
+        pour chaque clé, afin qu'il soit possible de l'adapter à la longueur
+        effective des valeurs.
     
     Attributes
     ----------
@@ -2443,6 +2691,19 @@ class ValueKey(ObjectKey):
     transform : {None, 'email', 'phone'}
         *Propriété.* Le cas échéant, la nature de la transformation appliquée à
         l'objet.
+    placeholder : str
+        *Propriété.* Texte de substitution à utiliser pour la clé.
+    input_mask : str
+        *Propriété.* Masque de saisie à utiliser pour la clé.
+    is_mandatory : bool
+        *Propriété.* Cette clé devra-t-elle obligatoirement recevoir une valeur ?
+    is_read_only : bool
+        *Propriété.* La valeur de cette clé est-elle en lecture seule ?
+    regex_validator : str
+        *Propriété.* Expression rationnelle de validation à utiliser pour la clé.
+    regex_validator_flags : str
+        *Propriété.* Paramètres associés à l'expression rationnelle de validation
+        de la clé.
     value_language : str
         *Propriété.* La langue de l'objet. None si l'objet n'est pas un Literal de
         type rdf:langString. Obligatoirement renseigné dans un groupe
@@ -2451,6 +2712,9 @@ class ValueKey(ObjectKey):
         *Propriété.* La source utilisée par la valeur courante de la clé.
     do_not_save : bool
         True pour une information qui ne devra pas être sauvegardée.
+    is_long_text : bool
+        Dans le cas d'une valeur de type xsd:string ou rdf:langString, indique
+        si le texte est présumé long (True) ou court (False).
     
     Methods
     -------
@@ -2460,9 +2724,6 @@ class ValueKey(ObjectKey):
     change_source(value_source)
         Change la source d'une clé-valeur et renvoie le carnet d'actions
         qui permettra de matérialiser l'opération sur les widgets.
-    parse_value(value)
-        Prépare une valeur en vue de son enregistrement dans un graphe
-        de métadonnées.
     
     """
     
@@ -2483,9 +2744,16 @@ class ValueKey(ObjectKey):
         self._rdftype = None
         self._xsdtype = None
         self._transform = None
+        self._placeholder = None
+        self._input_mask = None
+        self._is_mandatory = None
+        self._is_read_only = None
+        self._regex_validator = None
+        self._regex_validator_flags = None   
         self._value = None
         self._value_language = None
         self._value_source = None
+        self._is_long_text = None
     
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -2495,9 +2763,16 @@ class ValueKey(ObjectKey):
         self.rdftype = kwargs.get('rdftype')
         self.xsdtype = kwargs.get('xsdtype')
         self.transform = kwargs.get('transform')
+        self.placeholder = kwargs.get('placeholder')
+        self.input_mask = kwargs.get('input_mask')
+        self.is_mandatory = kwargs.get('is_mandatory')
+        self.is_read_only = kwargs.get('is_read_only')
+        self.regex_validator = kwargs.get('regex_validator')
+        self.regex_validator_flags = kwargs.get('regex_validator_flags')
         self.value = kwargs.get('value')
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
+        self.is_long_text = kwargs.get('is_long_text')
 
     @property
     def key_type(self):
@@ -2569,22 +2844,16 @@ class ValueKey(ObjectKey):
     def value(self, value):
         """Définit la valeur portée par la clé (objet du triplet RDF).
         
-        Si la valeur fournie n'est pas un IRI ou un litéral RDF,
-        elle est convertie grâce à `parse_value` (sous réserve que
-        la valeur soit fournie après l'initialisation de la clé,
-        sinon elle sera juste ignorée).
-        
         Parameters
         ----------
         value : URIRef or Literal
             La valeur.
         
         """
-        if not isinstance(value, (URIRef, Literal)):
-            if self._is_unborn:
-                return
-            self._value = self.parse_value(value)
-        self._value = value
+        if value:
+            self._value = value
+        else:
+            self._value = None
 
     @property
     def rdftype(self):
@@ -2671,6 +2940,223 @@ class ValueKey(ObjectKey):
                 self.value_language = self.value_language
     
     @property
+    def placeholder(self):
+        """Texte de substitution à utiliser pour la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.placeholder
+        return self._placeholder
+
+    @placeholder.setter
+    def placeholder(self, value):
+        """Définit le texte de substitution à utiliser pour la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le texte de substitution à déclarer.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if value:
+                self._placeholder = str(value)
+            else:
+                self._placeholder = None
+    
+    @property
+    def input_mask(self):
+        """Masque de saisie à utiliser pour la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.input_mask
+        return self._input_mask
+
+    @input_mask.setter
+    def input_mask(self, value):
+        """Définit le masque de saisie à utiliser pour la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            Le masque de saisie à déclarer.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey) and value:
+            if value:
+                self._input_mask = str(value)
+            else:
+                self._input_mask = None
+    
+    @property
+    def is_mandatory(self):
+        """Cette clé devra-t-elle obligatoirement recevoir une valeur ?
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        bool
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.is_mandatory
+        return self._is_mandatory
+
+    @is_mandatory.setter
+    def is_mandatory(self, value):
+        """Définit si la clé doit obligatoirement recevoir une valeur.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : bool or Literal
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if value is None:
+                value = False
+            self._is_mandatory = bool(value)
+    
+    @property
+    def is_read_only(self):
+        """La valeur de cette clé est-elle en lecture seule ?
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        bool
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.is_read_only
+        return self._is_read_only
+
+    @is_read_only.setter
+    def is_read_only(self, value):
+        """Définit si la valeur de la clé est en lecture seule.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : bool or Literal
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if value is None:
+                value = False
+            self._is_read_only = bool(value)
+    
+    @property
+    def regex_validator(self):
+        """Expression rationnelle de validation à utiliser pour la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.regex_validator
+        return self._regex_validator
+
+    @regex_validator.setter
+    def regex_validator(self, value):
+        """Définit l'expression rationnelle de validation à utiliser pour la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+            L'expression rationnelle.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey) and value:
+            if value:
+                self._regex_validator = str(value)
+            else:
+                self._regex_validator = None
+    
+    @property
+    def regex_validator_flags(self):
+        """Paramètres associés à l'expression rationnelle de validation de la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété du groupe parent.
+        
+        Returns
+        -------
+        str
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.regex_validator_flags
+        return self._regex_validator_flags
+
+    @regex_validator_flags.setter
+    def regex_validator_flags(self, value):
+        """Définit les paramètres associés à l'expression rationnelle de validation de la clé.
+        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Parameters
+        ----------
+        value : str or Literal
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey) and value:
+            if value:
+                self._regex_validator_flags = str(value)
+            else:
+                self._regex_validator_flags = None
+    
+    @property
     def value_language(self):
         """Langue de la valeur portée par la clé.
         
@@ -2752,6 +3238,35 @@ class ValueKey(ObjectKey):
         if WidgetKey.actionsbook and self.value_source != old_value:
             WidgetKey.actionsbook.sources.append(self)
             WidgetKey.actionsbook.thesaurus.append(self)
+    
+    @property
+    def is_long_text(self):
+        """La valeur de la clé est-elle un long texte ?
+        
+        Returns
+        -------
+        bool
+        
+        """
+        return self._is_long_text
+    
+    @is_long_text.setter
+    def is_long_text(self, value):
+        """Définit si la valeur de la clé est ou sera un long texte.
+        
+        Cette propriété ne peut valoir True que pour une valeur textuelle
+        (type rdf:langString ou xsd:string), toute tentative dans d'autres
+        circonstances serait silencieusement ignorée.
+        
+        Returns
+        -------
+        bool
+        
+        """
+        if not value or not self.xsdtype in (RDF.langString, XSD.string):
+            self._is_long_text = False
+        else:
+            self._is_long_text = True
     
     @property
     def transform(self):
@@ -2918,39 +3433,6 @@ class ValueKey(ObjectKey):
             'sources': True, 'rdftype': True, 'xsdtype': True, 'transform': True,
             'rowspan': True, 'value': False, 'value_language': False,
             'value_source': False }
-
-    def parse_value(self, value):
-        """Prépare une valeur en vue de son enregistrement dans un graphe de métadonnées.
-        
-        Parameters
-        ----------
-        value : str
-            La valeur, exprimée sous la forme d'une chaîne de caractères.
-        
-        Returns
-        -------
-        Literal or URIRef
-        
-        """
-        if value in (None, ''):
-            return
-        if self.value_transform == 'email':
-            value = owlthing_from_email(value)
-        if self.value_transform == 'phone':
-            value = owlthing_from_tel(value)
-        if self.value_language:
-            return Literal(value, lang=self.value_language)
-        if self.xsdtype:
-            return Literal(value, datatype=self.xsdtype)
-        if self.value_source:
-            res = Thesaurus.values(self.value_source).parser(value)
-            if res:
-                return res
-        f = forbidden_char(value)
-        if f:
-            raise ForbiddenOperation(self, "Le caractère '{}' " \
-                "n'est pas autorisé dans un IRI.".format(f))
-        return URIRef(value)
 
     def change_language(self, value_language):
         """Change la langue d'une clé-valeur.
@@ -3284,28 +3766,5 @@ class ChildrenList(list):
             and isinstance(value, ValueKey):
             value.parent.language_in(value.value_language)
 
-    
-def forbidden_char(anystr):
-    """Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.
-    
-    Parameters
-    ----------
-    anystr : str
-        La chaîne de caractères à tester.
-    
-    Returns
-    -------
-    str
-        Si la chaîne contient au moins un caractère interdit, l'un
-        de ces caractères.
-    
-    Example
-    -------
-    >>> forbidden_char('avec des espaces')
-    ' '
-    
-    """
-    r = re.search(r'([<>"\s{}|\\^`])', anystr)
-    return r[1] if r else None
 
 
