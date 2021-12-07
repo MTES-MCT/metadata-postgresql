@@ -47,10 +47,12 @@ class WidgetsDict(dict):
     Attributes
     ----------
     mode : {'edit', 'read'} 
-        'edit' pour un dictionnaire produit pour l'édition, 'read'
+        ``'edit'`` pour un dictionnaire produit pour l'édition, ``'read'``
         pour un dictionnaire produit uniquement pour la consultation.
         Certaines méthodes ne peuvent être utilisées que sur un
-        dictionnaire dont l'attribut `mode` vaut 'edit'.
+        dictionnaire dont l'attribut `mode` vaut ``'edit'``.
+    edit : bool
+        *Propriété calculée*. True si `mode` vaut ``'edit'``.
     translation : bool
         True pour un dictionnaire comportant des fonctionnalités de
         traduction, False sinon. Certaines méthodes ne peuvent être
@@ -72,45 +74,72 @@ class WidgetsDict(dict):
     
     """
     
-    def __init__(self, mode, translation, language, langList, nsm):
+    def __init__(self, nsm, mode='edit', translation=False, language='fr',
+        langList=['fr', 'en'], readHideBlank=True, editHideUnlisted=False,
+        readHideUnlisted=True, editOnlyCurrentLanguage=False,
+        readOnlyCurrentLanguage=True, labelLengthLimit=25, valueLengthLimit=65,
+        textEditRowSpan=6):
         if mode in ('edit', 'read'):
             # 'search' n'est pas accepté pour le moment
             self.mode = mode
         else:
             raise UnknownParameterValue('mode', mode)
-        
-        if not isinstance(translation, bool):
-            raise TypeError("translation should be a boolean.")    
-        elif translation and mode != 'edit':
-            raise ValueError("translation can't be True in 'read' mode.")
-        else:
-            self.translation = translation
             
         if isinstance(language, str):
             self.language = language
         else:
-            raise TypeError("language should be a string.")
+            raise TypeError('`language` devrait être une chaîne de caractères.')
             
         if not isinstance(langList, list):
-            raise TypeError("langList should be a list.")
+            raise TypeError('`langList` devrait être une liste.')
         elif not language in langList:
-            raise ValueError("language should be in langList.")
+            raise ValueError('`language` devrait être un des items de `langList`.')
         else:
             self.langList = langList
         
+        if not isinstance(labelLengthLimit, int):
+            raise TypeError('`labelLengthLimit` devrait être un nombre entier.')
+        else:
+            self.labelLengthLimit = labelLengthLimit
+        if not isinstance(valueLengthLimit, int):
+            raise TypeError('`valueLengthLimit` devrait être un nombre entier.')
+        else:
+            self.valueLengthLimit = valueLengthLimit
+        if not isinstance(textEditRowSpan, int):
+            raise TypeError('`textEditRowSpan` devrait être un nombre entier.')
+        else:
+            self.textEditRowSpan = textEditRowSpan
+        
         self.nsm = nsm
+        self.translation = translation and self.edit
+        self.readHideBlank = readHideBlank and not self.edit
+        self.readHideUnlisted = readHideUnlisted and not self.edit
+        self.readOnlyCurrentLanguage = readOnlyCurrentLanguage and not self.edit
+        self.editHideUnlisted = editHideUnlisted and self.edit
+        self.editOnlyCurrentLanguage = editHideUnlisted and self.edit
         self.root = None
+
+    @property
+    def edit(self):
+        """Le dictionnaire est-il généré pour l'édition ?
+        
+        Returns
+        -------
+        bool
+        
+        """
+        returns (mode == 'edit')
 
 
     def _build_dict(self, metagraph, shape, vocabulary, path, class_iri,
-        parent, subject, nsm, template_is_empty, shallow_template,
-        shallow_template_tabs, shallow_data, vsources):
+        parent, subject, template_is_empty, shallow_template,
+        shallow_template_tabs, shallow_data):
         
         # identification de la forme du schéma SHACL qui décrit la
         # classe cible :
         shape_iri = shape.shape_iri_from_class(class_iri)
         if not shape_iri:
-            raise IntegrityBreach("La class '{}' n'est pas répertoriée dans le " \
+            raise IntegrityBreach("La classe '{}' n'est pas répertoriée dans le " \
                 "schéma SHACL".format(class_iri))
         
         # ------ Boucle sur les catégories ------
@@ -121,25 +150,18 @@ class WidgetsDict(dict):
             
             # récupération des informations relatives
             # à la catégorie dans le schéma SHACL
-            p = shape.read_property(shape_iri, property_iri)
-
-            cur_parent = parent
-            predicate = p['property']
-            kind = p['kind'].n3(nsm)
-            new_path = ( path + " / " if path else '') + predicate.n3(nsm)
-            sources = {}
-            default_value = None
-            default_brut = None
-            default_source = None
-            default_source_uri = None
-            default_page = None
-            is_ghost = parent.is_ghost or False
+            kwargs = shape.read_property(shape_iri, property_iri)
+            kwargs['parent'] = parent
+            kwargs['is_mandatory'] = kwargs['min'] and int(kwargs['min']) > 0
+            
+            new_path = ( path + " / " if path else '') + kwargs['predicate'].n3(self.nsm)
+            kind = kwargs['kind'].n3(self.nsm)
             one_language = None
             values = None
             
-            multilingual = p['unilang'] and (str(p['unilang']).lower() == 'true') or False
-            multiple = ( p['max'] is None or int( p['max'] ) > 1 ) and not multilingual
-                        
+            multilingual = bool(kwargs['unilang'])
+            multiple = (kwargs['max'] is None or int(kwargs['max']) > 1) and not multilingual
+            
             # ------ Récupération des valeurs ------
             # cas d'une propriété dont les valeurs sont mises à
             # jour à partir d'informations disponibles côté serveur
@@ -150,20 +172,18 @@ class WidgetsDict(dict):
             # sinon, on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
             # et le sujet considéré
-            elif not metagraph.is_empty: 
-                values = [ o for o in metagraph.objects(subject, predicate) ]
+            values = [ o for o in metagraph.objects(subject, predicate) ]
 
             # exclusion des catégories qui ne sont pas prévues par
             # le modèle, ne sont pas considérées comme obligatoires
-            # par shape et n'ont pas de valeur renseignée
+            # par shape et n'ont pas de valeur renseignée.
             # les catégories obligatoires de shape sont affichées
             # quoi qu'il arrive en mode édition
             # les catégories sans valeur sont éliminées indépendemment
             # du modèle en mode lecture quand readHideBlank vaut True
-            if values in ( None, [], [ None ] ) and (
-                ( self.readHideBlank and self.mode == 'read' ) \
-                or ( not template_is_empty and not ( new_path in shallow_template ) \
-                    and not ( self.mode == 'edit' and p['min'] and int(p['min']) > 0 ) ) \
+            if values in (None, [], [None]) and (self.readHideBlank \
+                or (not template_is_empty and not (new_path in shallow_template) \
+                    and not (self.edit and kwargs['is_mandatory'])) \
                 ):
                 continue
             # s'il y a une valeur, mais que
@@ -172,111 +192,62 @@ class WidgetsDict(dict):
             # pour ne pas perdre la valeur, mais on ne créera
             # pas de widget. Les catégories obligatoires de shape sont
             # affichées quoi qu'il arrive
-            elif ( (mode == 'edit' and self.editHideUnlisted) or \
-                (mode == 'read' and self.readHideUnlisted) ) \
-                and not template_is_empty and not ( new_path in shallow_template ) \
-                and not ( p['min'] and int(p['min']) > 0 ):
-                is_ghost = True
+            elif (self.editHideUnlisted or self.readHideUnlisted) \
+                and not template_is_empty and not new_path in shallow_template \
+                and not kwargs['is_mandatory']:
+                kwargs['is_ghost'] = True
             
-            values = values or [ None ]
+            values = values or [None]
             
             # ------ Extraction des informations du modèle et choix de l'onglet ------
-            if not is_ghost and (new_path in shallow_template):
+            t = dict()
+            if not kwargs['is_ghost'] and new_path in shallow_template:
                 t = shallow_template[new_path]
-                shallow_template[new_path].update({ 'done' : True })
-                
+                shallow_template[new_path]['done'] = True
                 # choix du bon onglet (évidemment juste
                 # pour les catégories de premier niveau)
-                if cur_parent.parent.is_root:
+                if isinstance(parent, RootKey):
                     tab = t.get('tab name', None)
                     if tab and tab in shallow_template_tabs:
-                        cur_parent = shallow_template_tabs[tab]
-            else:
-                t = dict()
-                if not is_ghost and cur_parent.parent.is_root and not template_is_empty:
-                    # les métadonnées hors modèle non masquées
-                    # de premier niveau iront dans un onglet "Autres".
-                    # S'il n'existe pas encore, on l'ajoute :
-                    if not "Autres" in shallow_template_tabs:
-                        cur_parent = GroupOfPropertiesKey(parent=cur_parent)
-                        shallow_template_tabs.update({ "Autres": cur_parent })
-                        self.update({ cur_parent : InternalDict() })
-                        self[cur_parent].update({
-                            'object' : widget.object(),
-                            'main widget type' : 'QGroupBox',
-                            'label' : 'Autres',
-                            'node' : subject,
-                            'class' : URIRef('http://www.w3.org/ns/dcat#Dataset'),
-                            'shape order' : len(shallow_template_tabs) + 1,
-                            'do not save' : True
-                            })
-                    else:
-                        cur_parent = shallow_template_tabs["Autres"]  
-            
-            # ------ Sources / thésaurus ------
-            if not is_ghost and kind in ("sh:BlankNodeOrIRI", "sh:IRI") \
-                and p['ontologies']:
+                        kwargs['parent'] = shallow_template_tabs[tab]
+                kwargs['order_idx'] = (t.get('order', 9999), kwargs['shape_order'])
+                # TODO: modification de kwargs selon le template
+            elif not kwargs['is_ghost'] and isinstance(parent, RootKey) \
+                and not template_is_empty:
+                # les métadonnées hors modèle non masquées
+                # de premier niveau iront dans un onglet "Autres".
+                # S'il n'existe pas encore, on l'ajoute :
+                if not "Autres" in shallow_template_tabs:
+                    tabkey = TabKey(parent=parent, label='Autres')
+                    kwargs['parent'] = tabkey
+                    shallow_template_tabs['Autres'] = tabkey
+                    self[tabkey] = InternalDict()
+                else:
+                    kwargs['parent'] = shallow_template_tabs["Autres"]  
 
-                for s in p['ontologies']:
-                    lt = [ o for o in vocabulary.objects(
-                        s, URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")
-                        ) ]
-                    st = pick_translation(lt, self.language) if lt else None
-                    if st:
-                        sources.update({ s: str(st) })
-                        # si t vaut None, c'est que le thésaurus n'est pas
-                        # référencé dans vocabulary, dans ce cas, on l'exclut
-            
-            # ------ Valeur par défaut ------
-            if not is_ghost:
-                default_value = t.get('default value') or None
-                if default_value:
-                    if sources:
-                        for s in sources:
-                            # comme on ne sait pas de quel thésaurus provient le concept
-                            # on les teste tous jusqu'à trouver le bon
-                            default_brut = concept_from_value(
-                                default_value, s, vocabulary, self.language, strict=False
-                                )
-                            if default_brut:
-                                default_source_uri = s
-                                default_source = sources.get(default_source_uri)
-                                default_value, default_page = value_from_concept(
-                                    default_brut, vocabulary, self.language, getpage=True,
-                                    getschemeStr=False, getschemeIRI=False, getconceptStr=True
-                                    )
-                                # NB : on retourne chercher default_value, car la langue de la valeur
-                                # du template n'était pas nécessairement la bonne
-                                break
-                        # s'il y a le moindre problème avec la valeur par défaut, on la rejette :
-                        if default_value is None or default_brut is None or default_source is None:
-                            default_value = default_brut = default_source = default_page = default_source_uri = None
-                    elif kind in ("sh:BlankNodeOrIRI", "sh:IRI") and forbidden_char(default_value) is None:
-                        default_brut = URIRef(default_value)
-                
-            #### TODO
-            
+            # si seules les métadonnées dans la langue
+            # principale doivent être affichées et qu'aucune valeur n'est
+            # disponible dans cette langue, on prendra le parti d'afficher
+            # arbitrairement les valeurs de la première langue venue
+            if ( (not self.edit and self.readOnlyCurrentLanguage) or
+                   ( self.edit and self.editOnlyCurrentLanguage and not translation ) ) \
+                and not any(not isinstance(v, Literal) or v.language in (None, language) \
+                    for v in values):
+                    for v in values:
+                        if isinstance(v, Literal) and v.language:
+                            one_language = v.language
+                            break
+
             # ------ Multi-valeurs ------
-            if len(values) > 1 or (((self.translation and multilingual) or multiple)
-                and not (self.mode == 'read' and self.readHideBlank)):
+            if len(values) > 1 or (((self.translation and multilingual) \
+                or multiple) and not self.readHideBlank):
                 
                 if self.translation and multilingual:
-                    widget = TranslationGroupKey(parent=cur_parent,
-                        available_languages=self.langList)
+                    groupkey = TranslationGroupKey(**kwargs)
                 else:
-                    widget = GroupOfValuesKey(parent=cur_parent, is_ghost=is_ghost)
-                
-                self.update({ widget : InternalDict() })
-                if not is_ghost:
-                    self[widget].update({
-                        'object' : widget.object(),
-                        'main widget type' : 'QGroupBox',
-                        'label' : t.get('label') or str(p['name']),
-                        'help text' : t.get('help text') or (str(p['descr']) if p['descr'] else None),
-                        'path' : new_path,
-                        'shape order' : int(p['order']) if p['order'] is not None else None,
-                        'template order' : int(t.get('order')) if t.get('order') is not None else None
-                        })
+                    groupkey = GroupOfValuesKey(**kwargs)
+                self[groupkey] = InternalDict()
+                kwargs['parent'] = groupkey
                         
                 cur_parent = widget
                 # les widgets de saisie référencés juste après auront
