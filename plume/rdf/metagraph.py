@@ -20,50 +20,38 @@ class Metagraph(Graph):
     Un graphe de métadonnées décrit un et un seul jeu de données
     (dcat:Dataset).
     
+    Parameters
+    ----------
+    datasetid : URIRef, optional
+        L'identifiant du jeu de données, sous forme d'URIRef.
+    uuid : UUID, optional
+        L'identifiant du jeu de données, sous forme d'UUID.
+    
     Attributes
     ----------
     datasetid : URIRef
         L'identifiant du jeu de données, sous forme d'URIRef.
     uuid : UUID
         L'identifiant du jeu de données, sous forme d'UUID.
-    is_empty : bool
-        True si le graphe est vide. Renseigner cet attribut permet
-        d'éviter d'interroger inutilement le graphe.
+    
+    Notes
+    -----
+    À l'initialisation, `uuid` est déduit de `datasetid` et
+    réciproquement. Si `datasetid` et `uuid` sont tous deux
+    renseignés (ce qui ne présente aucun intérêt), ce dernier
+    prime. Si ni `datasetid` ni `uuid` n'est fourni ou si la
+    valeur fournie n'était pas un UUID valide, un nouvel
+    identifiant sera généré.
     
     """
-    def __init__(self, datasetid=None, uuid=None, is_empty=False):
-        """Crée un graphe de métadonnées vierge.
-        
-        Parameters
-        ----------
-        datasetid : URIRef, optional
-            L'identifiant du jeu de données, sous forme d'URIRef.
-        uuid : UUID, optional
-            L'identifiant du jeu de données, sous forme d'UUID.
-        is_empty : bool, default False
-            À mettre à True s'il est assuré que le graphe restera
-            vide.
-        
-        Notes
-        -----
-        `uuid` est déduit de `datasetid` et réciproquement.
-        Si `datasetid` et `uuid` sont tous deux renseignés (ce
-        qui ne présente aucun intérêt), ce dernier prime.
-        Si ni `datasetid` ni `uuid` n'est fourni ou si la
-        valeur fournie n'était pas un UUID valide, un nouvel
-        identifiant sera généré.
-        
-        """
+    def __init__(self, datasetid=None, uuid=None):
         super().__init__(self)
-        self.is_empty = is_empty
-        
         if uuid:
             self.uuid = uuid
             self.datasetid = datasetid_from_uuid(uuid)
         elif datasetid:
             self.datasetid = datasetid
             self.uuid = uuid_from_datasetid(datasetid)
-        
         if not self.datasetid or not self.uuid:
             self.uuid = uuid4()
             self.datasetid = datasetid_from_uuid(self.uuid)
@@ -157,25 +145,23 @@ class ShapeGraph(Graph):
         
         """
         prop_map = {
-            "sh:path": ("property", False),
-            "sh:name": ("name", False),
-            "sh:description": ("descr", False),
+            "sh:path": ("predicate", False),
+            "sh:name": ("label", False),
+            "sh:description": ("description", False),
             "sh:nodeKind": ("kind", False),
-            "sh:order": ("order", False),
-            "snum:widget" : ("widget", False),
-            "sh:class": ("class", False),
+            "sh:order": ("shape_order", False),
+            "sh:class": ("rdftype", False),
             "snum:placeholder": ("placeholder", False),
-            "snum:inputMask": ("mask", False),
-            "sh:defaultValue": ("default", False),
+            "snum:inputMask": ("input_mask", False),
             "snum:rowSpan": ("rowspan", False),
             "sh:minCount": ("min", False),
             "sh:maxCount": ("max", False),
-            "sh:datatype": ("type", False),
+            "sh:datatype": ("xsdtype", False),
             "sh:uniqueLang": ("unilang", False),
-            "sh:pattern": ("pattern", False),
-            "sh:flags": ("flags", False),
+            "sh:pattern": ("regex_validator", False),
+            "sh:flags": ("regex_validator_flags", False),
             "snum:transform": ("transform", False),
-            "snum:ontology": ("ontologies", True)
+            "snum:ontology": ("sources", True)
             } 
         p = { v[0]: None for v in prop_map.values() }
         
