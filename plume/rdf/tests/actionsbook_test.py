@@ -1,7 +1,7 @@
 
 import unittest
 
-from rdflib import URIRef, DC, RDFS
+from rdflib import URIRef, DC, RDFS, DCAT
 
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.widgetkey import RootKey, ObjectKey, GroupOfPropertiesKey, \
@@ -10,31 +10,74 @@ from plume.rdf.widgetkey import RootKey, ObjectKey, GroupOfPropertiesKey, \
 
 class ActionsBookTestCase(unittest.TestCase):
 
+    def test_basic_operations(self):
+        """Quelques opérations classiques.
+        
+        """
+        r = RootKey()
+        t = TranslationGroupKey(parent=r, predicate=RDFS.label)
+        b = TranslationButtonKey(parent=t)
+        w1 = ValueKey(parent=t, value_language='en')
+        m = ValueKey(parent=r, predicate=DCAT.theme,
+            sources=[URIRef('http://publications.europa.eu/resource/authority/data-theme'),
+                URIRef('https://inspire.ec.europa.eu/theme')])
+        a = WidgetKey.unload_actionsbook()
+        self.assertEqual(a.create, [r, t, b, w1, m])
+        a = w1.change_language('fr')
+        self.assertEqual(a.languages, [w1])
+        a = m.change_source(URIRef('https://inspire.ec.europa.eu/theme'))
+        self.assertEqual(a.sources, [m])
+        self.assertEqual(a.thesaurus, [m])
+        a = b.add()
+        self.assertEqual(a.show_minus_button, [w1])
+        self.assertEqual(a.hide, [b])
+        self.assertEqual(a.languages, [w1])
+        w2 = a.create[0]
+        a = w1.drop()
+        self.assertEqual(a.show, [b])
+        self.assertEqual(a.drop, [w1])
+        self.assertEqual(a.languages, [w2])
+        self.assertEqual(a.hide_minus_button, [w2])
+
     def test_no_ghost(self):
         """Non enregistrement des clés fantômes dans les carnets d'action.
 
         """
         r = RootKey()
-        g = ObjectKey(parent=r, is_ghost=True, predicate=DC.title,
-            path='dct:title')
-        w = ObjectKey(parent=r, predicate=DC.description,
-            path='dct:description')
+        g = ObjectKey(parent=r, is_ghost=True, predicate=DC.title)
+        w = ObjectKey(parent=r, predicate=DC.description)
         a = WidgetKey.unload_actionsbook()
         self.assertEqual(a.create, [r, w])
+
+    def test_no_unborn(self):
+        """Pas de clés non créées dans les listes autres que create.
+
+        """
+        r = RootKey()
+        t = TranslationGroupKey(parent=r, predicate=RDFS.label)
+        b = TranslationButtonKey(parent=t)
+        w1 = ValueKey(parent=t, language_value='en')
+        m = ValueKey(parent=r, predicate=DCAT.theme,
+            sources=[URIRef('http://publications.europa.eu/resource/authority/data-theme'),
+                URIRef('https://inspire.ec.europa.eu/theme')])
+        a = WidgetKey.unload_actionsbook()
+        for k in a.__dict__.keys():
+            with self.subTest(key=k):
+                if k == 'create':
+                    self.assertEqual(getattr(a, k), [r, t, b, w1, m])
+                else:
+                    self.assertEqual(getattr(a, k), [])
 
     def test_visible(self):
         """Pas de clés masquées dans les listes de clés à afficher.
         
         """
         r = RootKey()
-        WidgetKey.langlist = ['fr', 'en']
         g = GroupOfPropertiesKey(parent=r,
             rdftype=URIRef('http://purl.org/dc/terms/RightsStatement'),
-            predicate=URIRef('http://purl.org/dc/terms/accessRights'),
-            path='dct:accessRights')
+            predicate=URIRef('http://purl.org/dc/terms/accessRights'))
         m = ValueKey(parent=r, m_twin=g, is_hidden_m=False)
-        t = TranslationGroupKey(parent=g, predicate=RDFS.label,
-            path='dct:accessRights / rdfs:label')
+        t = TranslationGroupKey(parent=g, predicate=RDFS.label)
         b = TranslationButtonKey(parent=t)
         self.assertFalse(b.is_hidden_b)
         w1 = ValueKey(parent=t)
