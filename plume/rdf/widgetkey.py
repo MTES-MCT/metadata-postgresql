@@ -131,7 +131,10 @@ class WidgetKey:
     
     """
     
-    _langlist = ['fr', 'en']
+    langlist = ['fr', 'en']
+    """Liste des langues autorisées.
+    
+    """
     
     actionsbook = ActionsBook()
     """Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
@@ -180,7 +183,7 @@ class WidgetKey:
         str
         
         """
-        return WidgetKey._langlist[0]
+        return self.langlist[0]
   
     @main_language.setter
     def main_language(self, value):
@@ -206,56 +209,12 @@ class WidgetKey:
         le principal effet de cette fonction est d'ajouter la langue à la
         liste si besoin et de retrier la liste.
         """
-        if value and WidgetKey._langlist and not value in WidgetKey._langlist:
-            WidgetKey._langlist.append(value)
-        if value and WidgetKey._langlist:
+        if value and self.langlist and not value in self.langlist:
+            self.langlist.append(value)
+        if value and self.langlist:
             # langlist est trié de manière à ce que la langue principale
             # soit toujours le premier élément.
-            WidgetKey._langlist.sort(key= lambda x: (x != value, x))
-
-    @property
-    def langlist(self):
-        """Liste des langues autorisées.
-        
-        Cette propriété est commune à toutes les clés.
-        
-        Returns
-        -------
-        list of str
-        
-        Raises
-        ------
-        MissingParameter
-            Si la valeur de `langlist` n'est pas définie.
-        
-        """
-        return WidgetKey._langlist
-    
-    @langlist.setter
-    def langlist(self, value):
-        """Définit la liste des langues autorisées.
-        
-        Cette propriété est commune à toutes les clés.
-        
-        La première langue de la liste fait office de langue
-        principale de saisie, mais il est également possible
-        définir explicitement cette dernière, s'il n'est pas certains
-        que la liste est correctement triée.
-        
-        Parameters
-        ----------
-        value : list of str
-            La liste des langues.
-        
-        Raises
-        ------
-        MissingParameter
-            Si aucune valeur n'est fournie, ou si la liste est vide.
-            
-        """
-        if not value:
-            raise MissingParameter('langlist')
-        WidgetKey._langlist = value
+            self.langlist.sort(key= lambda x: (x != value, x))
 
     def __init__(self, **kwargs):
         self._is_unborn = True
@@ -270,12 +229,11 @@ class WidgetKey:
         self._heritage(**kwargs)
         self._computed_attributes(**kwargs)
         self.order_idx = kwargs.get('order_idx')
-        self._is_unborn = False
         if self and self.parent and not self.no_computation:
             self.parent.compute_rows()
             self.parent.compute_single_children()
-        if WidgetKey.actionsbook:
-            WidgetKey.actionsbook.create.append(self)
+        self._is_unborn = False
+        WidgetKey.actionsbook.create.append(self)
 
     def _base_attributes(self, **kwargs):
         return
@@ -340,7 +298,9 @@ class WidgetKey:
         if self.parent:
             raise ForbiddenOperation(self, 'Modifier a posteriori ' \
                 "le parent d'une clé n'est pas permis.")
-        if not value:
+        if value is None:
+            # surtout pas "not value" ici, on ne veut pas rejeter
+            # tous les parents fantômes
             raise MissingParameter('parent', self)
         if not self._validate_parent(value):
             raise ForbiddenOperation(self, 'La classe du parent ' \
@@ -419,9 +379,9 @@ class WidgetKey:
             return
         old_value = self.is_hidden_m
         self._is_hidden_m = value
-        if WidgetKey.actionsbook and not value and old_value:
+        if not value and old_value:
             WidgetKey.actionsbook.show.append(self)
-        elif WidgetKey.actionsbook and value and not old_value:
+        elif value and not old_value:
             WidgetKey.actionsbook.hide.append(self)
 
     @property
@@ -559,7 +519,7 @@ class WidgetKey:
         if isinstance(self.parent, GroupOfValuesKey):
             self._order_idx = None
         else:
-            self._order_idx = value or (999,)
+            self._order_idx = value or (9999,)
         if not self._is_unborn:
             self.parent.compute_rows()
 
@@ -641,8 +601,7 @@ class WidgetKey:
         
         """
         self.parent.children.remove(self)
-        if WidgetKey.actionsbook:
-            WidgetKey.actionsbook.drop.append(self) 
+        WidgetKey.actionsbook.drop.append(self) 
 
 
 class ObjectKey(WidgetKey):
@@ -669,12 +628,6 @@ class ObjectKey(WidgetKey):
         est obligatoire. À noter que si une jumelle est déclarée et que
         le prédicat n'est pas renseigné ou pas cohérent avec celui de
         la jumelle, c'est celui de la jumelle qui sera utilisé.
-    path : str, optional
-        Chemin SPARQL de la métadonnée. Si la clé appartient à un groupe
-        de valeurs, c'est lui qui porte cette information. Sinon, elle
-        est obligatoire. À noter que si une jumelle est déclarée et que
-        le chemin n'est pas renseigné ou pas cohérent avec celui de
-        la jumelle, c'est celui de la jumelle qui sera utilisé.
     label : str or Literal, optional
         Etiquette de la clé (libellé de la catégorie de métadonnée
         représentée par la clé). Cet argument est ignoré si la clé
@@ -698,8 +651,8 @@ class ObjectKey(WidgetKey):
     ----------
     predicate : URIRef
         *Propriété.* Prédicat représenté par la clé.
-    path : str
-        *Propriété.* Chemin SPARQL de la métadonnée.
+    path : rdflib.paths.SequencePath
+        *Propriété calculée dynamiquement.* Chemin de la métadonnée.
     label : str
         *Propriété.* Etiquette de la clé (libellé de la catégorie de
         métadonnée représentée par la clé). None pour une clé appartenant
@@ -732,7 +685,6 @@ class ObjectKey(WidgetKey):
     """    
     def _base_attributes(self, **kwargs):
         self._predicate = None
-        self._path = None
         self._label = None
         self._description = None
         self._m_twin = None
@@ -741,7 +693,6 @@ class ObjectKey(WidgetKey):
     def _computed_attributes(self, **kwargs):
         self.m_twin = kwargs.get('m_twin')
         self.predicate = kwargs.get('predicate')
-        self.path = kwargs.get('path')
         self.label = kwargs.get('label')
         self.description = kwargs.get('description')
         self.is_hidden_m = kwargs.get('is_hidden_m')
@@ -826,46 +777,20 @@ class ObjectKey(WidgetKey):
         """Chemin représenté par la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        le chemin est celui du groupe parent. Sinon, il est
+        calculé dynamiquement à partir du chemin du parent et de
+        la valeur de `predicate`.
         
         Returns
         -------
-        str
+        rdflib.paths.SequencePath
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
             return self.parent.path
-        return self._path
-
-    @path.setter
-    def path(self, value):
-        """Définit le chemin représenté par la clé.
-        
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
-        information est supposée être définie par la propriété de
-        même nom du groupe.
-        
-        Si la clé a une jumelle dont le chemin est différent
-        de la valeur fournie, c'est ce chemin qui sera utilisé.
-        
-        Parameters
-        ----------
-        value : str
-            Le chemin à déclarer.
-        
-        Raises
-        ------
-        MissingParameter
-            Si `value` vaut None, cette information étant obligatoire.
-        
-        """
-        if not isinstance(self.parent, GroupOfValuesKey):
-            if self.m_twin and value != self.m_twin.path:
-                value = self.m_twin.path
-            if not value:
-                raise MissingParameter('path', self)
-            self._path = value
+        if isinstance(self.parent, RootKey):
+            return self.predicate
+        return self.parent.path / self.predicate
 
     @property
     def label(self):
@@ -974,9 +899,8 @@ class ObjectKey(WidgetKey):
     def m_twin(self, value):
         """Définit la clé jumelle.
         
-        Les attributs `rowspan`, `predicate` and `is_hidden_m`, de la clé
-        sont silencieusement mis en cohérence / déduits de ceux de la clé
-        jumelle.
+        Les attributs  `predicate` et `is_hidden_m`, de la clé
+        sont silencieusement déduits de ceux de la clé jumelle.
         
         Parameters
         ----------
@@ -991,20 +915,21 @@ class ObjectKey(WidgetKey):
             ou si les deux clés n'ont pas le même parent.
         
         """
-        if not value:
-            # fait aussi tourner court toute tentative de désigner un
-            # fantôme comme jumeau.
-            return
-        if not self :
-            raise ForbiddenOperation(self, 'Un fantôme ne peut avoir ' \
-                'de clé jumelle.')
-        d = {ValueKey: GroupOfPropertiesKey, GroupOfPropertiesKey: ValueKey}
-        if not isinstance(value, d[type(self)]):
-            raise ForbiddenOperation(self, 'La clé jumelle devrait' \
-                ' être de type {}.'.format(d[type(self)]))
-        if self.parent != value.parent:
-            raise ForbiddenOperation(self, 'La clé et sa jumelle ' \
-                'devraient avoir la même clé parent.')
+        if not value is None:
+            if not value:
+                # fait aussi tourner court toute tentative de désigner un
+                # fantôme comme jumeau.
+                return
+            if not self :
+                raise ForbiddenOperation(self, 'Un fantôme ne peut avoir ' \
+                    'de clé jumelle.')
+            d = {ValueKey: GroupOfPropertiesKey, GroupOfPropertiesKey: ValueKey}
+            if not isinstance(value, d[type(self)]):
+                raise ForbiddenOperation(self, 'La clé jumelle devrait' \
+                    ' être de type {}.'.format(d[type(self)]))
+            if self.parent != value.parent:
+                raise ForbiddenOperation(self, 'La clé et sa jumelle ' \
+                    'devraient avoir la même clé parent.')
         self._m_twin = value
         value._m_twin = self
         if not self._is_unborn:
@@ -1013,9 +938,9 @@ class ObjectKey(WidgetKey):
             # et des nombres de lignes, et du fait
             # que la visibilité de la jumelle est inversée
             # par rapport à celle de la clé
-            self.rowspan = self.rowspan
             self.predicate = self.predicate
             self.is_hidden_m = self.is_hidden_m
+            self.parent.compute_rows
     
     @property
     def is_hidden_m(self):
@@ -1166,8 +1091,15 @@ class ObjectKey(WidgetKey):
             # condition exclut seulement les jumeaux `ValueKey`.
         return super().copy(parent=parent, empty=empty)
 
-    def kill(self):
+    def kill(self, preserve_twin=False):
         """Efface une clé de la mémoire de son parent.
+        
+        Parameters
+        ----------
+        preserve_twin : bool
+            True si la jumelle doit être conservée (généralement
+            non souhaitable, sauf dans le cas très spécifique du
+            nettoyage des groupes de propriétés vides).
         
         Notes
         -----
@@ -1178,9 +1110,11 @@ class ObjectKey(WidgetKey):
         """
         super().kill()
         if self.m_twin:
-            self.parent.children.remove(m_twin)
-            if WidgetKey.actionsbook:
-                WidgetKey.actionsbook.drop.append(m_twin)
+            if not preserve_twin:
+                self.parent.children.remove(self.m_twin)
+                WidgetKey.actionsbook.drop.append(self.m_twin)
+            else:
+                self.m_twin = None
 
     def drop(self):
         """Supprime une clé d'un groupe de valeur ou de traduction.
@@ -1191,7 +1125,7 @@ class ObjectKey(WidgetKey):
         Returns
         -------
         ActionsBook
-            Le carnet d'actions qui permettra de répercuter sur les widgets
+            Le carnet d'actions qui permettra de matérialiser
             la suppresssion de la clé.
         
         """
@@ -1324,10 +1258,45 @@ class GroupKey(WidgetKey):
                 n += 1
             if child.row != n:
                 child._row = n
-                if WidgetKey.actionsbook:
-                    WidgetKey.actionsbook.move.append(child)
+                WidgetKey.actionsbook.move.append(child)
             n += child.rowspan 
         return n
+
+    def _search_from_path(self, path):
+        for child in self.real_children():
+            if path == child.path:
+                if isinstance(child, ObjectKey) and \
+                    child.m_twin and not child.is_main_twin:
+                    continue
+                return child
+            elif path.n3().startswith(child.path.n3()) \
+                and isinstance(child, GroupKey):
+                # à cette heure, rdflib ne propose pas de méthode
+                # pour casser proprement un chemin, on prend donc
+                # le parti de comparer des chaînes de caractères
+                return child._search_from_path(path)
+
+    def _search_from_rdftype(self, rdftype, matchlist):
+        for child in self.real_children():
+            if isinstance(child, GroupOfPropertiesKey) and \
+                rdftype == child.rdftype:
+                matchlist.append(child)
+            if isinstance(child, GroupKey):
+                # moins efficace que search_from_path,
+                # parce qu'on est obligé de parcourir toutes
+                # les branches
+                child._search_from_rdftype(rdftype, matchlist)
+
+    def _clean(self):
+        if not self.children:
+            if isinstance(self, GroupOfPropertiesKey):
+                self.kill(preserve_twin=True)
+            else:
+                self.kill()
+        else:
+            for child in self.children:
+                if isinstance(child, GroupKey):
+                    child._clean()
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -1387,6 +1356,16 @@ class TabKey(GroupKey):
         fantôme est toujours un fantôme.
     label : str or Literal
         Etiquette de l'onglet.
+    order_idx : tuple of int, default (999,)
+        Indice(s) permettant le classement de la clé parmi ses soeurs dans
+        un groupe de propriétés. Les clés de plus petits indices seront les
+        premières.
+    
+    Attributes
+    ----------
+    path : rdflib.paths.SequencePath
+        *Propriété calculée dynamiquement.* Le chemin du bouton,
+        identique à celui du groupe parent.
     
     """
     
@@ -1397,7 +1376,8 @@ class TabKey(GroupKey):
         self.label = kwargs.get('label')
     
     def _validate_parent(self, parent):
-        return isinstance(parent, GroupOfPropertiesKey)
+        return isinstance(parent, GroupOfPropertiesKey) \
+            or isinstance(parent, RootKey)
     
     @property
     def key_type(self):
@@ -1416,6 +1396,22 @@ class TabKey(GroupKey):
         
         """
         return 'tab'
+
+    @property
+    def path(self):
+        """Chemin représenté par la clé.
+        
+        Le chemin d'un onglet est identique à celui du groupe
+        de propriétés parent.
+        
+        Returns
+        -------
+        rdflib.paths.SequencePath
+        
+        """
+        if isinstance(self.parent, RootKey):
+            return None
+        return self.parent.path
 
     @property
     def label(self):
@@ -1497,6 +1493,11 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     sources : list of URIRef
         *Propriété non modifiable.* La liste de sources de la clé-valeur
         jumelle.
+    
+    Methods
+    -------
+    paste_from_rdftype(widgetkey)
+        Remplace la branche par une autre de même type RDF.
     
     """
     
@@ -1680,6 +1681,46 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             key.is_hidden_m = self.is_hidden_m
         return key
 
+    def paste_from_rdftype(self, widgetkey):
+        """Remplace la branche par une branche de même type.
+        
+        Cette méthode n'a pas d'effet si elle est appliquée à
+        une clé fantôme ou masquée.
+        
+        Parameters
+        ----------
+        widgetkey : GroupOfPropertiesKey
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de matérialiser les
+            opérations réalisées.
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Si la clé à copier est un fantôme, est masquée,
+            n'est pas un groupe de propriétés, ou si sa classe
+            RDF n'est pas celle de `self`.
+        
+        """
+        if self.is_hidden:
+            return ActionsBook()
+        if widgetkey.is_hidden:
+            raise ForbiddenOperation(self, "Il n'est pas permis de " \
+                'copier/coller une branche fantôme ou masquée.')
+        if not isinstance(widgetkey, GroupOfPropertiesKey):
+            raise ForbiddenOperation(self, 'Seul un groupe de ' \
+                'propriétés peut être copié avec cette méthode.')
+        if not self.rdftype == widgetkey.rdftype:
+            raise ForbiddenOperation(self, '`rdftype` doit être ' \
+                'identique pour les deux clés.')
+        WidgetKey.clear_actionsbook()
+        self.kill()
+        widgetkey.copy(parent=self.parent, empty=False)
+        return WidgetKey.unload_actionsbook()
+
     def kill(self):
         """Efface une clé de la mémoire de son parent.
         
@@ -1714,8 +1755,6 @@ class GroupOfValuesKey(GroupKey):
         supposés être associés aux clés du groupe.
     predicate : URIRef
         Le prédicat commun à toutes les clés du groupe.
-    path : str
-        Le chemin SPARQL commun à toutes les clés du groupe.
     label : str or Literal, optional
         Etiquette du groupe (libellé de la catégorie de métadonnée dont
         les filles du groupe sont les valeurs).
@@ -1756,8 +1795,9 @@ class GroupOfValuesKey(GroupKey):
         Référence la clé qui représente le bouton plus du groupe.
     predicate : URIRef
         *Propriété.* Prédicat commun à toutes les valeurs du groupe.
-    path : str
-        *Propriété.* Chemin SPARQL commun à toutes les clés du groupe.
+    path : rdflib.paths.SequencePath
+        *Propriété calculée dynamiquement.* Chemin commun à toutes les
+        clés du groupe.
     label : str
         *Propriété.* Etiquette du groupe (libellé de la catégorie de
         métadonnée dont les filles du groupe sont les valeurs).
@@ -1801,7 +1841,6 @@ class GroupOfValuesKey(GroupKey):
         self.button = None
         self._with_minus_buttons = None
         self._predicate = None
-        self._path = None
         self._label = None
         self._description = None
         self._rdftype = None
@@ -1819,7 +1858,6 @@ class GroupOfValuesKey(GroupKey):
         super()._computed_attributes(**kwargs)
         self.with_minus_buttons = kwargs.get('with_minus_buttons', True)
         self.predicate = kwargs.get('predicate')
-        self.path = kwargs.get('path')
         self.label = kwargs.get('label')
         self.description = kwargs.get('description')
         self.rdftype = kwargs.get('rdftype')
@@ -1834,7 +1872,7 @@ class GroupOfValuesKey(GroupKey):
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
     
     def _validate_parent(self, parent):
-        return isinstance(parent, (GroupOfPropertiesKey, TabKey))
+        return isinstance(parent, (GroupOfPropertiesKey, TabKey, RootKey))
     
     @property
     def key_type(self):
@@ -1912,33 +1950,19 @@ class GroupOfValuesKey(GroupKey):
     
     @property
     def path(self):
-        """Chemin commun à toutes les valeurs du groupe.
+        """Chemin commun à toutes les clés du groupe.
+        
+        Cette propriété est calculée dynamiquement à partir
+        du chemin du parent et de la valeur de `predicate`.
         
         Returns
         -------
-        str
+        rdflib.paths.SequencePath
         
         """
-        return self._path
-
-    @path.setter
-    def path(self, value):
-        """Définit le chemin commun à toutes les valeurs du groupe.
-        
-        Parameters
-        ----------
-        value : str
-            Le chemin à déclarer.
-        
-        Raises
-        ------
-        MissingParameter
-            Si `value` vaut None, cette information étant obligatoire.
-        
-        """
-        if not value:
-            raise MissingParameter('path', self)
-        self._path = value
+        if isinstance(self.parent, RootKey):
+            return self.predicate
+        return self.parent.path / self.predicate
     
     @property
     def label(self):
@@ -2122,9 +2146,12 @@ class GroupOfValuesKey(GroupKey):
         Parameters
         ----------
         value : {None, 'email', 'phone'}
-            La transformation.
+            La transformation. Il est également permis de fournir la valeur
+            sous forme de Literal.
         
         """
+        if isinstance(value, Literal):
+            value = str(value)
         if not value in (None, 'email', 'phone'):
             return
         self._transform = value
@@ -2359,8 +2386,7 @@ class GroupOfValuesKey(GroupKey):
         if self.button:
             if self.button.row != n:
                 self.button._row = n
-                if WidgetKey.actionsbook:
-                    WidgetKey.actionsbook.move.append(self.button)
+                WidgetKey.actionsbook.move.append(self.button)
             n += self.button.rowspan
         return n
 
@@ -2385,14 +2411,12 @@ class GroupOfValuesKey(GroupKey):
             if true_children_count >= 2 \
                 and not child.is_single_child is False:
                 child._is_single_child = False
-                if WidgetKey.actionsbook:
-                    WidgetKey.actionsbook.show_minus_button.append(child)
+                WidgetKey.actionsbook.show_minus_button.append(child)
             # boutons moins à masquer
             if true_children_count < 2 \
                 and not child.is_single_child:
                 child._is_single_child = True
-                if WidgetKey.actionsbook:
-                    WidgetKey.actionsbook.hide_minus_button.append(child) 
+                WidgetKey.actionsbook.hide_minus_button.append(child) 
 
 
 class TranslationGroupKey(GroupOfValuesKey):
@@ -2538,17 +2562,12 @@ class TranslationGroupKey(GroupOfValuesKey):
             # une langue qui n'était pas autorisée n'est
             # pas remise dans le pot. Idem pour une langue
             # qui y était déjà (cas de doubles traductions,
-            # ce qui pourrait arriver dans des fiches importées).
-        
-        self.available_languages.append(value_language)
-        
-        if WidgetKey.actionsbook:
-            for child in self.real_children():
-                WidgetKey.actionsbook.languages.append(child)
-        
+            # ce qui pourrait arriver dans des fiches importées).       
+        self.available_languages.append(value_language)     
+        for child in self.real_children():
+            WidgetKey.actionsbook.languages.append(child)
         if self.button and len(self.available_languages) == 1:
-            if WidgetKey.actionsbook:
-                WidgetKey.actionsbook.show.append(self.button)
+            WidgetKey.actionsbook.show.append(self.button)
 
     def language_out(self, value_language):
         """Retire une langue de la liste des langues disponibles.
@@ -2563,16 +2582,11 @@ class TranslationGroupKey(GroupOfValuesKey):
             return
             # on admet que la langue ait pu ne pas se trouver
             # dans la liste (métadonnées importées, etc.)
-        
         self.available_languages.remove(value_language)
-    
-        if WidgetKey.actionsbook:
-            for child in self.real_children():
-                WidgetKey.actionsbook.languages.append(child)
-        
+        for child in self.real_children():
+            WidgetKey.actionsbook.languages.append(child)
         if not self.available_languages and self.button:
-            if WidgetKey.actionsbook:
-                WidgetKey.actionsbook.hide.append(self.button)
+            WidgetKey.actionsbook.hide.append(self.button)
 
 
 class ValueKey(ObjectKey):
@@ -3204,6 +3218,8 @@ class ValueKey(ObjectKey):
                     raise IntegrityBreach(self, 'Plus de langue disponible.')
             self.parent.language_in(self._value_language)
             self.parent.language_out(value)
+        elif self.value_language != value:
+            WidgetKey.actionsbook.languages.append(self)
         self._value_language = value
     
     @property
@@ -3235,7 +3251,7 @@ class ValueKey(ObjectKey):
             self._value_source = value
         else:
             self._value_source = None
-        if WidgetKey.actionsbook and self.value_source != old_value:
+        if self.value_source != old_value:
             WidgetKey.actionsbook.sources.append(self)
             WidgetKey.actionsbook.thesaurus.append(self)
     
@@ -3297,10 +3313,13 @@ class ValueKey(ObjectKey):
         Parameters
         ----------
         value : {None, 'email', 'phone'}
-            La transformation.
+            La transformation. Il est également permis de fournir
+            la valeur sous forme de Literal.
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
+            if isinstance(value, Literal):
+                value = str(value)
             if not value in (None, 'email', 'phone'):
                 return
             self._transform = value   
@@ -3338,8 +3357,7 @@ class ValueKey(ObjectKey):
         if not isinstance(self.parent, GroupOfValuesKey) \
             and self.sources != value:
             self._sources = value
-            if WidgetKey.actionsbook:
-                WidgetKey.actionsbook.sources.append(self)
+            WidgetKey.actionsbook.sources.append(self)
             if self.value_source:
                 # pour le cas où value_source ne serait plus
                 # une source autorisée.
@@ -3450,7 +3468,7 @@ class ValueKey(ObjectKey):
         if self.is_hidden:
             return ActionsBook()
         WidgetKey.clear_actionsbook()
-        self.language = value_language
+        self.value_language = value_language
         return WidgetKey.unload_actionsbook()
     
     def change_source(self, value_source):
@@ -3469,7 +3487,7 @@ class ValueKey(ObjectKey):
         if self.is_hidden:
             return ActionsBook()
         WidgetKey.clear_actionsbook()
-        self.source = value_source
+        self.value_source = value_source
         return WidgetKey.unload_actionsbook()
 
 class PlusButtonKey(WidgetKey):
@@ -3481,7 +3499,7 @@ class PlusButtonKey(WidgetKey):
     tous ces cas, rien ne sera créé.
     
     Les boutons héritent des attributs et méthodes de la classe
-    `WidgetKey`. Ils n'ont pas d'attributs propres.
+    `WidgetKey`.
     
     Parameters
     ----------
@@ -3492,6 +3510,12 @@ class PlusButtonKey(WidgetKey):
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme. Tenter de créer un bouton plus
         fantôme ne produira rien.
+    
+    Attributes
+    ----------
+    path : rdflib.paths.SequencePath
+        *Propriété calculée dynamiquement.* Le chemin du bouton,
+        identique à celui du groupe parent.
     
     Methods
     -------
@@ -3536,14 +3560,14 @@ class PlusButtonKey(WidgetKey):
     
     @property
     def path(self):
-        """Chemin SPARQL du bouton.
+        """Chemin du bouton.
         
-        Le chemin SPARQL d'un bouton est simplement celui de son groupe
+        Le chemin d'un bouton est simplement celui de son groupe
         parent.
         
         Returns
         -------
-        str
+        rdflib.paths.SequencePath
         
         """
         return self.parent.path
@@ -3571,7 +3595,7 @@ class PlusButtonKey(WidgetKey):
         Returns
         -------
         ActionsBook
-            Le carnet d'actions qui permettra de répercuter sur les widgets
+            Le carnet d'actions qui permettra de matérialiser
             la création de la clé.
         
         """
@@ -3670,6 +3694,19 @@ class RootKey(GroupKey):
         La classe de l'objet RDF décrit par le groupe racine.
         Vaut toujours URIRef("http://www.w3.org/ns/dcat#Dataset").
     
+    Methods
+    -------
+    search_from_path(path)
+        Renvoie la première clé de l'arbre dont le chemin est `path`.
+    search_from_rftype(rdftype)
+        Renvoie tous les groupes de propriétés de l'arbre dont la
+        classe RDF est `rdftype`.
+    paste_from_path(widgetkey)
+        Copie et colle la clé dans l'arbre, en la plaçant selon
+        la valeur de `path`.
+    clean()
+        Balaie l'arbre de clés et supprime tous les groupes sans fille.
+    
     """
     def _heritage(self, **kwargs):
         return
@@ -3732,8 +3769,121 @@ class RootKey(GroupKey):
         return {}
 
     def kill(self):
-        return
+        WidgetKey.actionsbook.drop.append(self)
 
+    def search_from_path(self, path):
+        """Renvoie la première clé de l'arbre dont le chemin correspond à celui recherché.
+        
+        Si une clé et son parent ont le même chemin (cas d'un groupe
+        de valeurs et ses clés filles ou d'un groupe de propriétés
+        et ses onglets), c'est toujours le groupe parent qui est
+        renvoyé.
+        
+        Si le chemin pointe sur un couple de jumelles, c'est la jumelle
+        de référence (celle dont la propriété `is_main_twin` vaut True)
+        qui est renvoyée.
+        
+        Si le chemin n'existe pas dans l'arbre, la méthode ne renvoie
+        rien. Les clés fantômes ne sont pas prises en compte.
+        
+        Parameters
+        ----------
+        path : rdflib.paths.SequencePath
+            Le chemin à chercher.
+        
+        Returns
+        -------
+        WidgetKey
+        
+        """
+        return self._search_from_path(path)
+
+    def search_from_rdftype(self, rdftype):
+        """Renvoie la liste des groupes de propriétés du type recherché.
+        
+        Parameters
+        ----------
+        rdftype : URIRef
+            Le type RDF (classe) cible.
+            
+        Returns
+        -------
+        list of GroupOfPropertiesKey
+        
+        """
+        matchlist = []
+        self._search_from_rdftype(rdftype, matchlist)
+        
+
+    def paste_from_path(self, widgetkey):
+        """Copie et colle une branche dans l'arbre de clés.
+        
+        La clé est positionnée en fonction de son type et de
+        la valeur de `path`. Si le chemin n'existe pas dans l'arbre
+        dont `self` est la racine, la méthode n'a pas d'effet. Idem
+        s'il pointe sur une branche masquée.
+        
+        Si le chemin pointe sur un groupe de valeurs avec un bouton
+        (donc dans lequel on présume que les ajouts sont autorisés)
+        et que la clé à coller est de type `GroupOfPropertiesKey`,
+        elle est ajoutée au groupe. Sinon, la clé à coller remplace
+        la clé de même chemin dans l'arbre cible, sous réserve qu'elles
+        soient bien de même nature.
+        
+        Parameters
+        ----------
+        widgetkey : GroupOfPropertiesKey or GroupOfValuesKey
+            La clé correspondant à la base de la branche à copier.
+            
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de matérialiser les
+            opérations réalisées.
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Si appliquée à une clé qui n'est pas un groupe de valeurs
+            ou de propriétés, ou à une clé fantôme ou masquée.
+        
+        """
+        if widgetkey.is_hidden:
+            raise ForbiddenOperation(self, "Il n'est pas permis de " \
+                'copier/coller une branche fantôme ou masquée.')
+        if not isinstance(widgetkey, (GroupOfPropertiesKey, GroupOfValuesKey)):
+            raise ForbiddenOperation(self, 'Seuls les groupes de valeurs, ' \
+                'de traduction ou de propriétés peuvent être copiés/collés.')
+        WidgetKey.clear_actionsbook()
+        refkey = self.search_from_path(widgetkey.path)
+        if not refkey or refkey.is_hidden:
+            return ActionsBook()
+        if type(refkey) == type(widgetkey):
+            refkey.kill()
+            widgetkey.copy(parent=refkey.parent, empty=False)  
+        elif isinstance(widgetkey, GroupOfPropertiesKey) and \
+            isinstance(refkey, GroupOfValuesKey) and refkey.button \
+            and not refkey.button.is_hidden:
+            widgetkey.copy(parent=refkey, empty=False)
+        return WidgetKey.unload_actionsbook()
+
+    def clean(self):
+        """Balaie l'arbre de clés et supprime tous les groupes sans fille.
+        
+        Cette méthode a la spécificité de pouvoir supprimer un groupe
+        de propriétés tout en préservant sa jumelle clé-valeur (qui
+        n'est alors plus une clé jumelle).
+        
+        Returns
+        -------
+        ActionsBook
+            Le carnet d'actions qui permettra de matérialiser les
+            opérations réalisées.
+        
+        """
+        WidgetKey.clear_actionsbook()
+        self._clean()
+        return WidgetKey.unload_actionsbook()
 
 class ChildrenList(list):
     """Liste des enfants d'une clé.
