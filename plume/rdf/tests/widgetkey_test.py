@@ -10,6 +10,20 @@ from plume.rdf.actionsbook import ActionsBook
 
 class WidgetKeyTestCase(unittest.TestCase):
 
+    def test_update(self):
+        """Mise à jour massive des attributs.
+
+        """
+        r = RootKey()
+        g = GroupOfPropertiesKey(parent=r,
+            rdftype=URIRef('http://purl.org/dc/terms/RightsStatement'),
+            predicate=DC.title)
+        g.update(predicate=URIRef('http://purl.org/dc/terms/accessRights'),
+            label="Conditions d'accès")
+        self.assertEqual(g.predicate,
+            URIRef('http://purl.org/dc/terms/accessRights'))
+        self.assertEqual(g.label, "Conditions d'accès")
+
     def test_lang_attributes(self):
         """Gestion des propriétés de classe, `langlist` et `main_language`.
         
