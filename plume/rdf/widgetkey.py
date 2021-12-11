@@ -1,27 +1,25 @@
 """Clés des dictionnaires de widgets.
 
-La classe `WidgetKey` matérialise les clés des dictionnaires
-de widgets (classe `WidgetsDict`).
+La classe `WidgetKey` produit les clés des dictionnaires
+de widgets (classe :py:class:`plume.rdf.widgetsdict.WidgetsDict`).
 
 Dans le contexte d'un dictionnaire, ces clés forment un arbre :
-- à la base, la clé racine est la seule qui n'ait pas
-de "parent". Elle est référencée dans l'attribut `root` du
-dictionnaire WidgetsDict ;
+- à la base, la clé racine, de classe :py:class:`RootKey`, est la
+  seule qui n'ait pas de clé "parente". Elle est référencée dans
+  l'attribut `root` du dictionnaire de widgets ;
 - toutes les autres clés descendent d'une clé parente,
-référencée dans leur attribut `parent`. Réciproquement,
-les filles d'une clé sont référencées dans son attribut
-`children`.
+  référencée dans leur attribut :py:attr:`WidgetKey.parent`.
+  Réciproquement, les filles d'une clé sont référencées dans
+  son attribut :py:attr:`GroupKey.children`.
 
 La clé est porteuse de toutes les informations nécessaires
-au maintien de l'intégrité du dictionnaire de widgets.
-Les autres informations, qui servent au paramétrage des widgets,
-à la sérialisation en graphe de métadonnées (classe `Metagraph`),
-etc. sont stockées dans le dictionnaire interne (classe
-`InternalDict`) associé à la clé.
+au maintien de l'intégrité du dictionnaire de widgets, au
+paramétrage des widgets et à la sérialisation en graphe de
+métadonnées (classe :py:class:`plume.rdf.metagraph.Metagraph`).
 
-Les clés ne sont *pas* indépendantes les unes des autres. La
-seule création d'une nouvelle clé entraîne la modification de
-son parent et parfois de ses soeurs.
+Les clés ne sont pas indépendantes les unes des autres. La
+création ou la modification d'une clé entraîne la modification
+(automatique) de son parent et parfois de ses soeurs.
 
 """
 
@@ -36,8 +34,8 @@ except:
     from rdflib import URIRef, BNode, Literal
 from rdflib.namespace import RDF, XSD
 
-from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
-    UnknownParameterValue
+from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
+    ForbiddenOperation, UnknownParameterValue
 from plume.rdf.actionsbook import ActionsBook
 
 
@@ -45,89 +43,81 @@ from plume.rdf.actionsbook import ActionsBook
 class WidgetKey:
     """Clé d'un dictionnaire de widgets.
     
-    *Cette classe ne doit pas être utilisée directement, on préfèrera toujours
-    les classes filles qui héritent de ses méthodes et attributs.*
-    
     Parameters
     ----------
     parent : GroupKey
-        La clé parente. Ne peut pas être None, sauf dans le cas d'un objet
-        de la classe `RootKey` (groupe racine).
+        La clé parente. Ne peut pas être ``None``, sauf dans le cas d'un objet
+        de la classe :py:class:`RootKey` (groupe racine).
     is_ghost : bool, default False
-        True si la clé ne doit pas être matérialisée. À noter que quelle
+        ``True`` si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
     order_idx : tuple of int, default (999,)
         Indice(s) permettant le classement de la clé parmi ses soeurs dans
         un groupe de propriétés. Les clés de plus petits indices seront les
-        premières. Cet argument sera ignoré si le groupe parent n'est pas
-        un groupe de propriétés.
+        premières. Cet argument sera ignoré si le groupe parent est un
+        groupe de valeurs (:py:class:`GroupOfvaluesKey`).
     
     Attributes
     ----------
     actionsbook : ActionsBook
-        *Attribut de classe.* Le carnet d'actions trace les actions à
-        réaliser sur les widgets au fil des modifications des clés. Pour
-        le réinitialiser, on utilisera la méthode de classe `clear_actionsbook`.
+        Le carnet d'actions trace les actions à réaliser sur les widgets
+        au fil des modifications des clés. Pour le réinitialiser, on
+        utilisera la méthode de classe :py:meth:`clear_actionsbook`, et
+        :py:meth:`unload_actionsbook` pour le récupérer.
+        *Cet attribut est partagé par toutes les instances de la classe.*
     no_computation : bool
-        *Attribut de classe.* Si True, inhibe temporairement la réalisation de
-        certains calculs.
-    main_language : str
-        *Propriété de classe.* Langue principale de saisie des métadonnées.
-    langlist : str
-        *Propriété de classe.* Liste des langues autorisées. Par défaut, cette
-        propriété vaut ['fr', 'en'], mais elle est supposée être actualisée
-        avant toute génération d'arbre de clés (et il n'est pas conseillé de
-        de la modifier tant qu'on ne change pas d'arbre).
+        Si True, inhibe temporairement la réalisation de certains calculs.
+        *Cet attribut est partagé par toutes les instances de la classe.*
     uuid : UUID
-        *Attribut généré automatiquement.* Identifiant unique de la clé.
-    parent : GroupKey
-        *Propriété non modifiable après l'initialisation.* La clé parente.
-        None pour une clé racine (`RootKey`).
-    is_ghost : bool
-        *Propriété non modifiable après l'initialisation.* True pour une
-        clé non matérialisée et ses descendantes.
-    is_hidden_m : bool
-        *Propriété non modifiable manuellement.* True pour la clé présentement
-        masquée d'un couple de jumelles, ou toute clé descendant de celle-ci
-        (branche masquée).
-    is_hidden_b : bool
-        *Propriété non modifiable manuellement.* True pour une clé représentant
-        un bouton masqué.
-    is_single_child : bool
-        *Propriété non modifiable manuellement*. True si le parent est un
-        groupe de valeurs et il n'y a qu'une seule valeur dans le groupe.
-    has_minus_button : bool
-        *Propriété.* True si un bouton moins est associé à la clé
-        (potentiellement masqué, selon `is_single_child`).
-    independant_label : bool
-        *Propriété.* True si l'étiquette de la clé occupe sa propre ligne de la
-        grille.
-    row : int
-        *Propriété non modifiable manuellement.* L'indice de la ligne de la
-        grille occupée par le widget porté par la clé. Vaut None pour une clé
-        fantôme.
-    rowspan : int
-        *Propriété non modifiable manuellement.* Nombre de lignes occupées
-        par le ou les widgets portés par la clé, étiquette séparée non comprise.
-        Vaut 0 pour une clé fantôme.
-    order_idx : tuple of int
-        *Propriété.* Indice(s) permettant le classement de la clé parmi ses
-        soeurs. Les clés de plus petits indices seront les premières.
-    path : str
-        *Propriété non modifiable manuellement.* Chemin SPARQL de la clé.
+        Identifiant unique de la clé.
+    langlist
+    main_language
+    parent
+    is_ghost
+    is_hidden_m
+    is_hidden_b
+    is_single_child
+    has_minus_button
+    independant_label
+    row
+    rowspan
+    order_idx
+    path
+    attr_to_copy
+    attr_to_update
     
     Methods
     -------
     clear_actionsbook()
-        *Méthode de classe.* Remplace le carnet d'actions par un carnet vierge.
+        *Méthode de classe.* Remplace le carnet d'actions par un carnet
+        vierge.
     unload_actionsbook()
-        *Méthode de classe.* Renvoie le carnet d'actions et le remplace par
-        un carnet vierge.
+        *Méthode de classe.* Renvoie le carnet d'actions et le remplace
+        par un carnet vierge.
     kill()
         Efface la clé de la mémoire de son parent.
-    copy(parent, empty)
+    copy(parent=None, empty=True)
         Copie une clé et, le cas échéant, la branche qui en descend.
+    update(**kwargs)
+        Met à jour les attributs de la clé selon les valeurs fournies.
+    
+    Warnings
+    --------
+    Cette classe ne doit pas être utilisée directement pour créer de
+    nouvelles clés. On préfèrera toujours les classes filles qui héritent
+    de ses méthodes et attributs :
+    
+    * :py:class:`RootKey` pour la clé racine d'un arbre de clés.
+    * :py:class:`GroupOfPropertiesKey` pour les groupes de propriétés.
+    * :py:class:`GroupOfValuesKey` pour les groupes de valeurs.
+    * :py:class:`TranslationGroupKey` pour les groupes de traduction.
+    * :py:class:`TabKey` pour les onglets.
+    * :py:class:`ValueKey` pour les clés-valeurs (correspondent aux
+       widgets de saisie).
+    * :py:class:`PlusButtonKey` pour les boutons plus des groupes de
+      valeurs.
+    * :py:class:`TranslationButtonKey` pour les boutons de traduction.
     
     """
     
@@ -142,11 +132,11 @@ class WidgetKey:
     """
     
     no_computation = False
-    """Si True, `no_computation` empêche l'exécution immédiate de certaines opérations.
+    """Si True, empêche l'exécution immédiate de certaines opérations.
     
     Les opérations concernées sont les plus coûteuses en temps de calcul : le
     calcul des lignes et le calcul des langues disponibles dans les groupes de
-    traduction. Il est préférable de réaliser ces opérations après avoir
+    traduction. Il peut être préférable de réaliser ces opérations après avoir
     initialisé toutes les clés du groupe, plutôt qu'une fois pour chaque clé.
     
     """
@@ -176,23 +166,27 @@ class WidgetKey:
         """Langue principale de saisie des métadonnées.
         
         Cette propriété est commune à toutes les clés. Concrètement,
-        main_language est simplement la première valeur de `langlist`.
+        `main_language` est simplement la première valeur de
+        :py:attr:`langlist`.
         
         Returns
         -------
         str
         
+        Raises
+        ------
+        MissingParameter
+            Si :py:attr:`langlist` ne contient pas au moins une valeur.
+        
         """
-        return self.langlist[0]
+        if self.langlist:
+            return self.langlist[0]
+        else:
+            raise MissingParameter('langlist')
   
     @main_language.setter
     def main_language(self, value):
         """Définit la langue principale de saisie des métadonnées.
-        
-        Cette propriété est commune à toutes les clés.
-        
-        Si la langue n'était pas incluse dans la liste des langues
-        autorisées, elle est silencieusement ajoutée.
         
         Parameters
         ----------
@@ -205,9 +199,12 @@ class WidgetKey:
         
         Notes
         -----
-        `main_language` n'étant jamais que la première valeur de `langlist`,
-        le principal effet de cette fonction est d'ajouter la langue à la
-        liste si besoin et de retrier la liste.
+        La langue principale n'est pas stockée indépendamment, ce
+        *setter* réordonne simplement :py:attr:`langlist` pour que la
+        nouvelle langue principale soit en tête de la liste. Si la
+        langue n'était pas incluse dans la liste des langues autorisées,
+        elle est silencieusement ajoutée.
+        
         """
         if value and self.langlist and not value in self.langlist:
             self.langlist.append(value)
@@ -215,6 +212,13 @@ class WidgetKey:
             # langlist est trié de manière à ce que la langue principale
             # soit toujours le premier élément.
             self.langlist.sort(key= lambda x: (x != value, x))
+
+    def __new__(cls, **kwargs):
+        if cls.__name__ == 'WidgetKey':
+            raise ForbiddenOperation(message='La classe `WidgetKey` ne ' \
+                'devrait pas être directement utilisée pour créer ' \
+                'de nouvelles clés.')
+        return super().__new__(cls)
 
     def __init__(self, **kwargs):
         self._is_unborn = True
@@ -245,24 +249,13 @@ class WidgetKey:
         return
     
     def __str__(self):
-        return "{} {}".format(self.key_type, self.uuid)
+        return "{} {}".format(type(self).__name__, self.uuid)
     
     def __repr__(self):
-        return "{} {}".format(self.key_type, self.uuid)
+        return "{} {}".format(type(self).__name__, self.uuid)
     
     def __bool__(self):
         return not self.is_ghost
-    
-    @property
-    def key_type(self):
-        """Type de clé.
-        
-        Returns
-        -------
-        str
-        
-        """
-        return 'WidgetKey'
     
     @property
     def parent(self):
@@ -271,6 +264,13 @@ class WidgetKey:
         Returns
         -------
         GroupKey
+        
+        Notes
+        -----
+        Cette propriété n'est plus modifiable après l'initialisation.
+        Pour reproduire la clé avec un autre parent, on utilisera la
+        méthode :py:meth:`WidgetKey.copy`. :py:meth:`WidgetKey.kill`
+        permet d'effacer la clé d'origine si besoin.
         
         """
         return self._parent
@@ -332,6 +332,11 @@ class WidgetKey:
         Cette propriété est en lecture seule, il n'est pas prévu
         à ce stade qu'elle puisse être modifiée après l'initialisation
         des clés.
+        
+        :py:attr:`is_ghost` définit la valeur booléenne de la clé :
+        ``bool(widgetkey)`` vaut ``False`` si ``widgetkey`` est une
+        clé fantôme.
+        
         """
         return self._is_ghost
     
@@ -345,9 +350,14 @@ class WidgetKey:
         
         Notes
         -----
-        Cette propriété est définie sur la classe `WidgetKey` pour
-        simplifier les tests de visibilité, mais seul son alter ego
-        de la classe `TranslationButtonKey` présente un intérêt.
+        Cette propriété est définie sur la classe :py:class:`WidgetKey`
+        pour simplifier les tests de visibilité, mais elle vaut toujours
+        ``False`` quand la clé n'est pas un bouton de traduction.
+        
+        See Also
+        --------
+        TranslationButtonKey.is_hidden_b :
+            Réécriture de la propriété pour un bouton de traduction.
         
         """
         return False
@@ -356,7 +366,7 @@ class WidgetKey:
     def is_hidden_m(self):
         """La clé appartient-elle à une branche masquée ?
         
-        Cette propriété vaut True pour la clé présentement masquée d'un
+        Cette propriété vaut ``True`` pour la clé présentement masquée d'un
         couple de jumelles, ou toute clé descendant de celle-ci (branche
         masquée). Cet attribut est héréditaire.
         
@@ -366,8 +376,13 @@ class WidgetKey:
         
         Notes
         -----
-        Cette propriété est en lecture seule pour la classe `WidgetKey`.
-        Le setter est défini sur `ObjectKey`.
+        Cette propriété est en lecture seule. Le *setter* est défini
+        sur la classe :py:class:`ObjectKey`.
+        
+        See Also
+        --------
+        ObjectKey.is_hidden_m
+            Réécriture de la propriété pour les clés-objets.
         
         """
         return self._is_hidden_m
@@ -388,9 +403,10 @@ class WidgetKey:
     def is_hidden(self):
         """La clé est-elle masquée ?
         
-        Cette propriété, qui synthétise `is_ghost`, `is_hidden_b` et
-        `is_hidden_m`, vaut True pour une clé masquée **ou fantôme**.
-        Elle permet de filtrer les clés non visibles.
+        Cette propriété, qui synthétise :py:attr:`is_ghost`,
+        :py:attr:`is_hidden_b` et :py:attr:`is_hidden_m`, vaut ``True``
+        pour une clé masquée ou fantôme. Elle permet de filtrer les clés
+        non matérialisées ou non visibles.
         
         """
         return not self or self.is_hidden_b or self.is_hidden_m
@@ -405,27 +421,39 @@ class WidgetKey:
         
         Notes
         -----
-        Cette propriété est définie sur la classe `WidgetKey`
-        pour simplifier les tests, mais seul son alter ego
-        de la classe `ObjectKey` présente un intérêt.
+        Cette propriété est définie sur la classe :py:class:`WidgetKey`
+        pour simplifier les tests, mais elle vaut toujours ``False``
+        quand la clé n'est pas une clé-objet (:py:class:`ObjectKey`).
+        
+        See Also
+        --------
+        ObjectKey.has_minus_button
+            Réécriture de la propriété pour les clés-objets.
         
         """
         return False
 
     @property
     def path(self):
-        """Chemin SPARQL de la clé.
+        """Chemin de la clé.
         
         Returns
         -------
-        str
+        rdflib.paths.SequencePath
         
         Notes
         -----
         Cette propriété sert aux recherches de clé. Elle est définie
-        sur la classe `WidgetKey` par commodité, mais ce sont ses
-        alter ego des classes `ObjectKey` et `GroupOfValuesKey` qui
-        présentent un intérêt.
+        sur la classe :py:class:`WidgetKey` par commodité, mais elle vaut
+        ``None`` si la clé n'appartient pas aux classes :py:class:`ObjectKey`
+        ou :py:class:`GroupOfValuesKey`.
+        
+        See Also
+        --------
+        ObjectKey.path
+            Réécriture de la propriété pour les clés-objets.
+        GroupOfValuesKey.path
+            Réécriture de la propriété pour les groupes de valeurs.
         
         """
         return None
@@ -440,9 +468,14 @@ class WidgetKey:
         
         Notes
         -----
-        Cette propriété est définie sur la classe `WidgetKey`
-        pour simplifier les tests, mais seul son alter ego
-        de la classe `ValueKey` présente un intérêt.
+        Cette propriété est définie sur la classe :py:class:`WidgetKey`
+        pour simplifier les tests, mais elle vaut toujours ``False``
+        quand la clé n'est pas une clé-valeur (:py:class:`ValueKey`).
+        
+        See Also
+        --------
+        ValueKey.independant_label
+            Réécriture de la propriété pour les clés-valeurs.
         
         """
         return False
@@ -457,9 +490,15 @@ class WidgetKey:
         
         Notes
         -----
-        Cette propriété est définie sur la classe `WidgetKey` pour
-        simplifier son utilisation, mais seul son alter ego
-        de la classe `ValueKey` présente un intérêt.
+        Dans le cas général, cette propriété vaut ``1`` si la clé
+        n'est pas un fantôme (cf. :py:attr:`WidgetKey.is_ghost`)
+        et ``0`` sinon. Elle ne peut être modifiée et prendre
+        d'autres valeurs que pour les clés-valeurs.
+        
+        See Also
+        --------
+        ValueKey.independant_label
+            Réécriture de la propriété pour les clés-valeurs.
         
         """
         return 0 if not self else 1
@@ -468,14 +507,21 @@ class WidgetKey:
     def row(self):
         """Ligne de la clé dans la grille.
         
+        Vaut toujours ``None`` pour une clé fantôme.
+        
         Returns
         -------
         int
         
+        Warnings
+        --------
+        L'indice de ligne d'une clé masquée doit être considéré
+        comme non significatif.
+        
         Notes
         -----
-        Propriété calculée par `compute_rows`, accessible uniquement en
-        lecture.
+        Propriété calculée par :py:meth:`GroupKey.compute_rows`,
+        accessible uniquement en lecture.
         
         """
         return None if not self else self._row
@@ -490,7 +536,8 @@ class WidgetKey:
         
         Notes
         -----
-        Propriété calculée par `compute_single_children`, accessible
+        Propriété calculée par
+        :py:meth:`GroupOfValuesKey.compute_single_children`, accessible
         uniquement en lecture.
         
         """
@@ -528,9 +575,10 @@ class WidgetKey:
         """Attributs de la classe à prendre en compte pour la copie des clés.
         
         Cette propriété est un dictionnaire dont les clés sont les
-        noms des attributs contenant les informations nécessaire pour
-        dupliquer la clé et les valeurs sont des booléens qui indiquent
-        si la valeur serait à conserver pour créer une copie vide de la clé.
+        noms des attributs contenant les informations nécessaires pour
+        dupliquer la clé, et les valeurs sont des booléens qui indiquent
+        si l'attribut est à prendre en compte lorsqu'il s'agit de
+        créer une copie vide de la clé.
         
         Certains attributs sont volontairement exclus de cette liste, car
         ils requièrent un traitement spécifique.
@@ -538,6 +586,16 @@ class WidgetKey:
         Returns
         -------
         dict
+        
+        See Also
+        --------
+        WidgetKey.copy
+        
+        Notes
+        -----
+        Plusieurs classes filles de :py:class:`WidgetKey` redéfinissent
+        cette propriété, en complétant le dictionnaire avec leurs propres
+        attributs.
         
         """
         return { 'parent': True }
@@ -553,9 +611,9 @@ class WidgetKey:
             de l'original.
         empty : bool, default True
             Crée-t-on une copie vide (cas d'un nouvel enregistrement
-            dans un groupe de valeurs ou de traduction) - True - ou
+            dans un groupe de valeurs ou de traduction) - ``True`` - ou
             souhaite-t-on dupliquer une branche de l'arbre de clés
-            en préservant son contenu - False ?
+            en préservant son contenu - ``False`` ?
         
         Returns
         -------
@@ -570,11 +628,12 @@ class WidgetKey:
         
         Notes
         -----
-        Cette méthode est complétée sur la classe `GroupKey` pour
-        copier également la branche descendant de la clé, sur
-        `GroupOfValuesKey` pour les boutons, et sur `ObjectKey`
+        Cette méthode est complétée sur la classe :py:class:`GroupKey`
+        pour copier également la branche descendant de la clé, sur
+        :py:class:`GroupOfValuesKey` pour les boutons, et sur
+        :py:class:`GroupOfPropertiesKey` et :py:class:`ValueKey`
         pour la jumelle éventuelle. Elle utilise la propriété
-        `attr_to_copy`, qui liste les attributs non calculables
+        :py:attr:`attr_to_copy`, qui liste les attributs non calculables
         de chaque classe.
         
         """
@@ -597,92 +656,132 @@ class WidgetKey:
         Notes
         -----
         Cette méthode n'est pas appliquée récursivement aux enfants
-        de la clé "tuée". Elle coupe simplement la branche.
+        de la clé effacée. Elle coupe simplement la branche de
+        l'arbre.
         
         """
         self.parent.children.remove(self)
         WidgetKey.actionsbook.drop.append(self) 
 
+    @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        Notes
+        -----
+        Toutes les classes filles de :py:class:`WidgetKey` redéfinissent
+        cette propriété en ajoutant ou retirant des attributs à la liste.
+        
+        """
+        return ['order_idx']
+
+    def update(self, **kwargs):
+        """Met à jour les attributs de la clé selon les valeurs fournies.
+        
+        Parameters
+        ----------
+        **kwargs : dict
+            Les attributs à mettre à jour. Si un attribut n'est
+            pas défini pour la classe de la clé ou s'il n'est
+            pas modifiable, il sera silencieusement ignoré.
+        
+        """
+        for k, v in kwargs.items():
+            if k in self.attr_to_update:
+                setattr(self, k, v)
 
 class ObjectKey(WidgetKey):
-    """Clé de dictionnaire de widgets représentant un couple prédicat/objet (au sens RDF).
+    """Clé-objet.
     
-    *Cette classe ne doit pas être utilisée directement, on préfèrera toujours
-    `ValueKey` et `GroupOfPropertiesKey`, qui héritent de ses méthodes et
-    attributs.*
+    Une clé-objet est une clé de dictionnaire de widgets représentant
+    un couple prédicat/objet d'un graphe RDF. Le sujet du triplet est
+    alors sa clé parente.
     
-    Outre ses propriétés propres listées ci-après, `ObjectKey` hérite des
-    attributs et méthodes de la classe `WidgetKey`.
+    Outre ses propriétés propres listées ci-après, :py:class:`ObjectKey`
+    hérite des attributs et méthodes de la classe :py:class:`WidgetKey`.
     
     Parameters
     ----------
     parent : GroupKey
-        La clé parente. Ne peut pas être None.
+        La clé parente. Ne peut pas être ``None``.
     is_ghost : bool, default False
-        True si la clé ne doit pas être matérialisée. À noter que quelle
+        ``True`` si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
-    predicate : URIRef, optional
+    order_idx : tuple of int, default (999,)
+        Indice(s) permettant le classement de la clé parmi ses soeurs dans
+        un groupe de propriétés. Les clés de plus petits indices seront les
+        premières. Cet argument sera ignoré si le groupe parent est un
+        groupe de valeurs (:py:class:`GroupOfvaluesKey`).
+    predicate : rdflib.term.URIRef
         Prédicat représenté par la clé. Si la clé appartient à un groupe
         de valeurs, c'est lui qui porte cette information. Sinon, elle
-        est obligatoire. À noter que si une jumelle est déclarée et que
-        le prédicat n'est pas renseigné ou pas cohérent avec celui de
-        la jumelle, c'est celui de la jumelle qui sera utilisé.
-    label : str or Literal, optional
+        est obligatoire. Pour des clés jumelles, le prédicat déclaré
+        sur la jumelle de référence prévaut, sauf s'il vaut ``None``.
+    label : str or rdflib.term.Literal, optional
         Etiquette de la clé (libellé de la catégorie de métadonnée
         représentée par la clé). Cet argument est ignoré si la clé
-        appartient à un groupe de valeurs. Si une jumelle est déclarée et
-        que l'étiquette n'est pas renseignée ou pas cohérente avec celle de
-        la jumelle, c'est celle de la jumelle qui sera utilisée.
-    description : str or Literal, optional
+        appartient à un groupe de valeurs. Pour des clés jumelles,
+        l'étiquette déclarée sur la jumelle de référence prévaut, sauf si
+        elle vaut ``None``.
+    description : str or rdflib.term.Literal, optional
         Définition de la catégorie de métadonnée représentée par la clé.
         Cet argument est ignoré si la clé appartient à un groupe de valeurs.
-        Si une jumelle est déclarée et que le descriptif n'est pas renseigné
-        ou pas cohérent avec celui de la jumelle, c'est celui de la jumelle
-        qui sera utilisé.
+        Pour des clés jumelles, le descriptif déclaré sur la jumelle de
+        référence prévaut, sauf s'il vaut ``None``.
     m_twin : ObjectKey, optional
-        Clé jumelle. Un couple de jumelle ne se déclare qu'une fois, sur
-        la seconde clé créée.
+        Clé jumelle, le cas échéant. Un couple de jumelle ne se déclare
+        qu'une fois, sur la seconde clé créée.
     is_hidden_m : bool, default False
         La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
         n'est pris en compte que pour une clé qui a une jumelle.        
     
     Attributes
     ----------
-    predicate : URIRef
-        *Propriété.* Prédicat représenté par la clé.
-    path : rdflib.paths.SequencePath
-        *Propriété calculée dynamiquement.* Chemin de la métadonnée.
-    label : str
-        *Propriété.* Etiquette de la clé (libellé de la catégorie de
-        métadonnée représentée par la clé). None pour une clé appartenant
-        à un groupe de valeurs, car c'est alors lui qui porte l'étiquette.
-    description : str
-        *Propriété.* Définition de la catégorie de métadonnée représentée
-        par la clé. None pour une clé appartenant à un groupe de valeurs,
-        car c'est alors lui qui porte cette information.
-    m_twin : ObjectKey
-        *Propriété.* Clé jumelle.
-    is_main_twin : bool
-        *Propriété.* La clé est-elle la clé de référence du couple de
-        jumelles ? Toujours False si la clé n'a pas de jumelle.
-        La clé visible est celle qui n'est pas masquée ou, si les
-        deux jumelles sont masquées, la jumelle de classe `ValueKey`.
-        La clé de référence est celle qui redeviendra visible si la
-        branche est démasquée en amont.
+    predicate
+    path
+    label
+    description
+    m_twin
+    is_main_twin
     
     Methods
     -------
-    drop
+    drop()
         Supprime une clé-objet d'un groupe de valeurs ou de traduction
         et renvoie le carnet d'actions qui permettra de matérialiser
         l'opération sur les widgets.
-    switch_twin
-        Change la visibilité d'un couple de jumelles et renvoie le
+    switch_twin()
+        Intervertit la visibilité d'un couple de jumelles et renvoie le
         carnet d'actions qui permettra de matérialiser l'opération
         sur les widgets.
     
-    """    
+    Warnings
+    --------
+    Cette classe ne doit pas être utilisée directement pour créer de
+    nouvelles clés. On préfèrera toujours les classes filles qui héritent
+    de ses méthodes et attributs :
+    
+    * :py:class:`GroupOfPropertiesKey` pour les groupes de propriétés.
+      C'est la classe à utiliser lorsque l'objet du triplet RDF est un 
+      noeud vide.
+    * :py:class:`ValueKey` pour les clés-valeurs (correspondent aux
+      widgets de saisie). C'est la classe à utiliser lorsque l'objet
+      du triplet RDF est un IRI ou une valeur litérale.
+    
+    """
+    
+    def __new__(cls, **kwargs):
+        if cls.__name__ == 'ObjectKey':
+            raise ForbiddenOperation(message='La classe `ObjectKey` ne ' \
+                'devrait pas être directement utilisée pour créer ' \
+                'de nouvelles clés.')
+        return super().__new__(cls, **kwargs)
+    
     def _base_attributes(self, **kwargs):
         self._predicate = None
         self._label = None
@@ -699,27 +798,20 @@ class ObjectKey(WidgetKey):
         self.is_main_twin = kwargs.get('is_main_twin')
     
     @property
-    def key_type(self):
-        """Type de clé.
-        
-        Returns
-        -------
-        str
-        
-        """
-        return 'ObjectKey'
-    
-    @property
     def has_minus_button(self):
         """Un bouton moins est-il associé à la clé ?
-        
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété `with_minus_buttons` du
-        groupe parent. Sinon cette propriété vaut False quoi qu'il arrive.
         
         Returns
         -------
         bool
+        
+        Notes
+        -----
+        Cette propriété n'est pas modifiable manuellement.        
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la méthode va chercher la propriété
+        :py:attr:`GroupOfValuesKey.with_minus_buttons` du groupe parent.
+        Sinon cette propriété vaut ``False`` quoi qu'il arrive.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -730,12 +822,14 @@ class ObjectKey(WidgetKey):
     def predicate(self):
         """Prédicat représenté par la clé.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
-        
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la propriété du groupe parent est renvoyée.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -746,44 +840,56 @@ class ObjectKey(WidgetKey):
     def predicate(self, value):
         """Définit le prédicat représenté par la clé.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
-        information est supposée être définie par la propriété de
-        même nom du groupe.
-        
-        Si la clé a une jumelle dont le prédicat est différent
-        de la valeur fournie, c'est ce prédicat qui sera utilisé.
-        
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             Le prédicat à déclarer.
         
         Raises
         ------
         MissingParameter
-            Si `value` vaut None, cette information étant obligatoire.
+            Si `value` vaut ``None`` alors que la clé n'appartient
+            pas à un groupe de valeurs, cette information étant
+            obligatoire.
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        le *setter* n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
+        
+        Si la clé a une jumelle dont le prédicat est différent
+        de la valeur fournie, c'est celui de la jumelle de référence
+        qui prévaudra, sauf s'il vaut ``None``. Autrement dit, pour
+        changer le prédicat d'un couple de jumelles, il faut cibler
+        la jumelle de référence, sans quoi l'opération n'aura pas d'effet.
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
-            if self.m_twin and value != self.m_twin.predicate:
+            if self.m_twin and (not self.is_main_twin or not value):
                 value = self.m_twin.predicate
             if not value:
                 raise MissingParameter('predicate', self)
             self._predicate = value
+            if self.m_twin and value != self.m_twin.predicate \
+                and self.is_main_twin:
+                self.m_twin._predicate = value 
 
     @property
     def path(self):
         """Chemin représenté par la clé.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        le chemin est celui du groupe parent. Sinon, il est
-        calculé dynamiquement à partir du chemin du parent et de
-        la valeur de `predicate`.
-        
         Returns
         -------
         rdflib.paths.SequencePath
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        le chemin est celui du groupe parent. Sinon, il est
+        calculé dynamiquement à partir du chemin du parent et de
+        la valeur de :py:attr:`ObjectKey.predicate`.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -796,58 +902,75 @@ class ObjectKey(WidgetKey):
     def label(self):
         """Etiquette de la clé.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode renvoie None, car l'étiquette est portée par le
-        groupe.
-        
         Returns
         -------
         str
         
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        cette propriété vaudra ``None``, car l'étiquette est portée
+        par le groupe.
+        
+        Hors d'un groupe de valeurs, si aucune étiquette n'est
+        mémorisée, la propriété renvoie ``'???'``` plutôt que ``None``.
+        
         """
-        return self._label
+        if not isinstance(self.parent, GroupOfValuesKey):
+            return self._label or '???'
     
     @label.setter
     def label(self, value):
         """Définit l'étiquette de la clé.
         
+        Parameters
+        ----------
+        value : str or rdflib.term.Literal
+            Le libellé de l'étiquette.
+        
+        Notes
+        -----
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* maintient à la valeur à ``None``, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Si la clé a une jumelle dont l'étiquette est différente
-        de la valeur fournie, c'est cette étiquette qui sera utilisée.
-        
-        Parameters
-        ----------
-        value : str or Literal
-            Le libellé de l'étiquette.
+        de la valeur fournie, c'est celle de la jumelle de référence
+        qui prévaudra. Autrement dit, pour changer l'étiquette d'un
+        couple de jumelles, il faut cibler la jumelle de référence,
+        sans quoi l'opération n'aura pas d'effet.
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
-            if self.m_twin and value != self.m_twin.label:
+            if self.m_twin and not self.is_main_twin:
                 value = self.m_twin.label
-            if not value:
-                value = '???'
-            self._label = str(value)
+            value = str(value) if value else None
+            self._label = value
+            if self.m_twin and self.is_main_twin:
+                self.m_twin._label = value
+        else:
+            self._label = None
 
     @property
     def description(self):
         """Descriptif de la métadonnée représentée par la clé.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode renvoie None, car l'étiquette est portée par le
-        groupe. Sinon, lorsqu'il n'y a ni étiquette, ni descriptif
-        mémorisé, cette propriété renvoie le chemin - `path`.
-        
         Returns
         -------
         str
         
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        cette propriété vaudra ``None``, car le descriptif est porté
+        par le groupe. Sinon, lorsqu'il n'y a ni étiquette, ni descriptif
+        mémorisé, cette propriété renvoie le chemin (valeur de la
+        propriété :py:attr:`ObjectKey.path`).
+        
         """
         if not isinstance(self.parent, GroupOfValuesKey):
-            if self.value == '???' and not self._description:
+            if not self._label and not self._description:
                 return self.path
             return self._description
     
@@ -855,38 +978,97 @@ class ObjectKey(WidgetKey):
     def description(self, value):
         """Définit le descriptif de la métadonnée représentée par la clé.
         
+        Parameters
+        ----------
+        value : str or rdflib.term.Literal
+            Le descriptif.
+        
+        Notes
+        -----
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* maintient la valeur à ``None``, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Si la clé a une jumelle dont le descriptif est différent
-        de la valeur fournie, c'est ce descriptif qui sera utilisé.
+        de la valeur fournie, c'est celui de la jumelle de référence
+        qui prévaudra. Autrement dit, pour changer le descriptif d'un
+        couple de jumelles, il faut cibler la jumelle de référence,
+        sans quoi l'opération n'aura pas d'effet.
+        
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if self.m_twin and not self.is_main_twin:
+                value = self.m_twin.description
+            value = str(value) if value else None
+            self._description = value
+            if self.m_twin and self.is_main_twin:
+                self.m_twin._description = value
+        else:
+            self._description = None
+
+    @property
+    def order_idx(self):
+        """Indice de classement de la clé parmi ses soeurs.
+        
+        Returns
+        -------
+        tuple of int
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.order_idx` en
+        assurant qu'elle prenne toujours la même valeur pour deux
+        clés jumelles.
+        
+        """
+        return self._order_idx
+
+    @order_idx.setter
+    def order_idx(self, value):
+        """Définit l'indice de classement de la clé parmi ses soeurs.
         
         Parameters
         ----------
-        value : str or Literal
-            Le descriptif.
+        value : tuple of int
+        
+        Notes
+        -----
+        Si la clé a une jumelle dont l'indice de classement est différent
+        de la valeur fournie, c'est celui de la jumelle de référence
+        qui prévaudra. Autrement dit, pour changer l'indice de classement
+        d'un couple de jumelles, il faut cibler la jumelle de référence,
+        sans quoi l'opération n'aura pas d'effet.
         
         """
-        if not isinstance(self.parent, GroupOfValuesKey) and value:
-            if self.m_twin and value != self.m_twin.description:
-                value = self.m_twin.description
-            if value:
-                self._description = str(value)
-            else:
-                self._description = None
+        if isinstance(self.parent, GroupOfValuesKey):
+            self._order_idx = None
+        else:
+            if self.m_twin and not self.is_main_twin:
+                value = self.m_twin.order_idx
+            value = value or (9999,)
+            self._order_idx = value
+            if self.m_twin and self.is_main_twin:
+                self.m_twin._order_idx = value
+        if not self._is_unborn:
+            self.parent.compute_rows()
 
     @property
     def m_twin(self):
         """Clé jumelle.
         
-        Deux clés jumelles sont une clé `ValueKey` et une clé
-        `GroupOfPropertiesKey` représentant le même objet, la première
-        sous forme d'IRI, la seconde sous la forme d'un ensemble de
-        propriétés (définition "manuelle"). Les deux clés occupant le
-        même emplacement dans la grille, l'une des deux doit toujours être
-        masquée (`is_hidden_m` valant True).
+        Deux clés jumelles sont une clé-valeur (classe :py:class:`ValueKey`)
+        et une clé groupe de propriétés (classe :py:class:`GroupOfPropertiesKey`)
+        représentant le même objet, la première sous forme d'IRI, la seconde sous
+        la forme d'un ensemble de propriétés (définition "manuelle"). Les deux clés
+        occupant le même emplacement dans la grille, l'une des deux doit toujours
+        être masquée (:py:attr:`ObjectKey.is_hidden_m` valant ``True``).
+        
+        Les clés jumelles partagent certains attributs : :py:attr:`ObjectKey.predicate`
+        (et par suite :py:attr:`ObjectKey.path`), :py:attr:`ObjectKey.label`,
+        :py:attr:`ObjectKey.description` et :py:attr:`ObjectKey.order_idx`
+        prennent toujours la même valeur pour les deux jumelles (mise à jour
+        automatique).
         
         Returns
         -------
@@ -899,9 +1081,6 @@ class ObjectKey(WidgetKey):
     def m_twin(self, value):
         """Définit la clé jumelle.
         
-        Les attributs  `predicate` et `is_hidden_m`, de la clé
-        sont silencieusement déduits de ceux de la clé jumelle.
-        
         Parameters
         ----------
         value : ObjectKey
@@ -911,8 +1090,8 @@ class ObjectKey(WidgetKey):
         ------
         ForbiddenOperation
             Si la clé cible est un fantôme, si la clé jumelle n'est pas du bon
-            type (`ValueKey` pour une clé `GroupOfPropertiesKey` et inversement),
-            ou si les deux clés n'ont pas le même parent.
+            type (:py:class:`ValueKey` pour une clé :py:class:`GroupOfPropertiesKey`
+            et inversement), ou si les deux clés n'ont pas le même parent.
         
         """
         if not value is None:
@@ -931,28 +1110,34 @@ class ObjectKey(WidgetKey):
                 raise ForbiddenOperation(self, 'La clé et sa jumelle ' \
                     'devraient avoir la même clé parent.')
         self._m_twin = value
-        value._m_twin = self
+        if value:
+            value._m_twin = self
         if not self._is_unborn:
             # pour une clé dont le jumeau est défini a posteriori,
-            # il faut s'assurer de la cohérence des prédicats et
-            # et des nombres de lignes, et du fait
-            # que la visibilité de la jumelle est inversée
-            # par rapport à celle de la clé
-            self.predicate = self.predicate
+            # il faut s'assurer de la cohérence des attributs partagés
             self.is_hidden_m = self.is_hidden_m
-            self.parent.compute_rows
+            # NB : assure la mise à jour de is_main_twin et le calcul des
+            # indices des lignes
+            self.predicate = self.predicate
+            self.label = self.label
+            self.description = self.description
+            self.order_idx = self.order_idx
     
     @property
     def is_hidden_m(self):
         """La clé appartient-elle à une branche masquée ?
         
-        Cette propriété vaut True pour la clé présentement masquée d'un
-        couple de jumelles, ou toute clé descendant de celle-ci (branche
-        masquée). Cet attribut est héréditaire.
+        Cette propriété héréditaire vaut ``True`` pour la clé présentement
+        masquée d'un couple de jumelles, ou toute clé descendant de celle-ci
+        (branche masquée).
         
         Returns
         -------
         bool
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.is_hidden_m`.
         
         """
         return self._is_hidden_m 
@@ -967,16 +1152,14 @@ class ObjectKey(WidgetKey):
         Parameters
         ----------
         value : bool
-            True si la clé est masquée, False sinon.
+            ``True`` si la clé est masquée, ``False`` sinon.
         
         """
         if not self or self.parent.is_hidden_m or not self.m_twin:
             return
-            # pas besoin de retoucher à la valeur
-            # définie à l'initialisation ou héritée
-            # du parent
-        if value is None:
-            value = False
+            # pas besoin de retoucher à la valeur définie à
+            # l'initialisation ou héritée du parent
+        value = value or False
         self._hide_m(value, rec=False)
         self.m_twin._hide_m(not value, rec=False)
         if not self._is_unborn:
@@ -985,9 +1168,9 @@ class ObjectKey(WidgetKey):
 
     @property
     def is_main_twin(self):
-        """La clé est-elle la jumelle de référence du couple ?
+        """La clé est-elle la jumelle référente du couple ?
         
-        Toujours False si la clé n'a pas de jumelle.
+        Toujours ``False`` si la clé n'a pas de jumelle.
         
         Returns
         -------
@@ -1002,7 +1185,8 @@ class ObjectKey(WidgetKey):
         
         Cette propriété n'est pas supposée être définie manuellement. Elle
         ne peut d'ailleurs l'être que lorsque les deux jumelles appartiennent
-        à une branche masquée, sinon elle est déduite de `is_hidden_m`.
+        à une branche masquée, sinon elle est déduite de
+        :py:attr:`ObjectKey.is_hidden_m`.
         
         Parameters
         ----------
@@ -1029,13 +1213,29 @@ class ObjectKey(WidgetKey):
         self.m_twin._is_main_twin = not value   
 
     @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_update`.
+        
+        """
+        return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m']
+
+    @property
     def attr_to_copy(self):
         """Attributs de la classe à prendre en compte pour la copie des clés.
         
         Cette propriété est un dictionnaire dont les clés sont les
-        noms des attributs contenant les informations nécessaire pour
-        dupliquer la clé et les valeurs sont des booléens qui indiquent
-        si la valeur serait à conserver pour créer une copie vide de la clé.
+        noms des attributs contenant les informations nécessaires pour
+        dupliquer la clé, et les valeurs sont des booléens qui indiquent
+        si l'attribut est à prendre en compte lorsqu'il s'agit de
+        créer une copie vide de la clé.
         
         Certains attributs sont volontairement exclus de cette liste, car
         ils requièrent un traitement spécifique.
@@ -1044,52 +1244,16 @@ class ObjectKey(WidgetKey):
         -------
         dict
         
-        """
-        return { 'parent': True, 'predicate': True }
-
-    def copy(self, parent=None, empty=True):
-        """Renvoie une copie de la clé.
-        
-        Dans le cas d'un couple de jumelles, cette méthode n'aura d'effet que
-        si elle est appliquée sur la clé `GroupOfPropertiesKey`. Elle
-        copie alors à la fois la clé et sa jumelle `ValueKey`.
-        
-        Parameters
-        ----------
-        parent : GroupKey, optional
-            La clé parente. Si elle n'est pas spécifiée, il sera
-            considéré que le parent de la copie est le même que celui
-            de l'original.
-        empty : bool, default True
-            Crée-t-on une copie vide (cas d'un nouvel enregistrement
-            dans un groupe de valeurs ou de traduction) - True - ou
-            souhaite-t-on dupliquer une branche de l'arbre de clés
-            en préservant son contenu - False ?
-        
-        Returns
-        -------
-        WidgetKey
-        
-        Raises
-        ------
-        ForbiddenOperation
-            Lorsque la méthode est explicitement appliquée à une clé
-            fantôme. Il est possible de copier des branches contenant
-            des fantômes, ceux-ci ne seront simplement pas copiés.
+        See Also
+        --------
+        WidgetKey.copy
         
         Notes
         -----
-        La méthode n'est réécrite sur cette classe que pour exclure les
-        jumelles `ValueKey`. Cf. `GroupOfPropertiesKey.copy` pour le
-        mécanisme de copie des couples.
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_copy`.
         
         """
-        if self.m_twin:
-            return
-            # NB: les objets de classe `GroupOfPropertiesKey`
-            # n'appellent pas cette méthode, donc cette
-            # condition exclut seulement les jumeaux `ValueKey`.
-        return super().copy(parent=parent, empty=empty)
+        return { 'parent': True, 'predicate': True }
 
     def kill(self, preserve_twin=False):
         """Efface une clé de la mémoire de son parent.
@@ -1097,15 +1261,14 @@ class ObjectKey(WidgetKey):
         Parameters
         ----------
         preserve_twin : bool
-            True si la jumelle doit être conservée (généralement
+            ``True`` si la jumelle doit être conservée (généralement
             non souhaitable, sauf dans le cas très spécifique du
             nettoyage des groupes de propriétés vides).
         
         Notes
         -----
-        Cette méthode complète la méthode éponyme de la classe
-        `WidgetKey` en effaçant aussi la clé jumelle, s'il y en
-        a une.
+        Complète la méthode :py:meth:`WidgetKey.kill` en effaçant aussi
+        la clé jumelle, s'il y en a une.
         
         """
         super().kill()
@@ -1136,7 +1299,7 @@ class ObjectKey(WidgetKey):
         return WidgetKey.unload_actionsbook()
 
     def switch_twin(self):
-        """Change la visibilité d'un couple de jumelles.
+        """Intervertit la visibilité d'un couple de jumelles.
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
         et le carnet d'actions renvoyé est vide : cette méthode est
@@ -1145,8 +1308,8 @@ class ObjectKey(WidgetKey):
         Returns
         -------
         ActionsBook
-            Le carnet d'actions qui permettra de répercuter le changement
-            de source sur les widgets.
+            Le carnet d'actions qui permettra de répercuter
+            le changement de source sur les widgets.
         
         """
         if self.is_hidden:
@@ -1156,26 +1319,28 @@ class ObjectKey(WidgetKey):
         return WidgetKey.unload_actionsbook()
 
 class GroupKey(WidgetKey):
-    """Clé de dictionnaire de widgets représentant un groupe.
+    """Clé de groupe.
     
-    Une "clé de groupe" est une clé qui pourra être désignée comme parent
-    d'autres clés, dites "clés filles".
+    Une clé de groupe est une clé de dictionnaire de widgets qui pourra être
+    désignée comme parent d'autres clés, dites "clés filles".
     
-    *Cette classe ne doit pas être utilisée directement, on préfèrera toujours
-    ses classes filles, qui héritent de ses méthodes et attributs.*
-    
-    Outre ses attributs propres listés ci-après, `GroupKey` hérite de tous
-    les attributs de la classe `WidgetKey`.
+    Outre ses attributs propres listés ci-après, :py:class:`GroupKey` hérite
+    de tous les attributs et propriétés de la classe :py:class:`WidgetKey`.
     
     Parameters
     ----------
     parent : GroupKey
-        La clé parente. Ne peut pas être None, sauf dans le cas d'un objet
-        de la classe `RootKey` (groupe racine).
+        La clé parente. Ne peut pas être ``None``, sauf dans le cas d'un objet
+        de la classe :py:class:`RootKey` (groupe racine).
     is_ghost : bool, default False
-        True si la clé ne doit pas être matérialisée. À noter que quelle
+        ``True`` si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
+    order_idx : tuple of int, default (999,)
+        Indice(s) permettant le classement de la clé parmi ses soeurs dans
+        un groupe de propriétés. Les clés de plus petits indices seront les
+        premières. Cet argument sera ignoré si le groupe parent est un
+        groupe de valeurs (:py:class:`GroupOfvaluesKey`).
     
     Attributes
     ----------
@@ -1187,8 +1352,30 @@ class GroupKey(WidgetKey):
     real_children()
         Générateur sur les enfants de la clé qui ne sont ni des fantômes ni
         des boutons.
+    compute_rows()
+        Calcule les indices de ligne des filles du groupe, qui
+        définissent le placement vertical des widgets.
+    
+    Warnings
+    --------
+    Cette classe ne doit pas être utilisée directement pour créer de
+    nouvelles clés. On préfèrera toujours les classes filles qui héritent
+    de ses méthodes et attributs :
+    
+    * :py:class:`RootKey` pour la clé racine d'un arbre de clés.
+    * :py:class:`GroupOfPropertiesKey` pour les groupes de propriétés.
+    * :py:class:`GroupOfValuesKey` pour les groupes de valeurs.
+    * :py:class:`TranslationGroupKey` pour les groupes de traduction.
+    * :py:class:`TabKey` pour les onglets.
     
     """
+    def __new__(cls, **kwargs):
+        if cls.__name__ == 'GroupKey':
+            raise ForbiddenOperation(message='La classe `GroupKey` ne ' \
+                'devrait pas être directement utilisée pour créer ' \
+                'de nouvelles clés.')
+        return super().__new__(cls, **kwargs)
+    
     def _base_attributes(self, **kwargs):
         self.children = ChildrenList()
     
@@ -1198,17 +1385,6 @@ class GroupKey(WidgetKey):
             child._hide_m(value, rec=True)
         if value and not self._is_unborn:
             self.compute_rows()
-    
-    @property
-    def key_type(self):
-        """Type de clé.
-        
-        Returns
-        -------
-        str
-        
-        """
-        return 'GroupKey'
     
     def real_children(self):
         """Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).
@@ -1228,8 +1404,9 @@ class GroupKey(WidgetKey):
     def compute_rows(self):
         """Actualise les indices de ligne des filles du groupe.
         
-        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
-        variable partagée `no_computation` vaut True.
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si
+        l'attribut de classe :py:attr:`WidgetKey.no_computation` vaut
+        ``True``.
         
         Returns
         -------
@@ -1238,8 +1415,13 @@ class GroupKey(WidgetKey):
         
         Notes
         -----
-        `compute_rows` respecte l'ordre des clés filles dans la
-        liste de l'attribut `children`.
+        Hormis dans les groupes de valeurs, où elle respecte
+        l'ordre d'initialisation des clés filles, la méthode trie
+        la liste :py:attr:`GroupKey.children` en fonction de
+        l'attribut :py:attr:`WidgetKey.order_idx`. Les indices
+        des clés sont définis par leur ordre dans la liste et 
+        les valeurs de :py:attr:`WidgetKey.rowspan` des clés
+        qui les précèdent.
         
         """
         if not self or WidgetKey.no_computation:
@@ -1247,8 +1429,8 @@ class GroupKey(WidgetKey):
         n = 0
         if not isinstance(self, GroupOfValuesKey):
             # dans les groupes de valeurs, le premier entré
-            # reste toujours le premier ; dans les groupes de
-            # propriétés, on trie en fonction de `order_idx`
+            # reste toujours le premier ; sinon, on trie en
+            # fonction de `order_idx`
             self.children.sort(key=lambda x: x.order_idx)
         for child in self.real_children():
             if isinstance(child, ObjectKey) and \
@@ -1311,13 +1493,13 @@ class GroupKey(WidgetKey):
             de l'original.
         empty : bool, default True
             Crée-t-on une copie vide (cas d'un nouvel enregistrement
-            dans un groupe de valeurs ou de traduction) - True - ou
+            dans un groupe de valeurs ou de traduction) - ``True`` - ou
             souhaite-t-on dupliquer une branche de l'arbre de clés
-            en préservant son contenu - False ?
+            en préservant son contenu - ``False`` ?
         
         Returns
         -------
-        WidgetKey
+        GroupKey
         
         Raises
         ------
@@ -1325,6 +1507,11 @@ class GroupKey(WidgetKey):
             Lorsque la méthode est explicitement appliquée à une clé
             fantôme. Il est possible de copier des branches contenant
             des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        Notes
+        -----
+        Redéfinit la méthode :py:meth:`WidgetKey.copy` en gérant la
+        copie des filles de la clé.
         
         """
         key = super().copy(parent=parent, empty=empty)
@@ -1338,34 +1525,34 @@ class GroupKey(WidgetKey):
 
 
 class TabKey(GroupKey):
-    """Clé de dictionnaire de widgets représentant un onglet.
+    """Onglet.
     
-    Les onglets doublent leur groupe de propriétés parent sans porter
-    aucune information sur la structure du graphe RDF.
+    Les onglets sont des clés de dictionnaires de widgets qui doublent
+    leur groupe de propriétés parent sans porter aucune information sur
+    la structure du graphe RDF.
     
-    `TabKey` hérite des attributs et méthodes de la classe `GroupKey`.
+    :py:class:`TabKey` hérite des attributs et méthodes de la classe
+    :py:class:`GroupKey`.
     
     Parameters
     ----------
     parent : GroupKey
-        La clé parente. Ne peut pas être None, sauf dans le cas d'un objet
-        de la classe `RootKey` (groupe racine).
+        La clé parente. Ne peut pas être ``None``.
     is_ghost : bool, default False
-        True si la clé ne doit pas être matérialisée. À noter que quelle
+        ``True`` si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
-    label : str or Literal
-        Etiquette de l'onglet.
     order_idx : tuple of int, default (999,)
         Indice(s) permettant le classement de la clé parmi ses soeurs dans
         un groupe de propriétés. Les clés de plus petits indices seront les
         premières.
+    label : str or rdflib.term.Literal
+        Etiquette de l'onglet.
     
     Attributes
     ----------
-    path : rdflib.paths.SequencePath
-        *Propriété calculée dynamiquement.* Le chemin du bouton,
-        identique à celui du groupe parent.
+    label
+    path
     
     """
     
@@ -1380,19 +1567,12 @@ class TabKey(GroupKey):
             or isinstance(parent, RootKey)
     
     @property
-    def key_type(self):
-        """Type de clé.
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         Returns
         -------
         str
-        
-        """
-        return 'TabKey'
-    
-    @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
         
         """
         return 'tab'
@@ -1421,8 +1601,13 @@ class TabKey(GroupKey):
         -------
         str
         
+        Notes
+        -----
+        Si aucune étiquette n'est mémorisée, la propriété renvoie ``'???'```
+        plutôt que ``None``.
+        
         """
-        return self._label
+        return self._label or '???'
     
     @label.setter
     def label(self, value):
@@ -1430,47 +1615,70 @@ class TabKey(GroupKey):
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le libellé de l'onglet.
         
-        Raises
-        ------
-        MissingParameter
-            Si aucune valeur n'est fournie, cette information
-            étant obligatoire.
+        """
+        self._label = str(value) if value else None
+
+    @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_update`.
         
         """
-        if not value:
-            raise MissingParameter('label', self)
-        self._label = str(value)
+        return ['order_idx', 'label']
 
 class GroupOfPropertiesKey(GroupKey, ObjectKey):
-    """Clé de dictionnaire de widgets représentant un groupe de propriétés.
+    """Groupe de propriétés.
     
-    Une "clé de groupe de propriétés" représente un couple prédicat / noeud
-    vide, ce dernier étant à la fois un objet et un sujet. Ses filles
-    représentent les différents prédicats qui décrivent à leur tour le sujet.
+    Un groupe de propriétés est une clé de dictionnaire de widgets qui 
+    représente un couple prédicat / noeud vide. Ses filles représentent
+    les triplets dont le noeud vide est le sujet.
     
-    Outre ses attributs propres listés ci-après, `GroupOfPropertiesKey`
-    hérite de tous les attributs et méthodes des classes `GroupKey` et
-    `ObjectKey`.
+    Outre ses attributs propres listés ci-après, la classe
+    :py:class:`GroupOfPropertiesKey` hérite de tous les attributs et
+    méthodes des classes :py:class:`GroupKey` et :py:class:`ObjectKey`.
     
     Parameters
     ----------
     parent : GroupKey
-        La clé parente. Ne peut pas être None, sauf dans le cas d'un objet
-        de la classe `RootKey` (groupe racine).
+        La clé parente. Ne peut pas être ``None``.
     is_ghost : bool, default False
-        True si la clé ne doit pas être matérialisée. À noter que quelle
+        ``True`` si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
-    predicate : URIRef, optional
+    order_idx : tuple of int, default (999,)
+        Indice(s) permettant le classement de la clé parmi ses soeurs dans
+        un groupe de propriétés. Les clés de plus petits indices seront les
+        premières. Cet argument sera ignoré si le groupe parent est un
+        groupe de valeurs (:py:class:`GroupOfvaluesKey`).
+    predicate : rdflib.term.URIRef
         Prédicat représenté par la clé. Si la clé appartient à un groupe
         de valeurs, c'est lui qui porte cette information. Sinon, elle
-        est obligatoire.
-    m_twin : ObjectKey, optional
-        Clé jumelle. Un couple de jumelle ne se déclare qu'une fois, sur
-        la seconde clé créée.
+        est obligatoire. Pour des clés jumelles, le prédicat déclaré
+        sur la jumelle de référence prévaut, sauf s'il vaut ``None``.
+    label : str or rdflib.term.Literal, optional
+        Etiquette de la clé (libellé de la catégorie de métadonnée
+        représentée par la clé). Cet argument est ignoré si la clé
+        appartient à un groupe de valeurs. Pour des clés jumelles,
+        l'étiquette déclarée sur la jumelle de référence prévaut, sauf si
+        elle vaut ``None``.
+    description : str or rdflib.term.Literal, optional
+        Définition de la catégorie de métadonnée représentée par la clé.
+        Cet argument est ignoré si la clé appartient à un groupe de valeurs.
+        Pour des clés jumelles, le descriptif déclaré sur la jumelle de
+        référence prévaut, sauf s'il vaut ``None``.
+    m_twin : ValueKey, optional
+        Clé jumelle, le cas échéant. Un couple de jumelle ne se déclare
+        qu'une fois, sur la seconde clé créée.
     is_hidden_m : bool, default False
         La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
         n'est pris en compte que pour une clé qui a une jumelle.
@@ -1478,21 +1686,15 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Le noeud vide objet du prédicat, qui est également le sujet
         des triplets des enfants du groupe. Si non fourni, un nouveau
         noeud vide est généré.
-    rdftype : URIRef, optional
-        La classe RDF du noeud. Si la clé appartient à un groupe
-        de valeurs, c'est lui qui porte cette information. Sinon, elle
-        est obligatoire.
+    rdftype : rdflib.term.URIRef
+        La classe RDF du noeud. Si la clé appartient à un groupe de valeurs,
+        c'est lui qui porte cette information. Sinon, elle est obligatoire.
     
     Attributes
     ----------
-    node : BNode
-        Le noeud vide objet du prédicat, qui est également le sujet des
-        triplets des enfants du groupe.
-    rdftype : URIRef
-        *Propriété.* La classe RDF du noeud.
-    sources : list of URIRef
-        *Propriété non modifiable.* La liste de sources de la clé-valeur
-        jumelle.
+    node
+    rdftype
+    sources
     
     Methods
     -------
@@ -1505,15 +1707,12 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         GroupKey._base_attributes(self, **kwargs)
         ObjectKey._base_attributes(self, **kwargs)
         self._rdftype = None
-        node = kwargs.get('node')
-        if node and isinstance(node, BNode):
-            self.node = node
-        else:
-            self.node = BNode()
+        self._node = None
     
     def _computed_attributes(self, **kwargs):
         ObjectKey._computed_attributes(self, **kwargs)
         self.rdftype = kwargs.get('rdftype')
+        self.node = kwargs.get('node')
  
     def _validate_parent(self, parent):
         if isinstance(parent, GroupOfValuesKey) and not parent.rdftype:
@@ -1523,33 +1722,67 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             not isinstance(parent, TranslationGroupKey)
  
     @property
-    def key_type(self):
-        """Type de clé.
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         Returns
         -------
         str
         
         """
-        return 'GroupOfPropertiesKey'
+        return 'group of properties'
  
     @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
+    def node(self):
+        """Le noeud vide objet du prédicat et sujet des filles du groupe.
+        
+        Returns
+        -------
+        rdflib.term.BNode
         
         """
-        return 'group of properties'
+        return self._node
+ 
+    @node.setter
+    def node(self, value):
+        """Définit le noeud vide objet du prédicat.
+        
+        Parameters
+        ----------
+        value : BNode
+            Le noeud vide.
+        
+        Notes
+        -----
+        Si aucune valeur n'est fournie, ou si elle n'est pas du 
+        bon type, un nouveau noeud vide est automatiquement généré.
+        
+        Warnings
+        --------
+        Aucun contrôle n'est réalisé pour vérifier que le nouveau
+        noeud vide n'est pas déjà utilisé par une autre clé. En
+        cas de doute sur l'unicité des valeurs disponibles, il est
+        préférable de ne pas en donner, et laisser le *setter*
+        générer les noeuds vides.
+        
+        """
+        if value and isinstance(value, BNode):
+            self._node = value
+        else:
+            self._node = BNode()
  
     @property
     def rdftype(self):
         """La classe RDF du noeud.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
-        
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la propriété du groupe parent est renvoyée.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -1560,20 +1793,23 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     def rdftype(self, value):
         """Définit la classe RDF du noeud.
         
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
-        information est supposée être définie par la propriété de
-        même nom du groupe.
-        
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             La classe RDF à déclarer.
         
         Raises
         ------
         MissingParameter
-            Si `value` vaut None, cette information étant obligatoire.
+            Si `value` vaut ``None``, cette information étant
+            obligatoire.
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        le *setter* n'aura silencieusement aucun effet, car cette
+        information est supposée être définie par la propriété de
+        même nom du groupe.
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
@@ -1585,39 +1821,15 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     def sources(self):
         """Le cas échéant, la liste des sources de la clé-valeur jumelle.
 
-        Cette propriété vaut toujours None pour une clé sans jumelle.
+        Cette propriété vaut toujours ``None`` pour une clé sans jumelle.
         
         Returns
         -------
-        list of URIRef
+        list of rdflib.term.URIRef
         
         """
         if self.m_twin:
             return self.m_twin.sources
-
-    def compute_rows(self):
-        """Actualise les indices de ligne des filles du groupe.
-        
-        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
-        variable partagée `no_computation` vaut True.
-        
-        Returns
-        -------
-        int
-            L'indice de la prochaine ligne disponible.
-        
-        Notes
-        -----
-        La méthode `compute_rows` de `GroupOfPropertiesKey` trie
-        les clés en fonction de leur attribut `order_idx` avant
-        de calculer les indices de ligne.
-        
-        """
-        if not self or WidgetKey.no_computation:
-            return
-        if not isinstance(self, GroupOfValuesKey):
-            self.children.sort(key=lambda x: x.order_idx)
-        return super().compute_rows()
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -1625,13 +1837,30 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         super()._hide_m(value, rec=rec)
 
     @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_update`.
+        
+        """
+        return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m',
+            'node', 'rdftype']
+
+    @property
     def attr_to_copy(self):
         """Attributs de la classe à prendre en compte pour la copie des clés.
         
         Cette propriété est un dictionnaire dont les clés sont les
-        noms des attributs contenant les informations nécessaire pour
-        dupliquer la clé et les valeurs sont des booléens qui indiquent
-        si la valeur serait à conserver pour créer une copie vide de la clé.
+        noms des attributs contenant les informations nécessaires pour
+        dupliquer la clé, et les valeurs sont des booléens qui indiquent
+        si l'attribut est à prendre en compte lorsqu'il s'agit de
+        créer une copie vide de la clé.
         
         Certains attributs sont volontairement exclus de cette liste, car
         ils requièrent un traitement spécifique.
@@ -1639,6 +1868,14 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Returns
         -------
         dict
+        
+        See Also
+        --------
+        WidgetKey.copy, GroupKey.copy
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_copy`.
         
         """
         return { 'parent': True, 'predicate': True, 'rdftype': True }
@@ -1657,9 +1894,9 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             de l'original.
         empty : bool, default True
             Crée-t-on une copie vide (cas d'un nouvel enregistrement
-            dans un groupe de valeurs ou de traduction) - True - ou
+            dans un groupe de valeurs ou de traduction) - ``True`` - ou
             souhaite-t-on dupliquer une branche de l'arbre de clés
-            en préservant son contenu - False ?
+            en préservant son contenu - ``False`` ?
         
         Returns
         -------
@@ -1690,6 +1927,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Parameters
         ----------
         widgetkey : GroupOfPropertiesKey
+            La clé mère de la branche à copier.
         
         Returns
         -------
@@ -1718,7 +1956,11 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
                 'identique pour les deux clés.')
         WidgetKey.clear_actionsbook()
         self.kill()
-        widgetkey.copy(parent=self.parent, empty=False)
+        newkey = widgetkey.copy(parent=self.parent, empty=False)
+        newkey.update(predicate=self.predicate, label=self.label,
+            description=self.description, order_idx=self.order_idx)
+            # les informations relatives au prédicat du groupe
+            # sont conservées
         return WidgetKey.unload_actionsbook()
 
     def kill(self):
@@ -1726,61 +1968,68 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         Notes
         -----
-        Cette méthode réoriente simplement la commande vers la
-        méthode `kill` de la classe `ObjectKey`.
+        Cette méthode réoriente simplement la commande vers la méthode
+        :py:meth:`ObjectKey.kill` de la classe :py:class:`ObjectKey`
+        (sinon c'est :py:meth:`WidgetKey.kill` qui serait utilisée).
         
         """
         ObjectKey.kill(self)
 
 class GroupOfValuesKey(GroupKey):
-    """Clé de dictionnaire de widgets représentant un groupe de valeurs.
+    """Groupe de valeurs.
     
-    Une "clé de groupe de valeurs" est une clé de groupe dont les filles,
-    qui peuvent être des `GroupOfPropertiesKey` ou des `ValueKey`,
-    représentent les différents objets d'un même couple sujet / prédicat.
+    Un groupe de valeurs est une clé de groupe dont les filles,
+    qui peuvent être des :py:class:`GroupOfPropertiesKey` ou des
+    :py:class:`ValueKey`, ont le même prédicat.
     
-    Outre les attributs spécifiques listés ci-après, `GroupOfValuesKey`
-    hérite de tous les attributs de la classe `GroupKey`.
+    Outre ses attributs spécifiques listés ci-après, la classe
+    :py:class:`GroupOfValuesKey` hérite de tous les attributs
+    de la classe :py:class:`GroupKey`.
     
     Parameters
     ----------
     parent : GroupKey
-        La clé parente. Ne peut pas être None.
+        La clé parente. Ne peut pas être ``None``, sauf dans le cas d'un objet
+        de la classe :py:class:`RootKey` (groupe racine).
     is_ghost : bool, default False
-        True si la clé ne doit pas être matérialisée. À noter que quelle
+        ``True`` si la clé ne doit pas être matérialisée. À noter que quelle
         que soit la valeur fournie à l'initialisation, une fille de clé
         fantôme est toujours un fantôme.
-    has_minus_button : bool, default True
-        True si des boutons moins (non représentés par des clés) sont
+    order_idx : tuple of int, default (999,)
+        Indice(s) permettant le classement de la clé parmi ses soeurs dans
+        un groupe de propriétés. Les clés de plus petits indices seront les
+        premières.
+    with_minus_buttons : bool, default True
+        ``True`` si des boutons moins (non représentés par des clés) sont
         supposés être associés aux clés du groupe.
-    predicate : URIRef
+    predicate : rdflib.term.URIRef
         Le prédicat commun à toutes les clés du groupe.
-    label : str or Literal, optional
+    label : str or rdflib.term.Literal, optional
         Etiquette du groupe (libellé de la catégorie de métadonnée dont
         les filles du groupe sont les valeurs).
-    description : str or Literal, optional
+    description : str or rdflib.term.Literal, optional
         Définition de la catégorie de métadonnée représentée par les clés
         du groupe.
-    rdftype : URIRef, optional
-        La classe RDF commune à toutes les valeurs du groupe. Peut
-        valoir None si le groupe ne contient pas de `GroupOfPropertiesKey`.
-    sources : list of URIRef, optional
-        Liste des sources de vocabulaire contrôlé pour les valeurs
-        du groupe.
+    rdftype : rdflib.term.URIRef, optional
+        La classe RDF commune à toutes les valeurs du groupe. Cette
+        information est obligatoire dès lors qu'une des filles du groupe est
+        de type :py:class:`GroupOfPropertiesKey`.
+    sources : list of rdflib.term.URIRef, optional
+        Liste des sources de vocabulaire contrôlé pour les valeurs du groupe.
     transform : {None, 'email', 'phone'}, optional
         Le cas échéant, la nature de la transformation appliquée aux
         objets du groupe.
-    xsdtype : URIRef, optional
-        Le cas échéant, le type (xsd:type) des valeurs du groupe. La valeur
-        de ce paramètre est ignorée si `rdftype` est renseigné, sinon 
-        xsd:string fait office de valeur par défaut.
-    placeholder : str or Literal, optional
+    xsdtype : rdflib.term.URIRef, default 'xsd:string'
+        Le cas échéant, le type des valeurs litérales du groupe. La valeur de
+        ce paramètre est ignorée si :py:attr:`GroupOfValuesKey.rdftype` est
+        renseigné, sinon ``'xsd:string'`` fait office de valeur par défaut.
+    placeholder : str or rdflib.term.Literal, optional
         Texte de substitution à utiliser pour les clés du groupe.
-    input_mask : str or Literal, optional
+    input_mask : str or rdflib.term.Literal, optional
         Masque de saisie à utiliser pour les clés du groupe.
-    is_mandatory : bool or Literal, default False
+    is_mandatory : bool or rdflib.term.Literal, default False
         Ce groupe doit-il obligatoirement avoir une clé avec une valeur ?
-    is_read_only : bool or Literal, default False
+    is_read_only : bool or rdflib.term.Literal, default False
         Les valeurs des clés du groupe sont-elles en lecture seule ?
     regex_validator : str, optional
         Expression rationnelle de validation à utiliser pour les clés du
@@ -1793,47 +2042,26 @@ class GroupOfValuesKey(GroupKey):
     ----------
     button : PlusButtonKey
         Référence la clé qui représente le bouton plus du groupe.
-    predicate : URIRef
-        *Propriété.* Prédicat commun à toutes les valeurs du groupe.
-    path : rdflib.paths.SequencePath
-        *Propriété calculée dynamiquement.* Chemin commun à toutes les
-        clés du groupe.
-    label : str
-        *Propriété.* Etiquette du groupe (libellé de la catégorie de
-        métadonnée dont les filles du groupe sont les valeurs).
-    description : str
-        *Propriété.* Définition de la catégorie de métadonnée représentée
-        par les clés du groupe.
-    with_minus_buttons : bool, default True
-        True si des boutons moins (non représentés par des clés) sont
-        supposés être associés aux clés du groupe.
-    rdftype : URIRef
-        *Propriété.* Classe RDF commune à toutes les valeurs du groupe. Peut
-        valoir None si le groupe ne contient pas de `GroupOfPropertiesKey`.
-    sources : list of URIRef
-        *Propriété non modifiable après l'initialisation.* Liste des sources
-        de vocabulaire contrôlé pour les valeurs du groupe, s'il y a lieu.
-    transform : {None, 'email', 'phone'}, optional
-        *Propriété.* Le cas échéant, la nature de la transformation appliquée
-        aux objets du groupe.
-    xsdtype : URIRef, optional
-        *Propriété.* Le cas échéant, le type (xsd:type) des valeurs du groupe. 
-    placeholder : str
-        *Propriété.* Texte de substitution à utiliser pour les clés du groupe.
-    input_mask : str
-        *Propriété.* Masque de saisie à utiliser pour les clés du groupe.
-    is_mandatory : bool
-        *Propriété.* Ce groupe doit-il obligatoirement avoir une clé avec une
-        valeur ?
-    is_read_only : bool
-        *Propriété.* Les valeurs des clés du groupe sont-elles en lecture
-        seule ?
-    regex_validator : str
-        *Propriété.* Expression rationnelle de validation à utiliser pour
-        les clés du groupe.
-    regex_validator_flags : str
-        *Propriété.* Paramètres associés à l'expression rationnelle de
-        validation des clés du groupe.
+    predicate
+    path
+    label
+    description
+    with_minus_buttons
+    rdftype
+    sources
+    transform
+    xsdtype
+    placeholder
+    input_mask
+    is_mandatory
+    is_read_only
+    regex_validator
+    regex_validator_flags
+    
+    Methods
+    -------
+    compute_single_children()
+        Détermine si les clés du groupe sont des filles uniques.
     
     """
     def _base_attributes(self, **kwargs):
@@ -1875,19 +2103,12 @@ class GroupOfValuesKey(GroupKey):
         return isinstance(parent, (GroupOfPropertiesKey, TabKey, RootKey))
     
     @property
-    def key_type(self):
-        """Type de clé.
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         Returns
         -------
         str
-        
-        """
-        return 'GroupOfValuesKey'
-    
-    @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
         
         """
         return 'group of values'
@@ -1907,7 +2128,8 @@ class GroupOfValuesKey(GroupKey):
     def with_minus_buttons(self, value):
         """Détermine si les filles du groupe sont accompagnées de boutons moins.
         
-        Assure que la propriété vaudra toujours False pour un groupe fantôme.
+        Assure que la propriété vaudra toujours ``False`` pour
+        un groupe fantôme.
         
         Parameters
         ----------
@@ -1924,7 +2146,7 @@ class GroupOfValuesKey(GroupKey):
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         return self._predicate
@@ -1935,13 +2157,14 @@ class GroupOfValuesKey(GroupKey):
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             Le prédicat à déclarer.
         
         Raises
         ------
         MissingParameter
-            Si `value` vaut None, cette information étant obligatoire.
+            Si `value` vaut ``None``, cette information étant
+            obligatoire.
         
         """
         if not value:
@@ -1953,7 +2176,8 @@ class GroupOfValuesKey(GroupKey):
         """Chemin commun à toutes les clés du groupe.
         
         Cette propriété est calculée dynamiquement à partir
-        du chemin du parent et de la valeur de `predicate`.
+        du chemin du parent et de la valeur de l'attribut
+        :py:attr:`GroupOfValuesKey.predicate`.
         
         Returns
         -------
@@ -1975,8 +2199,13 @@ class GroupOfValuesKey(GroupKey):
         -------
         str
         
+        Notes
+        -----
+        Si aucune étiquette n'est mémorisée, la propriété renvoie
+        ``'???'``` plutôt que ``None``.
+        
         """
-        return self._label
+        return self._label or '???'
     
     @label.setter
     def label(self, value):
@@ -1984,27 +2213,25 @@ class GroupOfValuesKey(GroupKey):
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le libellé de l'étiquette.
         
         """
-        if not value:
-            value = '???'
-        self._label = str(value)
+        self._label = str(value) if value else None
 
     @property
     def description(self):
         """Descriptif de la métadonnée représentée par les clés du groupe.
         
         Lorsqu'il n'y a ni étiquette, ni descriptif mémorisé, cette
-        propriété renvoie le chemin - `path`.
+        propriété renvoie le chemin - py:attr:`GroupOfValuesKey.path`.
         
         Returns
         -------
         str
         
         """
-        if self.value == '???' and not self._description:
+        if not self._value and not self._description:
             return self.path
         return self._description
     
@@ -2014,14 +2241,11 @@ class GroupOfValuesKey(GroupKey):
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le descriptif.
         
         """
-        if value:
-            self._description = str(value)
-        else:
-            self._description = None
+        self._description = str(value) if value else None
     
     @property
     def rdftype(self):
@@ -2029,7 +2253,7 @@ class GroupOfValuesKey(GroupKey):
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         return self._rdftype
@@ -2040,13 +2264,13 @@ class GroupOfValuesKey(GroupKey):
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             La classe à déclarer.
         
         Raises
         ------
         ForbiddenOperation
-            En cas de tentative de mettre `value` à None alors qu'il y
+            En cas de tentative de mettre `value` à ``None`` alors qu'il y
             a au moins un groupe de propriétés (représentant un noeud
             vide, qui doit avoir une classe associée) parmi les enfants
             du groupe.
@@ -2065,7 +2289,7 @@ class GroupOfValuesKey(GroupKey):
         
         Returns
         -------
-        list of URIRef
+        list of rdflib.term.URIRef
         
         """
         return self._sources
@@ -2076,20 +2300,18 @@ class GroupOfValuesKey(GroupKey):
         
         Parameters
         ----------
-        value : list of URIRef
+        value : list of rdflib.term.URIRef
             La liste de sources à déclarer.
         
-        Raises
-        ------
-        ForbiddenOperation
-            En cas de tentative de modification a posteriori (après la
-            déclaration du premier enfant).
-        
         """
-        if self.children:
-            raise ForbiddenOperation(self, 'Modifier a posteriori ' \
-                "la liste des sources n'est pas permis.")
-        self._sources = value
+        if value != sources:
+            self._sources = value
+            if not self._is_unborn:
+                for child in self.children:
+                    if isinstance(child, ValueKey) and child.value_source:
+                        child.value_source = child.value_source
+                    if isinstance(child, ValueKey) or child.m_twin:
+                        WidgetKey.actionsbook.sources.append(child)
     
     @property
     def xsdtype(self):
@@ -2097,7 +2319,7 @@ class GroupOfValuesKey(GroupKey):
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         return self._xsdtype
@@ -2106,15 +2328,22 @@ class GroupOfValuesKey(GroupKey):
     def xsdtype(self, value):
         """Définit le type XSD commun aux valeurs du groupe.
         
-        `rdftype` prévaut sur `xsdtype` : si le premier est renseigné,
+        :py:attr:`GroupOfValuesKey.rdftype` prévaut sur
+        :py:attr:`GroupOfValuesKey.xsdtype` : si le premier est renseigné,
         c'est que la valeur est un IRI ou un noeud vide, et le second
-        ne peut qu'être nul. Sinon, xsd:string est utilisé comme valeur
+        ne peut qu'être nul. Sinon, ``'xsd:string'`` est utilisé comme valeur
         par défaut.
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             Le type à déclarer.
+        
+        Notes
+        -----
+        Modifier cette propriété emporte la mise en cohérence de
+        :py:attr:`GroupOfValuesKey.value_language` pour toutes les
+        clés-valeurs du groupe. 
         
         """
         if self.rdftype:
@@ -2124,11 +2353,12 @@ class GroupOfValuesKey(GroupKey):
         self._xsdtype = value
         if not self._is_unborn:
             for child in self.children:
-                child.value_language = child.value_language
+                if isinstance(child, ValueKey):
+                    child.value_language = child.value_language
     
     @property
     def transform(self):
-        """Nature de la transformation appliquée aux valeurs du groupe.
+        """Nature de la transformation appliquée aux clés-valeurs du groupe.
         
         Returns
         -------
@@ -2139,7 +2369,7 @@ class GroupOfValuesKey(GroupKey):
     
     @transform.setter
     def transform(self, value):
-        """Définit la nature de la transformation appliquée aux valeurs du groupe.
+        """Définit la nature de la transformation appliquée aux clés-valeurs du groupe.
 
         Toute valeur qui ne serait pas dans la liste ci-après serait ignorée.
 
@@ -2147,7 +2377,13 @@ class GroupOfValuesKey(GroupKey):
         ----------
         value : {None, 'email', 'phone'}
             La transformation. Il est également permis de fournir la valeur
-            sous forme de Literal.
+            sous forme de rdflib.term.Literal.
+        
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cet attribut
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
         
         """
         if isinstance(value, Literal):
@@ -2158,7 +2394,7 @@ class GroupOfValuesKey(GroupKey):
     
     @property
     def placeholder(self):
-        """Texte de substitution à utiliser pour les clés du groupe.
+        """Texte de substitution à utiliser pour les clés-valeurs du groupe.
         
         Returns
         -------
@@ -2169,22 +2405,25 @@ class GroupOfValuesKey(GroupKey):
 
     @placeholder.setter
     def placeholder(self, value):
-        """Définit le texte de substitution à utiliser pour les clés du groupe.
+        """Définit le texte de substitution à utiliser pour les clés-valeurs du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le texte de substitution à déclarer.
         
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
+        
         """
-        if value:
-            self._placeholder = str(value)
-        else:
-            self._placeholder = None
+        self._placeholder = str(value) if value else None
     
     @property
     def input_mask(self):
-        """Masque de saisie à utiliser pour les clés du groupe.
+        """Masque de saisie à utiliser pour les clés-valeurs du groupe.
         
         Returns
         -------
@@ -2195,22 +2434,25 @@ class GroupOfValuesKey(GroupKey):
 
     @input_mask.setter
     def input_mask(self, value):
-        """Définit le masque de saisie à utiliser pour les clés du groupe.
+        """Définit le masque de saisie à utiliser pour les clés-valeurs du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le masque de saisie à déclarer.
         
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
+        
         """
-        if value:
-            self._input_mask = str(value)
-        else:
-            self._input_mask = None
+        self._input_mask = str(value) if value else None
     
     @property
     def is_mandatory(self):
-        """Au moins une clé du groupe devra-t-elle obligatoirement recevoir une valeur ?
+        """Au moins une clé-valeur du groupe devra-t-elle obligatoirement recevoir une valeur ?
         
         Returns
         -------
@@ -2221,20 +2463,24 @@ class GroupOfValuesKey(GroupKey):
 
     @is_mandatory.setter
     def is_mandatory(self, value):
-        """Définit si au moins une clé du groupe doit obligatoirement recevoir une valeur.
+        """Définit si au moins une clé-valeur du groupe doit obligatoirement recevoir une valeur.
         
         Parameters
         ----------
-        value : bool or Literal
+        value : bool or rdflib.term.Literal
+        
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
         
         """
-        if value is None:
-            value = False
         self._is_mandatory = bool(value)
     
     @property
     def is_read_only(self):
-        """Les valeurs des clés du groupe sont-elles en lecture seule ?
+        """Les valeurs des clés-valeurs du groupe sont-elles en lecture seule ?
         
         Returns
         -------
@@ -2245,20 +2491,24 @@ class GroupOfValuesKey(GroupKey):
 
     @is_read_only.setter
     def is_read_only(self, value):
-        """Définit si les valeurs des clés du groupe sont lecture seule.
+        """Définit si les valeurs des clés-valeurs du groupe sont lecture seule.
 
         Parameters
         ----------
-        value : bool or Literal
+        value : bool or rdflib.term.Literal
+        
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
         
         """
-        if value is None:
-            value = False
         self._is_read_only = bool(value)
     
     @property
     def regex_validator(self):
-        """Expression rationnelle de validation à utiliser pour les clés du groupe.
+        """Expression rationnelle de validation à utiliser pour les clés-valeurs du groupe.
         
         Returns
         -------
@@ -2269,22 +2519,25 @@ class GroupOfValuesKey(GroupKey):
 
     @regex_validator.setter
     def regex_validator(self, value):
-        """Définit l'expression rationnelle de validation à utiliser pour les clés du groupe.
+        """Définit l'expression rationnelle de validation à utiliser pour les clés-valeurs du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             L'expression rationnelle.
         
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
+        
         """
-        if value:
-            self._regex_validator = str(value)
-        else:
-            self._regex_validator = None
+        self._regex_validator = str(value) if value else None
     
     @property
     def regex_validator_flags(self):
-        """Paramètres associés à l'expression rationnelle de validation des clés du groupe.
+        """Paramètres associés à l'expression rationnelle de validation des clés-valeurs du groupe.
         
         Returns
         -------
@@ -2295,17 +2548,20 @@ class GroupOfValuesKey(GroupKey):
 
     @regex_validator_flags.setter
     def regex_validator_flags(self, value):
-        """Définit les paramètres associés à l'expression rationnelle de validation des clés du groupe.
+        """Définit les paramètres associés à l'expression rationnelle de validation des clés-valeurs du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
+        
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
         
         """
-        if value:
-            self._regex_validator_flags = str(value)
-        else:
-            self._regex_validator_flags = None
+        self._regex_validator_flags = str(value) if value else None
 
     def _hide_m(self, value, rec=False):
         super()._hide_m(value, rec=rec)
@@ -2313,13 +2569,28 @@ class GroupOfValuesKey(GroupKey):
             self.button._hide_m(value, rec=rec)
 
     @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        """
+        return ['order_idx', 'predicate', 'label', 'description', 'rdftype',
+            'sources', 'xsdtype', 'transform', 'placeholder', 'input_mask',
+            'is_mandatory', 'is_read_only', 'regex_validator',
+            'regex_validator_flags', 'with_minus_buttons']
+
+    @property
     def attr_to_copy(self):
         """Attributs de la classe à prendre en compte pour la copie des clés.
         
         Cette propriété est un dictionnaire dont les clés sont les
-        noms des attributs contenant les informations nécessaire pour
-        dupliquer la clé et les valeurs sont des booléens qui indiquent
-        si la valeur serait à conserver pour créer une copie vide de la clé.
+        noms des attributs contenant les informations nécessaires pour
+        dupliquer la clé, et les valeurs sont des booléens qui indiquent
+        si l'attribut est à prendre en compte lorsqu'il s'agit de
+        créer une copie vide de la clé.
         
         Certains attributs sont volontairement exclus de cette liste, car
         ils requièrent un traitement spécifique.
@@ -2327,6 +2598,14 @@ class GroupOfValuesKey(GroupKey):
         Returns
         -------
         dict
+        
+        See Also
+        --------
+        WidgetKey.copy, GroupOfValuesKey.copy
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_copy`.
         
         """
         return { 'parent': True, 'predicate': True, 'rdftype': True,
@@ -2347,9 +2626,9 @@ class GroupOfValuesKey(GroupKey):
             de l'original.
         empty : bool, default True
             Crée-t-on une copie vide (cas d'un nouvel enregistrement
-            dans un groupe de valeurs ou de traduction) - True - ou
+            dans un groupe de valeurs ou de traduction) - ``True`` - ou
             souhaite-t-on dupliquer une branche de l'arbre de clés
-            en préservant son contenu - False ?
+            en préservant son contenu - ``False`` ?
         
         Returns
         -------
@@ -2371,8 +2650,9 @@ class GroupOfValuesKey(GroupKey):
     def compute_rows(self):
         """Actualise les indices de ligne des filles du groupe.
         
-        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
-        variable partagée `no_computation` vaut True.
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si
+        l'attribut de classe :py:attr:`WidgetKey.no_computation` vaut
+        ``True``.
             
         Returns
         -------
@@ -2391,10 +2671,11 @@ class GroupOfValuesKey(GroupKey):
         return n
 
     def compute_single_children(self):
-        """Actualise l'attribut `is_single_child` des clés filles du groupe.
+        """Détermine si les clés du groupe sont des filles uniques.
         
-        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si la
-        variable partagée `no_computation` vaut True.
+        Cette méthode n'a pas d'effet dans un groupe fantôme, ou si
+        l'attribut de classe :py:attr:`WidgetKey.no_computation` vaut
+        ``True``.
         
         """
         if not self or WidgetKey.no_computation :
@@ -2442,7 +2723,7 @@ class TranslationGroupKey(GroupOfValuesKey):
         fantôme est toujours un fantôme. Il n'est pas permis d'avoir un
         groupe de traduction fantôme, y compris par héritage. Le cas échéant,
         c'est un groupe de valeurs qui sera automatiquement créé à la place.
-    predicate : URIRef
+    predicate : rdflib.term.URIRef
         Le prédicat commun à toutes les valeurs du groupe.
     
     Attributes
@@ -2479,15 +2760,15 @@ class TranslationGroupKey(GroupOfValuesKey):
         self.available_languages = self.langlist.copy()
 
     @property
-    def key_type(self):
-        """Type de clé.
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         Returns
         -------
         str
         
         """
-        return 'TranslationGroupKey'
+        return 'translation group'
 
     @property
     def rdftype(self):
@@ -2521,7 +2802,7 @@ class TranslationGroupKey(GroupOfValuesKey):
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         return self._xsdtype
@@ -2534,18 +2815,11 @@ class TranslationGroupKey(GroupOfValuesKey):
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             La classe à déclarer.
         
         """
         self._xsdtype = RDF.langString
-
-    @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
-        
-        """
-        return 'translation group'
 
     def language_in(self, value_language):
         """Ajoute une langue à la liste des langues disponibles.
@@ -2588,6 +2862,17 @@ class TranslationGroupKey(GroupOfValuesKey):
         if not self.available_languages and self.button:
             WidgetKey.actionsbook.hide.append(self.button)
 
+    @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        """
+        return ['order_idx']
+
 
 class ValueKey(ObjectKey):
     """Clé de dictionnaire de widgets représentant une valeur.
@@ -2610,7 +2895,7 @@ class ValueKey(ObjectKey):
         est appliquée.
     independant_label : bool, default False
         True si l'étiquette de la clé occupe une ligne séparée de la grille.
-    predicate : URIRef, optional
+    predicate : rdflib.term.URIRef, optional
         Prédicat représenté par la clé. Si la clé appartient à un groupe
         de valeurs, c'est lui qui porte cette information. Sinon, elle
         est obligatoire.
@@ -2620,7 +2905,7 @@ class ValueKey(ObjectKey):
     is_hidden_m : bool, default False
         La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
         n'est pris en compte que pour une clé qui a une jumelle.
-    sources : list of URIRef, optional
+    sources : list of rdflib.term.URIRef, optional
         Liste des sources de vocabulaire contrôlé pour les valeurs
         de la clé. Si la clé appartient à un groupe de valeurs, c'est lui
         qui porte cette information. Sinon, elle est obligatoire.
@@ -2628,19 +2913,19 @@ class ValueKey(ObjectKey):
         Le cas échéant, la nature de la transformation appliquée à
         l'objet. Si la clé appartient à un groupe de valeurs, c'est lui
         qui porte cette information, le cas échéant.
-    placeholder : str or Literal, optional
+    placeholder : str or rdflib.term.Literal, optional
         Texte de substitution à utiliser pour la clé. Si la clé appartient
         à un groupe de valeurs, c'est lui qui porte cette information, le
         cas échéant.
-    input_mask : str or Literal, optional
+    input_mask : str or rdflib.term.Literal, optional
         Masque de saisie à utiliser pour la clé. Si la clé appartient
         à un groupe de valeurs, c'est lui qui porte cette information, le
         cas échéant.
-    is_mandatory : bool or Literal, default False
+    is_mandatory : bool or rdflib.term.Literal, default False
         Cette clé devra-t-elle obligatoirement recevoir une valeur ? Si la
         clé appartient à un groupe de valeurs, c'est lui qui porte cette
         information, le cas échéant.
-    is_read_only : bool or Literal, default False
+    is_read_only : bool or rdflib.term.Literal, default False
         La valeur de cette clé est-elle en lecture seule ? Si la clé appartient
         à un groupe de valeurs, c'est lui qui porte cette information, le cas
         échéant.
@@ -2652,11 +2937,11 @@ class ValueKey(ObjectKey):
         Paramètres associés à l'expression rationnelle de validation de la clé.
         Si la clé appartient à un groupe de valeurs, c'est lui qui porte cette
         information, le cas échéant.
-    rdftype : URIRef, optional
+    rdftype : rdflib.term.URIRef, optional
         Classe RDF de la clé-valeur, s'il s'agit d'un IRI. Si la clé appartient
         à un groupe de valeurs, c'est lui qui porte cette information, le cas
         échéant.
-    xsdtype : URIRef, optional
+    xsdtype : rdflib.term.URIRef, optional
         Le type (xsd:type) de la clé-valeur, le cas échéant. Doit impérativement
         valoir rdf:langString pour que les informations sur les
         langues soient prises en compte. Si la clé appartient à un groupe de
@@ -2666,14 +2951,14 @@ class ValueKey(ObjectKey):
         valeur par défaut.
     do_not_save : bool, default False
         True pour une information qui ne devra pas être sauvegardée.
-    value : Literal or URIRef, optional
+    value : rdflib.term.Literal or rdflib.term.URIRef, optional
         La valeur mémorisée par la clé (objet du triplet RDF). Une clé
         fantôme ne sera effectivement créée que si une valeur est fournie.
     value_language : str, optional
-        La langue de l'objet. Obligatoire pour un Literal de
+        La langue de l'objet. Obligatoire pour une valeur litérale de
         type rdf:langString et a fortiori dans un groupe de traduction,
         ignoré pour tous les autres types.
-    value_source : URIRef
+    value_source : rdflib.term.URIRef
         La source utilisée par la valeur courante de la clé. Si la valeur
         fournie pour l'IRI ne fait pas partie des sources autorisées, elle
         sera silencieusement supprimée.
@@ -2692,14 +2977,14 @@ class ValueKey(ObjectKey):
     available_languages : list or str
         *Propriété non modifiable.* Liste des langues disponibles pour
         les traductions.
-    sources : list of URIRef
+    sources : list of rdflib.term.URIRef
         *Propriété.* Liste des sources de vocabulaire contrôlé pour les valeurs
         de la clé.
-    value : Literal or URIRef
+    value : rdflib.term.Literal or rdflib.term.URIRef
         *Propriété.* La valeur mémorisée par la clé (objet du triplet RDF).
-    rdftype : URIRef
+    rdftype : rdflib.term.URIRef
         *Propriété.* La classe RDF de la clé-valeur, si c'est un IRI.
-    xsdtype : URIRef
+    xsdtype : rdflib.term.URIRef
         *Propriété.* Le type (xsd:type) de la clé-valeur. None si
         l'objet n'est pas un Literal.
     transform : {None, 'email', 'phone'}
@@ -2722,7 +3007,7 @@ class ValueKey(ObjectKey):
         *Propriété.* La langue de l'objet. None si l'objet n'est pas un Literal de
         type rdf:langString. Obligatoirement renseigné dans un groupe
         de traduction.
-    value_source : URIRef
+    value_source : rdflib.term.URIRef
         *Propriété.* La source utilisée par la valeur courante de la clé.
     do_not_save : bool
         True pour une information qui ne devra pas être sauvegardée.
@@ -2789,19 +3074,12 @@ class ValueKey(ObjectKey):
         self.is_long_text = kwargs.get('is_long_text')
 
     @property
-    def key_type(self):
-        """Type de clé.
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         Returns
         -------
         str
-        
-        """
-        return 'ValueKey'
-
-    @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
         
         """
         return 'edit'
@@ -2849,7 +3127,7 @@ class ValueKey(ObjectKey):
         
         Returns
         -------
-        URIRef or Literal
+        rdflib.term.URIRef or rdflib.term.Literal
         
         """
         return self._value
@@ -2860,7 +3138,7 @@ class ValueKey(ObjectKey):
         
         Parameters
         ----------
-        value : URIRef or Literal
+        value : rdflib.term.URIRef or rdflib.term.Literal
             La valeur.
         
         """
@@ -2874,11 +3152,11 @@ class ValueKey(ObjectKey):
         """La classe RDF de la clé-valeur.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -2890,13 +3168,13 @@ class ValueKey(ObjectKey):
         """Définit la classe RDF de la clé-valeur.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             La classe RDF à déclarer.
         
         """
@@ -2910,11 +3188,11 @@ class ValueKey(ObjectKey):
         """Renvoie le type de la valeur portée par la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -2926,7 +3204,7 @@ class ValueKey(ObjectKey):
         """Définit le type de la valeur portée par la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
@@ -2940,7 +3218,7 @@ class ValueKey(ObjectKey):
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             Le type à déclarer.
         
         """
@@ -2958,7 +3236,7 @@ class ValueKey(ObjectKey):
         """Texte de substitution à utiliser pour la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
@@ -2974,13 +3252,13 @@ class ValueKey(ObjectKey):
         """Définit le texte de substitution à utiliser pour la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le texte de substitution à déclarer.
         
         """
@@ -2995,7 +3273,7 @@ class ValueKey(ObjectKey):
         """Masque de saisie à utiliser pour la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
@@ -3011,13 +3289,13 @@ class ValueKey(ObjectKey):
         """Définit le masque de saisie à utiliser pour la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             Le masque de saisie à déclarer.
         
         """
@@ -3032,7 +3310,7 @@ class ValueKey(ObjectKey):
         """Cette clé devra-t-elle obligatoirement recevoir une valeur ?
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
@@ -3048,13 +3326,13 @@ class ValueKey(ObjectKey):
         """Définit si la clé doit obligatoirement recevoir une valeur.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : bool or Literal
+        value : bool or rdflib.term.Literal
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
@@ -3067,7 +3345,7 @@ class ValueKey(ObjectKey):
         """La valeur de cette clé est-elle en lecture seule ?
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
@@ -3083,13 +3361,13 @@ class ValueKey(ObjectKey):
         """Définit si la valeur de la clé est en lecture seule.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : bool or Literal
+        value : bool or rdflib.term.Literal
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
@@ -3102,7 +3380,7 @@ class ValueKey(ObjectKey):
         """Expression rationnelle de validation à utiliser pour la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
@@ -3118,13 +3396,13 @@ class ValueKey(ObjectKey):
         """Définit l'expression rationnelle de validation à utiliser pour la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
             L'expression rationnelle.
         
         """
@@ -3139,7 +3417,7 @@ class ValueKey(ObjectKey):
         """Paramètres associés à l'expression rationnelle de validation de la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode va chercher la propriété du groupe parent.
+        la propriété du groupe parent est renvoyée.
         
         Returns
         -------
@@ -3155,13 +3433,13 @@ class ValueKey(ObjectKey):
         """Définit les paramètres associés à l'expression rationnelle de validation de la clé.
         
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        la méthode n'aura silencieusement aucun effet, car cette
+        le *setter* n'aura silencieusement aucun effet, car cette
         information est supposée être définie par la propriété de
         même nom du groupe.
         
         Parameters
         ----------
-        value : str or Literal
+        value : str or rdflib.term.Literal
         
         """
         if not isinstance(self.parent, GroupOfValuesKey) and value:
@@ -3228,7 +3506,7 @@ class ValueKey(ObjectKey):
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         return self._value_source
@@ -3239,7 +3517,7 @@ class ValueKey(ObjectKey):
         
         Parameters
         ----------
-        value : URIRef
+        value : rdflib.term.URIRef
             L'IRI de la nouvelle source. Peut être None pour une
             valeur "non référencée".
         
@@ -3314,7 +3592,7 @@ class ValueKey(ObjectKey):
         ----------
         value : {None, 'email', 'phone'}
             La transformation. Il est également permis de fournir
-            la valeur sous forme de Literal.
+            la valeur sous forme de litéral.
         
         """
         if not isinstance(self.parent, GroupOfValuesKey):
@@ -3333,7 +3611,7 @@ class ValueKey(ObjectKey):
         
         Returns
         -------
-        list of URIRef
+        list of rdflib.term.URIRef
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -3350,7 +3628,7 @@ class ValueKey(ObjectKey):
         
         Parameters
         ----------
-        value : list of URIRef
+        value : list of rdflib.term.URIRef
             La liste de sources.
         
         """
@@ -3431,13 +3709,30 @@ class ValueKey(ObjectKey):
         super()._hide_m(value, rec=rec)
 
     @property
+    def attr_to_update(self):
+        """Liste des attributs et propriétés pouvant être redéfinis post initialisation.
+        
+        Returns
+        -------
+        list
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_update`.
+        
+        """
+        return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m',
+            'node', 'rdftype']
+
+    @property
     def attr_to_copy(self):
         """Attributs de la classe à prendre en compte pour la copie des clés.
         
         Cette propriété est un dictionnaire dont les clés sont les
-        noms des attributs contenant les informations nécessaire pour
-        dupliquer la clé et les valeurs sont des booléens qui indiquent
-        si la valeur serait à conserver pour créer une copie vide de la clé.
+        noms des attributs contenant les informations nécessaires pour
+        dupliquer la clé, et les valeurs sont des booléens qui indiquent
+        si l'attribut est à prendre en compte lorsqu'il s'agit de
+        créer une copie vide de la clé.
         
         Certains attributs sont volontairement exclus de cette liste, car
         ils requièrent un traitement spécifique.
@@ -3446,11 +3741,60 @@ class ValueKey(ObjectKey):
         -------
         dict
         
+        See Also
+        --------
+        WidgetKey.copy
+        
+        Notes
+        -----
+        Redéfinit la propriété :py:attr:`WidgetKey.attr_to_copy`.
+        
         """
         return { 'parent': True, 'predicate': True, 'do_not_save': True,
             'sources': True, 'rdftype': True, 'xsdtype': True, 'transform': True,
             'rowspan': True, 'value': False, 'value_language': False,
             'value_source': False }
+
+    def copy(self, parent=None, empty=True):
+        """Renvoie une copie de la clé.
+        
+        Parameters
+        ----------
+        parent : GroupKey, optional
+            La clé parente. Si elle n'est pas spécifiée, il sera
+            considéré que le parent de la copie est le même que celui
+            de l'original.
+        empty : bool, default True
+            Crée-t-on une copie vide (cas d'un nouvel enregistrement
+            dans un groupe de valeurs ou de traduction) - ``True`` - ou
+            souhaite-t-on dupliquer une branche de l'arbre de clés
+            en préservant son contenu - ``False`` ?
+        
+        Returns
+        -------
+        ValueKey
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Lorsque la méthode est explicitement appliquée à une clé
+            fantôme. Il est possible de copier des branches contenant
+            des fantômes, ceux-ci ne seront simplement pas copiés.
+        
+        Notes
+        -----
+        Redéfinit la méthode :py:meth:`WidgetKey.copy` en gérant le
+        cas d'une clé jumelle. Concrètement, c'est alors la clé groupe de
+        propriétés du couple qui est copiée (:py:meth:`GroupOfPropertiesKey.copy`
+        porte le mécanisme de copie des couples), et la méthode renvoie 
+        ensuite sa jumelle.
+        
+        """
+        if self.m_twin:
+            groupkey = self.m_twin.copy(parent=parent, empty=empty)
+            return groupkey.m_twin
+        else:
+            return super().copy(parent=parent, empty=empty)
 
     def change_language(self, value_language):
         """Change la langue d'une clé-valeur.
@@ -3532,21 +3876,14 @@ class PlusButtonKey(WidgetKey):
             or not isinstance(parent, GroupOfValuesKey):
             return
         return super().__new__(cls)
-    
-    @property
-    def key_type(self):
-        """Type de clé.
-        
-        Returns
-        -------
-        str
-        
-        """
-        return 'PlusButtonKey'
 
     @property
     def key_object(self):
         """Transcription littérale du type de clé.
+        
+        Returns
+        -------
+        str
         
         """
         return 'plus button'
@@ -3606,7 +3943,7 @@ class PlusButtonKey(WidgetKey):
             child.copy(parent=self.parent, empty=True)
             break
         return WidgetKey.unload_actionsbook()
-        
+    
 
 class TranslationButtonKey(PlusButtonKey):
     """Clé de dictionnaire de widgets représentant un bouton de traduction.
@@ -3638,21 +3975,14 @@ class TranslationButtonKey(PlusButtonKey):
         if not isinstance(parent, TranslationGroupKey):
             return PlusButtonKey.__call__(**kwargs)
         return super().__new__(cls, **kwargs)
-    
-    @property
-    def key_type(self):
-        """Type de clé.
-        
-        Returns
-        -------
-        str
-        
-        """
-        return 'TranslationButtonKey'
    
     @property
     def key_object(self):
         """Transcription littérale du type de clé.
+        
+        Returns
+        -------
+        str
         
         """
         return 'translation button'
@@ -3682,15 +4012,15 @@ class RootKey(GroupKey):
     
     Parameters
     ----------
-    datasetid : URIRef, optional
+    datasetid : rdflib.term.URIRef, optional
         L'identifiant du graphe de métadonnées.
     
     Attributes
     ----------
-    node : URIRef
+    node : rdflib.term.URIRef
         L'identifiant du jeu de données, qui sera le sujet des
         triplets des enfants du groupe.
-    rdftype : URIRef
+    rdftype : rdflib.term.URIRef
         La classe de l'objet RDF décrit par le groupe racine.
         Vaut toujours URIRef("http://www.w3.org/ns/dcat#Dataset").
     
@@ -3728,26 +4058,19 @@ class RootKey(GroupKey):
         self.children = ChildrenList()
  
     @property
-    def key_type(self):
-        """Type de clé.
+    def key_object(self):
+        """Transcription littérale du type de clé.
         
         Returns
         -------
         str
         
         """
-        return 'RootKey'
- 
-    @property
-    def key_object(self):
-        """Transcription littérale du type de clé.
-        
-        """
         return 'root'
     
     @property
     def parent(self):
-        return None
+        return
  
     @property
     def rdftype(self):
@@ -3755,7 +4078,7 @@ class RootKey(GroupKey):
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         """
         return self._rdftype
@@ -3767,6 +4090,10 @@ class RootKey(GroupKey):
     @property
     def attr_to_copy(self):
         return {}
+
+    @property
+    def attr_to_update(self):
+        return []
 
     def kill(self):
         WidgetKey.actionsbook.drop.append(self)
@@ -3803,7 +4130,7 @@ class RootKey(GroupKey):
         
         Parameters
         ----------
-        rdftype : URIRef
+        rdftype : rdflib.term.URIRef
             Le type RDF (classe) cible.
             
         Returns
