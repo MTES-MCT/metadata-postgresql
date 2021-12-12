@@ -132,8 +132,7 @@ class WidgetsDict(dict):
 
 
     def _build_dict(self, metagraph, shape, vocabulary, path, class_iri,
-        parent, subject, template_is_empty, shallow_template,
-        shallow_template_tabs, shallow_data):
+        parent, subject, template_is_empty, shallow_template, shallow_data):
         
         # identification de la forme du schéma SHACL qui décrit la
         # classe cible :
@@ -201,29 +200,28 @@ class WidgetsDict(dict):
             
             # ------ Extraction des informations du modèle et choix de l'onglet ------
             t = dict()
-            if not kwargs['is_ghost'] and new_path in shallow_template:
-                t = shallow_template[new_path]
-                shallow_template[new_path]['done'] = True
-                # choix du bon onglet (évidemment juste
-                # pour les catégories de premier niveau)
-                if isinstance(parent, RootKey):
-                    tab = t.get('tab name', None)
-                    if tab and tab in shallow_template_tabs:
-                        kwargs['parent'] = shallow_template_tabs[tab]
-                kwargs['order_idx'] = (t.get('order', 9999), kwargs['shape_order'])
-                # TODO: modification de kwargs selon le template
-            elif not kwargs['is_ghost'] and isinstance(parent, RootKey) \
-                and not template_is_empty:
-                # les métadonnées hors modèle non masquées
-                # de premier niveau iront dans un onglet "Autres".
-                # S'il n'existe pas encore, on l'ajoute :
-                if not "Autres" in shallow_template_tabs:
-                    tabkey = TabKey(parent=parent, label='Autres')
+            if not kwargs['is_ghost']:
+                if new_path in shallow_template:
+                    t = shallow_template[new_path]
+                    shallow_template[new_path]['done'] = True
+                    # choix du bon onglet (évidemment juste
+                    # pour les catégories de premier niveau)
+                    if isinstance(parent, RootKey):
+                        tabkey = parent.search_tab(t.get('tab name'))
+                        # renvoie le premier onglet si le nom est None
+                        kwargs['parent'] = tabkey
+                    kwargs['order_idx'] = (t.get('order', 9999), kwargs['shape_order'])
+                elif isinstance(parent, RootKey) \
+                    and not template_is_empty:
+                    # les métadonnées hors modèle non masquées
+                    # de premier niveau iront dans l'onglet "Autres".
+                    tabkey = parent.search_tab('Autres')
                     kwargs['parent'] = tabkey
-                    shallow_template_tabs['Autres'] = tabkey
-                    self[tabkey] = InternalDict()
-                else:
-                    kwargs['parent'] = shallow_template_tabs["Autres"]  
+                elif isinstance(parent, RootKey):
+                    # en l'absence de modèle, on prend juste le
+                    # premier onglet
+                    tabkey = parent.search_tab()
+                    kwargs['parent'] = tabkey
 
             # si seules les métadonnées dans la langue
             # principale doivent être affichées et qu'aucune valeur n'est
@@ -247,13 +245,11 @@ class WidgetsDict(dict):
                 else:
                     groupkey = GroupOfValuesKey(**kwargs)
                 self[groupkey] = InternalDict()
+                # les widgets référencés ensuite auront ce groupe
+                # pour parent
                 kwargs['parent'] = groupkey
-                        
-                cur_parent = widget
-                # les widgets de saisie référencés juste après auront
-                # ce groupe pour parent
-
-
+                # ajustement des attributs de la clé selon le modèle
+                groupkey.update(t, exclude_none=True)
 
 
 
