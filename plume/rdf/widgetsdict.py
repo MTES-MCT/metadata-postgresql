@@ -200,28 +200,26 @@ class WidgetsDict(dict):
             
             # ------ Extraction des informations du modèle et choix de l'onglet ------
             t = dict()
-            if not kwargs['is_ghost']:
-                if new_path in shallow_template:
-                    t = shallow_template[new_path]
-                    shallow_template[new_path]['done'] = True
-                    # choix du bon onglet (évidemment juste
-                    # pour les catégories de premier niveau)
-                    if isinstance(parent, RootKey):
-                        tabkey = parent.search_tab(t.get('tab name'))
-                        # renvoie le premier onglet si le nom est None
-                        kwargs['parent'] = tabkey
-                    kwargs['order_idx'] = (t.get('order', 9999), kwargs['shape_order'])
-                elif isinstance(parent, RootKey) \
-                    and not template_is_empty:
-                    # les métadonnées hors modèle non masquées
-                    # de premier niveau iront dans l'onglet "Autres".
-                    tabkey = parent.search_tab('Autres')
+            if new_path in shallow_template:
+                t = shallow_template[new_path]
+                shallow_template[new_path]['done'] = True
+                # choix du bon onglet (évidemment juste
+                # pour les catégories de premier niveau)
+                if isinstance(parent, RootKey):
+                    tabkey = parent.search_tab(t.get('tab name'))
+                    # renvoie le premier onglet si le nom est None
                     kwargs['parent'] = tabkey
-                elif isinstance(parent, RootKey):
-                    # en l'absence de modèle, on prend juste le
-                    # premier onglet
-                    tabkey = parent.search_tab()
-                    kwargs['parent'] = tabkey
+                kwargs['order_idx'] = (t.get('order', 9999), kwargs['shape_order'])
+            elif isinstance(parent, RootKey) and not template_is_empty:
+                # les métadonnées hors modèle non masquées
+                # de premier niveau iront dans l'onglet "Autres".
+                tabkey = parent.search_tab('Autres')
+                kwargs['parent'] = tabkey
+            elif isinstance(parent, RootKey):
+                # en l'absence de modèle, on prend juste le
+                # premier onglet
+                tabkey = parent.search_tab()
+                kwargs['parent'] = tabkey
 
             # si seules les métadonnées dans la langue
             # principale doivent être affichées et qu'aucune valeur n'est
