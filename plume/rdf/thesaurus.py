@@ -46,30 +46,34 @@ class Thesaurus:
     language : str
         La langue pour laquelle le thésaurus a été généré.
     values : list
-        La liste des valeurs du thésaurus.
+        La liste des termes du thésaurus.
     iri_from_str : dict
-        Dictionnaire dont les clés sont les valeurs du thésaurus
-        (str) et les valeurs les IRI correspondants.
+        Dictionnaire dont les clés sont les libellés des termes du
+        thésaurus et les valeurs les IRI correspondants.
     str_from_iri : dict
-        Dictionnaire dont les clés sont les IRI des valeurs du thésaurus
-        et les valeurs leurs libellés (str).
+        Dictionnaire dont les clés sont les IRI des termes du
+        thésaurus et les valeurs leurs libellés.
     links_from_iri : dict
-        Dictionnaire dont les clés sont les IRI des valeurs du thésaurus
-        et les valeurs les liens associés.
+        Dictionnaire dont les clés sont les IRI des termes du
+        thésaurus et les valeurs les liens associés.
     
     Methods
     -------
     values(thesaurus)
-        *Méthode de classe.* Renvoie la liste des valeurs du thésaurus.
+        *Méthode de classe.* Renvoie la liste des termes du thésaurus.
     label(thesaurus)
         *Méthode de classe.* Renvoie le libellé du thésaurus.
     concept_iri(thesaurus, concept_str)
-        *Méthode de classe.* Renvoie l'IRI correspondant à un libellé
-        de thésaurus.
+        *Méthode de classe.* Renvoie l'IRI correspondant au libellé
+        d'un terme de thésaurus.
     concept_str(thesaurus, concept_iri)
-        *Méthode de classe.* Renvoie le libellé d'un concept de thésaurus.
+        *Méthode de classe.* Renvoie le libellé correspondant à l'IRI
+        d'un terme de thésaurus.
     concept_link(thesaurus, concept_iri)
-        *Méthode de classe.* Renvoie le lien d'un concept de thésaurus.
+        *Méthode de classe.* Renvoie le lien d'un terme de thésaurus.
+    concept_source(concept_iri)
+        *Méthode de classe.* Renvoie l'IRI du thésaurus auquel
+        appartient le terme.
     
     """
     
@@ -77,40 +81,42 @@ class Thesaurus:
     """Accès à l'ensemble des thésaurus déjà compilés.
     
     `collection` est un dictionnaire dont les clés sont des tuples
-    (`iri`, `language`) et les valeurs l'objet `Thesaurus` lui-même.
+    (`iri`, `language`) et les valeurs l'objet :py:class:`Thesaurus`
+    lui-même.
     
     """
     
     @classmethod
     def values(cls, thesaurus):
-        """Cherche ou génère un thésaurus et renvoie la liste de ses valeurs.
+        """Cherche ou génère un thésaurus et renvoie la liste de ses termes.
         
-        Autant que possible, cette méthode va chercher les valeurs dans le
-        répertoire des thésaurus déjà compilés (`Thesaurus.collection`), à
-        défaut le thésaurus est compilé à partir de `vocabulary`.
+        Autant que possible, cette méthode va chercher les termes dans le
+        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
+        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
         
         Parameters
         ----------
-        thesaurus : tuple of URIRef and str
+        thesaurus : tuple(URIRef, str)
             Source. Tuple dont le premier élément est l'IRI de la source,
             le second la langue pour laquelle le thésaurus doit être généré.
         
         Returns
         -------
         list
-            La liste des valeurs du thésaurus. La première valeur de la liste
+            La liste des termes du thésaurus. La première valeur de la liste
             est toujours une chaîne de caractères vides.
         
         Raises
         ------
         UnknownParameterValue
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans `vocabulary`.
+            mais n'existe même pas dans :py:data:`vocabulary`.
         
         Examples
         --------
         >>> Thesaurus.values(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAuthorizedLicense'), 'fr')
+        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
+        ...         '/Vocabulaire/#CrpaAuthorizedLicense'), 'fr')
         ...     )
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
@@ -127,31 +133,32 @@ class Thesaurus:
     def label(cls, thesaurus):
         """Cherche ou génère un thésaurus et renvoie son libellé.
         
-        Autant que possible, cette méthode va chercher les valeurs dans le
-        répertoire des thésaurus déjà compilés (`Thesaurus.collection`), à
-        défaut le thésaurus est compilé à partir de `vocabulary`.
+        Autant que possible, cette méthode va chercher le libellé dans le
+        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
+        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
         
         Parameters
         ----------
-        thesaurus : tuple of URIRef and str
+        thesaurus : tuple(URIRef, str)
             Source. Tuple dont le premier élément est l'IRI de la source,
             le second la langue pour laquelle le thésaurus doit être généré.
         
         Returns
         -------
-        list
-            La liste des valeurs du thésaurus.
+        str
+            Le libellé du thésaurus.
         
         Raises
         ------
         UnknownParameterValue
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans `vocabulary`.
+            mais n'existe même pas dans :py:data:`vocabulary`.
         
         Examples
         --------
         >>> Thesaurus.label(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations'), 'fr')
+        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
+        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr')
         ...     )
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
@@ -169,34 +176,37 @@ class Thesaurus:
         """Cherche ou génère un thésaurus et renvoie l'IRI d'un concept.
         
         Autant que possible, cette méthode va chercher l'IRI dans le
-        répertoire des thésaurus déjà compilés (`Thesaurus.collection`), à
-        défaut le thésaurus est compilé à partir de `vocabulary`.
+        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
+        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
         
         Parameters
         ----------
-        thesaurus : tuple of URIRef and str
+        thesaurus : tuple(URIRef, str)
             Source. Tuple dont le premier élément est l'IRI de la source,
             le second la langue pour laquelle le thésaurus doit être généré.
         concept_str : str
-            Une valeur présumée issue du thésaurus, dont on cherche l'IRI.
+            Le libellé d'un terme présumé issu du thésaurus, dont on
+            cherche l'IRI.
         
         Returns
         -------
         URIRef
-            L'IRI du concept. Peut être None, si le thésaurus existe mais que
-            la chaîne de caractères n'y est pas répertoriée.
+            L'IRI du concept. Peut être ``None``, si le thésaurus existe
+            mais que la chaîne de caractères n'y est pas répertoriée.
         
         Raises
         ------
         UnknownParameterValue
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans `vocabulary`.
+            mais n'existe même pas dans :py:data:`vocabulary`.
         
         Examples
         --------
         >>> Thesaurus.concept_iri(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
-        ...     'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
+        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
+        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
+        ...     'Communicable au seul intéressé - atteinte à la' \
+        ...         ' protection de la vie privée (CRPA, L311-6 1°)'
         ...     )
         rdflib.term.URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
         
@@ -213,35 +223,38 @@ class Thesaurus:
     def concept_str(cls, thesaurus, concept_iri):
         """Cherche ou génère un thésaurus et renvoie le libellé d'un concept.
         
-        Autant que possible, cette méthode va chercher l'IRI dans le
-        répertoire des thésaurus déjà compilés (`Thesaurus.collection`), à
-        défaut le thésaurus est compilé à partir de `vocabulary`.
+        Autant que possible, cette méthode va chercher le libellé dans le
+        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
+        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
         
         Parameters
         ----------
-        thesaurus : tuple of URIRef and str
+        thesaurus : tuple(URIRef, str)
             Source. Tuple dont le premier élément est l'IRI de la source,
             le second la langue pour laquelle le thésaurus doit être généré.
         concept_iri : URIRef
-            Un IRI présumé issu du thésaurus, dont on cherche le libellé.
+            L'IRI d'un terme présumé issu du thésaurus, dont on cherche
+            le libellé.
         
         Returns
         -------
         str
-            Le libellé du concept. Peut être None, si le thésaurus existe mais
-            que l'IRI n'y est pas répertorié.
+            Le libellé du concept. Peut être ``None``, si le thésaurus existe
+            mais que l'IRI n'y est pas répertorié.
         
         Raises
         ------
         UnknownParameterValue
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans `vocabulary`.
+            mais n'existe même pas dans :py:data:`vocabulary`.
         
         Examples
         --------
         >>> Thesaurus.concept_str(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
-        ...     URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
+        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
+        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
+        ...     URIRef('http://snum.scenari-community.org/Metadata/' \
+        ...         'Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
         ...     )
         'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
         
@@ -258,35 +271,37 @@ class Thesaurus:
     def concept_link(cls, thesaurus, concept_iri):
         """Cherche ou génère un thésaurus et renvoie le lien d'un concept.
         
-        Autant que possible, cette méthode va chercher l'IRI dans le
-        répertoire des thésaurus déjà compilés (`Thesaurus.collection`), à
-        défaut le thésaurus est compilé à partir de `vocabulary`.
+        Autant que possible, cette méthode va chercher le lien dans le
+        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
+        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
         
         Parameters
         ----------
-        thesaurus : tuple of URIRef and str
+        thesaurus : tuple(URIRef, str)
             Source. Tuple dont le premier élément est l'IRI de la source,
             le second la langue pour laquelle le thésaurus doit être généré.
         concept_iri : URIRef
-            Un IRI présumé issu du thésaurus, dont on cherche le lien.
+            L'IRI d'un terme présumé issu du thésaurus, dont on cherche le lien.
         
         Returns
         -------
         URIRef
-            Le lien associé au concept. Peut être None, si le thésaurus existe
-            mais que l'IRI n'y est pas répertorié.
+            Le lien associé au concept. Peut être ``None``, si le thésaurus
+            existe mais que l'IRI n'y est pas répertorié.
         
         Raises
         ------
         UnknownParameterValue
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans `vocabulary`.
+            mais n'existe même pas dans :py:data:`vocabulary`.
         
         Examples
         --------
         >>> Thesaurus.concept_link(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
-        ...     URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
+        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
+        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
+        ...     URIRef('http://snum.scenari-community.org/Metadata/' \
+        ...         'Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
         ...     )
         rdflib.term.URIRef('https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056')
         
@@ -298,6 +313,27 @@ class Thesaurus:
         if t:
             return t.links_from_iri.get(concept_iri)
         raise UnknownParameterValue('iri', iri)
+    
+    @classmethod
+    def concept_source(cls, concept_iri):
+        """Renvoie l'IRI du thésaurus référençant l'IRI considérée.
+        
+        Parameters
+        ----------
+        concept_iri : URIRef
+            L'IRI d'un terme présumé issu d'un thésaurus.
+
+        Returns
+        -------
+        URIRef
+        
+        Notes
+        -----
+        Cette méthode se borne à interroger :py:data:`vocabulary`.
+        Elle n'exploite pas le répertoire des thésaurus.
+        
+        """
+        pass
     
     @classmethod
     def add(cls, iri, language, thesaurus):
@@ -360,8 +396,9 @@ def pick_translation(litlist, language):
     
     Parameters
     ----------
-    litlist : list of Literal
-        Une liste de Literal, présumés de type xsd:string.
+    litlist : list of rdflib.term.Literal
+        Une liste de valeurs litérales, présumées de type
+        ``xsd:string``.
     language : str
         La langue pour laquelle on cherche une traduction.
     
