@@ -731,7 +731,7 @@ class ObjectKey(WidgetKey):
     
     * :py:class:`GroupOfPropertiesKey` pour les groupes de propriétés.
       C'est la classe à utiliser lorsque l'objet du triplet RDF est un 
-      noeud vide.
+      noeud anonyme.
     * :py:class:`ValueKey` pour les clés-valeurs (correspondent aux
       widgets de saisie). C'est la classe à utiliser lorsque l'objet
       du triplet RDF est un IRI ou une valeur litérale.
@@ -880,11 +880,11 @@ class ObjectKey(WidgetKey):
         Notes
         -----
         Si la clé appartient à un groupe de valeurs ou de traduction,
-        cette propriété vaudra ``None``, car le descriptif est porté
-        par le groupe. Tenter d'en modifier la valeur n'aura silencieusement
-        aucun effet. Sinon, lorsqu'il n'y a ni étiquette, ni descriptif
-        mémorisé, cette propriété renvoie le chemin (valeur de la
-        propriété :py:attr:`ObjectKey.path`).
+        la propriété du groupe parent est renvoyée. Tenter d'en modifier
+        la valeur n'aura silencieusement aucun effet.
+        
+        Lorsqu'il n'y a ni étiquette, ni descriptif mémorisé, cette
+        propriété renvoie le chemin (:py:attr:`ObjectKey.path`).
         
         Si la clé a une jumelle dont le descriptif est différent
         de la valeur fournie, c'est celui de la jumelle de référence
@@ -896,10 +896,11 @@ class ObjectKey(WidgetKey):
         qui seront alors automatiquement converties.
         
         """
-        if not isinstance(self.parent, GroupOfValuesKey):
-            if not self._label and not self._description:
-                return self.path
-            return self._description
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.description
+        if not self._label and not self._description:
+            return self.path
+        return self._description
     
     @description.setter
     def description(self, value):
@@ -1532,8 +1533,8 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     """Groupe de propriétés.
     
     Un groupe de propriétés est une clé de dictionnaire de widgets qui 
-    représente un couple prédicat / noeud vide. Ses filles représentent
-    les triplets dont le noeud vide est le sujet.
+    représente un couple prédicat / noeud anonyme. Ses filles représentent
+    les triplets dont le noeud anonyme est le sujet.
     
     Outre ses attributs propres listés ci-après, la classe
     :py:class:`GroupOfPropertiesKey` hérite de tous les attributs et
@@ -1575,9 +1576,9 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
         n'est pris en compte que pour une clé qui a une jumelle.
     node : BNode, optional
-        Le noeud vide objet du prédicat, qui est également le sujet
+        Le noeud anonyme objet du prédicat, qui est également le sujet
         des triplets des enfants du groupe. Si non fourni, un nouveau
-        noeud vide est généré.
+        noeud anonyme est généré.
     rdftype : rdflib.term.URIRef
         La classe RDF du noeud. Si la clé appartient à un groupe de valeurs,
         c'est lui qui porte cette information. Sinon, elle est obligatoire.
@@ -1623,16 +1624,16 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
  
     @property
     def node(self):
-        """rdflib.term.BNode: Le noeud vide objet du prédicat et sujet des filles du groupe.
+        """rdflib.term.BNode: Le noeud anonyme objet du prédicat et sujet des filles du groupe.
         
         Warnings
         --------
         Aucun contrôle n'est réalisé pour vérifier que le nouveau
-        noeud vide n'est pas déjà utilisé par une autre clé. En
+        noeud anonyme n'est pas déjà utilisé par une autre clé. En
         cas de doute sur l'unicité des valeurs disponibles, il est
-        préférable de ne pas en donner, un nouveau noeud vide est
+        préférable de ne pas en donner, un nouveau noeud anonyme est
         alors automatiquement généré (idem si la valeur fournie
-        n'était pas véritablement un noeud vide).
+        n'était pas véritablement un noeud anonyme).
         
         """
         return self._node
@@ -2058,9 +2059,9 @@ class GroupOfValuesKey(GroupKey):
         ------
         MissingParameter
             Pour toute tentative de mettre à ``None`` la valeur de
-            cette propriété alors qu'il y a au moins un groupe de propriétés
-            (représentant un noeud vide, qui doit avoir une classe associée)
-            parmi les enfants du groupe.
+            cette propriété alors qu'il y a au moins un groupe de
+            propriétés (représentant un noeud anonyme, qui doit avoir
+            une classe associée) parmi les enfants du groupe.
         
         Notes
         -----
@@ -2113,7 +2114,7 @@ class GroupOfValuesKey(GroupKey):
         -----
         :py:attr:`GroupOfValuesKey.rdftype` prévaut sur
         :py:attr:`GroupOfValuesKey.xsdtype` : si le premier est renseigné,
-        c'est que la valeur est un IRI ou un noeud vide, et le second
+        c'est que la valeur est un IRI ou un noeud anonyme, et le second
         ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé comme valeur
         par défaut.
         
@@ -2893,7 +2894,7 @@ class ValueKey(ObjectKey):
         
         :py:attr:`ValueKey.rdftype` prévaut sur :py:attr:`ValueKey.xsdtype` :
         si le premier est renseigné, c'est que la valeur est un IRI ou un noeud
-        vide, et le second ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé
+        anonyme, et le second ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé
         comme valeur par défaut.
         
         Modifier cette propriété emporte la mise en cohérence des
