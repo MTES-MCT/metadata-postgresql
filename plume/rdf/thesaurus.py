@@ -2,7 +2,7 @@
 
 """
 
-from pathlib import Path
+
 from locale import strxfrm, setlocale, LC_COLLATE
 
 try:
@@ -15,8 +15,10 @@ except:
 
 from plume.rdf.metagraph import graph_from_file
 from plume.rdf.exceptions import UnknownParameterValue
+from plume.rdf.namespaces import FOAF, SKOS, SNUM
+from plume.rdf.utils import abspath
 
-vocabulary = graph_from_file(Path('data') / 'vocabulary.ttl')
+vocabulary = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
 """Graphe contenant le vocabulaire de tous les thésaurus.
 
 """
@@ -114,10 +116,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.values(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
-        ...         '/Vocabulaire/#CrpaAuthorizedLicense'), 'fr')
-        ...     )
+        >>> Thesaurus.values((SNUM.CrpaAuthorizedLicense, 'fr'))
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
         """
@@ -156,10 +155,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.label(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
-        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr')
-        ...     )
+        >>> Thesaurus.label((SNUM.CrpaAccessLimitations, 'fr'))
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
         """
@@ -203,8 +199,7 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_iri(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
-        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
+        ...     (SNUM.CrpaAccessLimitations, 'fr'), 
         ...     'Communicable au seul intéressé - atteinte à la' \
         ...         ' protection de la vie privée (CRPA, L311-6 1°)'
         ...     )
@@ -251,10 +246,8 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_str(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
-        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
-        ...     URIRef('http://snum.scenari-community.org/Metadata/' \
-        ...         'Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
+        ...     (SNUM.CrpaAccessLimitations, 'fr'), 
+        ...     SNUM['CrpaAccessLimitations-311-6-1-vp']
         ...     )
         'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
         
@@ -298,10 +291,8 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_link(
-        ...     (URIRef('http://snum.scenari-community.org/Metadata' \
-        ...         '/Vocabulaire/#CrpaAccessLimitations'), 'fr'), 
-        ...     URIRef('http://snum.scenari-community.org/Metadata/' \
-        ...         'Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
+        ...     (SNUM.CrpaAccessLimitations, 'fr'), 
+        ...     SNUM['CrpaAccessLimitations-311-6-1-vp']
         ...     )
         rdflib.term.URIRef('https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056')
         
@@ -333,7 +324,7 @@ class Thesaurus:
         Elle n'exploite pas le répertoire des thésaurus.
         
         """
-        pass
+        return vocabulary.value(concept_iri, SKOS.inScheme)
     
     @classmethod
     def add(cls, iri, language, thesaurus):
@@ -359,27 +350,24 @@ class Thesaurus:
         self.str_from_iri = {}
         self.links_from_iri = {}
         
-        slabels = [ o for o in vocabulary.objects(iri,
-            URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")) ]
+        slabels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
         if slabels:
             t = pick_translation(slabels, language)
             self.label = str(t)
         else:
             raise UnknownParameterValue('iri', iri)
         
-        concepts = [ c for c in vocabulary.subjects(
-            URIRef("http://www.w3.org/2004/02/skos/core#inScheme"), iri) ] 
+        concepts = [c for c in vocabulary.subjects(SKOS.inScheme, iri)] 
 
         if concepts:
             for c in concepts:
-                clabels = [ o for o in vocabulary.objects(c,
-                    URIRef("http://www.w3.org/2004/02/skos/core#prefLabel")) ]
+                clabels = [o for o in vocabulary.objects(c, SKOS.prefLabel)]
                 if clabels:
                     t = pick_translation(clabels, language)
                     self.values.append(str(t))
                     self.iri_from_str.update({str(t): c})
                     self.str_from_iri.update({c: str(t)})
-                    page = vocabulary.value(c, URIRef("http://xmlns.com/foaf/0.1/page"))
+                    page = vocabulary.value(c, FOAF.page)
                     self.links_from_iri.update({c: page or c})
 
             if self.values:
