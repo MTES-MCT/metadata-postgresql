@@ -32,13 +32,11 @@ except:
     # installe RDFLib si n'est pas déjà disponible
     manageLibrary()
     from rdflib import URIRef, BNode, Literal
-from rdflib.namespace import RDF, XSD
 
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     ForbiddenOperation, UnknownParameterValue
 from plume.rdf.actionsbook import ActionsBook
-
-
+from plume.rdf.namespaces import DCAT, RDF, XSD
 
 class WidgetKey:
     """Clé d'un dictionnaire de widgets.
@@ -1343,16 +1341,16 @@ class GroupKey(WidgetKey):
                 # le parti de comparer des chaînes de caractères
                 return child._search_from_path(path)
 
-    def _search_from_rdftype(self, rdftype, matchlist):
+    def _search_from_rdfclass(self, rdfclass, matchlist):
         for child in self.real_children():
             if isinstance(child, GroupOfPropertiesKey) and \
-                rdftype == child.rdftype:
+                rdfclass == child.rdfclass:
                 matchlist.append(child)
             if isinstance(child, GroupKey):
                 # moins efficace que search_from_path,
                 # parce qu'on est obligé de parcourir toutes
                 # les branches
-                child._search_from_rdftype(rdftype, matchlist)
+                child._search_from_rdfclass(rdfclass, matchlist)
 
     def _clean(self):
         if not self.children:
@@ -1579,38 +1577,38 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Le noeud anonyme objet du prédicat, qui est également le sujet
         des triplets des enfants du groupe. Si non fourni, un nouveau
         noeud anonyme est généré.
-    rdftype : rdflib.term.URIRef
+    rdfclass : rdflib.term.URIRef
         La classe RDF du noeud. Si la clé appartient à un groupe de valeurs,
         c'est lui qui porte cette information. Sinon, elle est obligatoire.
     
     Attributes
     ----------
     node
-    rdftype
+    rdfclass
     sources
     key_object
     
     Methods
     -------
-    paste_from_rdftype(widgetkey)
-        Remplace la branche par une autre de même type RDF.
+    paste_from_rdfclass(widgetkey)
+        Remplace la branche par une autre de même classe RDF.
     
     """
     
     def _base_attributes(self, **kwargs):
         GroupKey._base_attributes(self, **kwargs)
         ObjectKey._base_attributes(self, **kwargs)
-        self._rdftype = None
+        self._rdfclass = None
         self._node = None
     
     def _computed_attributes(self, **kwargs):
         ObjectKey._computed_attributes(self, **kwargs)
-        self.rdftype = kwargs.get('rdftype')
+        self.rdfclass = kwargs.get('rdfclass')
         self.node = kwargs.get('node')
  
     def _validate_parent(self, parent):
-        if isinstance(parent, GroupOfValuesKey) and not parent.rdftype:
-            raise IntegrityBreach(self, "L'attribut `rdftype` de " \
+        if isinstance(parent, GroupOfValuesKey) and not parent.rdfclass:
+            raise IntegrityBreach(self, "L'attribut `rdfclass` de " \
                 "la clé parente n'est pas renseigné.")
         return isinstance(parent, GroupKey) and \
             not isinstance(parent, TranslationGroupKey)
@@ -1646,7 +1644,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             self._node = BNode()
  
     @property
-    def rdftype(self):
+    def rdfclass(self):
         """rdflib.term.URIRef: La classe RDF du noeud.
         
         Raises
@@ -1663,15 +1661,15 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
 
         """
         if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.rdftype
-        return self._rdftype
+            return self.parent.rdfclass
+        return self._rdfclass
 
-    @rdftype.setter
-    def rdftype(self, value):
+    @rdfclass.setter
+    def rdfclass(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
             if not value:
-                raise MissingParameter('rdftype', self)
-            self._rdftype = value
+                raise MissingParameter('rdfclass', self)
+            self._rdfclass = value
 
     @property
     def sources(self):
@@ -1701,7 +1699,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         """
         return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m',
-            'node', 'rdftype']
+            'node', 'rdfclass']
 
     @property
     def attr_to_copy(self):
@@ -1726,7 +1724,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         """
         return { 'order_idx': True, 'parent': True, 'predicate': True,
-            'label': True, 'description': True, 'rdftype': True }
+            'label': True, 'description': True, 'rdfclass': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -1766,7 +1764,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             key.is_hidden_m = self.is_hidden_m
         return key
 
-    def paste_from_rdftype(self, widgetkey):
+    def paste_from_rdfclass(self, widgetkey):
         """Remplace la branche par une branche de même type.
         
         Cette méthode n'a pas d'effet si elle est appliquée à
@@ -1799,8 +1797,8 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         if not isinstance(widgetkey, GroupOfPropertiesKey):
             raise ForbiddenOperation(self, 'Seul un groupe de ' \
                 'propriétés peut être copié avec cette méthode.')
-        if not self.rdftype == widgetkey.rdftype:
-            raise ForbiddenOperation(self, '`rdftype` doit être ' \
+        if not self.rdfclass == widgetkey.rdfclass:
+            raise ForbiddenOperation(self, '`rdfclass` doit être ' \
                 'identique pour les deux clés.')
         WidgetKey.clear_actionsbook()
         self.kill()
@@ -1857,7 +1855,7 @@ class GroupOfValuesKey(GroupKey):
     description : str or rdflib.term.Literal, optional
         Définition de la catégorie de métadonnée représentée par les clés
         du groupe.
-    rdftype : rdflib.term.URIRef, optional
+    rdfclass : rdflib.term.URIRef, optional
         La classe RDF commune à toutes les valeurs du groupe. Cette
         information est obligatoire dès lors qu'une des filles du groupe est
         de type :py:class:`GroupOfPropertiesKey`.
@@ -1866,9 +1864,9 @@ class GroupOfValuesKey(GroupKey):
     transform : {None, 'email', 'phone'}, optional
         Le cas échéant, la nature de la transformation appliquée aux
         objets du groupe.
-    xsdtype : rdflib.term.URIRef, default xsd:string
+    datatype : rdflib.term.URIRef, default xsd:string
         Le cas échéant, le type des valeurs litérales du groupe. La valeur de
-        ce paramètre est ignorée si :py:attr:`GroupOfValuesKey.rdftype` est
+        ce paramètre est ignorée si :py:attr:`GroupOfValuesKey.rdfclass` est
         renseigné, sinon ``xsd:string`` fait office de valeur par défaut.
     placeholder : str or rdflib.term.Literal, optional
         Texte de substitution à utiliser pour les clés du groupe.
@@ -1894,10 +1892,10 @@ class GroupOfValuesKey(GroupKey):
     label
     description
     with_minus_buttons
-    rdftype
+    rdfclass
     sources
     transform
-    xsdtype
+    datatype
     placeholder
     input_mask
     is_mandatory
@@ -1918,9 +1916,9 @@ class GroupOfValuesKey(GroupKey):
         self._predicate = None
         self._label = None
         self._description = None
-        self._rdftype = None
+        self._rdfclass = None
         self._sources = None
-        self._xsdtype = None
+        self._datatype = None
         self._transform = None
         self._placeholder = None
         self._input_mask = None
@@ -1935,9 +1933,9 @@ class GroupOfValuesKey(GroupKey):
         self.predicate = kwargs.get('predicate')
         self.label = kwargs.get('label')
         self.description = kwargs.get('description')
-        self.rdftype = kwargs.get('rdftype')
+        self.rdfclass = kwargs.get('rdfclass')
         self.sources = kwargs.get('sources')
-        self.xsdtype = kwargs.get('xsdtype')
+        self.datatype = kwargs.get('datatype')
         self.transform = kwargs.get('transform')
         self.placeholder = kwargs.get('placeholder')
         self.input_mask = kwargs.get('input_mask')
@@ -2052,7 +2050,7 @@ class GroupOfValuesKey(GroupKey):
         self._description = str(value) if value else None
     
     @property
-    def rdftype(self):
+    def rdfclass(self):
         """rdflib.term.URIRef: Classe RDF commune à toutes les valeurs du groupe.
         
         Raises
@@ -2066,19 +2064,19 @@ class GroupOfValuesKey(GroupKey):
         Notes
         -----
         Modifier cette propriété emporte la mise en cohérence de
-        :py:attr:`GroupOfValuesKey.xsdtype`.
+        :py:attr:`GroupOfValuesKey.datatype`.
         
         """
-        return self._rdftype
+        return self._rdfclass
         
-    @rdftype.setter
-    def rdftype(self, value):
+    @rdfclass.setter
+    def rdfclass(self, value):
         if not value and any(isinstance(child, GroupOfPropertiesKey) \
             for child in self.children):
-            raise MissingParameter('rdftype', self)
-        self._rdftype = value
+            raise MissingParameter('rdfclass', self)
+        self._rdfclass = value
         if not self._is_unborn:
-            self.xsdtype = self.xsdtype
+            self.datatype = self.datatype
     
     @property
     def sources(self):
@@ -2107,13 +2105,13 @@ class GroupOfValuesKey(GroupKey):
                             WidgetKey.actionsbook.sources.append(child.m_twin)
     
     @property
-    def xsdtype(self):
-        """rdflib.term.URIRef: Type XSD commun aux valeurs du groupe, le cas échéant.
+    def datatype(self):
+        """rdflib.term.URIRef: Type de valeur commun aux valeurs du groupe, le cas échéant.
         
         Notes
         -----
-        :py:attr:`GroupOfValuesKey.rdftype` prévaut sur
-        :py:attr:`GroupOfValuesKey.xsdtype` : si le premier est renseigné,
+        :py:attr:`GroupOfValuesKey.rdfclass` prévaut sur
+        :py:attr:`GroupOfValuesKey.datatype` : si le premier est renseigné,
         c'est que la valeur est un IRI ou un noeud anonyme, et le second
         ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé comme valeur
         par défaut.
@@ -2125,15 +2123,15 @@ class GroupOfValuesKey(GroupKey):
         
         
         """
-        return self._xsdtype
+        return self._datatype
     
-    @xsdtype.setter
-    def xsdtype(self, value):
-        if self.rdftype:
+    @datatype.setter
+    def datatype(self, value):
+        if self.rdfclass:
             value = None
         elif not value:
             value = XSD.string
-        self._xsdtype = value
+        self._datatype = value
         if not self._is_unborn:
             for child in self.children:
                 if isinstance(child, ValueKey):
@@ -2311,8 +2309,8 @@ class GroupOfValuesKey(GroupKey):
         Réécriture de la propriété :py:attr:`WidgetKey.attr_to_update`.
         
         """
-        return ['order_idx', 'predicate', 'label', 'description', 'rdftype',
-            'sources', 'xsdtype', 'transform', 'placeholder', 'input_mask',
+        return ['order_idx', 'predicate', 'label', 'description', 'rdfclass',
+            'sources', 'datatype', 'transform', 'placeholder', 'input_mask',
             'is_mandatory', 'is_read_only', 'regex_validator',
             'regex_validator_flags', 'with_minus_buttons']
 
@@ -2339,7 +2337,7 @@ class GroupOfValuesKey(GroupKey):
         
         """
         return { 'order_idx': True, 'parent': True, 'predicate': True,
-            'rdftype': True, 'sources': True, 'xsdtype': True, 'transform': True,
+            'rdfclass': True, 'sources': True, 'datatype': True, 'transform': True,
             'with_minus_buttons' : True, 'label': True, 'description': True,
             'placeholder': True, 'input_mask': True, 'is_mandatory': True,
             'is_read_only': True, 'regex_validator': True,
@@ -2473,7 +2471,7 @@ class TranslationGroupKey(GroupOfValuesKey):
         Elle est initialisée avec la variable partagée
         :py:attr:`WidgetKey.langlist`, et mise à jour automatiquement
         au gré des ajouts et suppressions de traductions dans le groupe.
-    xsdtype
+    datatype
     key_object
     
     Methods
@@ -2489,7 +2487,7 @@ class TranslationGroupKey(GroupOfValuesKey):
     Dans un groupe de traduction, dont les enfants sont nécessairement
     des clés-valeurs (:py:class:`ValueKey`) représentant des valeurs
     littérales, il n'y a jamais lieu de fournir des valeurs pour les
-    propriétés :py:attr:`GroupOfValuesKey.rdftype` et
+    propriétés :py:attr:`GroupOfValuesKey.rdfclass` et
     :py:attr:`GroupOfValuesKey.sources`. Elles n'apparaissent donc pas
     dans la liste de paramètres ci-avant, et - si valeurs il y avait -
     elles seraient silencieusement perdues. Ces propriétés renvoient
@@ -2518,12 +2516,12 @@ class TranslationGroupKey(GroupOfValuesKey):
         return 'translation group'
 
     @property
-    def rdftype(self):
+    def rdfclass(self):
         return None
         
-    @rdftype.setter
-    def rdftype(self, value):
-        self._rdftype = None
+    @rdfclass.setter
+    def rdfclass(self, value):
+        self._rdfclass = None
         
     @property
     def sources(self):
@@ -2542,8 +2540,8 @@ class TranslationGroupKey(GroupOfValuesKey):
         self._transform = None
 
     @property
-    def xsdtype(self):
-        """rdflib.term.URIRef: Type XSD commun à toutes les valeurs du groupe.
+    def datatype(self):
+        """rdflib.term.URIRef: Type de valeur commun à toutes les valeurs du groupe.
         
         Notes
         -----
@@ -2552,11 +2550,11 @@ class TranslationGroupKey(GroupOfValuesKey):
         ignorée.
         
         """
-        return self._xsdtype
+        return self._datatype
         
-    @xsdtype.setter
-    def xsdtype(self, value):
-        self._xsdtype = RDF.langString
+    @datatype.setter
+    def datatype(self, value):
+        self._datatype = RDF.langString
 
     def language_in(self, value_language):
         """Ajoute une langue à la liste des langues disponibles.
@@ -2682,16 +2680,16 @@ class ValueKey(ObjectKey):
         Le cas échéant, paramètres associés à l'expression rationnelle de
         validation de la clé. Si la clé appartient à un groupe de valeurs, c'est
         lui qui porte cette information.
-    rdftype : rdflib.term.URIRef, optional
+    rdfclass : rdflib.term.URIRef, optional
         Classe RDF de la clé-valeur, s'il s'agit d'un IRI. Si la clé appartient
         à un groupe de valeurs, c'est lui qui porte cette information.
-    xsdtype : rdflib.term.URIRef, optional
-        Le type XSD de la clé-valeur, le cas échéant. Doit impérativement
+    datatype : rdflib.term.URIRef, optional
+        Le type de la clé-valeur, le cas échéant. Doit impérativement
         valoir ``rdf:langString`` pour que les informations sur les
         langues soient prises en compte. Si la clé appartient à un groupe de
         valeurs, c'est lui qui porte cette information. Dans le cas contraire,
-        si :py:attr:`ValueKey.rdftype` n'est pas nul, il sera toujours
-        considéré que :py:attr:`ValueKey.xsdtype` l'est. Sinon, ``xsd:string``
+        si :py:attr:`ValueKey.rdfclass` n'est pas nul, il sera toujours
+        considéré que :py:attr:`ValueKey.datatype` l'est. Sinon, ``xsd:string``
         est utilisé comme valeur par défaut.
     do_not_save : bool, default False
         ``True`` si la valeur de la clé (:py:attr:`ValueKey.value`) ne doit
@@ -2702,7 +2700,7 @@ class ValueKey(ObjectKey):
         pour ce paramètre.
     value_language : str, optional
         La langue de l'objet. Obligatoire pour une valeur litérale de
-        type XSD ``rdf:langString`` et a fortiori dans un groupe de traduction,
+        type ``rdf:langString`` et a fortiori dans un groupe de traduction,
         ignoré pour tous les autres types.
     value_source : rdflib.term.URIRef
         La source utilisée par la valeur courante de la clé. Si la valeur
@@ -2723,8 +2721,8 @@ class ValueKey(ObjectKey):
     available_languages
     sources
     value
-    rdftype
-    xsdtype
+    rdfclass
+    datatype
     transform
     placeholder
     input_mask
@@ -2764,8 +2762,8 @@ class ValueKey(ObjectKey):
         self._rowspan = 0
         self._independant_label = None
         self._sources = None
-        self._rdftype = None
-        self._xsdtype = None
+        self._rdfclass = None
+        self._datatype = None
         self._transform = None
         self._placeholder = None
         self._input_mask = None
@@ -2784,8 +2782,8 @@ class ValueKey(ObjectKey):
         self.rowspan = kwargs.get('rowspan')
         self.independant_label = kwargs.get('independant_label')
         self.sources = kwargs.get('sources')
-        self.rdftype = kwargs.get('rdftype')
-        self.xsdtype = kwargs.get('xsdtype')
+        self.rdfclass = kwargs.get('rdfclass')
+        self.datatype = kwargs.get('datatype')
         self.transform = kwargs.get('transform')
         self.placeholder = kwargs.get('placeholder')
         self.input_mask = kwargs.get('input_mask')
@@ -2812,6 +2810,8 @@ class ValueKey(ObjectKey):
         -----
         `rowspan` vaudra toujours ``0`` pour une clé fantôme. Si aucune
         valeur n'est fournie, une valeur par défaut de ``1`` est appliquée.
+        `rowspan` vaut toujours ``1`` quand :py:attr:`is_long_text` vaut
+        ``False``.
         
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
@@ -2833,6 +2833,8 @@ class ValueKey(ObjectKey):
     def rowspan(self, value):
         if not self:
             value = 0
+        elif not self.is_long_text:
+            value = 1
         elif isinstance(value, Literal):
             value = value.toPython()
             if not value or not isinstance(value, int):
@@ -2858,7 +2860,7 @@ class ValueKey(ObjectKey):
         self._value = value
 
     @property
-    def rdftype(self):
+    def rdfclass(self):
         """rdflib.term.URIRef: La classe RDF de la clé-valeur.
         
         Notes
@@ -2868,22 +2870,22 @@ class ValueKey(ObjectKey):
         la valeur n'aura silencieusement aucun effet.
         
         Modifier cette propriété emporte la mise en cohérence de la propriété
-        :py:attr:`ValueKey.xsdtype`.
+        :py:attr:`ValueKey.datatype`.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.rdftype
-        return self._rdftype
+            return self.parent.rdfclass
+        return self._rdfclass
 
-    @rdftype.setter
-    def rdftype(self, value):
+    @rdfclass.setter
+    def rdfclass(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
-            self._rdftype = value
+            self._rdfclass = value
             if not self._is_unborn:
-                self.xsdtype = self.xsdtype
+                self.datatype = self.datatype
 
     @property
-    def xsdtype(self):
+    def datatype(self):
         """rdflib.term.URIRef: Renvoie le type de la valeur portée par la clé.
         
         Notes
@@ -2892,7 +2894,7 @@ class ValueKey(ObjectKey):
         la propriété du groupe parent est renvoyée. Tenter d'en modifier
         la valeur n'aura silencieusement aucun effet.
         
-        :py:attr:`ValueKey.rdftype` prévaut sur :py:attr:`ValueKey.xsdtype` :
+        :py:attr:`ValueKey.rdfclass` prévaut sur :py:attr:`ValueKey.datatype` :
         si le premier est renseigné, c'est que la valeur est un IRI ou un noeud
         anonyme, et le second ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé
         comme valeur par défaut.
@@ -2901,22 +2903,22 @@ class ValueKey(ObjectKey):
         propriétés :py:attr:`ValueKey.value_language` et
         :py:attr:`ValueKey.is_long_text`. En particulier, si
         :py:attr:`ValueKey.value_language` contient une langue mais
-        que :py:attr:`ValueKey.xsdtype` n'est plus ``rdf:langString``,
+        que :py:attr:`ValueKey.datatype` n'est plus ``rdf:langString``,
         la langue sera silencieusement effacée.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.xsdtype
-        return self._xsdtype
+            return self.parent.datatype
+        return self._datatype
     
-    @xsdtype.setter
-    def xsdtype(self, value):
+    @datatype.setter
+    def datatype(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
-            if self.rdftype:
+            if self.rdfclass:
                 value = None
             elif not value:
                 value = XSD.string
-            self._xsdtype = value
+            self._datatype = value
             if not self._is_unborn:
                 self.value_language = self.value_language
                 self.is_long_text = self.is_long_text
@@ -3080,7 +3082,7 @@ class ValueKey(ObjectKey):
         
         Notes
         -----
-        Si :py:attr:`ValueKey.xsdtype` n'est pas ``xsd:langString``,
+        Si :py:attr:`ValueKey.datatype` n'est pas ``xsd:langString``,
         cette propriété vaudra toujours ``None``.
         
         À l'initialisation, si aucune langue n'est fournie, elle
@@ -3092,12 +3094,12 @@ class ValueKey(ObjectKey):
         """
         if self._value_language:
             return self._value_language
-        elif self.xsdtype == RDF.langString:
+        elif self.datatype == RDF.langString:
             return self.main_language
     
     @value_language.setter
     def value_language(self, value):
-        if self.xsdtype != RDF.langString:
+        if self.datatype != RDF.langString:
             value = None
         elif not value and isinstance(self.value, Literal):
             value = self.value.language
@@ -3171,15 +3173,20 @@ class ValueKey(ObjectKey):
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
         
+        Modifier cette propriété emporte la mise en cohérence de
+        la propriété :py:attr:`WidgetKey.rowspan`.
+        
         """
         return self._is_long_text
     
     @is_long_text.setter
     def is_long_text(self, value):
-        if not value or not self.xsdtype in (RDF.langString, XSD.string):
+        if not value or not self.datatype in (RDF.langString, XSD.string):
             self._is_long_text = False
         else:
             self._is_long_text = True
+        if not self._is_unborn:
+            self.rowspan = self.rowspan
     
     @property
     def transform(self):
@@ -3298,7 +3305,7 @@ class ValueKey(ObjectKey):
         """
         if isinstance(self.parent, TranslationGroupKey):
             return self.parent.available_languages
-        elif self.xsdtype == RDF.langString:
+        elif self.datatype == RDF.langString:
             self.langlist
 
     def _hide_m(self, value, rec=False):
@@ -3316,7 +3323,7 @@ class ValueKey(ObjectKey):
         
         """
         return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m',
-            'rowspan', 'value', 'rdftype', 'xsdtype', 'placeholder',
+            'rowspan', 'value', 'rdfclass', 'datatype', 'placeholder',
             'input_mask', 'is_mandatory', 'is_read_only', 'regex_validator', 
             'regex_validator_flags', 'value_language', 'value_source',
             'do_not_save', 'is_long_text', 'transform', 'sources', 'independant_label']
@@ -3345,7 +3352,7 @@ class ValueKey(ObjectKey):
         """
         return { 'order_idx': True, 'parent': True, 'predicate': True,
             'label': True, 'description': True, 'do_not_save': True,
-            'sources': True, 'rdftype': True, 'xsdtype': True, 'transform': True,
+            'sources': True, 'rdfclass': True, 'datatype': True, 'transform': True,
             'rowspan': True, 'value': False, 'value_language': False,
             'value_source': False, 'placeholder': True, 'input_mask': True,
             'is_mandatory': True, 'is_read_only': True, 'regex_validator': True,
@@ -3459,6 +3466,7 @@ class PlusButtonKey(WidgetKey):
     
     Attributes
     ----------
+    description
     path
     key_object
     
@@ -3490,6 +3498,13 @@ class PlusButtonKey(WidgetKey):
         
     def _register(self, parent):
         parent.button = self
+    
+    @property
+    def description(self):
+        """str: Texte d'aide.
+        
+        """
+        return 'Ajouter un élément « {} ».'.format(parent.label)
     
     @property
     def path(self):
@@ -3568,6 +3583,7 @@ class TranslationButtonKey(PlusButtonKey):
     ----------
     key_object
     is_hidden_b
+    description
     
     """
     
@@ -3587,6 +3603,13 @@ class TranslationButtonKey(PlusButtonKey):
         
         """
         return 'translation button'
+    
+    @property
+    def description(self):
+        """str: Texte d'aide.
+        
+        """
+        return 'Ajouter une traduction.'
     
     @property
     def is_hidden_b(self):
@@ -3628,16 +3651,16 @@ class RootKey(GroupKey):
     Attributes
     ----------
     node
-    rdftype
+    rdfclass
     key_object
     
     Methods
     -------
     search_from_path(path)
         Renvoie la première clé de l'arbre dont le chemin est `path`.
-    search_from_rftype(rdftype)
+    search_from_rdfclass(rdfclass)
         Renvoie tous les groupes de propriétés de l'arbre dont la
-        classe RDF est `rdftype`.
+        classe RDF est `rdfclass`.
     paste_from_path(widgetkey)
         Copie et colle la clé dans l'arbre, en la plaçant selon
         son chemin.
@@ -3675,7 +3698,7 @@ class RootKey(GroupKey):
         return
  
     @property
-    def rdftype(self):
+    def rdfclass(self):
         """rdflib.term.URIRef: Classe RDF.
         
         Notes
@@ -3683,7 +3706,7 @@ class RootKey(GroupKey):
         Vaut toujours ``dcat:Dataset``.
         
         """
-        return URIRef("http://www.w3.org/ns/dcat#Dataset")
+        return DCAT.Dataset
 
     @property
     def attr_to_copy(self):
@@ -3723,13 +3746,13 @@ class RootKey(GroupKey):
         """
         return self._search_from_path(path)
 
-    def search_from_rdftype(self, rdftype):
+    def search_from_rdfclass(self, rdfclass):
         """Renvoie la liste des groupes de propriétés du type recherché.
         
         Parameters
         ----------
-        rdftype : rdflib.term.URIRef
-            Le type RDF (classe) cible.
+        rdfclass : rdflib.term.URIRef
+            La classe RDF cible.
             
         Returns
         -------
@@ -3737,7 +3760,7 @@ class RootKey(GroupKey):
         
         """
         matchlist = []
-        self._search_from_rdftype(rdftype, matchlist)
+        self._search_from_rdfclass(rdfclass, matchlist)
 
     def paste_from_path(self, widgetkey):
         """Copie et colle une branche dans l'arbre de clés.
