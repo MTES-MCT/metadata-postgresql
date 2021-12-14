@@ -3,14 +3,15 @@
 from rdflib.namespace import NamespaceManager
 
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
-    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, PlusButtonKey, \
-    ObjectKey
+    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
+    PlusButtonKey, ObjectKey, RootKey, TabKey
 from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
-from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
-    UnknownParameterValue
+from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
+    UnknownParameterValue, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager    
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD
+from plume.rdf.properties import PlumeProperty
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -147,80 +148,79 @@ class WidgetsDict(dict):
         returns (mode == 'edit')
 
 
-    def _build_dict(self, metagraph, shape, parent, shallow_template, shallow_data):
-        # identification de la forme du schéma SHACL qui décrit la
-        # classe cible :
-        shape_iri = shape.shape_iri_from_class(parent.rdftype)
-        if not shape_iri:
-            raise IntegrityBreach("La classe '{}' n'est pas répertoriée dans le " \
-                "schéma SHACL".format(parent.rdftype))
+    def _build_dict(self, metagraph, shape, parent, _template, _data):
+
+        # liste des catégories communes de la classe :
+        properties = class_properties(parent.rdfclass)
         
-        # ------ BOUCLE SUR LES CATEGORIES DE SHAPE ------
-        for property_iri in shape.objects(
-            shape_iri,
-            URIRef("http://www.w3.org/ns/shacl#property")
-            ):
-            
-            # récupération des informations relatives
-            # à la catégorie dans le schéma SHACL
-            prop_args = shape.read_property(shape_iri, property_iri)
-            prop_args['parent'] = parent
-            prop_args['is_mandatory'] = prop_args['min'] and int(prop_args['min']) > 0
-            
-            new_path = ( parent.path + " / " if parent.path else '') \
+        # ajout des informations de template :
+        for prop_args in properties:
+            prop_args['path'] = (parent.path + " / " if parent.path else '') \
                 + prop_args['predicate'].n3(self.nsm)
-            kind = prop_args['kind'].n3(self.nsm)
+            if prop_args['path'] in _template:
+                prop_args.merge(_template['path'])
+        
+        # et des catégories locales :
+        if isinstance(parent, RootKey):
+            for path, prop_args in _template.items():
+                if prop_args['origin'] == 'local':
+                    properties.append(prop_args)
+        
+        # ------ CATEGORIES COMMUNES ------
+        for prop_args in properties:
+            
+            prop_args['parent'] = parent
+            new_path = prop_args['path']
             values = None
             multilingual = bool(prop_args['unilang']) and self.translation
-            multiple = (prop_args['max'] is None or int(prop_args['max']) > 1) \
+            multiple = bool(prop_args['is_multiple']) and self.edit \
                 and not bool(prop_args['unilang'])
             
             # ------ Récupération des valeurs ------
             # cas d'une propriété dont les valeurs sont mises à
             # jour à partir d'informations disponibles côté serveur
-            if shallow_data and new_path in shallow_data:
-                values = shallow_data[new_path].copy() or []
-                del shallow_data[new_path]
-                
+            if _data and new_path in _data:
+                values = _data[new_path].copy() or [None]
+                del _data[new_path]
             # sinon, on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
             # et le sujet considéré
-            values = [ o for o in metagraph.objects(subject, predicate) ]
+            else:
+                values = [o for o in metagraph.objects(subject, predicate)] or [None]
 
+            # ------ Exclusion et fantômisation ------
             # exclusion des catégories qui ne sont pas prévues par
             # le modèle, ne sont pas considérées comme obligatoires
             # par shape et n'ont pas de valeur renseignée.
-            # les catégories obligatoires de shape sont affichées
-            # quoi qu'il arrive en mode édition
-            # les catégories sans valeur sont éliminées indépendemment
-            # du modèle en mode lecture quand readHideBlank vaut True
-            if values in (None, [], [None]) and (self.hideBlank \
-                or (shallow_template and not new_path in shallow_template \
-                and not (self.edit and prop_args['is_mandatory']))):
+            # Les catégories obligatoires de shape sont affichées
+            # quoi qu'il arrive en mode édition.
+            # Les catégories sans valeur sont éliminées indépendamment
+            # du modèle quand hideBlank vaut True.
+            if values == [None] and (self.hideBlank \
+                or (_template and not new_path in _template)) \
+                and not (self.edit and prop_args['is_mandatory']):
                 continue
-            # s'il y a une valeur, mais que
-            # read/editHideUnlisted vaut True et que la catégorie n'est
-            # pas prévue par le modèle, on poursuit le traitement
-            # pour ne pas perdre la valeur, mais on ne créera
-            # pas de widget. Les catégories obligatoires de shape sont
-            # affichées quoi qu'il arrive
-            elif self.hideUnlisted and shallow_template \
-                and not new_path in shallow_template and not prop_args['is_mandatory']:
+            # s'il y a une valeur, mais que hideUnlisted vaut True
+            # et que la catégorie n'est pas prévue par le modèle, on
+            # poursuit le traitement pour ne pas perdre la valeur, mais
+            # on ne créera pas de widget.
+            # Les catégories obligatoires de shape sont affichées quoi
+            # qu'il arrive.
+            elif _template and not new_path in _template \
+                and self.hideUnlisted and not prop_args['is_mandatory']:
                 prop_args['is_ghost'] = True
-            
-            values = values or [None]
             
             # ------ Extraction des informations du modèle ------
             t = dict()
-            if new_path in shallow_template:
-                t = shallow_template[new_path]
-                shallow_template[new_path]['done'] = True
+            if new_path in _template:
+                t = _template[new_path]
+                t['done'] = True
                 prop_args['order_idx'] = (t.get('order', 9999), prop_args['shape_order'])
 
             # ------ Choix de l'onglet ------
             # pour les catégories de premier niveau
             if isinstance(parent, RootKey):
-                if shallow_template and not new_path in shallow_template:
+                if _template and not new_path in _template:
                     # les métadonnées hors modèle iront dans
                     # l'onglet "Autres".
                     tabkey = parent.search_tab('Autres')
@@ -236,7 +236,7 @@ class WidgetsDict(dict):
             # en tête. Dans tous les cas, la première valeur sera
             # affichées, les autres seront des fantômes si elles
             # ne sont pas dans la bonne langue.
-            if prop_args['xsdtype'].n3() == 'rdf:langString' \
+            if prop_args['datatype'] == RDF.langString \
                 and self.onlyCurrentLanguage:
                 sort_by_language(values, self.language)
 
@@ -252,12 +252,11 @@ class WidgetsDict(dict):
                 # les widgets référencés ensuite auront ce groupe pour parent
                 prop_args['parent'] = groupkey
             
-            # ------ BOUCLE SUR LES VALEURS ------
             for value in values:
                 val_args = prop_args.copy()
             
-                # ------ Affichage mono-langue ------
-                if val_args['xsdtype'].n3() == 'rdf:langString' \
+                # ------ Affichage mono-langue (suite) ------
+                if val_args['datatype'] == RDF.langString \
                     and self.onlyCurrentLanguage:
                     if value and parent.has_real_children and \
                         (not isinstance(value, Literal) or \
@@ -265,7 +264,7 @@ class WidgetsDict(dict):
                         val_args['is_ghost'] = True
                 
                 # ------ Cas d'un noeud anonyme -------
-                if kind in ('sh:BlankNode', 'sh:BlankNodeOrIRI') \
+                if val_args['kind'] in (SH.BlankNode, SH.BlankNodeOrIRI) \
                     and (isinstance(value, BNode) or (not self.hideBlank \
                     and not val_args['is_ghost'])):
                     nodekey = GroupOfPropertiesKey(**val_args)
@@ -274,44 +273,62 @@ class WidgetsDict(dict):
                     self[nodekey] = InternalDict()
                     nodekey.update(t, exclude_none=True)
                     self._build_dict(metagraph=metagraph, shape=shape, parent=nodekey,
-                        shallow_template=shallow_template, shallow_data=shallow_data)
-                    if kind == 'sh:BlankNodeOrIRI':
+                        _template=_template, _data=_data)
+                    if val_args['kind'] == SH.BlankNodeOrIRI:
                         val_args['m_twin'] = nodekey
                         kwarg['is_hidden_m'] = not isinstance(value, BNode)
                     
                 # ------ Cas d'une valeur litéral ou d'un IRI ------
-                if kind in ('sh:BlankNodeOrIRI', 'sh:Literal', 'sh:IRI') \
+                if val_args['kind'] in (SH.BlankNodeOrIRI, SH.Literal, SH.IRI) \
                     and (isinstance(value, (Literal, URIRef)) or \
                     (not self.hideBlank and not val_args['is_ghost'])):
                     
-                    # ------ Adaptation de is_long_text à la valeur ------
-                    if kind == 'sh:Literal' \
+                    # adaptation de is_long_text à la valeur
+                    if val_args['kind'] == SH.Literal \
                         and len(str(value)) > self.valueLengthLimit:
                         val_args['is_long_text'] = True
                 
-                    # ------ rowspan selon is_long_text ------
+                    # rowspan selon is_long_text
                     if val_args['is_long_text'] and not val_args['rowspan']:
                         val_args['rowspan'] = self.textEditRowSpan
                 
-                    # ------ Etiquette séparée ------
+                    # étiquette séparée
                     if val_args['label'] and (val_args['is_long_text'] or \
                         len(str(val_args['label'])) > self.labelLengthLimit):
                         val_args['independant_label'] = True
                 
-                    # ------ Source de la valeur ------
-                    
-                
-                    # ------ Langue de la valeur ------
-                    # value_language est déduit de value à l'initialisation
-                    # de la clé.
+                    # source de la valeur
+                    if val_args['sources']:
+                        val_args['value_source'] = Thesaurus.concept_source(value)
                 
                     val_args['value'] = value
+                    # value_language est déduit de value à l'initialisation
+                    # de la clé, le cas échéant
                     valkey = ValueKey(**val_args)
                     self[valkey] = InternalDict()
                     valkey.update(t, exclude_none=True)
                 
             # ------ Bouton ------
-            
+            if multilingual or multiple:
+                buttonkey = TranslationButtonKey(**prop_args) if multilingual \
+                    else PlusButtonKey(**prop_args)
+                if buttonkey:
+                    # buttonkey peut être None s'il s'avère que le groupe
+                    # est un fantôme
+                    self[buttonkey] = InternalDict()
+                    buttonkey.update(t, exclude_none=True)
+                    
+        if isinstance(parent, RootKey):
+        
+            # ------ CATEGORIES LOCALES -------
+            for new_path in _template:
+                if _template['new_path']['done']:
+                    continue
+                
+        
+            # ------ CATEGORIES NON REPERTORIEES ------
+        
+        
 
     def parent_grid(self, widgetkey):
         """Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.
@@ -473,16 +490,16 @@ class WidgetsDict(dict):
             return 'QGroupBox'
         if isinstance(widgetkey, PlusButtonKey):
             return 'QToolButton'
-        if widgetkey.xsdtype.n3(self.nsm) == 'xsd:boolean':
+        if widgetkey.datatype.n3(self.nsm) == 'xsd:boolean':
             return 'QCheckBox'
         if widgetkey.is_read_only:
             return 'QLabel'
-        if not widgetkey.xsdtype:
+        if not widgetkey.datatype:
             if value_source:
                 return 'QComboBox'
             else:
                 return 'QLineEdit'
-        if widgetkey.xsdtype.n3(self.nsm) in ('rdf:langString', 'xsd:string'):
+        if widgetkey.datatype.n3(self.nsm) in ('rdf:langString', 'xsd:string'):
             if widgetkey.is_long_text:
                 return 'QTextEdit'
             return 'QLineEdit'
@@ -492,7 +509,7 @@ class WidgetsDict(dict):
             'xsd:time': 'QTimeEdit',
             'gsp:wktLiteral': 'QTextEdit'
             }
-        return d.get(widgetkey.xsdtype.n3(self.nsm), 'QLineEdit')
+        return d.get(widgetkey.datatype.n3(self.nsm), 'QLineEdit')
     
     def type_validator(self, widgetkey):
         """S'il y a lieu, renvoie le validateur adapté pour une clé.
@@ -511,7 +528,7 @@ class WidgetsDict(dict):
             'xsd:float': 'QDoubleValidator',
             'xsd:double': 'QDoubleValidator'
             }
-        return d.get(widgetkey.xsdtype.n3(self.nsm))
+        return d.get(widgetkey.datatype.n3(self.nsm))
     
     def register_value(self, widgetkey, value):
         """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
@@ -536,8 +553,8 @@ class WidgetsDict(dict):
         if widgetkey.value_language:
             widgetkey.value = Literal(value, lang=self.value_language)
             return 
-        if widgetkey.xsdtype:
-            widgetkey.value = Literal(value, datatype=self.xsdtype)
+        if widgetkey.datatype:
+            widgetkey.value = Literal(value, datatype=self.datatype)
             return 
         if widgetkey.value_source:
             res = Thesaurus.concept_iri((widgetkey.value_source, \
