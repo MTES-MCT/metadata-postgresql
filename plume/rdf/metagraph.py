@@ -12,7 +12,6 @@ except:
     # installe RDFLib si n'est pas déjà disponible
     manageLibrary()
     from rdflib import Graph, URIRef
-    
 
 class Metagraph(Graph):
     """Graphes de métadonnées.
@@ -84,7 +83,6 @@ def uuid_from_datasetid(datasetid):
             except:
                 return
 
-
 def datasetid_from_uuid(uuid):
     """Crée un identifiant de jeu de données à partir d'un UUID.
     
@@ -100,80 +98,6 @@ def datasetid_from_uuid(uuid):
     
     """
     return URIRef(uuid.urn)
-
-
-class ShapeGraph(Graph):
-    """Schémas SHACL.
-    
-    """
-    def shape_iri_from_class(self, class_iri):
-        """Renvoie l'IRI de la forme décrivant la classe considérée.
-        
-        Parameters
-        ----------
-        class_iri : URIRef
-            IRI d'une classe présumée décrite dans le schéma.
-        
-        Returns
-        -------
-        URIRef
-            L'IRI de la forme. None si la classe n'est pas décrite  par
-            le schéma.
-        
-        """
-        for s in shape.subjects(
-            URIRef("http://www.w3.org/ns/shacl#targetClass"),
-            class_iri
-            ):
-            return s
-    
-    def read_property(self, shape_iri, property_iri):
-        """Extrait du schéma SHACL les caractéristiques d'une propriété d'une forme.
-        
-        Parameters
-        ----------
-        shape_iri : URIRef
-            IRI de la forme.
-        property_iri : URIRef
-            IRI de la propriété.
-        
-        Returns
-        -------
-        dict
-            Un dictionnaire avec une clé par caractéristique potentiellement
-            fournie.
-        
-        """
-        prop_map = {
-            "sh:path": ("predicate", False),
-            "sh:name": ("label", False),
-            "sh:description": ("description", False),
-            "sh:nodeKind": ("kind", False),
-            "sh:order": ("shape_order", False),
-            "sh:class": ("rdftype", False),
-            "snum:placeholder": ("placeholder", False),
-            "snum:inputMask": ("input_mask", False),
-            "snum:rowSpan": ("rowspan", False),
-            "sh:minCount": ("min", False),
-            "sh:maxCount": ("max", False),
-            "sh:datatype": ("xsdtype", False),
-            "sh:uniqueLang": ("unilang", False),
-            "sh:pattern": ("regex_validator", False),
-            "sh:flags": ("regex_validator_flags", False),
-            "snum:transform": ("transform", False),
-            "snum:ontology": ("sources", True)
-            } 
-        p = { v[0]: None for v in prop_map.values() }
-        
-        for a, b in shape.predicate_objects(property_iri):
-            if a.n3(nsm) in prop_map:
-                if prop_map[a.n3(nsm)][1]:
-                    p[prop_map[a.n3(nsm)][0]] = (p[prop_map[a.n3(nsm)][0]] or []) + [b]
-                else:
-                    p[prop_map[a.n3(nsm)][0]] = b
-                    
-        return p
-
 
 def get_datasetid(anygraph):
     """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
