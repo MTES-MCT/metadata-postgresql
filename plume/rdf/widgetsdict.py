@@ -10,7 +10,7 @@ from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, ForbiddenOperation, \
     UnknownParameterValue
 from plume.rdf.thesaurus import Thesaurus
-    
+from plume.rdf.namespaces import PlumeNamespaceManager    
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -38,11 +38,9 @@ class WidgetsDict(dict):
         Liste des langues autorisées pour les traductions. Certaines
         valeurs du dictionnaire dépendent de cette liste, et la connaître est
         nécessaire à l'exécution de certaines actions.
-    nsm : rdflib.namespace.NamespaceManager
-        Le gestionnaire d'espaces de nommage permettant de résoudre
-        tous les préfixes du dictionnaire. On pourra initialiser l'attribut
-        avec le gestionnaire du schéma SHACL, et le compléter ensuite
-        si besoin.
+    nsm : PlumeNamespaceManager, optional
+        Le gestionnaire d'espaces de nommage du graphe source. Si non
+        spécifié, un nouveau gestionnaire sera généré.
     
     Attributes
     ----------
@@ -68,13 +66,31 @@ class WidgetsDict(dict):
     root : RootKey
         La clé racine du dictionnaire, dont toutes les autres sont des
         descendantes.
-    nsm : rdflib.namespace.NamespaceManager
+    nsm : PlumeNamespaceManager
         Le gestionnaire d'espaces de nommage permettant de résoudre
         tous les préfixes du dictionnaire.
+    hideBlank : bool
+        Les métadonnées sans valeur doivent-elles être masquées ?
+    hideUnlisted : bool
+        Les métadonnées hors modèle doivent-elles être masquées ?
+    onlyCurrentLanguage : bool
+        Les métadonnées qui ne sont pas dans la langue principale
+        (`language`) doivent-elles être masquées ?
+    textEditRowSpan : int
+        Hauteur par défaut des widgets de saisie de texte multi-lignes,
+        en nombre de ligne.
+    valueLengthLimit : int
+        Si la longueur d'une valeur textuelle (nombre de caractères)
+        est supérieure à `valueLengthLimit`, elle est affichée sur
+        plusieurs lignes.
+    labelLengthLimit : int
+        Si la longueur d'une étiquette (nombre de caractères) est
+        supérieure à `labelLengthLimit`, elle est affichée au-dessus
+        du widget de saisie.
     
     """
     
-    def __init__(self, nsm, mode='edit', translation=False, language='fr',
+    def __init__(self, nsm=None, mode='edit', translation=False, language='fr',
         langList=['fr', 'en'], readHideBlank=True, editHideUnlisted=False,
         readHideUnlisted=True, editOnlyCurrentLanguage=False,
         readOnlyCurrentLanguage=True, labelLengthLimit=25, valueLengthLimit=65,
@@ -109,8 +125,7 @@ class WidgetsDict(dict):
             raise TypeError('`textEditRowSpan` devrait être un nombre entier.')
         else:
             self.textEditRowSpan = textEditRowSpan
-        
-        self.nsm = nsm
+
         self.translation = translation and self.edit
         self.hideBlank = readHideBlank and not self.edit
         self.hideUnlisted = (readHideUnlisted and not self.edit) \
@@ -118,6 +133,7 @@ class WidgetsDict(dict):
         self.onlyCurrentLanguage = (readOnlyCurrentLanguage and not self.edit) \
             or (editHideUnlisted and self.edit and not self.translation)
         self.root = None
+        self.nsm = nsm or PlumeNamespaceManager()
 
     @property
     def edit(self):
