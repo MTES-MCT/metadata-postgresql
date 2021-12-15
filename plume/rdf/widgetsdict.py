@@ -10,8 +10,9 @@ from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     UnknownParameterValue, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD
-from plume.rdf.properties import PlumeProperty
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM
+from plume.rdf.properties import PlumeProperty, class_properties
+from plume.rdf.metagraph import uuid_from_datasetid, datasetid_from_uuid
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -39,12 +40,18 @@ class WidgetsDict(dict):
         Liste des langues autorisées pour les traductions. Certaines
         valeurs du dictionnaire dépendent de cette liste, et la connaître est
         nécessaire à l'exécution de certaines actions.
-    nsm : PlumeNamespaceManager, optional
-        Le gestionnaire d'espaces de nommage du graphe source. Si non
-        spécifié, un nouveau gestionnaire sera généré.
     
     Attributes
     ----------
+    datasetid : URIRef
+        L'identifiant du jeu de données dont le dictionnaire présente les
+        métadonnées.
+    root : RootKey
+        La clé racine du dictionnaire, dont toutes les autres sont des
+        descendantes.
+    nsm : PlumeNamespaceManager
+        Le gestionnaire d'espaces de nommage permettant de résoudre
+        tous les préfixes du dictionnaire.
     mode : {'edit', 'read'} 
         ``'edit'`` pour un dictionnaire produit pour l'édition, ``'read'``
         pour un dictionnaire produit uniquement pour la consultation.
@@ -64,12 +71,6 @@ class WidgetsDict(dict):
     langList : list of str
         Liste des langues autorisées pour les traductions, telles que
         déclarées lors de la génération du dictionnaire.
-    root : RootKey
-        La clé racine du dictionnaire, dont toutes les autres sont des
-        descendantes.
-    nsm : PlumeNamespaceManager
-        Le gestionnaire d'espaces de nommage permettant de résoudre
-        tous les préfixes du dictionnaire.
     hideBlank : bool
         Les métadonnées sans valeur doivent-elles être masquées ?
     hideUnlisted : bool
@@ -91,104 +92,148 @@ class WidgetsDict(dict):
     
     """
     
-    def __init__(self, nsm=None, mode='edit', translation=False, language='fr',
+    def __init__(self, metagraph=None, template=None, templateTabs=None, data=None,
+        columns=None, mode='edit', translation=False, language='fr',
         langList=['fr', 'en'], readHideBlank=True, editHideUnlisted=False,
         readHideUnlisted=True, editOnlyCurrentLanguage=False,
         readOnlyCurrentLanguage=True, labelLengthLimit=25, valueLengthLimit=65,
         textEditRowSpan=6):
-        if mode in ('edit', 'read'):
-            # 'search' n'est pas accepté pour le moment
-            self.mode = mode
-        else:
-            raise UnknownParameterValue('mode', mode)
-            
-        if isinstance(language, str):
-            self.language = language
-        else:
-            raise TypeError('`language` devrait être une chaîne de caractères.')
-            
-        if not isinstance(langList, list):
-            raise TypeError('`langList` devrait être une liste.')
-        elif not language in langList:
-            raise ValueError('`language` devrait être un des items de `langList`.')
-        else:
-            self.langList = langList
         
-        if not isinstance(labelLengthLimit, int):
-            raise TypeError('`labelLengthLimit` devrait être un nombre entier.')
-        else:
-            self.labelLengthLimit = labelLengthLimit
-        if not isinstance(valueLengthLimit, int):
-            raise TypeError('`valueLengthLimit` devrait être un nombre entier.')
-        else:
-            self.valueLengthLimit = valueLengthLimit
-        if not isinstance(textEditRowSpan, int):
-            raise TypeError('`textEditRowSpan` devrait être un nombre entier.')
-        else:
-            self.textEditRowSpan = textEditRowSpan
-
+        # ------ Paramètres utilisateur ------
+        self.mode = mode if mode in ('edit', 'read') else 'edit'
+        self.langList = langList if langList and isinstance(langList, list) \
+            else ['fr', 'en']
+        self.language = language if language in self.langList else 'fr'
+        self.labelLengthLimit = labelLengthLimit if labelLengthLimit \
+            and isinstance(labelLengthLimit, int) else 25
+        self.valueLengthLimit = valueLengthLimit if valueLengthLimit \
+            and isinstance(valueLengthLimit, int) else 65
+        self.textEditRowSpan = textEditRowSpan if textEditRowSpan \
+            and isinstance(textEditRowSpan, int) else 6
         self.translation = translation and self.edit
         self.hideBlank = readHideBlank and not self.edit
         self.hideUnlisted = (readHideUnlisted and not self.edit) \
             or (editHideUnlisted and self.edit)
         self.onlyCurrentLanguage = (readOnlyCurrentLanguage and not self.edit) \
             or (editHideUnlisted and self.edit and not self.translation)
+        
+        # ------ Racine ------
+        # + gestion de l'identifiant
         self.root = None
-        self.nsm = nsm or PlumeNamespaceManager()
-
-    @property
-    def edit(self):
-        """Le dictionnaire est-il généré pour l'édition ?
+        self.datasetid = None
+        self.nsm = PlumeNamespaceManager()
         
-        Returns
-        -------
-        bool
-        
-        """
-        returns (mode == 'edit')
-
-
-    def _build_dict(self, metagraph, shape, parent, _template, _data):
-
-        # liste des catégories communes de la classe :
-        properties = class_properties(parent.rdfclass)
-        
-        # ajout des informations de template :
-        for prop_args in properties:
-            prop_args['path'] = (parent.path + " / " if parent.path else '') \
-                + prop_args['predicate'].n3(self.nsm)
-            if prop_args['path'] in _template:
-                prop_args.merge(_template['path'])
-        
-        # et des catégories locales :
-        if isinstance(parent, RootKey):
-            for path, prop_args in _template.items():
-                if prop_args['origin'] == 'local':
-                    properties.append(prop_args)
-        
-        # ------ CATEGORIES COMMUNES ------
-        for prop_args in properties:
+        if data:
+            ident = (data.get('dct:identifier') or [None])[0]
+            if ident:
+                self.datasetid = datasetid_from_uuid(ident)
+        mg_datasetid = get_datasetid(metagraph) if metagraph else None
+        self.root = RootKey(datasetid=mg_datasetid)
+        self[self.root] = InternalDict()
+        if not self.datasetid:
+            ident = uuid_from_datasetid(self.root.node)
+            if ident:
+                self.datasetid = self.root.node
+            else:
+                ident = uuid4()
+                self.datasetid = datasetid_from_uuid(ident)
+            data['dct:identifier'] = [str(ident)]
+            # à ce stade, l'identifiant de la clé racine est
+            # celui du graphe, qui n'est plus nécessairement
+            # identique à self.datasetid. On attend cependant
+            # la fin de l'initialisation pour le corriger, sans
+            # quoi on ne pourra pas récupérer le contenu du graphe.
             
-            prop_args['parent'] = parent
-            new_path = prop_args['path']
-            values = None
-            multilingual = bool(prop_args['unilang']) and self.translation
-            multiple = bool(prop_args['is_multiple']) and self.edit \
-                and not bool(prop_args['unilang'])
+        self.root.langlist = self.langList
+        self.root.main_language = self.language
+        self.root.max_rowspan = 30 if self.edit else 1
+        
+        # ------ Onglets ------
+        if templateTabs:
+            for label, order_idx in templateTabs:
+                tabkey = TabKey(parent=self.root, label=label,
+                    order_idx=order_idx)
+                self[tabkey] = InternalDict()
+        else:
+            tabkey = TabKey(parent=self.root, label='Général', order_idx=(0,))
+            self[tabkey] = InternalDict()
+        # dans tous les cas, on ajoute un onglet "Autres"
+        # pour les catégories hors modèle
+        tabkey = TabKey(parent=self.root, label='Autres', order_idx=(9999,))
+        self[tabkey] = InternalDict()
+        
+        # ------ Colonnes de la table ------
+        if columns:
+            tabkey = TabKey(parent=self.root, label='Champs', order_idx=(9998,))
+            self[tabkey] = InternalDict()
+            for label, value in columns:
+                valkey = ValKey(parent=tabkey, label=label, value=value,
+                    is_long_text=True, description='Description du champ',
+                    rowspan=textEditRowSpan, predicate=SNUM.column,
+                    do_not_save=True)
+                self[valkey] = InternalDict()
+        
+        # ------ Construction récursive ------
+        self._build_dict(parent=self.root, metagraph=metagraph, template=template, data=data)
+        
+        # ------ Nettoyage des groupes vides ------
+        actionsbook = self.root.clean()
+        for key in actionsbook.drop:
+            del self[key]
+        
+        # ------- Mise à jour de l'identifiant ------
+        # dans l'hypothèse où celui de data et celui de metagraph
+        # auraient été différents
+        self.root.node = self.datasetid
+        
+        # ------ Calcul des dictionnaires internes ------
+        for widgetkey in self.keys():
+            self.internalize_widgetkey(widgetkey)
+
+    def _build_dict(self, parent, metagraph=None, template=None, data=None):
+        # ------ Constitution de la liste des catégories ------
+        # catégories communes de la classe :
+        properties, n3_paths, predicates = class_properties(rdfclass=parent.rdfclass,
+            nsm=self.nsm, base_path=parent.path, template=template)
+        if isinstance(parent, RooKey):
+            # catégories locales:
+            for n3_path in template.keys():
+                if not n3_path in n3_paths:
+                    p = PlumeProperty(origin='local', nsm=self.nsm,
+                        n3_path=n3_path, template=template)
+                    properties.append(p)
+                    predicates.append(p.predicate)
+            # catégories non référencées
+            if metagraph:
+                for predicate, o in metagraph.predicate_objects(parent.node):
+                    if not predicate in predicates:
+                        properties.append(PlumeProperty(origin='unknown',
+                            nsm=self.nsm, predicate=predicate))   
+        
+        # ------ Boucle sur les catégories ------
+        for prop in properties:
+            prop_dict = prop.prop_dict
+            prop_dict['parent'] = parent
+            kind = prop_dict.get('kind', SH.Literal)
+            multilingual = bool(prop_dict.get('unilang')) and self.translation
+            multiple = bool(prop_dict.get('is_multiple')) and self.edit \
+                and not bool(prop_dict.get('unilang'))
             
             # ------ Récupération des valeurs ------
             # cas d'une propriété dont les valeurs sont mises à
             # jour à partir d'informations disponibles côté serveur
-            if _data and new_path in _data:
-                values = _data[new_path].copy() or [None]
-                del _data[new_path]
+            if data and prop.n3_path in data:
+                values = data[prop.n3_path].copy() or [None]
             # sinon, on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
             # et le sujet considéré
+            elif metagraph:
+                values = [o for o in metagraph.objects(parent.node,
+                    prop.predicate)] or [None]
             else:
-                values = [o for o in metagraph.objects(subject, predicate)] or [None]
+                values = [None]
 
-            # ------ Exclusion et fantômisation ------
+            # ------ Exclusion ------
             # exclusion des catégories qui ne sont pas prévues par
             # le modèle, ne sont pas considérées comme obligatoires
             # par shape et n'ont pas de valeur renseignée.
@@ -196,39 +241,31 @@ class WidgetsDict(dict):
             # quoi qu'il arrive en mode édition.
             # Les catégories sans valeur sont éliminées indépendamment
             # du modèle quand hideBlank vaut True.
-            if values == [None] and (self.hideBlank \
-                or (_template and not new_path in _template)) \
-                and not (self.edit and prop_args['is_mandatory']):
+            if values == [None] and (self.hideBlank or prop.unlisted) \
+                and not (self.edit and prop_dict.get('is_mandatory')):
                 continue
+            # ------ Fantômisation ------
             # s'il y a une valeur, mais que hideUnlisted vaut True
+            # (ce qui ne peut arriver qu'en mode lecture)
             # et que la catégorie n'est pas prévue par le modèle, on
             # poursuit le traitement pour ne pas perdre la valeur, mais
             # on ne créera pas de widget.
             # Les catégories obligatoires de shape sont affichées quoi
             # qu'il arrive.
-            elif _template and not new_path in _template \
-                and self.hideUnlisted and not prop_args['is_mandatory']:
-                prop_args['is_ghost'] = True
-            
-            # ------ Extraction des informations du modèle ------
-            t = dict()
-            if new_path in _template:
-                t = _template[new_path]
-                t['done'] = True
-                prop_args['order_idx'] = (t.get('order', 9999), prop_args['shape_order'])
+            elif prop.unlisted and self.hideUnlisted and \
+                not prop_dict.get('is_mandatory'):
+                prop_dict['is_ghost'] = True
 
             # ------ Choix de l'onglet ------
             # pour les catégories de premier niveau
             if isinstance(parent, RootKey):
-                if _template and not new_path in _template:
+                if prop.unlisted:
                     # les métadonnées hors modèle iront dans
                     # l'onglet "Autres".
-                    tabkey = parent.search_tab('Autres')
-                    prop_args['parent'] = tabkey
+                    prop_dict['parent'] = parent.search_tab('Autres')
                 else:
-                    tabkey = parent.search_tab(t.get('tab name'))
-                    # renvoie le premier onglet si le nom est None
-                    prop_args['parent'] = tabkey
+                    prop_dict['parent'] = parent.search_tab(t.get('tab'))
+                    # NB : renvoie le premier onglet si l'argument est None
 
             # ------ Affichage mono-langue ------
             # si seules les métadonnées dans la langue principale
@@ -236,99 +273,92 @@ class WidgetsDict(dict):
             # en tête. Dans tous les cas, la première valeur sera
             # affichées, les autres seront des fantômes si elles
             # ne sont pas dans la bonne langue.
-            if prop_args['datatype'] == RDF.langString \
+            if prop_dict.get('datatype') == RDF.langString \
                 and self.onlyCurrentLanguage:
                 sort_by_language(values, self.language)
 
             # ------ Multi-valeurs ------
+            # création d'un groupe de valeurs ou de traduction
+            # rassemblant les valeurs actuelles et futures
             if len(values) > 1 or ((multilingual or multiple) and not self.hideBlank):
-                if multilingual and not prop_args['is_ghost']:
-                    groupkey = TranslationGroupKey(**prop_args)
+                if multilingual and not prop_dict.get('is_ghost'):
+                    groupkey = TranslationGroupKey(**prop_dict)
                 else:
-                    groupkey = GroupOfValuesKey(**prop_args)
+                    groupkey = GroupOfValuesKey(**prop_dict)
                 self[groupkey] = InternalDict()
-                # ajustement des attributs de la clé selon le modèle
-                groupkey.update(t, exclude_none=True)
                 # les widgets référencés ensuite auront ce groupe pour parent
-                prop_args['parent'] = groupkey
+                prop_dict['parent'] = groupkey
             
+            # ------ Boucle sur les valeurs ------
             for value in values:
-                val_args = prop_args.copy()
+                val_dict = prop_dict.copy()
             
                 # ------ Affichage mono-langue (suite) ------
-                if val_args['datatype'] == RDF.langString \
+                if val_dict.get('datatype') == RDF.langString \
                     and self.onlyCurrentLanguage:
                     if value and parent.has_real_children and \
                         (not isinstance(value, Literal) or \
                         value.language != self.language):
-                        val_args['is_ghost'] = True
+                        val_dict['is_ghost'] = True
                 
                 # ------ Cas d'un noeud anonyme -------
-                if val_args['kind'] in (SH.BlankNode, SH.BlankNodeOrIRI) \
+                if kind in (SH.BlankNode, SH.BlankNodeOrIRI) \
                     and (isinstance(value, BNode) or (not self.hideBlank \
-                    and not val_args['is_ghost'])):
-                    nodekey = GroupOfPropertiesKey(**val_args)
+                    and not val_dict.get('is_ghost'))):
+                    nodekey = GroupOfPropertiesKey(**val_dict)
                     # NB: on ne conserve pas les noeuds anonymes, il est plus
                     # simple d'en générer de nouveaux à l'initialisation de la clé.
                     self[nodekey] = InternalDict()
-                    nodekey.update(t, exclude_none=True)
-                    self._build_dict(metagraph=metagraph, shape=shape, parent=nodekey,
-                        _template=_template, _data=_data)
-                    if val_args['kind'] == SH.BlankNodeOrIRI:
-                        val_args['m_twin'] = nodekey
-                        kwarg['is_hidden_m'] = not isinstance(value, BNode)
+                    self._build_dict(metagraph=metagraph, parent=nodekey,
+                        template=template, data=data)
+                    if kind == SH.BlankNodeOrIRI:
+                        val_dict['m_twin'] = nodekey
+                        val_dict['is_hidden_m'] = not isinstance(value, BNode)
                     
                 # ------ Cas d'une valeur litéral ou d'un IRI ------
-                if val_args['kind'] in (SH.BlankNodeOrIRI, SH.Literal, SH.IRI) \
+                if kind in (SH.BlankNodeOrIRI, SH.Literal, SH.IRI) \
                     and (isinstance(value, (Literal, URIRef)) or \
-                    (not self.hideBlank and not val_args['is_ghost'])):
+                    (not self.hideBlank and not val_dict.get('is_ghost'))):
                     
                     # adaptation de is_long_text à la valeur
-                    if val_args['kind'] == SH.Literal \
+                    if value and kind == SH.Literal \
                         and len(str(value)) > self.valueLengthLimit:
-                        val_args['is_long_text'] = True
+                        val_dict['is_long_text'] = True
                 
                     # rowspan selon is_long_text
-                    if val_args['is_long_text'] and not val_args['rowspan']:
-                        val_args['rowspan'] = self.textEditRowSpan
+                    if val_dict.get('is_long_text') and not 'rowspan' in val_dict:
+                        val_dict['rowspan'] = self.textEditRowSpan
                 
                     # étiquette séparée
-                    if val_args['label'] and (val_args['is_long_text'] or \
-                        len(str(val_args['label'])) > self.labelLengthLimit):
-                        val_args['independant_label'] = True
+                    if val_dict.get('label') and (val_dict.get('is_long_text') or \
+                        len(str(val_dict['label'])) > self.labelLengthLimit):
+                        val_dict['independant_label'] = True
                 
                     # source de la valeur
-                    if val_args['sources']:
-                        val_args['value_source'] = Thesaurus.concept_source(value)
+                    if val_dict.get('sources'):
+                        val_dict['value_source'] = Thesaurus.concept_source(value)
                 
-                    val_args['value'] = value
+                    val_dict['value'] = value
                     # value_language est déduit de value à l'initialisation
                     # de la clé, le cas échéant
-                    valkey = ValueKey(**val_args)
+                    valkey = ValueKey(**val_dict)
                     self[valkey] = InternalDict()
-                    valkey.update(t, exclude_none=True)
                 
             # ------ Bouton ------
             if multilingual or multiple:
-                buttonkey = TranslationButtonKey(**prop_args) if multilingual \
-                    else PlusButtonKey(**prop_args)
+                buttonkey = TranslationButtonKey(**prop_dict) if multilingual \
+                    else PlusButtonKey(**prop_dict)
                 if buttonkey:
                     # buttonkey peut être None s'il s'avère que le groupe
                     # est un fantôme
                     self[buttonkey] = InternalDict()
-                    buttonkey.update(t, exclude_none=True)
-                    
-        if isinstance(parent, RootKey):
+
+    @property
+    def edit(self):
+        """bool: Le dictionnaire est-il généré pour l'édition ?
         
-            # ------ CATEGORIES LOCALES -------
-            for new_path in _template:
-                if _template['new_path']['done']:
-                    continue
-                
-        
-            # ------ CATEGORIES NON REPERTORIEES ------
-        
-        
+        """
+        returns (mode == 'edit')
 
     def parent_grid(self, widgetkey):
         """Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.
