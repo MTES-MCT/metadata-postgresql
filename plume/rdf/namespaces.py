@@ -2,6 +2,7 @@
 
 """
 
+from rdflib import Graph
 from rdflib.namespace import Namespace, NamespaceManager
 
 ADMS = Namespace('http://www.w3.org/ns/adms#')
