@@ -67,10 +67,19 @@ class WidgetKey:
     no_computation : bool
         Si True, inhibe temporairement la réalisation de certains calculs.
         *Cet attribut est partagé par toutes les instances de la classe.*
+    langlist : list(str)
+        Liste des langues autorisées.
+        *Cet attribut est partagé par toutes les instances de la classe.*
+        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
+        *de l'arbre de clés.*
+    max_rowspan : int
+        Nombre maximum de lignes pouvant être occupées par un widget.
+        *Cet attribut est partagé par toutes les instances de la classe.*
+        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
+        *de l'arbre de clés.*
+    main_language
     uuid : UUID
         Identifiant unique de la clé.
-    langlist
-    main_language
     parent
     is_ghost
     is_hidden_m
@@ -121,6 +130,11 @@ class WidgetKey:
     
     langlist = ['fr', 'en']
     """Liste des langues autorisées.
+    
+    """
+    
+    max_rowspan = 30
+    """Nombre maximum de lignes pouvant être occupées par un widget.
     
     """
     
@@ -2841,7 +2855,7 @@ class ValueKey(ObjectKey):
                 value = 1
         elif not value:
             value = 1
-        self._rowspan = value
+        self._rowspan = min((value, self.max_rowspan))
         if not self._is_unborn:
             self.parent.compute_rows()
     
