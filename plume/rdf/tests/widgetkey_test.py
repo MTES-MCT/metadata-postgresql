@@ -34,6 +34,8 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(r.langlist, ['it', 'en', 'fr'])
         r.langlist = ['de', 'en']
         self.assertEqual(r.main_language, 'de')
+        r2 = RootKey()
+        self.assertEqual(r2.main_language, 'de')
 
     def test_search_path(self):
         """Recherche dans un arbre de clés à partir du chemin.
