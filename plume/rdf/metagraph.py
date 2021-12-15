@@ -13,6 +13,8 @@ except:
     manageLibrary()
     from rdflib import Graph, URIRef
 
+from plume.rdf.namespaces import DCAT, RDF
+
 class Metagraph(Graph):
     """Graphes de métadonnées.
     
@@ -66,8 +68,8 @@ def uuid_from_datasetid(datasetid):
     
     Returns
     -------
-    UUID
-        L'UUID contenu dans l'identifiant. None si l'identifiant
+    uuid.UUID
+        L'UUID contenu dans l'identifiant. ``None`` si l'identifiant
         ne contenait pas d'UUID.
     
     """
@@ -88,15 +90,22 @@ def datasetid_from_uuid(uuid):
     
     Parameters
     ----------
-    uuid : UUID
-        Un UUID.
+    uuid : uuid.UUID or str
+        Un UUID ou une chaîne de caractères présumée
+        être un UUID.
     
     Returns
     -------
     URIRef
-        Un identifiant de jeu de données.
+        Un identifiant de jeu de données. ``None`` si la valeur n'était
+        pas un UUID.
     
     """
+    if not isinstance(uuid, UUID):
+        try:
+            uuid = UUID(uuid)
+        except:
+            return
     return URIRef(uuid.urn)
 
 def get_datasetid(anygraph):
@@ -106,7 +115,7 @@ def get_datasetid(anygraph):
     ----------
     anygraph : Graph
         Un graphe quelconque, présumé contenir la description d'un
-        jeu de données (dcat:Dataset).
+        jeu de données (``dcat:Dataset``).
     
     Returns
     -------
@@ -115,10 +124,7 @@ def get_datasetid(anygraph):
         pas de jeu de données.
     
     """
-    for s in anygraph.subjects(
-        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-        URIRef("http://www.w3.org/ns/dcat#Dataset")
-        ):
+    for s in anygraph.subjects(RDF.type, DCAT.Dataset):
         return s
 
 def graph_from_file(filepath, format=None):
