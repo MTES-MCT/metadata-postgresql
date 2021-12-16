@@ -143,7 +143,10 @@ class WidgetsDict(dict):
             # identique à self.datasetid. On attend cependant
             # la fin de l'initialisation pour le corriger, sans
             # quoi on ne pourra pas récupérer le contenu du graphe.
-            
+        
+        # paramètres de configuration des clés
+        self.root.with_source_buttons = self.edit
+        self.root.with_language_buttons = self.translation
         self.root.langlist = self.langList
         self.root.main_language = self.language
         self.root.max_rowspan = 30 if self.edit else 1
