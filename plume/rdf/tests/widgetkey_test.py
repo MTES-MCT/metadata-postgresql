@@ -1,8 +1,9 @@
 
 import unittest
 from uuid import uuid4
-from rdflib import URIRef, Literal, RDFS, DC, FOAF
+from rdflib import URIRef, Literal
 
+from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, RootKey
@@ -10,14 +11,33 @@ from plume.rdf.actionsbook import ActionsBook
 
 class WidgetKeyTestCase(unittest.TestCase):
 
+    def test_get_all_attributes(self):
+        """Vérifie que tous les attributs et propriétés peuvent être évalués sans erreur.
+        
+        Notes
+        -----
+        Ne teste pas les classes qui ne peuvent pas être appelées directement.
+        
+        """
+        widgetkey = RootKey()
+        for attr in ('actionsbook', 'attr_to_copy', 'attr_to_update', 'children', 'columnspan',
+            'has_label', 'has_language_button', 'has_minus_button', 'has_source_button',
+            'independant_label', 'is_ghost', 'is_hidden', 'is_hidden_b', 'is_hidden_m',
+            'is_single_child', 'key_object', 'label_placement', 'langlist',
+            'language_button_placement', 'main_language', 'max_rowspan',
+            'minus_button_placement', 'no_computation', 'node', 'order_idx', 'parent',
+            'path', 'placement', 'rdfclass', 'row', 'rowspan', 'source_button_placement',
+            'uuid', 'with_language_buttons', 'with_source_buttons'):
+            getattr(widgetkey, attr)
+
     def test_update(self):
         """Mise à jour massive des attributs.
 
         """
         r = RootKey()
         g = GroupOfPropertiesKey(parent=r,
-            rdftype=URIRef('http://purl.org/dc/terms/RightsStatement'),
-            predicate=DC.title)
+            rdfclass=URIRef('http://purl.org/dc/terms/RightsStatement'),
+            predicate=DCT.title)
         g.update(predicate=URIRef('http://purl.org/dc/terms/accessRights'),
             label="Conditions d'accès")
         self.assertEqual(g.predicate,
@@ -28,13 +48,12 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Gestion des propriétés de classe, `langlist` et `main_language`.
         
         """
-        r = RootKey()  
-        r.langlist = ['fr', 'en']
-        r.main_language = 'it'
-        self.assertEqual(r.langlist, ['it', 'en', 'fr'])
-        r.langlist = ['de', 'en']
-        self.assertEqual(r.main_language, 'de')
+        r = RootKey()
         r2 = RootKey()
+        WidgetKey.langlist = ['fr', 'en']
+        r.main_language = 'it'
+        self.assertEqual(WidgetKey.langlist, ['it', 'en', 'fr'])
+        WidgetKey.langlist = ['de', 'en']
         self.assertEqual(r2.main_language, 'de')
 
     def test_search_path(self):
@@ -43,7 +62,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         """
         r = RootKey()
         g = GroupOfPropertiesKey(parent=r,
-            rdftype=URIRef('http://purl.org/dc/terms/RightsStatement'),
+            rdfclass=URIRef('http://purl.org/dc/terms/RightsStatement'),
             predicate=URIRef('http://purl.org/dc/terms/accessRights'))
         m = ValueKey(parent=r, m_twin=g, is_hidden_m=False)
         t = TranslationGroupKey(parent=g, predicate=RDFS.label)
@@ -63,7 +82,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         
         """
         rootkey = RootKey(datasetid=URIRef(uuid4().urn))
-        self.assertEqual(rootkey.rdftype, \
+        self.assertEqual(rootkey.rdfclass, \
             URIRef('http://www.w3.org/ns/dcat#Dataset'))
         
     def test_group_of_values(self):
@@ -71,31 +90,31 @@ class WidgetKeyTestCase(unittest.TestCase):
         
         """
         rootkey = RootKey()
-        groupkey = GroupOfValuesKey(parent=rootkey, predicate=DC.title,
-            rdftype=RDFS.label)
+        groupkey = GroupOfValuesKey(parent=rootkey,
+            predicate=DCAT.keyword)
         
         pluskey = PlusButtonKey(parent=groupkey)
         self.assertFalse(pluskey in groupkey.children)
         #self.assertEqual(pluskey.row, 0)
         self.assertEqual(groupkey.button, pluskey)
         
-        valkey1 = GroupOfPropertiesKey(parent=groupkey,
-            predicate=DC.description)
+        valkey1 = ValueKey(parent=groupkey)
         self.assertTrue(valkey1 in groupkey.children)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(pluskey.row, 1)
         self.assertFalse(pluskey.is_hidden_b)
         self.assertTrue(valkey1.is_single_child)
-        self.assertEqual(valkey1.predicate, DC.title)
+        self.assertEqual(valkey1.predicate, DCAT.keyword)
         
-        valkey2 = ValueKey(parent=groupkey, rowspan=3)
+        valkey2 = ValueKey(parent=groupkey, rowspan=3,
+            is_long_text=True)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(valkey2.row, 1)
         self.assertEqual(pluskey.row, 4)
         self.assertFalse(pluskey.is_hidden_b)
         self.assertFalse(valkey1.is_single_child)
         self.assertFalse(valkey2.is_single_child)
-        self.assertEqual(valkey2.predicate, DC.title)
+        self.assertEqual(valkey2.predicate, DCAT.keyword)
 
         valkey1.kill()
         self.assertFalse(valkey1 in groupkey.children)
@@ -111,30 +130,31 @@ class WidgetKeyTestCase(unittest.TestCase):
         rootkey = RootKey()
         WidgetKey.langlist = ['fr', 'en', 'it']
         groupkey = TranslationGroupKey(parent=rootkey,
-            predicate=DC.title)
+            predicate=DCT.title)
         transkey = TranslationButtonKey(parent=groupkey)
         self.assertFalse(transkey in groupkey.children)
         self.assertEqual(transkey.row, 0)
         self.assertEqual(groupkey.button, transkey)
 
         valkey1 = ValueKey(parent=groupkey, rowspan=3,
-            value_language='fr', predicate=RDFS.label)
+            is_long_text=True, value_language='fr',
+            predicate=RDFS.label)
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(transkey.row, 3)
         self.assertEqual(groupkey.available_languages, ['en', 'it'])
-        self.assertEqual(valkey1.predicate, DC.title)
+        self.assertEqual(valkey1.predicate, DCT.title)
         self.assertFalse(transkey.is_hidden_b)
         self.assertTrue(valkey1.is_single_child)
 
         valkey2 = ValueKey(parent=groupkey, rowspan=2,
-            value_language='en')
-        valkey3 = ValueKey(parent=groupkey, rowspan=1,
+            is_long_text=True, value_language='en')
+        valkey3 = ValueKey(parent=groupkey, rowspan=8,
             value_language='it')
         self.assertEqual(transkey.row, 6)
         self.assertEqual(groupkey.available_languages, [])
         self.assertTrue(transkey.is_hidden_b)
         self.assertFalse(valkey1.is_single_child)
-        self.assertEqual(valkey2.predicate, DC.title)
+        self.assertEqual(valkey2.predicate, DCT.title)
 
         valkey2.kill()
         self.assertFalse(valkey2 in groupkey.children)
@@ -143,7 +163,8 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(transkey.row, 4)
         self.assertEqual(valkey3.row, 3)
 
-        valkey4 = ValueKey(parent=groupkey, rowspan=2, value_language='de')
+        valkey4 = ValueKey(parent=groupkey, rowspan=2,
+            is_long_text=True, value_language='de')
         self.assertTrue(valkey4 in groupkey.children)
         self.assertEqual(groupkey.available_languages, ['en'])
         self.assertFalse(transkey.is_hidden_b)
@@ -153,7 +174,8 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(groupkey.available_languages, ['it'])
         self.assertFalse(transkey.is_hidden_b)
 
-        valkey4 = ValueKey(parent=groupkey, rowspan=2, value_language='de')
+        valkey4 = ValueKey(parent=groupkey, rowspan=2,
+            is_long_text=True, value_language='de')
         valkey4.change_language('it')
         self.assertEqual(groupkey.available_languages, [])
         self.assertTrue(transkey.is_hidden_b)
@@ -165,11 +187,11 @@ class WidgetKeyTestCase(unittest.TestCase):
         """
         rootkey = RootKey()
         groupkey = GroupOfValuesKey(parent=rootkey, is_ghost=True,
-            predicate=DC.title, rdftype=FOAF.Agent)
+            predicate=DCT.title, rdfclass=FOAF.Agent)
         pluskey = PlusButtonKey(parent=groupkey)
         self.assertIsNone(pluskey)
         editkey = ValueKey(parent=rootkey, rowspan=2,
-            predicate=DC.title)
+            predicate=DCT.title)
         
         self.assertIsNone(groupkey.row)
         self.assertEqual(editkey.row, 0)
@@ -180,7 +202,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertTrue(valkey1.is_ghost)
         self.assertFalse(valkey1.is_single_child)
         self.assertFalse(valkey1.has_minus_button)
-        self.assertEqual(valkey1.predicate, DC.title)
+        self.assertEqual(valkey1.predicate, DCT.title)
 
         valkey2 = ValueKey(parent=groupkey, is_ghost=False)
         self.assertIsNone(valkey2)
@@ -188,7 +210,7 @@ class WidgetKeyTestCase(unittest.TestCase):
             value=Literal('Mon fantôme à sauvegarder.',
             lang='fr'))
         self.assertTrue(valkey2.is_ghost)
-        self.assertEqual(valkey2.predicate, DC.title)
+        self.assertEqual(valkey2.predicate, DCT.title)
 
         groupkey.kill()
         self.assertFalse(groupkey in rootkey.children)
@@ -199,13 +221,14 @@ class WidgetKeyTestCase(unittest.TestCase):
         """Gestion des jumelles.
         
         """
-        rootkey = RootKey(datasetid=URIRef(uuid4().urn))
-        groupkey = GroupOfValuesKey(parent=rootkey, predicate=DC.title,
-            rdftype=FOAF.Agent)
+        rootkey = RootKey()
+        groupkey = GroupOfValuesKey(parent=rootkey, predicate=DCT.title,
+            rdfclass=FOAF.Agent)
         buttonkey = PlusButtonKey(parent=groupkey)
         valkey1 = GroupOfPropertiesKey(parent=groupkey, is_hidden_m=True)
-        valkey2 = ValueKey(parent=groupkey, rowspan=1, m_twin=valkey1)
-        valkey3 = ValueKey(parent=groupkey, rowspan=3)
+        self.assertFalse(valkey1.is_hidden_m)
+        valkey2 = ValueKey(parent=groupkey, m_twin=valkey1)
+        valkey3 = ValueKey(parent=groupkey)
 
         self.assertTrue(valkey1 in groupkey.children)
         self.assertTrue(valkey2 in groupkey.children)
@@ -214,7 +237,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(valkey1.row, 0)
         self.assertEqual(valkey2.row, 0)
         self.assertEqual(valkey3.row, 1)
-        self.assertEqual(buttonkey.row, 4)
+        self.assertEqual(buttonkey.row, 2)
         self.assertFalse(valkey1.is_single_child)
 
         self.assertTrue(valkey1.is_hidden_m)
@@ -245,16 +268,17 @@ class WidgetKeyTestCase(unittest.TestCase):
         rootkey = RootKey()
         WidgetKey.langlist = ['fr', 'en', 'it']
         WidgetKey.no_computation = True
-        groupkey1 = GroupOfValuesKey(parent=rootkey, predicate=DC.title,
-            rdftype=FOAF.Agent)
+        groupkey1 = GroupOfValuesKey(parent=rootkey, predicate=DCT.title,
+            rdfclass=FOAF.Agent)
         buttonkey1 = PlusButtonKey(parent=groupkey1)
         valkey1a = GroupOfPropertiesKey(parent=groupkey1)
         valkey1b = ValueKey(parent=groupkey1, rowspan=1, m_twin=valkey1a,
             is_hidden_m=True)
-        valkey1c = ValueKey(parent=groupkey1, rowspan=3)
-        groupkey2 = TranslationGroupKey(parent=rootkey, predicate=DC.title)
+        valkey1c = ValueKey(parent=groupkey1)
+        groupkey2 = TranslationGroupKey(parent=rootkey, predicate=DCT.title)
         buttonkey2 = TranslationButtonKey(parent=groupkey2)
-        valkey2 = ValueKey(parent=groupkey2, rowspan=2, value_language='en')
+        valkey2 = ValueKey(parent=groupkey2, rowspan=2, is_long_text=True,
+            value_language='en')
         WidgetKey.no_computation = False
         
         self.assertIsNone(valkey1a.row)
@@ -273,7 +297,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(valkey1a.row, 0)
         self.assertIsNone(valkey1b.row)
         self.assertEqual(valkey1c.row, 1)
-        self.assertEqual(buttonkey1.row, 4)
+        self.assertEqual(buttonkey1.row, 2)
         groupkey1.compute_single_children()
         self.assertFalse(valkey1a.is_single_child)
         self.assertFalse(valkey1b.is_single_child)
@@ -288,16 +312,16 @@ class WidgetKeyTestCase(unittest.TestCase):
     def test_actionsbook(self):
         rootkey = RootKey()
         WidgetKey.langlist=['fr', 'en', 'it']
-        groupkey1 = GroupOfValuesKey(parent=rootkey, predicate=DC.title,
-            rdftype=FOAF.Agent)
+        groupkey1 = GroupOfValuesKey(parent=rootkey, predicate=DCT.title,
+            rdfclass=FOAF.Agent)
         buttonkey1 = PlusButtonKey(parent=groupkey1)
         valkey1a = GroupOfPropertiesKey(parent=groupkey1)
         valkey1b = ValueKey(parent=groupkey1, rowspan=1, m_twin=valkey1a,
             is_hidden_m=True)
-        valkey1c = ValueKey(parent=groupkey1, rowspan=3)
-        groupkey2 = TranslationGroupKey(parent=rootkey, predicate=DC.title)
+        valkey1c = ValueKey(parent=groupkey1, rowspan=3, is_long_text=True)
+        groupkey2 = TranslationGroupKey(parent=rootkey, predicate=DCT.title)
         buttonkey2 = TranslationButtonKey(parent=groupkey2)
-        valkey2a = ValueKey(parent=groupkey2, rowspan=2,
+        valkey2a = ValueKey(parent=groupkey2, rowspan=2, is_long_text=True,
             value_language='en')
 
         WidgetKey.clear_actionsbook()
