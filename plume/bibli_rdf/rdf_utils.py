@@ -27,7 +27,7 @@ try:
 except:
     from plume.bibli_install.bibli_install import manageLibrary
     # installe RDFLib si n'est pas déjà disponible
-    manageLibrary()
+    manageLibrary("RDFLIB")
     from rdflib import Graph, Namespace, Literal, BNode, URIRef
 
 from rdflib.namespace import NamespaceManager, split_uri
