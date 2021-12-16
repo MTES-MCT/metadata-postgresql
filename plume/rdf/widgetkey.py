@@ -67,13 +67,27 @@ class WidgetKey:
     no_computation : bool
         Si True, inhibe temporairement la réalisation de certains calculs.
         *Cet attribut est partagé par toutes les instances de la classe.*
-    langlist : list(str)
-        Liste des langues autorisées.
+    with_language_buttons : bool
+        Mettre cet attribut à ``False`` permet d'inhiber la création
+        des boutons de choix de la langue, s'il y avait par ailleurs
+        lieu d'en créer.
+        *Cet attribut est partagé par toutes les instances de la classe.*
+        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
+        *de l'arbre de clés.*
+    with_source_buttons : bool
+        Mettre cet attribut à ``False`` permet d'inhiber la création
+        des boutons de choix de la source, s'il y avait par ailleurs
+        lieu d'en créer.
         *Cet attribut est partagé par toutes les instances de la classe.*
         *Il ne doit sous aucun prétexte être modifié après l'initialisation*
         *de l'arbre de clés.*
     max_rowspan : int
         Nombre maximum de lignes pouvant être occupées par un widget.
+        *Cet attribut est partagé par toutes les instances de la classe.*
+        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
+        *de l'arbre de clés.*
+    langlist : list(str)
+        Liste des langues autorisées.
         *Cet attribut est partagé par toutes les instances de la classe.*
         *Il ne doit sous aucun prétexte être modifié après l'initialisation*
         *de l'arbre de clés.*
@@ -86,9 +100,19 @@ class WidgetKey:
     is_hidden_b
     is_single_child
     has_minus_button
+    has_language_button
+    has_source_button
+    has_label
     independant_label
     row
     rowspan
+    column
+    columnspan
+    placement
+    language_button_placement
+    source_button_placement
+    minus_button_placement
+    label_placement
     order_idx
     path
     attr_to_copy
@@ -129,22 +153,40 @@ class WidgetKey:
     """
     
     langlist = ['fr', 'en']
-    """Liste des langues autorisées.
+    """list(str): Liste des langues autorisées.
     
     """
     
     max_rowspan = 30
-    """Nombre maximum de lignes pouvant être occupées par un widget.
+    """int: Nombre maximum de lignes pouvant être occupées par un widget.
+    
+    """
+    
+    with_language_buttons = True
+    """bool: Faut-il créer des boutons de sélection de la langue ?
+    
+    Mettre cet attribut à ``False`` permet d'inhiber la création
+    des boutons de choix de la langue, s'il y avait par ailleurs
+    lieu d'en créer.
+    
+    """
+    
+    with_source_buttons = True
+    """bool: Faut-il créer des boutons de sélection de la source ?
+    
+    Mettre cet attribut à ``False`` permet d'inhiber la création
+    des boutons de choix de la source, s'il y avait par ailleurs
+    lieu d'en créer.
     
     """
     
     actionsbook = ActionsBook()
-    """Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
+    """ActionsBook: Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
     
     """
     
     no_computation = False
-    """Si True, empêche l'exécution immédiate de certaines opérations.
+    """bool: Si True, empêche l'exécution immédiate de certaines opérations.
     
     Les opérations concernées sont les plus coûteuses en temps de calcul : le
     calcul des lignes et le calcul des langues disponibles dans les groupes de
@@ -191,8 +233,8 @@ class WidgetKey:
             Si :py:attr:`langlist` ne contient pas au moins une valeur.
         
         """
-        if self.langlist:
-            return self.langlist[0]
+        if WidgetKey.langlist:
+            return WidgetKey.langlist[0]
         else:
             raise MissingParameter('langlist')
   
@@ -207,7 +249,7 @@ class WidgetKey:
         
         Example
         -------
-        >>> WidgetKey.main_language = 'fr'
+        >>> self.main_language = 'fr'
         
         Notes
         -----
@@ -218,12 +260,12 @@ class WidgetKey:
         elle est silencieusement ajoutée.
         
         """
-        if value and self.langlist and not value in self.langlist:
-            self.langlist.append(value)
-        if value and self.langlist:
+        if value and WidgetKey.langlist and not value in WidgetKey.langlist:
+            WidgetKey.langlist.append(value)
+        if value and WidgetKey.langlist:
             # langlist est trié de manière à ce que la langue principale
             # soit toujours le premier élément.
-            self.langlist.sort(key= lambda x: (x != value, x))
+            WidgetKey.langlist.sort(key= lambda x: (x != value, x))
 
     def __new__(cls, **kwargs):
         if cls.__name__ == 'WidgetKey':
@@ -418,7 +460,60 @@ class WidgetKey:
         See Also
         --------
         ObjectKey.has_minus_button
-            Réécriture de la propriété pour les clés-objets.
+        
+        """
+        return False
+
+    @property
+    def has_language_button(self):
+        """bool: Un bouton annexe de sélection de la langue doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests, mais elle
+        vaut toujours ``False`` quand la clé n'est pas une clé-valeur
+        (:py:class:`ValueKey`).
+        
+        See Also
+        --------
+        ValueKey.has_language_button
+        
+        """
+        return False
+
+    @property
+    def has_source_button(self):
+        """bool: Un bouton annexe de sélection de la source doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests, mais elle
+        vaut toujours ``False`` quand la clé n'est pas une clé-objet
+        (:py:class:`ObjectKey`).
+        
+        See Also
+        --------
+        ValueKey.has_source_button, GroupOfPropertiesKey.has_source_button
+        
+        """
+        return False
+
+    @property
+    def has_label(self):
+        """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests, mais elle
+        vaut toujours ``False`` quand la clé n'est pas une clé-valeur
+        (:py:class:`ValueKey`).
+        
+        See Also
+        --------
+        ValueKey.has_label
         
         """
         return False
@@ -436,10 +531,7 @@ class WidgetKey:
         
         See Also
         --------
-        ObjectKey.path
-            Réécriture de la propriété pour les clés-objets.
-        GroupOfValuesKey.path
-            Réécriture de la propriété pour les groupes de valeurs.
+        ObjectKey.path, GroupOfValuesKey.path
         
         """
         return None
@@ -458,30 +550,9 @@ class WidgetKey:
         See Also
         --------
         ValueKey.independant_label
-            Réécriture de la propriété pour les clés-valeurs.
         
         """
         return False
-
-    @property
-    def rowspan(self):
-        """int: Nombre de lignes de la grille occupées par la clé.
-        
-        Notes
-        -----
-        Cette propriété est en lecture seule. Dans le cas général, 
-        elle vaut ``1`` si la clé n'est pas un fantôme (cf.
-        :py:attr:`WidgetKey.is_ghost`) et ``0`` sinon. Elle ne peut
-        être modifiée et prendre d'autres valeurs que pour les
-        clés-valeurs.
-        
-        See Also
-        --------
-        ValueKey.independant_label
-            Réécriture de la propriété pour les clés-valeurs.
-        
-        """
-        return 0 if not self else 1
 
     @property
     def row(self):
@@ -501,6 +572,142 @@ class WidgetKey:
         
         """
         return None if not self else self._row
+
+    @property
+    def rowspan(self):
+        """int: Nombre de lignes de la grille occupées par la clé.
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Dans le cas général, 
+        elle vaut ``1`` si la clé n'est pas un fantôme (cf.
+        :py:attr:`WidgetKey.is_ghost`) et ``0`` sinon. Elle ne peut
+        être modifiée et prendre d'autres valeurs que pour les
+        clés-valeurs.
+        
+        See Also
+        --------
+        ValueKey.independant_label
+        
+        """
+        return 0 if not self else 1
+
+    @property
+    def placement(self):
+        """tuple(int): Placement du widget principal de la clé dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme, un onglet ou une clé-racine.
+        
+        See Also
+        --------
+        ValueKey.placement
+        
+        """
+        return (self.row, 0, self.rowspan, 1) if self else None
+
+    @property
+    def language_button_placement(self):
+        """tuple(int): Placement du bouton de sélection de la langue dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton
+        de sélection de la langue.
+        
+        Notes
+        -----
+        Le bouton de sélection de la langue est placé à droite du widget
+        principal.
+        
+        """
+        if not self.has_language_button:
+            return
+        return (self.row, self.column + 1, 1, 1)
+
+    @property
+    def source_button_placement(self):
+        """tuple(int): Placement du bouton de sélection de la source dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton
+        de sélection de la langue.
+        
+        Notes
+        -----
+        Le bouton de sélection de la source est placé à droite du widget
+        principal et de l'éventuel bouton de sélection de la langue.
+        
+        """
+        if not self.has_source_button:
+            return
+        column = self.column + 1 + (1 if self.has_language_button else 0) 
+        return (self.row, column, 1, 1)
+
+    @property
+    def minus_button_placement(self):
+        """tuple(int): Placement du bouton moins dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton moins.
+        
+        Notes
+        -----
+        Le bouton moins est placé à droite du widget principal et des éventuels
+        boutons de sélection de la langue et sélection de la source.
+        
+        """
+        if not self.has_minus_button:
+            return
+        column = self.column + 1 + (1 if self.has_language_button else 0) \
+            + (1 if self.has_source_button else 0)
+        return (self.row, column, 1, 1)
+    
+    @property
+    def label_placement(self):
+        """tuple(int): Placement de l'étiquette dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme, qui n'a pas d'étiquette
+        ou dont l'étiquette est intégrée au widget principal.
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la classe
+        :py:class:`WidgetKey` pour simplifier les tests, mais elle vaut
+        toujours ``None`` quand la clé n'est pas une clé-valeur
+        (:py:class:`ValueKey`).
+        
+        See Also
+        --------
+        ValueKey.label_placement
+        
+        """
+        return
 
     @property
     def is_single_child(self):
@@ -530,13 +737,11 @@ class WidgetKey:
         après les autres.
         
         Modifier cette propriété emporte la mise en cohérence de la propriété
-        :py:attr:`WidgetKey.row` (et :py:attr:`ValueKey.label_row`, le cas
-        échéant) pour toutes les clés du groupe parent.
+        :py:attr:`WidgetKey.row` pour toutes les clés du groupe parent.
         
         See Also
         --------
         ObjectKey.order_idx
-            Réécriture de la propriété pour les clés-objets.
         
         """
         return self._order_idx
@@ -947,8 +1152,7 @@ class ObjectKey(WidgetKey):
         sans quoi l'opération n'aura pas d'effet.
         
         Modifier cette propriété emporte la mise en cohérence de la propriété
-        :py:attr:`WidgetKey.row` (et :py:attr:`ValueKey.label_row`, le cas
-        échéant) pour toutes les clés du groupe parent.
+        :py:attr:`WidgetKey.row` pour toutes les clés du groupe parent.
         
         """
         return self._order_idx
@@ -998,8 +1202,7 @@ class ObjectKey(WidgetKey):
         :py:attr:`ObjectKey.predicate`, :py:attr:`ObjectKey.label`,
         :py:attr:`ObjectKey.description` et :py:attr:`ObjectKey.order_idx`
         de la clé et de sa jumelle, ainsi que des propriétés :py:attr:`WidgetKey.row`,
-        :py:attr:`ValueKey.label_row` et :py:attr:`WidgetKey.is_single_child` pour
-        toutes les clés du groupe parent.
+        et :py:attr:`WidgetKey.is_single_child` pour toutes les clés du groupe parent.
         
         """
         return self._m_twin
@@ -1058,10 +1261,10 @@ class ObjectKey(WidgetKey):
         
         Modifier cette propriété emporte la mise en cohérence de la
         propriété :py:attr:`ObjectKey.is_main_twin` de la clé et de sa
-        jumelle, ainsi que des propriétés :py:attr:`WidgetKey.row` et
-        le cas échéant :py:attr:`ValueKey.label_row` pour toutes les clés
-        du groupe parent (car la propriété :py:attr:`WidgetKey.rowspan`
-        peut prendre des valeurs différentes pour les deux jumelles).
+        jumelle, ainsi que de la propriété :py:attr:`WidgetKey.row`
+        pour toutes les clés du groupe parent (car la propriété
+        :py:attr:`WidgetKey.rowspan` peut prendre des valeurs différentes
+        pour les deux jumelles).
         
         """
         return self._is_hidden_m 
@@ -1243,6 +1446,7 @@ class GroupKey(WidgetKey):
     ----------
     children : list of WidgetKey
         Liste des clés filles.
+    columnspan
     
     Methods
     -------
@@ -1282,6 +1486,19 @@ class GroupKey(WidgetKey):
             child._hide_m(value, rec=True)
         if value and not self._is_unborn:
             self.compute_rows()
+    
+    @property
+    def columnspan(self):
+        """int: Nombre de colonnes de la grille occupées par le widget principal de la clé.
+        
+        Vaut toujours ``0`` pour une clé fantôme.
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.columnspan`.
+        
+        """
+        return 0 if not self else 2
     
     def real_children(self):
         """Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).
@@ -1531,6 +1748,10 @@ class TabKey(GroupKey):
         self._label = str(value) if value else None
 
     @property
+    def placement(self):
+        return
+
+    @property
     def attr_to_update(self):
         """list(str): Liste des attributs et propriétés pouvant être redéfinis post initialisation.
         
@@ -1697,6 +1918,17 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         """
         if self.m_twin:
             return self.m_twin.sources
+
+    @property
+    def has_source_button(self):
+        """bool: Un bouton annexe de sélection de la source doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
+        
+        """
+        return self and self.with_source_buttons and self.m_twin
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -2480,11 +2712,7 @@ class TranslationGroupKey(GroupOfValuesKey):
     
     Attributes
     ----------
-    available_languages : list of str
-        Liste des langues encore disponibles pour les traductions.
-        Elle est initialisée avec la variable partagée
-        :py:attr:`WidgetKey.langlist`, et mise à jour automatiquement
-        au gré des ajouts et suppressions de traductions dans le groupe.
+    available_languages
     datatype
     key_object
     
@@ -2495,6 +2723,12 @@ class TranslationGroupKey(GroupOfValuesKey):
         traductions.
     language_out(value_language)
         Sort une langue de la liste des traductions disponibles.
+    
+    Warnings
+    --------
+    Il n'est possible de créer un groupe de traduction que si
+    l'attribut partagé :py:attr:`with_language_buttons` vaut ``True``.
+    À défaut, c'est un groupe de valeurs qui sera créé à la place.
     
     Notes
     -----
@@ -2512,7 +2746,8 @@ class TranslationGroupKey(GroupOfValuesKey):
         # crée un groupe de valeurs au lieu d'un groupe de
         # traduction dans le cas d'un fantôme
         parent = kwargs.get('parent')
-        if kwargs.get('is_ghost', False) or not parent:
+        if kwargs.get('is_ghost', False) or not parent \
+            or not WidgetKey.with_language_buttons:
             # si `parent` n'était pas spécifié, il y aura de toute
             # façon une erreur à l'initialisation
             return GroupOfValuesKey.__call__(**kwargs)
@@ -2520,7 +2755,7 @@ class TranslationGroupKey(GroupOfValuesKey):
     
     def _base_attributes(self, **kwargs):
         super()._base_attributes(**kwargs)
-        self.available_languages = self.langlist.copy()
+        self._available_languages = WidgetKey.langlist.copy()
 
     @property
     def key_object(self):
@@ -2528,6 +2763,17 @@ class TranslationGroupKey(GroupOfValuesKey):
         
         """
         return 'translation group'
+
+    @property
+    def available_languages(self):
+        """list(str) : Liste des langues encore disponibles pour les traductions.
+        
+        Cette liste est initialisée avec la variable partagée
+        :py:attr:`WidgetKey.langlist`, et mise à jour automatiquement
+        au gré des ajouts et suppressions de traductions dans le groupe.
+        
+        """
+        return self._available_languages
 
     @property
     def rdfclass(self):
@@ -2579,7 +2825,7 @@ class TranslationGroupKey(GroupOfValuesKey):
             Langue redevenue disponible.
 
         """        
-        if not value_language in self.langlist \
+        if not value_language in WidgetKey.langlist \
             or value_language in self.available_languages:
             return
             # une langue qui n'était pas autorisée n'est
@@ -2730,8 +2976,12 @@ class ValueKey(ObjectKey):
     Attributes
     ----------
     rowspan
+    placement
     independant_label
-    label_row
+    label_placement
+    has_language_button
+    has_source_button
+    has_label
     available_languages
     sources
     value
@@ -2772,12 +3022,12 @@ class ValueKey(ObjectKey):
     def _base_attributes(self, **kwargs):
         super()._base_attributes(**kwargs)
         self._do_not_save = None
-        self._is_long_text = None
-        self._rowspan = 0
         self._independant_label = None
         self._sources = None
         self._rdfclass = None
         self._datatype = None
+        self._is_long_text = None
+        self._rowspan = 0
         self._transform = None
         self._placeholder = None
         self._input_mask = None
@@ -2792,12 +3042,12 @@ class ValueKey(ObjectKey):
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
         self.do_not_save = kwargs.get('do_not_save')
-        self.is_long_text = kwargs.get('is_long_text')
-        self.rowspan = kwargs.get('rowspan')
         self.independant_label = kwargs.get('independant_label')
         self.sources = kwargs.get('sources')
         self.rdfclass = kwargs.get('rdfclass')
         self.datatype = kwargs.get('datatype')
+        self.is_long_text = kwargs.get('is_long_text')
+        self.rowspan = kwargs.get('rowspan')
         self.transform = kwargs.get('transform')
         self.placeholder = kwargs.get('placeholder')
         self.input_mask = kwargs.get('input_mask')
@@ -2831,8 +3081,7 @@ class ValueKey(ObjectKey):
         qui seront alors automatiquement converties.
         
         Modifier cette propriété emporte la mise en cohérence de
-        la propriété :py:attr:`WidgetKey.row` (et le cas échéant 
-        :py:attr:`ValueKey.label_row`) pour toutes les clés
+        la propriété :py:attr:`WidgetKey.row` pour toutes les clés
         du groupe parent, via :py:meth:`GroupKey.compute_rows`.
         
         Deux clés jumelles peuvent occuper un nombre de lignes
@@ -2858,6 +3107,110 @@ class ValueKey(ObjectKey):
         self._rowspan = min((value, self.max_rowspan))
         if not self._is_unborn:
             self.parent.compute_rows()
+    
+    @property
+    def placement(self):
+        """tuple(int): Placement du widget principal de la clé dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme, un onglet ou une clé-racine.
+        
+        """
+        if not self:
+            return
+        column = 0 if self.independant_label else 1
+        columnspan = 2 if self.independant_label else 1
+        return (self.row, column, self.rowspan, columnspan)
+    
+    @property
+    def independant_label(self):
+        """bool: L'étiquette de la clé occupe-t-elle sa propre ligne de la grille ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.independant_label`.
+        
+        Cette propriété vaudra toujours ``False`` pour une clé fantôme ou
+        qui n'a pas d'étiquette. Par défaut, il est également considéré
+        qu'elle vaut ``False``.
+        
+        Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
+        qui seront alors automatiquement converties.
+        
+        Modifier cette propriété emporte la mise en cohérence de la propriété
+        :py:attr:`WidgetKey.row` pour toutes les clés du groupe parent.
+        
+        """
+        return self._independant_label
+    
+    @independant_label.setter
+    def independant_label(self, value):
+        if not self or not self.label:
+            self._independant_label = False
+        self._independant_label = bool(value)
+        if not self._is_unborn:
+            self.parent.compute_rows()
+    
+    @property
+    def has_language_button(self):
+        """bool: Un bouton annexe de sélection de la langue doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_language_button`.
+        
+        """
+        return self and self.with_language_buttons and self.datatype == RDF.langString
+    
+    @property
+    def has_source_button(self):
+        """bool: Un bouton annexe de sélection de la source doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
+        
+        """
+        return self and self.with_source_buttons and (self.sources or self.m_twin)
+    
+    @property
+    def has_label(self):
+        """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
+        
+        """
+        return bool(self)
+        
+    @property
+    def label_placement(self):
+        """tuple(int): Placement de l'étiquette dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme.
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.label_placement`.
+        
+        See Also
+        --------
+        ValueKey.label_placement
+        
+        """
+        if not self:
+            return
+        row = ( self.row - 1 ) if self.independant_label else self.row
+        columnspan = 2 if self.independant_label else 1
+        return (row, 0, 1, columnspan)
     
     @property
     def value(self):
@@ -3195,10 +3548,10 @@ class ValueKey(ObjectKey):
     
     @is_long_text.setter
     def is_long_text(self, value):
-        if not value or not self.datatype in (RDF.langString, XSD.string):
-            self._is_long_text = False
-        else:
+        if value and self.datatype in (RDF.langString, XSD.string):
             self._is_long_text = True
+        else:
+            self._is_long_text = False
         if not self._is_unborn:
             self.rowspan = self.rowspan
     
@@ -3261,51 +3614,6 @@ class ValueKey(ObjectKey):
                 self.value_source = self.value_source
     
     @property
-    def independant_label(self):
-        """bool: L'étiquette de la clé occupe-t-elle sa propre ligne de la grille ?
-        
-        Notes
-        -----
-        Réécriture de la propriété :py:attr:`WidgetKey.independant_label`.
-        
-        Cette propriété vaudra toujours ``False`` pour une clé fantôme ou
-        qui n'a pas d'étiquette. Par défaut, il est également considéré
-        qu'elle vaut ``False``.
-        
-        Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
-        qui seront alors automatiquement converties.
-        
-        Modifier cette propriété emporte la mise en cohérence de la propriété
-        :py:attr:`WidgetKey.row` (et :py:attr:`ValueKey.label_row`, le cas
-        échéant) pour toutes les clés du groupe parent.
-        
-        """
-        return self._independant_label
-    
-    @independant_label.setter
-    def independant_label(self, value):
-        if not self or not self.label:
-            self._independant_label = False
-        self._independant_label = bool(value)
-        if not self._is_unborn:
-            self.parent.compute_rows()
-    
-    @property
-    def label_row(self):
-        """int: Indice de ligne de l'étiquette de la clé.
-        
-        Notes
-        -----
-        Cette propriété est en lecture seule. Elle est déduite
-        dynamiquement des valeurs de :py:attr:`ValueKey.row` et
-        :py:attr:`ValueKey.independant_label`.
-        
-        """
-        if not self.row:
-            return None
-        return ( self.row - 1 ) if self.independant_label else self.row 
-    
-    @property
     def available_languages(self):
         """list(str): Renvoie la liste des langues disponibles pour la clé.
         
@@ -3320,7 +3628,7 @@ class ValueKey(ObjectKey):
         if isinstance(self.parent, TranslationGroupKey):
             return self.parent.available_languages
         elif self.datatype == RDF.langString:
-            self.langlist
+            WidgetKey.langlist
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -3685,20 +3993,33 @@ class RootKey(GroupKey):
     def _heritage(self, **kwargs):
         return
     
-    def _computed_attributes(self, **kwargs):
-        return
-    
     def _base_attributes(self, **kwargs):
-        datasetid = kwargs.get('datasetid')
-        if not isinstance(datasetid, URIRef):
-            datasetid = URIRef(uuid4().urn)
-        self.node = datasetid
+        self._node = None
         self._is_ghost = False
         self._is_hidden_m = False
         self._is_hidden_b = False
         self._rowspan = 0
         self._row = None
         self.children = ChildrenList()
+ 
+    def _computed_attributes(self, **kwargs):
+        self.node = kwargs.get('datasetid')
+ 
+    @property
+    def node(self):
+        """rdflib.term.URIRef: Identifiant du jeu de données.
+        
+        En cas de modification, si la valeur fournie n'est pas un
+        IRI, un nouvel identifiant (UUID) est généré.
+        
+        """
+        return self._node
+    
+    @node.setter
+    def node(self, value):
+        if not isinstance(value, URIRef):
+            value = URIRef(uuid4().urn)
+        self._node = value
  
     @property
     def key_object(self):
@@ -3709,6 +4030,10 @@ class RootKey(GroupKey):
     
     @property
     def parent(self):
+        return
+ 
+    @property
+    def placement(self):
         return
  
     @property
