@@ -1,45 +1,109 @@
 """Dictionnaires de widgets.
 """
+from rdflib import Literal, URIRef, BNode
 from rdflib.namespace import NamespaceManager
 
+from plume.rdf.utils import sort_by_language
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
-    PlusButtonKey, ObjectKey, RootKey, TabKey
+    PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
 from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     UnknownParameterValue, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP
 from plume.rdf.properties import PlumeProperty, class_properties
 from plume.rdf.metagraph import uuid_from_datasetid, datasetid_from_uuid
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
     
-    Les attributs du dictionnaire de widgets rappellent le paramétrage
-    utilisé à sa création.
-    
     Parameters
     ----------
-    mode : {'edit', 'read'}
+    metagraph : plume.rdf.metagraph.Metagraph, optional
+        Le graphe RDF contenant les métadonnées de l'objet PostgreSQL
+        considéré.
+    template : plume.pg.template.TemplateDict, optional
+        Un dictionnaire contenant la configuration d'un modèle local
+        de formulaire de consultation/saisie des métadonnées.
+    templateTabs : plume.pg.template.TemplateTabsList, optional
+        La liste des onglets associés au modèle local. Ce paramètre
+        est ignoré en l'absence de `template`.
+    data : dict, optional
+        Un dictionnaire dont les clés sont des chemins N3 de catégories
+        de métadonnées, et les valeurs des listes contenant la ou les
+        valeurs à associer à ces catégories, à la place de celles de
+        `metagraph`. `data` sert à notamment à mettre à jour certaines
+        métadonnées à partir de sources externes, par exemple des
+        informations calculées par des requêtes sur le serveur.
+        Si `data` contient la clé ``dct:identifier``, sa valeur deviendra
+        l'identifiant du jeu de données, sous réserve qu'il s'agisse d'un
+        UUID valide.
+    columns : list(tuple(str, str)), optional
+        Une liste de tuples - un par champ de la table ou vue PostgreSQL
+        (si l'objet considéré n'est pas un schéma) -, contenant les noms
+        des champs et leurs descriptifs.
+    mode : {'edit', 'read'}, optional
         Indique si le dictionnaire est généré pour le mode édition
-        ('edit'), le mode lecture ('read'). Le mode détermine les actions
-        pouvant être exécutées sur le dictionnaire par la suite.
-    translation : bool
+        (``'edit'``), le mode lecture (``'read'``). Le mode détermine les
+        actions pouvant être exécutées sur le dictionnaire par la suite.
+    translation : bool, default False
         Paramètre utilisateur qui indique si les widgets de traduction
         doivent être affichés. Sa valeur contribue à déterminer les actions
-        pouvant être exécutées sur le dictionnaire. `translation` ne peut valoir
-        True que si le `mode` est 'edit'.
-    language : str
-        Langue principale de rédaction des métadonnées (paramètre utilisateur).
-        Elle influe sur certaines valeurs du dictionnaire et la connaître est
-        nécessaire à l'exécution de certaines actions. `language` doit
-        impérativement être l'un des éléments de `langList` ci-après.
-    langList : list of str
-        Liste des langues autorisées pour les traductions. Certaines
-        valeurs du dictionnaire dépendent de cette liste, et la connaître est
-        nécessaire à l'exécution de certaines actions.
+        pouvant être exécutées sur le dictionnaire. `translation` sera
+        silencieusement corrigé à ``False`` si `mode` n'est pas `'edit'`,
+        car l'ajout de traductions n'est évidemment possible qu'en mode
+        édition.
+    langList : list of str, default ['fr', 'en']
+        Liste des langues autorisées pour les traductions. Les langues
+        doivent être triées par priorité (langues à privilégier en
+        premier).
+    language : str, optional
+        Langue principale de rédaction des métadonnées.
+        Si `language` n'est pas fourni ou n'appartient pas à `langList`,
+        la première langue de `langList` sera utilisée à la place.
+    readHideBlank : bool, default True
+        Les champs vide du formulaire doivent-ils être masqués en mode
+        lecture ?
+    editHideUnlisted : bool, default False
+        Lorsqu'un modèle (`template`) est fourni, les champs non référencés
+        par celui-ci doivent-ils être masqués en mode édition même s'ils
+        contiennent une valeur ? Lorsque ce paramètre vaut ``False``, les
+        champs non référencés apparaissent dans l'onglet *Autres* du
+        formulaire.
+    readHideUnlisted : bool, default True
+        Lorsqu'un modèle (`template`) est fourni, les champs non référencés
+        par celui-ci doivent-ils être masqués en mode lecture même s'ils
+        contiennent une valeur ? Lorsque ce paramètre vaut ``False``, les
+        champs non référencés apparaissent dans l'onglet *Autres* du
+        formulaire.
+    editOnlyCurrentLanguage : bool, default False
+        Hors mode traduction et pour les propriétés appelant des traductions
+        (type ``rdf:langString``), les valeurs qui ne sont pas dans la
+        langue principale (`language`) doivent-elles être masquées en mode
+        édition ? S'il n'existe aucune traduction pour la langue demandée,
+        une valeur dans une autre langue est affichée, avec priorisation
+        des langues selon l'ordre de `langList`.
+    readOnlyCurrentLanguage : bool, default True
+        Pour les propriétés appelant des traductions (type ``rdf:langString``),
+        les valeurs qui ne sont pas dans la langue principale (`language`)
+        doivent-elles être masquées en mode lecture ? S'il n'existe aucune
+        traduction pour la langue demandée, une valeur dans une autre langue
+        est affichée, avec priorisation des langues selon l'ordre de `langList`.
+    labelLengthLimit : int, default 25
+        Si la longueur d'une étiquette (nombre de caractères) est
+        supérieure à `labelLengthLimit`, elle est affichée au-dessus
+        du widget de saisie.
+    valueLengthLimit : int, default 65
+        Si la longueur d'une valeur textuelle (nombre de caractères)
+        est supérieure à `valueLengthLimit`, elle est affichée sur
+        plusieurs lignes.
+    textEditRowSpan : int, default 6
+        Hauteur par défaut des widgets de saisie de texte multi-lignes,
+        en nombre de lignes. C'est la valeur utilisée quand le modèle local
+        ou le schéma des métadonnées communes ne définit pas de paramétrage
+        spécifique.        
     
     Attributes
     ----------
@@ -72,15 +136,15 @@ class WidgetsDict(dict):
         Liste des langues autorisées pour les traductions, telles que
         déclarées lors de la génération du dictionnaire.
     hideBlank : bool
-        Les métadonnées sans valeur doivent-elles être masquées ?
+        Les métadonnées sans valeur sont-elles masquées ?
     hideUnlisted : bool
-        Les métadonnées hors modèle doivent-elles être masquées ?
+        Les métadonnées avec valeur mais hors modèle sont-elles masquées ?
     onlyCurrentLanguage : bool
         Les métadonnées qui ne sont pas dans la langue principale
-        (`language`) doivent-elles être masquées ?
+        (`language`) sont-elles masquées ?
     textEditRowSpan : int
         Hauteur par défaut des widgets de saisie de texte multi-lignes,
-        en nombre de ligne.
+        en nombre de lignes.
     valueLengthLimit : int
         Si la longueur d'une valeur textuelle (nombre de caractères)
         est supérieure à `valueLengthLimit`, elle est affichée sur
@@ -93,17 +157,16 @@ class WidgetsDict(dict):
     """
     
     def __init__(self, metagraph=None, template=None, templateTabs=None, data=None,
-        columns=None, mode='edit', translation=False, language='fr',
-        langList=['fr', 'en'], readHideBlank=True, editHideUnlisted=False,
-        readHideUnlisted=True, editOnlyCurrentLanguage=False,
-        readOnlyCurrentLanguage=True, labelLengthLimit=25, valueLengthLimit=65,
-        textEditRowSpan=6):
+        columns=None, mode=None, translation=False, langList=None, language=None,
+        readHideBlank=True, editHideUnlisted=False, readHideUnlisted=True,
+        editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True, labelLengthLimit=None,
+        valueLengthLimit=None, textEditRowSpan=None):
         
         # ------ Paramètres utilisateur ------
         self.mode = mode if mode in ('edit', 'read') else 'edit'
         self.langList = langList if langList and isinstance(langList, list) \
             else ['fr', 'en']
-        self.language = language if language in self.langList else 'fr'
+        self.language = language if language in self.langList else self.langList[0]
         self.labelLengthLimit = labelLengthLimit if labelLengthLimit \
             and isinstance(labelLengthLimit, int) else 25
         self.valueLengthLimit = valueLengthLimit if valueLengthLimit \
@@ -122,6 +185,7 @@ class WidgetsDict(dict):
         self.root = None
         self.datasetid = None
         self.nsm = PlumeNamespaceManager()
+        data = data or {}
         
         if data:
             ident = (data.get('dct:identifier') or [None])[0]
@@ -145,14 +209,16 @@ class WidgetsDict(dict):
             # quoi on ne pourra pas récupérer le contenu du graphe.
         
         # paramètres de configuration des clés
-        self.root.with_source_buttons = self.edit
-        self.root.with_language_buttons = self.translation
-        self.root.langlist = self.langList
-        self.root.main_language = self.language
-        self.root.max_rowspan = 30 if self.edit else 1
+        WidgetKey.with_source_buttons = self.edit
+        WidgetKey.with_language_buttons = self.translation
+        WidgetKey.langlist = self.langList
+        WidgetKey.main_language = self.language
+        self.langList = WidgetKey.langlist
+        # NB: pour avoir la liste triée dans le bon ordre
+        WidgetKey.max_rowspan = 30 if self.edit else 1
         
         # ------ Onglets ------
-        if templateTabs:
+        if template and templateTabs:
             for label, order_idx in templateTabs:
                 tabkey = TabKey(parent=self.root, label=label,
                     order_idx=order_idx)
@@ -177,7 +243,8 @@ class WidgetsDict(dict):
                 self[valkey] = InternalDict()
         
         # ------ Construction récursive ------
-        self._build_dict(parent=self.root, metagraph=metagraph, template=template, data=data)
+        self._build_dict(parent=self.root, metagraph=metagraph, \
+            template=template, data=data)
         
         # ------ Nettoyage des groupes vides ------
         actionsbook = self.root.clean()
@@ -198,14 +265,15 @@ class WidgetsDict(dict):
         # catégories communes de la classe :
         properties, n3_paths, predicates = class_properties(rdfclass=parent.rdfclass,
             nsm=self.nsm, base_path=parent.path, template=template)
-        if isinstance(parent, RooKey):
+        if isinstance(parent, RootKey):
             # catégories locales:
-            for n3_path in template.keys():
-                if not n3_path in n3_paths:
-                    p = PlumeProperty(origin='local', nsm=self.nsm,
-                        n3_path=n3_path, template=template)
-                    properties.append(p)
-                    predicates.append(p.predicate)
+            if template:
+                for n3_path in template.keys():
+                    if not n3_path in n3_paths:
+                        p = PlumeProperty(origin='local', nsm=self.nsm,
+                            n3_path=n3_path, template=template)
+                        properties.append(p)
+                        predicates.append(p.predicate)
             # catégories non référencées
             if metagraph:
                 for predicate, o in metagraph.predicate_objects(parent.node):
@@ -247,6 +315,7 @@ class WidgetsDict(dict):
             if values == [None] and (self.hideBlank or prop.unlisted) \
                 and not (self.edit and prop_dict.get('is_mandatory')):
                 continue
+            
             # ------ Fantômisation ------
             # s'il y a une valeur, mais que hideUnlisted vaut True
             # (ce qui ne peut arriver qu'en mode lecture)
@@ -255,8 +324,8 @@ class WidgetsDict(dict):
             # on ne créera pas de widget.
             # Les catégories obligatoires de shape sont affichées quoi
             # qu'il arrive.
-            elif prop.unlisted and self.hideUnlisted and \
-                not prop_dict.get('is_mandatory'):
+            if values != [None] and prop.unlisted and self.hideUnlisted \
+                and not prop_dict.get('is_mandatory'):
                 prop_dict['is_ghost'] = True
 
             # ------ Choix de l'onglet ------
@@ -267,7 +336,8 @@ class WidgetsDict(dict):
                     # l'onglet "Autres".
                     prop_dict['parent'] = parent.search_tab('Autres')
                 else:
-                    prop_dict['parent'] = parent.search_tab(t.get('tab'))
+                    tab_label = template.get('tab') if template else None
+                    prop_dict['parent'] = parent.search_tab(tab_label)
                     # NB : renvoie le premier onglet si l'argument est None
 
             # ------ Affichage mono-langue ------
@@ -278,7 +348,7 @@ class WidgetsDict(dict):
             # ne sont pas dans la bonne langue.
             if prop_dict.get('datatype') == RDF.langString \
                 and self.onlyCurrentLanguage:
-                sort_by_language(values, self.language)
+                sort_by_language(values, self.langList)
 
             # ------ Multi-valeurs ------
             # création d'un groupe de valeurs ou de traduction
@@ -341,6 +411,10 @@ class WidgetsDict(dict):
                     if val_dict.get('sources'):
                         val_dict['value_source'] = Thesaurus.concept_source(value)
                 
+                    # tout en lecture seule en mode lecture
+                    if not self.edit:
+                        val_dict['is_read_only'] = True
+                
                     val_dict['value'] = value
                     # value_language est déduit de value à l'initialisation
                     # de la clé, le cas échéant
@@ -361,14 +435,14 @@ class WidgetsDict(dict):
         """bool: Le dictionnaire est-il généré pour l'édition ?
         
         """
-        returns (mode == 'edit')
+        return (self.mode == 'edit')
 
     def parent_grid(self, widgetkey):
         """Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.
         
         Parameters
         ----------
-        widgetkey : WidgetKey
+        widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
         
         Returns
@@ -386,61 +460,63 @@ class WidgetsDict(dict):
         
         Parameters
         ----------
-        widgetkey : WidgetKey
+        widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
         
-        """        
-        if not widgetkey in self:
-            raise KeyError("La clé '{}' n'est pas référencée.".format(widgetkey))
-        
+        """
         if not widgetkey:
-            return
+            return        
+        if not widgetkey in self:
+            raise KeyError("La clé '{}' n'est pas référencée.".format(widgetkey))   
    
         internaldict = self[widgetkey]
-        
         internaldict['main widget type'] = self.widget_type(widgetkey)
-        internaldict['row'] = widgetkey.row
-        internaldict['row span'] = widgetkey.row_span
-        internaldict['hidden'] = widgetkey.is_hidden_b
-        internaldict['hidden M'] = widgetkey.is_hidden_m
         
+        if isinstance(widgetkey, RootKey):
+            return
+            
         if isinstance(widgetkey, (GroupKey, ObjectKey)):
             internaldict['label'] = widgetkey.label
-            internaldict['help text'] = widgetkey.description
+            
+        if isinstance(widgetkey, TabKey):
+            return
+        
+        internaldict['help text'] = widgetkey.description
+        internaldict['hidden'] = widgetkey.is_hidden_b
+        internaldict['hidden M'] = widgetkey.is_hidden_m
+        internaldict['multiple sources'] = widgetkey.has_source_button
         
         if isinstance(widgetkey, ValueKey):
-            internaldict['label row'] = widgetkey.label_row \
-                if widgetkey.independant_label else None
-            internaldict['language value'] = widgetkey.value_language
-            internaldict['authorized languages'] = widgetkey.available_languages.copy() \
-                if widgetkey.available_languages else None
-            if not widgetkey.value_language in widgetkey.available_languages:
-                internaldict['authorized languages'].insert(0, widgetkey.value_language)
             internaldict['placeholder text'] = widgetkey.placeholder
             internaldict['input mask'] = widgetkey.input_mask
             internaldict['is mandatory'] = widgetkey.is_mandatory
             internaldict['regex validator pattern'] = widgetkey.regex_validator
             internaldict['regex validator flags'] = widgetkey.regex_validator_flags
             internaldict['type validator'] = self.type_validator(widgetkey)
-            internaldict['read only'] = widgetkey.read_only
+            internaldict['read only'] = widgetkey.is_read_only
             internaldict['value'] = self.str_value(widgetkey)
-            if widgetkey.sources:
-                internaldict['sources'] = [Thesaurus.label(s, widgetkey.main_language) \
+            if widgetkey.has_source_button and widgetkey.sources:
+                internaldict['sources'] = [Thesaurus.label((s, self.language)) \
                     for s in widgetkey.sources]
                 if widgetkey.value_source:
                     internaldict['current source'] = Thesaurus.label(
-                        (widgetkey.value_source, widgetkey.main_language))
+                        (widgetkey.value_source, self.language))
                     internaldict['thesaurus values'] = Thesaurus.values(
-                        (widgetkey.value_source, widgetkey.main_language))
+                        (widgetkey.value_source, self.language))
                 if not internaldict['current source']:
                     internaldict['current source'] = '< non référencé >'
                     internaldict['sources'].insert(0, '< non référencé >')
+            internaldict['language value'] = widgetkey.value_language
+            if widgetkey.has_language_button:
+                internaldict['authorized languages'] = widgetkey.available_languages.copy()
+                if not widgetkey.value_language in widgetkey.available_languages:
+                    internaldict['authorized languages'].insert(0, widgetkey.value_language)
         
         if isinstance(widgetkey, ObjectKey):
             internaldict['has minus button'] = widgetkey.has_minus_button
             internaldict['hide minus button'] = widgetkey.has_minus_button \
                 and widgetkey.is_single_child
-            if widgetkey.m_twin:
+            if widgetkey.has_source_button and widgetkey.m_twin:
                 internaldict['sources'] = internaldict['sources'] or ['< URI >']
                 internaldict['sources'].insert(0, '< manuel >')
                 if isinstance(widgetkey, ValueKey): 
@@ -449,14 +525,52 @@ class WidgetsDict(dict):
                 else:
                     internaldict['current source'] = '< manuel >'
 
+    def widget_placement(self, widgetkey, kind):
+        """Renvoie les paramètres de placement du widget dans la grille.
+        
+        Parameters
+        ----------
+        widgetkey : plume.rdf.widgetkey.WidgetKey
+            Une clé du dictionnaire de widgets.
+        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'label widget'}
+            Nature du widget considéré.
+        
+        Returns
+        -------
+        tuple
+            Le placement est défini par un tuple à quatre éléments :
+            * ``[0]`` est l'indice de la ligne (*row*) ;
+            * ``[1]`` est l'indice de la colonne (*column*) ;
+            * ``[2]`` est le nombre de lignes occupées (*row span*) ;
+            * ``[3]`` est le nombre de colonnes occupées (*column span*).
+        
+        Notes
+        -----
+        La fonction renvoie ``None`` si la nature de widget donnée en
+        argument n'est pas une valeur reconnue.
+        
+        """
+        if not widgetkey or not widgetkey in self:
+            return
+        if kind == 'main widget':
+            return widgetkey.placement
+        if kind == 'label widget':
+            return widgetkey.label_placement
+        if kind == 'language widget':
+            return widgetkey.language_button_placement
+        if kind == 'switch source widget':
+            return widgetkey.source_button_placement
+        if kind == 'minus widget':
+            return widgetkey.minus_button_placement
+
     def dictisize_actionsbook(self, widgetkey, actionsbook):
         """Traduit un carnet d'actions en dictionnaire.
         
         Parameters
         ----------
-        widgetkey : WidgetKey
+        widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
-        actionsbook : ActionsBook
+        actionsbook : plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions à traduire.
         
         Returns
@@ -476,7 +590,7 @@ class WidgetsDict(dict):
         
         Parameters
         ----------
-        buttonkey : PlusButtonKey
+        buttonkey : plume.rdf.widgetkey.PlusButtonKey
             La clé du bouton plus ou bouton de traduction actionné par
             l'utilisateur.
         
@@ -513,7 +627,7 @@ class WidgetsDict(dict):
         
         Parameters
         ----------
-        widgetkey : WidgetKey
+        widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé de dictionnaire de widgets.
         
         """
@@ -523,53 +637,48 @@ class WidgetsDict(dict):
             return 'QGroupBox'
         if isinstance(widgetkey, PlusButtonKey):
             return 'QToolButton'
-        if widgetkey.datatype.n3(self.nsm) == 'xsd:boolean':
+        if widgetkey.datatype == XSD.boolean:
             return 'QCheckBox'
         if widgetkey.is_read_only:
             return 'QLabel'
-        if not widgetkey.datatype:
-            if value_source:
-                return 'QComboBox'
-            else:
-                return 'QLineEdit'
-        if widgetkey.datatype.n3(self.nsm) in ('rdf:langString', 'xsd:string'):
-            if widgetkey.is_long_text:
-                return 'QTextEdit'
-            return 'QLineEdit'
+        if widgetkey.sources:
+            return 'QComboBox'
+        if widgetkey.is_long_text:
+            return 'QTextEdit'
         d = {
-            'xsd:date': 'QDateEdit',
-            'xsd:dateTime': 'QDateTimeEdit',
-            'xsd:time': 'QTimeEdit',
-            'gsp:wktLiteral': 'QTextEdit'
+            XSD.date: 'QDateEdit',
+            XSD.dateTime: 'QDateTimeEdit',
+            XSD.time: 'QTimeEdit',
+            GSP.wktLiteral: 'QTextEdit'
             }
-        return d.get(widgetkey.datatype.n3(self.nsm), 'QLineEdit')
+        return d.get(widgetkey.datatype, 'QLineEdit')
     
     def type_validator(self, widgetkey):
         """S'il y a lieu, renvoie le validateur adapté pour une clé.
         
         Parameters
         ----------
-        widgetkey : WidgetKey
+        widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé de dictionnaire de widgets.
         
         """
         if not widgetkey:
             return
         d = {
-            'xsd:integer': 'QIntValidator',
-            'xsd:decimal': 'QDoubleValidator',
-            'xsd:float': 'QDoubleValidator',
-            'xsd:double': 'QDoubleValidator'
+            XSD.integer: 'QIntValidator',
+            XSD.decimal: 'QDoubleValidator',
+            XSD.float: 'QDoubleValidator',
+            XSD.double: 'QDoubleValidator'
             }
-        return d.get(widgetkey.datatype.n3(self.nsm))
+        return d.get(widgetkey.datatype)
     
     def register_value(self, widgetkey, value):
         """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
         
         Parameters
         ----------
-        widgetkey : ValueKey
-            Une clé de dictionnaire de widgets.
+        widgetkey : plume.rdf.widgetkey.ValueKey
+            Une clé-valeur de dictionnaire de widgets.
         value : str
             La valeur, exprimée sous la forme d'une chaîne de caractères.
         
@@ -609,8 +718,8 @@ class WidgetsDict(dict):
         
         Parameters
         ----------
-        widgetkey : ValueKey
-            Une clé de dictionnaire de widgets.
+        widgetkey : plume.rdf.widgetkey.ValueKey
+            Une clé-valeur de dictionnaire de widgets.
         
         Returns
         -------
@@ -671,7 +780,7 @@ def text_with_link(anystr, anyiri):
     ----------
     anystr : str
         La chaîne de caractères porteuse du lien.
-    anyiri : URIRef
+    anyiri : rdflib.term.URIRef
         Un IRI quelconque correspondant à la cible du lien.
     
     Returns
@@ -702,9 +811,9 @@ def email_from_owlthing(thing_iri):
 
     Parameters
     ----------
-    thing_iri : URIRef
-        Objet de type URIref supposé correspondre à une adresse
-        mél (classe RDF owl:Thing).
+    thing_iri : rdflib.term.URIRef
+        IRI supposé correspondre à une adresse mél (classe
+        RDF  ``owl:Thing``).
 
     Returns
     -------
@@ -735,10 +844,9 @@ def owlthing_from_email(email_str):
 
     Returns
     -------
-    URIRef
-        Un objet de type URIRef (rdflib.term.URIRef) respectant grosso
-        modo le schéma officiel des URI pour les adresses mél :
-        mailto:<email>.
+    rdflib.term.URIRef
+        Un IRI respectant grosso modo le schéma officiel des URI pour
+        les adresses mél : ``mailto:<email>``.
 
     Examples
     --------
@@ -758,15 +866,15 @@ def owlthing_from_email(email_str):
 def tel_from_owlthing(thing_iri):
     """Renvoie la transcription sous forme de chaîne de caractères d'un IRI représentant un numéro de téléphone.
 
-    Contrairement à owlthing_from_tel, cette fonction très basique
+    Contrairement à :py:func:`owlthing_from_tel`, cette fonction très basique
     ne standardise pas la forme du numéro de téléphone. Elle se contente
-    de retirer le préfixe "tel:" s'il était présent.
+    de retirer le préfixe ``'tel:'`` s'il était présent.
 
     Parameters
     ----------
-    thing_iri : URIRef
-        Objet de type URIref supposé correspondre à un numéro
-        de téléphone (classe RDF owl:Thing).
+    thing_iri : rdflib.term.URIRef
+        IRI supposé correspondre à un numéro de téléphone (classe
+        RDF ``owl:Thing``).
 
     Returns
     -------
@@ -784,23 +892,22 @@ def owlthing_from_tel(tel_str, add_fr_prefix=True):
     """Construit un IRI valide à partir d'une chaîne de caractères représentant un numéro de téléphone.
 
     Si le numéro semble être un numéro de téléphone français valide,
-    il est standardisé sous la forme <tel:+33-x-xx-xx-xx-xx>.
+    il est standardisé sous la forme ``<tel:+33-x-xx-xx-xx-xx>``.
 
     Parameters
     ----------
     tel_str : str
         Une chaîne de caractère supposée correspondre à un numéro de téléphone.
     add_fr_prefix : bool, default True
-        True si la fonction doit tenter de transformer les numéros de téléphone
+        ``True`` si la fonction doit tenter de transformer les numéros de téléphone
         français locaux ou présumés comme tels (un zéro suivi de neuf chiffres)
-        en numéros globaux ("+33" suivi des neuf chiffres). True par défaut.
+        en numéros globaux (``'+33'`` suivi des neuf chiffres). ``True`` par défaut.
 
     Returns
     -------
-    URIRef
-        Un objet de type URIRef (rdflib.term.URIRef) respectant grosso
-        modo le schéma officiel des URI pour les numéros de téléphone :
-        tel:<phonenumber>.
+    rdflib.term.URIRef
+        Un IRI respectant grosso modo le schéma officiel des URI pour les
+        numéros de téléphone : ``tel:<phonenumber>``.
 
     Examples
     --------
@@ -837,27 +944,4 @@ def owlthing_from_tel(tel_str, add_fr_prefix=True):
     if tel:
         return URIRef('tel:' + tel)
 
-def sort_by_language(litlist, language):
-    """Trie une liste pour que les valeurs dans la langue demandée arrivent en tête.
-    
-    Parameters
-    ----------
-    litlist : list of rdflib.term.Literal
-        Une liste de valeurs litérales, présumées de type
-        ``xsd:string``.
-    language : str
-        La langue à privilégier pour les traductions.
-    
-    Notes
-    -----
-    Les valeurs de la langue désirée sont placées en premier,
-    puis les traductions françaises, puis les autres éléments.
-    
-    La liste est triée sur place, la fonction ne renvoie
-    donc rien.
 
-    """
-    litlist.sort(key=lambda v: \
-        0 if isinstance(v, Literal) and v.language == language else \
-        1 if isinstance(v, Literal) and v.language == 'fr' else \
-        2)
