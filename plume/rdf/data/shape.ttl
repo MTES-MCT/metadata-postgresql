@@ -33,7 +33,6 @@ snum:DatasetShape
 		sh:minCount 1 ;
         sh:uniqueLang true ;
         sh:order 0 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path owl:versionInfo ;
@@ -43,7 +42,6 @@ snum:DatasetShape
         sh:datatype xsd:string ;
 		sh:maxCount 1 ;
         sh:order 1 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:description ;
@@ -54,7 +52,7 @@ snum:DatasetShape
 		sh:minCount 1 ;
         sh:uniqueLang true ;
         sh:order 2 ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
         snum:rowSpan 15 ;
 	] ;
     sh:property [
@@ -65,7 +63,6 @@ snum:DatasetShape
         sh:datatype xsd:boolean ;
         sh:maxCount 1 ;
         sh:order 3 ;
-        snum:widget "QCheckBox" ;
 	] ;
     sh:property [
 		sh:path dcat:theme ;
@@ -75,16 +72,14 @@ snum:DatasetShape
         snum:ontology <http://publications.europa.eu/resource/authority/data-theme>,
             <https://inspire.ec.europa.eu/theme> ;
         sh:order 4 ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path dct:subject ;
 		sh:name "Catégorie ISO 19115"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
-        snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+        # snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
         sh:order 5 ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path dcat:keyword ;
@@ -92,7 +87,6 @@ snum:DatasetShape
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:order 6 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:spatial ;
@@ -116,7 +110,6 @@ snum:DatasetShape
         sh:maxCount 1 ;
         sh:order 11 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -127,7 +120,6 @@ snum:DatasetShape
         sh:maxCount 1 ;
         sh:order 12 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -138,7 +130,6 @@ snum:DatasetShape
         sh:maxCount 1 ;
         sh:order 13 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -147,10 +138,9 @@ snum:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class dct:Frequency ;
         sh:maxCount 1 ;
-        snum:ontology <http://publications.europa.eu/resource/authority/frequency>,
-            <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+        snum:ontology # <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency>,
+            <http://publications.europa.eu/resource/authority/frequency> ;
         sh:order 14 ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path dct:provenance ;
@@ -167,7 +157,7 @@ snum:DatasetShape
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 21 ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
 	] ;
     sh:property [
 		sh:path dct:conformsTo ;
@@ -185,7 +175,6 @@ snum:DatasetShape
         sh:datatype xsd:decimal ;
         sh:maxCount 1 ;
         sh:order 24 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path rdfs:comment ;
@@ -193,7 +182,7 @@ snum:DatasetShape
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:order 25 ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
 	] ;
     sh:property [
 		sh:path dcat:temporalResolution ;
@@ -201,7 +190,6 @@ snum:DatasetShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:duration ;
         sh:order 26 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:accessRights ;
@@ -212,7 +200,6 @@ snum:DatasetShape
         snum:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
             <http://publications.europa.eu/resource/authority/access-right>,
             snum:CrpaAccessLimitations ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path dcat:contactPoint ;
@@ -325,7 +312,6 @@ snum:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 60 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path foaf:page ;
@@ -334,17 +320,14 @@ snum:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 61 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:language ;
 		sh:name "Langue des données"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class dct:LinguisticSystem ;
-        sh:defaultValue <http://publications.europa.eu/resource/authority/language/FRA> ;
         sh:order 80 ;
         snum:ontology <http://publications.europa.eu/resource/authority/language> ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path snum:relevanceScore ;
@@ -354,18 +337,15 @@ snum:DatasetShape
         sh:datatype xsd:integer ;
         sh:maxCount 1 ;
         sh:order 81 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:type ;
 		sh:name "Type de jeu de données"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
-        sh:defaultValue <http://publications.europa.eu/resource/authority/dataset-type/GEOSPATIAL> ;
         sh:maxCount 1 ;
         sh:order 82 ;
-        snum:ontology snum:DatasetType ;
-        snum:widget "QComboBox" ;
+        # snum:ontology snum:DatasetType ;
 	] ;
     sh:property [
 		sh:path dct:identifier ;
@@ -374,7 +354,6 @@ snum:DatasetShape
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
         sh:order 83 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path adms:identifier ;
@@ -382,7 +361,6 @@ snum:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:order 84 ;
-        snum:widget "QLineEdit" ;
 	] .
 
 snum:DistributionShape
@@ -396,7 +374,6 @@ snum:DistributionShape
         sh:nodeKind sh:IRI ;
         sh:class rdfs:Resource ;
         sh:order 1 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:issued ;
@@ -406,7 +383,6 @@ snum:DistributionShape
         sh:maxCount 1 ;
         sh:order 2 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -425,7 +401,6 @@ snum:DistributionShape
         sh:maxCount 1 ;
         sh:order 4 ;
         snum:ontology snum:CrpaAuthorizedLicense ;
-        snum:widget "QComboBox" ;
 	] .
 
 snum:RightsStatementShape
@@ -440,7 +415,7 @@ snum:RightsStatementShape
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 1 ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
         snum:rowSpan 4 ;
 	] .
 
@@ -456,7 +431,6 @@ snum:LicenseDocumentShape
         sh:class skos:Concept ;
         sh:order 1 ;
         snum:ontology <http://purl.org/adms/licencetype/1.1> ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path rdfs:label ;
@@ -465,7 +439,7 @@ snum:LicenseDocumentShape
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 2 ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
 	] .
 
 snum:ProvenanceStatementShape
@@ -480,7 +454,7 @@ snum:ProvenanceStatementShape
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 0 ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
         snum:rowSpan 20 ;
 	] .
 
@@ -497,7 +471,6 @@ snum:PeriodOfTimeShape
         sh:maxCount 1 ;
         sh:order 0 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -508,7 +481,6 @@ snum:PeriodOfTimeShape
         sh:maxCount 1 ;
         sh:order 1 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] .
 
@@ -524,7 +496,6 @@ snum:KindShape
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
         sh:order 1 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path vcard:hasEmail ;
@@ -533,7 +504,6 @@ snum:KindShape
         sh:class owl:Thing ;
         sh:maxCount 1 ;
         sh:order 2 ;
-        snum:widget "QLineEdit" ;
         snum:transform "email" ;
 	] ;
     sh:property [
@@ -543,7 +513,6 @@ snum:KindShape
         sh:class owl:Thing ;
         sh:maxCount 1 ;
         sh:order 3 ;
-        snum:widget "QLineEdit" ;
         snum:transform "phone" ;
         snum:placeholder "+33-1-23-45-67-89" ;
 	] ;
@@ -554,7 +523,6 @@ snum:KindShape
         sh:class owl:Thing ;
         sh:maxCount 1 ;
         sh:order 4 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path vcard:organization-name ;
@@ -564,7 +532,6 @@ snum:KindShape
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
         sh:order 5 ;
-        snum:widget "QLineEdit" ;
 	] .
 
 snum:AgentShape
@@ -579,7 +546,6 @@ snum:AgentShape
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
         sh:order 0 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:type ;
@@ -589,7 +555,6 @@ snum:AgentShape
         sh:maxCount 1 ;
         sh:order 1 ;
         snum:ontology <http://purl.org/adms/publishertype/1.0> ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path foaf:mbox ;
@@ -598,7 +563,6 @@ snum:AgentShape
         sh:class owl:Thing ;
         sh:maxCount 1 ;
         sh:order 2 ;
-        snum:widget "QLineEdit" ;
         snum:transform "email" ;
 	] ;
     sh:property [
@@ -608,7 +572,6 @@ snum:AgentShape
         sh:class owl:Thing ;
         sh:maxCount 1 ;
         sh:order 3 ;
-        snum:widget "QLineEdit" ;
         snum:transform "phone" ;
         snum:placeholder "+33-1-23-45-67-89" ;
 	] ;
@@ -619,7 +582,6 @@ snum:AgentShape
         sh:class foaf:Document ;
         sh:maxCount 1 ;
         sh:order 4 ;
-        snum:widget "QLineEdit" ;
 	] .
 
 snum:LocationShape
@@ -636,7 +598,6 @@ snum:LocationShape
         sh:maxCount 1 ;
         sh:order 0 ;
         snum:ontology snum:InseeGeoIndex ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path dct:identifier ;
@@ -645,7 +606,6 @@ snum:LocationShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:order 1 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path skos:prefLabel ;
@@ -654,7 +614,6 @@ snum:LocationShape
         sh:datatype rdf:langString ;
         sh:order 2 ;
         sh:uniqueLang true ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dcat:bbox ;
@@ -664,7 +623,6 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 3 ;
-        snum:widget "QTextEdit" ;
         snum:placeholder "POLYGON((2.1 48.3,2.1 50.5,1.8 50.5,1.8 48.3,2.1 48.3))" ;
 	] ;
     sh:property [
@@ -675,7 +633,6 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 4 ;
-        snum:widget "QLineEdit" ;
         snum:placeholder "POINT(-71.064544 42.28787)" ;
 	]  ;
     sh:property [
@@ -686,7 +643,6 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 5 ;
-        snum:widget "QTextEdit" ;
 	] .
 
 snum:StandardShape
@@ -702,7 +658,6 @@ snum:StandardShape
         snum:ontology snum:StandardsRegister ;
         sh:maxCount 1 ;
         sh:order 0 ;
-        snum:widget "QComboBox" ;
 	] ;
     sh:property [
 		sh:path dct:identifier ;
@@ -711,7 +666,6 @@ snum:StandardShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:order 1 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:title ;
@@ -721,7 +675,6 @@ snum:StandardShape
         sh:datatype rdf:langString ;
         sh:order 2 ;
         sh:uniqueLang true ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path owl:versionInfo ;
@@ -731,7 +684,6 @@ snum:StandardShape
         sh:datatype xsd:string ;
 		sh:maxCount 1 ;
         sh:order 3 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:description ;
@@ -741,7 +693,7 @@ snum:StandardShape
         sh:datatype rdf:langString ;
         sh:order 4 ;
         sh:uniqueLang true ;
-        snum:widget "QTextEdit" ;
+        snum:longText true ;
 	] ;
     sh:property [
 		sh:path dct:issued ;
@@ -752,7 +704,6 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 5 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -764,7 +715,6 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 6 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -776,7 +726,6 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 7 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:widget "QDateEdit" ;
         snum:inputMask "0000-00-00" ;
 	] ;
     sh:property [
@@ -786,7 +735,6 @@ snum:StandardShape
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 8 ;
-        snum:widget "QLineEdit" ;
 	] ;
     sh:property [
 		sh:path dct:type ;
@@ -795,8 +743,7 @@ snum:StandardShape
         sh:class skos:Concept ;
         sh:maxCount 1 ;
         sh:order 9 ;
-        snum:ontology snum:StandardType ;
-        snum:widget "QComboBox" ;
+        # snum:ontology snum:StandardType ;
 	] .
 
 snum:AttributionShape
@@ -816,8 +763,7 @@ snum:AttributionShape
 		sh:name "Rôle"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class dcat:Role ;
-        snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole> ;
+        # snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole> ;
         sh:order 1 ;
-        snum:widget "QComboBox" ;
 	] .
 
