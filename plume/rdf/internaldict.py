@@ -135,35 +135,19 @@ class InternalDict(dict):
     """
     
     def __init__(self):
-        """Génère un dictionnaire interne vierge.
-        
-        Returns
-        -------
-        InternalDict
-            Un dictionnaire interne vide.
-        """
-        
         keys = [
             'object',
             # stockage des widgets :
             'main widget', 'grid widget', 'label widget', 'minus widget',
-            'language widget', 'switch source widget',
-            'switch source menu', 'switch source actions', 'language menu',
-            'language actions',
+            'language widget', 'switch source widget', 'switch source menu',
+            'switch source actions', 'language menu', 'language actions',
             # paramétrage des widgets
-            'main widget type', 'row', 'row span', 'label', 'label row',
-            'help text', 'value', 'language value', 'placeholder text',
-            'input mask', 'is mandatory', 'has minus button', 'hide minus button',
-            'regex validator pattern', 'regex validator flags', 'type validator',
-            'multiple sources', 'sources', 'current source', 'current source URI',
-            'thesaurus values', 'authorized languages', 'read only', 'hidden', 'hidden M',
-            # à l'usage des fonctions de rdf_utils
-            'default value', 'default source', 'multiple values', 'node kind',
-            'data type', 'ontology', 'transform', 'class', 'path', 'subject',
-            'predicate', 'node', 'default widget type', 'one per language',
-            'next child', 'shape order', 'template order', 'do not save',
-            'sources URI', 'independant label'
+            'main widget type', 'label', 'help text', 'value', 'language value',
+            'placeholder text', 'input mask', 'is mandatory', 'has minus button',
+            'hide minus button', 'regex validator pattern', 'regex validator flags',
+            'type validator', 'multiple sources', 'sources', 'current source',
+            'thesaurus values', 'authorized languages', 'read only', 'hidden',
+            'hidden M',
             ]
-        
         self.update({ k:None for k in keys })
 
