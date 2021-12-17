@@ -1045,11 +1045,12 @@ class ObjectKey(WidgetKey):
         parent et de la valeur de :py:attr:`ObjectKey.predicate`.
         
         """
+        parent_path = self.parent.path
         if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.path
-        if isinstance(self.parent, RootKey):
+            return parent_path
+        if not parent_path:
             return self.predicate
-        return self.parent.path / self.predicate
+        return parent_path / self.predicate
 
     @property
     def label(self):
@@ -1583,6 +1584,13 @@ class GroupKey(WidgetKey):
                 # les branches
                 child._search_from_rdfclass(rdfclass, matchlist)
 
+    def _search_from_uuid(self, uuid):
+        for child in self.children:
+            if str(child.uuid) == str(uuid):
+                return child
+            elif isinstance(child, GroupKey):
+                return child._search_from_uuid(uuid)
+
     def _clean(self):
         if not self.children:
             if isinstance(self, GroupOfPropertiesKey):
@@ -1698,9 +1706,11 @@ class TabKey(GroupKey):
     """
     
     def _base_attributes(self, **kwargs):
+        super()._base_attributes(**kwargs)
         self._label = None
         
     def _computed_attributes(self, **kwargs):
+        super()._computed_attributes(**kwargs)
         self.label = kwargs.get('label')
     
     def _validate_parent(self, parent):
@@ -2248,9 +2258,10 @@ class GroupOfValuesKey(GroupKey):
         :py:attr:`GroupOfValuesKey.predicate`.
         
         """
-        if isinstance(self.parent, RootKey):
+        parent_path = self.parent.path
+        if not parent_path:
             return self.predicate
-        return self.parent.path / self.predicate
+        return parent_path / self.predicate
     
     @property
     def label(self):
@@ -2287,7 +2298,7 @@ class GroupOfValuesKey(GroupKey):
         qui seront alors automatiquement converties.
         
         """
-        if not self._value and not self._description:
+        if not self._label and not self._description:
             return self.path
         return self._description
     
@@ -2545,6 +2556,11 @@ class GroupOfValuesKey(GroupKey):
         super()._hide_m(value, rec=rec)
         if self.button:
             self.button._hide_m(value, rec=rec)
+
+    def _search_from_uuid(self, uuid):
+        super._search_from_uuid(uuid)
+        if self.button and str(self.button.uuid) == str(uuid):
+            return self.button
 
     @property
     def attr_to_update(self):
@@ -3826,7 +3842,7 @@ class PlusButtonKey(WidgetKey):
         """str: Texte d'aide.
         
         """
-        return 'Ajouter un élément « {} ».'.format(parent.label)
+        return 'Ajouter un élément « {} ».'.format(self.parent.label)
     
     @property
     def path(self):
@@ -3983,6 +3999,8 @@ class RootKey(GroupKey):
     search_from_rdfclass(rdfclass)
         Renvoie tous les groupes de propriétés de l'arbre dont la
         classe RDF est `rdfclass`.
+    search_from_uuid(uuid)
+        Renvoie la clé de l'arbre dont l'identifiant est l'UUID recherché.
     paste_from_path(widgetkey)
         Copie et colle la clé dans l'arbre, en la plaçant selon
         son chemin.
@@ -4088,6 +4106,8 @@ class RootKey(GroupKey):
     def search_from_rdfclass(self, rdfclass):
         """Renvoie la liste des groupes de propriétés du type recherché.
         
+        Les clés fantômes ne sont pas prises en compte.
+        
         Parameters
         ----------
         rdfclass : rdflib.term.URIRef
@@ -4100,6 +4120,18 @@ class RootKey(GroupKey):
         """
         matchlist = []
         self._search_from_rdfclass(rdfclass, matchlist)
+
+    def search_from_uuid(self, uuid):
+        """Renvoie la clé de l'arbre dont l'identifiant est l'UUID recherché.
+        
+        Parameters
+        ----------
+        uuid : str or uuid.UUID
+        
+        """
+        if str(self.uuid) == str(uuid):
+            return self
+        return self._search_from_uuid(uuid)
 
     def paste_from_path(self, widgetkey):
         """Copie et colle une branche dans l'arbre de clés.
