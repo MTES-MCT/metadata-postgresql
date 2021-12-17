@@ -2,21 +2,13 @@
 
 """
 
-
 from locale import strxfrm, setlocale, LC_COLLATE
-
-try:
-    from rdflib import Graph, URIRef
-except:
-    from plume.bibli_install.bibli_install import manageLibrary
-    # installe RDFLib si n'est pas déjà disponible
-    manageLibrary()
-    from rdflib import Graph, URIRef
+from rdflib import Graph, URIRef
 
 from plume.rdf.metagraph import graph_from_file
 from plume.rdf.exceptions import UnknownParameterValue
 from plume.rdf.namespaces import FOAF, SKOS, SNUM
-from plume.rdf.utils import abspath
+from plume.rdf.utils import abspath, pick_translation
 
 vocabulary = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
 """Graphe contenant le vocabulaire de tous les thésaurus.
@@ -377,46 +369,5 @@ class Thesaurus:
                     )
         self.values.insert(0, '')       
         Thesaurus.add(iri, language, self)
-  
-
-def pick_translation(litlist, language):
-    """Renvoie l'élément de la liste correspondant à la langue désirée.
     
-    Parameters
-    ----------
-    litlist : list of rdflib.term.Literal
-        Une liste de valeurs litérales, présumées de type
-        ``xsd:string``.
-    language : str
-        La langue pour laquelle on cherche une traduction.
-    
-    Returns
-    -------
-    Literal
-        Un des éléments de la liste, qui peut être :
-        - le premier dont la langue est `language` ;
-        - à défaut, le dernier dont la langue est 'fr' ;
-        - à défaut, le premier de la liste.
-
-    """
-    if not litlist:
-        raise ForbiddenOperation('La liste ne contient aucune valeur.')
-    
-    val = None
-    
-    for l in litlist:
-        if l.language == language:
-            val = l
-            break
-        elif l.language == 'fr':
-            # à défaut de mieux, on gardera la traduction
-            # française
-            val = l
-            
-    if val is None:
-        # s'il n'y a ni la langue demandée ni traduction
-        # française, on prend la première valeur de la liste
-        val = litlist[0]
-        
-    return val
 
