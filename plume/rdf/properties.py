@@ -11,7 +11,7 @@ from rdflib.util import from_n3
 
 from plume.rdf.namespaces import SH, SNUM
 from plume.rdf.metagraph import graph_from_file
-from plume.rdf.utils import abspath
+from plume.rdf.utils import abspath, path_n3
 
 shape = graph_from_file(abspath('rdf/data/shape.ttl'))
 """Schéma SHACL définissant la structure des métadonnées communes.
@@ -76,9 +76,11 @@ class PlumeProperty:
             self.origin = 'shared'
             self.prop_dict = read_shape_property(property_node)
             self.predicate = self.prop_dict['predicate']
-            self.n3_path = ((base_path / self.predicate) \
-                if base_path else self.predicate).n3(nsm)
-            if template and self.n3_path in template:
+            self.n3_path = path_n3((base_path / self.predicate) \
+                if base_path else self.predicate, nsm)
+            if not template:
+                self.unlisted = False
+            elif self.n3_path in template:
                 merge_property_dict(self.prop_dict, template[self.n3_path])
                 self.unlisted = False
             else:
