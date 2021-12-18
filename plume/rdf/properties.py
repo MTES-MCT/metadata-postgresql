@@ -107,7 +107,7 @@ class PlumeProperty:
     
 
 def merge_property_dict(shape_dict, template_dict):
-    """Fusionne deux dictionnaires décrivant une même propriété.
+    """Fusionne deux dictionnaires décrivant une même catégorie de métadonnées.
     
     Parameters
     ----------
@@ -122,16 +122,43 @@ def merge_property_dict(shape_dict, template_dict):
     -----
     La fonction ne renvoie rien, elle complète `shape_dict`.
     
+    Les clés ``predicate``, ``kind``, ``datatype``, ``is_multiple``
+    et ``unilang`` ne peuvent pas être redéfinies par le modèle,
+    leurs valeurs éventuelles seront ignorées.
+    
+    La clé ``order_idx`` produite par :py:func:`read_shape_property`
+    à partir de l'indice fourni par le schéma SHACL est un tuple
+    dont la première valeur est ``9999``, et la seconde l'indice.
+    :py:func:`plume.pg.template.build_template` fait exactement
+    l'inverse : ses clés ``order_idx`` ont l'indice du modèle en
+    première (et unique) valeur. `merge_property_dict` recréé des
+    clés ``order_idx`` dont la première valeur est l'indice du
+    modèle, et la seconde celle du schéma des catégories communes.
+    
+    La clé ``sources`` peut être restreinte par le modèle : si ce
+    dernier fournit une liste d'URL, alors seules les sources qui
+    se trouvent dans cette liste seront conservées, sous réserve
+    qu'il y en ait au moins une (sinon la clé d'origine est préservée).
+    
     """
-    restricted = ['predicate', 'kind', 'datatype', 'is_multiple', 'unilang']
-    # propriétés que le modèle n'a pas le droit d'écraser
+    restricted = ['predicate', 'kind', 'datatype', 'is_multiple',
+        'unilang', 'sources', 'order_idx']
+        # propriétés que le modèle n'a pas le droit d'écraser, ou
+        # du moins pas brutalement
     for key, value in template_dict.items():
         if not key in restricted and not value is None:
             shape_dict[key] = value
             # NB: on remplace des Literal et URIRef par des str, bool, etc.,
             # mais ça n'a pas d'importance, WidgetKey peut gérer les deux
             # formes
-    shape_dict['order_idx'] = (template_dict['order_idx'][0], shape_dict['order_idx'][1])  
+    shape_dict['order_idx'] = (template_dict['order_idx'][0], shape_dict['order_idx'][1])
+    if shape_dict.get('sources') and template_dict.get('sources'):
+        sources = shape_dict['sources'].copy()
+        for s in sources:
+            if not str(s) in template_dict['sources']:
+                sources.remove(s)
+        if sources:
+            shape_dict['sources'] = sources
 
 def class_properties(rdfclass, nsm, base_path, template=None):
     """Renvoie la liste des propriétés d'une classe.
