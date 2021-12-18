@@ -6,7 +6,7 @@ from locale import strxfrm, setlocale, LC_COLLATE
 from rdflib import Graph, URIRef
 
 from plume.rdf.metagraph import graph_from_file
-from plume.rdf.exceptions import UnknownParameterValue
+from plume.rdf.exceptions import UnknownSource
 from plume.rdf.namespaces import FOAF, SKOS, SNUM
 from plume.rdf.utils import abspath, pick_translation
 
@@ -23,10 +23,13 @@ class Thesaurus:
     
     Parameters
     ----------
-    iri : URIRef
+    iri : rdflib.term.URIRef
         L'IRI du thésaurus.
-    language : str
-        La langue pour laquelle le thésaurus doit être généré.
+    langlist : tuple(str)
+        Le tuple de langues pour lequel le thésaurus doit être
+        généré. Lorsque plusieurs traductions sont disponibles, les
+        langues qui apparaissent en premier dans `langlist` seront
+        privilégiées.
     
     Attributes
     ----------
@@ -37,8 +40,8 @@ class Thesaurus:
         Le libellé du thésaurus.
     iri : URIRef
         L'IRI du thésaurus.
-    language : str
-        La langue pour laquelle le thésaurus a été généré.
+    langlist : tuple(str)
+        Le tuple de langues pour lequel le thésaurus a été généré.
     values : list
         La liste des termes du thésaurus.
     iri_from_str : dict
@@ -75,7 +78,7 @@ class Thesaurus:
     """Accès à l'ensemble des thésaurus déjà compilés.
     
     `collection` est un dictionnaire dont les clés sont des tuples
-    (`iri`, `language`) et les valeurs l'objet :py:class:`Thesaurus`
+    (`iri`, `langlist`) et les valeurs l'objet :py:class:`Thesaurus`
     lui-même.
     
     """
@@ -90,9 +93,12 @@ class Thesaurus:
         
         Parameters
         ----------
-        thesaurus : tuple(URIRef, str)
+        thesaurus : tuple(rdflib.term.URIRef, tuple(str))
             Source. Tuple dont le premier élément est l'IRI de la source,
-            le second la langue pour laquelle le thésaurus doit être généré.
+            le second un tuple de langues pour lequel le thésaurus doit
+            être généré. Lorsque plusieurs traductions sont disponibles,
+            les langues qui apparaissent en premier dans le tuple
+            seront privilégiées.
         
         Returns
         -------
@@ -102,7 +108,7 @@ class Thesaurus:
         
         Raises
         ------
-        UnknownParameterValue
+        UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
             mais n'existe même pas dans :py:data:`vocabulary`.
         
@@ -112,13 +118,12 @@ class Thesaurus:
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
         """
-        iri, language = thesaurus
         if thesaurus in cls.collection:
             return cls.collection[thesaurus].values
-        t = Thesaurus(iri, language)
+        t = Thesaurus(*thesaurus)
         if t:
             return t.values
-        raise UnknownParameterValue('iri', iri)
+        raise UnknownSource(thesaurus[0])
     
     @classmethod
     def label(cls, thesaurus):
@@ -130,9 +135,12 @@ class Thesaurus:
         
         Parameters
         ----------
-        thesaurus : tuple(URIRef, str)
+        thesaurus : tuple(rdflib.term.URIRef, tuple(str))
             Source. Tuple dont le premier élément est l'IRI de la source,
-            le second la langue pour laquelle le thésaurus doit être généré.
+            le second un tuple de langues pour lequel le thésaurus doit
+            être généré. Lorsque plusieurs traductions sont disponibles,
+            les langues qui apparaissent en premier dans le tuple
+            seront privilégiées.
         
         Returns
         -------
@@ -141,7 +149,7 @@ class Thesaurus:
         
         Raises
         ------
-        UnknownParameterValue
+        UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
             mais n'existe même pas dans :py:data:`vocabulary`.
         
@@ -151,13 +159,12 @@ class Thesaurus:
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
         """
-        iri, language = thesaurus
         if thesaurus in cls.collection:
             return cls.collection[thesaurus].label
-        t = Thesaurus(iri, language)
+        t = Thesaurus(*thesaurus)
         if t:
             return t.label
-        raise UnknownParameterValue('iri', iri)
+        raise UnknownSource(thesaurus[0])
     
     @classmethod
     def concept_iri(cls, thesaurus, concept_str):
@@ -169,9 +176,12 @@ class Thesaurus:
         
         Parameters
         ----------
-        thesaurus : tuple(URIRef, str)
+        thesaurus : tuple(rdflib.term.URIRef, tuple(str))
             Source. Tuple dont le premier élément est l'IRI de la source,
-            le second la langue pour laquelle le thésaurus doit être généré.
+            le second un tuple de langues pour lequel le thésaurus doit
+            être généré. Lorsque plusieurs traductions sont disponibles,
+            les langues qui apparaissent en premier dans le tuple
+            seront privilégiées.
         concept_str : str
             Le libellé d'un terme présumé issu du thésaurus, dont on
             cherche l'IRI.
@@ -184,7 +194,7 @@ class Thesaurus:
         
         Raises
         ------
-        UnknownParameterValue
+        UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
             mais n'existe même pas dans :py:data:`vocabulary`.
         
@@ -198,13 +208,12 @@ class Thesaurus:
         rdflib.term.URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
         
         """
-        iri, language = thesaurus
         if thesaurus in cls.collection:
             return cls.collection[thesaurus].iri_from_str.get(concept_str)
-        t = Thesaurus(iri, language)
+        t = Thesaurus(*thesaurus)
         if t:
             return t.iri_from_str.get(concept_str)
-        raise UnknownParameterValue('iri', iri)
+        raise UnknownSource(thesaurus[0])
     
     @classmethod
     def concept_str(cls, thesaurus, concept_iri):
@@ -216,9 +225,12 @@ class Thesaurus:
         
         Parameters
         ----------
-        thesaurus : tuple(URIRef, str)
+        thesaurus : tuple(rdflib.term.URIRef, tuple(str))
             Source. Tuple dont le premier élément est l'IRI de la source,
-            le second la langue pour laquelle le thésaurus doit être généré.
+            le second un tuple de langues pour lequel le thésaurus doit
+            être généré. Lorsque plusieurs traductions sont disponibles,
+            les langues qui apparaissent en premier dans le tuple
+            seront privilégiées.
         concept_iri : URIRef
             L'IRI d'un terme présumé issu du thésaurus, dont on cherche
             le libellé.
@@ -231,7 +243,7 @@ class Thesaurus:
         
         Raises
         ------
-        UnknownParameterValue
+        UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
             mais n'existe même pas dans :py:data:`vocabulary`.
         
@@ -244,13 +256,12 @@ class Thesaurus:
         'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
         
         """
-        iri, language = thesaurus
         if thesaurus in cls.collection:
             return cls.collection[thesaurus].str_from_iri.get(concept_iri)
-        t = Thesaurus(iri, language)
+        t = Thesaurus(*thesaurus)
         if t:
             return t.str_from_iri.get(concept_iri)
-        raise UnknownParameterValue('iri', iri)
+        raise UnknownSource(thesaurus[0])
     
     @classmethod
     def concept_link(cls, thesaurus, concept_iri):
@@ -262,9 +273,12 @@ class Thesaurus:
         
         Parameters
         ----------
-        thesaurus : tuple(URIRef, str)
+        thesaurus : tuple(rdflib.term.URIRef, tuple(str))
             Source. Tuple dont le premier élément est l'IRI de la source,
-            le second la langue pour laquelle le thésaurus doit être généré.
+            le second un tuple de langues pour lequel le thésaurus doit
+            être généré. Lorsque plusieurs traductions sont disponibles,
+            les langues qui apparaissent en premier dans le tuple
+            seront privilégiées.
         concept_iri : URIRef
             L'IRI d'un terme présumé issu du thésaurus, dont on cherche le lien.
         
@@ -276,7 +290,7 @@ class Thesaurus:
         
         Raises
         ------
-        UnknownParameterValue
+        UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
             mais n'existe même pas dans :py:data:`vocabulary`.
         
@@ -289,13 +303,12 @@ class Thesaurus:
         rdflib.term.URIRef('https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056')
         
         """
-        iri, language = thesaurus
         if thesaurus in cls.collection:
             return cls.collection[thesaurus].links_from_iri.get(concept_iri)
-        t = Thesaurus(iri, language)
+        t = Thesaurus(*thesaurus)
         if t:
             return t.links_from_iri.get(concept_iri)
-        raise UnknownParameterValue('iri', iri)
+        raise UnknownSource(thesaurus[0])
     
     @classmethod
     def concept_source(cls, concept_iri):
@@ -319,24 +332,24 @@ class Thesaurus:
         return vocabulary.value(concept_iri, SKOS.inScheme)
     
     @classmethod
-    def add(cls, iri, language, thesaurus):
+    def add(cls, iri, langlist, thesaurus):
         """Ajoute un thésaurus au répertoire des thésaurus compilés.
         
         Parameters
         ----------
         iri : URIRef
             L'IRI du thésaurus considéré.
-        language : str
-            La langue pour laquelle le thésaurus a été généré.
+        langlist : tuple(str)
+            Le tuple de langues pour lequel le thésaurus a été généré.
         thesaurus : Thesaurus
             Le thésaurus en tant que tel.
         
         """
-        cls.collection.update({(iri, language): thesaurus})
+        cls.collection.update({(iri, langlist): thesaurus})
     
-    def __init__(self, iri, language):
+    def __init__(self, iri, langlist):
         self.iri = iri
-        self.language = language
+        self.langlist = langlist
         self.values = []
         self.iri_from_str = {}
         self.str_from_iri = {}
@@ -344,10 +357,10 @@ class Thesaurus:
         
         slabels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
         if slabels:
-            t = pick_translation(slabels, language)
+            t = pick_translation(slabels, langlist)
             self.label = str(t)
         else:
-            raise UnknownParameterValue('iri', iri)
+            raise UnknownSource(thesaurus[0])
         
         concepts = [c for c in vocabulary.subjects(SKOS.inScheme, iri)] 
 
@@ -355,7 +368,7 @@ class Thesaurus:
             for c in concepts:
                 clabels = [o for o in vocabulary.objects(c, SKOS.prefLabel)]
                 if clabels:
-                    t = pick_translation(clabels, language)
+                    t = pick_translation(clabels, langlist)
                     self.values.append(str(t))
                     self.iri_from_str.update({str(t): c})
                     self.str_from_iri.update({c: str(t)})
@@ -368,6 +381,6 @@ class Thesaurus:
                     key=lambda x: strxfrm(x)
                     )
         self.values.insert(0, '')       
-        Thesaurus.add(iri, language, self)
+        Thesaurus.add(iri, langlist, self)
     
 
