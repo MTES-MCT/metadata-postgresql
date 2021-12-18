@@ -269,7 +269,7 @@ class WidgetKey:
 
     def __new__(cls, **kwargs):
         if cls.__name__ == 'WidgetKey':
-            raise ForbiddenOperation(message='La classe `WidgetKey` ne ' \
+            raise ForbiddenOperation('La classe `WidgetKey` ne ' \
                 'devrait pas être directement utilisée pour créer ' \
                 'de nouvelles clés.')
         return super().__new__(cls)
@@ -339,15 +339,15 @@ class WidgetKey:
     @parent.setter
     def parent(self, value):
         if not self._is_unborn:
-            raise ForbiddenOperation(self, 'Modifier a posteriori ' \
-                "le parent d'une clé n'est pas permis.")
+            raise ForbiddenOperation('Modifier a posteriori ' \
+                "le parent d'une clé n'est pas permis.", self)
         if value is None:
             # surtout pas "not value" ici, on ne veut pas rejeter
             # tous les parents fantômes
             raise MissingParameter('parent', self)
         if not self._validate_parent(value):
-            raise ForbiddenOperation(self, 'La classe du parent ' \
-                "n'est pas cohérente avec celle de la clé.")
+            raise ForbiddenOperation('La classe du parent ' \
+                "n'est pas cohérente avec celle de la clé.", self)
         # héritage dans les branches fantômes et masquées
         if value.is_ghost:
             self._is_ghost = True
@@ -560,11 +560,6 @@ class WidgetKey:
         
         Vaut toujours ``None`` pour une clé fantôme.
         
-        Warnings
-        --------
-        L'indice de ligne d'une clé masquée doit être considéré
-        comme non significatif.
-        
         Notes
         -----
         Propriété calculée par :py:meth:`GroupKey.compute_rows`,
@@ -606,10 +601,10 @@ class WidgetKey:
         
         See Also
         --------
-        ValueKey.placement
+        ValueKey.placement, ButtonKey.placement
         
         """
-        return (self.row, 0, self.rowspan, 1) if self else None
+        return (self.row, 0, self.rowspan, 2) if self else None
 
     @property
     def language_button_placement(self):
@@ -626,13 +621,14 @@ class WidgetKey:
         
         Notes
         -----
-        Le bouton de sélection de la langue est placé à droite du widget
-        principal.
+        Le bouton de sélection de la langue est placé immédiatement à droite
+        du widget principal.
         
         """
         if not self.has_language_button:
             return
-        return (self.row, self.column + 1, 1, 1)
+        row, column, rowspan, columnspan = self.placement
+        return (row, column + columnspan, 1, 1)
 
     @property
     def source_button_placement(self):
@@ -655,8 +651,9 @@ class WidgetKey:
         """
         if not self.has_source_button:
             return
-        column = self.column + 1 + (1 if self.has_language_button else 0) 
-        return (self.row, column, 1, 1)
+        row, column, rowspan, columnspan = self.placement
+        column = column + columnspan + (1 if self.has_language_button else 0) 
+        return (row, column, 1, 1)
 
     @property
     def minus_button_placement(self):
@@ -678,9 +675,10 @@ class WidgetKey:
         """
         if not self.has_minus_button:
             return
-        column = self.column + 1 + (1 if self.has_language_button else 0) \
+        row, column, rowspan, columnspan = self.placement
+        column = column + columnspan + (1 if self.has_language_button else 0) \
             + (1 if self.has_source_button else 0)
-        return (self.row, column, 1, 1)
+        return (row, column, 1, 1)
     
     @property
     def label_placement(self):
@@ -819,8 +817,8 @@ class WidgetKey:
         
         """
         if not self:
-            raise ForbiddenOperation(self, 'La copie des clés fantômes ' \
-                "n'est pas autorisée.")
+            raise ForbiddenOperation('La copie des clés fantômes ' \
+                "n'est pas autorisée.", self)
         return self._copy(parent=parent, empty=empty)
 
     def _copy(self, parent=None, empty=True):
@@ -957,7 +955,7 @@ class ObjectKey(WidgetKey):
     
     def __new__(cls, **kwargs):
         if cls.__name__ == 'ObjectKey':
-            raise ForbiddenOperation(message='La classe `ObjectKey` ne ' \
+            raise ForbiddenOperation('La classe `ObjectKey` ne ' \
                 'devrait pas être directement utilisée pour créer ' \
                 'de nouvelles clés.')
         return super().__new__(cls, **kwargs)
@@ -1202,8 +1200,10 @@ class ObjectKey(WidgetKey):
         :py:attr:`ObjectKey.is_hidden_m`, :py:attr:`ObjectKey.is_main_twin`,
         :py:attr:`ObjectKey.predicate`, :py:attr:`ObjectKey.label`,
         :py:attr:`ObjectKey.description` et :py:attr:`ObjectKey.order_idx`
-        de la clé et de sa jumelle, ainsi que des propriétés :py:attr:`WidgetKey.row`,
-        et :py:attr:`WidgetKey.is_single_child` pour toutes les clés du groupe parent.
+        de la clé et de sa jumelle, des propriétés :py:attr:`ObjectKey.rowspan`
+        et :py:attr:`ObjectKey.independant_label` de la clé-valeur du couple,
+        ainsi que de la propriété :py:attr:`WidgetKey.is_single_child` pour
+        toutes les clés du groupe parent.
         
         """
         return self._m_twin
@@ -1216,15 +1216,15 @@ class ObjectKey(WidgetKey):
                 # fantôme comme jumeau.
                 return
             if not self :
-                raise ForbiddenOperation(self, 'Un fantôme ne peut avoir ' \
-                    'de clé jumelle.')
+                raise ForbiddenOperation('Un fantôme ne peut avoir ' \
+                    'de clé jumelle.', self)
             d = {ValueKey: GroupOfPropertiesKey, GroupOfPropertiesKey: ValueKey}
             if not isinstance(value, d[type(self)]):
-                raise ForbiddenOperation(self, 'La clé jumelle devrait' \
-                    ' être de type {}.'.format(d[type(self)]))
+                raise ForbiddenOperation('La clé jumelle devrait' \
+                    ' être de type {}.'.format(d[type(self)]), self)
             if self.parent != value.parent:
-                raise ForbiddenOperation(self, 'La clé et sa jumelle ' \
-                    'devraient avoir la même clé parent.')
+                raise ForbiddenOperation('La clé et sa jumelle ' \
+                    'devraient avoir la même clé parent.', self)
         self._m_twin = value
         if value:
             value._m_twin = self
@@ -1232,9 +1232,20 @@ class ObjectKey(WidgetKey):
             # pour une clé dont le jumeau est défini a posteriori,
             # il faut s'assurer de la cohérence des attributs partagés
             self.is_hidden_m = self.is_hidden_m
-            # NB : assure la mise à jour de is_main_twin et le calcul des
-            # indices des lignes
+            # assure la mise à jour de is_main_twin
             self.predicate = self.predicate
+            self.rdfclass = self.rdfclass
+            # emporte la mise en cohérence de ValueKey.datatype (None), et
+            # par suite de ValueKey.is_long_text (False), ce qui garantit
+            # que le rowspan de la clé-valeur vaut 1, comme celui du groupe.
+            # on réexprime toutefois cette contrainte explicitement pour plus
+            # de clarté
+            if isinstance(self, ValueKey):
+                self.rowspan = self.rowspan
+                self.independant_label = self.independant_label
+            else:
+                value.rowspan = value.rowspan
+                value.independant_label = value.independant_label
             self.label = self.label
             self.description = self.description
             self.order_idx = self.order_idx
@@ -1262,10 +1273,7 @@ class ObjectKey(WidgetKey):
         
         Modifier cette propriété emporte la mise en cohérence de la
         propriété :py:attr:`ObjectKey.is_main_twin` de la clé et de sa
-        jumelle, ainsi que de la propriété :py:attr:`WidgetKey.row`
-        pour toutes les clés du groupe parent (car la propriété
-        :py:attr:`WidgetKey.rowspan` peut prendre des valeurs différentes
-        pour les deux jumelles).
+        jumelle.
         
         """
         return self._is_hidden_m 
@@ -1281,7 +1289,6 @@ class ObjectKey(WidgetKey):
         self.m_twin._hide_m(not value, rec=False)
         if not self._is_unborn:
             self.is_main_twin = not self.is_hidden_m
-            self.parent.compute_rows()
 
     @property
     def is_main_twin(self):
@@ -1399,12 +1406,19 @@ class ObjectKey(WidgetKey):
         self.kill()
         return WidgetKey.unload_actionsbook()
 
-    def switch_twin(self):
+    def switch_twin(self, value_source=None):
         """Intervertit la visibilité d'un couple de jumelles.
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
         et le carnet d'actions renvoyé est vide : cette méthode est
         supposée être appliquée sur la jumelle visible du couple.
+        
+        Parameters
+        ----------
+        value_source : rdflib.term.URIRef, optional
+            Si la clé qui redevient visible est la clé-valeur, la
+            source à utiliser pour celle-ci. Si non fourni, la
+            source antérieure est conservée.
         
         Returns
         -------
@@ -1417,6 +1431,8 @@ class ObjectKey(WidgetKey):
             return ActionsBook()
         WidgetKey.clear_actionsbook()
         self.is_hidden_m = True
+        if isinstance(self.m_twin, ValueKey) and value_source:
+            self.m_twin.value_source = value_source
         return WidgetKey.unload_actionsbook()
 
 class GroupKey(WidgetKey):
@@ -1473,7 +1489,7 @@ class GroupKey(WidgetKey):
     """
     def __new__(cls, **kwargs):
         if cls.__name__ == 'GroupKey':
-            raise ForbiddenOperation(message='La classe `GroupKey` ne ' \
+            raise ForbiddenOperation('La classe `GroupKey` ne ' \
                 'devrait pas être directement utilisée pour créer ' \
                 'de nouvelles clés.')
         return super().__new__(cls, **kwargs)
@@ -1556,6 +1572,10 @@ class GroupKey(WidgetKey):
             if child.row != n:
                 child._row = n
                 WidgetKey.actionsbook.move.append(child)
+            if isinstance(child, ObjectKey) and child.m_twin \
+                and child.is_main_twin and child.m_twin.row != n:
+                child.m_twin._row = n
+                WidgetKey.actionsbook.move.append(child.m_twin)
             n += child.rowspan 
         return n
 
@@ -1566,11 +1586,13 @@ class GroupKey(WidgetKey):
                     child.m_twin and not child.is_main_twin:
                     continue
                 return child
-            elif path.n3().startswith(child.path.n3()) \
+            elif (not child.path or path.n3().startswith(child.path.n3())) \
                 and isinstance(child, GroupKey):
                 # à cette heure, rdflib ne propose pas de méthode
                 # pour casser proprement un chemin, on prend donc
                 # le parti de comparer des chaînes de caractères
+                # "not child.path" est là pour les onglets rattachés
+                # à la racine, dont le chemin est vide
                 return child._search_from_path(path)
 
     def _search_from_rdfclass(self, rdfclass, matchlist):
@@ -1831,6 +1853,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     node
     rdfclass
     sources
+    has_source_button
     key_object
     
     Methods
@@ -1853,8 +1876,8 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
  
     def _validate_parent(self, parent):
         if isinstance(parent, GroupOfValuesKey) and not parent.rdfclass:
-            raise IntegrityBreach(self, "L'attribut `rdfclass` de " \
-                "la clé parente n'est pas renseigné.")
+            raise IntegrityBreach("L'attribut `rdfclass` de " \
+                "la clé parente n'est pas renseigné.", self)
         return isinstance(parent, GroupKey) and \
             not isinstance(parent, TranslationGroupKey)
  
@@ -1904,6 +1927,12 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         la propriété du groupe parent est renvoyée. Tenter d'en modifier
         la valeur n'aura silencieusement aucun effet.
 
+        Si la clé a une jumelle dont la classe est différente
+        de la valeur fournie, c'est celle de la jumelle de référence
+        qui prévaudra, sauf si elle vaut ``None``. Autrement dit, pour
+        changer la classe d'un couple de jumelles, il faut cibler
+        la jumelle de référence, sans quoi l'opération n'aura pas d'effet.
+
         """
         if isinstance(self.parent, GroupOfValuesKey):
             return self.parent.rdfclass
@@ -1912,9 +1941,14 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     @rdfclass.setter
     def rdfclass(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
+            if self.m_twin and (not self.is_main_twin or not value):
+                value = self.m_twin.rdfclass
             if not value:
                 raise MissingParameter('rdfclass', self)
             self._rdfclass = value
+            if self.m_twin and value != self.m_twin.rdfclass \
+                and self.is_main_twin:
+                self.m_twin._rdfclass = value 
 
     @property
     def sources(self):
@@ -1938,7 +1972,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
         
         """
-        return self and self.with_source_buttons and self.m_twin
+        return self and self.with_source_buttons and bool(self.m_twin)
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -2048,14 +2082,14 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         if self.is_hidden:
             return ActionsBook()
         if widgetkey.is_hidden:
-            raise ForbiddenOperation(self, "Il n'est pas permis de " \
-                'copier/coller une branche fantôme ou masquée.')
+            raise ForbiddenOperation("Il n'est pas permis de " \
+                'copier/coller une branche fantôme ou masquée.', self)
         if not isinstance(widgetkey, GroupOfPropertiesKey):
-            raise ForbiddenOperation(self, 'Seul un groupe de ' \
-                'propriétés peut être copié avec cette méthode.')
+            raise ForbiddenOperation('Seul un groupe de ' \
+                'propriétés peut être copié avec cette méthode.', self)
         if not self.rdfclass == widgetkey.rdfclass:
-            raise ForbiddenOperation(self, '`rdfclass` doit être ' \
-                'identique pour les deux clés.')
+            raise ForbiddenOperation('`rdfclass` doit être ' \
+                'identique pour les deux clés.', self)
         WidgetKey.clear_actionsbook()
         self.kill()
         newkey = widgetkey.copy(parent=self.parent, empty=False)
@@ -3091,7 +3125,7 @@ class ValueKey(ObjectKey):
         `rowspan` vaudra toujours ``0`` pour une clé fantôme. Si aucune
         valeur n'est fournie, une valeur par défaut de ``1`` est appliquée.
         `rowspan` vaut toujours ``1`` quand :py:attr:`is_long_text` vaut
-        ``False``.
+        ``False`` ou pour une clé qui a une jumelle.
         
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
@@ -3100,19 +3134,19 @@ class ValueKey(ObjectKey):
         la propriété :py:attr:`WidgetKey.row` pour toutes les clés
         du groupe parent, via :py:meth:`GroupKey.compute_rows`.
         
-        Deux clés jumelles peuvent occuper un nombre de lignes
-        différent, c'est la raison pour laquelle les indices de
-        ligne sont systématiquement recalculés par lorsque
-        la propriété :py:attr:`ObjectKey.is_hidden_m` est modifiée.
-        
         """
         return self._rowspan
     
     @rowspan.setter
     def rowspan(self, value):
+        old_value = self.rowspan
         if not self:
             value = 0
-        elif not self.is_long_text:
+        elif not self.is_long_text or self.m_twin:
+            # théoriquement, l'existence d'un jumeau implique
+            # que rdfclass n'est pas None et donc que is_long_text
+            # vaut False, mais on écrit explicitement la condition
+            # pour plus de résilience
             value = 1
         elif isinstance(value, Literal):
             value = value.toPython()
@@ -3120,8 +3154,9 @@ class ValueKey(ObjectKey):
                 value = 1
         elif not value:
             value = 1
-        self._rowspan = min((value, self.max_rowspan))
-        if not self._is_unborn:
+        value = min((value, self.max_rowspan))
+        self._rowspan = value
+        if not self._is_unborn and old_value != value:
             self.parent.compute_rows()
     
     @property
@@ -3135,6 +3170,10 @@ class ValueKey(ObjectKey):
         * ``[3]`` est le nombre de colonnes occupées.
         
         Elle vaut ``None`` pour une clé fantôme, un onglet ou une clé-racine.
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.placement`.
         
         """
         if not self:
@@ -3155,6 +3194,11 @@ class ValueKey(ObjectKey):
         qui n'a pas d'étiquette. Par défaut, il est également considéré
         qu'elle vaut ``False``.
         
+        Il n'est pas permis à une clé jumelle d'avoir une étiquette indépendante,
+        car les deux jumelles doivent occuper exactement le même nombre de lignes
+        de la grille, et le groupe de propriétés n'en occupe qu'une. La valeur
+        sera mise silencieusement à ``False`` dans ce cas.
+        
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
         
@@ -3166,10 +3210,12 @@ class ValueKey(ObjectKey):
     
     @independant_label.setter
     def independant_label(self, value):
-        if not self or not self.label:
+        old_value = self.independant_label
+        if not self or not self.label or self.m_twin:
             self._independant_label = False
-        self._independant_label = bool(value)
-        if not self._is_unborn:
+        value = bool(value)
+        self._independant_label = value
+        if not self._is_unborn and old_value != value:
             self.parent.compute_rows()
     
     @property
@@ -3181,7 +3227,8 @@ class ValueKey(ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_language_button`.
         
         """
-        return self and self.with_language_buttons and self.datatype == RDF.langString
+        return self and self.with_language_buttons \
+            and self.datatype == RDF.langString
     
     @property
     def has_source_button(self):
@@ -3192,7 +3239,8 @@ class ValueKey(ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
         
         """
-        return self and self.with_source_buttons and (self.sources or self.m_twin)
+        return self and self.with_source_buttons \
+            and ((self.sources and len(self.sources) > 1) or bool(self.m_twin))
     
     @property
     def has_label(self):
@@ -3252,6 +3300,12 @@ class ValueKey(ObjectKey):
         la propriété du groupe parent est renvoyée. Tenter d'en modifier
         la valeur n'aura silencieusement aucun effet.
         
+        Si la clé a une jumelle dont la classe est différente
+        de la valeur fournie, c'est celle de la jumelle de référence
+        qui prévaudra, sauf si elle vaut ``None``. Autrement dit, pour
+        changer la classe d'un couple de jumelles, il faut cibler
+        la jumelle de référence, sans quoi l'opération n'aura pas d'effet.
+        
         Modifier cette propriété emporte la mise en cohérence de la propriété
         :py:attr:`ValueKey.datatype`.
         
@@ -3263,9 +3317,16 @@ class ValueKey(ObjectKey):
     @rdfclass.setter
     def rdfclass(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
+            if self.m_twin and (not self.is_main_twin or not value):
+                value = self.m_twin.rdfclass
+                # impossible que value soit None, le setter
+                # de GroupOfPropertiesKey aurait renvoyé une erreur
             self._rdfclass = value
             if not self._is_unborn:
                 self.datatype = self.datatype
+            if self.m_twin and value != self.m_twin.rdfclass \
+                and self.is_main_twin:
+                self.m_twin._rdfclass = value 
 
     @property
     def datatype(self):
@@ -3491,7 +3552,7 @@ class ValueKey(ObjectKey):
                 if self.available_languages:
                     value = self.available_languages[0]
                 else:
-                    raise IntegrityBreach(self, 'Plus de langue disponible.')
+                    raise IntegrityBreach('Plus de langue disponible.', self)
             self.parent.language_in(self._value_language)
             self.parent.language_out(value)
         elif self.value_language != value:
@@ -3510,6 +3571,14 @@ class ValueKey(ObjectKey):
         si la source fournie n'était pas référencée. Sinon, toute valeur
         prise par cette propriété est nécessairement une des valeurs de la liste
         de l'attribut :py:attr:`ValueKey.sources`.
+        
+        Si aucune source n'est fournie et qu'il n'y a pas non plus de valeur
+        (:py:attr:`ValueKey.value` est `None`), la première source de
+        :py:attr:`ValueKey.sources` est utilisée.
+        
+        Modifier la source post initialisation a pour effet d'effacer la
+        valeur mémorisée (:py:attr:`ValueKey.value`), puisque l'ancienne valeur
+        est présumée issue de l'ancienne source.
 
         """
         return self._value_source
@@ -3518,14 +3587,19 @@ class ValueKey(ObjectKey):
     def value_source(self, value):
         if not self.sources :
             return
+        if not value and not self.value:
+            value = self.sources[0]
         old_value = self.value_source
         if value in self.sources:
             self._value_source = value
         else:
             self._value_source = None
-        if self.value_source != old_value:
+        if not self._is_unborn and self.value_source != old_value:
             WidgetKey.actionsbook.sources.append(self)
             WidgetKey.actionsbook.thesaurus.append(self)
+            if self.value:
+                self.value = None
+                WidgetKey.actionsbook.empty.append(self)
     
     @property
     def do_not_save(self):
@@ -3744,6 +3818,11 @@ class ValueKey(ObjectKey):
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
         et le carnet d'actions renvoyé est vide.
         
+        Parameters
+        ----------
+        value_language : str
+            La nouvelle langue à déclarer.
+        
         Returns
         -------
         ActionsBook
@@ -3762,6 +3841,11 @@ class ValueKey(ObjectKey):
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
         et le carnet d'actions renvoyé est vide.
+        
+        Parameters
+        ----------
+        value_source : rdflib.term.URIRef
+            La nouvelle source à déclarer.
         
         Returns
         -------
@@ -3806,6 +3890,7 @@ class PlusButtonKey(WidgetKey):
     ----------
     description
     path
+    placement
     key_object
     
     Methods
@@ -3855,6 +3940,23 @@ class PlusButtonKey(WidgetKey):
         
         """
         return self.parent.path
+    
+    @property
+    def placement(self):
+        """tuple(int): Placement du bouton dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.placement`.
+        
+        """
+        return (self.row, 0, self.rowspan, 1) if self else None
     
     def kill(self):
         """Efface une clé bouton de la mémoire de son parent.
@@ -4167,11 +4269,12 @@ class RootKey(GroupKey):
         
         """
         if widgetkey.is_hidden:
-            raise ForbiddenOperation(self, "Il n'est pas permis de " \
-                'copier/coller une branche fantôme ou masquée.')
+            raise ForbiddenOperation("Il n'est pas permis de " \
+                'copier/coller une branche fantôme ou masquée.', self)
         if not isinstance(widgetkey, (GroupOfPropertiesKey, GroupOfValuesKey)):
-            raise ForbiddenOperation(self, 'Seuls les groupes de valeurs, ' \
-                'de traduction ou de propriétés peuvent être copiés/collés.')
+            raise ForbiddenOperation('Seuls les groupes de valeurs, de ' \
+                'traduction ou de propriétés peuvent être copiés/collés.',
+                self)
         WidgetKey.clear_actionsbook()
         refkey = self.search_from_path(widgetkey.path)
         if not refkey or refkey.is_hidden:
