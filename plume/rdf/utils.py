@@ -37,7 +37,7 @@ def sort_by_language(litlist, langlist):
     litlist : list(rdflib.term.Literal)
         Une liste de valeurs litérales, présumées de type
         ``xsd:string``.
-    langlist : list(str)
+    langlist : list(str) or tuple(str)
         Une liste de langues, triées par priorité décroissante.
 
     """
@@ -52,7 +52,7 @@ def pick_translation(litlist, langlist):
     litlist : list(rdflib.term.Literal)
         Une liste de valeurs litérales, présumées de type
         ``xsd:string``.
-    langlist : list(str) or str
+    langlist : list(str) or tuple(str) or str
         Une langue ou une liste de langues triées par priorité
         décroissante.
     
@@ -76,7 +76,7 @@ def pick_translation(litlist, langlist):
     """
     if not litlist:
         return
-    if not isinstance(langlist, list):
+    if not isinstance(langlist, (list, tuple)):
         langlist = [langlist] if langlist else []
     
     val = None
