@@ -3,26 +3,23 @@
 class ForbiddenOperation(Exception):
     """Signale l'usage non approprié d'une fonction.
     
+    Parameters
+    ----------
+    message : str, optional
+        Description de l'anomalie.
+    widgetkey : plume.rdf.widgetkey.WidgetKey, optional
+        La clé concernée du dictionnaire de widgets.
+    
     Attributes
     ----------
-    widgetkey : WidgetKey
+    widgetkey : plume.rdf.widgetkey.WidgetKey
         La clé concernée.
     message : str
         Description de l'anomalie.
     
     """
     
-    def __init__(self, widgetkey=None, message=''):
-        """Génère une erreur de type ForbiddenOperation.
-        
-        Parameters
-        ----------
-        widgetkey : WidgetKey, optional
-            La clé concernée du dictionnaire de widgets.
-        message : str, optional
-            Description de l'anomalie.
-        
-        """
+    def __init__(self, message='', widgetkey=None):
         self.widgetkey = widgetkey
         self.message = message
         
@@ -36,26 +33,23 @@ class ForbiddenOperation(Exception):
 class IntegrityBreach(Exception):
     """Signale une rupture d'intégrité du dictionnaire de widgets.
     
+    Parameters
+    ----------
+    message : str, optional
+        Description de l'anomalie.
+    widgetkey : plume.rdf.widgetkey.WidgetKey, optional
+        La clé concernée du dictionnaire de widgets.
+    
     Attributes
     ----------
-    widgetkey : WidgetKey
+    widgetkey : plume.rdf.widgetkey.WidgetKey
         La clé concernée.
     message : str
         Description de l'anomalie.
     
     """
     
-    def __init__(self, widgetkey=None, message=''):
-        """Génère une erreur de type IntegrityBreach.
-        
-        Parameters
-        ----------
-        widgetkey : WidgetKey, optional
-            La clé concernée du dictionnaire de widgets.
-        message : str, optional
-            Description de l'anomalie.
-        
-        """
+    def __init__(self, message='', widgetkey=None):
         self.widgetkey = widgetkey
         self.message = message
         
@@ -69,25 +63,22 @@ class IntegrityBreach(Exception):
 class MissingParameter(Exception):
     """Signale un paramètre manquant.
     
+    Parameters
+    ----------
+    parameter : str
+        Nom du paramètre.
+    widgetkey : plume.rdf.widgetkey.WidgetKey, optional
+        La clé concernée du dictionnaire de widgets.
+    
     Attributes
     ----------
     parameter : str
         Nom du paramètre.
-    widgetkey : WidgetKey
+    widgetkey : plume.rdf.widgetkey.WidgetKey
         La clé concernée.
     
     """
     def __init__(self, parameter, widgetkey=None):
-        """Génère une erreur de type MissingParameter.
-        
-        Parameters
-        ----------
-        parameter : str
-            Nom du paramètre.
-        widgetkey : WidgetKey, optional
-            La clé concernée du dictionnaire de widgets.
-        
-        """
         self.widgetkey = widgetkey
         self.parameter = parameter
         
@@ -96,10 +87,19 @@ class MissingParameter(Exception):
             self.parameter,
             " {}.".format(self.widgetkey) if self.widgetkey else ''
             )
-    
+   
 
 class UnknownParameterValue(Exception):
     """Signale une valeur non autorisée pour un paramètre.
+    
+    Parameters
+    ----------
+    parameter : str
+        Nom du paramètre.
+    value : str
+        Valeur problématique.
+    widgetkey : plume.rdf.widgetkey.WidgetKey, optional
+        La clé concernée du dictionnaire de widgets.
     
     Attributes
     ----------
@@ -107,23 +107,11 @@ class UnknownParameterValue(Exception):
         Nom du paramètre.
     value : str
         Valeur problématique.
-    widgetkey : WidgetKey
+    widgetkey : plume.rdf.widgetkey.WidgetKey
         La clé concernée.
     
     """
     def __init__(self, parameter, value, widgetkey=None):
-        """Génère une erreur de type UnknownParameterValue.
-        
-        Parameters
-        ----------
-        parameter : str
-            Nom du paramètre.
-        value : str
-            Valeur problématique.
-        widgetkey : WidgetKey, optional
-            La clé concernée du dictionnaire de widgets.
-        
-        """
         self.widgetkey = widgetkey
         self.parameter = parameter
         self.value = value
@@ -133,4 +121,28 @@ class UnknownParameterValue(Exception):
             self.value, self.parameter,
             " {}.".format(self.widgetkey) if self.widgetkey else ''
             )
+
+
+class UnknownSource(Exception):
+    """Signale une source de vocabulaire contrôlé inconnue.
+    
+    C'est-à-dire qui n'apparaît pas dans ``data/vocabulary.ttl``.
+    
+    Parameters
+    ----------
+    iri : rdflib.term.URIRef
+        L'IRI de la source.
+    
+    Attributes
+    ----------
+    iri : rdflib.term.URIRef
+        L'IRI de la source.
+    
+    """
+    def __init__(self, iri):
+        self.iri = iri
+
+    def __str__(self):
+        return "Source '{}' non répertoriée.".format(self.iri)
+ 
  
