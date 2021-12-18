@@ -44,7 +44,7 @@ class WidgetsDict(dict):
         Une liste de tuples - un par champ de la table ou vue PostgreSQL
         (si l'objet considéré n'est pas un schéma) -, contenant les noms
         des champs et leurs descriptifs.
-    mode : {'edit', 'read'}, optional
+    mode : {'edit', 'read'}, default 'edit'
         Indique si le dictionnaire est généré pour le mode édition
         (``'edit'``), le mode lecture (``'read'``). Le mode détermine les
         actions pouvant être exécutées sur le dictionnaire par la suite.
@@ -55,14 +55,14 @@ class WidgetsDict(dict):
         silencieusement corrigé à ``False`` si `mode` n'est pas `'edit'`,
         car l'ajout de traductions n'est évidemment possible qu'en mode
         édition.
-    langList : list of str, default ['fr', 'en']
+    langList : list(str) or tuple(str), default ('fr', 'en')
         Liste des langues autorisées pour les traductions. Les langues
         doivent être triées par priorité (langues à privilégier en
         premier).
     language : str, optional
         Langue principale de rédaction des métadonnées.
         Si `language` n'est pas fourni ou n'appartient pas à `langList`,
-        la première langue de `langList` sera utilisée à la place.
+        la première langue de `langList` tiendra lieu de langue principale.
     readHideBlank : bool, default True
         Les champs vide du formulaire doivent-ils être masqués en mode
         lecture ?
@@ -121,20 +121,19 @@ class WidgetsDict(dict):
         pour un dictionnaire produit uniquement pour la consultation.
         Certaines méthodes ne peuvent être utilisées que sur un
         dictionnaire dont l'attribut `mode` vaut ``'edit'``.
-    edit : bool
-        *Propriété calculée*. True si `mode` vaut ``'edit'``.
+    edit
     translation : bool
         True pour un dictionnaire comportant des fonctionnalités de
-        traduction, False sinon. Certaines méthodes ne peuvent être
+        traduction, ``False`` sinon. Certaines méthodes ne peuvent être
         utilisées que sur un dictionnaire dont l'attribut `translation`
-        vaut True.
-    language : str
-        Langue principale déclarée lors de la création du dictionnaire.
-        `language` est nécessairement l'un des éléments de `langList`
-        ci-après.
-    langList : list of str
-        Liste des langues autorisées pour les traductions, telles que
-        déclarées lors de la génération du dictionnaire.
+        vaut ``True``.
+    langlist : tuple(str)
+        Tuple des langues autorisées pour les traductions, ordonné
+        de manière à ce que la langue principale éventuellement
+        fournie à l'initialisation soit la première valeur (et
+        préservant pour le reste l'ordre d'origine du paramètre
+        `langList`).
+    main_language
     hideBlank : bool
         Les métadonnées sans valeur sont-elles masquées ?
     hideUnlisted : bool
@@ -159,14 +158,13 @@ class WidgetsDict(dict):
     def __init__(self, metagraph=None, template=None, templateTabs=None, data=None,
         columns=None, mode=None, translation=False, langList=None, language=None,
         readHideBlank=True, editHideUnlisted=False, readHideUnlisted=True,
-        editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True, labelLengthLimit=None,
-        valueLengthLimit=None, textEditRowSpan=None):
+        editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True,
+        labelLengthLimit=None, valueLengthLimit=None, textEditRowSpan=None):
         
         # ------ Paramètres utilisateur ------
         self.mode = mode if mode in ('edit', 'read') else 'edit'
-        self.langList = langList if langList and isinstance(langList, list) \
-            else ['fr', 'en']
-        self.language = language if language in self.langList else self.langList[0]
+        self.langlist = tuple(langList) if langList \
+            and isinstance(langList, (list, tuple)) else ('fr', 'en')
         self.labelLengthLimit = labelLengthLimit if labelLengthLimit \
             and isinstance(labelLengthLimit, int) else 25
         self.valueLengthLimit = valueLengthLimit if valueLengthLimit \
@@ -211,9 +209,9 @@ class WidgetsDict(dict):
         # paramètres de configuration des clés
         WidgetKey.with_source_buttons = self.edit
         WidgetKey.with_language_buttons = self.translation
-        WidgetKey.langlist = self.langList
-        WidgetKey.main_language = self.language
-        self.langList = WidgetKey.langlist
+        WidgetKey.langlist = list(self.langlist)
+        WidgetKey.main_language = language
+        self.langlist = tuple(WidgetKey.langlist)
         # NB: pour avoir la liste triée dans le bon ordre
         WidgetKey.max_rowspan = 30 if self.edit else 1
         
@@ -258,7 +256,7 @@ class WidgetsDict(dict):
         
         # ------ Calcul des dictionnaires internes ------
         for widgetkey in self.keys():
-            self.internalize_widgetkey(widgetkey)
+            self.internalize(widgetkey)
 
     def _build_dict(self, parent, metagraph=None, template=None, data=None):
         # ------ Constitution de la liste des catégories ------
@@ -348,7 +346,7 @@ class WidgetsDict(dict):
             # ne sont pas dans la bonne langue.
             if prop_dict.get('datatype') == RDF.langString \
                 and self.onlyCurrentLanguage:
-                sort_by_language(values, self.langList)
+                sort_by_language(values, self.langlist)
 
             # ------ Multi-valeurs ------
             # création d'un groupe de valeurs ou de traduction
@@ -371,7 +369,7 @@ class WidgetsDict(dict):
                     and self.onlyCurrentLanguage:
                     if value and parent.has_real_children and \
                         (not isinstance(value, Literal) or \
-                        value.language != self.language):
+                        value.language != self.main_language):
                         val_dict['is_ghost'] = True
                 
                 # ------ Cas d'un noeud anonyme -------
@@ -437,6 +435,23 @@ class WidgetsDict(dict):
         """
         return (self.mode == 'edit')
 
+    @property
+    def main_language(self):
+        """str: Language principale de saisie.
+        
+        Raises
+        ------
+        IntegrityBreach
+            Lorsque l'attribut :py:attr:`WidgetsDict.langlist` ne
+            contient aucune valeur.
+        
+        """
+        if self.langlist:
+            return self.langlist[0]
+        else:
+            raise IntegrityBreach('La liste des langues autorisées est vide, ' \
+                'impossible de déterminer la langue principale de saisie.')
+
     def parent_grid(self, widgetkey):
         """Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.
         
@@ -455,7 +470,7 @@ class WidgetsDict(dict):
         if widgetkey.parent:
             return self[widgetkey.parent].get('grid widget')
 
-    def internalize_widgetkey(self, widgetkey):
+    def internalize(self, widgetkey):
         """Retranscrit les attributs d'une clé dans le dictionnaire interne associé.
         
         Parameters
@@ -482,9 +497,9 @@ class WidgetsDict(dict):
             return
         
         internaldict['help text'] = widgetkey.description
-        internaldict['hidden'] = widgetkey.is_hidden_b
-        internaldict['hidden M'] = widgetkey.is_hidden_m
+        internaldict['hidden'] = widgetkey.is_hidden
         internaldict['multiple sources'] = widgetkey.has_source_button
+        internaldict['has label'] = widgetkey.has_label
         
         if isinstance(widgetkey, ValueKey):
             internaldict['placeholder text'] = widgetkey.placeholder
@@ -495,35 +510,37 @@ class WidgetsDict(dict):
             internaldict['type validator'] = self.type_validator(widgetkey)
             internaldict['read only'] = widgetkey.is_read_only
             internaldict['value'] = self.str_value(widgetkey)
-            if widgetkey.has_source_button and widgetkey.sources:
-                internaldict['sources'] = [Thesaurus.label((s, self.language)) \
-                    for s in widgetkey.sources]
-                if widgetkey.value_source:
-                    internaldict['current source'] = Thesaurus.label(
-                        (widgetkey.value_source, self.language))
-                    internaldict['thesaurus values'] = Thesaurus.values(
-                        (widgetkey.value_source, self.language))
-                if not internaldict['current source']:
-                    internaldict['current source'] = '< non référencé >'
-                    internaldict['sources'].insert(0, '< non référencé >')
             internaldict['language value'] = widgetkey.value_language
             if widgetkey.has_language_button:
                 internaldict['authorized languages'] = widgetkey.available_languages.copy()
                 if not widgetkey.value_language in widgetkey.available_languages:
-                    internaldict['authorized languages'].insert(0, widgetkey.value_language)
+                    internaldict['authorized languages'].insert(0, widgetkey.value_language)        
         
         if isinstance(widgetkey, ObjectKey):
             internaldict['has minus button'] = widgetkey.has_minus_button
             internaldict['hide minus button'] = widgetkey.has_minus_button \
                 and widgetkey.is_single_child
-            if widgetkey.has_source_button and widgetkey.m_twin:
-                internaldict['sources'] = internaldict['sources'] or ['< URI >']
-                internaldict['sources'].insert(0, '< manuel >')
-                if isinstance(widgetkey, ValueKey): 
-                    if not internaldict['current source']:
-                        internaldict['current source'] = '< URI >'
+            if widgetkey.has_source_button:
+                if widgetkey.sources:
+                    internaldict['sources'] = [Thesaurus.label((s, self.langlist)) \
+                        for s in widgetkey.sources]
+                    if isinstance(widgetkey, ValueKey):
+                        if widgetkey.value_source:
+                            internaldict['current source'] = Thesaurus.label(
+                                (widgetkey.value_source, self.langlist))
+                            internaldict['thesaurus values'] = Thesaurus.values(
+                                (widgetkey.value_source, self.langlist))
+                        else:
+                            internaldict['current source'] = '< non référencé >'
+                            internaldict['sources'].insert(0, '< non référencé >')
                 else:
-                    internaldict['current source'] = '< manuel >'
+                    internaldict['sources'] = ['< URI >']
+                    if isinstance(widgetkey, ValueKey):
+                        internaldict['current source'] = '< URI >'
+                if widgetkey.m_twin:
+                    internaldict['sources'].insert(0, '< manuel >')
+                    if isinstance(widgetkey, GroupOfPropertiesKey): 
+                        internaldict['current source'] = '< manuel >'
 
     def widget_placement(self, widgetkey, kind):
         """Renvoie les paramètres de placement du widget dans la grille.
@@ -533,21 +550,23 @@ class WidgetsDict(dict):
         widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
         kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'label widget'}
-            Nature du widget considéré.
+            Nature du widget considéré, soit plus prosaïquement le nom
+            de la clé du dictionnaire interne qui le référence.
         
         Returns
         -------
         tuple
-            Le placement est défini par un tuple à quatre éléments :
-            * ``[0]`` est l'indice de la ligne (*row*) ;
-            * ``[1]`` est l'indice de la colonne (*column*) ;
-            * ``[2]`` est le nombre de lignes occupées (*row span*) ;
-            * ``[3]`` est le nombre de colonnes occupées (*column span*).
+            Le placement dans le ``QGridLayout`` est défini par un tuple à
+            quatre éléments :
+            * ``[0]`` est l'indice de la ligne (paramètre ``row``) ;
+            * ``[1]`` est l'indice de la colonne (paramètre ``column``) ;
+            * ``[2]`` est le nombre de lignes occupées (paramètre ``rowSpan``) ;
+            * ``[3]`` est le nombre de colonnes occupées (paramètre ``columnSpan``).
         
         Notes
         -----
-        La fonction renvoie ``None`` si la nature de widget donnée en
-        argument n'est pas une valeur reconnue.
+        La fonction renvoie ``None`` pour une clé fantôme ou si la nature de widget
+        donnée en argument n'est pas une valeur reconnue.
         
         """
         if not widgetkey or not widgetkey in self:
@@ -563,30 +582,164 @@ class WidgetsDict(dict):
         if kind == 'minus widget':
             return widgetkey.minus_button_placement
 
-    def dictisize_actionsbook(self, widgetkey, actionsbook):
+    def dictisize_actionsbook(self, actionsbook=None):
         """Traduit un carnet d'actions en dictionnaire.
+        
+        Cette méthode assure également la mise à jour du dictionnaire
+        de widgets.
+        
+        Parameters
+        ----------
+        actionsbook : plume.rdf.actionsbook.ActionsBook, optionnal
+            Le carnet d'actions à traduire. Si aucune carnet n'est
+            fournie, la méthode renvoie un dictionnaire dont toutes
+            les clés ont pour valeur des listes vides.
+        
+        Returns
+        -------
+        dict
+            Un dictionnaire avec les clés suivantes :
+            * ``new keys`` : liste de nouvelles clés du dictionnaire de widgets
+              à matérialiser (:py:class:`plume.rdf.widgetkey.WidgetKey`). Elles
+              sont évidemment fournies dans le bon ordre, d'abord les clés parents
+              puis les clés filles. Pour toutes ces clés, il sera nécessaire de
+              générer les widgets, actions et menus, comme à la création initiale
+              du dictionnaire.
+            * ``widgets to show`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
+              à rendre visibles. Il s'agit a priori de widgets antérieurement masqués,
+              mais ce n'est pas une règle absolue.
+            * ``widgets to hide`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
+              à masquer. Il s'agit a priori de widgets antérieurement visibles, mais
+              ce n'est pas une règle absolue.
+            * ``widgets to delete`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
+              à détruire, incluant les grilles (:py:class:`QtWidgets:QGridLayout`).
+            * ``actions to delete`` : liste d'actions (:py:class:`QtGui.QAction`) à
+              détruire.
+            * ``menus to delete`` : liste de menus (:py:class:`QtWidgets.QMenu`) à
+              détruire.
+            * ``language menu to update`` : liste de clés du dictionnaire de widgets
+              (:py:class:`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu
+              du bouton de sélection de la langue doit être régénéré.
+            * ``switch source menu to update`` : liste de clés du dictionnaire de
+              widgets (:py:class:`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le
+              menu du bouton de sélection de la source doit être régénéré.
+            * ``concepts list to update`` : liste de clés du dictionnaire
+              (:py:class:`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal
+              est un widget ``QComboBox`` dont la liste de termes doit être
+              régénérée.
+            * ``widgets to empty`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
+              dont le texte doit être effacé.
+            * ``widgets to move`` : liste de tuples contenant les informations relatives
+              à des widgets dont - parce qu'on a supprimé un widget antérieurement
+              positionné au-dessus d'eux dans la grille - il faut à présent modifier
+              la position.
+              * ``[0]`` est la grille (:py:class:`QtWidgets.QGridLayout`) ;
+              * ``[1]`` est le widget (:py:class:`QtWidgets.QWidget`) à déplacer ;
+              * ``[2]`` est le nouveau numéro de ligne du widget dans la grille (paramètre
+                ``row``) ;
+              * ``[3]`` est l'indice (inchangé) de la colonne (paramètre ``column``) ;
+              * ``[4]`` est le nombre inchangé) de lignes occupées (paramètre ``rowSpan``) ;
+              * ``[5]`` est le nombre inchangé) de colonnes occupées (paramètre ``columnSpan``).
+        
+        """
+        d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
+            'widgets to delete', 'actions to delete', 'menus to delete',
+            'language menu to update', 'switch source menu to update', 'concepts list to update',
+            'widgets to empty', 'widgets to move')}
+        
+        if not actionsbook:
+            return d
+        
+        for widgetkey in actionsbook.modified:
+            self.internalize(widgetkey)
+        
+        d['new keys'] = actionsbook.create
+        d['language menu to update'] = actionsbook.languages
+        d['switch source menu to update'] = actionsbook.sources
+        d['concepts list to update'] = actionsbook.thesaurus
+        
+        for widgetkey in actionsbook.show:
+            d['widgets to show'] += self.list_widgets(widgetkey)
+        
+        for widgetkey in actionsbook.show_minus_button:
+            w = self[widgetkey]['minus widget']
+            if w:
+                d['widgets to show'].append(w)
+        
+        for widgetkey in actionsbook.hide:
+            d['widgets to hide'] += self.list_widgets(widgetkey)
+        
+        for widgetkey in actionsbook.hide_minus_button:
+            w = self[widgetkey]['minus widget']
+            if w:
+                d['widgets to hide'].append(w)
+        
+        for widgetkey in actionsbook.drop:
+            d['widgets to delete'] += self.list_widgets(widgetkey)
+            w = self[widgetkey]['grid widget']
+            if w:
+                d['widgets to delete'].append(w)
+            m = self[widgetkey]['language menu']
+            if m:
+                d['menus to delete'].append(m)
+            m = self[widgetkey]['switch source menu']
+            if m:
+                d['menus to delete'].append(m)
+            a = self[widgetkey]['switch source actions']
+            if a:
+                d['actions to delete'] += a
+            a = self[widgetkey]['language actions']
+            if a:
+                d['actions to delete'] += a
+            del self[widgetkey]
+        
+        for widgetkey in actionsbook.empty:
+            w = self[widgetkey]['main widget']
+            if w:
+                d['widgets to empty'].append(w)
+        
+        for widgetkey in actionsbook.move:
+            g = self.parent_grid(widgetkey)
+            for w, k in self.list_widgets(widgetkey, with_kind=True):
+                p = self.widget_placement(widgetkey, k)
+                d['widgets to move'].append(g, w, *p)
+
+    def list_widgets(self, widgetkey, with_kind=False):
+        """Renvoie la liste des widgets référencés pour la clé considérée.
         
         Parameters
         ----------
         widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
-        actionsbook : plume.rdf.actionsbook.ActionsBook
-            Le carnet d'actions à traduire.
-        
+        with_kind : bool, default False
+            Si ``True``, la méthode ne renvoie pas une liste de widgets, mais une
+            liste de tuples dont le premier élément est le widget et le
+            second une chaîne de caractères spécifiant sa nature (nom de la
+            clé du dictionnaire interne où il est référencé).
+            
         Returns
         -------
-        dict
-        
+        list
+
         """
-        
-        ## TODO
+        if not widgetkey or not widgetkey in self:
+            return []
+        l = []        
+        for k in ('main widget', 'minus widget', 'switch source widget',
+            'language widget', 'label widget'):
+            w = self[widgetkey][k]
+            if w:
+                if with_kind:
+                    l.append((w, k))
+                else:
+                    l.append(w)
+        return l
 
     def add(self, buttonkey):
-        """Ajoute un enregistrement (vide) dans le dictionnaire de widgets.
+        """Ajoute une clé sans valeur dans le dictionnaire de widgets.
         
-        Cette fonction est à utiliser après activation d'un bouton plus
-        (plus button) ou bouton de traduction (translation button) par
-        l'utilisateur.
+        Cette méthode est à exécuter après l'activation d'un bouton plus
+        ou bouton de traduction par l'utilisateur.
         
         Parameters
         ----------
@@ -597,30 +750,144 @@ class WidgetsDict(dict):
         Returns
         -------
         dict
-            Un dictionnaire ainsi constitué :
-            {
-            "widgets to show" : [liste des widgets masqués à afficher (QWidget)],
-            "widgets to hide" : [liste de widgets à masquer (QWidget)],
-            "widgets to move" : [liste de tuples - cf. ci-après],
-            "language menu to update" : [liste de clés (tuples) pour lesquelles
-            le menu des langues devra être régénéré],
-            "new keys" : [liste des nouvelles clés du dictionnaire (tuple)]
-            }
-            
-            Pour toutes les clés listées sous "new keys", il sera nécessaire de
-            générer les widgets, actions et menus, comme à la création initiale
-            du dictionnaire.
-            
-            Les tuples de la clé "widgets to move" sont formés comme suit :
-            [0] la grille (QGridLayout) où un widget doit être déplacé.
-            [1] le widget en question (QWidget).
-            [2] son nouveau numéro de ligne / row (int).
-            [3] son numéro de colonne / column (int).
-            [4] le nombre de lignes occupées / rowSpan (int).
-            [5] le nombre de colonnes occupées / columnSpan (int).
+            Cf. :py:meth:`WidgetsDict.dictisize_actionsbook` pour la
+            description de ce dictionnaire, qui contient toutes
+            les informations qui permettront de matérialiser l'action
+            réalisée.
         
         """
-        ## TODO
+        if not isinstance(buttonkey, PlusButtonKey):
+            raise ForbiddenOperation("Seul un bouton permet d'ajouter" \
+                ' des éléments.', buttonkey)
+        if buttonkey.is_hidden:
+            raise ForbiddenOperation("Il n'est pas permis d'ajouter des " \
+                'éléments avec un bouton invisible.', buttonkey)
+        a = buttonkey.add()
+        return dictisize_actionsbook(a)
+
+    def drop(self, objectkey):
+        """Supprime une clé du dictionnaire de widgets.
+        
+        Cette méthode est à exécuter après l'activation d'un bouton moins
+        par l'utilisateur.
+        
+        Parameters
+        ----------
+        objectkey : plume.rdf.widgetkey.ObjectKey
+            Une clé-valeur ou un groupe de propriété dont l'utilisateur
+            vient d'activer le bouton moins.
+        
+        Returns
+        -------
+        dict
+            Cf. :py:meth:`WidgetsDict.dictisize_actionsbook` pour la
+            description de ce dictionnaire, qui contient toutes
+            les informations qui permettront de matérialiser l'action
+            réalisée.
+        
+        """
+        if not objectkey.has_minus_button:
+            raise ForbiddenOperation("Il faut un bouton moins " \
+                ' pour supprimer une clé.', objectkey)
+        if objectkey.hide_minus_button or objectkey.is_hidden:
+            raise ForbiddenOperation("Il n'est pas permis de supprimer des " \
+                'éléments avec un bouton moins invisible.', objectkey)
+        a = objectkey.drop()
+        return dictisize_actionsbook(a)
+
+    def change_language(self, valuekey, new_language):
+        """Change la langue déclarée pour une clé du dictionnaire de widgets.
+        
+        Cette méthode est à exécuter lorsque l'utilisateur clique sur
+        une langue dans le menu d'un bouton de sélection de la langue.
+        
+        Parameters
+        ----------
+        valuekey : plume.rdf.widgetkey.ValueKey
+            La clé-valeur dont un item du menu des langues vient d'être
+            actionné par l'utilisateur.
+        new_language : str
+            La nouvelle langue sélectionnée par l'utilisateur.
+        
+        Returns
+        -------
+        dict
+            Cf. :py:meth:`WidgetsDict.dictisize_actionsbook` pour la
+            description de ce dictionnaire, qui contient toutes
+            les informations qui permettront de matérialiser l'action
+            réalisée.
+        
+        """
+        if self[valuekey]['language value'] == new_language:
+            return dictisize_actionsbook()
+        if not valuekey.has_language_button:
+            raise ForbiddenOperation("Il faut un bouton de sélection " \
+                "de la langue pour changer la langue d'une clé.", valuekey)
+        if valuekey.is_hidden:
+            raise ForbiddenOperation("Il n'est pas permis de changer " \
+                "la langue d'une clé invisible.", valuekey)
+        a = valuekey.change_language(new_language)
+        return dictisize_actionsbook(a)
+
+    def change_source(self, objectkey, new_source):
+        """Change la source déclarée pour une clé du dictionnaire de widgets.
+        
+        Cette méthode est à exécuter lorsque l'utilisateur clique sur
+        une source dans le menu d'un bouton de sélection de la source.
+        
+        Parameters
+        ----------
+        objectkey : plume.rdf.widgetkey.ObjectKey
+            La clé-valeur ou le groupe de propriété dont un item du menu des
+            sources vient d'être actionné par l'utilisateur.
+        
+        Returns
+        -------
+        dict
+            Cf. :py:meth:`WidgetsDict.dictisize_actionsbook` pour la
+            description de ce dictionnaire, qui contient toutes
+            les informations qui permettront de matérialiser l'action
+            réalisée.
+        
+        """
+        if self[objectkey]['current source'] == new_source:
+            return dictisize_actionsbook()
+        if not objectkey.has_source_button:
+            raise ForbiddenOperation("Il faut un bouton de sélection " \
+                "de la source pour changer la source d'une clé.", objectkey)
+        if objectkey.is_hidden:
+            raise ForbiddenOperation("Il n'est pas permis de changer " \
+                "la source d'une clé invisible.", objectkey)
+        
+        value_source = None
+        if not new_source in ('< manuel >', '< URI >', '< non référencé >'):
+            for s in objectkey.sources:
+                # tous ces thésaurus ont déjà été chargé à
+                # l'initialisation du dictionnaire de widgets, donc
+                # cette boucle sur deux ou trois valeurs maximum
+                # ne coûte pas grand chose
+                if Thesaurus.label((s, self.langlist)) == new_source:
+                    value_source = s
+                    break
+        
+        if isinstance(objectkey, GroupOfPropertiesKey):
+            # si la source n'est pas la même, c'est que ce n'est pas
+            # < manuel >, et toutes les autres impliquent de basculer
+            # sur la jumelle clé-valeur
+            # Le cas d'une nouvelle source valant < URI > remplit
+            # nécessairement cette condition
+            a = objectkey.switch_twin(value_source)
+        elif isinstance(objectkey, ValueKey) and new_source == '< manuel >':
+            a = objectkey.switch_twin()
+        else:
+            a = valuekey.change_source(value_source)
+            # Le cas d'une nouvelle source valant < non référencé > est
+            # traité ici (hypothétique, car < non référencé > ne peut normalement
+            # apparaître dans la liste des sources que s'il est sélectionné).
+            # Comme value_source vaut None, c'est la première source de la
+            # liste qui serait en fait retenue (et présentée comme telle).
+        
+        return dictisize_actionsbook(a)
 
     def widget_type(self, widgetkey):
         """Renvoie le type de widget adapté pour une clé.
@@ -662,7 +929,7 @@ class WidgetsDict(dict):
             Une clé de dictionnaire de widgets.
         
         """
-        if not widgetkey:
+        if not widgetkey or widgetkey.is_read_only:
             return
         d = {
             XSD.integer: 'QIntValidator',
@@ -672,7 +939,7 @@ class WidgetsDict(dict):
             }
         return d.get(widgetkey.datatype)
     
-    def register_value(self, widgetkey, value):
+    def update_value(self, widgetkey, value):
         """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
         
         Parameters
@@ -706,8 +973,8 @@ class WidgetsDict(dict):
                 return
         f = forbidden_char(value)
         if f:
-            raise ForbiddenOperation(widgetkey, "Le caractère '{}' " \
-                "n'est pas autorisé dans un IRI.".format(f))
+            raise ForbiddenOperation("Le caractère '{}' " \
+                "n'est pas autorisé dans un IRI.".format(f), widgetkey)
         widgetkey.value = URIRef(value)
     
     def str_value(self, widgetkey):
