@@ -3,10 +3,10 @@ import unittest
 from uuid import uuid4
 from rdflib import URIRef, Literal
 
-from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF
+from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
-    PlusButtonKey, RootKey
+    PlusButtonKey, RootKey, TabKey
 from plume.rdf.actionsbook import ActionsBook
 
 class WidgetKeyTestCase(unittest.TestCase):
@@ -36,12 +36,9 @@ class WidgetKeyTestCase(unittest.TestCase):
         """
         r = RootKey()
         g = GroupOfPropertiesKey(parent=r,
-            rdfclass=URIRef('http://purl.org/dc/terms/RightsStatement'),
-            predicate=DCT.title)
-        g.update(predicate=URIRef('http://purl.org/dc/terms/accessRights'),
-            label="Conditions d'accès")
-        self.assertEqual(g.predicate,
-            URIRef('http://purl.org/dc/terms/accessRights'))
+            rdfclass=DCT.RightsStatement, predicate=DCT.title)
+        g.update(predicate=DCT.accessRights, label="Conditions d'accès")
+        self.assertEqual(g.predicate, DCT.accessRights)
         self.assertEqual(g.label, "Conditions d'accès")
 
     def test_lang_attributes(self):
@@ -61,38 +58,40 @@ class WidgetKeyTestCase(unittest.TestCase):
         
         """
         r = RootKey()
-        g = GroupOfPropertiesKey(parent=r,
-            rdfclass=URIRef('http://purl.org/dc/terms/RightsStatement'),
-            predicate=URIRef('http://purl.org/dc/terms/accessRights'))
+        g = GroupOfPropertiesKey(parent=r, rdfclass=DCT.RightsStatement,
+            predicate=DCT.accessRights)
         m = ValueKey(parent=r, m_twin=g, is_hidden_m=False)
         t = TranslationGroupKey(parent=g, predicate=RDFS.label)
         b = TranslationButtonKey(parent=t)
         w1 = ValueKey(parent=t)
         w2 = ValueKey(parent=t)
-        self.assertEqual(r.search_from_path(URIRef('http://purl.org/dc/terms/' \
-            'accessRights') / RDFS.label), t)
-        self.assertEqual(r.search_from_path(URIRef('http://purl.org/dc/terms/' \
-            'accessRights')), m)
+        self.assertEqual(r.search_from_path(DCT.accessRights / RDFS.label), t)
+        self.assertEqual(r.search_from_path(DCT.accessRights), m)
         m.switch_twin()
-        self.assertEqual(r.search_from_path(URIRef('http://purl.org/dc/terms/' \
-            'accessRights')), g)
+        self.assertEqual(r.search_from_path(DCT.accessRights), g)
+    
+    def test_search_path_tab(self):
+        """Recherche dans un arbre de clés à partir du chemin, avec onglet à la racine.
+        
+        """
+        r = RootKey()
+        o = TabKey(parent=r, label='Mon onglet')
+        v = ValueKey(parent=o, predicate=DCT.title, datatype=RDF.langString)
+        self.assertEqual(r.search_from_path(DCT.title), v)
     
     def test_root_key(self):
         """Initialisation d'une clé racine.
         
         """
         rootkey = RootKey(datasetid=URIRef(uuid4().urn))
-        self.assertEqual(rootkey.rdfclass, \
-            URIRef('http://www.w3.org/ns/dcat#Dataset'))
+        self.assertEqual(rootkey.rdfclass, DCAT.Dataset)
         
     def test_group_of_values(self):
         """Gestion des lignes dans un groupe de valeurs.
         
         """
         rootkey = RootKey()
-        groupkey = GroupOfValuesKey(parent=rootkey,
-            predicate=DCAT.keyword)
-        
+        groupkey = GroupOfValuesKey(parent=rootkey, predicate=DCAT.keyword)
         pluskey = PlusButtonKey(parent=groupkey)
         self.assertFalse(pluskey in groupkey.children)
         #self.assertEqual(pluskey.row, 0)
