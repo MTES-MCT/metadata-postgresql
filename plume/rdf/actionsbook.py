@@ -24,6 +24,9 @@ class ActionsBook:
     
     Attributes
     ----------
+    modified : list
+        Liste de toutes les clés modifiées (excluant les créations
+        et les suppressions).
     show : list
         Liste des clés dont les widgets doivent être rendus visibles.
     show_minus_button : list
@@ -43,12 +46,15 @@ class ActionsBook:
         Liste des clés dont le menu des sources doit être mis à jour.
     thesaurus : list
         Liste des clés dont la liste de valeurs doit être recalculée.
+    empty : list
+        Liste des clés pour lesquelles le texte saisi doit être effacé.
     drop : list
         Liste des clés dont les widgets doivent être supprimés.
     
     """
     
     def __init__(self):
+        self.modified = NoGhostKeyList(actionsbook=self)
         self.show = VisibleKeyList(actionsbook=self, erase=['hide',
             'show_minus_button'])
         self.show_minus_button = TrueMinusButtonKeyList(actionsbook=self,
@@ -59,14 +65,16 @@ class ActionsBook:
             erase=['show_minus_button'])
         self.create = NoGhostKeyList(actionsbook=self, erase=['show',
             'show_minus_button', 'hide', 'hide_minus_button', 'move',
-            'languages', 'sources', 'thesaurus'])
+            'languages', 'sources', 'thesaurus', 'modified', 'empty'])
         self.move = NoGhostKeyList(actionsbook=self)
         self.languages = NoGhostKeyList(actionsbook=self)
         self.sources = NoGhostKeyList(actionsbook=self)
         self.thesaurus = NoGhostKeyList(actionsbook=self)
+        self.empty = NoGhostKeyList(actionsbook=self)
         self.drop = NoGhostKeyList(actionsbook=self, erase=['show',
             'show_minus_button', 'hide', 'hide_minus_button', 'create',
-            'move', 'languages', 'sources', 'thesaurus'])
+            'move', 'languages', 'sources', 'thesaurus', 'modified',
+            'empty'])
 
     def __bool__(self):
         return sum(len(getattr(self, a)) for a in self.__dict__.keys()) > 0
@@ -112,6 +120,10 @@ class NoGhostKeyList(list):
             if not value in self and \
                 not value in self.actionsbook.create:
                 super().append(value)
+            if not value in self.actionsbook.modified \
+                and not value in self.actionsbook.create \
+                and not value in self.actionsbook.drop:
+                self.actionsbook.modified.append(value)
             for a in self.erase:
                 l = getattr(self.actionsbook, a)
                 if value in l:
