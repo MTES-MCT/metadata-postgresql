@@ -11,10 +11,10 @@ class UtilsTestCase(unittest.TestCase):
         
         """
         l1 = [Literal('My Title', lang='en'), Literal('Mon titre', lang='fr'),
-                'Mon autre titre', Literal('Mein Titel', lang='de')]
+            'Mon autre titre', Literal('Mein Titel', lang='de')]
         l2 = [Literal('Mon titre', lang='fr'), Literal('Mein Titel', lang='de'),
-                Literal('My Title', lang='en'), 'Mon autre titre']
-        langlist = ['fr', 'de']
+            Literal('My Title', lang='en'), 'Mon autre titre']
+        langlist = ('fr', 'de')
         sort_by_language(l1, langlist)
         self.assertEqual(l1, l2) 
 
@@ -22,9 +22,9 @@ class UtilsTestCase(unittest.TestCase):
         """Choix d'une traduction.
         
         """
-        langlist = ['fr', 'de']
+        langlist = ('fr', 'de')
         l = [Literal('My Title', lang='en'), Literal('Mon titre', lang='fr'),
-			'Mon autre titre', Literal('Mein Titel', lang='de')]
+	    'Mon autre titre', Literal('Mein Titel', lang='de')]
         self.assertEqual(pick_translation(l, langlist), Literal('Mon titre', lang='fr'))
         self.assertEqual(pick_translation(l, 'de'), Literal('Mein Titel', lang='de'))
         self.assertEqual(pick_translation(l, 'it'), Literal('My Title', lang='en'))
