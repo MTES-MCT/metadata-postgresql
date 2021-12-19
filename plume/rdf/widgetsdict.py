@@ -1,5 +1,8 @@
 """Dictionnaires de widgets.
 """
+
+import re
+
 from rdflib import Literal, URIRef, BNode
 from rdflib.namespace import NamespaceManager
 
@@ -14,7 +17,7 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
 from plume.rdf.thesaurus import Thesaurus
 from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP
 from plume.rdf.properties import PlumeProperty, class_properties
-from plume.rdf.metagraph import uuid_from_datasetid, datasetid_from_uuid
+from plume.rdf.metagraph import uuid_from_datasetid, datasetid_from_uuid, get_datasetid
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -191,6 +194,7 @@ class WidgetsDict(dict):
                 self.datasetid = datasetid_from_uuid(ident)
         mg_datasetid = get_datasetid(metagraph) if metagraph else None
         self.root = RootKey(datasetid=mg_datasetid)
+        # génère un nouvel identifiant si l'argument vaut None
         self[self.root] = InternalDict()
         if not self.datasetid:
             ident = uuid_from_datasetid(self.root.node)
@@ -200,11 +204,11 @@ class WidgetsDict(dict):
                 ident = uuid4()
                 self.datasetid = datasetid_from_uuid(ident)
             data['dct:identifier'] = [str(ident)]
-            # à ce stade, l'identifiant de la clé racine est
-            # celui du graphe, qui n'est plus nécessairement
-            # identique à self.datasetid. On attend cependant
-            # la fin de l'initialisation pour le corriger, sans
-            # quoi on ne pourra pas récupérer le contenu du graphe.
+            # à ce stade, l'identifiant de la clé racine est identique
+            # à celui du graphe et pas nécessairement à self.datasetid.
+            # On attend cependant la fin de l'initialisation pour le remettre
+            # en cohérence, sans quoi on ne pourra pas récupérer le contenu
+            # du graphe.
         
         # paramètres de configuration des clés
         WidgetKey.with_source_buttons = self.edit
@@ -376,20 +380,25 @@ class WidgetsDict(dict):
                 if kind in (SH.BlankNode, SH.BlankNodeOrIRI) \
                     and (isinstance(value, BNode) or (not self.hideBlank \
                     and not val_dict.get('is_ghost'))):
+                    if isinstance(value, BNode):
+                        val_dict['node'] = value
+                    # NB: on doit conserver les noeuds anonymes, sans quoi
+                    # il ne serait plus possible de récupérer les valeurs
+                    # dans le graphe
                     nodekey = GroupOfPropertiesKey(**val_dict)
-                    # NB: on ne conserve pas les noeuds anonymes, il est plus
-                    # simple d'en générer de nouveaux à l'initialisation de la clé.
                     self[nodekey] = InternalDict()
-                    self._build_dict(metagraph=metagraph, parent=nodekey,
+                    self._build_dict(parent=nodekey, metagraph=metagraph,
                         template=template, data=data)
                     if kind == SH.BlankNodeOrIRI:
                         val_dict['m_twin'] = nodekey
-                        val_dict['is_hidden_m'] = not isinstance(value, BNode)
+                        val_dict['is_hidden_m'] = isinstance(value, BNode)
                     
                 # ------ Cas d'une valeur litéral ou d'un IRI ------
                 if kind in (SH.BlankNodeOrIRI, SH.Literal, SH.IRI) \
                     and (isinstance(value, (Literal, URIRef)) or \
                     (not self.hideBlank and not val_dict.get('is_ghost'))):
+                    if isinstance(value, BNode):
+                        value = None
                     
                     # adaptation de is_long_text à la valeur
                     if value and kind == SH.Literal \
@@ -405,19 +414,27 @@ class WidgetsDict(dict):
                         len(str(val_dict['label'])) > self.labelLengthLimit):
                         val_dict['independant_label'] = True
                 
-                    # source de la valeur
-                    if val_dict.get('sources'):
-                        val_dict['value_source'] = Thesaurus.concept_source(value)
-                
                     # tout en lecture seule en mode lecture
                     if not self.edit:
                         val_dict['is_read_only'] = True
                 
-                    val_dict['value'] = value
-                    # value_language est déduit de value à l'initialisation
-                    # de la clé, le cas échéant
+                    if isinstance(value, (URIRef, Literal)):
+                        # source de la valeur
+                        if val_dict.get('sources') and isinstance(value, URIRef):
+                            val_dict['value_source'] = Thesaurus.concept_source(value)
+                        # value_language est déduit de value à l'initialisation
+                        # de la clé, le cas échéant
+                        val_dict['value'] = value
+                    
                     valkey = ValueKey(**val_dict)
                     self[valkey] = InternalDict()
+                    
+                    if value is not None and not isinstance(value, (URIRef, Literal)):
+                        # cas d'une valeur issue de data, par exemple.
+                        # on saisit la valeur après la création de la clé,
+                        # pour pouvoir la dé-sérialiser en fonction des
+                        # attributs de la clé
+                        self.update_value(valkey, value)
                 
             # ------ Bouton ------
             if multilingual or multiple:
@@ -952,7 +969,7 @@ class WidgetsDict(dict):
         """
         if widgetkey.is_read_only or not isinstance(widgetkey, ValueKey):
             return
-        if not value:
+        if value in (None, ''):
             widgetkey.value = None
             return
         if widgetkey.transform == 'email':
@@ -960,11 +977,14 @@ class WidgetsDict(dict):
         if widgetkey.transform == 'phone':
             value = owlthing_from_tel(value)
         if widgetkey.value_language:
-            widgetkey.value = Literal(value, lang=self.value_language)
+            widgetkey.value = Literal(value, lang=widgetkey.value_language)
             return 
-        if widgetkey.datatype:
-            widgetkey.value = Literal(value, datatype=self.datatype)
-            return 
+        if widgetkey.datatype and widgetkey.datatype != XSD.string:
+            widgetkey.value = Literal(value, datatype=widgetkey.datatype)
+            return
+        if widgetkey.datatype == XSD.string:
+            widgetkey.value = Literal(value)
+            return
         if widgetkey.value_source:
             res = Thesaurus.concept_iri((widgetkey.value_source, \
                 widgetkey.main_language), value)
@@ -1016,6 +1036,19 @@ class WidgetsDict(dict):
             elif isinstance(value, URIRef):
                 str_value = text_with_link(str_value, value)
         return str_value
+    
+    def build_metagraph(self):
+        """Construit un graphe de métadonnées à partir du contenu du dictionnaire.
+        
+        Returns
+        -------
+        plume.rdf.metagraph.Metagraph
+        
+        """
+        if self.root:
+            return self.root.build_metagraph()
+    
+# Utilitaires
 
 def forbidden_char(anystr):
     """Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.
@@ -1095,7 +1128,6 @@ def email_from_owlthing(thing_iri):
     # à partir de Python 3.9
     # str(thingIRI).removeprefix("mailto:") serait plus élégant
     return re.sub('^mailto[:]', '', str(thing_iri))
-
 
 def owlthing_from_email(email_str):
     """Construit un IRI valide à partir d'une chaîne de caractères représentant une adresse mél.
