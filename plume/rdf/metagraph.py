@@ -5,15 +5,9 @@
 from uuid import UUID, uuid4
 from pathlib import Path
 
-try:
-    from rdflib import Graph, URIRef
-except:
-    from plume.bibli_install.bibli_install import manageLibrary
-    # installe RDFLib si n'est pas déjà disponible
-    manageLibrary()
-    from rdflib import Graph, URIRef
+from rdflib import Graph, URIRef
 
-from plume.rdf.namespaces import DCAT, RDF
+from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF
 
 class Metagraph(Graph):
     """Graphes de métadonnées.
@@ -21,41 +15,15 @@ class Metagraph(Graph):
     Un graphe de métadonnées décrit un et un seul jeu de données
     (dcat:Dataset).
     
-    Parameters
-    ----------
-    datasetid : URIRef, optional
-        L'identifiant du jeu de données, sous forme d'URIRef.
-    uuid : UUID, optional
-        L'identifiant du jeu de données, sous forme d'UUID.
-    
-    Attributes
-    ----------
-    datasetid : URIRef
-        L'identifiant du jeu de données, sous forme d'URIRef.
-    uuid : UUID
-        L'identifiant du jeu de données, sous forme d'UUID.
-    
     Notes
-    -----
-    À l'initialisation, `uuid` est déduit de `datasetid` et
-    réciproquement. Si `datasetid` et `uuid` sont tous deux
-    renseignés (ce qui ne présente aucun intérêt), ce dernier
-    prime. Si ni `datasetid` ni `uuid` n'est fourni ou si la
-    valeur fournie n'était pas un UUID valide, un nouvel
-    identifiant sera généré.
+    -----   
+    Tous les graphes de métadonnées sont initialisés avec
+    l'espace de nommage standard de Plume
+    (:py:class:`plume.rdf.namespaces.PlumeNamespaceManager`).
     
     """
-    def __init__(self, datasetid=None, uuid=None):
-        super().__init__(self)
-        if uuid:
-            self.uuid = uuid
-            self.datasetid = datasetid_from_uuid(uuid)
-        elif datasetid:
-            self.datasetid = datasetid
-            self.uuid = uuid_from_datasetid(datasetid)
-        if not self.datasetid or not self.uuid:
-            self.uuid = uuid4()
-            self.datasetid = datasetid_from_uuid(self.uuid)
+    def __init__(self):
+        super().__init__(namespace_manager=PlumeNamespaceManager())
 
 
 def uuid_from_datasetid(datasetid):
