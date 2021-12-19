@@ -7,6 +7,43 @@ from rdflib import Literal, URIRef
 
 from plume import __path__
 
+def data_from_file(filepath):
+    """Renvoie le contenu d'un fichier.
+    
+    Le fichier sera présumé être encodé en UTF-8 et mieux
+    vaudrait qu'il le soit.
+    
+    On pourra utiliser conjointement :py:func:`abspath` pour
+    l'import de données du modèle:
+    
+        >>> data_from_file(abspath('pg/tests/samples/pg_description_1.txt'))
+    
+    Parameters
+    ----------
+    filepath : str
+        Chemin complet du fichier source.
+    
+    Returns
+    -------
+    str
+    
+    See Also
+    --------
+    plume.rdf.metagraph.graph_from_file : Import de données RDF.
+    
+    """
+    pfile = Path(filepath)
+    
+    if not pfile.exists():
+        raise FileNotFoundError("Can't find file {}.".format(filepath))
+        
+    if not pfile.is_file():
+        raise TypeError("{} is not a file.".format(filepath))
+    
+    with pfile.open(encoding='UTF-8') as src:
+        data = src.read()
+    return data
+
 def abspath(relpath):
     """Déduit un chemin absolu d'un chemin relatif au package.
     
