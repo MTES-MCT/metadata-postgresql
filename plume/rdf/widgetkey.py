@@ -25,18 +25,13 @@ création ou la modification d'une clé entraîne la modification
 
 from uuid import uuid4
 
-try:
-    from rdflib import URIRef, BNode, Literal
-except:
-    from plume.bibli_install.bibli_install import manageLibrary
-    # installe RDFLib si n'est pas déjà disponible
-    manageLibrary()
-    from rdflib import URIRef, BNode, Literal
+from rdflib import URIRef, BNode, Literal
 
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     ForbiddenOperation, UnknownParameterValue
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.namespaces import DCAT, RDF, XSD
+from plume.rdf.metagraph import Metagraph
 
 class WidgetKey:
     """Clé d'un dictionnaire de widgets.
@@ -58,7 +53,7 @@ class WidgetKey:
     
     Attributes
     ----------
-    actionsbook : ActionsBook
+    actionsbook : plume.rdf.actionsbook.ActionsBook
         Le carnet d'actions trace les actions à réaliser sur les widgets
         au fil des modifications des clés. Pour le réinitialiser, on
         utilisera la méthode de classe :py:meth:`clear_actionsbook`, et
@@ -181,7 +176,7 @@ class WidgetKey:
     """
     
     actionsbook = ActionsBook()
-    """ActionsBook: Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
+    """plume.rdf.actionsbook.ActionsBook: Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
     
     """
     
@@ -208,7 +203,7 @@ class WidgetKey:
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
         
         """
         book = cls.actionsbook
@@ -1395,7 +1390,7 @@ class ObjectKey(WidgetKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser
             la suppresssion de la clé.
         
@@ -1422,7 +1417,7 @@ class ObjectKey(WidgetKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter
             le changement de source sur les widgets.
         
@@ -1693,6 +1688,11 @@ class GroupKey(WidgetKey):
                 str(label) == child.label):
                 return child
 
+    def _build_metagraph(self, metagraph):
+        b = False
+        for child in self.children:
+            b = child._build_metagraph(metagraph) or b
+        return b
 
 class TabKey(GroupKey):
     """Onglet.
@@ -1723,6 +1723,7 @@ class TabKey(GroupKey):
     ----------
     label
     path
+    node
     key_object
     
     """
@@ -1745,6 +1746,15 @@ class TabKey(GroupKey):
         
         """
         return 'tab'
+
+    @property
+    def node(self):
+        """rdflib.term.URIRef or rdflib.term.BNode: Noeud sujet des filles de l'onglet.
+        
+        Identique à celui du groupe parent.
+        
+        """
+        return self.parent.node
 
     @property
     def path(self):
@@ -2067,7 +2077,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser les
             opérations réalisées.
         
@@ -2110,6 +2120,19 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         """
         ObjectKey.kill(self)
+
+    def _build_metagraph(self, metagraph):
+        if self.is_hidden_m:
+            return False
+        b = super()._build_metagraph(metagraph)
+        if b:
+            metagraph.add((self.parent.node, self.predicate, self.node))
+            metagraph.add((self.node, RDF.type, self.rdfclass))
+            # il n'est pas très intuitif d'ajouter le parent au
+            # graphe après ses enfants, mais ça ne rend pas le graphe
+            # invalide et de cette façon on n'intègre pas de groupes de
+            # propriétés vides
+        return b
 
 class GroupOfValuesKey(GroupKey):
     """Groupe de valeurs.
@@ -2280,6 +2303,15 @@ class GroupOfValuesKey(GroupKey):
         if not value:
             raise MissingParameter('predicate', self)
         self._predicate = value
+    
+    @property
+    def node(self):
+        """rdflib.term.URIRef or rdflib.term.BNode: Noeud sujet des filles du groupe.
+        
+        Identique à celui du groupe parent.
+        
+        """
+        return self.parent.node
     
     @property
     def path(self):
@@ -3825,7 +3857,7 @@ class ValueKey(ObjectKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter le changement
             de langue sur les widgets.
         
@@ -3849,7 +3881,7 @@ class ValueKey(ObjectKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter le changement
             de source sur les widgets.
         
@@ -3859,6 +3891,14 @@ class ValueKey(ObjectKey):
         WidgetKey.clear_actionsbook()
         self.value_source = value_source
         return WidgetKey.unload_actionsbook()
+
+    def _build_metagraph(self, metagraph):
+        if self.do_not_save or self.is_hidden_m or self.value is None:
+            # les clés fantôme sont sauvegardées (elles servent
+            # à ça), mais pas les clés masquées
+            return False
+        metagraph.add((self.parent.node, self.predicate, self.value))
+        return True
 
 class PlusButtonKey(WidgetKey):
     """Bouton plus.
@@ -3976,7 +4016,7 @@ class PlusButtonKey(WidgetKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser
             la création de la clé.
         
@@ -4108,6 +4148,8 @@ class RootKey(GroupKey):
         son chemin.
     clean()
         Balaie l'arbre de clés et supprime tous les groupes sans fille.
+    build_metagraph()
+        Traduit l'arbre de clés en graphe de métadonnées.
     
     """
     def _heritage(self, **kwargs):
@@ -4257,7 +4299,7 @@ class RootKey(GroupKey):
             
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser les
             opérations réalisées.
         
@@ -4297,7 +4339,7 @@ class RootKey(GroupKey):
         
         Returns
         -------
-        ActionsBook
+        plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser les
             opérations réalisées.
         
@@ -4305,6 +4347,19 @@ class RootKey(GroupKey):
         WidgetKey.clear_actionsbook()
         self._clean()
         return WidgetKey.unload_actionsbook()
+
+    def build_metagraph(self):
+        """Traduit l'arbre de clés en graphe de métadonnées.
+        
+        Returns
+        -------
+        plume.rdf.metagraph.Metagraph
+        
+        """
+        metagraph = Metagraph()
+        metagraph.add((self.node, RDF.type, self.rdfclass))
+        self._build_metagraph(metagraph)
+        return metagraph
 
 class ChildrenList(list):
     """Liste des enfants d'une clé.
