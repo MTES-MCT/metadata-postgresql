@@ -1,4 +1,19 @@
 """Dictionnaires de widgets.
+
+Ce module permet de générer des dictionnaires de widgets
+(:py:class:`WidgetsDict`) rassemblant et structurant
+toutes les informations nécessaires à la création d'un
+formulaire de consultation ou saisie des métadonnées.
+
+Création d'un dictionnaire vierge:
+
+    >>> widgetsdict = WidgetDict()
+    
+Cf. classe :py:class:`WidgetsDict` pour les informations
+pouvant être fournies en argument : graphe contenant les
+métadonnées de l'objet PostgreSQL, modèle de formulaire,
+descriptifs des champs...
+
 """
 
 import re
@@ -65,48 +80,7 @@ class WidgetsDict(dict):
     language : str, optional
         Langue principale de rédaction des métadonnées.
         Si `language` n'est pas fourni ou n'appartient pas à `langList`,
-        la première langue de `langList` tiendra lieu de langue principale.
-    readHideBlank : bool, default True
-        Les champs vide du formulaire doivent-ils être masqués en mode
-        lecture ?
-    editHideUnlisted : bool, default False
-        Lorsqu'un modèle (`template`) est fourni, les champs non référencés
-        par celui-ci doivent-ils être masqués en mode édition même s'ils
-        contiennent une valeur ? Lorsque ce paramètre vaut ``False``, les
-        champs non référencés apparaissent dans l'onglet *Autres* du
-        formulaire.
-    readHideUnlisted : bool, default True
-        Lorsqu'un modèle (`template`) est fourni, les champs non référencés
-        par celui-ci doivent-ils être masqués en mode lecture même s'ils
-        contiennent une valeur ? Lorsque ce paramètre vaut ``False``, les
-        champs non référencés apparaissent dans l'onglet *Autres* du
-        formulaire.
-    editOnlyCurrentLanguage : bool, default False
-        Hors mode traduction et pour les propriétés appelant des traductions
-        (type ``rdf:langString``), les valeurs qui ne sont pas dans la
-        langue principale (`language`) doivent-elles être masquées en mode
-        édition ? S'il n'existe aucune traduction pour la langue demandée,
-        une valeur dans une autre langue est affichée, avec priorisation
-        des langues selon l'ordre de `langList`.
-    readOnlyCurrentLanguage : bool, default True
-        Pour les propriétés appelant des traductions (type ``rdf:langString``),
-        les valeurs qui ne sont pas dans la langue principale (`language`)
-        doivent-elles être masquées en mode lecture ? S'il n'existe aucune
-        traduction pour la langue demandée, une valeur dans une autre langue
-        est affichée, avec priorisation des langues selon l'ordre de `langList`.
-    labelLengthLimit : int, default 25
-        Si la longueur d'une étiquette (nombre de caractères) est
-        supérieure à `labelLengthLimit`, elle est affichée au-dessus
-        du widget de saisie.
-    valueLengthLimit : int, default 65
-        Si la longueur d'une valeur textuelle (nombre de caractères)
-        est supérieure à `valueLengthLimit`, elle est affichée sur
-        plusieurs lignes.
-    textEditRowSpan : int, default 6
-        Hauteur par défaut des widgets de saisie de texte multi-lignes,
-        en nombre de lignes. C'est la valeur utilisée quand le modèle local
-        ou le schéma des métadonnées communes ne définit pas de paramétrage
-        spécifique.        
+        la première langue de `langList` tiendra lieu de langue principale.        
     
     Attributes
     ----------
@@ -155,6 +129,50 @@ class WidgetsDict(dict):
         Si la longueur d'une étiquette (nombre de caractères) est
         supérieure à `labelLengthLimit`, elle est affichée au-dessus
         du widget de saisie.
+    
+    Other Parameters
+    ----------------
+    readHideBlank : bool, default True
+        Les champs vide du formulaire doivent-ils être masqués en mode
+        lecture ?
+    editHideUnlisted : bool, default False
+        Lorsqu'un modèle (`template`) est fourni, les champs non référencés
+        par celui-ci doivent-ils être masqués en mode édition même s'ils
+        contiennent une valeur ? Lorsque ce paramètre vaut ``False``, les
+        champs non référencés apparaissent dans l'onglet *Autres* du
+        formulaire.
+    readHideUnlisted : bool, default True
+        Lorsqu'un modèle (`template`) est fourni, les champs non référencés
+        par celui-ci doivent-ils être masqués en mode lecture même s'ils
+        contiennent une valeur ? Lorsque ce paramètre vaut ``False``, les
+        champs non référencés apparaissent dans l'onglet *Autres* du
+        formulaire.
+    editOnlyCurrentLanguage : bool, default False
+        Hors mode traduction et pour les propriétés appelant des traductions
+        (type ``rdf:langString``), les valeurs qui ne sont pas dans la
+        langue principale (`language`) doivent-elles être masquées en mode
+        édition ? S'il n'existe aucune traduction pour la langue demandée,
+        une valeur dans une autre langue est affichée, avec priorisation
+        des langues selon l'ordre de `langList`.
+    readOnlyCurrentLanguage : bool, default True
+        Pour les propriétés appelant des traductions (type ``rdf:langString``),
+        les valeurs qui ne sont pas dans la langue principale (`language`)
+        doivent-elles être masquées en mode lecture ? S'il n'existe aucune
+        traduction pour la langue demandée, une valeur dans une autre langue
+        est affichée, avec priorisation des langues selon l'ordre de `langList`.
+    labelLengthLimit : int, default 25
+        Si la longueur d'une étiquette (nombre de caractères) est
+        supérieure à `labelLengthLimit`, elle est affichée au-dessus
+        du widget de saisie.
+    valueLengthLimit : int, default 65
+        Si la longueur d'une valeur textuelle (nombre de caractères)
+        est supérieure à `valueLengthLimit`, elle est affichée sur
+        plusieurs lignes.
+    textEditRowSpan : int, default 6
+        Hauteur par défaut des widgets de saisie de texte multi-lignes,
+        en nombre de lignes. C'est la valeur utilisée quand le modèle local
+        ou le schéma des métadonnées communes ne définit pas de paramétrage
+        spécifique.
     
     """
     
