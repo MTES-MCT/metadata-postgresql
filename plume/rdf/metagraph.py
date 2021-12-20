@@ -5,15 +5,24 @@
 from uuid import UUID, uuid4
 from pathlib import Path
 
-from rdflib import Graph, URIRef
+from rdflib import Graph, URIRef, BNode
 
-from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF
+from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
+    LOCAL, predicate_map
+from plume.rdf.utils import abspath
+
 
 class Metagraph(Graph):
     """Graphes de métadonnées.
     
-    Un graphe de métadonnées décrit un et un seul jeu de données
-    (dcat:Dataset).
+    Un graphe de métadonnées est présumé décrire un et un seul jeu de
+    données (dcat:Dataset).
+    
+    Attributes
+    ----------
+    datasetid
+    uuid
+    available_formats
     
     Notes
     -----   
@@ -25,6 +34,156 @@ class Metagraph(Graph):
     def __init__(self):
         super().__init__(namespace_manager=PlumeNamespaceManager())
 
+    def __str__(self):
+        gid = self.uuid
+        if gid:
+            return 'dataset {}'.format(gid)
+        return 'no dataset'
+
+    @property
+    def datasetid(self):
+        """rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe, sous forme d'IRI.
+        
+        Peut être ``None`` si le graphe de métadonnées ne contient
+        pas d'élément ``dcat:Dataset``.
+        
+        """
+        return get_datasetid(self)
+
+    @property
+    def uuid(self):
+        """uuid.UUID: Identifiant du jeu de données décrit par le graphe, sous forme d'UUID.
+        
+        Peut être ``None`` si le graphe de métadonnées ne contient
+        pas d'élément ``dcat:Dataset``, ou si l'identifiant, pour une
+        raison ou une autre, n'était pas un UUID valide.
+        
+        """
+        datasetid = self.datasetid
+        if datasetid:
+            return uuid_from_datasetid(datasetid)
+
+    def export(self, filepath, format=None):
+        """Sérialise le graphe de métadonnées dans un fichier.
+        
+        Parameters
+        ----------
+        filepath : str
+            Chemin complet du fichier cible.
+        format : str, optional
+            Format d'export. Pour connaître la liste des valeurs
+            acceptées, on exécutera :py:func:`export_formats`.
+            À noter certains formats peuvent donner un résultat peu
+            probant selon le graphe. La propriété
+            :py:attr:`available_formats` fournit une liste de formats
+            présumés adaptés pour le graphe, il préférable de choisir
+            l'un d'eux.
+            Si aucun format n'est fourni et qu'il ne peut pas être
+            déduit de l'extension du fichier cible, l'export sera fait
+            en turtle.
+        
+        Notes
+        -----
+        Le fichier sera toujours encodé en UTF-8 sauf pour le format
+        NTriples (encodage ASCII).
+        
+        """
+        pfile = Path(filepath)
+
+        if format and not format in export_formats():
+            raise ValueError("Format '{}' is not supported.".format(format))
+        
+        # en l'absence de format, si le chemin comporte un
+        # suffixe, on tente d'en déduire le format
+        if not format and pfile.suffix:
+            format = export_format_from_extension(pfile.suffix)
+        if not format:
+            format = 'turtle'
+        
+        # réciproquement, si le nom de fichier n'a pas
+        # de suffixe, on en ajoute un d'après le format
+        if not pfile.suffix:
+            pfile = pfile.with_suffix(
+                export_extension_from_format(format) or ''
+                )
+        
+        s = self.serialize(
+            format=format,
+            encoding='ascii' if format=='nt' else 'utf-8'
+            )
+        
+        with open(pfile, 'wb') as dest:
+            dest.write(s)
+
+    @property
+    def available_formats(self):
+        """list(str): Liste des formats d'export recommandés pour le graphe.
+        
+        Notes
+        -----
+        À date, cette propriété exclut les formats ``'xml'`` et
+        ``'pretty-xml'`` en présence de catégories locales de
+        métadonnées, car leurs espaces de nommage ne sont pas
+        gérés correctement. Il s'agit d'une limitation de RDFLib
+        et non du format, qui pourrait être corrigée à l'avenir.
+        
+        """
+        l = export_formats()
+        # Une méthode plus gourmande pourrait consister à purement et simplement
+        # tester toutes les sérialisations possibles et retourner celles qui
+        # ne produisent pas d'erreur. À ce stade, il semble cependant que
+        # la seule incompatibilité prévisible et admissible soit la
+        # combinaison XML + usage d'UUID pour les métadonnées locales. C'est
+        # donc uniquement ce cas qui est testé ici.
+        for p in self.predicates():
+            if p in LOCAL:
+                for f in ('xml', 'pretty-xml'):
+                    if f in l:
+                        l.remove(f)            
+                break  
+        return l
+
+    def _clean_metagraph(self, raw_metagraph, raw_subject, triple, memory):
+        l = [(p, o) for p, o in raw_metagraph.predicate_objects(raw_subject)]
+        
+        # si la liste ne contient que la classe de l'IRI
+        # ou du noeud anonyme, on passe
+        if (len(l) == 1 and l[0][0] == RDF.type):
+            l = []
+        
+        if l:
+            rdfclass = raw_metagraph.value(raw_subject, RDF.type)
+            # s'il n'y a pas de classe, ou que la classe n'est pas décrite
+            # dans shape, un IRI ou Literal sera écrit tel quel,
+            # sans ses descendants, un BNode est effacé
+            if not rdfclass or \
+                not (None, SH.targetClass, rdfclass) in shape:
+                l = []
+                if isinstance(raw_subject, BNode):
+                    return
+
+        # suppression des noeuds anonymes terminaux
+        if not l and isinstance(raw_subject, BNode):
+            return
+        
+        subject = raw_subject
+        # cas d'un IRI non terminal
+        # on le remplace par un noeud anonyme
+        if l and not isinstance(raw_subject, BNode):
+            subject = BNode()
+            triple = (triple[0], triple[1], subject)
+        
+        self.add(triple)
+        
+        for p, o in l:
+            if not (raw_subject, p, o) in memory:
+                memory.add((raw_subject, p, o))
+                triple = (subject, predicate_map.get(p, p), o)
+                self._clean_metagraph(raw_metagraph, o, triple, memory)
+
+
+
+# ------ utilitaires de gestion des identifiants ------
 
 def uuid_from_datasetid(datasetid):
     """Extrait l'UUID d'un identifiant de jeu de données.
@@ -95,6 +254,40 @@ def get_datasetid(anygraph):
     for s in anygraph.subjects(RDF.type, DCAT.Dataset):
         return s
 
+# ------ utilitaires d'import / export ------
+
+def metagraph_from_file(filepath, format=None, old_metagraph=None):
+    """Crée un graphe de métadonnées à partir d'un fichier.
+    
+    Parameters
+    ----------
+    filepath : str
+        Chemin complet du fichier source, supposé contenir des
+        métadonnées dans un format RDF, sans quoi l'import échouera.
+        Le fichier sera présumé être encodé en UTF-8 et mieux
+        vaudrait qu'il le soit.
+    format : str, optional
+        Le format des métadonnées. Si non renseigné, il est autant que
+        possible déduit de l'extension du fichier, qui devra donc être
+        cohérente avec son contenu. Pour connaître la liste des valeurs
+        acceptées, on exécutera :py:func:`import_formats`.
+    old_metagraph : Metagraph, optional
+        Le graphe contenant les métadonnées actuelles de l'objet
+        PostgreSQL considéré, dont on récupèrera l'identifiant.
+    
+    Returns
+    -------
+    Metagraph
+    
+    Notes
+    -----
+    Cette fonction se borne à exécuter successivement :py:func:`graph_from_file`
+    et :py:func:`clean_metagraph`.
+    
+    """
+    g = graph_from_file(filepath, format=format)
+    return clean_metagraph(g, old_metagraph=old_metagraph)
+
 def graph_from_file(filepath, format=None):
     """Désérialise le contenu d'un fichier sous forme de graphe.
     
@@ -106,16 +299,17 @@ def graph_from_file(filepath, format=None):
     filepath : str
         Chemin complet du fichier source, supposé contenir des
         métadonnées dans un format RDF, sans quoi l'import échouera.
-    format : str
+    format : str, optional
         Le format des métadonnées. Si non renseigné, il est autant que
         possible déduit de l'extension du fichier, qui devra donc être
-        cohérente avec son contenu. Valeurs acceptées : 'turtle',
-        'json-ld', 'xml', 'n3', 'nt', 'trig'.
+        cohérente avec son contenu. Pour connaître la liste des valeurs
+        acceptées, on exécutera :py:func:`import_formats`.
     
     Returns
     -------
     Graph
         Un graphe.
+    
     """
     pfile = Path(filepath)
     
@@ -142,6 +336,116 @@ def graph_from_file(filepath, format=None):
     with pfile.open(encoding='UTF-8') as src:
         g = Graph().parse(data=src.read(), format=format)
     return g
+
+def clean_metagraph(raw_graph, old_metagraph=None):
+    """Crée un graphe propre à partir d'un graphe issu d'une source externe.
+    
+    Parameters
+    ----------
+    raw_graph : rdflib.graph.Graph
+        Un graphe de métadonnées présumé issu d'un import via
+        :py:func:`graph_from_file` ou équivalent.
+    old_metagraph : Metagraph, optional
+        Le graphe contenant les métadonnées actuelles de l'objet
+        PostgreSQL considéré, dont on récupèrera l'identifiant.
+    
+    Returns
+    -------
+    Metagraph
+    
+    Notes
+    -----
+    Le graphe est retraité de manière à ce qu'un maximum de
+    métadonnées soient reconnues lors de la génération du dictionnaire
+    de widgets. En particulier, la fonction s'assure que tous les noeuds
+    sont des noeuds anonymes.
+    
+    """
+    metagraph = Metagraph()
+    raw_subject = get_datasetid(raw_graph)
+    subject = None
+    if old_metagraph:
+        subject = old_metagraph.datasetid
+    
+    if not raw_subject :
+        # le graphe ne contient pas de dcat:Dataset
+        # on renvoie un graphe avec uniquement l'ancien
+        # identifiant, ou vierge en l'absence d'identifiant
+        if subject:
+            metagraph.add((subject, RDF.type, DCAT.Dataset))
+        return metagraph
+    
+    # à défaut d'avoir pu récupérer l'identifiant de
+    # l'ancien graphe, on en génère un nouveau
+    if not subject:
+        subject = datasetid_from_uuid(uuid4())
+    memory = Graph()
+    
+    # memory stockera les triples déjà traités de raw_graph,
+    # il sert à éviter les boucles
+    for p, o in raw_graph.predicate_objects(raw_subject):
+        triple = (subject, predicate_map.get(p, p), o)
+        metagraph._clean_metagraph(raw_graph, o, triple, memory)
+    return metagraph
+
+def copy_metagraph(src_metagraph=None, old_metagraph=None):
+    """Génère un nouveau graphe de métadonnées avec le contenu du graphe cible. 
+
+    Parameters
+    ----------
+    src_metagraph : Metagraph, optional
+        Le graphe dont on souhaite copier le contenu. Si non
+        spécifié, la fonction considère un graphe vide.
+    old_metagraph : Metagraph, optional
+        Le graphe contenant les métadonnées actuelles de l'objet
+        PostgreSQL considéré, dont on récupèrera l'identifiant.
+    
+    Returns
+    -------
+    Metagraph
+    
+    Notes
+    -----
+    Cette fonction ne réalise aucun contrôle sur les informations
+    qu'elle copie. Si `src_metagraph` n'est pas issu d'une source fiable,
+    il est préférable d'utiliser :py:func:`clean_metagraph`.
+    
+    """
+    if src_metagraph is None:
+        src_metagraph = Graph()
+        src_datasetid = None
+    else:  
+        src_datasetid = src_metagraph.datasetid
+        
+    datasetid = old_metagraph.datasetid if old_metagraph else None
+    metagraph = Metagraph()
+    
+    # cas où le graphe à copier ne contiendrait pas
+    # de descriptif de dataset, on renvoie un graphe contenant
+    # uniquement l'identifiant, ou vierge à défaut d'identifiant
+    if not src_datasetid:
+        if datasetid:
+            metagraph.add((datasetid, RDF.type, DCAT.Dataset))
+        return metagraph
+    
+    # à défaut d'avoir pu d'extraire un identifiant de l'ancien
+    # graphe, on en génère un nouveau
+    if not datasetid:
+        datasetid = datasetid_from_uuid(uuid4())
+    
+    # boucle sur les triples du graphe source, on remplace
+    # l'identifiant partout où il apparaît en sujet ou (même si
+    # ça ne devrait pas être le cas) en objet
+    for s, p, o in src_metagraph:
+        metagraph.add((
+            datasetid if s == src_datasetid else s,
+            p,
+            datasetid if o == src_datasetid else o
+            ))
+        
+    # NB : on ne se préoccupe pas de mettre à jour dct:identifier,
+    # ce sera fait à l'initialisation du dictionnaire de widgets.
+    return metagraph
 
 def import_formats():
     """Renvoie la liste de tous les formats disponibles pour l'import.
@@ -183,9 +487,9 @@ def import_extensions_from_format(format=None):
         Si `format` n'est pas renseigné, la fonction renvoie la liste
         de toutes les extensions reconnues pour l'import.
     
-    Example
-    -------
-    >>> rdf_utils.import_extensions('xml')
+    Examples
+    --------
+    >>> import_extensions_from_format('xml')
     ['.rdf', '.xml']
     
     """
@@ -301,11 +605,14 @@ rdflib_formats = {
     }
 """Formats reconnus par les fonctions de RDFLib.
 
-Si la clé `import` vaut False, le format n'est pas reconnu
-à l'import. Si `export default` vaut True, il s'agit du
+Si la clé ``import`` vaut ``False``, le format n'est pas reconnu
+à l'import. Si ``export default`` vaut ``True``, il s'agit du
 format d'export privilégié pour les extensions listées
-par la clé `extension`.
+par la clé ``extension``.
 
 """
-    
-    
+
+shape = graph_from_file(abspath('rdf/data/shape.ttl'))
+"""Schéma SHACL définissant la structure des métadonnées communes.
+
+"""
