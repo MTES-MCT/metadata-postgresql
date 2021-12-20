@@ -1,0 +1,99 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns1: <http://data.europa.eu/88u/ontology/dcatapop#> .
+@prefix uuid: <urn:uuid:> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+uuid:89094354-eeec-43d5-89b0-d2daceaed85a a dcat:Dataset ;
+    ns1:debugInfo "EUODP->DEU xslt, version:20210804" ;
+    dct:accessRights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
+    dct:description "Der Indikator gibt die potenzielle Gesamtgefährdung für die Umwelt durch Stickstoff- und Phosphorüberschuss- bzw. -mangel in den Agrarflächen an. Ein Mangel an Stickstoff oder Phosphor mindert die Bodenfruchtbarkeit und Erosion, während ein Übermaß dieser Stoffe zur Verschmutzung des Oberflächen- und Grundwassers (einschliesslich des Trinkwassers) und zur Eutrophierung führt. Durch Mist und Düngemittel kommt es im Boden zu Stickstoff- und Phosphoreinträgen, während das Ernten von Nutzpflanzen, die Beseitigung von Rückständen und der Wasserabfluss dem Boden Stickstoff und Phosphor entziehen. Bilanzüberschüsse an Stickstoff und Phosphor werden im Zuge der Wasserrahmenrichtlinie überwacht, der Stickstoff im Zusammenhang mit der Nitrat-Richtlinie Die Daten stammen aus mehreren Quellen, darunter Düngemittelverbrauch, Tierbestände, Pflanzenproduktion und Anbauflächen verschiedener Nutzpflanzen. Zu den erfassten Flächenarten gehören Ackerland, Dauerkulturen und Dauergrünland. Die Maßeinheit ist Kilogramm Nährstoff pro Hektar Fläche."@de,
+        "The indicator balance represents the total potential threat to the environment of nitrogen and phosphorous surplus or deficit in agricultural soils. A lack of nitrogen or phosphorous may cause degradation in soil fertility and erosion, while an excess may cause surface and groundwater (including drinking water) pollution and eutrophication. Manure and fertiliser introduce nitrogen and phosphorous to the soil while harvesting of crops, removal of residues and runoff remove nitrogen and phosphorous from the soil. Nitrogen and phosphorous balance surpluses are monitored for the purposes of the Water Framework Directive and nitrogen for the Nitrates Directive. The data comes from multiple sources including the consumption of fertilisers, livestock population, crop production and areas of various types of crops. The land types included are arable land, permanent crops and permanent grassland. The unit of measure used is kg of nutrient per hectare of this land."@en,
+        "Cet indicateur exprime la menace potentielle totale pour l'environnement que représentent les excédents ou les déficits d'azote et de phosphore dans les sols agricoles. Un déficit d'azote ou de phosphore peut réduire la fertilité des sols et provoquer l’érosion des sols, tandis qu'un excédent peut générer la pollution des eaux souterraines et de surface (dont l’eau potable) et une eutrophisation. Le fumier et l'engrais introduisent de l'azote et du phosphore dans les sols, alors que les récoltes, l'enlèvement des résidus et le ruissellement retirent ces éléments des sols. Les excédents en azote et en phosphore font l'objet d'un suivi aux fins de la directive cadre sur l'eau; l'azote fait, en outre, l'objet d'un suivi aux fins de la directive sur les nitrates. Les données proviennent de différentes sources (consommation d'engrais, cheptel vif, production végétale, superficies des divers types de cultures, etc.). Les types de sols pris en compte sont les terres arables, les cultures permanentes et les prairies permanentes. L'unité de mesure utilisée est le kg de nutriment par hectare de ces sols."@fr ;
+    dct:identifier "http://data.europa.eu/88u/dataset/Bm13sogjiWMI1eyXRLQ",
+        "t2020_rn310" ;
+    dct:modified "2021-08-31"^^xsd:date ;
+    dct:publisher <http://publications.europa.eu/resource/authority/corporate-body/ESTAT> ;
+    dct:subject <http://eurovoc.europa.eu/4257>,
+        <http://eurovoc.europa.eu/4260>,
+        <http://eurovoc.europa.eu/6331>,
+        <http://eurovoc.europa.eu/6402> ;
+    dct:temporal [ a dct:PeriodOfTime ;
+            dcat:endDate "2019-01-01"^^xsd:date ;
+            dcat:startDate "1990-01-01"^^xsd:date ] ;
+    dct:title "Bruttonährstoffbilanz der Agrarflächen"@de,
+        "Gross nutrient balance on agricultural land"@en,
+        "Bilan nutritif brut de la terre agricole"@fr ;
+    dct:type <http://publications.europa.eu/resource/authority/dataset-type/STATISTICAL> ;
+    dcat:contactPoint [ a vcard:Kind ;
+            vcard:hasAddress <http://www.w3.org/2006/vcard/ns#Address/ffb26c2b-e054-4e8c-baf8-148713fd1ce8> ;
+            vcard:hasTelephone <http://data.europa.eu/88u/voice/+352430136789> ;
+            vcard:organization-name "Eurostat, the statistical office of the European Union" ;
+            foaf:homePage <http://ec.europa.eu/eurostat/help/support> ] ;
+    dcat:distribution [ a dcat:Distribution ;
+            dct:description "Download dataset in SDMX-ML format"@en ;
+            dct:format <http://publications.europa.eu/resource/authority/file-type/ZIP> ;
+            dct:identifier "http://data.europa.eu/88u/distribution/b8863d24-6e61-48b5-9b42-a785a1e1cd5a" ;
+            dct:license <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> ;
+            dct:title "Bruttonährstoffbilanz der Agrarflächen"@de,
+                "Gross nutrient balance on agricultural land"@en,
+                "Bilan nutritif brut de la terre agricole"@fr ;
+            dct:type <http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> ;
+            dcat:accessURL <http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.sdmx.zip> ],
+        [ a dcat:Distribution ;
+            dct:format <http://publications.europa.eu/resource/authority/file-type/OP_DATPRO> ;
+            dct:identifier "http://data.europa.eu/88u/distribution/824846e5-c5e4-4e0b-85b4-3d50b063802c" ;
+            dct:license <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> ;
+            dct:title "[VISUALISATION] Karte"@de,
+                "[VISUALISATION] Map"@en,
+                "[VISUALISATION] Carte"@fr ;
+            dct:type <http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION> ;
+            dcat:accessURL <http://ec.europa.eu/eurostat/tgm/mapToolClosed.do?tab=map&init=1&plugin=1&language=en&pcode=t2020_rn310> ],
+        [ a dcat:Distribution ;
+            dct:format <http://publications.europa.eu/resource/authority/file-type/OP_DATPRO> ;
+            dct:identifier "http://data.europa.eu/88u/distribution/21dd92ed-2d99-41c3-af53-c90f4558f9d1" ;
+            dct:license <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> ;
+            dct:title "[VISUALISATION] Graph"@de,
+                "[VISUALISATION] Graph"@en,
+                "[VISUALISATION] Graphique"@fr ;
+            dct:type <http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION> ;
+            dcat:accessURL <http://ec.europa.eu/eurostat/tgm/graph.do?tab=graph&plugin=1&language=en&pcode=t2020_rn310> ],
+        [ a dcat:Distribution ;
+            dct:description "Download dataset in TSV format (unzipped)"@en ;
+            dct:format <http://publications.europa.eu/resource/authority/file-type/TSV> ;
+            dct:identifier "http://data.europa.eu/88u/distribution/c4774bcd-d4d0-49b9-aa28-bbc6504d61ec" ;
+            dct:license <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> ;
+            dct:title "Bruttonährstoffbilanz der Agrarflächen"@de,
+                "Gross nutrient balance on agricultural land"@en,
+                "Bilan nutritif brut de la terre agricole"@fr ;
+            dct:type <http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> ;
+            dcat:accessURL <http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.tsv.gz&unzip=true> ],
+        [ a dcat:Distribution ;
+            dct:format <http://publications.europa.eu/resource/authority/file-type/OP_DATPRO> ;
+            dct:identifier "http://data.europa.eu/88u/distribution/e5e56f1e-9628-4484-8d43-8039cc46bda6" ;
+            dct:license <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> ;
+            dct:title "[VISUALISATION] Tabelle"@de,
+                "[VISUALISATION] Table"@en,
+                "[VISUALISATION] Tableau"@fr ;
+            dct:type <http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION> ;
+            dcat:accessURL <http://ec.europa.eu/eurostat/tgm/table.do?tab=table&plugin=1&language=en&pcode=t2020_rn310> ],
+        [ a dcat:Distribution ;
+            dct:description "Download dataset in TSV format"@en ;
+            dct:format <http://publications.europa.eu/resource/authority/file-type/ZIP> ;
+            dct:identifier "http://data.europa.eu/88u/distribution/4d9716c5-b858-4a52-8114-6d431a42c40f" ;
+            dct:license <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> ;
+            dct:title "Bruttonährstoffbilanz der Agrarflächen"@de,
+                "Gross nutrient balance on agricultural land"@en,
+                "Bilan nutritif brut de la terre agricole"@fr ;
+            dct:type <http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> ;
+            dcat:accessURL <http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.tsv.gz> ] ;
+    dcat:keyword "ESTAT"@en ;
+    dcat:landingPage <http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310> ;
+    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/AGRI>,
+        <http://publications.europa.eu/resource/authority/data-theme/ENVI> ;
+    foaf:page <http://ec.europa.eu/eurostat/cache/metadata/en/t2020_rn310_esmsip2.htm>,
+        <http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=metadata/t2020_rn310_esmsip2.sdmx.zip>,
+        <http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310> .
+
