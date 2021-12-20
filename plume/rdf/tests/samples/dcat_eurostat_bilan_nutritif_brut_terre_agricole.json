@@ -1,0 +1,452 @@
+{
+  "@context" : {
+    "topic" : {
+      "@id" : "http://xmlns.com/foaf/0.1/topic",
+      "@type" : "@id"
+    },
+    "url" : {
+      "@id" : "http://schema.org/url"
+    },
+    "hasValue" : {
+      "@id" : "http://www.w3.org/2006/vcard/ns#hasValue",
+      "@type" : "@id"
+    },
+    "title" : {
+      "@id" : "http://purl.org/dc/terms/title"
+    },
+    "type" : {
+      "@id" : "http://purl.org/dc/terms/type",
+      "@type" : "@id"
+    },
+    "format" : {
+      "@id" : "http://purl.org/dc/terms/format",
+      "@type" : "@id"
+    },
+    "modified" : {
+      "@id" : "http://purl.org/dc/terms/modified",
+      "@type" : "http://www.w3.org/2001/XMLSchema#date"
+    },
+    "theme" : {
+      "@id" : "http://www.w3.org/ns/dcat#theme",
+      "@type" : "@id"
+    },
+    "distribution" : {
+      "@id" : "http://www.w3.org/ns/dcat#distribution",
+      "@type" : "@id"
+    },
+    "description" : {
+      "@id" : "http://purl.org/dc/terms/description"
+    },
+    "subject" : {
+      "@id" : "http://purl.org/dc/terms/subject",
+      "@type" : "@id"
+    },
+    "accessRights" : {
+      "@id" : "http://purl.org/dc/terms/accessRights",
+      "@type" : "@id"
+    },
+    "contactPoint" : {
+      "@id" : "http://www.w3.org/ns/dcat#contactPoint",
+      "@type" : "@id"
+    },
+    "page" : {
+      "@id" : "http://xmlns.com/foaf/0.1/page",
+      "@type" : "@id"
+    },
+    "identifier" : {
+      "@id" : "http://purl.org/dc/terms/identifier"
+    },
+    "publisher" : {
+      "@id" : "http://purl.org/dc/terms/publisher",
+      "@type" : "@id"
+    },
+    "temporal" : {
+      "@id" : "http://purl.org/dc/terms/temporal",
+      "@type" : "@id"
+    },
+    "keyword" : {
+      "@id" : "http://www.w3.org/ns/dcat#keyword"
+    },
+    "landingPage" : {
+      "@id" : "http://www.w3.org/ns/dcat#landingPage",
+      "@type" : "@id"
+    },
+    "debugInfo" : {
+      "@id" : "http://data.europa.eu/88u/ontology/dcatapop#debugInfo"
+    },
+    "checksumValue" : {
+      "@id" : "https://spdx.org/rdf/terms/#checksumValue"
+    },
+    "algorithm" : {
+      "@id" : "https://spdx.org/rdf/terms/#algorithm",
+      "@type" : "@id"
+    },
+    "primaryTopic" : {
+      "@id" : "http://xmlns.com/foaf/0.1/primaryTopic",
+      "@type" : "@id"
+    },
+    "issued" : {
+      "@id" : "http://purl.org/dc/terms/issued",
+      "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "license" : {
+      "@id" : "http://purl.org/dc/terms/license",
+      "@type" : "@id"
+    },
+    "accessURL" : {
+      "@id" : "http://www.w3.org/ns/dcat#accessURL",
+      "@type" : "@id"
+    },
+    "hasTelephone" : {
+      "@id" : "http://www.w3.org/2006/vcard/ns#hasTelephone",
+      "@type" : "@id"
+    },
+    "hasAddress" : {
+      "@id" : "http://www.w3.org/2006/vcard/ns#hasAddress",
+      "@type" : "@id"
+    },
+    "organisation-name" : {
+      "@id" : "http://www.w3.org/2006/vcard/ns#organisation-name"
+    },
+    "homePage" : {
+      "@id" : "http://xmlns.com/foaf/0.1/homePage",
+      "@type" : "@id"
+    },
+    "startDate" : {
+      "@id" : "http://schema.org/startDate",
+      "@type" : "http://www.w3.org/2001/XMLSchema#date"
+    },
+    "endDate" : {
+      "@id" : "http://schema.org/endDate",
+      "@type" : "http://www.w3.org/2001/XMLSchema#date"
+    },
+    "checksum" : {
+      "@id" : "https://spdx.org/rdf/terms/#checksum",
+      "@type" : "@id"
+    },
+    "transStatus" : {
+      "@id" : "https://europeandataportal.eu/voc#transStatus",
+      "@type" : "@id"
+    },
+    "transIssued" : {
+      "@id" : "https://europeandataportal.eu/voc#transIssued",
+      "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "hasQualityMetadata" : {
+      "@id" : "http://www.w3.org/ns/dqv#hasQualityMetadata",
+      "@type" : "@id"
+    },
+    "street-address" : {
+      "@id" : "http://www.w3.org/2006/vcard/ns#street-address"
+    },
+    "schema" : "http://schema.org/",
+    "spdx" : "https://spdx.org/rdf/terms/#",
+    "adms" : "http://www.w3.org/ns/adms#",
+    "dcatap" : "http://data.europa.eu/r5r/",
+    "gsp" : "http://www.opengis.net/ont/geosparql#",
+    "owl" : "http://www.w3.org/2002/07/owl#",
+    "org" : "http://www.w3.org/ns/org#",
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    "skos" : "http://www.w3.org/2004/02/skos/core#",
+    "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+    "hydra" : "http://www.w3.org/ns/hydra/core#",
+    "dct" : "http://purl.org/dc/terms/",
+    "v" : "http://www.w3.org/2006/vcard/ns#",
+    "time" : "http://www.w3.org/2006/time#",
+    "dcat" : "http://www.w3.org/ns/dcat#",
+    "odrl" : "https://www.w3.org/TR/odrl-vocab/#",
+    "locn" : "http://www.w3.org/ns/locn#",
+    "prov" : "http://www.w3.org/ns/prov#",
+    "foaf" : "http://xmlns.com/foaf/0.1/",
+    "gmd" : "http://www.isotc211.org/2005/gmd#"
+  },
+  "@graph" : [ {
+    "@id" : "_:b0",
+    "@type" : "spdx:Checksum",
+    "algorithm" : "checksum:Algorithm_md5",
+    "checksumValue" : "41fc910192a1f8d617606ef3e4b74ec8"
+  }, {
+    "@id" : "http://data.europa.eu/88u/record/39f9327a-3798-4b2e-872c-de1f8a35da8e",
+    "@type" : "dcat:CatalogRecord",
+    "issued" : "2015-10-16T12:46:08.400806+02:00",
+    "dct:modified" : {
+      "@type" : "xsd:dateTime",
+      "@value" : "2021-09-01T07:13:27+02:00"
+    },
+    "primaryTopic" : "https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"
+  }, {
+    "@id" : "http://data.europa.eu/88u/voice/+352430136789",
+    "@type" : "v:Voice",
+    "hasValue" : "tel:+352430136789"
+  }, {
+    "@id" : "http://ec.europa.eu/eurostat/cache/metadata/en/t2020_rn310_esmsip2.htm",
+    "@type" : "foaf:Document",
+    "format" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "title" : {
+      "@language" : "en",
+      "@value" : "[DOCUMENTATION] ESMS metadata (Euro-SDMX Metadata structure) HTML"
+    },
+    "type" : "http://publications.europa.eu/resource/authority/documentation-type/DOCUMENTATION_MAIN",
+    "url" : {
+      "@language" : "en",
+      "@value" : "http://ec.europa.eu/eurostat/cache/metadata/en/t2020_rn310_esmsip2.htm"
+    },
+    "topic" : "https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"
+  }, {
+    "@id" : "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=metadata/t2020_rn310_esmsip2.sdmx.zip",
+    "@type" : "foaf:Document",
+    "format" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "title" : {
+      "@language" : "en",
+      "@value" : "ESMS metadata (Euro-SDMX Metadata structure) SDMX"
+    },
+    "type" : "http://publications.europa.eu/resource/authority/documentation-type/WEBPAGE_RELATED",
+    "url" : {
+      "@language" : "en",
+      "@value" : "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=metadata/t2020_rn310_esmsip2.sdmx.zip"
+    },
+    "topic" : "https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"
+  }, {
+    "@id" : "http://ec.europa.eu/eurostat/help/support",
+    "@type" : "foaf:Document",
+    "url" : "http://ec.europa.eu/eurostat/help/support",
+    "topic" : "file:///usr/verticles/"
+  }, {
+    "@id" : "http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310",
+    "@type" : "foaf:Document",
+    "format" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "title" : {
+      "@language" : "en",
+      "@value" : "More information on Eurostat Website"
+    },
+    "type" : "http://publications.europa.eu/resource/authority/documentation-type/WEBPAGE_RELATED",
+    "url" : [ {
+      "@language" : "en",
+      "@value" : "http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310"
+    }, "http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310" ],
+    "topic" : "https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/access-right/PUBLIC",
+    "@type" : "dct:RightsStatement"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/corporate-body/ESTAT",
+    "@type" : "foaf:Agent"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/data-theme/AGRI",
+    "@type" : "skos:Concept"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/data-theme/ENVI",
+    "@type" : "skos:Concept"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/dataset-type/STATISTICAL",
+    "@type" : "skos:Concept"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/documentation-type/DOCUMENTATION_MAIN",
+    "@type" : "skos:Concept"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/documentation-type/WEBPAGE_RELATED",
+    "@type" : "skos:Concept"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "@type" : "dct:MediaTypeOrExtent"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/file-type/TSV",
+    "@type" : "dct:MediaTypeOrExtent"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/file-type/ZIP",
+    "@type" : "dct:MediaTypeOrExtent"
+  }, {
+    "@id" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "@type" : "dct:LicenseDocument"
+  }, {
+    "@id" : "dct:PeriodOfTime/88dd71ac-e7f5-48d5-b2dd-d56d5e32cdc3",
+    "@type" : "dct:PeriodOfTime",
+    "endDate" : "2019-01-01",
+    "startDate" : "1990-01-01"
+  }, {
+    "@id" : "v:Address/ffb26c2b-e054-4e8c-baf8-148713fd1ce8",
+    "@type" : "v:Address",
+    "street-address" : "Joseph Bech building, 5 Rue Alphonse Weicker, L-2721 Luxembourg"
+  }, {
+    "@id" : "v:Kind/b816bd6a-5985-4126-b089-4464ed90036c",
+    "@type" : "v:Kind",
+    "hasAddress" : "v:Address/ffb26c2b-e054-4e8c-baf8-148713fd1ce8",
+    "hasTelephone" : "http://data.europa.eu/88u/voice/+352430136789",
+    "organisation-name" : "Eurostat, the statistical office of the European Union",
+    "homePage" : "http://ec.europa.eu/eurostat/help/support"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq",
+    "@type" : "dcat:Dataset",
+    "debugInfo" : "EUODP->DEU xslt, version:20210804",
+    "accessRights" : "http://publications.europa.eu/resource/authority/access-right/PUBLIC",
+    "description" : [ {
+      "@language" : "de",
+      "@value" : "Der Indikator gibt die potenzielle Gesamtgefährdung für die Umwelt durch Stickstoff- und Phosphorüberschuss- bzw. -mangel in den Agrarflächen an. Ein Mangel an Stickstoff oder Phosphor mindert die Bodenfruchtbarkeit und Erosion, während ein Übermaß dieser Stoffe zur Verschmutzung des Oberflächen- und Grundwassers (einschliesslich des Trinkwassers) und zur Eutrophierung führt. Durch Mist und Düngemittel kommt es im Boden zu Stickstoff- und Phosphoreinträgen, während das Ernten von Nutzpflanzen, die Beseitigung von Rückständen und der Wasserabfluss dem Boden Stickstoff und Phosphor entziehen. Bilanzüberschüsse an Stickstoff und Phosphor werden im Zuge der Wasserrahmenrichtlinie überwacht, der Stickstoff im Zusammenhang mit der Nitrat-Richtlinie Die Daten stammen aus mehreren Quellen, darunter Düngemittelverbrauch, Tierbestände, Pflanzenproduktion und Anbauflächen verschiedener Nutzpflanzen. Zu den erfassten Flächenarten gehören Ackerland, Dauerkulturen und Dauergrünland. Die Maßeinheit ist Kilogramm Nährstoff pro Hektar Fläche."
+    }, {
+      "@language" : "fr",
+      "@value" : "Cet indicateur exprime la menace potentielle totale pour l'environnement que représentent les excédents ou les déficits d'azote et de phosphore dans les sols agricoles. Un déficit d'azote ou de phosphore peut réduire la fertilité des sols et provoquer l’érosion des sols, tandis qu'un excédent peut générer la pollution des eaux souterraines et de surface (dont l’eau potable) et une eutrophisation. Le fumier et l'engrais introduisent de l'azote et du phosphore dans les sols, alors que les récoltes, l'enlèvement des résidus et le ruissellement retirent ces éléments des sols. Les excédents en azote et en phosphore font l'objet d'un suivi aux fins de la directive cadre sur l'eau; l'azote fait, en outre, l'objet d'un suivi aux fins de la directive sur les nitrates. Les données proviennent de différentes sources (consommation d'engrais, cheptel vif, production végétale, superficies des divers types de cultures, etc.). Les types de sols pris en compte sont les terres arables, les cultures permanentes et les prairies permanentes. L'unité de mesure utilisée est le kg de nutriment par hectare de ces sols."
+    }, {
+      "@language" : "en",
+      "@value" : "The indicator balance represents the total potential threat to the environment of nitrogen and phosphorous surplus or deficit in agricultural soils. A lack of nitrogen or phosphorous may cause degradation in soil fertility and erosion, while an excess may cause surface and groundwater (including drinking water) pollution and eutrophication. Manure and fertiliser introduce nitrogen and phosphorous to the soil while harvesting of crops, removal of residues and runoff remove nitrogen and phosphorous from the soil. Nitrogen and phosphorous balance surpluses are monitored for the purposes of the Water Framework Directive and nitrogen for the Nitrates Directive. The data comes from multiple sources including the consumption of fertilisers, livestock population, crop production and areas of various types of crops. The land types included are arable land, permanent crops and permanent grassland. The unit of measure used is kg of nutrient per hectare of this land."
+    } ],
+    "identifier" : [ "t2020_rn310", "http://data.europa.eu/88u/dataset/Bm13sogjiWMI1eyXRLQ" ],
+    "modified" : "2021-08-31",
+    "publisher" : "http://publications.europa.eu/resource/authority/corporate-body/ESTAT",
+    "subject" : [ "http://eurovoc.europa.eu/4257", "http://eurovoc.europa.eu/4260", "http://eurovoc.europa.eu/6331", "http://eurovoc.europa.eu/6402" ],
+    "temporal" : "dct:PeriodOfTime/88dd71ac-e7f5-48d5-b2dd-d56d5e32cdc3",
+    "title" : [ {
+      "@language" : "en",
+      "@value" : "Gross nutrient balance on agricultural land"
+    }, {
+      "@language" : "fr",
+      "@value" : "Bilan nutritif brut de la terre agricole"
+    }, {
+      "@language" : "de",
+      "@value" : "Bruttonährstoffbilanz der Agrarflächen"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/dataset-type/STATISTICAL",
+    "contactPoint" : "v:Kind/b816bd6a-5985-4126-b089-4464ed90036c",
+    "distribution" : [ "https://europeandataportal.eu/set/distribution/156e239e-0792-4b61-97ee-ba8343d52751", "https://europeandataportal.eu/set/distribution/64a9ab6f-df0e-49c3-b51b-5b3aaaa590b0", "https://europeandataportal.eu/set/distribution/2b1d2991-852a-4685-bbf8-f06ffe3a9bb0", "https://europeandataportal.eu/set/distribution/bf080191-2625-4e7e-ae90-df1955f5d166", "https://europeandataportal.eu/set/distribution/e712b98a-52b5-4e91-a418-130f2e123988", "https://europeandataportal.eu/set/distribution/64ecf6ea-3fc9-48d6-bff1-3397b28e3099" ],
+    "keyword" : {
+      "@language" : "en",
+      "@value" : "ESTAT"
+    },
+    "landingPage" : "http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310",
+    "theme" : [ "http://publications.europa.eu/resource/authority/data-theme/AGRI", "http://publications.europa.eu/resource/authority/data-theme/ENVI" ],
+    "page" : [ "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=metadata/t2020_rn310_esmsip2.sdmx.zip", "http://ec.europa.eu/eurostat/web/products-datasets/-/t2020_rn310", "http://ec.europa.eu/eurostat/cache/metadata/en/t2020_rn310_esmsip2.htm" ]
+  }, {
+    "@id" : "https://europeandataportal.eu/set/distribution/156e239e-0792-4b61-97ee-ba8343d52751",
+    "@type" : "dcat:Distribution",
+    "description" : {
+      "@language" : "en",
+      "@value" : "Download dataset in TSV format (unzipped)"
+    },
+    "format" : "http://publications.europa.eu/resource/authority/file-type/TSV",
+    "identifier" : "http://data.europa.eu/88u/distribution/c4774bcd-d4d0-49b9-aa28-bbc6504d61ec",
+    "license" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "title" : [ {
+      "@language" : "fr",
+      "@value" : "Bilan nutritif brut de la terre agricole"
+    }, {
+      "@language" : "de",
+      "@value" : "Bruttonährstoffbilanz der Agrarflächen"
+    }, {
+      "@language" : "en",
+      "@value" : "Gross nutrient balance on agricultural land"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE",
+    "accessURL" : "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.tsv.gz&unzip=true"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/distribution/2b1d2991-852a-4685-bbf8-f06ffe3a9bb0",
+    "@type" : "dcat:Distribution",
+    "format" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "identifier" : "http://data.europa.eu/88u/distribution/e5e56f1e-9628-4484-8d43-8039cc46bda6",
+    "license" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "title" : [ {
+      "@language" : "en",
+      "@value" : "[VISUALISATION] Table"
+    }, {
+      "@language" : "de",
+      "@value" : "[VISUALISATION] Tabelle"
+    }, {
+      "@language" : "fr",
+      "@value" : "[VISUALISATION] Tableau"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION",
+    "accessURL" : "http://ec.europa.eu/eurostat/tgm/table.do?tab=table&plugin=1&language=en&pcode=t2020_rn310"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/distribution/64a9ab6f-df0e-49c3-b51b-5b3aaaa590b0",
+    "@type" : "dcat:Distribution",
+    "format" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "identifier" : "http://data.europa.eu/88u/distribution/824846e5-c5e4-4e0b-85b4-3d50b063802c",
+    "license" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "title" : [ {
+      "@language" : "de",
+      "@value" : "[VISUALISATION] Karte"
+    }, {
+      "@language" : "fr",
+      "@value" : "[VISUALISATION] Carte"
+    }, {
+      "@language" : "en",
+      "@value" : "[VISUALISATION] Map"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION",
+    "accessURL" : "http://ec.europa.eu/eurostat/tgm/mapToolClosed.do?tab=map&init=1&plugin=1&language=en&pcode=t2020_rn310"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/distribution/64ecf6ea-3fc9-48d6-bff1-3397b28e3099",
+    "@type" : "dcat:Distribution",
+    "format" : "http://publications.europa.eu/resource/authority/file-type/OP_DATPRO",
+    "identifier" : "http://data.europa.eu/88u/distribution/21dd92ed-2d99-41c3-af53-c90f4558f9d1",
+    "license" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "title" : [ {
+      "@language" : "de",
+      "@value" : "[VISUALISATION] Graph"
+    }, {
+      "@language" : "fr",
+      "@value" : "[VISUALISATION] Graphique"
+    }, {
+      "@language" : "en",
+      "@value" : "[VISUALISATION] Graph"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION",
+    "accessURL" : "http://ec.europa.eu/eurostat/tgm/graph.do?tab=graph&plugin=1&language=en&pcode=t2020_rn310"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/distribution/bf080191-2625-4e7e-ae90-df1955f5d166",
+    "@type" : "dcat:Distribution",
+    "description" : {
+      "@language" : "en",
+      "@value" : "Download dataset in TSV format"
+    },
+    "format" : "http://publications.europa.eu/resource/authority/file-type/ZIP",
+    "identifier" : "http://data.europa.eu/88u/distribution/4d9716c5-b858-4a52-8114-6d431a42c40f",
+    "license" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "title" : [ {
+      "@language" : "fr",
+      "@value" : "Bilan nutritif brut de la terre agricole"
+    }, {
+      "@language" : "en",
+      "@value" : "Gross nutrient balance on agricultural land"
+    }, {
+      "@language" : "de",
+      "@value" : "Bruttonährstoffbilanz der Agrarflächen"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE",
+    "accessURL" : "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.tsv.gz"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/distribution/e712b98a-52b5-4e91-a418-130f2e123988",
+    "@type" : "dcat:Distribution",
+    "description" : {
+      "@language" : "en",
+      "@value" : "Download dataset in SDMX-ML format"
+    },
+    "format" : "http://publications.europa.eu/resource/authority/file-type/ZIP",
+    "identifier" : "http://data.europa.eu/88u/distribution/b8863d24-6e61-48b5-9b42-a785a1e1cd5a",
+    "license" : "http://publications.europa.eu/resource/authority/licence/CC_BY_4_0",
+    "title" : [ {
+      "@language" : "en",
+      "@value" : "Gross nutrient balance on agricultural land"
+    }, {
+      "@language" : "fr",
+      "@value" : "Bilan nutritif brut de la terre agricole"
+    }, {
+      "@language" : "de",
+      "@value" : "Bruttonährstoffbilanz der Agrarflächen"
+    } ],
+    "type" : "http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE",
+    "accessURL" : "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/t2020_rn310.sdmx.zip"
+  }, {
+    "@id" : "https://europeandataportal.eu/set/record/bm13sogjiwmi1eyxrlq",
+    "@type" : "dcat:CatalogRecord",
+    "identifier" : "Bm13sogjiWMI1eyXRLQ",
+    "issued" : "2021-07-15T09:49:30Z",
+    "dct:modified" : {
+      "@type" : "xsd:dateTime",
+      "@value" : "2021-09-01T14:21:43Z"
+    },
+    "hasQualityMetadata" : "https://europeandataportal.eu/id/metrics/bm13sogjiwmi1eyxrlq",
+    "primaryTopic" : "https://europeandataportal.eu/set/data/bm13sogjiwmi1eyxrlq",
+    "transIssued" : "2021-09-01T14:21:43Z",
+    "transStatus" : "https://europeandataportal.eu/voc#TransInProcess",
+    "checksum" : "_:b0"
+  } ]
+}
