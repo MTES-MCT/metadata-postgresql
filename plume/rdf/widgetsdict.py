@@ -17,6 +17,7 @@ descriptifs des champs...
 """
 
 import re
+from uuid import uuid4
 
 from rdflib import Literal, URIRef, BNode
 from rdflib.namespace import NamespaceManager
@@ -210,7 +211,7 @@ class WidgetsDict(dict):
             ident = (data.get('dct:identifier') or [None])[0]
             if ident:
                 self.datasetid = datasetid_from_uuid(ident)
-        mg_datasetid = get_datasetid(metagraph) if metagraph else None
+        mg_datasetid = metagraph.datasetid if metagraph else None
         self.root = RootKey(datasetid=mg_datasetid)
         # génère un nouvel identifiant si l'argument vaut None
         self[self.root] = InternalDict()
@@ -295,6 +296,8 @@ class WidgetsDict(dict):
                         properties.append(p)
                         predicates.append(p.predicate)
             # catégories non référencées
+            # en principe il s'agit simplement de catégories locales
+            # qui ne sont pas référencées par le modèle considéré
             if metagraph:
                 for predicate, o in metagraph.predicate_objects(parent.node):
                     if not predicate in predicates:
