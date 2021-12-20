@@ -257,7 +257,7 @@ class WidgetsDict(dict):
             tabkey = TabKey(parent=self.root, label='Champs', order_idx=(9998,))
             self[tabkey] = InternalDict()
             for label, value in columns:
-                valkey = ValKey(parent=tabkey, label=label, value=value,
+                valkey = ValueKey(parent=tabkey, label=label, value=Literal(value),
                     is_long_text=True, description='Description du champ',
                     rowspan=textEditRowSpan, predicate=SNUM.column,
                     do_not_save=True)
@@ -1035,7 +1035,7 @@ class WidgetsDict(dict):
         
         """
         value = widgetkey.value
-        if not value:
+        if value is None:
             return
         str_value = None
         if widgetkey.transform == 'email':
