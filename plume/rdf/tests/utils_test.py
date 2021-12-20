@@ -1,8 +1,15 @@
 
 import unittest
+from uuid import uuid4
+
 from rdflib import Literal
 
-from plume.rdf.utils import sort_by_language, pick_translation
+from plume.rdf.utils import sort_by_language, pick_translation, \
+         path_from_n3
+from plume.rdf.namespaces import PlumeNamespaceManager, DCT
+from plume.rdf.metagraph import datasetid_from_uuid
+
+nsm = PlumeNamespaceManager()
 
 class UtilsTestCase(unittest.TestCase):
 
@@ -28,5 +35,16 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(pick_translation(l, langlist), Literal('Mon titre', lang='fr'))
         self.assertEqual(pick_translation(l, 'de'), Literal('Mein Titel', lang='de'))
         self.assertEqual(pick_translation(l, 'it'), Literal('My Title', lang='en'))
+
+    def test_path_from_n3(self):
+        """Reconstruction d'un chemin d'URI à partir d'un chemin N3.
+
+        """
+        p = path_from_n3('dct:title / dct:description', nsm=nsm)
+        self.assertEqual(p, DCT.title / DCT.description)
+        uuid = uuid4()
+        p = path_from_n3('<{}>'.format(uuid.urn), nsm=nsm)
+        self.assertEqual(p, datasetid_from_uuid(uuid))
+        
 
 unittest.main()
