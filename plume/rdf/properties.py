@@ -10,13 +10,9 @@ from rdflib import URIRef
 from rdflib.util import from_n3
 
 from plume.rdf.namespaces import SH, SNUM
-from plume.rdf.metagraph import graph_from_file
-from plume.rdf.utils import abspath, path_n3
+from plume.rdf.metagraph import shape
+from plume.rdf.utils import path_n3
 
-shape = graph_from_file(abspath('rdf/data/shape.ttl'))
-"""Schéma SHACL définissant la structure des métadonnées communes.
-
-"""
 
 class PlumeProperty:
     """Catégorie de métadonnée.
