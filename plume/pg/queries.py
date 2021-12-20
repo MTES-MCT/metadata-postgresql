@@ -1,9 +1,9 @@
 """Requêtes prêtes à être envoyées au serveur PostgreSQL.
 
-Ce module suppose l'usage de Psycopg pour la communication
-avec le serveur PostgreSQL.
+Ce module suppose l'usage de la bibliothèque Psycopg pour la
+communication avec le serveur PostgreSQL.
 
-Selon le cas, les paramètres doivent être passés :
+Selon le cas, les paramètres des requêtes doivent être passés :
 * soit en argument de la fonction qui crée la requête, dans
   le cas des identifiants d'objets PostgreSQL ;
 * soit, pour les valeurs litérales, dans le tuple qui constitue le
@@ -18,111 +18,132 @@ https://www.psycopg.org
 
 """
 
-
 from psycopg2 import sql
+
+from plume.rdf.exceptions import UnknownParameterValue
+from plume.rdf.namespaces import SNUM
 
 
 def query_is_relation_owner():
-    """Requête qui vérifie que le rôle courant est membre du propriétaire d'une table.
+    """Requête qui vérifie que le rôle courant est membre du propriétaire d'une relation (table, etc.).
     
     À utiliser comme suit:
     
-        >>> cur.execute(query_is_relation_owner(), (schema_name, table_name))
-    
-    Avec (arguments positionnels) :
-    - ``schema_name`` (``str``) : nom du schéma ;
-    - ``table_name`` (``str``) : nom de la table (ou toute autre relation).
+        >>> query = query_is_relation_owner()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> res = cur.fetchone()
+		>>> is_owner = res[0] if res else False
     
     Returns
     -------
-    str
+    psycopg2.sql.SQL
+        Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return """
+    return sql.SQL("""
         SELECT pg_has_role(relowner, 'USAGE')
             FROM pg_catalog.pg_class
             WHERE relnamespace = quote_ident(%s)::regnamespace
                 AND relname = %s
-        """
+        """)
     
 
 def query_exists_extension():
-    """Crée une requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
+    """Requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
     
-    ARGUMENTS
-    ---------
-    Néant.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> cur.execute(query_exists_extension(), (extension_name,))
-    
-    Avec (arguments positionnels) :
-    - extension_name (str) : le nom de l'extension.
+        >>> query = query_exists_extension()
+        >>> cur.execute(query, ("nom de l'extension",))
+        >>> metadata_exists = cur.fetchone()[0]
     
     Cette requête renverra :
-    - True si l'extension est installée ;
-    - False si elle est disponible dans le répertoire des
-    extension du serveur mais non installée ;
-    - NULL si elle n'est pas disponible sur le serveur.
+    - ``True`` si l'extension est installée ;
+    - ``False`` si elle est disponible dans le répertoire des
+      extension du serveur mais non installée ;
+    - ``NULL`` si elle n'est pas disponible sur le serveur.
+    
+    Returns
+    -------
+    psycopg2.sql.SQL
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
     """
-    return """
+    return sql.SQL("""
         SELECT count(*) = 1
             FROM pg_available_extensions
             WHERE name = %s
                 AND installed_version IS NOT NULL
-        """
+        """)
 
 
 def query_get_relation_kind(schema_name, table_name):
-    """Crée une requête qui récupère le type d'une relation PostgreSQL.
+    """Requête qui récupère le type d'une relation PostgreSQL.
     
-    ARGUMENTS
-    ---------
-    - schema_name (str) : nom du schéma de la relation ;
-    - table_name (str) : nom de la relation (table, vue...).
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> query = query_get_relation_type(schema_name, table_name)
-    >>> cur.execute(query)
-    >>> relkind = cur.fetchone()[0]
+        >>> query = query_get_relation_kind('nom du schéma',
+        ...     'nom de la relation')
+        >>> cur.execute(query)
+        >>> relkind = cur.fetchone()[0]
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return sql.SQL(
-        "SELECT relkind FROM pg_catalog.pg_class WHERE pg_class.oid = '{}'::regclass"
-        ).format(
+    return sql.SQL("""
+        SELECT relkind FROM pg_catalog.pg_class
+            WHERE pg_class.oid = '{}'::regclass
+        """).format(
             sql.Identifier(schema_name, table_name)
             )
 
 
 def query_update_table_comment(schema_name, table_name, relation_kind='r'):
-    """Crée une requête de mise à jour du descriptif d'une table ou vue.
+    """Requête de mise à jour du descriptif d'une table ou vue.
     
-    ARGUMENTS
-    ---------
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table.
-    - relation_kind (str) : le type de relation. 'r' (table simple)
-    par défaut.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> query = query_update_table_comment(schema_name, table_name)
-    >>> cur.execute(query, (new_pg_description,))
+        >>> query = query_update_table_comment('nom du schéma',
+        ...     'nom de la relation', 'type de relation')
+        >>> cur.execute(query, ('Nouveau descriptif',)
     
-    Avec (arguments positionnels) :
-    - new_pg_description (str) : valeur actualisée du descriptif de
-    la table.
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    relation_kind : {'r', 'v', 'm', 'f', 'p'}, optional
+        Le type de relation. ``'r'`` par défaut, ce qui
+        correspond à une table simple.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    Raises
+    ------
+    UnknownParameterValue
+        Si le type de relation n'est pas l'une des
+        valeurs autorisées.
+
     """
     d = { 'r': 'TABLE', 'v': 'VIEW', 'm': 'MATERIALIZED VIEW',
         'f': 'FOREIGN TABLE', 'p': 'TABLE' }
     
     if not relation_kind in d:
-        raise ValueError('Unknown or unsupported relation type "{}".'.format(relation_kind))
+        raise UnknownParameterValue('relation_kind', relation_kind)
     
     return sql.SQL(
         "COMMENT ON {} {} IS %s"
@@ -133,19 +154,26 @@ def query_update_table_comment(schema_name, table_name, relation_kind='r'):
 
 
 def query_get_table_comment(schema_name, table_name):
-    """Crée une requête de récupération du descriptif d'une table ou vue.
+    """Requête de récupération du descriptif d'une table ou vue.
     
-    ARGUMENTS
-    ---------
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> query = query_get_table_comment(schema_name, table_name)
-    >>> cur.execute(query)
-    >>> old_description = cur.fetchone()[0]
+        >>> query = query_get_table_comment('nom du schéma',
+        ...     'nom de la relation')
+        >>> cur.execute(query)
+        >>> old_description = cur.fetchone()[0]
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
     return sql.SQL(
@@ -156,94 +184,108 @@ def query_get_table_comment(schema_name, table_name):
 
 
 def query_list_templates():
-    """Crée une requête d'import de la liste des modèles disponibles.
+    """Requête d'import de la liste des modèles disponibles.
     
-    ARGUMENTS
-    ---------
-    Néant.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> cur.execute(query_list_templates(), (schema_name, table_name))
+        >>> query = query_list_templates()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> templates = cur.fetchall()
     
-    Avec (arguments positionnels) :
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table.
+    Returns
+    -------
+    psycopg2.sql.SQL
+        Une requête prête à être envoyée au serveur PostgreSQL.
     
-    On notera qu'au lieu d'importer le filtre sql_filter, la
-    commande l'exécute et renvoie un booléen indiquant s'il est
-    vérifié.
+    Notes
+    -----
+    La requête interroge la table ``z_plume.meta_template``
+    créée par l'extension ``pg_plume``. Au lieu d'importer 
+    tel quel le contenu de son champ ``sql_filter``,
+    elle l'exécute et renvoie un booléen indiquant si la
+    condition qu'il spécifie est remplie.
+    
     """
-    return """
+    return sql.SQL("""
         SELECT
             tpl_label,
-            z_metadata.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
+            z_plume.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
             md_conditions,
             priority
-            FROM z_metadata.meta_template
+            FROM z_plume.meta_template
             ORDER BY tpl_label
-        """
+        """)
 
 
 def query_get_categories():
-    """Crée une requête d'import des catégories à afficher dans un modèle donné.
+    """Requête d'import des catégories à afficher dans un modèle donné.
     
-    ARGUMENTS
-    ---------
-    Néant.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> cur.execute(query_get_categories(), (tpl_label,))
+        >>> query = query_get_categories()
+        >>> cur.execute(query, ('nom du modèle',))
+        >>> categories = cur.fetchall()
     
-    Avec :
-    - tpl_label (str) : nom du modèle à utiliser.
+    Returns
+    -------
+    psycopg2.sql.SQL
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Notes
+    -----
+    La requête interroge la vue ``z_plume.meta_template_categories_full``
+    créée par l'extension ``pg_plume``.
+    
     """
-    return """
+    return sql.SQL("""
         SELECT 
             origin,
             path,
             cat_label,
-            widget_type::text,
+            is_long_text,
             row_span,
             help_text,
-            default_value,
             placeholder_text,
             input_mask,
             multiple_values,
             is_mandatory,
-            order_key,
-            read_only,
+            order_idx,
+            is_read_only,
             is_node,
             data_type::text,
+            sources,
             tab_name
-            FROM z_metadata.meta_template_categories_full
+            FROM z_plume.meta_template_categories_full
             WHERE tpl_label = %s
-        """
+        """)
 
 
 def query_template_tabs():
-    """Crée une requête d'import des onglets utilisés par un modèle.
+    """Requête d'import des onglets utilisés par un modèle.
     
-    ARGUMENTS
-    ---------
-    Néant.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> cur.execute(query_template_tabs(), (tpl_label,))
+        >>> query = query_template_tabs()
+        >>> cur.execute(query, ('nom du modèle',))
+        >>> tabs = cur.fetchall()
     
-    Avec :
-    - tpl_label (str) : nom du modèle.
+    Returns
+    -------
+    psycopg2.sql.SQL
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Notes
+    -----
+    La requête interroge les tables ``z_plume.meta_tab`` et
+    ``z_plume.meta_template_categories`` créées par l'extension
+    ``pg_plume``.
+
     """
-    return """
+    return sql.SQL("""
         SELECT
             meta_tab.tab_name
-            FROM z_metadata.meta_tab
-                LEFT JOIN z_metadata.meta_template_categories
+            FROM z_plume.meta_tab
+                LEFT JOIN z_plume.meta_template_categories
                     ON meta_tab.tab_name = meta_template_categories.tab_name
             WHERE meta_template_categories.tpl_label = %s
                 AND (
@@ -257,22 +299,30 @@ def query_template_tabs():
                     )
             GROUP BY meta_tab.tab_name, meta_tab.tab_num
             ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab_name
-        """
+        """)
 
 
 def query_get_columns(schema_name, table_name):
-    """Crée une requête de récupération des descriptifs des champs d'une table ou vue.
+    """Requête de récupération des descriptifs des champs d'une table ou vue.
     
-    ARGUMENTS
-    ---------
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> query = query_get_columns(schema_name, table_name)
-    >>> cur.execute(query)
+        >>> query = query_get_columns('nom du schéma',
+        ...     'nom de la relation')
+        >>> cur.execute(query)
+        >>> columns = cur.fetchall()
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
 
     """
     return sql.SQL(
@@ -290,23 +340,28 @@ def query_get_columns(schema_name, table_name):
 
 
 def query_update_column_comment(schema_name, table_name, column_name):
-    """Crée une requête de mise à jour du descriptif d'un champ.
+    """Requête de mise à jour du descriptif d'un champ.
     
-    ARGUMENTS
-    ---------
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table ;
-    - column_name (str) : nom du champ.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> query = query_update_column_comment(schema_name, table_name, column_name)
-    >>> cur.execute(query, (new_pg_col_description,))
+        >>> query = query_update_column_comment('nom du schéma',
+        ...     'nom de la relation', 'nom du champ')
+        >>> cur.execute(query, ('Nouveau descriptif du champ',)
     
-    Avec (arguments positionnels) :
-    - new_pg_col_description (str) : valeur actualisée du descriptif du
-    champ.
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    column_name : str
+        Nom du champ.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
     """
     return sql.SQL(
         "COMMENT ON COLUMN {} IS %s"
@@ -316,32 +371,43 @@ def query_update_column_comment(schema_name, table_name, column_name):
 
 
 def query_update_columns_comments(schema_name, table_name, widgetsdict):
-    """Crée une requête de mise à jour des descriptifs des champs d'une table.
+    """Requête de mise à jour des descriptifs des champs d'une table.
     
-    ARGUMENTS
-    ---------
-    - schema_name (str) : nom du schéma de la table ;
-    - table_name (str) : nom de la table ;
-    - widgetsdict (WidgetsDict) : le dictionnaire de widgets qui contient
-    les descriptifs actualisés des champs.
+    À utiliser comme suit:
     
-    RESULTAT
-    --------
-    Une requête prête à l'emploi, à utiliser comme suit :
-    >>> query = query_update_columns_comments(schema_name, table_name, widgetsdict)
-    >>> cur.execute(query)
+        >>> query = query_update_columns_comments('nom du schéma',
+        ...     'nom de la relation', widgetsdict)
+        >>> if query:
+        ...     cur.execute(query)
     
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    widgetsdict : plume.rdf.widgetsdict.WidgetsDict
+        Le dictionnaire de widgets qui contient les descriptifs
+        actualisés des champs.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Notes
+    -----    
     À noter que cette requête pourrait échouer si des champs ont été
     supprimés ou renommés entre temps.
     
-    La fonction renvoie None si elle ne trouve aucun descriptif de champ
-    dans le dictionnaire de widgets.
+    La fonction renvoie ``None`` si elle ne trouve aucun descriptif
+    de champ dans le dictionnaire de widgets.
+    
     """
     updated_columns = []
     for k, v in widgetsdict.items():
-        if v['path'] == 'snum:column' and v['object'] == 'edit':
-            updated_columns.append( (v['label'], v['value'] or '') )
-    
+        if k.path == SNUM.column:
+            updated_columns.append((k.label, str(k.value or '')))   
     if updated_columns:
         return sql.SQL(' ; ').join([
             sql.SQL(
