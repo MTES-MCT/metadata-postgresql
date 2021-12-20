@@ -24,7 +24,7 @@ SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
 VCARD = Namespace('http://www.w3.org/2006/vcard/ns#')
 XSD = Namespace('http://www.w3.org/2001/XMLSchema#')
 SNUM = Namespace('http://snum.scenari-community.org/Metadata/Vocabulaire/#')
-UUID = Namespace('urn:uuid:')
+LOCAL = Namespace('urn:uuid:')
 
 namespaces = {
     'adms': ADMS,
@@ -46,8 +46,21 @@ namespaces = {
     'vcard': VCARD,
     'xsd': XSD,
     'snum': SNUM,
-    'uuid': UUID
+    'uuid': LOCAL
     }
+
+predicate_map = {
+    VCARD['organisation-name']: VCARD['organization-name'],
+    SDO.endDate: DCAT.endDate,
+    SDO.startDate: DCAT.startDate
+    }
+"""Mapping de prédicats qui ont notoirement tendance à être mal écrits.
+
+Coquilles, formes obsolètes... Ce dictionnaire sert notamment au nettoyage
+des graphes importées de sources externes par la fonction 
+:py:func:`plume.rdf.metagraph.clean_metagraph`.
+
+"""
 
 class PlumeNamespaceManager(NamespaceManager):
     """Gestionnaire d'espaces de nommage.
