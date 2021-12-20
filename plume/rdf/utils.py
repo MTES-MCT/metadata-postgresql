@@ -1,9 +1,10 @@
 """Utilitaires.
 
 """
-
+import re
 from pathlib import Path
 from rdflib import Literal, URIRef
+from rdflib.util import from_n3
 
 from plume import __path__
 
@@ -154,4 +155,38 @@ def path_n3(path, nsm):
     if isinstance(path, URIRef):
         return path.n3(nsm)
     return ' / '.join(path_n3(c, nsm) for c in path.args)
+
+def path_from_n3(path_n3, nsm):
+    """Renvoie un chemin d'IRI reconstruit à partir de sa représentation N3.
+    
+    Parameters
+    ----------
+    path_n3 : str
+        Représentation N3 d'un chemin d'IRI. Les préfixes
+        utilisés doivent impérativement être ceux du
+        gestionnaire d'espaces de nommage, et a fortiori de
+        Plume (:py:data:`plume.rdf.namespaces.namespaces`).
+    nsm : plume.rdf.namespaces.PlumeNamespaceManager
+        Un gestionnaire d'espaces de nommage.
+    
+    Returns
+    -------
+    URIRef or rdflib.paths.Path
+        Le chemin d'IRI. ``None`` si la reconstruction a
+        échoué, soit parce que `path_n3` n'était pas
+        vraiment la représentation N3 d'un chemin d'IRI,
+        soit parce que tous les préfixes utilisés n'ont pas
+        été reconnus.
+    
+    """
+    namespaces = nsm.namespaces()
+    l = re.split(r"\s*[/]\s*", path_n3)
+    path = None
+    for elem in l:
+        try:
+            iri = from_n3(elem, nsm=nsm)
+        except:
+            return
+        path = (path / iri) if path else iri
+    return path
 
