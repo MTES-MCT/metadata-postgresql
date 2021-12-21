@@ -46,9 +46,6 @@ class WidgetsDict(dict):
     template : plume.pg.template.TemplateDict, optional
         Un dictionnaire contenant la configuration d'un modèle local
         de formulaire de consultation/saisie des métadonnées.
-    templateTabs : plume.pg.template.TemplateTabsList, optional
-        La liste des onglets associés au modèle local. Ce paramètre
-        est ignoré en l'absence de `template`.
     data : dict, optional
         Un dictionnaire dont les clés sont des chemins N3 de catégories
         de métadonnées, et les valeurs des listes contenant la ou les
@@ -177,8 +174,8 @@ class WidgetsDict(dict):
     
     """
     
-    def __init__(self, metagraph=None, template=None, templateTabs=None, data=None,
-        columns=None, mode=None, translation=False, langList=None, language=None,
+    def __init__(self, metagraph=None, template=None, data=None, columns=None,
+        mode=None, translation=False, langList=None, language=None,
         readHideBlank=True, editHideUnlisted=False, readHideUnlisted=True,
         editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True,
         labelLengthLimit=None, valueLengthLimit=None, textEditRowSpan=None):
@@ -239,11 +236,13 @@ class WidgetsDict(dict):
         WidgetKey.max_rowspan = 30 if self.edit else 1
         
         # ------ Onglets ------
-        if template and templateTabs:
-            for label, order_idx in templateTabs:
+        if template and template.tabs:
+            i = 1
+            for label in template.tabs:
                 tabkey = TabKey(parent=self.root, label=label,
-                    order_idx=order_idx)
+                    order_idx=(i,))
                 self[tabkey] = InternalDict()
+                i += 1
         else:
             tabkey = TabKey(parent=self.root, label='Général', order_idx=(0,))
             self[tabkey] = InternalDict()
