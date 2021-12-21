@@ -4,8 +4,13 @@
 
 import re
 
-from plume.rdf.utils import path_from_n3
+from rdflib.util import from_n3
+from rdflib.term import URIRef
 
+from plume.rdf.utils import path_from_n3
+from plume.rdf.namespaces import SH, PlumeNamespaceManager
+
+nsm = PlumeNamespaceManager()
 
 class TemplateDict:
     """Modèle de formulaire.
@@ -44,12 +49,33 @@ class TemplateDict:
         self.shared = {}
         self.local = {}
         
-        for origin, path, cat_label, is_long_text, row_span, \
-            help_text, placeholder_text, input_mask, multiple_values, \
-            is_mandatory, order_key, is_read_only, is_node, \
-            data_type, sources, tab_name in sorted(categories, reverse=True):
+        for path, origin, label, description, special, \
+            is_node, datatype, is_long_text, rowspan, \
+            placeholder, input_mask, is_multiple, unilang, \
+            is_mandatory, sources, template_order, is_read_only, \
+            tab in sorted(categories, reverse=True):
             
-            config = {} 
+            config = {
+                'label': label,
+                'description': description,
+                'datatype': from_n3(datatype, nsm=nsm),
+                'is_long_text': is_long_text,
+                'rowspan': rowspan,
+                'placeholder': placeholder,
+                'input_mask': input_mask,
+                'is_multiple': is_multiple,
+                'unilang': unilang,
+                'is_mandatory': is_mandatory,
+                'sources': [URIRef(s) for s in sources],
+                'template_order': template_order,
+                'is_read_only': is_read_only,
+                'tab': tab
+                }
+            if template_order:
+                config['order_idx'] = (template_order,)
+            if special:
+                config['kind'] = SH.IRI
+                config['transform'] = special
                 
             if origin == 'shared':
             
@@ -93,6 +119,7 @@ class TemplateDict:
                 self.shared[path] = config
             
             elif origin == 'local':
+                del config['sources']
                 self.local[path] = config
 
 def search_template(templates, metagraph=None):
@@ -150,12 +177,11 @@ def search_template(templates, metagraph=None):
         # conditions sur les métadonnées
         if isinstance(md_conditions, list):
             datasetid = metagraph.datasetid
-            nsm = metagraph.namespace_manager
             for ands in md_conditions:
                 if isinstance(ands, dict) and len(ands) > 0:
                     b = True
                     for path_n3, expected in ands.items():
-                        path = path_from_n3(path_n3, nsm)
+                        path = path_from_n3(path_n3, nsm=nsm)
                         if path is None:
                             b = False
                             break
