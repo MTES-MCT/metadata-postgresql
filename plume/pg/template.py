@@ -7,15 +7,93 @@ import re
 from plume.rdf.utils import path_from_n3
 
 
-class TemplateDict(dict):
+class TemplateDict:
     """Modèle de formulaire.
     
-    """
-
-class TemplateTabsList(list):
-    """Liste des onglets d'un modèle.
+    Parameters
+    ----------
+    categories : list of tuples
+        Liste des catégories de métadonnées prévues par le modèle
+        avec leur paramétrage, résultant de l'exécution de la
+        requête :py:func:`plume.pg.queries.query_get_categories`.
+    tabs : list(str), optional
+        Liste ordonnée des onglets du modèle, résultant de l'exécution
+        de la requête :py:func:`plume.pg.queries.query_template_tabs`.
+    
+    Attributes
+    ----------
+    tabs : list(str)
+        La liste ordonnée des onglets du modèle. Il s'agira d'une
+        liste vide si le modèle ne spécifie pas d'onglets.
+    shared : dict
+        Les catégories communes utilisées par le modèle. Les clés
+        du dictionnaire sont les chemins N3 des catégories, les
+        valeurs sont des dictionnaires contenant les informations
+        de paramétrage.
+    local : dict
+        Les catégories locales utilisées par le modèle. Les clés
+        du dictionnaire sont les chemins N3 des catégories, les
+        valeurs sont des dictionnaires contenant les informations
+        de paramétrage.
     
     """
+    
+    def __init__(self, categories, tabs=None):
+    
+        self.tabs = tabs or []
+        self.shared = {}
+        self.local = {}
+        
+        for origin, path, cat_label, is_long_text, row_span, \
+            help_text, placeholder_text, input_mask, multiple_values, \
+            is_mandatory, order_key, is_read_only, is_node, \
+            data_type, sources, tab_name in sorted(categories, reverse=True):
+            
+            config = {} 
+                
+            if origin == 'shared':
+            
+                # cas d'une branche vide qui n'a pas
+                # de raison d'être :
+                if is_node and not path in self.shared:
+                    continue
+                    # si le noeud avait eu un prolongement, le tri
+                    # inversé sur categories fait qu'il aurait été
+                    # traité avant, et le présent chemin aurait
+                    # alors été pré-enregistré dans le dictionnaire
+                    # (cf. opérations suivantes).
+                    # NB : on distingue les noeuds vides au fait
+                    # que is_node vaut True. Ce n'est pas une
+                    # méthode parfaite, considérant que des
+                    # modifications manuelles restent possibles.
+                    # Les conséquences ne seraient pas dramatiques,
+                    # cependant (juste un groupe sans rien dedans,
+                    # qui sera éliminé à l'initialisation du
+                    # dictionnaire de widgets).
+            
+                # gestion des hypothétiques ancêtres manquants :
+                path_elements = re.split(r'\s*[/]\s*', c[1])
+                
+                path = ' / '.join(path_elements)
+                # avec espacement propre, à toute fin utile
+                
+                if len(path_elements) > 1:
+                    paths = [ ' / '.join(path_elements[:i + 1] ) \
+                            for i in range(len(path_elements) - 1) ]
+                    for p in paths:
+                        # insertion des chemins des catégories
+                        # ancêtres. S'ils étaient dans la table PG,
+                        # le tri inversé sur categories fait qu'ils
+                        # ne sont pas encore passés ; la configuration
+                        # sera renseignée lorsque la boucle les
+                        # atteindra.
+                        if not p in self.shared:
+                            self.shared[p] = {}
+            
+                self.shared[path] = config
+            
+            elif origin == 'local':
+                self.local[path] = config
 
 def search_template(templates, metagraph=None):
     """Déduit d'un graphe de métadonnées le modèle de formulaire à utiliser.
@@ -23,8 +101,8 @@ def search_template(templates, metagraph=None):
     Parameters
     ----------
     templates : list of tuples
-        La liste de tous les modèles disponibles avec leurs conditions
-        d'usage (tuples), résultant de l'exécution de la requête
+        La liste de tous les modèles disponibles avec leurs
+        conditions d'usage, résultant de l'exécution de la requête
         :py:func:`plume.pg.queries.query_list_templates`.
     metagraph : plume.rdf.metagraph.Metagraph, optional
         Le graphe de métadonnées issu de la dé-sérialisation des
@@ -97,127 +175,4 @@ def search_template(templates, metagraph=None):
                         break
     
     return r
-
-
-def build_template(categories):
-    """Crée un modèle de formulaire exploitable à partir d'une liste de catégories.
-    
-    ARGUMENTS
-    ---------
-    - categories (list) : la liste de toutes les catégories
-    du modèle et leur paramétrage (tuples). Concrètement elle est 
-    importée du serveur PostgreSQL de cette façon :
-    >>> cur.execute(query_list_templates())
-    >>> templates = cur.fetchall()
-    >>> tpl_label = search_template(metagraph, templates)
-    Si n'est pas None :
-    >>> cur.execute(query_get_categories(), (tpl_label,))
-    >>> categories = cur.fetchall()
-    
-    RESULTAT
-    --------
-    Le modèle de formulaire (template) qui sera à donner en argument à la
-    fonction rdf_utils.build_dict().
-    """
-    d = {}
-    
-    for c in sorted(categories, reverse=True):
-        p = c[1]
-    
-        if c[0] == 'shared':
-        
-            # cas d'une branche vide qui n'a pas
-            # de raison d'être :
-            if not c[1] in d and c[13]:
-                continue
-                # si le noeud avait eu un prolongement,
-                # le tri inversé sur categories fait
-                # qu'il aurait été traité avant, et
-                # le présent chemin aurait alors été
-                # pré-enregistré dans le dictionnaire
-                # (cf. opérations suivantes)
-                # NB : on distingue les noeuds vides
-                # au fait que is_node vaut True. Ce
-                # n'est pas une méthode parfaite,
-                # considérant que des modifications
-                # manuelles restent possibles. Les
-                # conséquences ne seraient pas
-                # dramatique cependant (juste un groupe
-                # sans rien dedans).       
-        
-            # gestion préventive des hypothétiques
-            # ancêtres manquants :
-            t = re.split(r'\s*[/]\s*', c[1])
-            
-            p = ' / '.join(t)
-            # avec espacement propre, à toute fin utile
-            
-            if len(t) > 1:
-                tbis = [ ' / '.join(t[:i + 1] ) \
-                        for i in range(len(t) - 1) ]
-            
-                for e in tbis:
-                    if not e in d:
-                        d.update({ e : {} })
-                        # insertion des chemins des
-                        # catégories ancêtres
-                        # s'ils étaient dans la table PG,
-                        # le tri inversé sur categories fait
-                        # qu'ils ne sont pas encore passés ;
-                        # les bonnes valeurs seront renseignées
-                        # par l'un des prochains update.
-    
-        d.update({
-                p : {
-                    'label' : c[2],
-                    'main widget type' : c[3],
-                    'row span' : c[4],
-                    'help text' : c[5],
-                    'default value' : c[6],
-                    'placeholder text' : c[7],
-                    'input mask' : c[8],
-                    'multiple values' : c[9],
-                    'is mandatory' : c[10],
-                    'order' : c[11],
-                    'read only' : c[12],
-                    'data type' : c[14],
-                    'tab name': c[15]
-                    }
-            })
-  
-    return d
-    
-
-def build_template_tabs(tabs):
-    """Crée un dictionnaire exploitable à partir d'une liste d''onglets.
-    
-    ARGUMENTS
-    ---------
-    - tabs (list) : la liste de toutes les onglets du modèle
-    et leur paramétrage (tuples). Concrètement elle est 
-    importée du serveur PostgreSQL de cette façon :
-    >>> cur.execute(query_list_templates())
-    >>> templates = cur.fetchall()
-    >>> tpl_label = search_template(metagraph, templates)
-    Si n'est pas None :
-    >>> cur.execute(query_template_tabs(), (tpl_label,))
-    >>> tabs = cur.fetchall()
-    
-    RESULTAT
-    --------
-    La liste d'onglets (templateTabs) qui sera à donner en argument à la
-    fonction rdf_utils.build_dict().
-    
-    La fonction renvoie None si le modèle ne définit pas d'onglets.
-    """
-    n = 0
-    d = {}
-    
-    for t in tabs:
-        d.update({ t[0]: (n,) })
-        n += 1
-    
-    if n > 0:
-        return d
-
 
