@@ -84,8 +84,8 @@ class PlumeProperty:
             self.n3_path = path_n3(self.path, nsm)
             if not template:
                 self.unlisted = False
-            elif self.n3_path in template:
-                merge_property_dict(self.prop_dict, template[self.n3_path])
+            elif self.n3_path in template.shared:
+                merge_property_dict(self.prop_dict, template.shared[self.n3_path])
                 self.unlisted = False
             else:
                 self.unlisted = True
@@ -93,7 +93,7 @@ class PlumeProperty:
         elif origin == 'local' and n3_path and template:
             self.origin = 'local'
             self.unlisted = False
-            self.prop_dict = template[self.n3_path]
+            self.prop_dict = template.local[self.n3_path]
             self.predicate = path_from_n3(n3_path, nsm=nsm)
             self.path = self.predicate
             self.prop_dict.update({'predicate': self.predicate})
