@@ -200,7 +200,7 @@ def query_list_templates():
     Notes
     -----
     La requête interroge la table ``z_plume.meta_template``
-    créée par l'extension ``pg_plume``. Au lieu d'importer 
+    créée par l'extension PlumePg. Au lieu d'importer 
     tel quel le contenu de son champ ``sql_filter``,
     elle l'exécute et renvoie un booléen indiquant si la
     condition qu'il spécifie est remplie.
@@ -234,27 +234,29 @@ def query_get_categories():
     Notes
     -----
     La requête interroge la vue ``z_plume.meta_template_categories_full``
-    créée par l'extension ``pg_plume``.
+    créée par l'extension PlumePg.
     
     """
     return sql.SQL("""
         SELECT 
-            origin,
             path,
-            cat_label,
-            is_long_text,
-            row_span,
-            help_text,
-            placeholder_text,
-            input_mask,
-            multiple_values,
-            is_mandatory,
-            order_key,
-            is_read_only,
+            origin,
+            label,
+            description,
+            special::text,
             is_node,
-            data_type::text,
+            datatype::text,
+            is_long_text,
+            rowspan,
+            placeholder,
+            input_mask,
+            is_multiple,
+            unilang,
+            is_mandatory,
             sources,
-            tab_name
+            template_order,
+            is_read_only,
+            tab
             FROM z_plume.meta_template_categories_full
             WHERE tpl_label = %s
         """)
@@ -278,7 +280,7 @@ def query_template_tabs():
     -----
     La requête interroge les tables ``z_plume.meta_tab`` et
     ``z_plume.meta_template_categories`` créées par l'extension
-    ``pg_plume``.
+    PlumePg.
     
     L'ordre de la liste résultant de l'exécution de la requête
     est l'ordre dans lequel le modèle prévoit que les onglets
@@ -287,10 +289,10 @@ def query_template_tabs():
     """
     return sql.SQL("""
         SELECT
-            meta_tab.tab_name
+            meta_tab.tab
             FROM z_plume.meta_tab
                 LEFT JOIN z_plume.meta_template_categories
-                    ON meta_tab.tab_name = meta_template_categories.tab_name
+                    ON meta_tab.tab = meta_template_categories.tab
             WHERE meta_template_categories.tpl_label = %s
                 AND (
                     meta_template_categories.shrcat_path IS NOT NULL
@@ -301,8 +303,8 @@ def query_template_tabs():
                             '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
                             ])
                     )
-            GROUP BY meta_tab.tab_name, meta_tab.tab_num
-            ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab_name
+            GROUP BY meta_tab.tab, meta_tab.tab_num
+            ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab
         """)
 
 
