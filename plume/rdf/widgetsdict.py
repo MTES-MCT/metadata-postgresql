@@ -211,7 +211,6 @@ class WidgetsDict(dict):
         mg_datasetid = metagraph.datasetid if metagraph else None
         self.root = RootKey(datasetid=mg_datasetid)
         # génère un nouvel identifiant si l'argument vaut None
-        self[self.root] = InternalDict()
         if not self.datasetid:
             ident = uuid_from_datasetid(self.root.node)
             if ident:
@@ -241,26 +240,21 @@ class WidgetsDict(dict):
             for label in template.tabs:
                 tabkey = TabKey(parent=self.root, label=label,
                     order_idx=(i,))
-                self[tabkey] = InternalDict()
                 i += 1
         else:
             tabkey = TabKey(parent=self.root, label='Général', order_idx=(0,))
-            self[tabkey] = InternalDict()
         # dans tous les cas, on ajoute un onglet "Autres"
         # pour les catégories hors modèle
         tabkey = TabKey(parent=self.root, label='Autres', order_idx=(9999,))
-        self[tabkey] = InternalDict()
         
         # ------ Colonnes de la table ------
         if columns:
             tabkey = TabKey(parent=self.root, label='Champs', order_idx=(9998,))
-            self[tabkey] = InternalDict()
             for label, value in columns:
                 valkey = ValueKey(parent=tabkey, label=label, value=Literal(value),
                     is_long_text=True, description='Description du champ',
                     rowspan=textEditRowSpan, predicate=SNUM.column,
                     do_not_save=True)
-                self[valkey] = InternalDict()
         
         # ------ Construction récursive ------
         self._build_dict(parent=self.root, metagraph=metagraph, \
@@ -268,8 +262,6 @@ class WidgetsDict(dict):
         
         # ------ Nettoyage des groupes vides ------
         actionsbook = self.root.clean()
-        for key in actionsbook.drop:
-            del self[key]
         
         # ------- Mise à jour de l'identifiant ------
         # dans l'hypothèse où celui de data et celui de metagraph
@@ -277,23 +269,23 @@ class WidgetsDict(dict):
         self.root.node = self.datasetid
         
         # ------ Calcul des dictionnaires internes ------
-        for widgetkey in self.keys():
+        # et référencement dans le dictionnaire
+        for widgetkey in self.root.tree_keys():
             self.internalize(widgetkey)
 
     def _build_dict(self, parent, metagraph=None, template=None, data=None):
         # ------ Constitution de la liste des catégories ------
         # catégories communes de la classe :
-        properties, n3_paths, predicates = class_properties(rdfclass=parent.rdfclass,
+        properties, predicates = class_properties(rdfclass=parent.rdfclass,
             nsm=self.nsm, base_path=parent.path, template=template)
         if isinstance(parent, RootKey):
             # catégories locales:
             if template:
-                for n3_path in template.keys():
-                    if not n3_path in n3_paths:
-                        p = PlumeProperty(origin='local', nsm=self.nsm,
-                            n3_path=n3_path, template=template)
-                        properties.append(p)
-                        predicates.append(p.predicate)
+                for n3_path in template.local.keys():
+                    p = PlumeProperty(origin='local', nsm=self.nsm,
+                        n3_path=n3_path, template=template)
+                    properties.append(p)
+                    predicates.append(p.predicate)
             # catégories non référencées
             # en principe il s'agit simplement de catégories locales
             # qui ne sont pas référencées par le modèle considéré
@@ -358,7 +350,7 @@ class WidgetsDict(dict):
                     # l'onglet "Autres".
                     prop_dict['parent'] = parent.search_tab('Autres')
                 else:
-                    tab_label = template.get('tab') if template else None
+                    tab_label = prop_dict.get('tab')
                     prop_dict['parent'] = parent.search_tab(tab_label)
                     # NB : renvoie le premier onglet si l'argument est None
 
@@ -380,7 +372,6 @@ class WidgetsDict(dict):
                     groupkey = TranslationGroupKey(**prop_dict)
                 else:
                     groupkey = GroupOfValuesKey(**prop_dict)
-                self[groupkey] = InternalDict()
                 # les widgets référencés ensuite auront ce groupe pour parent
                 prop_dict['parent'] = groupkey
             
@@ -406,7 +397,6 @@ class WidgetsDict(dict):
                     # il ne serait plus possible de récupérer les valeurs
                     # dans le graphe
                     nodekey = GroupOfPropertiesKey(**val_dict)
-                    self[nodekey] = InternalDict()
                     self._build_dict(parent=nodekey, metagraph=metagraph,
                         template=template, data=data)
                     if kind == SH.BlankNodeOrIRI:
@@ -447,7 +437,6 @@ class WidgetsDict(dict):
                         val_dict['value'] = value
                     
                     valkey = ValueKey(**val_dict)
-                    self[valkey] = InternalDict()
                     
                     if value is not None and not isinstance(value, (URIRef, Literal)):
                         # cas d'une valeur issue de data, par exemple.
@@ -460,10 +449,6 @@ class WidgetsDict(dict):
             if multilingual or multiple:
                 buttonkey = TranslationButtonKey(**prop_dict) if multilingual \
                     else PlusButtonKey(**prop_dict)
-                if buttonkey:
-                    # buttonkey peut être None s'il s'avère que le groupe
-                    # est un fantôme
-                    self[buttonkey] = InternalDict()
 
     @property
     def edit(self):
@@ -510,18 +495,32 @@ class WidgetsDict(dict):
     def internalize(self, widgetkey):
         """Retranscrit les attributs d'une clé dans le dictionnaire interne associé.
         
+        Si la clé n'était pas référencée dans le dictionnaire de widgets,
+        cette méthode se charge de la référencer.
+        
         Parameters
         ----------
         widgetkey : plume.rdf.widgetkey.WidgetKey
-            Une clé du dictionnaire de widgets.
+            Une clé du dictionnaire de widgets. Si la clé n'est pas encore
+            référencée dans le dictionnaire, elle le sera.
+        
+        Raises
+        ------
+        IntegrityBreach
+            En cas de tentative d'utilisation de cette méthode sur une clé
+            fantôme.
         
         """
         if not widgetkey:
-            return        
-        if not widgetkey in self:
-            raise KeyError("La clé '{}' n'est pas référencée.".format(widgetkey))   
+            raise IntegrityBreach('Les clés fantômes ne doivent pas être ' \
+                'référencées dans le dictionnaire de widgets.', widgetkey=widgetkey)
+        
+        if widgetkey in self:
+            internaldict = self[widgetkey]
+        else:
+            internaldict = InternalDict()
+            self[widgetkey] = internaldict
    
-        internaldict = self[widgetkey]
         internaldict['main widget type'] = self.widget_type(widgetkey)
         
         if isinstance(widgetkey, RootKey):
