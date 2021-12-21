@@ -249,7 +249,7 @@ def query_get_categories():
             input_mask,
             multiple_values,
             is_mandatory,
-            order_idx,
+            order_key,
             is_read_only,
             is_node,
             data_type::text,
@@ -279,6 +279,10 @@ def query_template_tabs():
     La requête interroge les tables ``z_plume.meta_tab`` et
     ``z_plume.meta_template_categories`` créées par l'extension
     ``pg_plume``.
+    
+    L'ordre de la liste résultant de l'exécution de la requête
+    est l'ordre dans lequel le modèle prévoit que les onglets
+    soient présentés à l'utilisateur.
 
     """
     return sql.SQL("""
