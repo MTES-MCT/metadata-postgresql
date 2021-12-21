@@ -1,6 +1,6 @@
-# extension metadata
+# extension plume_pg
 default_version = '0.0.1'
-comment = 'Gestion des métadonnées locales.'
+comment = 'PlumePg - Gestion des métadonnées locales.'
 superuser = false
 encoding = 'UTF8'
 requires = 'plpgsql, pgcrypto'

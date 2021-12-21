@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- Système de gestion des métadonnées locales
+-- PlumePg - Système de gestion des métadonnées locales
 -- > Script de recette
 --
 -- Copyright République Française, 2020-2021.
@@ -15,7 +15,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- schéma contenant les objets : z_metadata_recette
+-- schéma contenant les objets : z_plume_recette
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -23,20 +23,20 @@
 /*
 
 Les tests sont à exécuter par un super-utilisateur sur une base vierge
-où ont simplement été installées les extensions pgcrypto et metadata.
+où ont simplement été installées les extensions pgcrypto et plume_pg.
 L'extension asgard doit être disponible sur le serveur.
 
 
 > Exécution de la recette :
 
-SELECT * FROM z_metadata_recette.execute_recette() ;
+SELECT * FROM z_plume_recette.execute_recette() ;
 
 
 > Modèle de fonction de test :
 
--- Function: z_metadata_recette.t000()
+-- Function: z_plume_recette.t000()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t000()
+CREATE OR REPLACE FUNCTION z_plume_recette.t000()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -60,7 +60,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t000() IS 'Métadonnées (recette). TEST : .' ;
+COMMENT ON FUNCTION z_plume_recette.t000() IS 'Métadonnées (recette). TEST : .' ;
 
 */
 
@@ -69,29 +69,29 @@ COMMENT ON FUNCTION z_metadata_recette.t000() IS 'Métadonnées (recette). TEST 
 
 
 -------------------------------------------
------- 0 - SCHEMA z_metadata_recette ------
+------ 0 - SCHEMA z_plume_recette ------
 -------------------------------------------
 
--- SCHEMA: z_metadata_recette
+-- SCHEMA: z_plume_recette
 
-CREATE SCHEMA IF NOT EXISTS z_metadata_recette ;
+CREATE SCHEMA IF NOT EXISTS z_plume_recette ;
 
-COMMENT ON SCHEMA z_metadata_recette IS 'Métadonnées. Bibliothèque de fonctions pour la recette technique.' ;
+COMMENT ON SCHEMA z_plume_recette IS 'Métadonnées. Bibliothèque de fonctions pour la recette technique.' ;
 
 
 ----------------------------------
 ------ 1 - FONCTION CHAPEAU ------
 ----------------------------------
 
--- FUNCTION: z_metadata_recette.execute_recette()
+-- FUNCTION: z_plume_recette.execute_recette()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.execute_recette()
+CREATE OR REPLACE FUNCTION z_plume_recette.execute_recette()
     RETURNS TABLE (test text, description text)
     LANGUAGE plpgsql
     AS $_$
 /* OBJET : Exécution de la recette : lance successivement toutes
-           les fonctions de tests du schéma z_metadata_recette.
-APPEL : SELECT * FROM z_metadata_recette.execute_recette() ;
+           les fonctions de tests du schéma z_plume_recette.
+APPEL : SELECT * FROM z_plume_recette.execute_recette() ;
 ARGUMENTS : néant.
 SORTIE : table des tests qui ont échoué. */
 DECLARE
@@ -105,7 +105,7 @@ BEGIN
     FOR test IN (
             SELECT oid::regprocedure::text AS nom, proname::text AS ref
                 FROM pg_catalog.pg_proc
-                WHERE pronamespace = 'z_metadata_recette'::regnamespace::oid
+                WHERE pronamespace = 'z_plume_recette'::regnamespace::oid
                     AND proname ~ '^t[0-9]+b*$'
                 ORDER BY proname
             ) 
@@ -121,7 +121,7 @@ BEGIN
         SELECT
             num,
             substring(
-                obj_description(('z_metadata_recette.' || num || '()')::regprocedure, 'pg_proc'),
+                obj_description(('z_plume_recette.' || num || '()')::regprocedure, 'pg_proc'),
                 'TEST.[:].(.*)$'
                 )
             FROM unnest(l) AS t (num)
@@ -129,16 +129,16 @@ BEGIN
 END
 $_$ ;
 
-COMMENT ON FUNCTION z_metadata_recette.execute_recette() IS 'Métadonnées (recette). Exécution de la recette.' ;
+COMMENT ON FUNCTION z_plume_recette.execute_recette() IS 'Métadonnées (recette). Exécution de la recette.' ;
 
 
 ---------------------------------------
 ------ 2 - BIBLIOTHÈQUE DE TESTS ------
 ---------------------------------------
 
--- Function: z_metadata_recette.t001()
+-- Function: z_plume_recette.t001()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t001()
+CREATE OR REPLACE FUNCTION z_plume_recette.t001()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -147,12 +147,12 @@ DECLARE
    e_detl text ;
 BEGIN
 
-    DROP EXTENSION metadata ;
-    CREATE EXTENSION metadata ;
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg ;
     
     ASSERT EXISTS (
         SELECT * FROM pg_available_extensions
-            WHERE name = 'metadata'
+            WHERE name = 'plume_pg'
                 AND installed_version IS NOT NULL
         ) ;
 
@@ -169,12 +169,12 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t001() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation.' ;
+COMMENT ON FUNCTION z_plume_recette.t001() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation.' ;
 
 
--- Function: z_metadata_recette.t002()
+-- Function: z_plume_recette.t002()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t002()
+CREATE OR REPLACE FUNCTION z_plume_recette.t002()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -186,36 +186,36 @@ DECLARE
    prod text ;
 BEGIN
 
-    DROP EXTENSION metadata ;
+    DROP EXTENSION plume_pg ;
     
     CREATE EXTENSION asgard ;
     SET ROLE g_admin ;
     
-    CREATE EXTENSION metadata ;
+    CREATE EXTENSION plume_pg ;
     
     SELECT creation, producteur, lecteur
         INTO crea, prod, lec
         FROM z_asgard.gestion_schema_usr
-        WHERE nom_schema = 'z_metadata' ;
+        WHERE nom_schema = 'z_plume' ;
     
     ASSERT FOUND, 'échec assertion #1' ;
     ASSERT crea, 'échec assertion #2' ;
     ASSERT prod = 'g_admin', 'échec assertion #3' ;
     ASSERT lec = 'g_consult', 'échec assertion #4' ;
-    ASSERT has_table_privilege('g_consult', 'z_metadata.meta_template_categories_full', 'SELECT') ;
+    ASSERT has_table_privilege('g_consult', 'z_plume.meta_template_categories_full', 'SELECT') ;
     
-    DROP EXTENSION metadata ;
+    DROP EXTENSION plume_pg ;
     
     SELECT creation INTO crea
         FROM z_asgard.gestion_schema_usr
-        WHERE nom_schema = 'z_metadata' ;
+        WHERE nom_schema = 'z_plume' ;
         
     ASSERT FOUND, 'échec assertion #5' ;
     ASSERT NOT crea, 'échec assertion #6' ;
     
     RESET ROLE ;
     DROP EXTENSION asgard ;
-    CREATE EXTENSION metadata ;
+    CREATE EXTENSION plume_pg ;
     
     RETURN True ;
     
@@ -230,12 +230,12 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t002() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec ASGARD et par g_admin.' ;
+COMMENT ON FUNCTION z_plume_recette.t002() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec ASGARD et par g_admin.' ;
 
 
--- Function: z_metadata_recette.t003()
+-- Function: z_plume_recette.t003()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t003()
+CREATE OR REPLACE FUNCTION z_plume_recette.t003()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -244,9 +244,9 @@ DECLARE
    e_detl text ;
 BEGIN
 
-    DROP EXTENSION metadata ;
-    CREATE EXTENSION metadata VERSION '0.0.1' ;
-    ALTER EXTENSION metadata UPDATE ;
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg VERSION '0.0.1' ;
+    ALTER EXTENSION plume_pg UPDATE ;
 
     RETURN True ;
     
@@ -261,12 +261,12 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t003() IS 'Métadonnées (recette). TEST : Installation depuis une version antérieure.' ;
+COMMENT ON FUNCTION z_plume_recette.t003() IS 'Métadonnées (recette). TEST : Installation depuis une version antérieure.' ;
 
 
--- Function: z_metadata_recette.t004()
+-- Function: z_plume_recette.t004()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t004()
+CREATE OR REPLACE FUNCTION z_plume_recette.t004()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -276,16 +276,16 @@ DECLARE
    p text ;
 BEGIN
 
-    INSERT INTO z_metadata.meta_categorie (cat_label)
+    INSERT INTO z_plume.meta_categorie (label)
         VALUES ('Ma catégorie') ;
 
     SELECT path INTO p
-        FROM z_metadata.meta_categorie
-        WHERE cat_label = 'Ma catégorie' ;
+        FROM z_plume.meta_categorie
+        WHERE label = 'Ma catégorie' ;
         
     ASSERT p ~ '^uuid[:][0-9a-z-]{36}$' ;
     
-    DELETE FROM z_metadata.meta_categorie ;
+    DELETE FROM z_plume.meta_categorie ;
 
     RETURN True ;
     
@@ -300,12 +300,12 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t004() IS 'Métadonnées (recette). TEST : Génération des chemins des catégories locales.' ;
+COMMENT ON FUNCTION z_plume_recette.t004() IS 'Métadonnées (recette). TEST : Génération des chemins des catégories locales.' ;
 
 
--- Function: z_metadata_recette.t005()
+-- Function: z_plume_recette.t005()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t005()
+CREATE OR REPLACE FUNCTION z_plume_recette.t005()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -314,19 +314,19 @@ DECLARE
    e_detl text ;
 BEGIN
 
-    DROP EXTENSION metadata ;
+    DROP EXTENSION plume_pg ;
     
-    CREATE SCHEMA z_metadata ;
-    CREATE EXTENSION metadata ;
+    CREATE SCHEMA z_plume ;
+    CREATE EXTENSION plume_pg ;
     
-    DROP EXTENSION metadata ;
+    DROP EXTENSION plume_pg ;
     
-    ASSERT EXISTS (SELECT * FROM pg_namespace WHERE nspname = 'z_metadata') ;
+    ASSERT EXISTS (SELECT * FROM pg_namespace WHERE nspname = 'z_plume') ;
     -- le schéma n'est pas supposé être supprimé en même temps
     -- que l'extension lorsqu'il pré-existait.
     
-    DROP SCHEMA z_metadata ;
-    CREATE EXTENSION metadata ;
+    DROP SCHEMA z_plume ;
+    CREATE EXTENSION plume_pg ;
 
     RETURN True ;
     
@@ -341,12 +341,12 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t005() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec schéma z_metadata pré-existant.' ;
+COMMENT ON FUNCTION z_plume_recette.t005() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec schéma z_plume pré-existant.' ;
 
 
--- Function: z_metadata_recette.t006()
+-- Function: z_plume_recette.t006()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t006()
+CREATE OR REPLACE FUNCTION z_plume_recette.t006()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -358,22 +358,23 @@ BEGIN
 	-- mime une commande INSERT produite par un
 	-- script de restauration.
 	-- en changeant le label
-	INSERT INTO z_metadata.meta_shared_categorie (
-	    origin, path, cat_label, widget_type, row_span,
-		help_text, default_value, placeholder_text, input_mask,
-		multiple_values, is_mandatory, order_key
-		)
-		VALUES ('shared', 'dct:description', 'résumé', 'QTextEdit', 15, NULL, NULL, NULL, NULL, True, True, 1) ;
+	INSERT INTO z_plume.meta_categorie (
+        path, origin, label, description, special,
+        is_node, datatype, is_long_text, rowspan,
+        placeholder, input_mask, is_multiple, unilang,
+        is_mandatory, sources, template_order
+        ) VALUES
+        ('dct:description', 'shared', 'résumé', 'Description du jeu de données.', NULL, false, 'rdf:langString', true, 15, NULL, NULL, true, true, true, NULL, 2) ;
 		
 	ASSERT (
-		SELECT cat_label = 'résumé'
-			FROM z_metadata.meta_categorie
+		SELECT label = 'résumé'
+			FROM z_plume.meta_categorie
 			WHERE path = 'dct:description'
 		) ;
 
 	-- on remet le label initial
-	UPDATE z_metadata.meta_categorie
-		SET cat_label = 'description'
+	UPDATE z_plume.meta_categorie
+		SET label = 'Description'
 		WHERE path = 'dct:description' ;
 
     RETURN True ;
@@ -389,12 +390,12 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t006() IS 'Métadonnées (recette). TEST : Restauration des modifications utilisateur dans meta_shared_categorie.' ;
+COMMENT ON FUNCTION z_plume_recette.t006() IS 'Métadonnées (recette). TEST : Restauration des modifications utilisateur dans meta_shared_categorie.' ;
 
 
--- Function: z_metadata_recette.t007()
+-- Function: z_plume_recette.t007()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t007()
+CREATE OR REPLACE FUNCTION z_plume_recette.t007()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -405,7 +406,7 @@ BEGIN
 
 	-- sans schéma ni table :
 	ASSERT (
-		SELECT z_metadata.meta_execute_sql_filter(
+		SELECT z_plume.meta_execute_sql_filter(
 			'pg_has_role(''pg_monitor'', ''pg_read_all_stats'', ''USAGE'')',
 			'schema',
 			'table'
@@ -413,7 +414,7 @@ BEGIN
 		), 'échec assertion #1' ;
 		
 	ASSERT (
-		SELECT NOT z_metadata.meta_execute_sql_filter(
+		SELECT NOT z_plume.meta_execute_sql_filter(
 			'pg_has_role(''pg_read_all_stats'', ''pg_monitor'', ''USAGE'')',
 			'schema',
 			'table'
@@ -422,7 +423,7 @@ BEGIN
 
 	-- avec schéma :
 	ASSERT (
-		SELECT z_metadata.meta_execute_sql_filter(
+		SELECT z_plume.meta_execute_sql_filter(
 			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
 			'r_ign_bdtopo',
 			'table'
@@ -430,7 +431,7 @@ BEGIN
 		), 'échec assertion #3' ;
 		
 	ASSERT (
-		SELECT NOT z_metadata.meta_execute_sql_filter(
+		SELECT NOT z_plume.meta_execute_sql_filter(
 			'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
 			'schema',
 			'table'
@@ -439,7 +440,7 @@ BEGIN
 		
 	-- avec schéma et table :
 	ASSERT (
-		SELECT z_metadata.meta_execute_sql_filter(
+		SELECT z_plume.meta_execute_sql_filter(
 			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']) AND $2 ~ ''_fr$''',
 			'r_ign_admin_express',
 			'region_fr'
@@ -447,7 +448,7 @@ BEGIN
 		), 'échec assertion #5' ;
 		
 	ASSERT (
-		SELECT NOT z_metadata.meta_execute_sql_filter(
+		SELECT NOT z_plume.meta_execute_sql_filter(
 			'$1 ~ ANY(ARRAY[''^r_'', ''^e_'']) AND $2 ~ ''_fr$''',
 			'r_ign_admin_express',
 			NULL
@@ -458,7 +459,7 @@ BEGIN
 	
 	-- pas de filtre :
 	ASSERT (
-		SELECT z_metadata.meta_execute_sql_filter(
+		SELECT z_plume.meta_execute_sql_filter(
 			NULL,
 			'schema',
 			'table'
@@ -466,7 +467,7 @@ BEGIN
 		), 'échec assertion #7' ;
 		
 	ASSERT (
-		SELECT z_metadata.meta_execute_sql_filter(
+		SELECT z_plume.meta_execute_sql_filter(
 			'',
 			'schema',
 			'table'
@@ -475,7 +476,7 @@ BEGIN
 	
 	-- avec un filtre invalide :
 	ASSERT (
-		SELECT z_metadata.meta_execute_sql_filter(
+		SELECT z_plume.meta_execute_sql_filter(
 			'n''importe quoi',
 			'schema',
 			'table'
@@ -496,13 +497,13 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t007() IS 'Métadonnées (recette). TEST : Exécution des filtres SQL par meta_execute_sql_filter.' ;
+COMMENT ON FUNCTION z_plume_recette.t007() IS 'Métadonnées (recette). TEST : Exécution des filtres SQL par meta_execute_sql_filter.' ;
 
 
 
--- Function: z_metadata_recette.t008()
+-- Function: z_plume_recette.t008()
 
-CREATE OR REPLACE FUNCTION z_metadata_recette.t008()
+CREATE OR REPLACE FUNCTION z_plume_recette.t008()
     RETURNS boolean
     LANGUAGE plpgsql
     AS $_$
@@ -515,54 +516,54 @@ BEGIN
 	-- import d'un modèle
 	SELECT *
         INTO res
-        FROM z_metadata.meta_import_sample_template('Basique') ;
+        FROM z_plume.meta_import_sample_template('Basique') ;
         
     ASSERT res.label = 'Basique' AND res.summary = 'created',
         'échec assertion #0' ;
 	
 	ASSERT (
 		SELECT count(*)
-			FROM z_metadata.meta_template_categories_full
+			FROM z_plume.meta_template_categories_full
 			WHERE tpl_label = 'Basique'
 		) > 0, 'échec assertion #1' ;
 		
-	DELETE FROM z_metadata.meta_template
+	DELETE FROM z_plume.meta_template
 		WHERE tpl_label = 'Basique' ;
 		
 	-- import de tous les modèles
-	PERFORM z_metadata.meta_import_sample_template() ;
+	PERFORM z_plume.meta_import_sample_template() ;
 	
 	ASSERT (
 		SELECT count(*)
-			FROM z_metadata.meta_template_categories_full
+			FROM z_plume.meta_template_categories_full
 			WHERE tpl_label = 'Basique'
 		) > 0, 'échec assertion #2' ;
 		
 	ASSERT (
 		SELECT count(*)
-			FROM z_metadata.meta_template
+			FROM z_plume.meta_template
 		) > 1, 'échec assertion #3' ;
 	
 	-- réinitialisation
-	UPDATE z_metadata.meta_template
+	UPDATE z_plume.meta_template
 	    SET sql_filter = 'True'
 		WHERE tpl_label = 'Basique' ;
 		
 	SELECT *
         INTO res
-        FROM z_metadata.meta_import_sample_template('Basique') ;
+        FROM z_plume.meta_import_sample_template('Basique') ;
         
     ASSERT res.label = 'Basique' AND res.summary = 'updated',
         'échec assertion #4' ;
 	
 	ASSERT (
 		SELECT sql_filter IS NULL
-			FROM z_metadata.meta_template
+			FROM z_plume.meta_template
 			WHERE tpl_label = 'Basique'
 		), 'échec assertion #5' ;
 		
-	DROP EXTENSION metadata ;
-	CREATE EXTENSION metadata ;
+	DROP EXTENSION plume_pg ;
+	CREATE EXTENSION plume_pg ;
 
     RETURN True ;
     
@@ -577,5 +578,5 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_metadata_recette.t008() IS 'Métadonnées (recette). TEST : Insertion des modèles pré-configurés avec meta_import_sample_template.' ;
+COMMENT ON FUNCTION z_plume_recette.t008() IS 'Métadonnées (recette). TEST : Insertion des modèles pré-configurés avec meta_import_sample_template.' ;
 
