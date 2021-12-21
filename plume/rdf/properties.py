@@ -6,12 +6,11 @@ locales (décrites par un modèle stocké dans des tables PostgreSQL).
 
 """
 
-from rdflib import URIRef
-from rdflib.util import from_n3
+from rdflib.term import URIRef
 
 from plume.rdf.namespaces import SH, SNUM
 from plume.rdf.metagraph import shape
-from plume.rdf.utils import path_n3
+from plume.rdf.utils import path_n3, path_from_n3
 
 
 class PlumeProperty:
@@ -50,6 +49,8 @@ class PlumeProperty:
     
     Attributes
     ----------
+    path : rdflib.paths.SequencePath
+        Chemin de la catégorie.
     n3_path : str
         La représentation N3 du chemin de la catégorie.
     predicate : URIRef
@@ -63,6 +64,12 @@ class PlumeProperty:
     origin : {'shared', 'local', 'unknown'}
         L'origine de la catégorie.
     
+    Raises
+    ------
+    RuntimeError
+        Quand tous les arguments requis pour la valeur d'`origin`
+        n'ont pas été fournis.
+    
     """
     def __init__(self, origin, nsm, base_path=None, property_node=None,
         template=None, n3_path=None, predicate=None):
@@ -72,8 +79,9 @@ class PlumeProperty:
             self.origin = 'shared'
             self.prop_dict = read_shape_property(property_node)
             self.predicate = self.prop_dict['predicate']
-            self.n3_path = path_n3((base_path / self.predicate) \
-                if base_path else self.predicate, nsm)
+            self.path = (base_path / self.predicate) if base_path \
+                else self.predicate
+            self.n3_path = path_n3(self.path, nsm)
             if not template:
                 self.unlisted = False
             elif self.n3_path in template:
@@ -86,7 +94,8 @@ class PlumeProperty:
             self.origin = 'local'
             self.unlisted = False
             self.prop_dict = template[self.n3_path]
-            self.predicate = from_n3(n3_path, nsm=nsm)
+            self.predicate = path_from_n3(n3_path, nsm=nsm)
+            self.path = self.predicate
             self.prop_dict.update({'predicate': self.predicate})
             self.n3_path = n3_path
         
@@ -94,6 +103,7 @@ class PlumeProperty:
             self.origin = 'unknown'
             self.unlisted = True
             self.predicate = predicate
+            self.path = predicate
             self.n3_path = predicate.n3(nsm)
             self.prop_dict = {'predicate': self.predicate}
         
@@ -138,7 +148,7 @@ def merge_property_dict(shape_dict, template_dict):
     
     """
     restricted = ['predicate', 'kind', 'datatype', 'is_multiple',
-        'unilang', 'sources', 'order_idx']
+        'unilang', 'transform', 'sources', 'order_idx']
         # propriétés que le modèle n'a pas le droit d'écraser, ou
         # du moins pas brutalement
     for key, value in template_dict.items():
@@ -157,7 +167,7 @@ def merge_property_dict(shape_dict, template_dict):
             shape_dict['sources'] = sources
 
 def class_properties(rdfclass, nsm, base_path, template=None):
-    """Renvoie la liste des propriétés d'une classe.
+    """Renvoie la liste des propriétés communes d'une classe.
     
     Parameters
     ----------
@@ -173,12 +183,10 @@ def class_properties(rdfclass, nsm, base_path, template=None):
     
     Returns
     -------
-    tuple(list(PlumeProperty), list(str), list(URIRef))
+    tuple(list(PlumeProperty), list(URIRef))
         Un tuple avec :
         * ``[0]`` La liste des propriétés.
-        * ``[1]`` La liste des représentations N3 des chemins desdites
-          propriétés.
-        * ``[2]`` La liste des IRI des propriétés (prédicats des
+        * ``[1]`` La liste des IRI des propriétés (prédicats des
           triplets du graphe de métadonnées).
     
     """
@@ -191,7 +199,6 @@ def class_properties(rdfclass, nsm, base_path, template=None):
         return []
     
     properties = []
-    n3_paths = []
     predicates = []
     # propriétés associées
     for property_node in shape.objects(shape_iri, SH['property']):
@@ -199,9 +206,8 @@ def class_properties(rdfclass, nsm, base_path, template=None):
             property_node=property_node, base_path=base_path,
             template=template)
         properties.append(p)
-        n3_paths.append(p.n3_path)
         predicates.append(p.predicate)
-    return properties, n3_paths, predicates
+    return properties, predicates
 
 def read_shape_property(shape_node):
     """Extrait du schéma SHACL les caractéristiques d'une propriété d'une forme.
