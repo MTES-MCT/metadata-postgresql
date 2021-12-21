@@ -1,4 +1,4 @@
-"""Utilitaire pour le dialogue avec les services CSW des catalogues.
+"""Utilitaires pour le dialogue avec les services CSW des catalogues.
 
 """
 
