@@ -868,6 +868,10 @@ class WidgetKey:
                 (not v is None or not exclude_none):
                 setattr(self, k, v)
 
+    def _tree_keys(self):
+        if self:
+            yield self
+
 class ObjectKey(WidgetKey):
     """Clé-objet.
     
@@ -1693,6 +1697,12 @@ class GroupKey(WidgetKey):
         for child in self.children:
             b = child._build_metagraph(metagraph) or b
         return b
+
+    def _tree_keys(self):
+        if self:
+            yield from super()._tree_keys()
+            for child in self.children:
+                yield from child._tree_keys()
 
 class TabKey(GroupKey):
     """Onglet.
@@ -2758,6 +2768,11 @@ class GroupOfValuesKey(GroupKey):
                 child._is_single_child = True
                 WidgetKey.actionsbook.hide_minus_button.append(child) 
 
+    def _tree_keys(self):
+        if self:
+            yield from super()._tree_keys()
+            if self.button:
+                yield from self.button._tree_keys()
 
 class TranslationGroupKey(GroupOfValuesKey):
     """Groupe de traduction.
@@ -4150,6 +4165,8 @@ class RootKey(GroupKey):
         Balaie l'arbre de clés et supprime tous les groupes sans fille.
     build_metagraph()
         Traduit l'arbre de clés en graphe de métadonnées.
+    tree_keys()
+        Générateur sur les clés non fantomatiques de l'arbre.
     
     """
     def _heritage(self, **kwargs):
@@ -4360,6 +4377,18 @@ class RootKey(GroupKey):
         metagraph.add((self.node, RDF.type, self.rdfclass))
         self._build_metagraph(metagraph)
         return metagraph
+
+    def tree_keys(self):
+        """Générateur sur les clés de l'arbre.
+        
+        Les fantômes sont exclus, les boutons sont inclus.
+        
+        Yields
+        ------
+        WidgetKey
+        
+        """
+        yield from self._tree_keys()
 
 class ChildrenList(list):
     """Liste des enfants d'une clé.
