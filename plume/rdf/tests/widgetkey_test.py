@@ -30,6 +30,20 @@ class WidgetKeyTestCase(unittest.TestCase):
             'uuid', 'with_language_buttons', 'with_source_buttons'):
             getattr(widgetkey, attr)
 
+    def test_tree_keys(self):
+        """Itérateur sur les clés non fantômes de l'arbre.
+        
+        """
+        r = RootKey()
+        g = GroupOfPropertiesKey(parent=r, rdfclass=DCT.RightsStatement,
+            predicate=DCT.accessRights)
+        m = ValueKey(parent=r, m_twin=g, is_hidden_m=False)
+        t = TranslationGroupKey(parent=g, predicate=RDFS.label)
+        b = TranslationButtonKey(parent=t)
+        w1 = ValueKey(parent=t)
+        w2 = ValueKey(parent=t)
+        self.assertEqual([k for k in r.tree_keys()], [r, g, t, w1, w2, b, m])
+
     def test_update(self):
         """Mise à jour massive des attributs.
 
@@ -294,7 +308,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         
         groupkey1.compute_rows()
         self.assertEqual(valkey1a.row, 0)
-        self.assertIsNone(valkey1b.row)
+        self.assertEqual(valkey1b.row, 0)
         self.assertEqual(valkey1c.row, 1)
         self.assertEqual(buttonkey1.row, 2)
         groupkey1.compute_single_children()
@@ -338,7 +352,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         actionsbook = valkey1a.switch_twin()
         self.assertEqual(actionsbook.create, [])
         self.assertEqual(actionsbook.drop, [])
-        self.assertEqual(actionsbook.move, [valkey1b])
+        self.assertEqual(actionsbook.move, [])
         self.assertEqual(actionsbook.show_minus_button, [])
         self.assertEqual(actionsbook.hide_minus_button, [])
         self.assertEqual(actionsbook.show, [valkey1b])
