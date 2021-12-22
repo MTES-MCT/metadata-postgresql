@@ -8,7 +8,7 @@ from pathlib import Path
 from plume.rdf.rdflib import Graph, URIRef, BNode
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
     LOCAL, predicate_map
-from plume.rdf.utils import abspath
+from plume.rdf.utils import abspath, DatasetId
 
 
 class Metagraph(Graph):
@@ -20,7 +20,6 @@ class Metagraph(Graph):
     Attributes
     ----------
     datasetid
-    uuid
     available_formats
     
     Notes
@@ -34,33 +33,21 @@ class Metagraph(Graph):
         super().__init__(namespace_manager=PlumeNamespaceManager())
 
     def __str__(self):
-        gid = self.uuid
+        datasetid = self.datasetid
+        gid = datasetid.uuid if isinstance(datasetid, DatasetId) else datasetid
         if gid:
             return 'dataset {}'.format(gid)
         return 'no dataset'
 
     @property
     def datasetid(self):
-        """rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe, sous forme d'IRI.
+        """rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe.
         
         Peut être ``None`` si le graphe de métadonnées ne contient
         pas d'élément ``dcat:Dataset``.
         
         """
         return get_datasetid(self)
-
-    @property
-    def uuid(self):
-        """uuid.UUID: Identifiant du jeu de données décrit par le graphe, sous forme d'UUID.
-        
-        Peut être ``None`` si le graphe de métadonnées ne contient
-        pas d'élément ``dcat:Dataset``, ou si l'identifiant, pour une
-        raison ou une autre, n'était pas un UUID valide.
-        
-        """
-        datasetid = self.datasetid
-        if datasetid:
-            return uuid_from_datasetid(datasetid)
 
     def export(self, filepath, format=None):
         """Sérialise le graphe de métadonnées dans un fichier.
@@ -180,60 +167,6 @@ class Metagraph(Graph):
                 triple = (subject, predicate_map.get(p, p), o)
                 self._clean_metagraph(raw_metagraph, o, triple, memory)
 
-
-
-# ------ utilitaires de gestion des identifiants ------
-
-def uuid_from_datasetid(datasetid):
-    """Extrait l'UUID d'un identifiant de jeu de données.
-    
-    Parameters
-    ----------
-    datasetid : URIRef
-        Un identifiant de jeu de données.
-    
-    Returns
-    -------
-    uuid.UUID
-        L'UUID contenu dans l'identifiant. ``None`` si l'identifiant
-        ne contenait pas d'UUID.
-    
-    """
-    try:
-        u = UUID(str(datasetid))
-        return u
-    except:
-        r = re.search('[:]([a-z0-9-]{36})$', str(datasetid))
-        if r:
-            try:
-                u = UUID(r[1])
-                return u
-            except:
-                return
-
-def datasetid_from_uuid(uuid):
-    """Crée un identifiant de jeu de données à partir d'un UUID.
-    
-    Parameters
-    ----------
-    uuid : uuid.UUID or str
-        Un UUID ou une chaîne de caractères présumée
-        être un UUID.
-    
-    Returns
-    -------
-    URIRef
-        Un identifiant de jeu de données. ``None`` si la valeur n'était
-        pas un UUID.
-    
-    """
-    if not isinstance(uuid, UUID):
-        try:
-            uuid = UUID(uuid)
-        except:
-            return
-    return URIRef(uuid.urn)
-
 def get_datasetid(anygraph):
     """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
     
@@ -252,8 +185,6 @@ def get_datasetid(anygraph):
     """
     for s in anygraph.subjects(RDF.type, DCAT.Dataset):
         return s
-
-# ------ utilitaires d'import / export ------
 
 def metagraph_from_file(filepath, format=None, old_metagraph=None):
     """Crée un graphe de métadonnées à partir d'un fichier.
@@ -361,29 +292,24 @@ def clean_metagraph(raw_graph, old_metagraph=None):
     
     """
     metagraph = Metagraph()
-    raw_subject = get_datasetid(raw_graph)
-    subject = None
-    if old_metagraph:
-        subject = old_metagraph.datasetid
+    raw_datasetid = get_datasetid(raw_graph)
+    old_datasetid = old_metagraph.datasetid if old_metagraph else None
+    datasetid = DatasetId(old_datasetid)
     
-    if not raw_subject :
+    if not raw_datasetid :
         # le graphe ne contient pas de dcat:Dataset
         # on renvoie un graphe avec uniquement l'ancien
-        # identifiant, ou vierge en l'absence d'identifiant
-        if subject:
-            metagraph.add((subject, RDF.type, DCAT.Dataset))
+        # identifiant (ou potentiellement un nouveau
+        # si l'ancien n'était pas un UUID valide)
+        metagraph.add((datasetid, RDF.type, DCAT.Dataset))
         return metagraph
-    
-    # à défaut d'avoir pu récupérer l'identifiant de
-    # l'ancien graphe, on en génère un nouveau
-    if not subject:
-        subject = datasetid_from_uuid(uuid4())
+
     memory = Graph()
     
     # memory stockera les triples déjà traités de raw_graph,
     # il sert à éviter les boucles
-    for p, o in raw_graph.predicate_objects(raw_subject):
-        triple = (subject, predicate_map.get(p, p), o)
+    for p, o in raw_graph.predicate_objects(raw_datasetid):
+        triple = (datasetid, predicate_map.get(p, p), o)
         metagraph._clean_metagraph(raw_graph, o, triple, memory)
     return metagraph
 
@@ -416,21 +342,16 @@ def copy_metagraph(src_metagraph=None, old_metagraph=None):
     else:  
         src_datasetid = src_metagraph.datasetid
         
-    datasetid = old_metagraph.datasetid if old_metagraph else None
+    old_datasetid = old_metagraph.datasetid if old_metagraph else None
+    datasetid = DatasetId(old_datasetid)
     metagraph = Metagraph()
     
     # cas où le graphe à copier ne contiendrait pas
     # de descriptif de dataset, on renvoie un graphe contenant
-    # uniquement l'identifiant, ou vierge à défaut d'identifiant
+    # uniquement l'identifiant
     if not src_datasetid:
-        if datasetid:
-            metagraph.add((datasetid, RDF.type, DCAT.Dataset))
+        metagraph.add((datasetid, RDF.type, DCAT.Dataset))
         return metagraph
-    
-    # à défaut d'avoir pu d'extraire un identifiant de l'ancien
-    # graphe, on en génère un nouveau
-    if not datasetid:
-        datasetid = datasetid_from_uuid(uuid4())
     
     # boucle sur les triples du graphe source, on remplace
     # l'identifiant partout où il apparaît en sujet ou (même si
