@@ -17,10 +17,9 @@ descriptifs des champs...
 """
 
 import re
-from uuid import uuid4
 
 from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
-from plume.rdf.utils import sort_by_language
+from plume.rdf.utils import sort_by_language, DatasetId
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -31,7 +30,6 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
 from plume.rdf.thesaurus import Thesaurus
 from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP
 from plume.rdf.properties import PlumeProperty, class_properties
-from plume.rdf.metagraph import uuid_from_datasetid, datasetid_from_uuid, get_datasetid
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -198,30 +196,22 @@ class WidgetsDict(dict):
         # ------ Racine ------
         # + gestion de l'identifiant
         self.root = None
-        self.datasetid = None
         self.nsm = PlumeNamespaceManager()
         data = data or {}
         
-        if data:
-            ident = (data.get('dct:identifier') or [None])[0]
-            if ident:
-                self.datasetid = datasetid_from_uuid(ident)
-        mg_datasetid = metagraph.datasetid if metagraph else None
-        self.root = RootKey(datasetid=mg_datasetid)
-        # génère un nouvel identifiant si l'argument vaut None
-        if not self.datasetid:
-            ident = uuid_from_datasetid(self.root.node)
-            if ident:
-                self.datasetid = self.root.node
-            else:
-                ident = uuid4()
-                self.datasetid = datasetid_from_uuid(ident)
-            data['dct:identifier'] = [str(ident)]
-            # à ce stade, l'identifiant de la clé racine est identique
-            # à celui du graphe et pas nécessairement à self.datasetid.
-            # On attend cependant la fin de l'initialisation pour le remettre
-            # en cohérence, sans quoi on ne pourra pas récupérer le contenu
-            # du graphe.
+        ident = data.get('dct:identifier') if data else None
+        old_uuid = ident[0] if ident else None
+        old_datasetid = metagraph.datasetid if metagraph else None
+        self.root = RootKey(datasetid=old_datasetid)
+        self.datasetid = DatasetId(old_uuid, old_datasetid)
+        data['dct:identifier'] = [str(self.datasetid.uuid)]
+        # à ce stade, on a nécessairement un UUID valide dans
+        # l'attribut datasetid. Par contre, l'identifiant de la
+        # clé racine est identique à celui du graphe et pas
+        # nécessairement à self.datasetid.
+        # On attend la fin de l'initialisation pour le remettre
+        # en cohérence, sans quoi on ne pourrait pas récupérer le
+        # contenu du graphe.
         
         # paramètres de configuration des clés
         WidgetKey.with_source_buttons = self.edit
