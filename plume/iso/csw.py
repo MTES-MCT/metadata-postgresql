@@ -27,7 +27,7 @@ def getrecordbyid_request(url_csw, file_identifier):
     ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable', 
     ...     'fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297'
     ...     )
-    >>> from urllib import urlopen
+    >>> from urllib.request import urlopen
     >>> with urlopen(r) as src:
     ...     xml = src.read()
     
