@@ -3,9 +3,56 @@
 """
 import re
 from pathlib import Path
+from uuid import UUID, uuid4
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3
+
+class DatasetId(URIRef):
+    """Identifiant de jeu de données.
+    
+    Parameters
+    ----------
+    *uuids : str or UUID or rdflib.term.URIRef
+        UUID ou chaînes de caractères ou IRI présumés correspondre
+        à un UUID. Le premier élément qui s'avère être réellement
+        un UUID est conservé. Si aucun n'est valide ou si l'argument
+        n'est pas fourni, un nouvel UUID est utilisé pour créer
+        l'identifiant.
+    
+    Attributes
+    ----------
+    uuid : uuid.UUID
+        Représentation de l'identifiant sous forme d'UUID.
+    
+    Examples
+    --------
+    >>> DatasetId('4dc72616-7235-461f-95cf-94dfc3cfa629', 
+    ...     'urn:uuid:2b4bb94a-c10b-4d99-a0e7-4ee28888e4f4')
+    DatasetId('urn:uuid:4dc72616-7235-461f-95cf-94dfc3cfa629')
+
+    >>> DatasetId('pas un UUID', 
+    ...     'urn:uuid:2b4bb94a-c10b-4d99-a0e7-4ee28888e4f4')
+    DatasetId('urn:uuid:2b4bb94a-c10b-4d99-a0e7-4ee28888e4f4')
+    
+    >>> DatasetId()
+    DatasetId('urn:uuid:...')
+    
+    """
+    def __new__(cls, *uuids):
+        if uuids:
+            for uuid in uuids:
+                if isinstance(uuid, DatasetId):
+                    return uuid
+                try:
+                    u = UUID(str(uuid))
+                    return super().__new__(cls, u.urn)
+                except:
+                    continue
+        return super().__new__(cls, uuid4().urn)
+    
+    def __init__(self, *uuids):
+        self.uuid = UUID(str(self))
 
 def data_from_file(filepath):
     """Renvoie le contenu d'un fichier.
