@@ -31,6 +31,7 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.namespaces import DCAT, RDF, XSD
 from plume.rdf.metagraph import Metagraph
+from plume.rdf.utils import DatasetId
 
 class WidgetKey:
     """Clé d'un dictionnaire de widgets.
@@ -4187,16 +4188,24 @@ class RootKey(GroupKey):
     def node(self):
         """rdflib.term.URIRef: Identifiant du jeu de données.
         
-        En cas de modification, si la valeur fournie n'est pas un
-        IRI, un nouvel identifiant (UUID) est généré.
+        Notes
+        -----
+        Si la valeur fournie n'est pas un IRI, un nouvel identifiant
+        (UUID) est généré.
         
         """
         return self._node
     
     @node.setter
     def node(self, value):
+        # NB: on pourrait juste écrire self._node = DatasetId(value)
+        # pour s'assurer d'avoir un identifiant valide. Mais cela
+        # empêcherait d'extraire les informations de graphes dont,
+        # pour une raison ou une autre, l'identifiant a été corrompu.
+        # C'est la fonction d'initialisation de WidgetsDict qui s'assurera
+        # de corriger l'identifiant (post extraction des métadonnées).
         if not isinstance(value, URIRef):
-            value = URIRef(uuid4().urn)
+            value = DatasetId()
         self._node = value
  
     @property
