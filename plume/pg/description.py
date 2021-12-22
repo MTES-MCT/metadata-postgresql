@@ -33,7 +33,7 @@ Le nouveau texte descriptif est simplement:
 """
 
 import re
-from plume.rdf.metagraph import Metagraph, get_datasetid
+from plume.rdf.metagraph import Metagraph
 
 
 class PgDescription:
