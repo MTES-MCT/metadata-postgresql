@@ -3,10 +3,9 @@
 """
 import re
 from pathlib import Path
-from rdflib import Literal, URIRef
-from rdflib.util import from_n3
 
 from plume import __path__
+from plume.rdf.rdflib import Literal, URIRef, from_n3
 
 def data_from_file(filepath):
     """Renvoie le contenu d'un fichier.

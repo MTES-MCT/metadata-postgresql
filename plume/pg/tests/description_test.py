@@ -1,10 +1,11 @@
 
 import unittest
+
+from plume.rdf.rdflib import isomorphic
 from plume.pg.description import PgDescription
 from plume.rdf.utils import abspath, data_from_file
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import RDF, DCAT, DCT
-from rdflib.compare import isomorphic
 
 pg_description_1 = data_from_file(abspath('pg/tests/samples/pg_description_1.txt'))
 pg_description_2 = data_from_file(abspath('pg/tests/samples/pg_description_2.txt'))

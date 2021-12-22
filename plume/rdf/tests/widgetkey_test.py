@@ -1,8 +1,8 @@
 
 import unittest
 from uuid import uuid4
-from rdflib import URIRef, Literal
 
+from plume.rdf.rdflib import URIRef, Literal
 from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \

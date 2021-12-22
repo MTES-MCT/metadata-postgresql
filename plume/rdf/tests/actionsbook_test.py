@@ -1,8 +1,8 @@
 
 import unittest
 
-from rdflib import URIRef, DC, RDFS, DCAT
-
+from plume.rdf.rdflib import URIRef
+from plume.rdf.namespaces import DCT, RDFS, DCAT
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.widgetkey import RootKey, ObjectKey, GroupOfPropertiesKey, \
      TranslationGroupKey, ValueKey, WidgetKey, TranslationButtonKey, \
@@ -44,8 +44,8 @@ class ActionsBookTestCase(unittest.TestCase):
 
         """
         r = RootKey()
-        g = ObjectKey(parent=r, is_ghost=True, predicate=DC.title)
-        w = ObjectKey(parent=r, predicate=DC.description)
+        g = ObjectKey(parent=r, is_ghost=True, predicate=DCT.title)
+        w = ObjectKey(parent=r, predicate=DCT.description)
         a = WidgetKey.unload_actionsbook()
         self.assertEqual(a.create, [r, w])
 

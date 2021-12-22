@@ -1,4 +1,6 @@
+"""Quelques classes d'erreurs à l'usage des modules de Plume.
 
+"""
 
 class ForbiddenOperation(Exception):
     """Signale l'usage non approprié d'une fonction.

@@ -19,9 +19,7 @@ descriptifs des champs...
 import re
 from uuid import uuid4
 
-from rdflib import Literal, URIRef, BNode
-from rdflib.namespace import NamespaceManager
-
+from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
 from plume.rdf.utils import sort_by_language
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \

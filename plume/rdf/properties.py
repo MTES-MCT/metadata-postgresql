@@ -6,8 +6,7 @@ locales (décrites par un modèle stocké dans des tables PostgreSQL).
 
 """
 
-from rdflib.term import URIRef
-
+from plume.rdf.rdflib import URIRef
 from plume.rdf.namespaces import SH, SNUM
 from plume.rdf.metagraph import shape
 from plume.rdf.utils import path_n3, path_from_n3

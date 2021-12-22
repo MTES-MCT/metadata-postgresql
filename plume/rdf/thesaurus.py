@@ -3,8 +3,8 @@
 """
 
 from locale import strxfrm, setlocale, LC_COLLATE
-from rdflib import Graph, URIRef
 
+from plume.rdf.rdflib import Graph, URIRef
 from plume.rdf.metagraph import graph_from_file
 from plume.rdf.exceptions import UnknownSource
 from plume.rdf.namespaces import FOAF, SKOS, SNUM

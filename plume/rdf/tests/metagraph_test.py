@@ -1,8 +1,7 @@
 
 import unittest
 
-from rdflib.compare import isomorphic
-
+from plume.rdf.rdflib import isomorphic
 from plume.rdf.utils import abspath
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, \
     get_datasetid

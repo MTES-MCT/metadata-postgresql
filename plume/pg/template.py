@@ -4,9 +4,7 @@
 
 import re
 
-from rdflib.util import from_n3
-from rdflib.term import URIRef
-
+from plume.rdf.rdflib import URIRef, from_n3
 from plume.rdf.utils import path_from_n3
 from plume.rdf.namespaces import SH, PlumeNamespaceManager
 

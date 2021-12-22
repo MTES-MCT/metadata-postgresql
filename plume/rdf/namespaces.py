@@ -2,8 +2,7 @@
 
 """
 
-from rdflib import Graph
-from rdflib.namespace import Namespace, NamespaceManager
+from plume.rdf.rdflib import Graph, Namespace, NamespaceManager
 
 ADMS = Namespace('http://www.w3.org/ns/adms#')
 DCAT = Namespace('http://www.w3.org/ns/dcat#')

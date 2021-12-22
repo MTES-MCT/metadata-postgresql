@@ -5,8 +5,7 @@
 from uuid import UUID, uuid4
 from pathlib import Path
 
-from rdflib import Graph, URIRef, BNode
-
+from plume.rdf.rdflib import Graph, URIRef, BNode
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
     LOCAL, predicate_map
 from plume.rdf.utils import abspath

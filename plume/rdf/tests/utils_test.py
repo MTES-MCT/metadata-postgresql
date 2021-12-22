@@ -2,8 +2,7 @@
 import unittest
 from uuid import uuid4
 
-from rdflib import Literal
-
+from plume.rdf.rdflib import Literal
 from plume.rdf.utils import sort_by_language, pick_translation, \
          path_from_n3
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT

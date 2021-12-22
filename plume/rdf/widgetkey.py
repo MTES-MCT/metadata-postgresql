@@ -25,8 +25,7 @@ création ou la modification d'une clé entraîne la modification
 
 from uuid import uuid4
 
-from rdflib import URIRef, BNode, Literal
-
+from plume.rdf.rdflib import URIRef, BNode, Literal
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     ForbiddenOperation, UnknownParameterValue
 from plume.rdf.actionsbook import ActionsBook
