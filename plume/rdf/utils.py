@@ -236,3 +236,26 @@ def path_from_n3(path_n3, nsm):
         path = (path / iri) if path else iri
     return path
 
+def forbidden_char(anystr):
+    """Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.
+    
+    Parameters
+    ----------
+    anystr : str
+        La chaîne de caractères à tester.
+    
+    Returns
+    -------
+    str
+        Si la chaîne contient au moins un caractère interdit, l'un
+        de ces caractères.
+    
+    Example
+    -------
+    >>> forbidden_char('avec des espaces')
+    ' '
+    
+    """
+    r = re.search(r'([<>"\s{}|\\^`])', anystr)
+    return r[1] if r else None
+
