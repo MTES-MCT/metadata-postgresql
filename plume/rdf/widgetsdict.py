@@ -19,7 +19,7 @@ descriptifs des champs...
 import re
 
 from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
-from plume.rdf.utils import sort_by_language, DatasetId
+from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -1056,29 +1056,6 @@ class WidgetsDict(dict):
             return self.root.build_metagraph()
     
 # Utilitaires
-
-def forbidden_char(anystr):
-    """Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.
-    
-    Parameters
-    ----------
-    anystr : str
-        La chaîne de caractères à tester.
-    
-    Returns
-    -------
-    str
-        Si la chaîne contient au moins un caractère interdit, l'un
-        de ces caractères.
-    
-    Example
-    -------
-    >>> forbidden_char('avec des espaces')
-    ' '
-    
-    """
-    r = re.search(r'([<>"\s{}|\\^`])', anystr)
-    return r[1] if r else None
 
 def text_with_link(anystr, anyiri):
     """Génère un fragment HTML définissant un lien.
