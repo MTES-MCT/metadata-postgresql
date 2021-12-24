@@ -125,7 +125,7 @@ snum:CrpaAccessLimitations a skos:ConceptScheme ;
 
 <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> a skos:Concept ;
     skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
-    skos:prefLabel "Aucune restriction d'accès public"@fr,
+    skos:prefLabel "Pas de restriction d'accès public selon INSPIRE"@fr,
         "No limitations to public access"@en .
 
 <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a> a skos:Concept ;
