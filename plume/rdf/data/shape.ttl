@@ -228,7 +228,7 @@ snum:DatasetShape
 	] ;
     sh:property [
 		sh:path dct:rightsHolder ;
-		sh:name "Détenteur de droits"@fr ;
+		sh:name "Propriétaire"@fr ;
         sh:description "Organisme ou personne qui détient des droits sur les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
@@ -289,14 +289,6 @@ snum:DatasetShape
         sh:nodeKind sh:BlankNode ;
         sh:class foaf:Agent ;
         sh:order 50 ;
-	] ;
-    sh:property [
-		sh:path prov:qualifiedAttribution ;
-		sh:name "Partie prenante"@fr ;
-        sh:description "Entité ou personne intervenant dans le processus de création, de diffusion ou de maintenance de la donnée."@fr ;
-        sh:nodeKind sh:BlankNode ;
-        sh:class prov:Attribution ;
-        sh:order 51 ;
 	] ;
 	sh:property [
 		sh:path dcat:distribution ;
@@ -543,8 +535,8 @@ snum:AgentShape
 		sh:path foaf:name ;
 		sh:name "Nom"@fr ;
         sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
-        sh:maxCount 1 ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
         sh:order 0 ;
 	] ;
     sh:property [
@@ -744,26 +736,5 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 9 ;
         # snum:ontology snum:StandardType ;
-	] .
-
-snum:AttributionShape
-    a sh:NodeShape ;
-    sh:targetClass prov:Attribution ;
-    sh:closed true ;
-    sh:ignoredProperties ( rdf:type ) ;
-    sh:property [
-		sh:path prov:agent ;
-		sh:name "Entité"@fr ;
-        sh:nodeKind sh:BlankNode ;
-        sh:class foaf:Agent ;
-        sh:order 0 ;
-	] ;
-    sh:property [
-		sh:path dcat:hadRole ;
-		sh:name "Rôle"@fr ;
-        sh:nodeKind sh:IRI ;
-        sh:class dcat:Role ;
-        # snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole> ;
-        sh:order 1 ;
 	] .
 
