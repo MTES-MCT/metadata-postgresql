@@ -6,7 +6,8 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 from plume import __path__
-from plume.rdf.rdflib import Literal, URIRef, from_n3
+from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
+from plume.rdf.namespaces import RDF, DCAT
 
 class DatasetId(URIRef):
     """Identifiant de jeu de données.
@@ -429,4 +430,236 @@ def owlthing_from_tel(tel_str, add_fr_prefix=True):
     if tel:
         return URIRef('tel:' + tel)
 
+def get_datasetid(anygraph):
+    """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
+    
+    Parameters
+    ----------
+    anygraph : Graph
+        Un graphe quelconque, présumé contenir la description d'un
+        jeu de données (``dcat:Dataset``).
+    
+    Returns
+    -------
+    URIRef
+        L'identifiant du jeu de données. None si le graphe ne contenait
+        pas de jeu de données.
+    
+    """
+    for s in anygraph.subjects(RDF.type, DCAT.Dataset):
+        return s
+
+def graph_from_file(filepath, format=None):
+    """Désérialise le contenu d'un fichier sous forme de graphe.
+    
+    Le fichier sera présumé être encodé en UTF-8 et mieux
+    vaudrait qu'il le soit.
+    
+    Parameters
+    ----------
+    filepath : str
+        Chemin complet du fichier source, supposé contenir des
+        métadonnées dans un format RDF, sans quoi l'import échouera.
+    format : str, optional
+        Le format des métadonnées. Si non renseigné, il est autant que
+        possible déduit de l'extension du fichier, qui devra donc être
+        cohérente avec son contenu. Pour connaître la liste des valeurs
+        acceptées, on exécutera :py:func:`import_formats`.
+    
+    Returns
+    -------
+    Graph
+        Un graphe.
+    
+    """
+    pfile = Path(filepath)
+    
+    if not pfile.exists():
+        raise FileNotFoundError("Can't find file {}.".format(filepath))
+        
+    if not pfile.is_file():
+        raise TypeError("{} is not a file.".format(filepath))
+    
+    if format and not format in import_formats():
+        raise ValueError("Format '{}' is not supported.".format(format))
+    
+    if not format:
+        if not pfile.suffix in import_extensions_from_format():
+            raise TypeError("Couldn't guess RDF format from file extension." \
+                            "Please use format to declare it manually.")
+                            
+        else:
+            format = import_format_from_extension(pfile.suffix)
+            # NB : en théorie, la fonction parse de RDFLib est censée
+            # pouvoir reconnaître le format d'après l'extension, mais à
+            # ce jour elle n'identifie même pas toute la liste ci-avant.
+    
+    with pfile.open(encoding='UTF-8') as src:
+        g = Graph().parse(data=src.read(), format=format)
+    return g
+
+def import_formats():
+    """Renvoie la liste de tous les formats disponibles pour l'import.
+    
+    Returns
+    -------
+    list of str
+        La liste des formats reconnus par RDFLib à l'import.
+    
+    """
+    return [ k for k, v in rdflib_formats.items() if v['import'] ]
+
+def export_formats():
+    """Renvoie la liste de tous les formats disponibles pour l'export.
+    
+    Returns
+    -------
+    list of str
+        La liste des formats reconnus par RDFLib à l'export.
+    
+    """
+    return [ k for k in rdflib_formats.keys() ]
+
+def import_extensions_from_format(format=None):
+    """Renvoie la liste des extensions associées à un format d'import.
+    
+    Parameters
+    ----------
+    format : str, optional
+        Un format d'import présumé inclus dans la liste des formats
+        reconnus par les fonctions de RDFLib (rdflib_formats avec
+        import=True).
+    
+    Returns
+    -------
+    list of str
+        La liste de toutes les extensions associées au format considéré,
+        avec le point.
+        Si `format` n'est pas renseigné, la fonction renvoie la liste
+        de toutes les extensions reconnues pour l'import.
+    
+    Examples
+    --------
+    >>> import_extensions_from_format('xml')
+    ['.rdf', '.xml']
+    
+    """
+    if not format:
+        l = []
+        for k, d in rdflib_formats.items():
+            if d['import']:
+                l += d['extensions']
+        return l
+    
+    d = rdflib_formats.get(format)
+    if d and d['import']:
+        return d['extensions']
+
+def export_extension_from_format(format):
+    """Renvoie l'extension utilisée pour les exports dans le format considéré.
+    
+    Parameters
+    ----------
+    format : str
+        Un format d'export présumé inclus dans la liste des formats
+        reconnus par les fonctions de RDFLib (rdflib_format).
+    
+    Returns
+    -------
+    str
+        L'extension à utiliser pour le format considéré, avec le point.
+    
+    Example
+    -------
+    >>> rdf_utils.export_extension('pretty-xml')
+    '.rdf'
+    
+    """
+    d = rdflib_formats.get(format)
+    if d:
+        return d['extensions'][0]
+
+def import_format_from_extension(extension):
+    """Renvoie le format d'import correspondant à l'extension.
+    
+    Parameters
+    ----------
+    extension : str
+        Une extension (avec point).
+    
+    Returns
+    -------
+    str
+        Un nom de format. La fonction renvoie None si l'extension
+        n'est pas reconnue.
+    
+    """
+    for k, d in rdflib_formats.items():
+        if d['import'] and extension in d['extensions']:
+            return k
+
+def export_format_from_extension(extension):
+    """Renvoie le format d'export correspondant à l'extension.
+    
+     Parameters
+    ----------
+    extension : str
+        Une extension (avec point).
+    
+    Returns
+    -------
+    str
+        Un nom de format. La fonction renvoie None si l'extension
+        n'est pas reconnue.
+    
+    """
+    for k, d in rdflib_formats.items():
+        if d['export default'] and extension in d['extensions']:
+            return k
+
+rdflib_formats = {
+    'turtle': {
+        'extensions': ['.ttl'],
+        'import': True,
+        'export default': True
+        },
+    'n3': {
+        'extensions': ['.n3'],
+        'import': True,
+        'export default': True
+        },
+    'json-ld': {
+        'extensions': ['.jsonld', '.json'],
+        'import': True,
+        'export default': True
+        },
+    'xml': {
+        'extensions': ['.rdf', '.xml'],
+        'import': True,
+        'export default': False
+        },
+    'pretty-xml': {
+        'extensions': ['.rdf', '.xml'],
+        'import': False,
+        'export default': True
+        },
+    'nt': {
+        'extensions': ['.nt'],
+        'import': True,
+        'export default': True
+        },
+    'trig': {
+        'extensions': ['.trig'],
+        'import': True,
+        'export default': True
+        }
+    }
+"""Formats reconnus par les fonctions de RDFLib.
+
+Si la clé ``import`` vaut ``False``, le format n'est pas reconnu
+à l'import. Si ``export default`` vaut ``True``, il s'agit du
+format d'export privilégié pour les extensions listées
+par la clé ``extension``.
+
+"""
 
