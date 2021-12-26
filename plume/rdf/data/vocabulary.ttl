@@ -3,6 +3,105 @@
 @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
 
 
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/farming> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Farming"@en,
+		"Agriculture"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/elevation> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Elevation"@en,
+		"Altitude"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/biota> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Biota"@en,
+		"Biote"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/climatologyMeteorologyAtmosphere> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Climatology / Meteorology / Atmosphere"@en,
+		"Climatologie/Météorologie/Atmosphère"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/inlandWaters> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Inland Waters"@en,
+		"Eaux intérieures"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/environment> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Environment"@en,
+		"Environnement"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/imageryBaseMapsEarthCover> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Imagery / Base Maps / Earth Cover"@en,
+		"Imagerie/Cartes de base/Occupation des terres"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/geoscientificInformation> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Geoscientific Information"@en,
+		"Informations géoscientifiques"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/boundaries> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Boundaries"@en,
+		"Limites"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/location> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Location"@en,
+		"Localisation"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/oceans> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Oceans"@en,
+		"Océans"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/planningCadastre> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Planning / Cadastre"@en,
+		"Planification/Cadastre"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/intelligenceMilitary> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Intelligence / Military"@en,
+		"Renseignement/Secteur militaire"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/health> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Health"@en,
+		"Santé"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/utilitiesCommunication> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Utilities / Communication"@en,
+		"Services d’utilité publique/Communication"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/society> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Society"@en,
+		"Société"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/structure> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Structure"@en,
+		"Structure"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/transportation> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Transportation"@en,
+		"Transport"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/economy> a skos:Concept ;
+	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+	skos:prefLabel "Economy"@en,
+		"Économie"@fr .
+
+<https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> a skos:ConceptScheme ;
+    skos:prefLabel "Catégories thématiques conformément à la norme EN ISO 19115"@fr,
+        "Topic categories in accordance with EN ISO 19115"@en .
+
 
 <http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
     skos:inScheme snum:StandardRegister ;
