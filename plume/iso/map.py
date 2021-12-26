@@ -2,6 +2,7 @@
 
 """
 
+import re
 from json import load
 import xml.etree.ElementTree as etree
 
@@ -30,7 +31,7 @@ ns = {
 
 
 class IsoToDcat:
-    """Transformation d'un XML ISO 19139 en une liste de triples GeoDCAT-AP.
+    """Transcripteur ISO 19139 / GeoDCAT-AP.
     
     Parameters
     ----------
@@ -137,24 +138,25 @@ class IsoToDcat:
 
     @property
     def map_epsg(self):
-        epsg = self.isoxml.findtext('./gmd:referenceSystemInfo/'
+        l = []
+        for elem in self.isoxml.findall('./gmd:referenceSystemInfo/'
             'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
-            'gmd:RS_Identifier/gmd:code/gmx:Anchor',
-            namespaces=ns)
-        if not epsg:
-            epsg_txt = self.isoxml.findtext('./gmd:referenceSystemInfo/'
-                'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
-                'gmd:RS_Identifier/gmd:code/gco:CharacterString',
+            'gmd:RS_Identifier/gmd:code', namespaces=ns):
+            epsg = elem.findtext('./gmx:Anchor',
                 namespaces=ns)
-            r = re.search('EPSG:([0-9]*)', epsg_txt)
-            if r:
-                epsg = r[1]
-        if not epsg:
-            return []
-        node = BNode()
-        return [(self.datasetid, DCT.conformsTo, node),
-            (node, SKOS.inScheme, URIRef('http://www.opengis.net/def/crs/EPSG/0')),
-            (node, DCT.identifier, Literal(epsg))]
+            if not epsg:
+                epsg_txt = elem.findtext('./gco:CharacterString',
+                    namespaces=ns)
+                r = re.search('EPSG:([0-9]*)', epsg_txt)
+                if r:
+                    epsg = r[1]
+            if not epsg:
+                continue
+            node = BNode()
+            l += [(self.datasetid, DCT.conformsTo, node),
+                (node, SKOS.inScheme, URIRef('http://www.opengis.net/def/crs/EPSG/0')),
+                (node, DCT.identifier, Literal(epsg))]
+        return l
 
     @property
     def map_dates(self):
@@ -197,18 +199,32 @@ class IsoToDcat:
                 if keyword_iri:
                     l.append((self.datasetid, DCAT.theme, keyword_iri))
                     continue
-            l.append((self.datasetid, DCAT.keyword,
-                Literal(keyword, lang=self.language)))
+            for k in keyword.split(','):
+                l.append((self.datasetid, DCAT.keyword,
+                    Literal(k.strip(), lang=self.language)))
         return l
 
     @property
-    def map_access_rights(self):
-        return find_iri(self.isoxml, './gmd:identificationInfo/'
-            'gmd:MD_DataIdentification/gmd:resourceConstraints/'
-            'gmd:MD_LegalConstraints/gmd:otherConstraints/'
-            'gco:CharacterString', self.datasetid, DCT.accessRights,
-            thesaurus=URIRef('http://inspire.ec.europa.eu/'
-                'metadata-codelist/LimitationsOnPublicAccess'))        
+    def map_subjects(self):
+        l = []
+        for elem in self.isoxml.findall('./gmd:identificationInfo/'
+            'gmd:MD_DataIdentification/gmd:topicCategory',
+            namespaces=ns):
+            code = elem.findtext('./gmd:MD_TopicCategoryCode',
+                namespaces=ns)
+            if not code:
+                continue
+            iri = URIRef('http://inspire.ec.europa.eu/metadata-codelist/'
+                'TopicCategory/{}'.format(code))
+            label = Thesaurus.concept_str((URIRef('https://inspire.ec.'
+                'europa.eu/metadata-codelist/TopicCategory'), self.language),
+                iri)
+            if not label:
+                # on ne conserve que les codes qui existent dans le
+                # thésaurus
+                continue
+            l.append((self.datasetid, DCT.subject, iri))
+        return l
 
     @property
     def map_organizations(self):
@@ -309,7 +325,7 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         elif transform == 'phone':
             value = owlthing_from_tel(value)
         elif thesaurus:
-            value = Thesaurus.concept_iri((thesaurus, self.language), value)
+            value = Thesaurus.concept_iri(thesaurus, value)
             if not value:
                 continue
         l.append((subject, predicate, URIRef(value)))
