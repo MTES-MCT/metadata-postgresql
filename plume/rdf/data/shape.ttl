@@ -78,7 +78,7 @@ snum:DatasetShape
 		sh:name "Catégorie ISO 19115"@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
-        # snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+        snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
         sh:order 5 ;
 	] ;
     sh:property [
@@ -175,14 +175,6 @@ snum:DatasetShape
         sh:datatype xsd:decimal ;
         sh:maxCount 1 ;
         sh:order 24 ;
-	] ;
-    sh:property [
-		sh:path rdfs:comment ;
-		sh:name "Commentaire sur la résolution spatiale"@fr ;
-        sh:nodeKind sh:Literal ;
-        sh:datatype rdf:langString ;
-        sh:order 25 ;
-        snum:longText true ;
 	] ;
     sh:property [
 		sh:path dcat:temporalResolution ;
