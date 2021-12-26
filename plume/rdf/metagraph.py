@@ -1,4 +1,4 @@
-"""Graphes RDF.
+"""Graphes de métadonnées.
 
 """
 
@@ -8,8 +8,15 @@ from pathlib import Path
 from plume.rdf.rdflib import Graph, URIRef, BNode
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
     LOCAL, predicate_map
-from plume.rdf.utils import abspath, DatasetId
+from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
+    export_extension_from_format, export_format_from_extension, export_formats
+from plume.iso.map import IsoToDcat
 
+
+shape = graph_from_file(abspath('rdf/data/shape.ttl'))
+"""Schéma SHACL définissant la structure des métadonnées communes.
+
+"""
 
 class Metagraph(Graph):
     """Graphes de métadonnées.
@@ -48,6 +55,12 @@ class Metagraph(Graph):
         
         """
         return get_datasetid(self)
+
+    def print(self):
+        """Imprime le graphe de métadonnées dans la console (sérialisation turtle).
+        
+        """
+        print(self.serialize())
 
     def export(self, filepath, format=None):
         """Sérialise le graphe de métadonnées dans un fichier.
@@ -167,24 +180,6 @@ class Metagraph(Graph):
                 triple = (subject, predicate_map.get(p, p), o)
                 self._clean_metagraph(raw_metagraph, o, triple, memory)
 
-def get_datasetid(anygraph):
-    """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
-    
-    Parameters
-    ----------
-    anygraph : Graph
-        Un graphe quelconque, présumé contenir la description d'un
-        jeu de données (``dcat:Dataset``).
-    
-    Returns
-    -------
-    URIRef
-        L'identifiant du jeu de données. None si le graphe ne contenait
-        pas de jeu de données.
-    
-    """
-    for s in anygraph.subjects(RDF.type, DCAT.Dataset):
-        return s
 
 def metagraph_from_file(filepath, format=None, old_metagraph=None):
     """Crée un graphe de métadonnées à partir d'un fichier.
@@ -200,7 +195,7 @@ def metagraph_from_file(filepath, format=None, old_metagraph=None):
         Le format des métadonnées. Si non renseigné, il est autant que
         possible déduit de l'extension du fichier, qui devra donc être
         cohérente avec son contenu. Pour connaître la liste des valeurs
-        acceptées, on exécutera :py:func:`import_formats`.
+        acceptées, on exécutera :py:func:`plume.rdf.utils.import_formats`.
     old_metagraph : Metagraph, optional
         Le graphe contenant les métadonnées actuelles de l'objet
         PostgreSQL considéré, dont on récupèrera l'identifiant.
@@ -211,61 +206,13 @@ def metagraph_from_file(filepath, format=None, old_metagraph=None):
     
     Notes
     -----
-    Cette fonction se borne à exécuter successivement :py:func:`graph_from_file`
-    et :py:func:`clean_metagraph`.
+    Cette fonction se borne à exécuter successivement
+    :py:func:`plume.rdf.utils.graph_from_file` et
+    :py:func:`clean_metagraph`.
     
     """
     g = graph_from_file(filepath, format=format)
     return clean_metagraph(g, old_metagraph=old_metagraph)
-
-def graph_from_file(filepath, format=None):
-    """Désérialise le contenu d'un fichier sous forme de graphe.
-    
-    Le fichier sera présumé être encodé en UTF-8 et mieux
-    vaudrait qu'il le soit.
-    
-    Parameters
-    ----------
-    filepath : str
-        Chemin complet du fichier source, supposé contenir des
-        métadonnées dans un format RDF, sans quoi l'import échouera.
-    format : str, optional
-        Le format des métadonnées. Si non renseigné, il est autant que
-        possible déduit de l'extension du fichier, qui devra donc être
-        cohérente avec son contenu. Pour connaître la liste des valeurs
-        acceptées, on exécutera :py:func:`import_formats`.
-    
-    Returns
-    -------
-    Graph
-        Un graphe.
-    
-    """
-    pfile = Path(filepath)
-    
-    if not pfile.exists():
-        raise FileNotFoundError("Can't find file {}.".format(filepath))
-        
-    if not pfile.is_file():
-        raise TypeError("{} is not a file.".format(filepath))
-    
-    if format and not format in import_formats():
-        raise ValueError("Format '{}' is not supported.".format(format))
-    
-    if not format:
-        if not pfile.suffix in import_extensions_from_format():
-            raise TypeError("Couldn't guess RDF format from file extension." \
-                            "Please use format to declare it manually.")
-                            
-        else:
-            format = import_format_from_extension(pfile.suffix)
-            # NB : en théorie, la fonction parse de RDFLib est censée
-            # pouvoir reconnaître le format d'après l'extension, mais à
-            # ce jour elle n'identifie même pas toute la liste ci-avant.
-    
-    with pfile.open(encoding='UTF-8') as src:
-        g = Graph().parse(data=src.read(), format=format)
-    return g
 
 def clean_metagraph(raw_graph, old_metagraph=None):
     """Crée un graphe propre à partir d'un graphe issu d'une source externe.
@@ -367,172 +314,46 @@ def copy_metagraph(src_metagraph=None, old_metagraph=None):
     # ce sera fait à l'initialisation du dictionnaire de widgets.
     return metagraph
 
-def import_formats():
-    """Renvoie la liste de tous les formats disponibles pour l'import.
-    
-    Returns
-    -------
-    list of str
-        La liste des formats reconnus par RDFLib à l'import.
-    
-    """
-    return [ k for k, v in rdflib_formats.items() if v['import'] ]
-
-def export_formats():
-    """Renvoie la liste de tous les formats disponibles pour l'export.
-    
-    Returns
-    -------
-    list of str
-        La liste des formats reconnus par RDFLib à l'export.
-    
-    """
-    return [ k for k in rdflib_formats.keys() ]
-
-def import_extensions_from_format(format=None):
-    """Renvoie la liste des extensions associées à un format d'import.
+def metagraph_from_iso(raw_xml, old_metagraph=None, language='fr'):
+    """Crée un graphe de métadonnées à partir d'un XML renvoyé par un service CSW.
     
     Parameters
     ----------
-    format : str, optional
-        Un format d'import présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (rdflib_formats avec
-        import=True).
+    raw_xml : str
+        Le résultat brut retourné par le service CSW, présumé être
+        un XML conforme au standard ISO 19139.
+    old_metagraph : Metagraph, optional
+        Le graphe contenant les métadonnées actuelles de l'objet
+        PostgreSQL considéré, dont on récupèrera l'identifiant.
+    language : str, default 'fr'
+        Langue principale de rédaction des métadonnées.
     
     Returns
     -------
-    list of str
-        La liste de toutes les extensions associées au format considéré,
-        avec le point.
-        Si `format` n'est pas renseigné, la fonction renvoie la liste
-        de toutes les extensions reconnues pour l'import.
+    Metagraph
     
     Examples
     --------
-    >>> import_extensions_from_format('xml')
-    ['.rdf', '.xml']
+    >>> from urllib.request import urlopen
+    >>> from plume.iso.csw import getrecordbyid_request
+    >>> r = getrecordbyid_request(
+	...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable', 
+	...     'fr-120066022-jdd-3c998f8c-0e33-4ae5-8535-150a745bccce'
+	...     )
+    >>> with urlopen(r) as src:
+	...     xml = src.read()
+    >>> g = metagraph_from_iso(xml)
     
     """
-    if not format:
-        l = []
-        for k, d in rdflib_formats.items():
-            if d['import']:
-                l += d['extensions']
-        return l
-    
-    d = rdflib_formats.get(format)
-    if d and d['import']:
-        return d['extensions']
+    old_datasetid = old_metagraph.datasetid if old_metagraph else None
+    datasetid = DatasetId(old_datasetid)
+    metagraph = Metagraph()
+    metagraph.add((datasetid, RDF.type, DCAT.Dataset))
+    if raw_xml:
+        iso = IsoToDcat(raw_xml, datasetid=datasetid, main_language=language)
+        for t in iso.triples:
+            metagraph.add(t)
+    return metagraph
 
-def export_extension_from_format(format):
-    """Renvoie l'extension utilisée pour les exports dans le format considéré.
-    
-    Parameters
-    ----------
-    format : str
-        Un format d'export présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (rdflib_format).
-    
-    Returns
-    -------
-    str
-        L'extension à utiliser pour le format considéré, avec le point.
-    
-    Example
-    -------
-    >>> rdf_utils.export_extension('pretty-xml')
-    '.rdf'
-    
-    """
-    d = rdflib_formats.get(format)
-    if d:
-        return d['extensions'][0]
 
-def import_format_from_extension(extension):
-    """Renvoie le format d'import correspondant à l'extension.
-    
-    Parameters
-    ----------
-    extension : str
-        Une extension (avec point).
-    
-    Returns
-    -------
-    str
-        Un nom de format. La fonction renvoie None si l'extension
-        n'est pas reconnue.
-    
-    """
-    for k, d in rdflib_formats.items():
-        if d['import'] and extension in d['extensions']:
-            return k
 
-def export_format_from_extension(extension):
-    """Renvoie le format d'export correspondant à l'extension.
-    
-     Parameters
-    ----------
-    extension : str
-        Une extension (avec point).
-    
-    Returns
-    -------
-    str
-        Un nom de format. La fonction renvoie None si l'extension
-        n'est pas reconnue.
-    
-    """
-    for k, d in rdflib_formats.items():
-        if d['export default'] and extension in d['extensions']:
-            return k
-
-rdflib_formats = {
-    'turtle': {
-        'extensions': ['.ttl'],
-        'import': True,
-        'export default': True
-        },
-    'n3': {
-        'extensions': ['.n3'],
-        'import': True,
-        'export default': True
-        },
-    'json-ld': {
-        'extensions': ['.jsonld', '.json'],
-        'import': True,
-        'export default': True
-        },
-    'xml': {
-        'extensions': ['.rdf', '.xml'],
-        'import': True,
-        'export default': False
-        },
-    'pretty-xml': {
-        'extensions': ['.rdf', '.xml'],
-        'import': False,
-        'export default': True
-        },
-    'nt': {
-        'extensions': ['.nt'],
-        'import': True,
-        'export default': True
-        },
-    'trig': {
-        'extensions': ['.trig'],
-        'import': True,
-        'export default': True
-        }
-    }
-"""Formats reconnus par les fonctions de RDFLib.
-
-Si la clé ``import`` vaut ``False``, le format n'est pas reconnu
-à l'import. Si ``export default`` vaut ``True``, il s'agit du
-format d'export privilégié pour les extensions listées
-par la clé ``extension``.
-
-"""
-
-shape = graph_from_file(abspath('rdf/data/shape.ttl'))
-"""Schéma SHACL définissant la structure des métadonnées communes.
-
-"""
