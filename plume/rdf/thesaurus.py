@@ -5,10 +5,9 @@
 from locale import strxfrm, setlocale, LC_COLLATE
 
 from plume.rdf.rdflib import Graph, URIRef
-from plume.rdf.metagraph import graph_from_file
 from plume.rdf.exceptions import UnknownSource
 from plume.rdf.namespaces import FOAF, SKOS, SNUM
-from plume.rdf.utils import abspath, pick_translation
+from plume.rdf.utils import abspath, pick_translation, graph_from_file
 
 vocabulary = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
 """Graphe contenant le vocabulaire de tous les thésaurus.
@@ -114,7 +113,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.values((SNUM.CrpaAuthorizedLicense, 'fr'))
+        >>> Thesaurus.values((SNUM.CrpaAuthorizedLicense, ('fr', 'en')))
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
         """
@@ -155,7 +154,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.label((SNUM.CrpaAccessLimitations, 'fr'))
+        >>> Thesaurus.label((SNUM.CrpaAccessLimitations, ('fr', 'en')))
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
         """
@@ -201,7 +200,7 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_iri(
-        ...     (SNUM.CrpaAccessLimitations, 'fr'), 
+        ...     (SNUM.CrpaAccessLimitations, ('fr', 'en')), 
         ...     'Communicable au seul intéressé - atteinte à la' \
         ...         ' protection de la vie privée (CRPA, L311-6 1°)'
         ...     )
@@ -250,7 +249,7 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_str(
-        ...     (SNUM.CrpaAccessLimitations, 'fr'), 
+        ...     (SNUM.CrpaAccessLimitations, ('fr', 'en')), 
         ...     SNUM['CrpaAccessLimitations-311-6-1-vp']
         ...     )
         'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
@@ -297,7 +296,7 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_link(
-        ...     (SNUM.CrpaAccessLimitations, 'fr'), 
+        ...     (SNUM.CrpaAccessLimitations, ('fr', 'en')), 
         ...     SNUM['CrpaAccessLimitations-311-6-1-vp']
         ...     )
         rdflib.term.URIRef('https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056')
