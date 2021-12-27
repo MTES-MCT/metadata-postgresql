@@ -41,8 +41,6 @@ class IsoToDcat:
     datasetid : plume.rdf.utils.DatasetId, optional
         L'identifiant du jeu de données. Si non fourni, un nouvel
         identifiant est généré.
-    main_language : str, default 'fr'
-        Langue principale de rédaction des métadonnées.
     
     Attributes
     ----------
@@ -63,14 +61,21 @@ class IsoToDcat:
         Langue de la fiche de métadonnées. Normalement, cette
         information est disponible dans le XML. S'il n'a pas
         été possible de l'extraire, les métadonnées seront
-        présumées être dans la langue principale de rédaction
-        des métadonnées (paramètre `main_language`).
+        présumées être en français.
     iso639_language_codes : dict
         Attribut de classe. Répertoire des codes de langues
         utilisés par les métadonnées ISO 19139. Les clés sont
         les codes sur trois caractères des métadonnées ISO, les
         valeurs sont les codes sur deux caractères utilisés
         préférentiellement pour les valeurs litériales RDF.
+    metadata_language
+    map_title
+    map_description
+    map_epsg
+    map_dates
+    map_keywords
+    map_subjects
+    map_organizations
     
     Notes
     -----
@@ -80,8 +85,14 @@ class IsoToDcat:
     """
     
     iso639_language_codes = None
+    """dict: Mapping des codes de langue de trois caractères en codes à deux caractères.
+    
+    Ce dictionnaire est chargé si besoin à l'initialisation d'un nouvel
+    objet, grâce à la méthode :py:meth:`IsoToDcat.load_language_codes`.
+    
+    """
  
-    def __init__(self, raw_xml, datasetid=None, main_language='fr'):
+    def __init__(self, raw_xml, datasetid=None):
         try:
             root = etree.fromstring(raw_xml)
             self.isoxml = root.find('./gmd:MD_Metadata', ns) \
@@ -90,7 +101,7 @@ class IsoToDcat:
             self.isoxml = etree.Element(wns('gmd:MD_Metadata'))
         self.triples = []
         self.datasetid = DatasetId(datasetid)
-        self.language = self.metadata_language() or main_language
+        self.language = self.metadata_language() or 'fr'
         for attr in dir(self):
             if attr.startswith('map_'):
                 triples = getattr(self, attr, [])
@@ -101,10 +112,19 @@ class IsoToDcat:
     
     @classmethod
     def load_language_codes(cls):
+        """Charge le dictionnaire des codes de langues.
+        
+        """
         with open(abspath('iso/data/iso-639-2.json')) as src:
             cls.iso639_language_codes = load(src)
     
     def metadata_language(self):
+        """str: Langue des métadonnées.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML.
+        
+        """
         code = self.isoxml.findtext('./gmd:language/gmd:LanguageCode',
             namespaces=ns)
         if not code:
@@ -125,6 +145,13 @@ class IsoToDcat:
     
     @property
     def map_title(self):
+        """list of tuples: Triples contenant le libellé du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         return find_literal(self.isoxml, './gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:citation/'
             'gmd:CI_Citation/gmd:title/gco:CharacterString', self.datasetid,
@@ -132,12 +159,26 @@ class IsoToDcat:
 
     @property
     def map_description(self):
+        """list of tuples: Triples contenant le descriptif du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         return find_literal(self.isoxml, './gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:abstract/gco:CharacterString',
             self.datasetid, DCT.description, language=self.language)
 
     @property
     def map_epsg(self):
+        """list of tuples: Triples contenant le ou les référentiels de coordonnées du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         l = []
         for elem in self.isoxml.findall('./gmd:referenceSystemInfo/'
             'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
@@ -160,6 +201,13 @@ class IsoToDcat:
 
     @property
     def map_dates(self):
+        """list of tuples: Triples contenant les dates du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         l = []
         type_map = {
             'creation': DCT.created,
@@ -183,6 +231,13 @@ class IsoToDcat:
 
     @property
     def map_keywords(self):
+        """list of tuples: Triples contenant les mots-clés.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         l = []
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:descriptiveKeywords',
@@ -195,7 +250,7 @@ class IsoToDcat:
             if t and 'INSPIRE themes' in t:
                 keyword_iri = Thesaurus.concept_iri((
                     URIRef('https://inspire.ec.europa.eu/theme'),
-                    self.language), keyword)
+                    (self.language,)), keyword)
                 if keyword_iri:
                     l.append((self.datasetid, DCAT.theme, keyword_iri))
                     continue
@@ -206,6 +261,13 @@ class IsoToDcat:
 
     @property
     def map_subjects(self):
+        """list of tuples: Triples contenant la ou les catégories ISO 19115.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         l = []
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:topicCategory',
@@ -217,8 +279,8 @@ class IsoToDcat:
             iri = URIRef('http://inspire.ec.europa.eu/metadata-codelist/'
                 'TopicCategory/{}'.format(code))
             label = Thesaurus.concept_str((URIRef('https://inspire.ec.'
-                'europa.eu/metadata-codelist/TopicCategory'), self.language),
-                iri)
+                'europa.eu/metadata-codelist/TopicCategory'),
+                (self.language,)), iri)
             if not label:
                 # on ne conserve que les codes qui existent dans le
                 # thésaurus
@@ -227,7 +289,32 @@ class IsoToDcat:
         return l
 
     @property
+    def map_provenance(self):
+        """list of tuples: Triples contenant la généalogie des données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        node = BNode()
+        triples = find_literal(self.isoxml, './gmd:dataQualityInfo/'
+            'gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/'
+            'gmd:statement/gco:CharacterString', node, RDFS.label,
+            language=self.language)
+        if triples:
+            triples.append((self.datasetid, DCT.provenance, node))
+        return triples
+
+    @property
     def map_organizations(self):
+        """list of tuples: Triples contenant les informations relatives aux organisations responsables.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
         l = []
         role_map = {
             'resourceProvider': GEODCAT.resourceProvider,
@@ -299,6 +386,38 @@ class IsoToDcat:
         return l
 
 def find_literal(elem, path, subject, predicate, multi=False, datatype=None, language=None):
+    """Extrait des valeurs litérales d'un XML et les renvoie sous forme de triples.
+    
+    Parameters
+    ----------
+    elem : xml.etree.ElementTree.Element
+        Un élément XML présumé contenir l'information
+        recherchée.
+    path : str
+        Le chemin de l'information recherchée dans le XML.
+    subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
+        L'identifiant du graphe ou le noeud anonyme sujet
+        des triples à renvoyer.
+    predicate : rdflib.term.URIRef
+        La propriété qui sera le prédicat des triples
+        renvoyés.
+    multi : bool, default False
+        La propriété admet-elle plusieurs valeurs ? Si ``False``,
+        la fonction s'arrête dès qu'une valeur a été trouvée,
+        même si le XML en contenait plusieurs.
+    datatype : URIRef, optional
+        Le cas échéant, l'IRI du type de données. Les types XSD.string
+        et RDF.langString ne doivent pas être spécifiés.
+    language : str, optional
+        Le cas échéant, la langue de la valeur.
+    
+    Returns
+    -------
+    list of tuples
+        Une liste de triples, ou une liste vide si le chemin cherché
+        n'était pas présent dans le XML.
+    
+    """
     l = []
     for sub in elem.findall(path, namespaces=ns):
         value = sub.text
@@ -306,7 +425,7 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
             continue
         if language:
             l.append((subject, predicate, Literal(value, lang=language)))
-        elif datatype:
+        elif datatype and datatype != XSD.string:
             l.append((subject, predicate, Literal(value, datatype=datatype)))
         else:
             l.append((subject, predicate, Literal(value)))
@@ -315,6 +434,41 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
     return l
 
 def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesaurus=None):
+    """Extrait des IRI d'un XML et les renvoie sous forme de triples.
+    
+    Parameters
+    ----------
+    elem : xml.etree.ElementTree.Element
+        Un élément XML présumé contenir l'information
+        recherchée.
+    path : str
+        Le chemin de l'information recherchée dans le XML.
+    subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
+        L'identifiant du graphe ou le noeud anonyme sujet
+        des triples à renvoyer.
+    predicate : rdflib.term.URIRef
+        La propriété qui sera le prédicat des triples
+        renvoyés.
+    multi : bool, default False
+        La propriété admet-elle plusieurs valeurs ? Si ``False``,
+        la fonction s'arrête dès qu'une valeur a été trouvée,
+        même si le XML en contenait plusieurs.
+    transform : {None, 'email', 'phone'}, optional
+        Le cas échéant, la nature de la transformation à
+        appliquer aux objets des triples.
+    thesaurus : tuple(rdflib.term.URIRef, tuple(str))
+        Source de vocabulaire contrôlée pour les objets des triples.
+        Il s'agit d'un tuple dont le premier élément est l'IRI de la
+        source, le second un tuple de langues pour lequel le thésaurus
+        doit être généré.
+    
+    Returns
+    -------
+    list of tuples
+        Une liste de triples, ou une liste vide si le chemin cherché
+        n'était pas présent dans le XML.
+    
+    """
     l = []
     for sub in elem.findall(path, namespaces=ns):
         value = sub.text
