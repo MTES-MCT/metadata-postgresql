@@ -340,10 +340,11 @@ snum:DatasetShape
         sh:order 83 ;
 	] ;
     sh:property [
-		sh:path adms:identifier ;
-		sh:name "Autre identifiant"@fr ;
-        sh:nodeKind sh:IRI ;
-        sh:class skos:Concept ;
+		sh:path snum:linkedRecord ;
+		sh:name "Fiche distante"@fr ;
+		sh:description "Configuration d'import des métadonnées depuis une fiche de catalogue INSPIRE."@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class snum:LinkedRecord ;
         sh:order 84 ;
 	] .
 
@@ -728,5 +729,30 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 9 ;
         # snum:ontology snum:StandardType ;
+	] .
+
+snum:LinkedRecordShape
+    a sh:NodeShape ;
+    sh:targetClass snum:LinkedRecord ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [
+		sh:path snum:csw ;
+		sh:name "Service CSW"@fr ;
+		sh:description "URL de base du service CSW, sans aucun paramètre."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:maxCount 1 ;
+        sh:order 0 ;
+        snum:placeholder "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable" ;
+	] ;
+    sh:property [
+		sh:path dct:identifier ;
+		sh:name "Identifiant de la fiche"@fr ;
+		sh:description "Identifiant de la fiche de métadonnées (et non de la ressource)."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+        sh:order 1 ;
+		snum:placeholder "fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297" ;
 	] .
 
