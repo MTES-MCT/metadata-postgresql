@@ -5,11 +5,12 @@
 from uuid import UUID, uuid4
 from pathlib import Path
 
-from plume.rdf.rdflib import Graph, URIRef, BNode
+from plume.rdf.rdflib import Graph, URIRef, BNode, Literal
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
-    LOCAL, predicate_map
+    LOCAL, SNUM, DCT, predicate_map
 from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
-    export_extension_from_format, export_format_from_extension, export_formats
+    export_extension_from_format, export_format_from_extension, export_formats, \
+    forbidden_char
 from plume.iso.map import IsoToDcat
 
 
@@ -28,6 +29,7 @@ class Metagraph(Graph):
     ----------
     datasetid
     available_formats
+    linked_record
     
     Notes
     -----   
@@ -53,8 +55,96 @@ class Metagraph(Graph):
         Peut être ``None`` si le graphe de métadonnées ne contient
         pas d'élément ``dcat:Dataset``.
         
+        Il est possible de définir l'identifiant du jeu de données via
+        cette propriété, sous réserve que le graphe soit vide (dans le cas
+        contraire, la commande n'aura aucun effet).
+        
+        Identifiant aléatoire:
+        
+            >>> metagraph = Metagraph()
+            >>> metagraph.datasetid = None
+            >>> metagraph.datasetid
+            DatasetId('urn:uuid:...')
+        
+        Identifiant pré-déterminé:
+        
+            >>> metagraph = Metagraph()
+            >>> metagraph.datasetid = '523d5fa9-77a8-41da-a5ce-36b64fe935ed'
+            >>> metagraph.datasetid
+            DatasetId('urn:uuid:523d5fa9-77a8-41da-a5ce-36b64fe935ed')
+        
+        L'identifiant doit être UUID valide, sans quoi un nouvel UUID sera
+        utilisé à la place. Il peut être fourni sous la forme d'une chaîne
+        de caractères, d'un objet :py:class:`uuid.UUID`, :py:class:`rdflib.URIRef`
+        ou encore :py:class:`plume.rdf.utils.DatasetId`.
+        
         """
         return get_datasetid(self)
+
+    @datasetid.setter
+    def datasetid(self, value):
+        if len(self) > 0:
+            return
+        datasetid = DatasetId(value)
+        self.add((datasetid, RDF.type, DCAT.Dataset))
+
+    @property
+    def linked_record(self):
+        """tuple(str): Fiche de métadonnées distante référencée par le graphe, le cas échéant.
+        
+        Le tuple est constitué de deux éléments : l'URL de base du service
+        CSW et l'identifiant de la fiche.
+        
+        À défaut de configuration sauvegardée, cette propriété vaut ``None``.
+        
+        Pour sauvegarder une configuration:
+        
+            >>> metagraph = Metagraph()
+            >>> metagraph.datasetid = None
+            >>> metagraph.linked_record = (
+            ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable', 
+            ...     'fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297'
+            ...     ) 
+        
+        Le graphe doit a minima contenir un identifiant de jeu de données,
+        sans quoi la tentative de sauvegarde sera silencieusement ignorée.
+        
+        Pour effacer la configuration:
+        
+            >>> metagraph.linked_record = None
+        
+        """
+        datasetid = self.datasetid
+        url_csw = self.value(datasetid, SNUM.linkedRecord / SNUM.csw)
+        file_identifier = self.value(datasetid, SNUM.linkedRecord / DCT.identifier)
+        if url_csw and file_identifier:
+            return (str(url_csw), str(file_identifier))
+
+    @linked_record.setter
+    def linked_record(self, value):
+        if value is not None:
+            if not isinstance(value, tuple) \
+                or not len(value)==2:
+                return
+            url_csw, file_identifier = value
+            if forbidden_char(url_csw):
+                return
+        datasetid = self.datasetid
+        if not datasetid:
+            return
+        node = self.value(datasetid, SNUM.linkedRecord)
+        if node:
+            self.remove((node, SNUM.csw, None))
+            self.remove((node, DCT.identifier, None))
+            if value is None:
+                self.remove((datasetid, SNUM.linkedRecord, node))
+                return
+        else:
+            node = BNode()
+        if value is not None:
+            self.add((datasetid, SNUM.linkedRecord, node))
+            self.add((node, SNUM.csw, URIRef(url_csw)))
+            self.add((node, DCT.identifier, Literal(file_identifier)))
 
     def print(self):
         """Imprime le graphe de métadonnées dans la console (sérialisation turtle).
@@ -314,7 +404,7 @@ def copy_metagraph(src_metagraph=None, old_metagraph=None):
     # ce sera fait à l'initialisation du dictionnaire de widgets.
     return metagraph
 
-def metagraph_from_iso(raw_xml, old_metagraph=None, language='fr'):
+def metagraph_from_iso(raw_xml, old_metagraph=None):
     """Crée un graphe de métadonnées à partir d'un XML renvoyé par un service CSW.
     
     Parameters
@@ -325,8 +415,6 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, language='fr'):
     old_metagraph : Metagraph, optional
         Le graphe contenant les métadonnées actuelles de l'objet
         PostgreSQL considéré, dont on récupèrera l'identifiant.
-    language : str, default 'fr'
-        Langue principale de rédaction des métadonnées.
     
     Returns
     -------
@@ -346,11 +434,11 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, language='fr'):
     
     """
     old_datasetid = old_metagraph.datasetid if old_metagraph else None
-    datasetid = DatasetId(old_datasetid)
     metagraph = Metagraph()
-    metagraph.add((datasetid, RDF.type, DCAT.Dataset))
+    metagraph.datasetid = old_datasetid
+
     if raw_xml:
-        iso = IsoToDcat(raw_xml, datasetid=datasetid, main_language=language)
+        iso = IsoToDcat(raw_xml, datasetid=metagraph.datasetid)
         for t in iso.triples:
             metagraph.add(t)
     return metagraph
