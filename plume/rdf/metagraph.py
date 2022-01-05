@@ -95,7 +95,7 @@ class Metagraph(Graph):
         Le tuple est constitué de deux éléments : l'URL de base du service
         CSW et l'identifiant de la fiche.
         
-        À défaut de configuration sauvegardée, cette propriété vaut ``None``.
+        À défaut de configuration sauvegardée, cette propriété vaut ``(None, None)``.
         
         Pour sauvegarder une configuration:
         
@@ -117,8 +117,8 @@ class Metagraph(Graph):
         datasetid = self.datasetid
         url_csw = self.value(datasetid, SNUM.linkedRecord / SNUM.csw)
         file_identifier = self.value(datasetid, SNUM.linkedRecord / DCT.identifier)
-        if url_csw and file_identifier:
-            return (str(url_csw), str(file_identifier))
+        return (str(url_csw) if url_csw else None,
+            str(file_identifier) if file_identifier else None)
 
     @linked_record.setter
     def linked_record(self, value):
@@ -127,8 +127,10 @@ class Metagraph(Graph):
                 or not len(value)==2:
                 return
             url_csw, file_identifier = value
-            if forbidden_char(url_csw):
-                return
+            if not url_csw and not file_identifier:
+                value = None
+            elif url_csw and forbidden_char(url_csw):
+                url_csw = None
         datasetid = self.datasetid
         if not datasetid:
             return
@@ -143,8 +145,10 @@ class Metagraph(Graph):
             node = BNode()
         if value is not None:
             self.add((datasetid, SNUM.linkedRecord, node))
-            self.add((node, SNUM.csw, URIRef(url_csw)))
-            self.add((node, DCT.identifier, Literal(file_identifier)))
+            if url_csw:
+                self.add((node, SNUM.csw, URIRef(url_csw)))
+            if file_identifier:
+                self.add((node, DCT.identifier, Literal(file_identifier)))
 
     def print(self):
         """Imprime le graphe de métadonnées dans la console (sérialisation turtle).
