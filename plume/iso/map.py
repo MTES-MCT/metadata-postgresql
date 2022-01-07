@@ -211,8 +211,8 @@ class IsoToDcat:
         l = []
         type_map = {
             'creation': DCT.created,
-            'revision': DCT.issued,
-            'publication': DCT.modified
+            'revision': DCT.modified,
+            'publication': DCT.issued
             }
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/'
@@ -245,18 +245,21 @@ class IsoToDcat:
             t = elem.findtext('./gmd:MD_Keywords/gmd:thesaurusName/'
                 'gmd:CI_Citation/gmd:title/gco:CharacterString',
                 namespaces=ns)
-            keyword = elem.findtext('./gmd:MD_Keywords/gmd:keyword/'
-                'gco:CharacterString', namespaces=ns)
-            if t and 'INSPIRE themes' in t:
-                keyword_iri = Thesaurus.concept_iri((
-                    URIRef('https://inspire.ec.europa.eu/theme'),
-                    (self.language,)), keyword)
-                if keyword_iri:
-                    l.append((self.datasetid, DCAT.theme, keyword_iri))
-                    continue
-            for k in keyword.split(','):
-                l.append((self.datasetid, DCAT.keyword,
-                    Literal(k.strip(), lang=self.language)))
+            for subelem in elem.findall('./gmd:MD_Keywords/gmd:keyword',
+                namespaces=ns):
+                keyword = subelem.findtext('./gco:CharacterString',
+                    namespaces=ns)
+                if t and 'INSPIRE themes' in t:
+                    keyword_iri = Thesaurus.concept_iri((
+                        URIRef('https://inspire.ec.europa.eu/theme'),
+                        (self.language,)), keyword)
+                    if keyword_iri:
+                        l.append((self.datasetid, DCAT.theme, keyword_iri))
+                        continue
+                for k in keyword.split(','):
+                    if k:
+                        l.append((self.datasetid, DCAT.keyword,
+                            Literal(k.strip(), lang=self.language)))
         return l
 
     @property
