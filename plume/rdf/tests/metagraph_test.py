@@ -52,7 +52,6 @@ class MetagraphTestCase(unittest.TestCase):
         issued = Literal('2020-04-16', datatype=XSD.date)
         self.assertTrue((datasetid, DCT.issued, issued) in metagraph)
         
-
     def test_metagraph_from_iso_geosource(self):
         """Génération d'un graphe à partir de métadonnées ISO 19115/19139 (XML issu de GéoLittoral).
         
@@ -68,10 +67,12 @@ class MetagraphTestCase(unittest.TestCase):
         self.assertTrue((datasetid, DCT.issued, issued) in metagraph)
         fn1 = Literal("Ministère en charge de l'environnement / DGALN")
         fn2 = Literal('CEREMA Normandie-Centre')
-        self.assertTrue((datasetid, DCAT.contactPoint / VCARD.fn, fn1)
+        self.assertTrue((datasetid, DCT.rightsHolder / FOAF.name, fn1)
             in metagraph)
-        self.assertTrue((datasetid, DCAT.contactPoint / VCARD.fn, fn2)
+        self.assertTrue((datasetid, GEODCAT.custodian / FOAF.name, fn2)
             in metagraph)
+        self.assertTrue((datasetid, DCAT.theme,
+            URIRef('http://inspire.ec.europa.eu/theme/tn')) in metagraph)
     
     def test_metagraph_from_file(self):
         """Import depuis un fichier et génération d'un graphe de métadonnées propre.
