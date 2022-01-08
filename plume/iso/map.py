@@ -183,20 +183,27 @@ class IsoToDcat:
         for elem in self.isoxml.findall('./gmd:referenceSystemInfo/'
             'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
             'gmd:RS_Identifier/gmd:code', namespaces=ns):
-            epsg = elem.findtext('./gmx:Anchor',
+            epsg_txt = elem.findtext('./gmx:Anchor',
                 namespaces=ns)
-            if not epsg:
+            if not epsg_txt:
                 epsg_txt = elem.findtext('./gco:CharacterString',
                     namespaces=ns)
+            if not epsg_txt:
+                continue
+            if epsg_txt.isdigit():
+                epsg = epsg_txt
+            else:
                 r = re.search('EPSG:([0-9]*)', epsg_txt)
                 if r:
                     epsg = r[1]
-            if not epsg:
-                continue
             node = BNode()
             l += [(self.datasetid, DCT.conformsTo, node),
-                (node, SKOS.inScheme, URIRef('http://www.opengis.net/def/crs/EPSG/0')),
-                (node, DCT.identifier, Literal(epsg))]
+                (node, SKOS.inScheme, URIRef('http://www.opengis.net/def/crs/EPSG/0'))]
+            if epsg:
+                l.append((node, DCT.identifier, Literal(epsg)))
+            if epsg_txt != epsg:
+                l.append((node, DCT.title, Literal(epsg_txt,
+                    lang=self.language)))
         return l
 
     @property
