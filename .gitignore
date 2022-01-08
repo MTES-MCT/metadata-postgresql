@@ -5,3 +5,4 @@ __log__/
 TO_DO.txt
 *.zip
 test_export_*
+tests/export/dcat_eurostat_*
