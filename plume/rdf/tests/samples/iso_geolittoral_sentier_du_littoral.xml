@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
 <gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gmi="http://www.isotc211.org/2005/gmi" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://schemas.opengis.net/csw/2.0.2/profiles/apiso/1.0.0/apiso.xsd">
   <gmd:fileIdentifier>
       <gco:CharacterString>0fb2abdf-2809-4c2f-9323-f016ccc116aa</gco:CharacterString>
@@ -697,4 +698,5 @@ Source de données : Ortho-littorale V2 du Ministère en charge de l'environneme
          </gmd:maintenanceAndUpdateFrequency>
       </gmd:MD_MaintenanceInformation>
   </gmd:metadataMaintenance>
-<script/></gmd:MD_Metadata>
+</gmd:MD_Metadata>
+<script/></csw:GetRecordByIdResponse>
