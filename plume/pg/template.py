@@ -64,7 +64,7 @@ class TemplateDict:
                 'is_multiple': is_multiple,
                 'unilang': unilang,
                 'is_mandatory': is_mandatory,
-                'sources': [URIRef(s) for s in sources],
+                'sources': [URIRef(s) for s in sources or []],
                 'template_order': template_order,
                 'is_read_only': is_read_only,
                 'tab': tab
@@ -96,7 +96,7 @@ class TemplateDict:
                     # dictionnaire de widgets).
             
                 # gestion des hypothétiques ancêtres manquants :
-                path_elements = re.split(r'\s*[/]\s*', c[1])
+                path_elements = re.split(r'\s*[/]\s*', path)
                 
                 path = ' / '.join(path_elements)
                 # avec espacement propre, à toute fin utile
@@ -167,13 +167,14 @@ def search_template(templates, metagraph=None):
             continue
         
         # filtre SQL (dont on a d'ores-et-déjà le résultat
-        # dans sql_filter_check, calculé côté serveur)
-        if sql_filter_check:
+        # dans check_sql_filter, calculé côté serveur)
+        if check_sql_filter:
             r = tpl_label
             p = priority
+            continue
         
         # conditions sur les métadonnées
-        if isinstance(md_conditions, list):
+        if metagraph and isinstance(md_conditions, list):
             datasetid = metagraph.datasetid
             for ands in md_conditions:
                 if isinstance(ands, dict) and len(ands) > 0:
