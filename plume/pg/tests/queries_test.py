@@ -284,7 +284,6 @@ class QueriesTestCase(unittest.TestCase):
 
         """
         conn = psycopg2.connect(connection_string)
-        
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
