@@ -9,13 +9,11 @@ from rdflib.term import URIRef
 
 from plume.rdf.namespaces import DCAT, SH, PlumeNamespaceManager
 from plume.rdf.properties import class_properties
+from plume.pg.tests.connection import ConnectionString
 
 nsm = PlumeNamespaceManager()
 
-def table_from_shape(
-    mList=None, mPath=None, mNSManager=None,
-    mTargetClass=URIRef("http://www.w3.org/ns/dcat#Dataset")
-    ):
+def table_from_shape():
     """Renvoie une représentation du schéma SHACL sous forme de table.
     
     Le résultat correspond au contenu de la table
@@ -80,13 +78,7 @@ def query_from_shape():
         ``z_plume.meta_shared_categorie``).
     
     """
-    connection_string = "host={} port={} dbname={} user={} password={}".format(
-        input('host (localhost): ') or 'localhost',
-        input('port (5432): ') or '5432',
-        input('dbname (metadata_dev): ') or 'metadata_dev',
-        input('user (postgres): ') or 'postgres',
-        input('password : ')
-        )
+    connection_string = ConnectionString()
     
     t = table_from_shape()
 
