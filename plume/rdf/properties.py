@@ -230,7 +230,7 @@ def read_shape_property(shape_node):
         SH.nodeKind: ('kind', False),
         SH.order: ('shape_order', False),
         SH['class']: ('rdfclass', False),
-        SH.placeholder: ('placeholder', False),
+        SNUM.placeholder: ('placeholder', False),
         SNUM.inputMask: ('input_mask', False),
         SNUM.rowSpan: ('rowspan', False),
         SH.minCount: ('min', False),
