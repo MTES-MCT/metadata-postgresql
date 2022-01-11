@@ -1,7 +1,7 @@
 """Recette du module queries.
 
-Les tests nécessite une connexion PostgreSQL (définie par
-input) pointant sur une base où :
+Les tests nécessitent une connexion PostgreSQL (paramètres à
+saisir lors de l'exécution du test) pointant sur une base où :
 - l'extension plume_pg est installée ;
 - le schéma z_plume_recette existe et contient les fonctions
 de la recette côté serveur, qui sera exécutée par l'un des tests.
@@ -495,4 +495,6 @@ class QueriesTestCase(unittest.TestCase):
             )
         self.assertIsNone(query)
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
+
