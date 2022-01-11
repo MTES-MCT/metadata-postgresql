@@ -43,7 +43,7 @@ class TemplateDict:
     
     def __init__(self, categories, tabs=None):
     
-        self.tabs = tabs or []
+        self.tabs = [tab for tab, in tabs or []]
         self.shared = {}
         self.local = {}
         
@@ -69,8 +69,10 @@ class TemplateDict:
                 'is_read_only': is_read_only,
                 'tab': tab
                 }
-            if template_order:
+            
+            if template_order is not None:
                 config['order_idx'] = (template_order,)
+                
             if special:
                 config['kind'] = SH.IRI
                 config['transform'] = special
