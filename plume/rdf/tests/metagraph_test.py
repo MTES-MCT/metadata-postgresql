@@ -116,4 +116,6 @@ class MetagraphTestCase(unittest.TestCase):
             old_metagraph=m)
         self.assertTrue(isomorphic(m, m_reload))
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
+
