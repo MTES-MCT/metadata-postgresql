@@ -46,4 +46,6 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(p, datasetid_from_uuid(uuid))
         
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
+
