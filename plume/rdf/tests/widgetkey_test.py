@@ -410,7 +410,8 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.show, [])
         self.assertEqual(actionsbook.hide, [])
         self.assertEqual(actionsbook.languages, [valkey2c])
-        
-        
+ 
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
+
