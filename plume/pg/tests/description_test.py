@@ -56,4 +56,6 @@ class DescriptionTestCase(unittest.TestCase):
                 pgdescr.metagraph = metagraph
                 self.assertEqual(str(pgdescr), raw)
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
+
