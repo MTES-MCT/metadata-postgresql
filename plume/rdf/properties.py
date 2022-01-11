@@ -4,6 +4,11 @@ Ce module gère la convergence des informations descriptives des
 catégories de métadonnées communes (décrites par un schéma SHACL) et
 locales (décrites par un modèle stocké dans des tables PostgreSQL).
 
+La classe :py:class:`PlumeProperty` et la plupart des fonctions
+du module n'ont pas vraiment vocation à être utilisées
+directement. La plus utile - et celle qui sert au module
+:py:mod:`plume.rdf.widgetsdict` - est :py:fun:`class_properties`.
+
 """
 
 from plume.rdf.rdflib import URIRef
@@ -134,7 +139,7 @@ def merge_property_dict(shape_dict, template_dict):
     La clé ``order_idx`` produite par :py:func:`read_shape_property`
     à partir de l'indice fourni par le schéma SHACL est un tuple
     dont la première valeur est ``9999``, et la seconde l'indice.
-    :py:func:`plume.pg.template.build_template` fait exactement
+    :py:class:`plume.pg.template.TemplateDict` fait exactement
     l'inverse : ses clés ``order_idx`` ont l'indice du modèle en
     première (et unique) valeur. `merge_property_dict` recréé des
     clés ``order_idx`` dont la première valeur est l'indice du
@@ -145,9 +150,15 @@ def merge_property_dict(shape_dict, template_dict):
     se trouvent dans cette liste seront conservées, sous réserve
     qu'il y en ait au moins une (sinon la clé d'origine est préservée).
     
+    Le modèle peut rendre obligatoire une catégorie qui n'est
+    pas définie comme telle par le schéma des catégories communes,
+    mais pas l'inverse. La valeur de la clé ``is_mandatory`` n'est
+    donc écrasée que dans le cas où elle vaut ``False`` dans le
+    schéma et ``True`` dans le modèle.
+    
     """
     restricted = ['predicate', 'kind', 'datatype', 'is_multiple',
-        'unilang', 'transform', 'sources', 'order_idx']
+        'unilang', 'transform', 'sources', 'order_idx', 'is_mandatory']
         # propriétés que le modèle n'a pas le droit d'écraser, ou
         # du moins pas brutalement
     for key, value in template_dict.items():
@@ -156,14 +167,17 @@ def merge_property_dict(shape_dict, template_dict):
             # NB: on remplace des Literal et URIRef par des str, bool, etc.,
             # mais ça n'a pas d'importance, WidgetKey peut gérer les deux
             # formes
-    shape_dict['order_idx'] = (template_dict['order_idx'][0], shape_dict['order_idx'][1])
+    if 'order_idx' in template_dict:
+        shape_dict['order_idx'] = (template_dict['order_idx'][0], shape_dict['order_idx'][1])
     if shape_dict.get('sources') and template_dict.get('sources'):
         sources = shape_dict['sources'].copy()
         for s in sources:
-            if not str(s) in template_dict['sources']:
+            if not s in template_dict['sources']:
                 sources.remove(s)
         if sources:
             shape_dict['sources'] = sources
+    if template_dict.get('is_mandatory') and not shape_dict.get('is_mandatory'):
+        shape_dict['is_mandatory'] = True
 
 def class_properties(rdfclass, nsm, base_path, template=None):
     """Renvoie la liste des propriétés communes d'une classe.
