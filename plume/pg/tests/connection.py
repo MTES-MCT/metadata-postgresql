@@ -20,15 +20,36 @@ renseignée.
 class ConnectionString(str):
     """Chaîne de connexion PostgreSQL.
     
+    Les paramètres de connexion sont à saisir dynamiquement
+    à la première création d'objet. Ils sont ensuite
+    conservés en mémoire et réutilisés pour les appels
+    suivants à la classe.
+    
+    Parameters
+    ----------
+    replace : str, default False
+        Si ``True``, les paramètres éventuellement
+        mémorisés ne seront pas considérés.
+        L'utilisateur sera invité à saisir de
+        nouvelles valeurs.
+    
+    Warnings
+    --------
+    Non sécurisé (stockage en clair du mot de
+    passe).
+    
     """
-    def __new__(cls):
-        host = input('host (localhost): ') or 'localhost'
-        port = input('port (5432): ') or '5432'
-        dbname = input('dbname (metadata_dev): ') or 'metadata_dev'
-        user = input('user (postgres): ') or 'postgres'
-        password = None
-        while not password:
-            password = input('password : ')
-        return super().__new__(cls,
-            "host={} port={} dbname={} user={} password={}".format(
-            host, port, dbname, user, password))
+    _memory = None
+
+    def __new__(cls, replace=False):
+        if not cls._memory or replace:
+            host = input('host (localhost): ') or 'localhost'
+            port = input('port (5432): ') or '5432'
+            dbname = input('dbname (metadata_dev): ') or 'metadata_dev'
+            user = input('user (postgres): ') or 'postgres'
+            password = None
+            while not password:
+                password = input('password : ')
+            cls._memory = "host={} port={} dbname={} user={} password={}".format(
+                host, port, dbname, user, password)
+        return super().__new__(cls, cls._memory)
