@@ -108,7 +108,8 @@ class ActionsBookTestCase(unittest.TestCase):
         m.is_hidden_m = True
         a = WidgetKey.unload_actionsbook()
         self.assertEqual(a.show, [g, t, w1, w2])
-        
-        
+  
     
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
+
