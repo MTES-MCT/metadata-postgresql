@@ -229,11 +229,17 @@ class WidgetsDict(dict):
                 tabkey = TabKey(parent=self.root, label=label,
                     order_idx=(i,))
                 i += 1
+            # s'il n'existe pas déjà, on ajoute un
+            # onglet "Autres" pour les catégories hors
+            # modèle
+            if not 'Autres' in template.tabs:
+                tabkey = TabKey(parent=self.root, label='Autres',
+                    order_idx=(9999,))
         else:
             tabkey = TabKey(parent=self.root, label='Général', order_idx=(0,))
-        # dans tous les cas, on ajoute un onglet "Autres"
-        # pour les catégories hors modèle
-        tabkey = TabKey(parent=self.root, label='Autres', order_idx=(9999,))
+            # et on ajoute un onglet "Autres"
+            # pour les catégories hors modèle
+            tabkey = TabKey(parent=self.root, label='Autres', order_idx=(9999,))
         
         # ------ Colonnes de la table ------
         if columns:
