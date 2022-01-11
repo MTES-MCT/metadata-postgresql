@@ -1,20 +1,16 @@
 """Recette du module template.
 
-Les tests nécessite une connexion PostgreSQL (définie par
-input) pointant sur une base où :
-- l'extension plume_pg est installée ;
-- le schéma z_plume_recette existe et contient les fonctions
-de la recette côté serveur, qui sera exécutée par l'un des tests.
-
-Il est préférable d'utiliser un super-utilisateur (commandes de
-création et suppression de table dans le schéma z_plume,
-l'extension est désinstallée et réinstallée, etc.).
+Les tests nécessitent une connexion PostgreSQL (paramètres à
+saisir lors de l'exécution du test) pointant sur une base où 
+l'extension plume_pg est installée. Il est préférable d'utiliser
+un super-utilisateur.
 
 """
 
 import unittest, psycopg2
 
 from plume.rdf.utils import data_from_file, abspath
+from plume.rdf.namespaces import RDF
 from plume.pg.template import TemplateDict, search_template
 from plume.pg.description import PgDescription
 from plume.pg.tests.connection import ConnectionString
@@ -171,7 +167,7 @@ class TemplateTestCase(unittest.TestCase):
                 categories = cur.fetchall()
                 cur.execute(
                     query_template_tabs(),
-                    ('Template test',)
+                    ('Classique',)
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -187,9 +183,69 @@ class TemplateTestCase(unittest.TestCase):
                 if not d:
                     break
         self.assertEqual(d, {'is_read_only': False, 'tab': False})
-                
-        
-        
-        
 
-unittest.main()
+    def test_templatedict_homemade_template(self):
+        """Génération d'un modèle avec onglets et catégories locales.
+        
+        Le test crée un modèle sur le serveur PostgreSQL,
+        l'importe puis réinstalle l'extension PlumePg pour
+        effacer les modifications réalisées.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO z_plume.meta_template(tpl_label) VALUES ('Mon formulaire') ;
+                    INSERT INTO z_plume.meta_tab (tab, tab_num)
+                        VALUES ('Principal', 1), ('Secondaire', 2) ;
+                    INSERT INTO z_plume.meta_categorie (label, datatype, is_long_text)
+                        VALUES ('Notes', 'rdf:langString', True) ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path, tab)
+                        VALUES
+                        ('Mon formulaire', 'dct:description', 'Secondaire'),
+                        ('Mon formulaire', 'dct:modified', 'Secondaire'),
+                        ('Mon formulaire', 'dct:temporal / dcat:startDate', 'Secondaire'),
+                        ('Mon formulaire', 'dct:temporal / dcat:endDate', 'Secondaire'),
+                        ('Mon formulaire', 'dct:title', 'Principal'),
+                        ('Mon formulaire', 'owl:versionInfo', 'Principal') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path, tab) (
+                        SELECT 'Mon formulaire', path, 'Secondaire'
+                            FROM z_plume.meta_categorie
+                            WHERE origin = 'local' AND label = 'Notes'
+                        ) ;
+                    """)
+                cur.execute(
+                    query_get_categories(),
+                    ('Mon formulaire',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Mon formulaire',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        self.assertTrue('dct:temporal' in template.shared)
+        # le chemin intermédiaire dct:temporal n'est pas répertorié
+        # dans les catégories du modèle par meta_template_categories,
+        # mais TemplateDict est censé l'ajouter automatiquement.
+        self.assertEqual(len(template.shared), 7)
+        self.assertEqual(template.shared['dct:title']['tab'], 'Principal')
+        self.assertEqual(template.shared['dct:modified']['tab'], 'Secondaire')
+        self.assertEqual(len(template.local), 1)
+        for v in template.local.values():
+            self.assertTrue(v['is_long_text'])
+            self.assertEqual(v['label'], 'Notes')
+            self.assertEqual(v['datatype'], RDF.langString)
+            self.assertEqual(v['tab'], 'Secondaire')
+        self.assertEqual(len(template.tabs), 2)
+        self.assertTrue('Principal' in template.tabs)
+        self.assertTrue('Secondaire' in template.tabs)
+
+
+if __name__ == '__main__':
+    unittest.main()
+
