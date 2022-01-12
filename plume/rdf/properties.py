@@ -97,7 +97,7 @@ class PlumeProperty:
         elif origin == 'local' and n3_path and template:
             self.origin = 'local'
             self.unlisted = False
-            self.prop_dict = template.local[self.n3_path]
+            self.prop_dict = template.local[n3_path]
             self.predicate = path_from_n3(n3_path, nsm=nsm)
             self.path = self.predicate
             self.prop_dict.update({'predicate': self.predicate})
