@@ -46,3 +46,36 @@ def getrecordbyid_request(url_csw, file_identifier):
     data = urlencode(config)
     return '{}?{}'.format(url_csw, data)
 
+def getcapabilities_request(url_csw):
+    """Crée une requête GetCapabilities pour envoi en HTTP GET.
+    
+    Parameters
+    ----------
+    url_csw : str
+        L'URL de base du service CSW du catalogue, sans aucun paramètre.
+    
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> r = getcapabilities_request(
+    ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable'
+    ...     )
+    >>> from urllib.request import urlopen
+    >>> with urlopen(r) as src:
+    ...     xml = src.read()
+    
+    """
+    url_csw = url_csw.rstrip('?/')
+    config = {
+        'service' : 'CSW',
+        'REQUEST': 'GetCapabilities',
+        'version': '2.0.2',
+        'outputFormat': 'application/xml'
+        }
+    data = urlencode(config)
+    return '{}?{}'.format(url_csw, data)
+    
+
