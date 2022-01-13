@@ -180,6 +180,8 @@ class WidgetsDict(dict):
         self.mode = mode if mode in ('edit', 'read') else 'edit'
         self.langlist = tuple(langList) if langList \
             and isinstance(langList, (list, tuple)) else ('fr', 'en')
+        if not language in self.langlist:
+            language = None
         self.labelLengthLimit = labelLengthLimit if labelLengthLimit \
             and isinstance(labelLengthLimit, int) else 25
         self.valueLengthLimit = valueLengthLimit if valueLengthLimit \
@@ -217,7 +219,7 @@ class WidgetsDict(dict):
         WidgetKey.with_source_buttons = self.edit
         WidgetKey.with_language_buttons = self.translation
         WidgetKey.langlist = list(self.langlist)
-        WidgetKey.main_language = language
+        self.root.main_language = language
         self.langlist = tuple(WidgetKey.langlist)
         # NB: pour avoir la liste triée dans le bon ordre
         WidgetKey.max_rowspan = 30 if self.edit else 1
@@ -251,11 +253,11 @@ class WidgetsDict(dict):
                     do_not_save=True)
         
         # ------ Construction récursive ------
-        self._build_dict(parent=self.root, metagraph=metagraph, \
+        self._build_tree(parent=self.root, metagraph=metagraph, \
             template=template, data=data)
         
         # ------ Nettoyage des groupes vides ------
-        actionsbook = self.root.clean()
+        self.root.clean()
         
         # ------- Mise à jour de l'identifiant ------
         # dans l'hypothèse où celui de data et celui de metagraph
@@ -267,7 +269,7 @@ class WidgetsDict(dict):
         for widgetkey in self.root.tree_keys():
             self.internalize(widgetkey)
 
-    def _build_dict(self, parent, metagraph=None, template=None, data=None):
+    def _build_tree(self, parent, metagraph=None, template=None, data=None):
         # ------ Constitution de la liste des catégories ------
         # catégories communes de la classe :
         properties, predicates = class_properties(rdfclass=parent.rdfclass,
@@ -391,7 +393,7 @@ class WidgetsDict(dict):
                     # il ne serait plus possible de récupérer les valeurs
                     # dans le graphe
                     nodekey = GroupOfPropertiesKey(**val_dict)
-                    self._build_dict(parent=nodekey, metagraph=metagraph,
+                    self._build_tree(parent=nodekey, metagraph=metagraph,
                         template=template, data=data)
                     if kind == SH.BlankNodeOrIRI:
                         val_dict['m_twin'] = nodekey
@@ -515,6 +517,7 @@ class WidgetsDict(dict):
             internaldict = InternalDict()
             self[widgetkey] = internaldict
    
+        internaldict['object'] = widgetkey.key_object
         internaldict['main widget type'] = self.widget_type(widgetkey)
         
         if isinstance(widgetkey, RootKey):
