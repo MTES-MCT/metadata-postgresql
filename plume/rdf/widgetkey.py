@@ -833,6 +833,8 @@ class WidgetKey:
         de la clé effacée. Elle coupe simplement la branche de
         l'arbre.
         
+        Elle est sans effet sur les clés-racine (:py:class:`RootKey`).
+        
         """
         self.parent.children.remove(self)
         WidgetKey.actionsbook.drop.append(self) 
@@ -1463,6 +1465,7 @@ class GroupKey(WidgetKey):
     children : list of WidgetKey
         Liste des clés filles.
     columnspan
+    has_real_children
     
     Methods
     -------
@@ -1515,6 +1518,16 @@ class GroupKey(WidgetKey):
         
         """
         return 0 if not self else 2
+    
+    @property
+    def has_real_children(self):
+        """bool: Y a-t-il au moins un enfant dans ce groupe qui ne soit pas un fantôme ?
+        
+        """
+        for child in self.children:
+            if child:
+                return True
+        return False
     
     def real_children(self):
         """Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).
@@ -1613,15 +1626,14 @@ class GroupKey(WidgetKey):
                 return child._search_from_uuid(uuid)
 
     def _clean(self):
+        for child in self.children.copy():
+            if isinstance(child, GroupKey):
+                child._clean()
         if not self.children:
             if isinstance(self, GroupOfPropertiesKey):
                 self.kill(preserve_twin=True)
             else:
                 self.kill()
-        else:
-            for child in self.children:
-                if isinstance(child, GroupKey):
-                    child._clean()
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -1992,7 +2004,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
         
         """
-        return self and self.with_source_buttons and bool(self.m_twin)
+        return self and WidgetKey.with_source_buttons and bool(self.m_twin)
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -3274,7 +3286,7 @@ class ValueKey(ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_language_button`.
         
         """
-        return self and self.with_language_buttons \
+        return self and WidgetKey.with_language_buttons \
             and self.datatype == RDF.langString
     
     @property
@@ -3286,7 +3298,7 @@ class ValueKey(ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
         
         """
-        return self and self.with_source_buttons \
+        return self and WidgetKey.with_source_buttons \
             and ((self.sources and len(self.sources) > 1) or bool(self.m_twin))
     
     @property
@@ -3294,7 +3306,7 @@ class ValueKey(ObjectKey):
         """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
         
         """
-        return bool(self)
+        return bool(self and self.label)
         
     @property
     def label_placement(self):
@@ -3765,7 +3777,7 @@ class ValueKey(ObjectKey):
         if isinstance(self.parent, TranslationGroupKey):
             return self.parent.available_languages
         elif self.datatype == RDF.langString:
-            WidgetKey.langlist
+            return WidgetKey.langlist
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -4243,7 +4255,7 @@ class RootKey(GroupKey):
         return []
 
     def kill(self):
-        WidgetKey.actionsbook.drop.append(self)
+        return
 
     def search_from_path(self, path):
         """Renvoie la première clé de l'arbre dont le chemin correspond à celui recherché.
