@@ -44,8 +44,8 @@ class ActionsBookTestCase(unittest.TestCase):
 
         """
         r = RootKey()
-        g = ObjectKey(parent=r, is_ghost=True, predicate=DCT.title)
-        w = ObjectKey(parent=r, predicate=DCT.description)
+        g = ValueKey(parent=r, is_ghost=True, predicate=DCT.title)
+        w = ValueKey(parent=r, predicate=DCT.description)
         a = WidgetKey.unload_actionsbook()
         self.assertEqual(a.create, [r, w])
 
@@ -73,9 +73,8 @@ class ActionsBookTestCase(unittest.TestCase):
         
         """
         r = RootKey()
-        g = GroupOfPropertiesKey(parent=r,
-            rdftype=URIRef('http://purl.org/dc/terms/RightsStatement'),
-            predicate=URIRef('http://purl.org/dc/terms/accessRights'))
+        g = GroupOfPropertiesKey(parent=r, rdfclass=DCT.RightsStatement,
+            predicate=DCT.accessRights)
         m = ValueKey(parent=r, m_twin=g, is_hidden_m=False)
         t = TranslationGroupKey(parent=g, predicate=RDFS.label)
         b = TranslationButtonKey(parent=t)
