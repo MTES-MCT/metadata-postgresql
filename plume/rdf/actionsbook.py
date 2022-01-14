@@ -24,31 +24,31 @@ class ActionsBook:
     
     Attributes
     ----------
-    modified : list
+    modified : NoGhostKeyList
         Liste de toutes les clés modifiées (excluant les créations
         et les suppressions).
-    show : list
+    show : VisibleKeyList
         Liste des clés dont les widgets doivent être rendus visibles.
-    show_minus_button : list
+    show_minus_button : TrueMinusButtonKeyList
         Liste des clés dont le bouton moins doit être rendu visible,
         s'il existe.
-    hide : list
+    hide : NoGhostKeyList
         Liste des clés dont les widgets doivent être masqués.
-    hide_minus_button : list
+    hide_minus_button : TrueMinusButtonKeyList
         Liste des clés dont le bouton moins doit être masqué, s'il existe.
-    create : list
+    create : NoGhostKeyList
         Liste des clés dont les widgets doivent être créés.
-    move : list
+    move : NoGhostKeyList
         Liste des clés dont les widgets doivent être déplacés dans la grille.
-    languages : list
+    languages : NoGhostKeyList
         Liste des clés dont le menu des langues doit être mis à jour.
-    sources : list
+    sources : NoGhostKeyList
         Liste des clés dont le menu des sources doit être mis à jour.
-    thesaurus : list
+    thesaurus : NoGhostKeyList
         Liste des clés dont la liste de valeurs doit être recalculée.
-    empty : list
+    empty : NoGhostKeyList
         Liste des clés pour lesquelles le texte saisi doit être effacé.
-    drop : list
+    drop : KeyList
         Liste des clés dont les widgets doivent être supprimés.
     
     """
@@ -71,7 +71,7 @@ class ActionsBook:
         self.sources = NoGhostKeyList(actionsbook=self)
         self.thesaurus = NoGhostKeyList(actionsbook=self)
         self.empty = NoGhostKeyList(actionsbook=self)
-        self.drop = NoGhostKeyList(actionsbook=self, erase=['show',
+        self.drop = KeyList(actionsbook=self, erase=['show',
             'show_minus_button', 'hide', 'hide_minus_button', 'create',
             'move', 'languages', 'sources', 'thesaurus', 'modified',
             'empty'])
@@ -80,8 +80,8 @@ class ActionsBook:
         return sum(len(getattr(self, a)) for a in self.__dict__.keys()) > 0
 
 
-class NoGhostKeyList(list):
-    """Liste de clés garantie sans fantôme.
+class KeyList(list):
+    """Liste de clés.
     
     Parameters
     ----------
@@ -103,11 +103,8 @@ class NoGhostKeyList(list):
     
     Notes
     -----
-    Cette classe réécrit la méthode `append` de `list` pour
-    exclure silencieusement les clés fantômes. Les clés en
-    cours d'initialisation ne sont pas non plus prises en
-    compte, de même que les clés qui se trouvent déjà dans
-    `create`.
+    Les clés en cours d'initialisation ne sont jamais
+    ajoutées aux listes de clés.
     
     """
     def __init__(self, actionsbook, erase=None):
@@ -116,7 +113,7 @@ class NoGhostKeyList(list):
         super().__init__(self)
     
     def append(self, value):
-        if value and not value._is_unborn:
+        if not value._is_unborn:
             if not value in self and \
                 not value in self.actionsbook.create:
                 super().append(value)
@@ -128,6 +125,14 @@ class NoGhostKeyList(list):
                 l = getattr(self.actionsbook, a)
                 if value in l:
                     l.remove(value)
+
+class NoGhostKeyList(KeyList):
+    """Liste de clés garantie sans fantôme.
+    
+    """
+    def append(self, value):
+        if value:
+            super().append(value)
 
 class VisibleKeyList(NoGhostKeyList):
     """Liste de clés garanties visibles.
