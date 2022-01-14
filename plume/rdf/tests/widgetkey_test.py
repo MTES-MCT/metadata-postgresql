@@ -29,6 +29,49 @@ class WidgetKeyTestCase(unittest.TestCase):
             'path', 'placement', 'rdfclass', 'row', 'rowspan', 'source_button_placement',
             'uuid', 'with_language_buttons', 'with_source_buttons'):
             getattr(widgetkey, attr)
+        # TODO: à compléter pour les autres classes
+
+    def test_clean(self):
+        """Suppression ou fantômisation a posteriori des groupes qui n'ont pas d'enfants ou que des fantômes.
+        
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        gv = GroupOfValuesKey(parent=t, rdfclass=DCT.PeriodOfTime,
+            predicate=DCT.temporal)
+        gp1 = GroupOfPropertiesKey(parent=gv)
+        v1 = ValueKey(parent=gp1, predicate=DCAT.startDate, is_ghost=True,
+            value='2021-01-14')
+        v2 = ValueKey(parent=gp1, predicate=DCAT.endDate, is_ghost=True,
+            value='2021-01-17')
+        gp2 = GroupOfPropertiesKey(parent=gv)
+        gp3 = GroupOfPropertiesKey(parent=t, rdfclass=DCT.ProvenanceStatement,
+            predicate=DCT.provenance)
+        v3 = ValueKey(parent=gp3, predicate=RDFS.label)
+        self.assertFalse(r.is_ghost)
+        self.assertFalse(t.is_ghost)
+        self.assertFalse(gv.is_ghost)
+        self.assertFalse(gp1.is_ghost)
+        self.assertFalse(gp3.is_ghost)
+        self.assertTrue(gp1 in gv.children)
+        self.assertTrue(gp2 in gv.children)
+        actionsbook = r.clean()
+        self.assertFalse(r.is_ghost)
+        self.assertFalse(t.is_ghost)
+        self.assertTrue(gv.is_ghost)
+        self.assertTrue(gp1.is_ghost)
+        self.assertFalse(gp3.is_ghost)
+        self.assertTrue(gp1 in gv.children)
+        self.assertFalse(gp2 in gv.children)
+        self.assertEqual(len(actionsbook.drop), 3)
+        self.assertTrue(gp1 in actionsbook.drop)
+        self.assertTrue(gp2 in actionsbook.drop)
+        self.assertTrue(gv in actionsbook.drop)
+        v3.kill()
+        actionsbook = r.clean()
+        self.assertTrue(t.is_ghost)
+        self.assertTrue(t in actionsbook.drop)
+        self.assertTrue(gp3 in actionsbook.drop)
 
     def test_tree_keys(self):
         """Itérateur sur les clés non fantômes de l'arbre.
