@@ -282,7 +282,7 @@ class WidgetKey:
         self._heritage(**kwargs)
         self._computed_attributes(**kwargs)
         self.order_idx = kwargs.get('order_idx')
-        if self and self.parent and not self.no_computation:
+        if self and self.parent and not WidgetKey.no_computation:
             self.parent.compute_rows()
             self.parent.compute_single_children()
         self._is_unborn = False
@@ -320,6 +320,9 @@ class WidgetKey:
         ForbiddenOperation
             Si la classe de l'enfant n'est pas cohérente avec celle
             du parent.
+        ForbiddenOperation
+            En cas de tentative pour mêler des onglets et des
+            clés d'autres types dans un même groupe.
         
         Notes
         -----
@@ -343,6 +346,15 @@ class WidgetKey:
         if not self._validate_parent(value):
             raise ForbiddenOperation('La classe du parent ' \
                 "n'est pas cohérente avec celle de la clé.", self)
+        for child in value.children:
+            if isinstance(self, TabKey) and not isinstance(child, TabKey):
+                raise ForbiddenOperation("Il n'est pas permis " \
+                    'de créer un onglet dans un groupe contenant ' \
+                    "des clés d'autres types.", self)
+            if not isinstance(self, TabKey) and isinstance(child, TabKey):
+                raise ForbiddenOperation('Le groupe parent ' \
+                    "contenant un onglet, il n'est pas permis d'y " \
+                    "ajouter des clés d'autres types.", self)
         # héritage dans les branches fantômes et masquées
         if value.is_ghost:
             self._is_ghost = True
@@ -364,11 +376,21 @@ class WidgetKey:
         Notes
         -----
         Cette propriété n'est plus modifiable une fois la clé
-        initialisée.
+        initialisée, sauf pour les certains groupes dont, entre
+        autres conditions, tous les enfants sont des fantômes.
         
         :py:attr:`is_ghost` définit la valeur booléenne de la clé :
         ``bool(widgetkey)`` vaut ``False`` si ``widgetkey`` est une
         clé fantôme.
+        
+        See Also
+        --------
+        GroupOfPropertiesKey.is_ghost :
+            Réécriture de la propriété pour les groupes de propriétés.
+        GroupOfValuesKey.is_ghost :
+            Réécriture de la propriété pour les groupes de valeurs.
+        TabKey.is_ghost :
+            Réécriture de la propriété pour les onglets.
         
         """
         return self._is_ghost
@@ -1634,6 +1656,8 @@ class GroupKey(WidgetKey):
                 self.kill(preserve_twin=True)
             else:
                 self.kill()
+        elif self and not self.has_real_children:
+            self.is_ghost = True
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -1747,6 +1771,15 @@ class TabKey(GroupKey):
     path
     node
     key_object
+    is_ghost
+    
+    Notes
+    -----
+    Il n'est pas permis de créer un onglet dans un groupe contenant autre
+    chose que des onglets ni, réciproqument, une clé qui ne serait pas un
+    onglet dans un groupe contenant un onglet. C'est le setter de la
+    propriété :py:attr:`WidgetKey.parent` qui veille au respect de cette
+    condition.
     
     """
     
@@ -1810,6 +1843,39 @@ class TabKey(GroupKey):
     @label.setter
     def label(self, value):
         self._label = str(value) if value else None
+
+    @property
+    def is_ghost(self):
+        """bool: La clé est-elle une clé fantôme non matérialisée ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.is_ghost`.
+        
+        Cette propriété n'est modifiable post initialisation que 
+        pour transformer en fantôme une clé qui ne l'était pas,
+        si les conditions suivantes sont réunies :
+        * le groupe a au moins un enfant ;
+        * tous les enfants du groupe sont des fantômes.
+        
+        :py:attr:`is_ghost` définit la valeur booléenne de la clé :
+        ``bool(widgetkey)`` vaut ``False`` si ``widgetkey`` est une
+        clé fantôme.
+        
+        """
+        return self._is_ghost
+
+    @is_ghost.setter
+    def is_ghost(self, value):
+        if value and self and self.children \
+            and not self.has_real_children:
+            self._is_ghost = True
+            if not WidgetKey.no_computation:
+                # NB: on n'exécute pas compute_single_children,
+                # car le parent ne peut pas être un groupe
+                # de valeurs.
+                self.parent.compute_rows()
+            WidgetKey.actionsbook.drop.append(self) 
 
     @property
     def placement(self):
@@ -1887,6 +1953,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     sources
     has_source_button
     key_object
+    is_ghost
     
     Methods
     -------
@@ -2005,6 +2072,38 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         """
         return self and WidgetKey.with_source_buttons and bool(self.m_twin)
+
+    @property
+    def is_ghost(self):
+        """bool: La clé est-elle une clé fantôme non matérialisée ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.is_ghost`.
+        
+        Cette propriété n'est modifiable post initialisation que 
+        pour transformer en fantôme une clé qui ne l'était pas,
+        si les conditions suivantes sont réunies :
+        * le groupe de propriétés a au moins un enfant ;
+        * tous les enfants du groupe sont des fantômes ;
+        * la clé n'a pas de jumelle.
+        
+        :py:attr:`is_ghost` définit la valeur booléenne de la clé :
+        ``bool(widgetkey)`` vaut ``False`` si ``widgetkey`` est une
+        clé fantôme.
+        
+        """
+        return self._is_ghost
+
+    @is_ghost.setter
+    def is_ghost(self, value):
+        if value and self and not self.m_twin and self.children \
+            and not self.has_real_children:
+            self._is_ghost = True
+            if not WidgetKey.no_computation:
+                self.parent.compute_rows()
+                self.parent.compute_single_children()
+            WidgetKey.actionsbook.drop.append(self) 
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -2131,7 +2230,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
             # sont conservées
         return WidgetKey.unload_actionsbook()
 
-    def kill(self):
+    def kill(self, **kwargs):
         """Efface une clé de la mémoire de son parent.
         
         Notes
@@ -2141,7 +2240,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         (sinon c'est :py:meth:`WidgetKey.kill` qui serait utilisée).
         
         """
-        ObjectKey.kill(self)
+        ObjectKey.kill(self, **kwargs)
 
     def _build_metagraph(self, metagraph):
         if self.is_hidden_m:
@@ -2237,6 +2336,7 @@ class GroupOfValuesKey(GroupKey):
     is_read_only
     regex_validator
     regex_validator_flags
+    is_ghost
     
     Methods
     -------
@@ -2288,6 +2388,40 @@ class GroupOfValuesKey(GroupKey):
         
         """
         return 'group of values'
+    
+    @property
+    def is_ghost(self):
+        """bool: La clé est-elle une clé fantôme non matérialisée ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.is_ghost`.
+        
+        Cette propriété n'est modifiable post initialisation que 
+        pour transformer en fantôme une clé qui ne l'était pas,
+        si les conditions suivantes sont réunies :
+        * la clé n'est pas un groupe de traduction ;
+        * le groupe de valeurs a au moins un enfant ;
+        * tous les enfants du groupe sont des fantômes ;
+        * le groupe n'a pas de bouton plus.
+        
+        :py:attr:`is_ghost` définit la valeur booléenne de la clé :
+        ``bool(widgetkey)`` vaut ``False`` si ``widgetkey`` est une
+        clé fantôme.
+        
+        """
+        return self._is_ghost
+
+    @is_ghost.setter
+    def is_ghost(self, value):
+        if value and self and self.children and not self.has_real_children \
+            and not self.button and not isinstance(self, TranslationGroupKey):
+            self._is_ghost = True
+            self.with_minus_buttons = self.with_minus_buttons
+            if not WidgetKey.no_computation:
+                self.parent.compute_rows()
+                self.parent.compute_single_children()
+            WidgetKey.actionsbook.drop.append(self) 
     
     @property
     def with_minus_buttons(self):
@@ -3213,7 +3347,7 @@ class ValueKey(ObjectKey):
                 value = 1
         elif not value:
             value = 1
-        value = min((value, self.max_rowspan))
+        value = min((value, WidgetKey.max_rowspan))
         self._rowspan = value
         if not self._is_unborn and old_value != value:
             self.parent.compute_rows()
@@ -4174,11 +4308,18 @@ class RootKey(GroupKey):
         Copie et colle la clé dans l'arbre, en la plaçant selon
         son chemin.
     clean()
-        Balaie l'arbre de clés et supprime tous les groupes sans fille.
+        Balaie l'arbre de clés, supprime tous les groupes sans fille
+        et transforme en fantôme tous les groupes qui ne contiennent
+        que des fantômes.
     build_metagraph()
         Traduit l'arbre de clés en graphe de métadonnées.
     tree_keys()
         Générateur sur les clés non fantomatiques de l'arbre.
+    
+    Notes
+    -----
+    Une clé-racine n'est jamais un fantôme, et toute tentative
+    dans ce sens serait ignorée.
     
     """
     def _heritage(self, **kwargs):
@@ -4186,7 +4327,6 @@ class RootKey(GroupKey):
     
     def _base_attributes(self, **kwargs):
         self._node = None
-        self._is_ghost = False
         self._is_hidden_m = False
         self._is_hidden_b = False
         self._rowspan = 0
@@ -4229,6 +4369,14 @@ class RootKey(GroupKey):
     
     @property
     def parent(self):
+        return
+ 
+    @property
+    def is_ghost(self):
+        return False
+    
+    @is_ghost.setter
+    def is_ghost(self, value):
         return
  
     @property
@@ -4370,6 +4518,12 @@ class RootKey(GroupKey):
     def clean(self):
         """Balaie l'arbre de clés et supprime tous les groupes sans fille.
         
+        Les groupes qui ne contiennent que des fantômes sont transformés
+        en fantômes, s'ils ne l'étaient pas déjà (sous réserve des
+        contraintes exprimées dans les descriptifs des propriétés
+        :py:attr:`GroupOfPropertiesKey.is_ghost`, :py:attr:`TabKey.is_ghost`
+        et :py:attr:`GroupOfValuesKey.is_ghost`.
+        
         Cette méthode a la spécificité de pouvoir supprimer un groupe
         de propriétés tout en préservant sa jumelle clé-valeur (qui
         n'est alors plus une clé jumelle).
@@ -4379,6 +4533,12 @@ class RootKey(GroupKey):
         plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser les
             opérations réalisées.
+        
+        Notes
+        -----
+        Les suppressions et les fantômisations se traduisent par
+        des entrées dans la liste :py:attr:`ActionsBook.drop`
+        du carnet d'actions.
         
         """
         WidgetKey.clear_actionsbook()
