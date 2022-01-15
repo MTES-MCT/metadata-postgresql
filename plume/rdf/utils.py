@@ -4,6 +4,7 @@
 import re
 from pathlib import Path
 from uuid import UUID, uuid4
+from html import escape
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
