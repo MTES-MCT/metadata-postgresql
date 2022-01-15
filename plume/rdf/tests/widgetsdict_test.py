@@ -10,9 +10,10 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
+from plume.rdf.rdflib import isomorphic, Literal
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs
@@ -257,6 +258,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix dct: <http://purl.org/dc/terms/> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
             uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
                 dct:accessRights [ a dct:RightsStatement ;
@@ -265,7 +267,12 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
                 dcat:keyword "admin express"@fr,
                     "donnée externe"@fr,
+                    "external data"@en,
                     "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -300,20 +307,217 @@ class WidgetsDictTestCase(unittest.TestCase):
         # NB: le dictionnaire ne contient que la clé racine.
         # --- avec graphe, sans modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph)
+        key = widgetsdict.root.search_from_path(DCAT.keyword)
+        self.assertTrue(key in widgetsdict)
+        self.assertIsNone(key.button)
+        key = key.children[0]
+        self.assertEqual(widgetsdict[key]['value'], 'admin express')
+        self.assertFalse(widgetsdict[key]['has minus button'])
+        key = widgetsdict.root.search_from_path(DCAT.keyword)
+        key = key.children[3]
+        self.assertEqual(key.value, Literal('external data', lang='en'))
+        self.assertTrue(not key in widgetsdict)
+        key = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertFalse(widgetsdict[key]['multiple sources'])
+        self.assertEqual(widgetsdict[key]['value'],
+            '<a href="http://inspire.ec.europa.eu/theme/au">Unités administratives</a>')
+        key = widgetsdict.root.search_from_path(DCT.accessRights)
+        self.assertFalse(widgetsdict[key]['multiple sources'])
+        key = widgetsdict.root.search_from_path(OWL.versionInfo)
+        self.assertIsNone(key)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
         # --- avec graphe non inclus dans le modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
             template=template)
-        # groupe de valeurs
-        key = widgetsdict.root.search_from_path(DCAT.keyword)
-        #self.assertTrue(not key.button in widgetsdict)
+        key = widgetsdict.root.search_tab('Autres')
+        self.assertIsNone(key)
+        for child in widgetsdict.root.children:
+            if child.label == 'Autres':
+                key = child
+        self.assertIsNotNone(key)
+        self.assertTrue(key.is_ghost)
+        self.assertFalse(key in widgetsdict)
+        self.assertTrue(key.children)
+        self.assertFalse(key.has_real_children)
+        key = widgetsdict.root.search_from_path(DCT.temporal)
+        self.assertTrue(isinstance(key, GroupOfPropertiesKey))
+        # pas de groupe de valeurs, puisqu'il n'y a qu'un objet
+        key = widgetsdict.root.search_from_path(DCT.temporal / DCAT.startDate)
+        self.assertEqual(widgetsdict[key]['value'], '2021-01-15')
+        self.assertFalse(widgetsdict[key]['has minus button'])
+        self.assertTrue(widgetsdict[key]['read only'])
+        key = widgetsdict.root.search_from_path(OWL.versionInfo)
+        self.assertIsNone(key)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        # --- avec un modèle vide ---
+        template = TemplateDict([])
+        widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
+            template=template)
+        self.assertEqual(len(widgetsdict), 4)
+        # racine + onglet + titre + description
+        key = widgetsdict.root.search_tab()
+        self.assertEqual(widgetsdict[key]['label'], 'Autres')
+        widgetsdict[key]['grid widget'] = '<Grid onglet "Autres">'
+        key = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
+        self.assertTrue(widgetsdict[key]['read only'])
+        key = widgetsdict.root.search_from_path(DCT.description)
+        self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
         
 
     def test_widgetsdict_special_hidden_keys(self):
         """Génération d'un dictionnaire de widgets avec paramètres masquant certaines informations.
 
-        """
+        Ce test contrôle l'effet des paramètres ``readHideBlank``,
+        ``editHideUnlisted``, ``readHideUnlisted``,
+        ``editOnlyCurrentLanguage`` et ``readOnlyCurrentLanguage``
+        de :py:class:`plume.rdf.widgetsdict.WidgetsDict`.
         
-	
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Basique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        # --- editHideUnlisted ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            editHideUnlisted=True)
+        for key in widgetsdict.keys():
+            self.assertNotEqual(key.path, DCAT.keyword)
+        key = widgetsdict.root.search_from_path(DCT.temporal)
+        self.assertTrue(key in widgetsdict)
+        key = widgetsdict.root.search_from_path(OWL.versionInfo)
+        self.assertTrue(key in widgetsdict)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        # --- editHideUnlisted sans modèle ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, editHideUnlisted=True)
+        key = widgetsdict.root.search_from_path(DCAT.keyword)
+        self.assertTrue(key in widgetsdict)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        # --- editHideUnlisted avec un modèle vide ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=TemplateDict([]),
+            editHideUnlisted=True)
+        self.assertEqual(len(widgetsdict), 6)
+        key = widgetsdict.root.search_tab()
+        self.assertEqual(widgetsdict[key]['label'], 'Autres')
+        widgetsdict[key]['grid widget'] = '<Grid onglet "Autres">'
+        key = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
+        key = widgetsdict.root.search_from_path(DCT.description)
+        self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        # --- editOnlyCurrentLanguage ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, language='it',
+            langList=['fr', 'it', 'en'])
+        key = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(len(key.children), 2)
+        for child in key.children:
+            self.assertTrue(child in widgetsdict)
+        self.assertIsNone(key.button)
+        key = widgetsdict.root.search_from_path(DCAT.keyword)
+        self.assertEqual(len(key.children), 4)
+        for child in key.children:
+            self.assertTrue(child in widgetsdict)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            editOnlyCurrentLanguage=True, language='it',
+            langList=['fr', 'it', 'en'])
+        self.assertTrue(widgetsdict.onlyCurrentLanguage)
+        key = widgetsdict.root.search_from_path(DCAT.keyword)
+        n = 0
+        for child in key.children:
+            if child in widgetsdict:
+                n += 1
+        self.assertEqual(n, 1)
+        key = widgetsdict.root.search_from_path(DCT.title)
+        self.assertTrue(key in widgetsdict)
+        self.assertEqual(len(key.children), 2)
+        self.assertTrue(key.children[1].is_ghost)
+        self.assertTrue(widgetsdict[key.children[0]]['value'],
+            'ADMIN EXPRESS - Départements de métropole')
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            editOnlyCurrentLanguage=True, language='en')
+        key = widgetsdict.root.search_from_path(DCT.title)
+        self.assertTrue(key in widgetsdict)
+        self.assertEqual(len(key.children), 2)
+        self.assertTrue(key.children[1].is_ghost)
+        self.assertTrue(widgetsdict[key.children[0]]['value'],
+            'ADMIN EXPRESS - Metropolitan Departments')
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        # --- readHideBlank ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            mode='read', readHideBlank=False)
+        key = widgetsdict.root.search_from_path(OWL.versionInfo)
+        self.assertTrue(key in widgetsdict)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        widgetsdict = WidgetsDict(metagraph=metagraph, mode='read',
+            readHideBlank=False)
+        key = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license)
+        self.assertTrue(key in widgetsdict)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        # --- readHideUnlisted ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, mode='read')
+        self.assertTrue(widgetsdict.hideUnlisted)
+        key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
+        self.assertIsNone(key)
+        widgetsdict = WidgetsDict(metagraph=metagraph, mode='read',
+            readHideUnlisted=False)
+        self.assertFalse(widgetsdict.hideUnlisted)
+        key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
+        self.assertTrue(key in widgetsdict)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            mode='read', readHideUnlisted=False)
+        self.assertFalse(widgetsdict.hideUnlisted)
+        key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
+        self.assertTrue(key in widgetsdict)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            mode='read', readHideUnlisted=False, readHideBlank=False)
+        key = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license)
+        self.assertIsNone(key)
+        # readHideBlank permet d'afficher des champs vides, mais pas ceux
+        # hors modèle, même combiné avec readHideUnlisted (sinon à quoi
+        # bon utiliser un modèle ?)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        
 
 if __name__ == '__main__':
     unittest.main()
