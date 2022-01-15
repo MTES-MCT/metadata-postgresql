@@ -193,7 +193,7 @@ class WidgetsDict(dict):
         self.hideUnlisted = (readHideUnlisted and not self.edit) \
             or (editHideUnlisted and self.edit)
         self.onlyCurrentLanguage = (readOnlyCurrentLanguage and not self.edit) \
-            or (editHideUnlisted and self.edit and not self.translation)
+            or (editOnlyCurrentLanguage and self.edit and not self.translation)
         
         # ------ Racine ------
         # + gestion de l'identifiant
@@ -206,7 +206,8 @@ class WidgetsDict(dict):
         old_datasetid = metagraph.datasetid if metagraph else None
         self.root = RootKey(datasetid=old_datasetid)
         self.datasetid = DatasetId(old_uuid, old_datasetid)
-        data['dct:identifier'] = [str(self.datasetid.uuid)]
+        if self.edit:
+            data['dct:identifier'] = [str(self.datasetid.uuid)]
         # à ce stade, on a nécessairement un UUID valide dans
         # l'attribut datasetid. Par contre, l'identifiant de la
         # clé racine est identique à celui du graphe et pas
@@ -287,7 +288,7 @@ class WidgetsDict(dict):
             # qui ne sont pas référencées par le modèle considéré
             if metagraph:
                 for predicate, o in metagraph.predicate_objects(parent.node):
-                    if not predicate in predicates:
+                    if not predicate in predicates and not predicate == RDF.type:
                         properties.append(PlumeProperty(origin='unknown',
                             nsm=self.nsm, predicate=predicate))   
         
@@ -305,6 +306,10 @@ class WidgetsDict(dict):
             # jour à partir d'informations disponibles côté serveur
             if data and prop.n3_path in data:
                 values = data[prop.n3_path].copy() or [None]
+                if values != [None]:
+                    prop_dict['delayed'] = True
+                    # NB: permettra la mise à jour silencieuse
+                    # de propriétés non affichées
             # sinon, on extrait la ou les valeurs éventuellement
             # renseignées dans le graphe pour cette catégorie
             # et le sujet considéré
@@ -328,7 +333,6 @@ class WidgetsDict(dict):
             
             # ------ Fantômisation ------
             # s'il y a une valeur, mais que hideUnlisted vaut True
-            # (ce qui ne peut arriver qu'en mode lecture)
             # et que la catégorie n'est pas prévue par le modèle, on
             # poursuit le traitement pour ne pas perdre la valeur, mais
             # on ne créera pas de widget.
@@ -364,6 +368,8 @@ class WidgetsDict(dict):
             # création d'un groupe de valeurs ou de traduction
             # rassemblant les valeurs actuelles et futures
             if len(values) > 1 or ((multilingual or multiple) and not self.hideBlank):
+                if not self.edit:
+                    prop_dict['with_minus_buttons'] = False
                 if multilingual and not prop_dict.get('is_ghost'):
                     groupkey = TranslationGroupKey(**prop_dict)
                 else:
@@ -378,7 +384,7 @@ class WidgetsDict(dict):
                 # ------ Affichage mono-langue (suite) ------
                 if val_dict.get('datatype') == RDF.langString \
                     and self.onlyCurrentLanguage:
-                    if value and parent.has_real_children and \
+                    if value and prop_dict['parent'].has_real_children and \
                         (not isinstance(value, Literal) or \
                         value.language != self.main_language):
                         val_dict['is_ghost'] = True
@@ -400,9 +406,7 @@ class WidgetsDict(dict):
                         val_dict['is_hidden_m'] = isinstance(value, BNode)
                     
                 # ------ Cas d'une valeur litéral ou d'un IRI ------
-                if kind in (SH.BlankNodeOrIRI, SH.Literal, SH.IRI) \
-                    and (isinstance(value, (Literal, URIRef)) or \
-                    (not self.hideBlank and not val_dict.get('is_ghost'))):
+                if kind in (SH.BlankNodeOrIRI, SH.Literal, SH.IRI):
                     if isinstance(value, BNode):
                         value = None
                     
@@ -439,7 +443,7 @@ class WidgetsDict(dict):
                         # on saisit la valeur après la création de la clé,
                         # pour pouvoir la dé-sérialiser en fonction des
                         # attributs de la clé
-                        self.update_value(valkey, value)
+                        self.update_value(valkey, value, override=True)
                 
             # ------ Bouton ------
             if multilingual or multiple:
@@ -972,7 +976,7 @@ class WidgetsDict(dict):
             }
         return d.get(widgetkey.datatype)
     
-    def update_value(self, widgetkey, value):
+    def update_value(self, widgetkey, value, override=False):
         """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
         
         Parameters
@@ -981,9 +985,13 @@ class WidgetsDict(dict):
             Une clé-valeur de dictionnaire de widgets.
         value : str
             La valeur, exprimée sous la forme d'une chaîne de caractères.
+        override : bool, default False
+            Si ``True``, permet de modifier la valeur d'une clé
+            en lecture seule.
         
         """
-        if widgetkey.is_read_only or not isinstance(widgetkey, ValueKey):
+        if not isinstance(widgetkey, ValueKey) \
+            or (widgetkey.is_read_only and not override):
             return
         if value in (None, ''):
             widgetkey.value = None
