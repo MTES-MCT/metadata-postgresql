@@ -1627,7 +1627,9 @@ class GroupKey(WidgetKey):
                 # le parti de comparer des chaînes de caractères
                 # "not child.path" est là pour les onglets rattachés
                 # à la racine, dont le chemin est vide
-                return child._search_from_path(path)
+                target = child._search_from_path(path)
+                if target:
+                    return target
 
     def _search_from_rdfclass(self, rdfclass, matchlist):
         for child in self.real_children():
@@ -1709,7 +1711,7 @@ class GroupKey(WidgetKey):
         ----------
         label : str or rdflib.term.Literal, optional
             L'étiquette de l'onglet recherché. Si `label` n'est
-            pas défini, le premier onglet du groupe est renvoyé (sous
+            pas spécifié, le premier onglet du groupe est renvoyé (sous
             réserve qu'il y en ait un).
         
         Returns
@@ -3200,7 +3202,14 @@ class ValueKey(ObjectKey):
     value : rdflib.term.Literal or rdflib.term.URIRef, optional
         La valeur mémorisée par la clé (objet du triplet RDF). Une clé
         fantôme ne sera effectivement créée que si une valeur est fournie
-        pour ce paramètre.
+        pour ce paramètre ou si le paramètre `delayed` ci-après vaut ``True``.
+    delayed : bool, default False
+        Si ``True``, autorise la création d'une clé-fantôme sans valeur,
+        étant entendu que la valeur sera fournie ultérieurement. Ce
+        paramètres est utile lorsque la valeur doit être dé-sérialisée
+        en fonction des paramètres de la clé (par exemple avec la méthode
+        :py:meth:`plume.rdf.widgetsdict.WidgetsDict.update_value`), ce qui
+        suppose que celle-ci soit préalablement initialisée.
     value_language : str, optional
         La langue de l'objet. Obligatoire pour une valeur litérale de
         type ``rdf:langString`` et a fortiori dans un groupe de traduction,
@@ -3256,9 +3265,9 @@ class ValueKey(ObjectKey):
     
     def __new__(cls, **kwargs):
         # inhibe la création de clés-valeurs fantôme sans
-        # valeur (ou sans parent)
-        if not kwargs.get('value') and (kwargs.get('is_ghost', False) \
-            or not kwargs.get('parent')):
+        # valeur, sauf à ce que delayed vaille True
+        if not kwargs.get('value') and kwargs.get('is_ghost', False) \
+            and not kwargs.get('delayed', False):
             return
         return super().__new__(cls)
     
