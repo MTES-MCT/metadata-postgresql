@@ -90,6 +90,7 @@ class WidgetKey:
     uuid : UUID
         Identifiant unique de la clé.
     parent
+    generation
     is_ghost
     is_hidden_m
     is_hidden_b
@@ -109,6 +110,7 @@ class WidgetKey:
     minus_button_placement
     label_placement
     order_idx
+    tree_idx
     path
     attr_to_copy
     attr_to_update
@@ -368,6 +370,15 @@ class WidgetKey:
         
     def _register(self, parent):
         parent.children.append(self)
+    
+    @property
+    def generation(self):
+        """int: Génération à laquelle appartient la clé.
+        
+        ``0`` pour la clé-racine, ``1`` pour ses enfants, etc.
+        
+        """
+        return 1 + self.parent.generation
     
     @property
     def is_ghost(self):
@@ -769,6 +780,15 @@ class WidgetKey:
             self._order_idx = value or (9999,)
         if not self._is_unborn:
             self.parent.compute_rows()
+
+    @property
+    def tree_idx(self):
+        """tuple: Représentation du placement de la clé dans l'arbre.
+        
+        """
+        l = list(self.parent.tree_idx)
+        l.append(self.parent.children.index(self))
+        return tuple(l)
 
     @property
     def attr_to_copy(self):
@@ -1248,6 +1268,10 @@ class ObjectKey(WidgetKey):
             if self.parent != value.parent:
                 raise ForbiddenOperation('La clé et sa jumelle ' \
                     'devraient avoir la même clé parent.', self)
+        elif self.m_twin and not self.is_main_twin:
+            # cas de la suppression du jumeau, lorsque la clé n'était
+            # pas la jumelle principale
+            self.is_hidden_m = self.m_twin.is_hidden_m
         self._m_twin = value
         if value:
             value._m_twin = self
@@ -1255,7 +1279,7 @@ class ObjectKey(WidgetKey):
             # pour une clé dont le jumeau est défini a posteriori,
             # il faut s'assurer de la cohérence des attributs partagés
             self.is_hidden_m = self.is_hidden_m
-            # assure la mise à jour de is_main_twin
+            # NB: assure la mise à jour de is_main_twin
             self.predicate = self.predicate
             self.rdfclass = self.rdfclass
             # emporte la mise en cohérence de ValueKey.datatype (None), et
@@ -1266,7 +1290,7 @@ class ObjectKey(WidgetKey):
             if isinstance(self, ValueKey):
                 self.rowspan = self.rowspan
                 self.independant_label = self.independant_label
-            else:
+            elif value is not None:
                 value.rowspan = value.rowspan
                 value.independant_label = value.independant_label
             self.label = self.label
@@ -1408,7 +1432,10 @@ class ObjectKey(WidgetKey):
                 self.parent.children.remove(self.m_twin)
                 WidgetKey.actionsbook.drop.append(self.m_twin)
             else:
-                self.m_twin = None
+                # on déréfence toujours la jumelle sur
+                # la clé qui a vocation à être conservée,
+                # pour lui rendre sa visibilité si besoin
+                self.m_twin.m_twin = None
 
     def drop(self):
         """Supprime une clé d'un groupe de valeur ou de traduction.
@@ -1650,9 +1677,19 @@ class GroupKey(WidgetKey):
                 return child._search_from_uuid(uuid)
 
     def _clean(self):
+        if isinstance(self, GroupOfPropertiesKey) and self.m_twin \
+            and not self.is_main_twin and not self.has_source_button:
+            self.kill(preserve_twin=True)
+            return
         for child in self.children.copy():
             if isinstance(child, GroupKey):
                 child._clean()
+            elif isinstance(child, ValueKey) and child.m_twin \
+                and not child.is_main_twin and not child.has_source_button:
+                # cas d'un jumeau qui n'avait pas lieu
+                # d'être, puisqu'il est masqué et qu'il n'y
+                # a pas de bouton pour l'afficher
+                child.kill(preserve_twin=True)
         if not self.children:
             if isinstance(self, GroupOfPropertiesKey):
                 self.kill(preserve_twin=True)
@@ -3266,8 +3303,10 @@ class ValueKey(ObjectKey):
     def __new__(cls, **kwargs):
         # inhibe la création de clés-valeurs fantôme sans
         # valeur, sauf à ce que delayed vaille True
-        if not kwargs.get('value') and kwargs.get('is_ghost', False) \
-            and not kwargs.get('delayed', False):
+        parent = kwargs.get('parent')
+        if not kwargs.get('value') and (kwargs.get('is_ghost', False) \
+            or (parent is not None and parent.is_ghost)) and \
+            not kwargs.get('delayed', False):
             return
         return super().__new__(cls)
     
@@ -3380,8 +3419,8 @@ class ValueKey(ObjectKey):
         """
         if not self:
             return
-        column = 0 if self.independant_label else 1
-        columnspan = 2 if self.independant_label else 1
+        column = 0 if self.independant_label or not self.has_label else 1
+        columnspan = 2 if self.independant_label or not self.has_label else 1
         return (self.row, column, self.rowspan, columnspan)
     
     @property
@@ -4102,6 +4141,7 @@ class PlusButtonKey(WidgetKey):
     path
     placement
     key_object
+    tree_idx
     
     Methods
     -------
@@ -4131,6 +4171,15 @@ class PlusButtonKey(WidgetKey):
         
     def _register(self, parent):
         parent.button = self
+    
+    @property
+    def tree_idx(self):
+        """tuple: Représentation du placement de la clé dans l'arbre.
+        
+        """
+        l = list(self.parent.tree_idx)
+        l.append(len(self.parent.children) + 1)
+        return tuple(l)
     
     @property
     def description(self):
@@ -4300,9 +4349,11 @@ class RootKey(GroupKey):
     
     Attributes
     ----------
+    generation
     node
     rdfclass
     key_object
+    tree_idx
     
     Methods
     -------
@@ -4344,6 +4395,15 @@ class RootKey(GroupKey):
  
     def _computed_attributes(self, **kwargs):
         self.node = kwargs.get('datasetid')
+ 
+    @property
+    def generation(self):
+        """int: Génération à laquelle appartient la clé.
+        
+        ``0`` pour la clé-racine, ``1`` pour ses enfants, etc.
+        
+        """
+        return 0
  
     @property
     def node(self):
@@ -4402,6 +4462,13 @@ class RootKey(GroupKey):
         
         """
         return DCAT.Dataset
+
+    @property
+    def tree_idx(self):
+        """tuple: Représentation du placement de la clé dans l'arbre.
+        
+        """
+        return (0,)
 
     @property
     def attr_to_copy(self):
@@ -4531,11 +4598,15 @@ class RootKey(GroupKey):
         en fantômes, s'ils ne l'étaient pas déjà (sous réserve des
         contraintes exprimées dans les descriptifs des propriétés
         :py:attr:`GroupOfPropertiesKey.is_ghost`, :py:attr:`TabKey.is_ghost`
-        et :py:attr:`GroupOfValuesKey.is_ghost`.
+        et :py:attr:`GroupOfValuesKey.is_ghost`).
         
-        Cette méthode a la spécificité de pouvoir supprimer un groupe
-        de propriétés tout en préservant sa jumelle clé-valeur (qui
-        n'est alors plus une clé jumelle).
+        Cette méthode a la spécificité de pouvoir supprimer
+        une clé tout en préservant sa jumelle clé-valeur (qui
+        n'est alors plus une clé jumelle). Outre le cas des jumelles
+        supprimées parce que ce sont des groupes de propriétés
+        vides, la méthode élimine les clés qui ne sont pas la
+        jumelle principale lorsqu'il n'y a pas de bouton de sélection
+        de la source qui permettraient de les afficher.
         
         Returns
         -------
