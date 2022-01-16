@@ -301,6 +301,9 @@ class WidgetsDict(dict):
             multiple = bool(prop_dict.get('is_multiple')) and self.edit \
                 and not bool(prop_dict.get('unilang'))
             
+            if not self.edit:
+                prop_dict['is_read_only'] = True
+            
             # ------ Récupération des valeurs ------
             # cas d'une propriété dont les valeurs sont mises à
             # jour à partir d'informations disponibles côté serveur
@@ -367,7 +370,7 @@ class WidgetsDict(dict):
             # ------ Multi-valeurs ------
             # création d'un groupe de valeurs ou de traduction
             # rassemblant les valeurs actuelles et futures
-            if len(values) > 1 or ((multilingual or multiple) and not self.hideBlank):
+            if len(values) > 1 or multilingual or multiple:
                 if not self.edit:
                     prop_dict['with_minus_buttons'] = False
                 if multilingual and not prop_dict.get('is_ghost'):
@@ -390,9 +393,7 @@ class WidgetsDict(dict):
                         val_dict['is_ghost'] = True
                 
                 # ------ Cas d'un noeud anonyme -------
-                if kind in (SH.BlankNode, SH.BlankNodeOrIRI) \
-                    and (isinstance(value, BNode) or (not self.hideBlank \
-                    and not val_dict.get('is_ghost'))):
+                if kind in (SH.BlankNode, SH.BlankNodeOrIRI):
                     if isinstance(value, BNode):
                         val_dict['node'] = value
                     # NB: on doit conserver les noeuds anonymes, sans quoi
@@ -423,10 +424,6 @@ class WidgetsDict(dict):
                     if val_dict.get('label') and (val_dict.get('is_long_text') or \
                         len(str(val_dict['label'])) > self.labelLengthLimit):
                         val_dict['independant_label'] = True
-                
-                    # tout en lecture seule en mode lecture
-                    if not self.edit:
-                        val_dict['is_read_only'] = True
                 
                     if isinstance(value, (URIRef, Literal)):
                         # source de la valeur
@@ -687,6 +684,8 @@ class WidgetsDict(dict):
         if not actionsbook:
             return d
         
+        for widgetkey in actionsbook.create:
+            self.internalize(widgetkey)
         for widgetkey in actionsbook.modified:
             self.internalize(widgetkey)
         
@@ -739,7 +738,9 @@ class WidgetsDict(dict):
             g = self.parent_grid(widgetkey)
             for w, k in self.list_widgets(widgetkey, with_kind=True):
                 p = self.widget_placement(widgetkey, k)
-                d['widgets to move'].append(g, w, *p)
+                d['widgets to move'].append((g, w, *p))
+        
+        return d
 
     def list_widgets(self, widgetkey, with_kind=False):
         """Renvoie la liste des widgets référencés pour la clé considérée.
@@ -800,7 +801,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("Il n'est pas permis d'ajouter des " \
                 'éléments avec un bouton invisible.', buttonkey)
         a = buttonkey.add()
-        return dictisize_actionsbook(a)
+        return self.dictisize_actionsbook(a)
 
     def drop(self, objectkey):
         """Supprime une clé du dictionnaire de widgets.
@@ -830,7 +831,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("Il n'est pas permis de supprimer des " \
                 'éléments avec un bouton moins invisible.', objectkey)
         a = objectkey.drop()
-        return dictisize_actionsbook(a)
+        return self.dictisize_actionsbook(a)
 
     def change_language(self, valuekey, new_language):
         """Change la langue déclarée pour une clé du dictionnaire de widgets.
@@ -856,7 +857,7 @@ class WidgetsDict(dict):
         
         """
         if self[valuekey]['language value'] == new_language:
-            return dictisize_actionsbook()
+            return self.dictisize_actionsbook()
         if not valuekey.has_language_button:
             raise ForbiddenOperation("Il faut un bouton de sélection " \
                 "de la langue pour changer la langue d'une clé.", valuekey)
@@ -864,7 +865,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("Il n'est pas permis de changer " \
                 "la langue d'une clé invisible.", valuekey)
         a = valuekey.change_language(new_language)
-        return dictisize_actionsbook(a)
+        return self.dictisize_actionsbook(a)
 
     def change_source(self, objectkey, new_source):
         """Change la source déclarée pour une clé du dictionnaire de widgets.
@@ -888,7 +889,7 @@ class WidgetsDict(dict):
         
         """
         if self[objectkey]['current source'] == new_source:
-            return dictisize_actionsbook()
+            return self.dictisize_actionsbook()
         if not objectkey.has_source_button:
             raise ForbiddenOperation("Il faut un bouton de sélection " \
                 "de la source pour changer la source d'une clé.", objectkey)
@@ -924,7 +925,7 @@ class WidgetsDict(dict):
             # Comme value_source vaut None, c'est la première source de la
             # liste qui serait en fait retenue (et présentée comme telle).
         
-        return dictisize_actionsbook(a)
+        return self.dictisize_actionsbook(a)
 
     def widget_type(self, widgetkey):
         """Renvoie le type de widget adapté pour une clé.
@@ -1072,3 +1073,33 @@ class WidgetsDict(dict):
         if self.root:
             return self.root.build_metagraph()
     
+    def print(self):
+        """Visualisateur très sommaire du contenu du dictionnaire de widgets.
+        
+        Les clés sont imprimées dans la console, avec - si
+        défini - leur libellé, leur valeur et leurs boutons annexes.
+        Une clé ou un bouton masqué apparaît précédé d'un
+        astérisque.
+        
+        """
+        l = sorted(self.keys(), key=lambda x: x.tree_idx)
+        for widgetkey in l:
+            print('  ' * widgetkey.generation, end='')
+            if self[widgetkey]['hidden']:
+                print('*', end='')
+            print('<', self[widgetkey]['object'], '/',
+                self[widgetkey]['main widget type'], '>', end=' ')
+            if self[widgetkey]['label']:
+                print(self[widgetkey]['label'], ':', end=' ')
+            if self[widgetkey]['value']:
+                print(self[widgetkey]['value'], end=' ')
+            if self[widgetkey]['hide minus button']:
+                print('*', end='')
+            if self[widgetkey]['has minus button']:
+                print('[-]', end=' ')
+            if self[widgetkey]['multiple sources']:
+                print('[...]', end=' ')
+            if self[widgetkey]['authorized languages']:
+                print('[{}]'.format(self.main_language), end=' ')
+            print()
+
