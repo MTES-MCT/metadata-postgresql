@@ -267,6 +267,9 @@ class WidgetKeyTestCase(unittest.TestCase):
             lang='fr'))
         self.assertTrue(valkey2.is_ghost)
         self.assertEqual(valkey2.predicate, DCT.title)
+        valkey3 = ValueKey(parent=groupkey, is_ghost=False,
+            delayed=True)
+        self.assertTrue(valkey3.is_ghost)
 
         groupkey.kill()
         self.assertFalse(groupkey in rootkey.children)
