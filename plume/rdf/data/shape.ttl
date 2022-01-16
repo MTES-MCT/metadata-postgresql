@@ -345,6 +345,7 @@ snum:DatasetShape
 		sh:description "Configuration d'import des métadonnées depuis une fiche de catalogue INSPIRE."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class snum:LinkedRecord ;
+        sh:maxCount 1 ;
         sh:order 84 ;
 	] .
 
