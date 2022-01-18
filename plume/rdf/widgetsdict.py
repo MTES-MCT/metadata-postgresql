@@ -827,7 +827,7 @@ class WidgetsDict(dict):
         if not objectkey.has_minus_button:
             raise ForbiddenOperation("Il faut un bouton moins " \
                 ' pour supprimer une clé.', objectkey)
-        if objectkey.hide_minus_button or objectkey.is_hidden:
+        if objectkey.is_single_child or objectkey.is_hidden:
             raise ForbiddenOperation("Il n'est pas permis de supprimer des " \
                 'éléments avec un bouton moins invisible.', objectkey)
         a = objectkey.drop()
