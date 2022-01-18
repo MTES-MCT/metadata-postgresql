@@ -31,6 +31,20 @@ class WidgetKeyTestCase(unittest.TestCase):
             getattr(widgetkey, attr)
         # TODO: à compléter pour les autres classes
 
+    def test_drop(self):
+        """Suppression d'une branche.
+        
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        gv = GroupOfValuesKey(parent=t, rdfclass=DCT.PeriodOfTime,
+            predicate=DCT.temporal)
+        gp1 = GroupOfPropertiesKey(parent=gv)
+        v1 = ValueKey(parent=gp1, predicate=DCAT.startDate)
+        v2 = ValueKey(parent=gp1, predicate=DCAT.endDate)
+        actionsbook = gp1.drop()
+        self.assertListEqual(actionsbook.drop, [gp1, v1, v2])
+
     def test_clean(self):
         """Suppression ou fantômisation a posteriori des groupes qui n'ont pas d'enfants ou que des fantômes.
         
