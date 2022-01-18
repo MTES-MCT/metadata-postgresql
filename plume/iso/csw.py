@@ -24,7 +24,7 @@ def getrecordbyid_request(url_csw, file_identifier):
     Examples
     --------
     >>> r = getrecordbyid_request(
-    ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable', 
+    ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset', 
     ...     'fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297'
     ...     )
     >>> from urllib.request import urlopen
@@ -61,7 +61,7 @@ def getcapabilities_request(url_csw):
     Examples
     --------
     >>> r = getcapabilities_request(
-    ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable'
+    ...     'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset'
     ...     )
     >>> from urllib.request import urlopen
     >>> with urlopen(r) as src:
