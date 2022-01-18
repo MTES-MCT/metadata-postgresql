@@ -657,6 +657,101 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(widgetsdict[g.children[2]]['hidden'])
         self.assertEqual(widgetsdict[g.children[2]]['object'], 'group of properties')
 
+    def test_drop(self):
+        """Suppression d'une clé du dictionnaire.
+
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Basique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+
+        # --- suppression d'une clé simple ---
+        g = widgetsdict.root.search_from_path(DCAT.keyword)
+        b = g.children[1]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dcat:keyword>'
+        widgetsdict[b]['main widget'] = '<B QLineEdit dcat:keyword>'
+        widgetsdict[b]['minus widget'] = '<B QToolButton dcat:keyword>'
+        c = g.children[2]
+        widgetsdict[c]['main widget'] = '<C QLineEdit dcat:keyword>'
+        widgetsdict[c]['minus widget'] = '<C QToolButton dcat:keyword>'
+        widgetsdict[g.button]['main widget'] = '<P QToolButton dcat:keyword>'
+        self.assertEqual(len(g.children), 4)
+        self.assertTrue(widgetsdict.widget_placement(b, 'main widget'),
+            (1, 0, 1, 2))
+        actionsdict = widgetsdict.drop(b)
+        self.assertEqual(len(g.children), 3)
+        self.assertFalse(b in widgetsdict)
+        self.assertEqual(actionsdict['widgets to delete'],
+            ['<B QLineEdit dcat:keyword>', '<B QToolButton dcat:keyword>'])
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dcat:keyword>', '<C QLineEdit dcat:keyword>', 1, 0, 1, 2),
+             ('<QGridLayout dcat:keyword>', '<C QToolButton dcat:keyword>', 1, 2, 1, 1),
+             ('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 3, 0, 1, 1)])
+        actionsdict = widgetsdict.drop(g.children[0])
+        actionsdict = widgetsdict.drop(g.children[1])
+        self.assertEqual(len(g.children), 1)
+        self.assertEqual(actionsdict['widgets to hide'], ['<C QToolButton dcat:keyword>'])
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 1, 0, 1, 1)])
+
+        # --- suppression d'un groupe de propriétés ---
+        g = widgetsdict.root.search_from_path(DCT.temporal)
+        widgetsdict.add(g.button)
+        b = g.children[0]
+        c = g.children[1]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:temporal>'
+        widgetsdict[g.button]['main widget'] = '<P QToolButton dct:temporal>'
+        widgetsdict[b]['main widget'] = '<B QGroupBox dct:temporal>'
+        widgetsdict[b]['minus widget'] = '<B QToolButton dct:temporal>'
+        widgetsdict[b.children[0]]['main widget'] = '<B QGroupBox dcat:startDate>'
+        widgetsdict[b.children[1]]['main widget'] = '<B QGroupBox dcat:endDate>'
+        widgetsdict[c]['main widget'] = '<C QGroupBox dct:temporal>'
+        widgetsdict[c]['minus widget'] = '<C QToolButton dct:temporal>'
+        actionsdict = widgetsdict.drop(g.children[0])
+        
+        
+        
+        
+
 if __name__ == '__main__':
     unittest.main()
 
