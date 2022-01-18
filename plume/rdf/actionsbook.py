@@ -48,12 +48,27 @@ class ActionsBook:
         Liste des clés dont la liste de valeurs doit être recalculée.
     empty : NoGhostKeyList
         Liste des clés pour lesquelles le texte saisi doit être effacé.
-    drop : KeyList
-        Liste des clés dont les widgets doivent être supprimés.
+    drop : NoGhostKeyList or KeyList
+        Liste des clés dont les widgets doivent être supprimés. `drop`
+        est une liste sans fantômes (:py:class:`NoGhostKeyList`),
+        sauf si le carnet d'actions a été initialisé avec le paramètre
+        `allow_ghosts` valant ``True``.
+
+    Parameters
+    ----------
+    allow_ghosts : bool, default False
+        La liste de l'attribut `drop` peut-elle contenir des clés
+        fantômes ? D'une manière générale, ce paramètre ne devrait pas
+        être utilisé, car `drop` risquerait de contenir des clés qui
+        ne sont pas référencées dans le dictionnaire de widgets. Il
+        sert lorsque des clés non fantômes (et donc potentiellement
+        référencées) deviennent des fantômes (et doivent donc être
+        déréférencées), soit essentiellement pour la méthode
+        :py:meth:`plume.rdf.widgetkey.RootKey.clean`.
     
     """
     
-    def __init__(self):
+    def __init__(self, allow_ghosts=False):
         self.modified = NoGhostKeyList(actionsbook=self)
         self.show = VisibleKeyList(actionsbook=self, erase=['hide',
             'show_minus_button'])
@@ -71,10 +86,13 @@ class ActionsBook:
         self.sources = NoGhostKeyList(actionsbook=self)
         self.thesaurus = NoGhostKeyList(actionsbook=self)
         self.empty = NoGhostKeyList(actionsbook=self)
-        self.drop = KeyList(actionsbook=self, erase=['show',
-            'show_minus_button', 'hide', 'hide_minus_button', 'create',
-            'move', 'languages', 'sources', 'thesaurus', 'modified',
-            'empty'])
+        l=['show', 'show_minus_button', 'hide', 'hide_minus_button',
+            'create', 'move', 'languages', 'sources', 'thesaurus',
+            'modified', 'empty']
+        if allow_ghosts:
+            self.drop = KeyList(actionsbook=self, erase=l)
+        else:
+            self.drop = NoGhostKeyList(actionsbook=self, erase=l)
 
     def __bool__(self):
         return sum(len(getattr(self, a)) for a in self.__dict__.keys()) > 0
