@@ -193,11 +193,17 @@ class WidgetKey:
     """
     
     @classmethod
-    def clear_actionsbook(cls):
+    def clear_actionsbook(cls, **kwargs):
         """Remplace le carnet d'actions par un carnet vierge.
         
+        Parameters
+        ----------
+        **kwargs : dict, optional
+            Paramètres à passer à la fonction d'initialisation
+            de la classe :py:class:`plume.rdf.actionsbook.ActionsBook`.
+        
         """
-        cls.actionsbook = ActionsBook()
+        cls.actionsbook = ActionsBook(**kwargs)
     
     @classmethod
     def unload_actionsbook(cls):
@@ -873,13 +879,17 @@ class WidgetKey:
         -----
         Cette méthode n'est pas appliquée récursivement aux enfants
         de la clé effacée. Elle coupe simplement la branche de
-        l'arbre.
+        l'arbre. Pour autant tous les descendants de la clé sont
+        enregistrés la liste :py:attr:`plume.rdf.actionsbook.ActionsBook.drop`
+        du carnet d'actions.
         
-        Elle est sans effet sur les clés-racine (:py:class:`RootKey`).
+        La méthode est sans effet sur les clés-racine (:py:class:`RootKey`).
         
         """
         self.parent.children.remove(self)
-        WidgetKey.actionsbook.drop.append(self) 
+        WidgetKey.actionsbook.drop.append(self)
+        if isinstance(self, GroupKey):
+            self._notify_dead_children()
 
     @property
     def attr_to_update(self):
@@ -1778,6 +1788,12 @@ class GroupKey(WidgetKey):
             yield from super()._tree_keys()
             for child in self.children:
                 yield from child._tree_keys()
+    
+    def _notify_dead_children(self):
+        for child in self.children:
+            WidgetKey.actionsbook.drop.append(child)
+            if isinstance(child, GroupKey):
+                child._notify_dead_children()
 
 class TabKey(GroupKey):
     """Onglet.
@@ -2958,6 +2974,11 @@ class GroupOfValuesKey(GroupKey):
             yield from super()._tree_keys()
             if self.button:
                 yield from self.button._tree_keys()
+    
+    def _notify_dead_children(self):
+        super()._notify_dead_children()
+        if self.button:
+            WidgetKey.actionsbook.drop.append(self.button)
 
 class TranslationGroupKey(GroupOfValuesKey):
     """Groupe de traduction.
@@ -4621,7 +4642,7 @@ class RootKey(GroupKey):
         du carnet d'actions.
         
         """
-        WidgetKey.clear_actionsbook()
+        WidgetKey.clear_actionsbook(allow_ghosts=True)
         self._clean()
         return WidgetKey.unload_actionsbook()
 
