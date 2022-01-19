@@ -18,14 +18,17 @@ from psycopg2 import sql
 import re, uuid
 import json
 from pathlib import Path
+
+
 try :
    from .bibli_pg  import pg_queries
 except :
    pass   
+
 try :
    from .bibli_pg  import template_utils
 except :
-   pass   
+   pass       
 try :
    from .bibli_rdf import rdf_utils,  __path__
 except :
@@ -118,13 +121,17 @@ def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
     extStr = ""
     for elem in mListExtensionExport :
         modelExt = rdf_utils.export_extension_from_format(elem)
-        extStr += ";;" + str(elem) + " (*" + str(modelExt) + ")"
-
+        #extStr += ";;" + str(elem) + " (*" + str(modelExt) + ")"   # Ancienne version à supprimer si OK
+        extStrExt = "*" + str(modelExt) + " "
+        if elem !=  modelExt[1:] :
+           extStrExt += "*." + str(elem) + " "
+        extStr += ";;" + str(elem) + " (" + str(extStrExt) + ")"
     TypeList = extStr[2:]
+    table = table.replace(".","_").replace(" ","_")
     InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table) + "." + extension
     mDialogueSave = QFileDialog
     fileName = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
-    fileName, extension = os.path.splitext(fileName)[0], os.path.splitext(fileName)[1][1:] 
+    fileName, extension = os.path.splitext(fileName)[0], os.path.splitext(fileName)[1][1:]
     if fileName == "" : return
     #**********************
     # Export fiche de métadonnée
@@ -134,6 +141,11 @@ def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
        zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à exporter votre fiche de métadonnées.", None)
        displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+    return  
+
+#==================================================
+def importObjetMetagraphCSW(self) :
+    #boite de dialogue CSW
     return  
 
 #==================================================
@@ -487,6 +499,7 @@ def returnAndSaveDialogParam(self, mAction):
     mDicAutreColor   = {}
     mDicAutrePolice  = {}
     mDicUserSettings = {}
+    mDicCSW          = {}
     mSettings = QgsSettings()
     mSettings.beginGroup("PLUME")
     mSettings.beginGroup("Generale")
@@ -580,7 +593,8 @@ def returnAndSaveDialogParam(self, mAction):
               mSettings.setValue(key, value)
            else :
               mDicUserSettings[key] = mSettings.value(key)           
-       #----
+
+       #----       
        #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
        if mDicUserSettings["language"] not in mDicUserSettings["langList"] : 
           mDicUserSettings["langList"].append(mDicUserSettings["language"])
@@ -590,6 +604,24 @@ def returnAndSaveDialogParam(self, mAction):
        
        mDicAutre = {**mDicAutre, **mDicUserSettings}          
        # liste des Paramétres UTILISATEURS
+       #======================
+
+       #======================
+       # liste des CSW
+       mSettings.endGroup()
+       mSettings.beginGroup("CSW")
+       #Ajouter si autre param
+       mDicCSW["urlCswDefaut"]   =  'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset'
+       mDicCSW["urlCswIdDefaut"] =  'fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab'
+       mDicCSW["urlCsw"]         =  ''
+       #----
+       for key, value in mDicCSW.items():
+           if not mSettings.contains(key) :
+              mSettings.setValue(key, value)
+           else :
+              mDicCSW[key] = mSettings.value(key)           
+       mDicAutre = {**mDicAutre, **mDicCSW}          
+       # liste des CSW
        #======================
 
     elif mAction == "Save" :
@@ -604,7 +636,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.6"
+def returnVersion() : return "version 0.2.7"
 
 #==================================================
 #Execute Pdf 
@@ -630,6 +662,15 @@ def getThemeIcon(theName):
     elif QFile.exists(myQrcPath): return myQrcPath
     else: return theName
 
+#==================================================
+def returnIcon( iconAdress) :
+    iconSource = iconAdress
+    iconSource = iconSource.replace("\\","/")
+    icon = QtGui.QIcon()
+    icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    icon.actualSize(QSize(15, 15))
+    return icon 
+    
 #==================================================
 def CorrigePath(nPath):
     nPath = str(nPath)
