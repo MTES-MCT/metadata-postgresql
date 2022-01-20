@@ -14,6 +14,7 @@ from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal
+from plume.rdf.exceptions import ForbiddenOperation
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs
@@ -732,6 +733,9 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(actionsdict['widgets to hide'], ['<C QToolButton dcat:keyword>'])
         self.assertEqual(actionsdict['widgets to move'],
             [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 1, 0, 1, 1)])
+        for k in actionsdict.keys():
+            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move'):
+                self.assertFalse(actionsdict[k])
 
         # --- suppression d'un groupe de propriétés ---
         g = widgetsdict.root.search_from_path(DCT.temporal)
@@ -746,11 +750,552 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict[b.children[1]]['main widget'] = '<B QGroupBox dcat:endDate>'
         widgetsdict[c]['main widget'] = '<C QGroupBox dct:temporal>'
         widgetsdict[c]['minus widget'] = '<C QToolButton dct:temporal>'
+        actionsdict = widgetsdict.drop(b)
+        self.assertEqual(len(g.children), 1)
+        self.assertFalse(b in widgetsdict)
+        self.assertFalse(b.children[0] in widgetsdict)
+        self.assertFalse(b.children[1] in widgetsdict)
+        self.assertTrue(widgetsdict[c]['hide minus button'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<C QToolButton dct:temporal>'])
+        self.assertEqual(actionsdict['widgets to delete'],
+            ['<B QGroupBox dct:temporal>', '<B QToolButton dct:temporal>',
+             '<B QGroupBox dcat:startDate>', '<B QGroupBox dcat:endDate>'])
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dct:temporal>', '<C QGroupBox dct:temporal>', 0, 0, 1, 2),
+             ('<QGridLayout dct:temporal>', '<C QToolButton dct:temporal>', 0, 2, 1, 1),
+             ('<QGridLayout dct:temporal>', '<P QToolButton dct:temporal>', 1, 0, 1, 1)])
+        for k in actionsdict.keys():
+            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move'):
+                self.assertFalse(actionsdict[k])
+
+        # --- suppression des clés jumelles ---
+        g = widgetsdict.root.search_from_path(DCT.accessRights)
+        widgetsdict.add(g.button)
+        b1 = g.children[0]
+        b2 = g.children[1]
+        c1 = g.children[2]
+        c2 = g.children[3]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:accessRights>'
+        widgetsdict[g.button]['main widget'] = '<P QToolButton dct:accessRights>'
+        widgetsdict[b1]['main widget'] = '<B1 QGroupBox dct:accessRights>'
+        widgetsdict[b1]['minus widget'] = '<B1-minus QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source widget'] = '<B1-source QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source menu'] = '<B1-source QMenu dct:accessRights>'
+        widgetsdict[b1]['switch source actions'] = ['<B1-source QAction n°1', '<B1-source QAction n°2']
+        widgetsdict[b1.children[0]]['main widget'] = '<B1 QGroupBox rdfs:label>'
+        widgetsdict[b2]['main widget'] = '<B2 QComboBox dct:accessRights>'
+        widgetsdict[b2]['minus widget'] = '<B2-minus QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source widget'] = '<B2-source QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source menu'] = '<B2-source QMenu dct:accessRights>'
+        widgetsdict[b2]['switch source actions'] = ['<B2-source QAction n°1', '<B2-source QAction n°2']
+        widgetsdict[c1]['main widget'] = '<C1 QGroupBox dct:accessRights>'
+        widgetsdict[c1]['minus widget'] = '<C1-minus QToolButton dct:accessRights>'
+        widgetsdict[c1]['switch source widget'] = '<C1-source QToolButton dct:accessRights>'
+        widgetsdict[c1]['switch source menu'] = '<C1-source QMenu dct:accessRights>'
+        widgetsdict[c1]['switch source actions'] = ['<C1-source QAction n°1', '<C1-source QAction n°2']
+        widgetsdict[c1.children[0]]['main widget'] = '<C1 QGroupBox rdfs:label>'
+        widgetsdict[c2]['main widget'] = '<C2 QComboBox dct:accessRights>'
+        widgetsdict[c2]['minus widget'] = '<C2-minus QToolButton dct:accessRights>'
+        widgetsdict[c2]['switch source widget'] = '<C2-source QToolButton dct:accessRights>'
+        widgetsdict[c2]['switch source menu'] = '<C2-source QMenu dct:accessRights>'
+        widgetsdict[c2]['switch source actions'] = ['<C2-source QAction n°1', '<C2-source QAction n°2']
+        actionsdict = widgetsdict.drop(b1)
+        self.assertEqual(actionsdict['widgets to hide'], ['<C1-minus QToolButton dct:accessRights>'])
+        self.assertEqual(actionsdict['widgets to delete'],
+            ['<B1 QGroupBox dct:accessRights>', '<B1-minus QToolButton dct:accessRights>',
+             '<B1-source QToolButton dct:accessRights>', '<B1 QGroupBox rdfs:label>',
+             '<B2 QComboBox dct:accessRights>', '<B2-minus QToolButton dct:accessRights>',
+             '<B2-source QToolButton dct:accessRights>'])
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dct:accessRights>', '<C1 QGroupBox dct:accessRights>', 0, 0, 1, 2),
+             ('<QGridLayout dct:accessRights>', '<C1-minus QToolButton dct:accessRights>', 0, 3, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<C1-source QToolButton dct:accessRights>', 0, 2, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<C2 QComboBox dct:accessRights>', 0, 0, 1, 2),
+             ('<QGridLayout dct:accessRights>', '<C2-minus QToolButton dct:accessRights>', 0, 3, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<C2-source QToolButton dct:accessRights>', 0, 2, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<P QToolButton dct:accessRights>', 1, 0, 1, 1)])
+        self.assertEqual(actionsdict['actions to delete'], ['<B1-source QAction n°1',
+            '<B1-source QAction n°2', '<B2-source QAction n°1', '<B2-source QAction n°2'])
+        self.assertEqual(actionsdict['menus to delete'], ['<B1-source QMenu dct:accessRights>',
+            '<B2-source QMenu dct:accessRights>'])
+        for k in actionsdict.keys():
+            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move', 'actions to delete',
+                'menus to delete'):
+                self.assertFalse(actionsdict[k])
+        
+    def test_change_source(self):
+        """Changement de la source courante d'une clé du dictionnaire.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ],
+                    <http://machin> ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Classique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+
+        # --- Multiples thésaurus ---
+        a = widgetsdict.root.search_from_path(DCAT.theme).children[0]
+        widgetsdict[a]['main widget'] = '<A QComboBox dcat:theme>'
+        self.assertEqual(widgetsdict[a]['current source'], 'Thème INSPIRE (UE)')
+        actionsdict = widgetsdict.change_source(a, 'Thème de données (UE)')
+        self.assertEqual(widgetsdict[a]['current source'], 'Thème de données (UE)')
+        self.assertEqual(actionsdict['switch source menu to update'], [a])
+        self.assertEqual(actionsdict['concepts list to update'], [a])
+        self.assertEqual(actionsdict['widgets to empty'], ['<A QComboBox dcat:theme>'])
+        self.assertTrue('Régions et villes' in widgetsdict[a]['thesaurus values'])
+        for k in actionsdict.keys():
+            if not k in ('switch source menu to update', 'concepts list to update',
+                'widgets to empty'):
+                self.assertFalse(actionsdict[k])
+
+        # --- Sortie du mode manuel ---
+        g = widgetsdict.root.search_from_path(DCT.accessRights)
+        b1 = g.children[0]
+        b2 = g.children[1]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:accessRights>'
+        widgetsdict[b1]['main widget'] = '<B1 QGroupBox dct:accessRights>'
+        widgetsdict[b1]['minus widget'] = '<B1-minus QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source widget'] = '<B1-source QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source menu'] = '<B1-source QMenu dct:accessRights>'
+        widgetsdict[b1]['switch source actions'] = ['<B1-source QAction n°1', '<B1-source QAction n°2']
+        widgetsdict[b1.children[0]]['main widget'] = '<B1 QGroupBox rdfs:label>'
+        widgetsdict[b2]['main widget'] = '<B2 QComboBox dct:accessRights>'
+        widgetsdict[b2]['minus widget'] = '<B2-minus QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source widget'] = '<B2-source QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source menu'] = '<B2-source QMenu dct:accessRights>'
+        widgetsdict[b2]['switch source actions'] = ['<B2-source QAction n°1', '<B2-source QAction n°2']
+        self.assertEqual(widgetsdict[b1]['current source'], "< manuel >")
+        self.assertFalse(widgetsdict[b1]['hidden'])
+        self.assertFalse(widgetsdict[b1.children[0]]['hidden'])
+        self.assertTrue(widgetsdict[b2]['hidden'])
+        actionsdict = widgetsdict.change_source(b1, "Droits d'accès (UE)")
+        self.assertEqual(widgetsdict[b2]['current source'], "Droits d'accès (UE)")
+        self.assertTrue(widgetsdict[b2]['thesaurus values'], 'public')
+        self.assertTrue(widgetsdict[b1]['hidden'])
+        self.assertTrue(widgetsdict[b1.children[0]]['hidden'])
+        self.assertFalse(widgetsdict[b2]['hidden'])
+        self.assertEqual(actionsdict['widgets to show'], ['<B2 QComboBox dct:accessRights>',
+            '<B2-minus QToolButton dct:accessRights>', '<B2-source QToolButton dct:accessRights>'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<B1 QGroupBox dct:accessRights>',
+            '<B1-minus QToolButton dct:accessRights>', '<B1-source QToolButton dct:accessRights>',
+            '<B1 QGroupBox rdfs:label>'])
+        self.assertEqual(actionsdict['switch source menu to update'], [b2])
+        self.assertEqual(actionsdict['concepts list to update'], [b2])
+        self.assertEqual(actionsdict['widgets to empty'], ['<B2 QComboBox dct:accessRights>'])
+        for k in actionsdict.keys():
+            if not k in ('switch source menu to update', 'concepts list to update',
+                'widgets to show', 'widgets to hide', 'widgets to empty'):
+                self.assertFalse(actionsdict[k])
+
+        # --- Entrée en mode manuel ---
+        actionsdict = widgetsdict.change_source(b2, '< manuel >')
+        self.assertEqual(widgetsdict[b1]['current source'], "< manuel >")
+        self.assertFalse(widgetsdict[b1]['hidden'])
+        self.assertFalse(widgetsdict[b1.children[0]]['hidden'])
+        self.assertTrue(widgetsdict[b2]['hidden'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<B2 QComboBox dct:accessRights>',
+            '<B2-minus QToolButton dct:accessRights>', '<B2-source QToolButton dct:accessRights>'])
+        self.assertEqual(actionsdict['widgets to show'], ['<B1 QGroupBox dct:accessRights>',
+            '<B1-minus QToolButton dct:accessRights>', '<B1-source QToolButton dct:accessRights>',
+            '<B1 QGroupBox rdfs:label>'])
+        for k in actionsdict.keys():
+            if not k in ('widgets to show', 'widgets to hide'):
+                self.assertFalse(actionsdict[k])
+        
+        # --- Item non référencé vers thésaurus ---
+        g = widgetsdict.root.search_from_path(DCT.accessRights)
+        b1 = g.children[2]
+        b2 = g.children[3]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:accessRights>'
+        widgetsdict[b1]['main widget'] = '<B1 QGroupBox dct:accessRights>'
+        widgetsdict[b1]['minus widget'] = '<B1-minus QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source widget'] = '<B1-source QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source menu'] = '<B1-source QMenu dct:accessRights>'
+        widgetsdict[b1]['switch source actions'] = ['<B1-source QAction n°1', '<B1-source QAction n°2']
+        widgetsdict[b1.children[0]]['main widget'] = '<B1 QGroupBox rdfs:label>'
+        widgetsdict[b2]['main widget'] = '<B2 QComboBox dct:accessRights>'
+        widgetsdict[b2]['minus widget'] = '<B2-minus QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source widget'] = '<B2-source QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source menu'] = '<B2-source QMenu dct:accessRights>'
+        widgetsdict[b2]['switch source actions'] = ['<B2-source QAction n°1', '<B2-source QAction n°2']
+        self.assertEqual(widgetsdict[b2]['current source'], '< non référencé >')
+        self.assertTrue(not '< non référencé >' in widgetsdict[b1]['sources'])
+        actionsdict = widgetsdict.change_source(b2, "Droits d'accès (UE)")
+        self.assertEqual(widgetsdict[b2]['current source'], "Droits d'accès (UE)")
+        self.assertTrue(not '< non référencé >' in widgetsdict[b2]['sources'])
+        self.assertTrue(not '< non référencé >' in widgetsdict[b1]['sources'])
+        self.assertTrue(widgetsdict[b2]['thesaurus values'], 'public')
+        self.assertListEqual(actionsdict['switch source menu to update'], [b2])
+        
+        # --- Item non référencé vers manuel ---
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        g = widgetsdict.root.search_from_path(DCT.accessRights)
+        b1 = g.children[2]
+        b2 = g.children[3]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:accessRights>'
+        widgetsdict[b1]['main widget'] = '<B1 QGroupBox dct:accessRights>'
+        widgetsdict[b1]['minus widget'] = '<B1-minus QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source widget'] = '<B1-source QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source menu'] = '<B1-source QMenu dct:accessRights>'
+        widgetsdict[b1]['switch source actions'] = ['<B1-source QAction n°1', '<B1-source QAction n°2']
+        widgetsdict[b1.children[0]]['main widget'] = '<B1 QGroupBox rdfs:label>'
+        widgetsdict[b2]['main widget'] = '<B2 QComboBox dct:accessRights>'
+        widgetsdict[b2]['minus widget'] = '<B2-minus QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source widget'] = '<B2-source QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source menu'] = '<B2-source QMenu dct:accessRights>'
+        widgetsdict[b2]['switch source actions'] = ['<B2-source QAction n°1', '<B2-source QAction n°2']
+        self.assertEqual(widgetsdict[b2]['current source'], '< non référencé >')
+        self.assertTrue(not '< non référencé >' in widgetsdict[b1]['sources'])
+        actionsdict = widgetsdict.change_source(b2, '< manuel >')
+        self.assertEqual(widgetsdict[b1]['current source'], '< manuel >')
+        self.assertTrue(not '< non référencé >' in widgetsdict[b1]['sources'])
+        with self.assertRaises(ForbiddenOperation):
+            actionsdict = widgetsdict.change_source(b1, '< non référencé >')
+        # retour sur un thésaurus
+        actionsdict = widgetsdict.change_source(b1, "Droits d'accès (UE)")
+        self.assertTrue(not '< non référencé >' in widgetsdict[b2]['sources'])
+        self.assertListEqual(actionsdict['switch source menu to update'], [b2])
+        with self.assertRaises(ForbiddenOperation):
+            actionsdict = widgetsdict.change_source(b2, '< non référencé >')
+
+    def test_twins_and_template(self):
+        """Quelques contrôles sur le comportement des clés jumelles hors modèle.
+
+        Lorsqu'aucune des catégories du groupe de propriété
+        n'est dans le modèle, seul la clé-valeur est créée,
+        et elle n'a alors pas de jumelle. Sauf bien sûr si le
+        groupe de propriétés est nécessaire pour représenter
+        la valeur stockée dans le graphe.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Basique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        g = widgetsdict.root.search_from_path(DCT.accessRights)
+        self.assertEqual(len(g.children), 1)
+        c = g.children[0]
+        self.assertIsNone(c.m_twin)
+        self.assertFalse('< manuel >' in widgetsdict[c]['sources'])    
+
+    def test_translation_actions(self):
+        """Changement de langue courante pour une clé.
+
+        Ce test contrôle aussi l'effet des méthodes
+        :py:meth:`plume.rdf.widgetsdict.WidgetsDict.drop` et
+        :py:meth:`plume.rdf.widgetsdict.WidgetsDict.add` en
+        mode traduction.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Basique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            translation=True, langList=['fr', 'en', 'it'])
+
+        # --- ajout d'une clé dans un groupe de traduction ---
+        g = widgetsdict.root.search_from_path(DCT.title)
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:title>'
+        widgetsdict[g.button]['main widget'] = '<P QToolButton dct:title>'
+        fr = g.children[0]
+        widgetsdict[fr]['main widget'] = '<FR QLineEdit dct:title>'
+        widgetsdict[fr]['minus widget'] = '<FR-minus QToolButton dct:title>'
+        widgetsdict[fr]['language widget'] = '<FR-language QToolButton dct:title>'
+        widgetsdict[fr]['language menu'] = '<FR-language QMenu dct:title>'
+        widgetsdict[fr]['language actions'] = ['<FR-language QAction n°1', '<FR-language QAction n°2']
+        self.assertEqual(widgetsdict[fr]['authorized languages'], ['fr', 'en', 'it'])
+        actionsdict = widgetsdict.add(g.button)
+        en = g.children[1]
+        widgetsdict[en]['main widget'] = '<EN QLineEdit dct:title>'
+        widgetsdict[en]['minus widget'] = '<EN-minus QToolButton dct:title>'
+        widgetsdict[en]['language widget'] = '<EN-language QToolButton dct:title>'
+        widgetsdict[en]['language menu'] = '<EN-language QMenu dct:title>'
+        widgetsdict[en]['language actions'] = ['<EN-language QAction n°1', '<EN-language QAction n°2']
+        self.assertEqual(widgetsdict[fr]['authorized languages'], ['fr', 'it'])
+        self.assertEqual(widgetsdict[fr]['language value'], 'fr')
+        self.assertEqual(widgetsdict[en]['authorized languages'], ['en', 'it'])
+        self.assertEqual(widgetsdict[en]['language value'], 'en')
+        self.assertFalse(widgetsdict[g.button]['hidden'])
+        self.assertEqual(actionsdict['new keys'], [en])
+        self.assertEqual(actionsdict['language menu to update'], [fr])
+        self.assertEqual(actionsdict['widgets to move'], [('<QGridLayout dct:title>',
+            '<P QToolButton dct:title>', 2, 0, 1, 1)])
+        self.assertEqual(actionsdict['widgets to show'], ['<FR-minus QToolButton dct:title>'])
+        for k in actionsdict.keys():
+            if not k in ('new keys', 'language menu to update',
+                'widgets to move', 'widgets to show'):
+                self.assertFalse(actionsdict[k])
+        actionsdict = widgetsdict.add(g.button)
+        it = g.children[2]
+        widgetsdict[it]['main widget'] = '<IT QLineEdit dct:title>'
+        widgetsdict[it]['minus widget'] = '<IT-minus QToolButton dct:title>'
+        widgetsdict[it]['language widget'] = '<IT-language QToolButton dct:title>'
+        widgetsdict[it]['language menu'] = '<IT-language QMenu dct:title>'
+        widgetsdict[it]['language actions'] = ['<IT-language QAction n°1', '<IT-language QAction n°2']
+        self.assertEqual(widgetsdict[fr]['authorized languages'], ['fr'])
+        self.assertEqual(widgetsdict[fr]['language value'], 'fr')
+        self.assertEqual(widgetsdict[en]['authorized languages'], ['en'])
+        self.assertEqual(widgetsdict[en]['language value'], 'en')
+        self.assertEqual(widgetsdict[it]['authorized languages'], ['it'])
+        self.assertEqual(widgetsdict[it]['language value'], 'it')
+        self.assertTrue(widgetsdict[g.button]['hidden'])
+        self.assertEqual(actionsdict['new keys'], [it])
+        self.assertEqual(actionsdict['language menu to update'], [fr, en])
+        self.assertEqual(actionsdict['widgets to move'], [('<QGridLayout dct:title>',
+            '<P QToolButton dct:title>', 3, 0, 1, 1)])
+        self.assertEqual(actionsdict['widgets to hide'], ['<P QToolButton dct:title>'])
+        for k in actionsdict.keys():
+            if not k in ('new keys', 'language menu to update',
+                'widgets to move', 'widgets to hide'):
+                self.assertFalse(actionsdict[k])
+
+        # --- suppression d'une clé dans un groupe de traduction ---
+        actionsdict = widgetsdict.drop(fr)
+        self.assertFalse(fr in widgetsdict)
+        self.assertEqual(widgetsdict[en]['authorized languages'], ['en', 'fr'])
+        self.assertEqual(widgetsdict[en]['language value'], 'en')
+        self.assertEqual(widgetsdict[it]['authorized languages'], ['it', 'fr'])
+        self.assertEqual(widgetsdict[it]['language value'], 'it')
+        self.assertFalse(widgetsdict[g.button]['hidden'])
+        self.assertEqual(actionsdict['widgets to show'], ['<P QToolButton dct:title>'])
+        self.assertEqual(actionsdict['widgets to delete'], ['<FR QLineEdit dct:title>',
+            '<FR-minus QToolButton dct:title>', '<FR-language QToolButton dct:title>'])
+        self.assertEqual(actionsdict['actions to delete'], ['<FR-language QAction n°1',
+            '<FR-language QAction n°2'])
+        self.assertEqual(actionsdict['menus to delete'], ['<FR-language QMenu dct:title>'])
+        self.assertEqual(actionsdict['language menu to update'], [en, it])
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dct:title>', '<EN QLineEdit dct:title>', 0, 0, 1, 2),
+             ('<QGridLayout dct:title>', '<EN-minus QToolButton dct:title>', 0, 3, 1, 1),
+             ('<QGridLayout dct:title>', '<EN-language QToolButton dct:title>', 0, 2, 1, 1),
+             ('<QGridLayout dct:title>', '<IT QLineEdit dct:title>', 1, 0, 1, 2),
+             ('<QGridLayout dct:title>', '<IT-minus QToolButton dct:title>', 1, 3, 1, 1),
+             ('<QGridLayout dct:title>', '<IT-language QToolButton dct:title>', 1, 2, 1, 1),
+             ('<QGridLayout dct:title>', '<P QToolButton dct:title>', 2, 0, 1, 1)])
+        for k in actionsdict.keys():
+            if not k in ('widgets to show', 'widgets to delete', 'actions to delete',
+                'menus to delete', 'language menu to update', 'widgets to move'):
+                self.assertFalse(actionsdict[k])       
+
+        # --- changement de langue dans un groupe de traduction ---
+        actionsdict = widgetsdict.change_language(en, 'fr')
+        self.assertEqual(widgetsdict[en]['authorized languages'], ['fr', 'en'])
+        self.assertEqual(widgetsdict[en]['language value'], 'fr')
+        self.assertEqual(widgetsdict[it]['authorized languages'], ['it', 'en'])
+        self.assertEqual(widgetsdict[it]['language value'], 'it')
+        self.assertEqual(actionsdict['language menu to update'], [en, it])
+        for k in actionsdict.keys():
+            if not k in ('language menu to update'):
+                self.assertFalse(actionsdict[k])        
+        
+        # --- ajout d'une clé hors groupe de traduction ---
+        g = widgetsdict.root.search_from_path(DCAT.keyword)
+        widgetsdict[g]['grid widget'] = '<QGridLayout dcat:keyword>'
+        widgetsdict[g.button]['main widget'] = '<P QToolButton dcat:keyword>'
+        actionsdict = widgetsdict.add(g.button)
+        c = g.children[4]
+        widgetsdict[c]['main widget'] = '<C QLineEdit dcat:keyword>'
+        widgetsdict[c]['minus widget'] = '<C-minus QToolButton dcat:keyword>'
+        widgetsdict[c]['language widget'] = '<C-language QToolButton dcat:keyword>'
+        widgetsdict[c]['language menu'] = '<C-language QMenu dcat:keyword>'
+        widgetsdict[c]['language actions'] = ['<C-language QAction n°1', '<C-language QAction n°2']
+        self.assertEqual(widgetsdict[c]['authorized languages'], ['fr', 'en', 'it'])
+        self.assertEqual(widgetsdict[c]['language value'], 'fr')
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 5, 0, 1, 1)])
+        self.assertEqual(actionsdict['new keys'], [c])
+        for k in actionsdict.keys():
+            if not k in ('widgets to move', 'new keys'):
+                self.assertFalse(actionsdict[k])
+        
+        # --- suppression d'une clé hors groupe de traduction ---
+        actionsdict = widgetsdict.drop(c)
+        self.assertFalse(c in widgetsdict)
+        self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['fr', 'en', 'it'])
+        self.assertEqual(actionsdict['widgets to delete'], ['<C QLineEdit dcat:keyword>',
+            '<C-minus QToolButton dcat:keyword>', '<C-language QToolButton dcat:keyword>'])
+        self.assertEqual(actionsdict['actions to delete'], ['<C-language QAction n°1',
+            '<C-language QAction n°2'])
+        self.assertEqual(actionsdict['menus to delete'], ['<C-language QMenu dcat:keyword>'])
+        self.assertEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 4, 0, 1, 1)])
+        for k in actionsdict.keys():
+            if not k in ('widgets to delete', 'actions to delete',
+                'menus to delete', 'widgets to move'):
+                self.assertFalse(actionsdict[k])
+        
+        # --- changement de langue hors groupe de traduction ---
+        c = g.children[0]
+        widgetsdict[c]['main widget'] = '<C QLineEdit dcat:keyword>'
+        widgetsdict[c]['minus widget'] = '<C-minus QToolButton dcat:keyword>'
+        widgetsdict[c]['language widget'] = '<C-language QToolButton dcat:keyword>'
+        widgetsdict[c]['language menu'] = '<C-language QMenu dcat:keyword>'
+        widgetsdict[c]['language actions'] = ['<C-language QAction n°1', '<C-language QAction n°2']
+        self.assertEqual(widgetsdict[c]['language value'], 'fr')
+        actionsdict = widgetsdict.change_language(c, 'it')
+        self.assertEqual(widgetsdict[c]['authorized languages'], ['fr', 'en', 'it'])
+        self.assertEqual(widgetsdict[c]['language value'], 'it')
+        self.assertEqual(actionsdict['language menu to update'], [c])
+        for k in actionsdict.keys():
+            if not k in ('language menu to update'):
+                self.assertFalse(actionsdict[k])  
+
+    def test_translation_unauthorized_language(self):
+        """Contrôle du comportement en présence de langues non autorisées.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Basique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Basique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            translation=True, langList=['fr', 'it'])
+        g = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(widgetsdict[g.children[0]]['language value'], 'fr')
+        self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['fr', 'it'])
+        self.assertEqual(widgetsdict[g.children[1]]['language value'], 'en')
+        self.assertEqual(widgetsdict[g.children[1]]['authorized languages'], ['en', 'it'])
         actionsdict = widgetsdict.drop(g.children[0])
-        
-        
-        
-        
+        self.assertEqual(widgetsdict[g.children[0]]['language value'], 'en')
+        self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['en', 'it', 'fr'])
+        actionsdict = widgetsdict.add(g.button)
+        self.assertEqual(widgetsdict[g.children[0]]['language value'], 'en')
+        self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['en', 'fr'])
+        self.assertEqual(widgetsdict[g.children[1]]['language value'], 'it')
+        self.assertEqual(widgetsdict[g.children[1]]['authorized languages'], ['it', 'fr'])
+        actionsdict = widgetsdict.drop(g.children[0])
+        self.assertEqual(widgetsdict[g.children[0]]['language value'], 'it')
+        self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['it', 'fr'])
+        with self.assertRaises(ForbiddenOperation):
+            actionsdict = widgetsdict.change_language(g.children[0], 'en')
 
 if __name__ == '__main__':
     unittest.main()
