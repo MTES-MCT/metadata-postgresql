@@ -793,6 +793,12 @@ class WidgetsDict(dict):
             les informations qui permettront de matérialiser l'action
             réalisée.
         
+        Raises
+        ------
+        ForbiddenOperation
+            Quand la clé est masquée ou qu'il ne s'agit pas d'un
+            bouton plus.
+        
         """
         if not isinstance(buttonkey, PlusButtonKey):
             raise ForbiddenOperation("Seul un bouton permet d'ajouter" \
@@ -822,6 +828,12 @@ class WidgetsDict(dict):
             description de ce dictionnaire, qui contient toutes
             les informations qui permettront de matérialiser l'action
             réalisée.
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Quand la clé est masquée, quand la clé n'a pas de bouton
+            moins.
         
         """
         if not objectkey.has_minus_button:
@@ -855,6 +867,13 @@ class WidgetsDict(dict):
             les informations qui permettront de matérialiser l'action
             réalisée.
         
+        Raises
+        ------
+        ForbiddenOperation
+            Quand la clé est masquée, quand la clé n'a pas de widget
+            annexe de sélection de la langue, ou quand la langue
+            n'est pas dans la liste des langues autorisées.
+        
         """
         if self[valuekey]['language value'] == new_language:
             return self.dictisize_actionsbook()
@@ -864,6 +883,9 @@ class WidgetsDict(dict):
         if valuekey.is_hidden:
             raise ForbiddenOperation("Il n'est pas permis de changer " \
                 "la langue d'une clé invisible.", valuekey)
+        if not new_language in self[valuekey]['authorized languages']:
+            raise ForbiddenOperation("La langue {} n'est pas disponible " \
+                'pour les traductions.'.format(new_language), valuekey)
         a = valuekey.change_language(new_language)
         return self.dictisize_actionsbook(a)
 
@@ -887,9 +909,19 @@ class WidgetsDict(dict):
             les informations qui permettront de matérialiser l'action
             réalisée.
         
+        Raises
+        ------
+        ForbiddenOperation
+            Quand la clé est masquée, quand la clé n'a pas de widget
+            annexe de sélection de la source, quand la source cible
+            n'est pas dans la liste des sources autorisées pour la clé.
+        
         """
         if self[objectkey]['current source'] == new_source:
             return self.dictisize_actionsbook()
+        if not new_source in self[objectkey]['sources']:
+            raise ForbiddenOperation("La source '{}' n'est pas " \
+                'autorisée.', objectkey)
         if not objectkey.has_source_button:
             raise ForbiddenOperation("Il faut un bouton de sélection " \
                 "de la source pour changer la source d'une clé.", objectkey)
@@ -918,12 +950,7 @@ class WidgetsDict(dict):
         elif isinstance(objectkey, ValueKey) and new_source == '< manuel >':
             a = objectkey.switch_twin()
         else:
-            a = valuekey.change_source(value_source)
-            # Le cas d'une nouvelle source valant < non référencé > est
-            # traité ici (hypothétique, car < non référencé > ne peut normalement
-            # apparaître dans la liste des sources que s'il est sélectionné).
-            # Comme value_source vaut None, c'est la première source de la
-            # liste qui serait en fait retenue (et présentée comme telle).
+            a = objectkey.change_source(value_source)
         
         return self.dictisize_actionsbook(a)
 
@@ -996,31 +1023,30 @@ class WidgetsDict(dict):
             return
         if value in (None, ''):
             widgetkey.value = None
-            return
-        if widgetkey.transform == 'email':
-            value = owlthing_from_email(value)
-        if widgetkey.transform == 'phone':
-            value = owlthing_from_tel(value)
-        if widgetkey.value_language:
-            widgetkey.value = Literal(value, lang=widgetkey.value_language)
-            return 
-        if widgetkey.datatype and widgetkey.datatype != XSD.string:
-            widgetkey.value = Literal(value, datatype=widgetkey.datatype)
-            return
-        if widgetkey.datatype == XSD.string:
-            widgetkey.value = Literal(value)
-            return
-        if widgetkey.value_source:
-            res = Thesaurus.concept_iri((widgetkey.value_source, \
-                widgetkey.main_language), value)
-            if res:
-                widgetkey.value = res
-                return
-        f = forbidden_char(value)
-        if f:
-            raise ForbiddenOperation("Le caractère '{}' " \
-                "n'est pas autorisé dans un IRI.".format(f), widgetkey)
-        widgetkey.value = URIRef(value)
+        else:
+            if widgetkey.transform == 'email':
+                value = owlthing_from_email(value)
+            if widgetkey.transform == 'phone':
+                value = owlthing_from_tel(value)
+            if widgetkey.value_language:
+                widgetkey.value = Literal(value, lang=widgetkey.value_language)
+            elif widgetkey.datatype and widgetkey.datatype != XSD.string:
+                widgetkey.value = Literal(value, datatype=widgetkey.datatype)
+            elif widgetkey.datatype == XSD.string:
+                widgetkey.value = Literal(value)
+            elif widgetkey.value_source:
+                res = Thesaurus.concept_iri((widgetkey.value_source, \
+                    widgetkey.main_language), value)
+                if res:
+                    widgetkey.value = res
+            else:
+                f = forbidden_char(value)
+                if f:
+                    raise ForbiddenOperation("Le caractère '{}' " \
+                        "n'est pas autorisé dans un IRI.".format(f), widgetkey)
+                widgetkey.value = URIRef(value)
+        if widgetkey in self:
+            self.internalize(widgetkey)
     
     def str_value(self, widgetkey):
         """Renvoie la valeur d'une clé-valeur du dictionnaire de widgets sous forme d'une chaîne de caractères.
@@ -1100,6 +1126,6 @@ class WidgetsDict(dict):
             if self[widgetkey]['multiple sources']:
                 print('[...]', end=' ')
             if self[widgetkey]['authorized languages']:
-                print('[{}]'.format(self.main_language), end=' ')
+                print('[{}]'.format(self[widgetkey]['language value']), end=' ')
             print()
 
