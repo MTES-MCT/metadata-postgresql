@@ -3859,9 +3859,12 @@ class ValueKey(ObjectKey):
         if not self._is_unborn and self.value_source != old_value:
             WidgetKey.actionsbook.sources.append(self)
             WidgetKey.actionsbook.thesaurus.append(self)
+            WidgetKey.actionsbook.empty.append(self)
+            # NB: même s'il n'y a pas de valeur dans la clé,
+            # car on veut aussi effacer les valeurs saisies dans
+            # le widgets mais non sauvegardées
             if self.value:
                 self.value = None
-                WidgetKey.actionsbook.empty.append(self)
     
     @property
     def do_not_save(self):
