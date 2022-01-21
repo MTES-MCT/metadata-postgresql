@@ -4,66 +4,57 @@ Foncièrement, lorsqu'un utilisateur demande l'affichage de la fiche de métadon
 1. rassemble dans un "dictionnaire de widgets", soit un objet python de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
 2. parcourt ce dictionnaire de widgets pour construire le formulaire qui sera présenté à l'utilisateur. 
 
-La première de ces étapes, objet de la présente partie, est réalisée par la fonction `build_dict` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils.py).
+La première de ces étapes est traitée ici. Pour la seconde, cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md).
 
-Celle-ci prend deux types d'arguments : des sources de données et des paramètres utilisateur.
+La classe `WidgetsDict` est définie par le module [plume.rdf.widgetsdict](/plume/rdf/widgetsdict.py). Sa fonction d'initialisation prend deux types d'arguments : des sources de données et des paramètres utilisateur. Aucun n'est obligatoire.
 
 Sources de données :
 
-| Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
-| --- | --- | --- | --- | --- | --- |
-| 0 | `metagraph` | rdflib.graph.Graph | oui |  | [→](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
-| 1 | `shape` | rdflib.graph.Graph | oui |  | [→](#shape--le-schéma-shacl-des-métadonnées-communes) |
-| 2 | `vocabulary` | rdflib.graph.Graph | oui |  | [→](#vocabulary--la-compilation-des-thésaurus) |
-| 3 | `template` | dict | non | `None` | [→](#template--le-modèle-de-formulaire) |
-| 4 | `templateTabs` | dict | non | `None` | [→](#templateTabs--la-liste-des-onglets) |
-| 5 | `columns` | list | non | `None` | [→](#columns--les-descriptifs-des-champs) |
-| 6 | `data` | dict | non | `None` | [→](#data--les-métadonnées-calculées) |
+| Position | Nom | Type | Valeur par défaut | Détails |
+| --- | --- | --- | --- | --- |
+| 0 | `metagraph` | [plume.rdf.metagraph.Metagraph](/plume/rdf/metagraph.py) | `None` | [→](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
+| 1 | `template` | [plume.pg.template.TemplateDict](/plume/pg/template.py) | `None` | [→](#template--le-modèle-de-formulaire) |
+| 2 | `data` | dict | `None` | [→](#data--les-métadonnées-calculées) |
+| 3 | `columns` | list(tuple(str, str)) | `None` | [→](#columns--les-descriptifs-des-champs) |
 
 Paramètres utilisateurs :
 
-| Position | Nom | Type | Obligatoire ? | Valeur par défaut | Détails |
-| --- | --- | --- | --- | --- | --- |
-| 7 | `mode` | str | non | `'edit'` | [→](#mode) |
-| 8 | `readHideBlank` | bool | non | `True` | [→](#readhideblank) |
-| 9 | `readHideUnlisted` | bool | non | `True` | [→](#readHideunlisted) |
-| 10 | `editHideUnlisted` | bool | non | `False` | [→](#editHideunlisted) |
-| 11 | `language` | str | non | `'fr'` | [→](#language) |
-| 12 | `translation` | bool | non | `False` | [→](#translation) |
-| 13 | `langList` | list (str) | non | `['fr', 'en']` | [→](#langlist) |
-| 14 | `readOnlyCurrentLanguage` | bool | non | `True` | [→](#readonlycurrentlanguage) |
-| 15 | `editOnlyCurrentLanguage` | bool | non | `False` | [→](#editonlycurrentlanguage) |
-| 16 | `labelLengthLimit` | int | non | `25` | [→](#labellengthlimit) |
-| 17 | `valueLengthLimit` | int | non | `65` | [→](#valuelengthlimit) |
-| 18 | `textEditRowSpan` | int | non | `6` | [→](#texteditrowspan) |
+| Position | Nom | Type | Valeur par défaut[^defaultvalues] | Détails |
+| --- | --- | --- | --- | --- |
+| 4 | `mode` | str | `'edit'` | [→](#mode) |
+| 5 | `translation` | bool | `False` | [→](#translation) |
+| 6 | `langList` | list(str) ou tuple(str) | `('fr', 'en')` | [→](#langlist) |
+| 7 | `language` | str | `'fr'` | [→](#language) |
+| 8 | `readHideBlank` | bool | `True` | [→](#readhideblank) |
+| 9 | `editHideUnlisted` | bool | `False` | [→](#editHideunlisted) |
+| 10 | `readHideUnlisted` | bool | `True` | [→](#readHideunlisted) |
+| 11 | `editOnlyCurrentLanguage` | bool | `False` | [→](#editonlycurrentlanguage) |
+| 12 | `readOnlyCurrentLanguage` | bool | `True` | [→](#readonlycurrentlanguage) |
+| 13 | `labelLengthLimit` | int | `25` | [→](#labellengthlimit) |
+| 14 | `valueLengthLimit` | int | `65` | [→](#valuelengthlimit) |
+| 15 | `textEditRowSpan` | int | `6` | [→](#texteditrowspan) |
+
+[^defaultvalues]: Hormis pour les booléens, les valeurs par défaut sont appliquées dans le corps de la fonction d'initialisation et non déclarées dans les paramètres. Ainsi, elles s'appliqueront aussi dans le cas où `None` est explicitement fourni en argument pour le paramètre.
 
 Tous les arguments sont décrits plus en détail dans la suite, ainsi que le résultat obtenu.
 
-Afin que les valeurs par défaut s'appliquent, on fournira de préférence à `build_dict()` ses arguments sous la forme d'un dictionnaire ne contenant que les arguments pour lesquels une valeur est effectivement disponible.
+On fournira de préférence à `WidgetsDict()` ses arguments sous la forme d'un dictionnaire ne contenant que les arguments pour lesquels une valeur est effectivement disponible.
 
 Par exemple :
 
 ```python
 
+from plume.rdf.widgetsdict import WidgetsDict
+
 kwa = {}
 
-# ajout des arguments obligatoires
-kwa.update({
-	'metagraph': metagraph,
-	'shape': shape,
-	'vocabulary': vocabulary 
-	})
-	
-# ajout des arguments optionnels
+if metagraph is not None:
+    kwa['metagraph'] = metagraph
 if template is not None:
-	kwa.update({ 'template': template })
-if data is not None:
-	kwa.update({ 'data': data })
-if mode is not None:
-	kwa.update({ 'mode': mode })
+    kwa['template'] = template
 # etc.
 
-widgetsdict = rdf_utils.build_dict(**kwa)
+widgetsdict = WidgetsDict(**kwa)
 
 ```
 
