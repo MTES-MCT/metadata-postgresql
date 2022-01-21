@@ -10,10 +10,10 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
-from plume.rdf.rdflib import isomorphic, Literal
+from plume.rdf.rdflib import isomorphic, Literal, URIRef
 from plume.rdf.exceptions import ForbiddenOperation
 
 from plume.pg.tests.connection import ConnectionString
@@ -1296,6 +1296,152 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['it', 'fr'])
         with self.assertRaises(ForbiddenOperation):
             actionsdict = widgetsdict.change_language(g.children[0], 'en')
+
+    def test_update_value(self):
+        """Mise à jour des valeurs stockées dans les clés avec dé-sérialisation.
+
+        Vérifie en même temps le fonctionnement de
+        :py:meth:`plume.rdf.widgetsdict.WidgetsDict.str_value`
+        en mode édition, puisque cette dernière est appliquée
+        pour mettre à jour la clé ``value`` du dictionnaire
+        interne.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    ('Classique',)
+                    )
+                tabs = cur.fetchall()
+                cur.execute('DELETE FROM z_plume.meta_template')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            translation=True)
+
+        # --- suppression de la valeur ---
+        g = widgetsdict.root.search_from_path(DCAT.keyword)
+        c = g.children[1]
+        widgetsdict.update_value(c, None)
+        self.assertEqual(c.value, None)
+        self.assertEqual(widgetsdict[c]['value'], None)
+
+        c = g.children[2]
+        widgetsdict.update_value(c, '')
+        self.assertEqual(c.value, None)
+        self.assertEqual(widgetsdict[c]['value'], None)
+        
+        # --- litéral avec une langue ---
+        g = widgetsdict.root.search_from_path(DCT.title)
+        c = g.children[1]
+        widgetsdict.update_value(c, 'Metropolitan Departments (Admin Express)')
+        self.assertEqual(c.value, Literal('Metropolitan Departments (Admin Express)', lang='en'))
+        self.assertEqual(widgetsdict[c]['value'], 'Metropolitan Departments (Admin Express)')
+
+        # --- litéral sans langue ---
+        c = widgetsdict.root.search_from_path(OWL.versionInfo)
+        widgetsdict.update_value(c, '1.0')
+        self.assertEqual(c.value, Literal('1.0'))
+        self.assertEqual(widgetsdict[c]['value'], '1.0')
+
+        # --- litéral avec un type particulier ---
+        c = widgetsdict.root.search_from_path(DCT.modified)
+        widgetsdict.update_value(c, '2021-01-21')
+        self.assertEqual(c.value, Literal('2021-01-21', datatype=XSD.date))
+        self.assertEqual(widgetsdict[c]['value'], '2021-01-21')
+
+        # --- URI basique ---
+        g = widgetsdict.root.search_from_path(DCAT.landingPage)
+        widgetsdict.add(g.button)
+        c = g.children[1]
+        widgetsdict.update_value(c, 'https://www.postgresql.org/docs/14/index.html')
+        self.assertEqual(c.value, URIRef('https://www.postgresql.org/docs/14/index.html'))
+        self.assertEqual(widgetsdict[c]['value'], 'https://www.postgresql.org/docs/14/index.html')
+
+        # --- téléphone ---
+        c = widgetsdict.root.search_from_path(DCAT.contactPoint / VCARD.hasTelephone)
+        widgetsdict.update_value(c, '0123456789')
+        self.assertEqual(c.value, URIRef('tel:+33-1-23-45-67-89'))
+        self.assertEqual(widgetsdict[c]['value'], '+33-1-23-45-67-89')
+
+        # --- mél ---
+        c = widgetsdict.root.search_from_path(DCAT.contactPoint / VCARD.hasEmail)
+        widgetsdict.update_value(c, 'service@developpement-durable.gouv.fr')
+        self.assertEqual(c.value, URIRef('mailto:service@developpement-durable.gouv.fr'))
+        self.assertEqual(widgetsdict[c]['value'], 'service@developpement-durable.gouv.fr')
+
+        # --- valeur de thésaurus ---
+        g = widgetsdict.root.search_from_path(DCAT.theme)
+        c = g.children[0]
+        widgetsdict.change_source(c, 'Thème de données (UE)')
+        widgetsdict.update_value(c, 'Régions et villes')
+        self.assertEqual(c.value, URIRef('http://publications.europa.eu/resource/authority/data-theme/REGI'))
+        self.assertEqual(widgetsdict[c]['value'], 'Régions et villes')
+
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix owl: <http://www.w3.org/2002/07/owl#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "Metropolitan Departments (Admin Express)"@en ;
+                dcat:keyword "admin express"@fr,
+                    "ign"@fr ;
+                dcat:landingPage <https://www.postgresql.org/docs/14/index.html> ;
+                dct:modified "2021-01-21"^^xsd:date ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://publications.europa.eu/resource/authority/data-theme/REGI> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                owl:versionInfo "1.0" ;
+                dcat:contactPoint [ a vcard:Kind ;
+                    vcard:hasTelephone <tel:+33-1-23-45-67-89> ;
+                    vcard:hasEmail <mailto:service@developpement-durable.gouv.fr> ] ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        
 
 if __name__ == '__main__':
     unittest.main()
