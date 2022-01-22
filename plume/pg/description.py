@@ -54,6 +54,15 @@ class PgDescription:
     post
     metagraph
     
+    Notes
+    -----
+    Si la dé-sérialisation du JSON-LD contenu dans le commentaire
+    PostgreSQL échoue, il sera considéré que le descriptif ne
+    contenait pas de métadonnées. À la première sauvegarde, le
+    contenu des balises <METADATA> sera écrasé. Le cas échéant, les
+    commentaires qui se trouvaient avant et après seront par contre
+    préservés.
+    
     """
     
     def __init__(self, raw=None):
@@ -69,7 +78,10 @@ class PgDescription:
             else:
                 self._ante, jsonld, self._post = r
                 self._jsonld = jsonld.strip('\n')
-                self._metagraph = Metagraph().parse(data=self._jsonld, format='json-ld')
+                try:
+                    self._metagraph = Metagraph().parse(data=self._jsonld, format='json-ld')
+                except:
+                    self._jsonld = ''
     
     def __str__(self):
         jsonld = '\n\n<METADATA>\n{}\n</METADATA>\n'.format(self._jsonld) \
