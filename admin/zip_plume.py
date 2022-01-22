@@ -12,7 +12,7 @@ particulier les scripts de tests et les données associées.
 
 Pour créer l'archive dans un autre répertoire:
 
-    >>> zip_plume('C:\Users\Me\Documents\Destination')
+    >>> zip_plume('C:\\Users\\Me\\Documents\\Destination')
 
 """
 
@@ -39,6 +39,7 @@ def zip_plume(dest=None):
 
     """
     plume = abspath('')
+
     if not plume.exists() or not plume.is_dir:
         raise FileNotFoundError(
             "Le répertoire 'plume' est introuvable."
@@ -66,10 +67,10 @@ def zip_plume(dest=None):
             for e in d.iterdir():
                 
                 if e.is_file():
-                    zhpy.write(e)
+                    zhpy.write(e, arcname=e.relative_to(plume))
                         
                 elif e.is_dir() and include(e):
-                    zhpy.write(e)
+                    zhpy.write(e, arcname=e.relative_to(plume))
                     p.append(e)
 
 
