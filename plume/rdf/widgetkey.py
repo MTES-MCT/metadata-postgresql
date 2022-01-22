@@ -3390,7 +3390,9 @@ class ValueKey(ObjectKey):
         ``False`` ou pour une clé qui a une jumelle.
         
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
-        qui seront alors automatiquement converties.
+        qui seront alors automatiquement converties. De même pour
+        des valeurs qui se trouveraient être fournies sous forme de
+        chaîne de caractères.
         
         Modifier cette propriété emporte la mise en cohérence de
         la propriété :py:attr:`WidgetKey.row` pour toutes les clés
@@ -3404,18 +3406,19 @@ class ValueKey(ObjectKey):
         old_value = self.rowspan
         if not self:
             value = 0
-        elif not self.is_long_text or self.m_twin:
-            # théoriquement, l'existence d'un jumeau implique
-            # que rdfclass n'est pas None et donc que is_long_text
-            # vaut False, mais on écrit explicitement la condition
-            # pour plus de résilience
-            value = 1
-        elif isinstance(value, Literal):
-            value = value.toPython()
-            if not value or not isinstance(value, int):
+        else:
+            if not self.is_long_text or self.m_twin:
+                # théoriquement, l'existence d'un jumeau implique
+                # que rdfclass n'est pas None et donc que is_long_text
+                # vaut False, mais on écrit explicitement la condition
+                # pour plus de résilience
                 value = 1
-        elif not value:
-            value = 1
+            elif isinstance(value, Literal):
+                value = value.toPython()
+            elif isinstance(value, str) and value.isdigit():
+                value = int(value)
+            if not isinstance(value, int) or value <= 0:
+                value = 1
         value = min((value, WidgetKey.max_rowspan))
         self._rowspan = value
         if not self._is_unborn and old_value != value:
