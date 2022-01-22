@@ -250,8 +250,8 @@ class WidgetsDict(dict):
             for label, value in columns:
                 valkey = ValueKey(parent=tabkey, label=label, value=Literal(value),
                     is_long_text=True, description='Description du champ',
-                    rowspan=textEditRowSpan, predicate=SNUM.column,
-                    do_not_save=True)
+                    rowspan=self.textEditRowSpan, predicate=SNUM.column,
+                    do_not_save=True, independant_label=True)
         
         # ------ Construction récursive ------
         self._build_tree(parent=self.root, metagraph=metagraph, \
@@ -600,13 +600,14 @@ class WidgetsDict(dict):
         Notes
         -----
         La fonction renvoie ``None`` pour une clé fantôme ou si la nature de widget
-        donnée en argument n'est pas une valeur reconnue.
+        donnée en argument n'est pas une valeur reconnue. Pour les clés-racines
+        et les onglets, elle renvoie un tuple de zéros.
         
         """
         if not widgetkey or not widgetkey in self:
             return
         if kind == 'main widget':
-            return widgetkey.placement
+            return widgetkey.placement or (0, 0, 0, 0)
         if kind == 'label widget':
             return widgetkey.label_placement
         if kind == 'language widget':
@@ -1100,6 +1101,48 @@ class WidgetsDict(dict):
         """
         if self.root:
             return self.root.build_metagraph()
+
+    def group_kind(self, widgetkey):
+        """Renvoie la nature du groupe auquel appartient la clé.
+        
+        Parameters
+        ----------
+        widgetkey : plume.rdf.widgetkey.ValueKey
+            Une clé-valeur de dictionnaire de widgets.
+        
+        Returns
+        -------
+        str
+            * ``'group of values'`` si la clé est un groupe
+              de valeurs ou, s'il s'agit d'une clé-valeur ou
+              d'un bouton, si son parent est un groupe de valeurs.
+            * ``'group of properties'`` si la clé est un groupe
+              de propriétés ou, s'il s'agit d'une clé-valeur ou d'un
+              bouton, si son parent est un groupe de propriétés.
+              Les clés-racines et les onglets sont considérés ici
+              comme des groupes de propriétés.
+            * ``'translation group'`` si l'enregistrement est un groupe de
+              traduction ou, s'il s'agit d'une clé-valeur ou d'un bouton,
+              si son parent est un groupe de traduction.
+        
+        Raises
+        ------
+        RuntimeError
+            Si le type obtenu n'est pas l'un des trois susmentionnés.
+        
+        """
+        if isinstance(widgetkey, GroupKey):
+            obj = self[widgetkey]['object']
+        else:
+            obj = self[widgetkey.parent]['object']
+        
+        if obj in ('root', 'tab'):
+            return 'group of properties'
+        if obj in ('group of values', 'group of properties',
+            'translation group'):
+            return obj
+            
+        raise RuntimeError("Unknown group kind for key {}.".format(key))
     
     def print(self):
         """Visualisateur très sommaire du contenu du dictionnaire de widgets.
