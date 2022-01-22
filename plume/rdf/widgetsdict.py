@@ -965,6 +965,8 @@ class WidgetsDict(dict):
         """
         if not widgetkey:
             return
+        if isinstance(widgetkey, RootKey):
+            return None
         if isinstance(widgetkey, GroupKey):
             return 'QGroupBox'
         if isinstance(widgetkey, PlusButtonKey):
