@@ -5,6 +5,7 @@ from plume.rdf.rdflib import isomorphic
 from plume.pg.description import PgDescription
 from plume.rdf.utils import abspath, data_from_file
 from plume.rdf.widgetsdict import WidgetsDict
+from plume.rdf.metagraph import Metagraph
 from plume.rdf.namespaces import RDF, DCAT, DCT
 
 pg_description_1 = data_from_file(abspath('pg/tests/samples/pg_description_1.txt'))
@@ -55,6 +56,69 @@ class DescriptionTestCase(unittest.TestCase):
                 self.assertTrue(isomorphic(metagraph, pgdescr.metagraph))
                 pgdescr.metagraph = metagraph
                 self.assertEqual(str(pgdescr), raw)
+
+    def test_invalid_json_ld(self):
+        """Avec un JSON-LD qui n'en est pas vraiment un.
+        
+        """
+        new_comment ="""Avant
+
+<METADATA>
+[
+  {{
+    "@id": "{}",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {{
+        "@value": "{}"
+      }}
+    ]
+  }}
+]
+</METADATA>
+Après"""
+        
+        # --- pas un JSON ---
+        raw = "Avant<METADATA> Ceci n'est pas un JSON-LD </METADATA>Après"
+        pgdescr = PgDescription(raw)
+        self.assertEqual(pgdescr.ante, 'Avant')
+        self.assertEqual(pgdescr.post, 'Après')
+        self.assertEqual(pgdescr.jsonld, '')
+        self.assertIsNone(pgdescr.metagraph)
+        widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        pgdescr.metagraph = metagraph
+        self.assertEqual(str(pgdescr), new_comment.format(
+            str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
+        
+        # --- JSON mais pas JSON-LD ---
+        raw = 'Avant<METADATA> {"key": "value"} </METADATA>Après'
+        pgdescr = PgDescription(raw)
+        self.assertEqual(pgdescr.ante, 'Avant')
+        self.assertEqual(pgdescr.post, 'Après')
+        self.assertEqual(pgdescr.jsonld, ' {"key": "value"} ')
+        self.assertTrue(isinstance(pgdescr.metagraph, Metagraph))
+        self.assertEqual(len(pgdescr.metagraph), 0)
+        widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        pgdescr.metagraph = metagraph
+        self.assertEqual(str(pgdescr), new_comment.format(
+            str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
+            
+        # --- balises vides ---
+        raw = 'Avant<METADATA></METADATA>Après'
+        pgdescr = PgDescription(raw)
+        self.assertEqual(pgdescr.ante, 'Avant')
+        self.assertEqual(pgdescr.post, 'Après')
+        self.assertEqual(pgdescr.jsonld, '')
+        self.assertIsNone(pgdescr.metagraph)
+        widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        pgdescr.metagraph = metagraph
+        self.assertEqual(str(pgdescr), new_comment.format(
+            str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
 
 if __name__ == '__main__':
     unittest.main()
