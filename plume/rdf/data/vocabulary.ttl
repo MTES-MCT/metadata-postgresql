@@ -104,7 +104,7 @@
 
 
 <http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
-    skos:inScheme snum:StandardRegister ;
+    skos:inScheme snum:StandardsRegister ;
     skos:prefLabel "OGC EPSG Coordinate Reference Systems Register"@en,
         "Système de coordonnées (registre de codes EPSG de l'OGC)"@fr .
 
