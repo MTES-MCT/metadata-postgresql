@@ -609,6 +609,7 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 3 ;
+        snum:longText true ;
         snum:placeholder "POLYGON((2.1 48.3,2.1 50.5,1.8 50.5,1.8 48.3,2.1 48.3))" ;
 	] ;
     sh:property [
@@ -629,6 +630,7 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 5 ;
+        snum:longText true ;
 	] .
 
 snum:StandardShape
