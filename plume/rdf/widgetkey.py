@@ -29,7 +29,7 @@ from plume.rdf.rdflib import URIRef, BNode, Literal
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     ForbiddenOperation, UnknownParameterValue
 from plume.rdf.actionsbook import ActionsBook
-from plume.rdf.namespaces import DCAT, RDF, XSD
+from plume.rdf.namespaces import DCAT, RDF, XSD, GSP
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.utils import DatasetId
 
@@ -3892,8 +3892,8 @@ class ValueKey(ObjectKey):
         Notes
         -----
         Cette propriété ne peut valoir ``True`` que pour une valeur textuelle
-        (``rdf:langString`` ou ``xsd:string``), toute tentative dans d'autres
-        circonstances serait silencieusement ignorée.
+        (``rdf:langString``, ``xsd:string``, ``gsp:wktLiteral``). Toute
+        tentative dans d'autres circonstances serait silencieusement ignorée.
         
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
@@ -3906,7 +3906,8 @@ class ValueKey(ObjectKey):
     
     @is_long_text.setter
     def is_long_text(self, value):
-        if value and self.datatype in (RDF.langString, XSD.string):
+        if value and self.datatype in (RDF.langString,
+            XSD.string, GSP.wktLiteral):
             self._is_long_text = True
         else:
             self._is_long_text = False
