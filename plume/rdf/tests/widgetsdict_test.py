@@ -10,7 +10,7 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -153,7 +153,26 @@ class WidgetsDictTestCase(unittest.TestCase):
             with self.subTest(internalkey = k):
                 if not k in d:
                     self.assertFalse(v)
-                
+        # widget de saisie avec une seule source
+        key = widgetsdict.root.search_from_path(DCT.conformsTo / SKOS.inScheme)
+        d = {
+            'main widget type': 'QComboBox',
+            'label': 'Registre',
+            'has label': True,
+            'object': 'edit',
+            }
+        for k, v in d.items():
+            with self.subTest(internalkey = k):
+                self.assertEqual(widgetsdict[key][k], v)
+        for k, v in widgetsdict[key].items():
+            with self.subTest(internalkey = k):
+                if not k in d and not k == 'thesaurus values':
+                    self.assertFalse(v)
+        self.assertTrue("Système de coordonnées (registre de codes EPSG de l'OGC)"
+            in widgetsdict[key]['thesaurus values'])
+        self.assertTrue('' in widgetsdict[key]['thesaurus values'])
+    
+    
     def test_widgetsdict_empty_translation(self):
         """Génération d'un dictionnaire de widgets sans graphe ni modèle, en mode traduction.
 
