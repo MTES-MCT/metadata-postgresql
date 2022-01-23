@@ -6,9 +6,9 @@ Plume, pour PLUgin MEtadonnées, est un plugin QGIS de consultation et saisie de
 
 ![Logo](flyers/plume1.png)
 
-Les métadonnées sont stockées au format RDF (JSON-LD) dans les descriptifs PostgreSQL des objets, l'utilisateur y accède en cliquant sur les couches dans l'explorateur de QGIS ou dans le panneau des couches. Plume prend en charge les tables, tables partionnées, tables étrangères, vues et vues matérialisées.
+Les métadonnées sont stockées au format RDF (JSON-LD) dans les descriptifs PostgreSQL des objets. L'utilisateur y accède en cliquant sur les couches dans l'explorateur de QGIS ou dans le panneau des couches. Plume prend en charge les tables, tables partionnées, tables étrangères, vues et vues matérialisées.
 
-Il se base sur le profil [GeoDCAT-AP 2.0](https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0/) de [DCAT v2](https://www.w3.org/TR/vocab-dcat-2/), qui constitue un socle de métadonnées communes et échangeables, tout en permettant une large personnalisation des catégories de métadonnées présentées à l'utilisateur lorsqu'il est couplé avec l'extension PostgreSQL *[metadata](/postgresql)*.
+Il se base sur le profil [GeoDCAT-AP 2.0](https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0/) de [DCAT v2](https://www.w3.org/TR/vocab-dcat-2/), qui constitue un socle de métadonnées communes et échangeables, tout en permettant une large personnalisation des catégories de métadonnées présentées à l'utilisateur lorsqu'il est couplé avec l'extension PostgreSQL *[plume_pg](/postgresql)*.
 
 
 ## Technologies
@@ -19,7 +19,7 @@ Plume est une application Python, avec les dépendances suivantes :
 - [RDFLib](https://rdflib.readthedocs.io/en/stable/index.html) 6.0.1 (non compatible avec la version 5)
 - [Qt for Python](https://doc.qt.io/qtforpython-5/api.html) 5.15.2
 
-La librairie RDFLib, qui n'est pas nativement présente dans les distributions de QGIS, est installée parallèlement à Plume, ce qui requiert une connexion internet. 
+La librairie RDFLib, qui n'est pas nativement présente dans les distributions de QGIS, est packagée dans le plugin et installée en parallèle. 
 
 
 ## Environnement
@@ -71,18 +71,21 @@ La documentation technique se trouve dans le répertoire [`__doc__`](/_doc__) du
 ```bash
 .                        # racine où se trouve les sources .py
 │
+├── bibli_install        # module d'installation de RDFLib et sources de RDFLib
 ├── i18n                 # fichiers des langues
 └── icons                # icônes de l'application
     └── general          # icônes de la barre d'outils de Plume
     └── buttons          # icônes des boutons du formulaire généré à la volée
     └── logo             # icônes pour le menu Extension et la barre d'outils de QGIS
-├── bibli_pg             # bibliothèque de fonctions pour la gestion des interactions avec PostgreSQL
-├── bibli_rdf            # bibliothèque de fonctions pour la manipulation des métadonnées RDF
+├── iso                  # modules pour le dialogue avec les services CSW et la conversion des métadonnées ISO 19115
+├── pg                   # modules pour le dialogue avec le serveur PostgreSQL et la gestion des modèles de formulaires
+├── rdf                  # modules de manipulation des métadonnées RDF
+
 ```
 
 ## Crédits
 
-© République Française, 2021.
+© République Française, 2021-2022.
 
 ### Production
 
@@ -91,7 +94,7 @@ Service du numérique du secrétariat général des Ministère de la transition 
 ### Équipe
 
 - Didier LECLERC (SNUM/UNI/DRC) : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL.
-- Leslie LEMAIRE (SNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes ([bibli_rdf](/plume/bibli_rdf) et [bibli_pg](/plume/bibli_pg)), création des logos et icônes.
+- Leslie LEMAIRE (SNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes (modules des répertoires [rdf](/plume/rdf), [pg](/plume/pg) et [iso](/plume/iso)), création des logos et icônes.
 
 ### Contact
 
