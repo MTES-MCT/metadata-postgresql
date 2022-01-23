@@ -274,6 +274,122 @@ class Metagraph(Graph):
                 triple = (subject, predicate_map.get(p, p), o)
                 self._clean_metagraph(raw_metagraph, o, triple, memory)
 
+    def merge(self, alt_metagraph, replace=False):
+        """Met à jour le graphe de métadonnées avec le contenu d'un autre graphe de métadonnées.
+        
+        Parameters
+        ----------
+        alt_metagraph : Metagraph
+            Un autre graphe de métadonnées.
+        replace : bool, default False
+            Mode de fusion des deux graphes :
+            * Si `replace` vaut ``True``, les informations du
+              graphe source sont preservées pour les catégories
+              de métadonnées non présentes dans le graphe complémentaire.
+              Sinon, elles sont remplacées par celles du graphe
+              complémentaire.
+            * Si `replace` vaut ``False``, les valeurs du 
+              graphe complémentaire ne sont importées que pour les
+              catégories de métadonnées qui n'étaient pas
+              renseignées dans le graphe source.
+        
+        Notes
+        -----
+        À ce stade, le mécanisme de fusion est sommaire. En particulier,
+        il n'est pas récursif et, dans le cas de catégories qui
+        admettent plusieurs valeurs, remplace ou préserve toutes
+        les valeurs plutôt que de les comparer une à une.
+        
+        Par principe, la propriété dct:identifier n'est jamais
+        remplacée, même si `replace` vaut ``True``, puisqu'elle
+        est censée rester cohérente avec l'URI du dcat:Dataset.
+        
+        """
+        alt_datasetid = alt_metagraph.datasetid if alt_metagraph else None
+        if not alt_datasetid:
+            return
+        
+        datasetid = self.datasetid
+        if not datasetid:
+            self.datasetid = None
+            # NB: génère un nouvel identifiant
+            datasetid = self.datasetid
+        
+        for predicate in alt_metagraph.predicates(alt_datasetid):
+            if predicate in (RDF.type, DCT.identifier):
+                continue
+            if (datasetid, predicate, None) in self:
+                if replace:
+                    for o in self.objects(datasetid, predicate):
+                        self.remove((datasetid, predicate, o))
+                        if isinstance(o, BNode):
+                            self.delete_branch(o)
+                else:
+                    continue
+            for o in alt_metagraph.objects(alt_datasetid, predicate):
+                self.add((datasetid, predicate, o))
+                if isinstance(o, BNode):
+                    self.copy_branch(alt_metagraph, o)
+
+    def delete_branch(self, bnode):
+        """Supprime du graphe de métadonnées une branche non liée au dcat:Dataset.
+        
+        Parameters
+        ----------
+        bnode : rdflib.terms.BNode
+            Le noeud anonyme sujet de la branche libre à
+            supprimer.
+        
+        Notes
+        -----
+        Cette méthode est récursive. Partant des triplets
+        dont `bnode` était sujet, elle les supprime et
+        supprime à leur tour les triplets dont leurs objets
+        étaient sujets (sauf à ce que ce sujet demeure
+        l'objet d'un autre triplet), et ainsi de suite.
+        
+        Elle n'aura d'effet que si tous les triplets
+        dont `bnode` était objet ont préalablement
+        été supprimés du graphe.
+        
+        """
+        if not isinstance(bnode, BNode):
+            return
+        for triple in self.triples((bnode, None, None)):
+            self.remove(triple)
+            o = triple[2]
+            if isinstance(o, BNode) and not (None, None, o) in self:
+                self.delete_branch(o)
+
+    def copy_branch(self, alt_metagraph, bnode):
+        """Copie dans le graphe une branche d'un autre graphe.
+        
+        Parameters
+        ----------
+        alt_metagraph : Metagraph
+            Le graphe de métadonnées contenant la branche
+            à copier.
+        bnode : rdflib.terms.BNode
+            Le noeud anonyme sujet de la branche à copier
+            de `alt_metagraph`. Il est présumé exister en
+            tant qu'objet dans le graphe source, sans
+            quoi la méthode n'aura aucun effet.
+        
+        Notes
+        -----
+        Cette méthode préserve les noeuds anonymes copiés
+        (mêmes identifiants dans le graphe résultant que
+        dans `alt_metagraph`).
+        
+        """
+        if not isinstance(bnode, BNode) or not (None, None, bnode) in self:
+            return
+        for triple in alt_metagraph.triples((bnode, None, None)):
+            if not triple in self:
+                self.add(triple)
+                o = triple[2]
+                if isinstance(o, BNode):
+                    self.copy_branch(alt_metagraph, o)
 
 def metagraph_from_file(filepath, format=None, old_metagraph=None):
     """Crée un graphe de métadonnées à partir d'un fichier.
@@ -408,7 +524,7 @@ def copy_metagraph(src_metagraph=None, old_metagraph=None):
     # ce sera fait à l'initialisation du dictionnaire de widgets.
     return metagraph
 
-def metagraph_from_iso(raw_xml, old_metagraph=None):
+def metagraph_from_iso(raw_xml, old_metagraph=None, preserve='always'):
     """Crée un graphe de métadonnées à partir d'un XML renvoyé par un service CSW.
     
     Parameters
@@ -419,6 +535,20 @@ def metagraph_from_iso(raw_xml, old_metagraph=None):
     old_metagraph : Metagraph, optional
         Le graphe contenant les métadonnées actuelles de l'objet
         PostgreSQL considéré, dont on récupèrera l'identifiant.
+    preserve : {'never', 'if exists', 'always'}, optional
+        Mode de fusion de l'ancien et du nouveau graphe :
+        * Si `preserve` vaut ``'never'``, le graphe est
+          est intégralement recréé à partir des informations
+          disponibles sur le catalogue distant. Hormis l'identifiant,
+          tout le contenu de l'ancien graphe est perdu.
+        * Si `preserve` vaut ``'if blank'``, les informations de
+          l'ancien graphe ne sont preservées que pour les
+          catégories de métadonnées qui ne sont pas renseignées
+          sur le catalogue distant.         .
+        * Si `preserve` vaut ``'always'``, les valeurs du 
+          catalogue distant ne sont importées que pour les
+          catégories de métadonnées qui n'étaient pas
+          renseignées dans l'ancien graphe.
     
     Returns
     -------
@@ -445,7 +575,9 @@ def metagraph_from_iso(raw_xml, old_metagraph=None):
         iso = IsoToDcat(raw_xml, datasetid=metagraph.datasetid)
         for t in iso.triples:
             metagraph.add(t)
+    
+    if preserve != 'never':
+        metagraph.merge(old_metagraph, replace=(preserve == 'always'))
+    
     return metagraph
-
-
 
