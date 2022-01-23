@@ -548,8 +548,14 @@ class WidgetsDict(dict):
             if widgetkey.has_language_button:
                 internaldict['authorized languages'] = widgetkey.available_languages.copy()
                 if not widgetkey.value_language in widgetkey.available_languages:
-                    internaldict['authorized languages'].insert(0, widgetkey.value_language)        
-        
+                    internaldict['authorized languages'].insert(0, widgetkey.value_language)
+            if not widgetkey.has_source_button and widgetkey.value_source \
+                and not widgetkey.is_read_only:
+                # cas où il n'y a qu'une seule source, le multi-sources
+                # est traité juste après
+                internaldict['thesaurus values'] = Thesaurus.values(
+                    (widgetkey.value_source, self.langlist))
+
         if isinstance(widgetkey, ObjectKey):
             internaldict['has minus button'] = widgetkey.has_minus_button
             internaldict['hide minus button'] = widgetkey.has_minus_button \
@@ -575,6 +581,7 @@ class WidgetsDict(dict):
                     internaldict['sources'].insert(0, '< manuel >')
                     if isinstance(widgetkey, GroupOfPropertiesKey): 
                         internaldict['current source'] = '< manuel >'
+
 
     def widget_placement(self, widgetkey, kind):
         """Renvoie les paramètres de placement du widget dans la grille.
@@ -983,8 +990,7 @@ class WidgetsDict(dict):
         d = {
             XSD.date: 'QDateEdit',
             XSD.dateTime: 'QDateTimeEdit',
-            XSD.time: 'QTimeEdit',
-            GSP.wktLiteral: 'QTextEdit'
+            XSD.time: 'QTimeEdit'
             }
         return d.get(widgetkey.datatype, 'QLineEdit')
     
