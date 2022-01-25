@@ -62,21 +62,23 @@ widgetsdict = WidgetsDict(**kwa)
 
 ### metagraph : le graphe des métadonnées pré-existantes
 
-Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `old_description`.
+Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `old_description`. Elles sont supposées se trouver entre deux balises `<METADATA>` et `</METADATA>`, et avoir été encodées au format JSON-LD.
 
-Cette information est a priori déjà disponible par l'intermédiaire des classes de QGIS. Néanmoins, si nécessaire, [pg_queries.py](/plume/bibli_pg/pg_queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui peut être utilisée comme suit :
+[queries.py](/plume/pg/queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui permet d'obtenir le descriptif de l'objet :
 
 ```python
 
 import psycopg2
+from plume.pg import queries
+
 conn = psycopg2.connect(connection_string)
 
 with conn:
     with conn.cursor() as cur:
     
-        query = pg_queries.query_get_table_comment(schema_name, table_name)
+        query = queries.query_get_table_comment(schema_name, table_name)
         cur.execute(query)
-        old_description = cur.fetchone()[0]
+        raw_old_description = cur.fetchone()[0]
 
 conn.close()
 
@@ -84,61 +86,27 @@ conn.close()
 
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
 
-Une fois le descriptif récupéré, la fonction `metagraph_from_pg_description()` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils/rdf_utils.py) permet d'en extraire les métadonnées et les dé-sérialiser en graphe RDF.
+Une fois le descriptif récupéré, on l'utilisera pour générer un objet de classe  [`plume.pg.description.PgDescription`](/plume/pg/description.py), ce qui a pour effet d'en extraire les métadonnées - s'il y en avait - et les dé-sérialiser en graphe de métadonnées.
 
 ```python
 
-metagraph = rdf_utils.metagraph_from_pg_description(old_description, shape)
+from plume.pg.description import PgDescription
+
+old_description = PgDescription(raw_old_description)
 
 ```
 
-*`shape` est le schéma SHACL des métadonnées communes, également argument de `build_dict()` et décrit juste après.*
+Le graphe de métadonnées, objet de classe [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py), peut être obtenu par un appel à la propriété `metagraph` de `old_description`.
 
-La fonction `metagraph_from_pg_description()` renverra un graphe vide si le descriptif PostgreSQL ne contenait pas les balises `<METADATA>` et `</METADATA>` entre lesquelles est supposé se trouver le JSON-LD contenant les métadonnées. C'est typiquement ce qui arrivera lorsque les métadonnées n'ont pas encore été rédigées.
-
-Si les balises sont présentes, mais ne contiennent pas un JSON valide, la fonction échouera sur une erreur `json.decoder.JSONDecodeError`. Dans ce cas, on pourra proposer à l'utilisateur de choisir entre abandonner l'ouverture de la fiche de métadonnées ou ouvrir une fiche vierge à la place.
 
 ```python
 
-try:
-
-	metagraph = rdf_utils.metagraph_from_pg_description(old_description, shape)
-	
-except:
-
-	# dialogue avec l'utilisateur
-	...
-	
-	# si l'exécution n'est pas interrompue :
-	metagraph = rdf_utils.metagraph_from_pg_description("", shape)
-
+metagraph = old_description.metagraph
 ```
 
-### shape : le schéma SHACL des métadonnées communes
+La propriété renverra un graphe vide si le descriptif PostgreSQL ne contenait pas les balises `<METADATA>` et `</METADATA>` entre lesquelles est supposé se trouver le JSON-LD contenant les métadonnées. C'est typiquement ce qui arrivera lorsque les métadonnées n'ont pas encore été rédigées.
 
-`shape` fournit les caractéristiques des métadonnées communes et, surtout, les informations sur la manière dont elles se structurent entre elles.
-
-C'est un schéma SHACL "augmenté", qui ajoute quelques propriétés au standard (celles dont l'espace de nommage est `snum`) afin de spécifier la manière dont les catégories doivent être représentées dans le formulaire. 
-
-En pratique, il s'agit du fichier [shape.ttl](/plume/bibli_rdf/rdf_utils/modeles/shape.ttl), à importer avec la fonction `load_shape()` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils/rdf_utils.py).
-
-```python
-
-shape = rdf_utils.load_shape()
-
-```
-
-### vocabulary : la compilation des thésaurus
-
-`vocabulary` est un graphe RDF où sont compilés les termes de tous les thésaurus dont `shape` prévoit l'utilisation.
-
-Concrètement, il s'agit du fichier [vocabulary.ttl](/plume/bibli_rdf/rdf_utils/modeles/vocabulary.ttl), à importer avec la fonction `load_vocabulary()` de [rdf_utils.py](/plume/bibli_rdf/rdf_utils/rdf_utils.py).
-
-```python
-
-shape = rdf_utils.load_vocabulary()
-
-```
+Si le contenu des balises n'est pas un JSON-LD valide, la propriété renverra également un graphe de métadonnées vide.
 
 ### template : le modèle de formulaire
 
