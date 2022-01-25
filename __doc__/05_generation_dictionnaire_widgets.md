@@ -10,35 +10,35 @@ La classe `WidgetsDict` est définie par le module [plume.rdf.widgetsdict](/plum
 
 Sources de données :
 
-| Position | Nom | Type | Valeur par défaut | Détails |
-| --- | --- | --- | --- | --- |
-| 0 | `metagraph` | [plume.rdf.metagraph.Metagraph](/plume/rdf/metagraph.py) | `None` | [→](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
-| 1 | `template` | [plume.pg.template.TemplateDict](/plume/pg/template.py) | `None` | [→](#template--le-modèle-de-formulaire) |
-| 2 | `data` | dict | `None` | [→](#data--les-métadonnées-calculées) |
-| 3 | `columns` | list(tuple(str, str)) | `None` | [→](#columns--les-descriptifs-des-champs) |
+| Nom | Type | Valeur par défaut | Détails |
+| --- | --- | --- | --- |
+| `metagraph` | [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py) | `None` | [→](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
+| `template` | [`plume.pg.template.TemplateDict`](/plume/pg/template.py) | `None` | [→](#template--le-modèle-de-formulaire) |
+| `data` | `dict` | `None` | [→](#data--les-métadonnées-calculées) |
+| `columns` | `list(tuple(str, str))` | `None` | [→](#columns--les-descriptifs-des-champs) |
 
 Paramètres utilisateurs :
 
-| Position | Nom | Type | Valeur par défaut[^defaultvalues] | Détails |
-| --- | --- | --- | --- | --- |
-| 4 | `mode` | str | `'edit'` | [→](#mode) |
-| 5 | `translation` | bool | `False` | [→](#translation) |
-| 6 | `langList` | list(str) ou tuple(str) | `('fr', 'en')` | [→](#langlist) |
-| 7 | `language` | str | `'fr'` | [→](#language) |
-| 8 | `readHideBlank` | bool | `True` | [→](#readhideblank) |
-| 9 | `editHideUnlisted` | bool | `False` | [→](#editHideunlisted) |
-| 10 | `readHideUnlisted` | bool | `True` | [→](#readHideunlisted) |
-| 11 | `editOnlyCurrentLanguage` | bool | `False` | [→](#editonlycurrentlanguage) |
-| 12 | `readOnlyCurrentLanguage` | bool | `True` | [→](#readonlycurrentlanguage) |
-| 13 | `labelLengthLimit` | int | `25` | [→](#labellengthlimit) |
-| 14 | `valueLengthLimit` | int | `65` | [→](#valuelengthlimit) |
-| 15 | `textEditRowSpan` | int | `6` | [→](#texteditrowspan) |
-
-[^defaultvalues]: Hormis pour les booléens, les valeurs par défaut sont appliquées dans le corps de la fonction d'initialisation et non déclarées dans les paramètres. Ainsi, elles s'appliqueront aussi dans le cas où `None` est explicitement fourni en argument pour le paramètre.
+| Nom | Type | Valeur par défaut | Détails |
+| --- | --- | --- | --- |
+| `mode` | `str` | `'edit'` | [→](#mode) |
+| `translation` | `bool` | `False` | [→](#translation) |
+| `langList` | `list(str)` ou `tuple(str)` | `('fr', 'en')` | [→](#langlist) |
+| `language` | `str` | `'fr'` | [→](#language) |
+| `readHideBlank` | `bool` | `True` | [→](#readhideblank) |
+| `editHideUnlisted` | `bool` | `False` | [→](#editHideunlisted) |
+| `readHideUnlisted` | `bool` | `True` | [→](#readHideunlisted) |
+| `editOnlyCurrentLanguage` | `bool` | `False` | [→](#editonlycurrentlanguage) |
+| `readOnlyCurrentLanguage` | `bool` | `True` | [→](#readonlycurrentlanguage) |
+| `labelLengthLimit` | `int` | `25` | [→](#labellengthlimit) |
+| `valueLengthLimit` | `int` | `65` | [→](#valuelengthlimit) |
+| `textEditRowSpan` | `int` | `6` | [→](#texteditrowspan) |
 
 Tous les arguments sont décrits plus en détail dans la suite, ainsi que le résultat obtenu.
 
-On fournira de préférence à `WidgetsDict()` ses arguments sous la forme d'un dictionnaire ne contenant que les arguments pour lesquels une valeur est effectivement disponible.
+Afin que les valeurs par défaut s'appliquent correctement, on fournira de préférence à `WidgetsDict()` ses arguments sous la forme d'un dictionnaire ne contenant que les arguments pour lesquels une valeur est effectivement disponible[^defaultvalues].
+
+[^defaultvalues]: Ce sujet concerne surtout les paramètres booléens. Pour les autres, les valeurs par défaut sont appliquées dans le corps de la fonction d'initialisation et non déclarées dans les paramètres. Ainsi, elles s'appliqueront aussi dans le cas où une valeur `None` est explicitement fournie en argument.
 
 Par exemple :
 
@@ -57,8 +57,6 @@ if template is not None:
 widgetsdict = WidgetsDict(**kwa)
 
 ```
-
-**Quoi qu'il arrive, les arguments optionnels doivent impérativement être nommés.** Leurs positions sont susceptibles d'être modifiées si de nouveaux arguments sont ajoutés à la fonction.
 
 ## Sources de données
 
