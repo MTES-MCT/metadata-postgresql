@@ -62,9 +62,9 @@ widgetsdict = WidgetsDict(**kwa)
 
 ### metagraph : le graphe des métadonnées pré-existantes
 
-Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `old_description`. Elles sont supposées se trouver entre deux balises `<METADATA>` et `</METADATA>`, et avoir été encodées au format JSON-LD.
+Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `old_description_raw`. Elles sont supposées se trouver entre deux balises `<METADATA>` et `</METADATA>`, et avoir été encodées au format JSON-LD.
 
-[queries.py](/plume/pg/queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui permet d'obtenir le descriptif de l'objet :
+Le module [plume.pg.queries](/plume/pg/queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui permet d'obtenir le descriptif de l'objet :
 
 ```python
 
@@ -110,14 +110,12 @@ Si le contenu des balises n'est pas un JSON-LD valide, la propriété renverra �
 
 ### template : le modèle de formulaire
 
-`template` est un dictionnaire contenant les informations relatives au modèle de formulaire à utiliser.
+`template` est un objet de classe [`plume.pg.template.TemplateDict`](/plume/pg/template.py) contenant les informations relatives au modèle de formulaire à utiliser.
 
 Les modèles de formulaires sont définis à l'échelle du service et stockés dans la base PostgreSQL. Ils permettent :
-- d'ajouter des métadonnées locales aux catégories communes définies dans `shape` ;
+- d'ajouter des catégories locales au schéma de métadonnées communes ;
 - de restreindre les catégories communes à afficher ;
-- de substituer des paramètres locaux à ceux spécifiés par `shape` (par exemple remplacer le nom à afficher pour la catégorie de métadonnée ou changer le type de widget à utiliser).
-
-La forme de `template` est proche de celle d'un dictionnaire de widgets, si ce n'est que ses clés sont des chemins SPARQL identifiant des catégories de métadonnées et ses contiennent moins de clés.
+- de substituer des paramètres locaux à ceux spécifiés par le schéma commun (par exemple remplacer le nom à afficher pour la catégorie de métadonnée, répartir les métadonnées dans plusieurs onglets...).
 
 Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](/__doc__/08_modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](/__doc__/08_modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `template`.
 
