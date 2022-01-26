@@ -43,16 +43,8 @@ class MainPlugin(object):
      self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADONNEES (Metadata storage in PostGreSQL) ") + "  (" + str(bibli_plume.returnVersion()) + ")")
      self.plume2.triggered.connect(self.clickIHMplume2)
      
-     #menuIcon = bibli_plume.getThemeIcon("about.png")
-     #self.about = QAction(QIcon(menuIcon), "About ...", self.iface.mainWindow())
-     #self.about.setText(QtWidgets.QApplication.translate("plume_main", "About ..."))
-     #self.about.triggered.connect(self.clickAbout)
-    
      #Construction du menu
      self.menu.addAction(self.plume2)
-     #self.menu.addSeparator()
-     #self.menu.addAction(self.about)
-
      #=========================
      #-- Ajout du menu
      menuBar = self.iface.mainWindow().menuBar()    
@@ -68,8 +60,6 @@ class MainPlugin(object):
      self.toolbar = self.iface.addToolBar(self.toolBarName)
      # Pour faire une action
      self.toolbar.addAction(self.plume2)
-     #self.toolbar.addSeparator()
-     #self.toolbar.addAction(self.about)
      #=========================
      
   def clickAbout(self):

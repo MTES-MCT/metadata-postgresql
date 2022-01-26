@@ -11,7 +11,6 @@ from qgis.gui import QgsDateTimeEdit
 import os
 from . import bibli_plume
 from .bibli_plume import *
-from .bibli_rdf import rdf_utils
 
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
@@ -39,8 +38,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 
     #---------------------------
     #Pour Gestion et Génération à la volée des onglets 
-    if (rdf_utils.is_root(_keyObjet) and _valueObjet['main widget type'] == "QGroupBox") : 
-       self.mFirst = rdf_utils.is_root(_keyObjet)
+    self.mFirst = _valueObjet['object'] == 'tab'
     #---------------------------
     # Gestion du Parent
     if self.mFirst :
@@ -58,7 +56,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetGroupBox = QtWidgets.QGroupBox()
        #-- 
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetGroupBox.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetGroupBox.setVisible(False)
 
        if _valueObjet['object'] == 'group of properties' :
           _colorQGroupBox = self.colorQGroupBox if self.mFirst else self.colorQGroupBoxGroupOfProperties
@@ -84,7 +82,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                               padding: 6px;            \
                               }")
        #--
-       #_mParentEnCours.addWidget(_mObjetGroupBox, _valueObjet['row'], 0, 1, 2)
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan)
        #--                        
@@ -122,7 +119,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQSaisie.setObjectName(str(_keyObjet))
        #--                        
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQSaisie.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQSaisie.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQSaisie, row, column, rowSpan, columnSpan)
@@ -175,17 +172,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #========== 
        #QCOMBOBOX 
        if _valueObjet['main widget type'] in ("QComboBox") :
-          schemeIRI = _valueObjet['current source URI']
-          # récupération de la liste si déjà constituée
-          _thesaurus = self.thesaurusCollection.get((schemeIRI, _language))
-          if _thesaurus is None:
-             # sinon, construction de la liste
-             _thesaurus = rdf_utils.build_vocabulary(schemeIRI, self.vocabulary, _language, value=_valueObjet['value'])
-             # mémorisation dans thesaurusCollection
-             if not schemeIRI == '< non répertorié >':
-                self.thesaurusCollection.update( { (schemeIRI, _language) : _thesaurus } )
-            
-          #print(_thesaurus)
+          _thesaurus = _valueObjet['thesaurus values']
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
           _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
           _mObjetQSaisie.setEditable(True)
@@ -195,23 +182,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           #mCompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
           _mObjetQSaisie.setCompleter(mCompleter)
        #==========
-       """
-       #OLD A SUPPRIMER 
-       #QCOMBOBOX                        
-       if _valueObjet['main widget type'] in ("QComboBox") :
-          _thesaurus = rdf_utils.build_vocabulary(_valueObjet['current source URI'], self.vocabulary, language=_language)
-          _thesaurus.insert(0, "")
-          #print(_thesaurus)
-          if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
-          _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
-          _mObjetQSaisie.setEditable(True)
-          #-
-          mCompleter = QCompleter(_thesaurus, self)
-          mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
-          #mCompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
-          _mObjetQSaisie.setCompleter(mCompleter)
-       #========== 
-       """
                                           
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQSaisie})
@@ -226,7 +196,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQLabel.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        _mObjetQLabel.setObjectName(str(_keyObjet))
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQLabel.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQLabel.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan)
@@ -245,7 +215,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        _mObjetQDateEdit = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQDateEdit.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQDateEdit.setVisible(False)
        #--                        
        _mObjetQDateEdit.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
        _mObjetQDateEdit.setObjectName(str(_keyObjet))
@@ -289,7 +259,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        _mObjetQCheckBox = QCheckBox()
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQCheckBox.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQCheckBox.setVisible(False)
        #--                        
        _mObjetQCheckBox.setStyleSheet("QCheckBox {  font-family:" + self.policeQGroupBox  +"; }")
        _mObjetQCheckBox.setObjectName(str(_keyObjet))
@@ -314,7 +284,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        _mObjetQDateTime = QDateTimeEdit()
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQDateTime.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQDateTime.setVisible(False)
        #--                        
        _mObjetQDateTime.setStyleSheet("QDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
        _mObjetQDateTime.setObjectName(str(_keyObjet))
@@ -359,7 +329,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButton_Plus_translation(self, _keyObjet, _valueObjet, _language, _langList))
        #--                        
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQToolButton.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
@@ -401,7 +371,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setToolTip('Supprimer l\'élément')
        #Masqué /Visible Générale                               
        if _valueObjet['hide minus button'] : _mObjetQToolButton.setVisible(False)
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQToolButton.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
 
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'minus widget'  : _mObjetQToolButton}) 
@@ -439,7 +409,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQToolButton.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'switch source widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
@@ -463,7 +433,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setText(_valueObjet['language value'])
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px;}")
        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px; border-style:" + _editStyle  + "; border-width: 0px;}")
        #------------
        _mListActions = []
@@ -480,7 +449,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
-       if (_valueObjet['hidden'] or _valueObjet['hidden M']) : _mObjetQToolButton.setVisible(False)
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'language widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
@@ -634,16 +603,7 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
     #- Maj QComboBox
     for elem in ret['concepts list to update'] : 
         __valueObjet = self.mDicObjetsInstancies[elem]
-        schemeIRI = __valueObjet['current source URI']
-        # récupération de la liste si déjà constituée
-        _thesaurus = self.thesaurusCollection.get((schemeIRI, _language))
-        if _thesaurus is None:
-           # sinon, construction de la liste
-           _thesaurus = rdf_utils.build_vocabulary(schemeIRI, self.vocabulary, _language, value=__valueObjet['value'])
-           # mémorisation dans thesaurusCollection
-           if not schemeIRI == '< non répertorié >':
-              self.thesaurusCollection.update( { (schemeIRI, _language) : _thesaurus } )
-        
+        _thesaurus = __valueObjet['thesaurus values']
         __valueObjet['main widget'].clear()
         __valueObjet['main widget'].addItems(_thesaurus)
 
@@ -834,7 +794,7 @@ def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
        __mObjetQLabelEtiquette.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + _labelBackGround  +";}")
        __mObjetQLabelEtiquette.setObjectName("label_" + str(__keyObjet))
        #Masqué /Visible Générale                               
-       if (__valueObjet['hidden'] or __valueObjet['hidden M']) : __mObjetQLabelEtiquette.setVisible(False)
+       if (__valueObjet['hidden']) : __mObjetQLabelEtiquette.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(__keyObjet, 'label widget')
        __mParentEnCours.addWidget(__mObjetQLabelEtiquette, row, column, rowSpan, columnSpan)

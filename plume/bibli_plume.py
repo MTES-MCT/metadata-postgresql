@@ -8,31 +8,16 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
                      
 from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayerCache, QgsFeatureRequest, QgsSettings, QgsDataSourceUri, QgsCredentials
- 
 from qgis.utils import iface
-import psycopg2
+
+from plume.rdf.widgetsdict import WidgetsDict
+from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph
+from plume.rdf.utils import export_extension_from_format, import_formats, import_extensions_from_format
+from plume.pg.description import PgDescription
+from plume.pg.template import TemplateDict, search_template
+from plume.pg import queries
+
 from . import doerreur
-
-from psycopg2 import sql
-
-import re, uuid
-import json
-from pathlib import Path
-
-
-try :
-   from .bibli_pg  import pg_queries
-except :
-   pass   
-
-try :
-   from .bibli_pg  import template_utils
-except :
-   pass       
-try :
-   from .bibli_rdf import rdf_utils,  __path__
-except :
-   pass   
 
 from qgis.gui import (QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel)
 from qgis.utils import iface
@@ -44,22 +29,6 @@ import os
 import datetime
 import os.path
 import time
-
-#========================================================
-#========================================================
-def dicListSql(mKeySql):
-    mdicListSql = {}
-
-    #------------------
-    # TESTS EN COURS
-    #-----------------
-    #Fonction tests 
-    mdicListSql['Fonction_Tests'] = ("""
-                  SELECT nombase, schema, nomobjet, typeobjet, etat FROM z_replique.replique;
-                                          """) 
-    mdicListSql['Fonction_Tests_SELECT'] = (""" SELECT * FROM "#schema#"."#table#"; """) 
-
-    return  mdicListSql[mKeySql]
 
 #==================================================
 def listUserParam(self):
@@ -82,46 +51,14 @@ def listUserParam(self):
     return 
     
 #==================================================
-def returnObjetVocabulary() :
-    #**********************
-    # vocabulaire - ontologies utilisées par les métadonnées communes
-    vocabulary = rdf_utils.load_vocabulary()
-    return vocabulary 
-
-#==================================================
-def returnObjetShape() :
-    #**********************
-    # schéma SHACL qui décrit les métadonnées communes
-    shape = rdf_utils.load_shape()
-    return shape 
-
-#==================================================
-def returnObjetMetagraph(self, old_description) :
-    #**********************
-    # Récupération fiche de métadonnée
-    try:
-       #       g = rdf_utils.metagraph_from_pg_description(src.read(), shape)
-       metagraph = rdf_utils.metagraph_from_pg_description(old_description, self.shape)
-    except:
-       # dialogue avec l'utilisateur  
-       # La fonction metagraph_from_pg_description() renverra un graphe vide si le descriptif PostgreSQL ne contenait pas les balises <METADATA> et </METADATA> 
-       # entre lesquelles est supposé se trouver le JSON-LD contenant les métadonnées. 
-       # C'est typiquement ce qui arrivera lorsque les métadonnées n'ont pas encore été rédigées.
-       # Si les balises sont présentes, mais ne contiennent pas un JSON valide, la fonction échouera sur une erreur json.decoder.JSONDecodeError. 
-       # Dans ce cas, on pourra proposer à l'utilisateur de choisir entre abandonner l'ouverture de la fiche de métadonnées 
-       #ou ouvrir une fiche vierge à la place.si entre les ba:lise
-       #...
-       # si l'exécution n'est pas interrompue :
-       metagraph = rdf_utils.metagraph_from_pg_description("", self.shape)
-    return metagraph 
+def returnObjetMetagraph(self, old_description) : return old_description.metagraph
 
 #==================================================
 def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
     #boite de dialogue Fichiers
     extStr = ""
     for elem in mListExtensionExport :
-        modelExt = rdf_utils.export_extension_from_format(elem)
-        #extStr += ";;" + str(elem) + " (*" + str(modelExt) + ")"   # Ancienne version à supprimer si OK
+        modelExt = export_extension_from_format(elem)
         extStrExt = "*" + str(modelExt) + " "
         if elem !=  modelExt[1:] :
            extStrExt += "*." + str(elem) + " "
@@ -136,7 +73,7 @@ def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
     #**********************
     # Export fiche de métadonnée
     try:
-       rdf_utils.export_metagraph(self.metagraph, self.shape, fileName, extension)
+       self.metagraph.export(fileName, extension)
     except:
        zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à exporter votre fiche de métadonnées.", None)
@@ -151,10 +88,10 @@ def importObjetMetagraphCSW(self) :
 #==================================================
 def importObjetMetagraph(self) :
     #boite de dialogue Fichiers
-    importFormats = rdf_utils.import_formats()
+    importFormats = import_formats()
     extStr = ""
     for elem in importFormats :
-        modelExt = rdf_utils.import_extensions_from_format(elem)
+        modelExt = import_extensions_from_format(elem)
         extStrExt = ""
         for elemExt in modelExt :
             extStrExt += "*" + str(elemExt) + " "
@@ -171,8 +108,7 @@ def importObjetMetagraph(self) :
     # Récupération fiche de métadonnée
     try:
        old_metagraph = self.metagraph
-       raw_metagraph  = rdf_utils.metagraph_from_file(filepath)
-       metagraph = rdf_utils.clean_metagraph(raw_metagraph , self.shape, old_metagraph)
+       metagraph  = metagraph_from_file(filepath, old_metagraph=old_metagraph)
     except:
        zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à importer votre fiche de métadonnées.", None)
@@ -185,7 +121,7 @@ def importObjetMetagraph(self) :
 def returnObjetTpl_label(self) :
     #**********************
     #Récupération de la liste des modèles
-    mKeySql = (pg_queries.query_list_templates(), (self.schema, self.table))
+    mKeySql = (queries.query_list_templates(), (self.schema, self.table))
     self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
 
@@ -194,7 +130,7 @@ def returnObjetTpl_label(self) :
     if self.preferedTemplate and self.enforcePreferedTemplate and templateLabels and self.preferedTemplate in templateLabels :
        tpl_label = self.preferedTemplate
     else : 
-       tpl_label = template_utils.search_template(self.metagraph, self.templates)
+       tpl_label = search_template(self.templates, self.metagraph)
        if not tpl_label :
           if self.preferedTemplate and templateLabels and self.preferedTemplate in templateLabels :
              tpl_label = self.preferedTemplate
@@ -205,33 +141,30 @@ def returnObjetTpl_label(self) :
 # == Génération des CATEGORIES, TEMPLATE, TABS
 def generationTemplateAndTabs(self, tpl_label):
     # Récupération des CATEGORIES associées au modèle retenu
-    mKeySql = (pg_queries.query_get_categories(), (tpl_label,))
+    mKeySql = (queries.query_get_categories(), (tpl_label,))
     categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         
     # Génération de template
     self.template = template_utils.build_template(categories)
 
     # Récupération des TEMPLATES associés au modèle retenu
-    mKeySql = (pg_queries.query_template_tabs(), (tpl_label,))
+    mKeySql = (queries.query_template_tabs(), (tpl_label,))
     tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
            
-    # Génération de templateTabs
-    self.templateTabs = template_utils.build_template_tabs(tabs)
-    return self.template, self.templateTabs 
-
+    # Génération de template
+    self.template = TemplateDict(categories, tabs)
+    return self.template
 #==================================================
 def returnObjetColumns(self, _schema, _table) :
     #**********************
     # liste des champs de la table
-    mKeySql = pg_queries.query_get_columns(_schema, _table)
+    mKeySql = queries.query_get_columns(_schema, _table)
     columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     return columns 
 
 #==================================================
 def returnObjetData(self) :
-    geoide_id = rdf_utils.get_geoide_json_uuid(self.comment)
-    data = { 'dct:identifier': [geoide_id] } if geoide_id else None
-    return data 
+    return    
 
 #==================================================
 def returnObjetTranslation(self) :
@@ -260,38 +193,22 @@ def saveObjetTranslation(mTranslation) :
 def returnObjetComment(self, _schema, _table) :
     #**********************
     # Récupération champ commentaire
-    mKeySql = pg_queries.query_get_table_comment(_schema, _table)
+    mKeySql = queries.query_get_table_comment(_schema, _table)
     old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    return old_description
+    return PgDescription(old_description)
 
 #==================================================
-def returnObjetsMeta(self, _schema, _table) :
+def returnObjetsMeta(self) :
     #**********************
     #Create Dict
     kwa = {}
-    # ajout des arguments obligatoires
-    kwa.update({'metagraph': self.metagraph,	'shape': self.shape,	'vocabulary': self.vocabulary})
-    # ajout des arguments optionnels
-    if self.template is not None:
-       kwa.update({ 'template': self.template })
-    #--   
-    if self.columns is not None:
-       kwa.update({ 'columns': self.columns })
-    #--   
-    if self.templateTabs  is not None:
-       kwa.update({ 'templateTabs': self.templateTabs })
-    #--
-    if self.data is not None:
-       kwa.update({ 'data': self.data })
-    #--
-    if self.mode is not None:
-       kwa.update({ 'mode': self.mode })
-    #--
-    if self.translation is not None and self.mode == "edit" :
-       kwa.update({ 'translation': self.translation })
-    #--   
-    d = rdf_utils.build_dict(**kwa)
-    return d
+    for param in ('metagraph', 'template', 'columns', 'data', 'mode', 'translation',
+        'language', 'langList', 'readHideBlank', 'readHideUnlisted', 'editHideUnlisted',
+        'readOnlyCurrentLanguage', 'editOnlyCurrentLanguage', 'labelLengthLimit',
+        'valueLengthLimit', 'textEditRowSpan'):
+        if getattr(self, param) is not None:
+            kwa[param] = getattr(self, param)
+    return WidgetsDict(**kwa)
 
 #==================================================
 def saveMetaIhm(self, _schema, _table) :
@@ -317,26 +234,26 @@ def saveMetaIhm(self, _schema, _table) :
            elif _valueObjet['main widget type'] in ("QCheckBox") :
               value = True if _valueObjet['main widget'].isChecked() else False
 
-           if _valueObjet['object'] == "edit" and not (_valueObjet['hidden'] or _valueObjet['hidden M']): 
+           if _valueObjet['object'] == "edit" and not (_valueObjet['hidden']): 
               self.mDicObjetsInstancies.update_value(_keyObjet, value)
     #-    
-    #Générer un graphe RDF à partir du dictionnaire de widgets actualisé        
-    self.metagraph = self.mDicObjetsInstancies.build_graph(self.vocabulary) 
-    self.oldMetagraph  = self. metagraph
+    #Générer un graphe RDF à partir du dictionnaire de widgets actualisé 
+    self.metagraph = self.mDicObjetsInstancies.build_metagraph()        
+    self.oldMetagraph  = self.metagraph
     #-    
     #Créer une version actualisée du descriptif PostgreSQL de l'objet. 
-    new_pg_description = rdf_utils.update_pg_description(self.comment, self.metagraph, geoideJSON=self.geoideJSON) 
-    self.comment = new_pg_description
+    self.comment.metagraph = self.metagraph
+    new_pg_description = str(self.comment)
     # une requête de mise à jour du descriptif.
-    mKeySql = pg_queries.query_get_relation_kind(_schema, _table) 
+    mKeySql = queries.query_get_relation_kind(_schema, _table) 
     kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     #-    
-    mKeySql = (pg_queries.query_update_table_comment(_schema, _table, relation_kind=kind[0]), (new_pg_description,)) 
+    mKeySql = (queries.query_update_table_comment(_schema, _table, relation_kind=kind[0]), (new_pg_description,)) 
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #-
     #Mettre à jour les descriptifs des champs de la table.    
-    mKeySql = pg_queries.query_update_columns_comments(_schema, _table, self.mDicObjetsInstancies)
+    mKeySql = queries.query_update_columns_comments(_schema, _table, self.mDicObjetsInstancies)
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #- Mettre à jour les descriptifs de la variable columns pour réaffichage
@@ -636,7 +553,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.7"
+def returnVersion() : return "version 0.2.8"
 
 #==================================================
 #Execute Pdf 

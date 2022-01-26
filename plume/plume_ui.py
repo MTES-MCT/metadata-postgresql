@@ -13,7 +13,6 @@ from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBo
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
 
-from .bibli_pg  import template_utils                                                                                                                                    
 from . import bibli_plume
 from .bibli_plume import *
 #
@@ -34,9 +33,9 @@ import subprocess
 import time
 import sys
 
-from .bibli_rdf import rdf_utils
-from .bibli_pg  import pg_queries
-from .bibli_pg  import template_utils
+import psycopg2
+from plume.pg import queries
+from plume.rdf.metagraph import copy_metagraph
 
 
 class Ui_Dialog_plume(object):
@@ -48,8 +47,6 @@ class Ui_Dialog_plume(object):
     def setupUi(self, Dialog):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
-        #--
-        self.thesaurusCollection = {} # nécessaire pour première instance  (Stockage des thésaurus)
         #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
@@ -172,8 +169,6 @@ class Ui_Dialog_plume(object):
 
         #==========================
         #Instanciation des "shape, template, vocabulary, mode" 
-        self.vocabulary  = bibli_plume.returnObjetVocabulary()
-        self.shape       = bibli_plume.returnObjetShape()
         self.translation = bibli_plume.returnObjetTranslation(self)
         #-
         self.displayToolBar(*self.listIconToolBar) 
@@ -214,7 +209,7 @@ class Ui_Dialog_plume(object):
            self.saveMetaGraph = False
            #-   
            old_metagraph = self.metagraph
-           self.metagraph = rdf_utils.copy_metagraph(None, old_metagraph)
+           self.metagraph = copy_metagraph(None, old_metagraph)
         #**********************
         elif mItem == "Copy" :
            self.copyMetagraph = self.metagraph
@@ -227,7 +222,7 @@ class Ui_Dialog_plume(object):
         elif mItem == "Paste" :
            if self.copyMetagraph != None :
               src_metagraph, old_metagraph = self.copyMetagraph, self.metagraph
-              _metagraph = rdf_utils.copy_metagraph(src_metagraph, old_metagraph)
+              _metagraph = copy_metagraph(src_metagraph, old_metagraph)
               self.metagraph = _metagraph
         #**********************
         elif mItem == "plumeImportFile" :
@@ -246,7 +241,7 @@ class Ui_Dialog_plume(object):
         #*** commun
         if mItem in ["Edition", "Save", "Empty", "plumeImportFile", "Paste", "Traduction"] :
            bibli_plume.saveObjetTranslation(self.translation)
-           self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+           self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         #-
         self.displayToolBar(*self.listIconToolBar)
         return
@@ -274,12 +269,13 @@ class Ui_Dialog_plume(object):
 
         if _mContinue : 
            if mItemTemplates == "Aucun" :
-              self.template, self.templateTabs = None, None
+              #self.template, self.templateTabs = None, None
+              self.template = None
            else :   
               # Choix du modèle
               bibli_plume.generationTemplateAndTabs(self, mItemTemplates)
            # Génération à la volée
-           self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+           self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
 
            # MAJ ICON FLAGS
            self.majQmenuModeleIconFlag(mItemTemplates)
@@ -296,6 +292,8 @@ class Ui_Dialog_plume(object):
         #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
         if mItem == "" : 
            self.language, mItem = "fr", "fr" 
+        else:
+            self.language = mItem
         if mItem not in self.langList : self.langList.append(mItem)  
         #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
         self.plumeChoiceLang.setText(mItem)
@@ -314,7 +312,7 @@ class Ui_Dialog_plume(object):
         mSettings.endGroup()
         #----
         #Regénération du dictionnaire    
-        self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+        self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         #-
         self.displayToolBar(*self.listIconToolBar)
         return
@@ -411,16 +409,19 @@ class Ui_Dialog_plume(object):
                     #-
                     tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
                     if tpl_labelDefaut :
-                       self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                       #self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                       self.template = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
                     else :
-                       self.template, self.templateTabs = None, None   
+                       #self.template, self.templateTabs = None, None   
+                       self.template = None
                     #-
                     self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
                     self.majQmenuModeleIconFlag(tpl_labelDefaut)
                  else :
-                    self.template, self.templateTabs = None, None   
+                    #self.template, self.templateTabs = None, None   
+                    self.template = None
                  #-
-                 self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+                 self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
     #---------------------------
@@ -456,24 +457,22 @@ class Ui_Dialog_plume(object):
                   #-
                   tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
                   if tpl_labelDefaut :
-                     self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                     self.template = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
                   else :
-                     self.template, self.templateTabs = None, None   
+                     self.template = None
                   #-
                   self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
                   self.majQmenuModeleIconFlag(tpl_labelDefaut)
                else :
-                  self.template, self.templateTabs = None, None   
+                  self.template = None
                #-
-               self.generationALaVolee(bibli_plume.returnObjetsMeta(self, self.schema, self.table))
+               self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
     #---------------------------
     def getAllFromUri(self):
         uri = QgsDataSourceUri(self.layer.source())
         self.schema, self.table = uri.schema(), uri.table()
-        #print( [ self.schema, self.table ] )
-        #self.relationType = db_table._relationType #type de relation v=vue, m= vue matérialisée, r = relation (table)
         #-
         self.uri, self.mConfigConnection, self.username, self.password = uri, uri.connectionInfo(), uri.username() or "", uri.password() or ""
         self.connectBaseOKorKO = self.connectBase()
@@ -643,7 +642,7 @@ class Ui_Dialog_plume(object):
            self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
            self.plumeTemplate.setObjectName("Template")
            #Lecture existence Extension METADATA
-           mKeySql = (pg_queries.query_exists_extension(), ('metadata',))
+           mKeySql = (queries.query_exists_extension(), ('plume_pg',))
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
            self.instalMetadata = False
            if r :
@@ -655,7 +654,7 @@ class Ui_Dialog_plume(object):
               self.plumeTemplate.setEnabled(True)
            else :
               self.plumeTemplate.setEnabled(False)
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Extension METADATA non installée.") 
+              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "L'extension PostgreSQL plume_pg n'est pas installée.") 
            self.plumeTemplate.setToolTip(mTextToolTip)
         #--QToolButton TEMPLATE                                               
         #====================
@@ -665,7 +664,7 @@ class Ui_Dialog_plume(object):
            #--QToolButton EXPORT                                               
            self.majQmenuExportIconFlag()
            #-
-           mKeySql = (pg_queries.query_is_relation_owner(), (self.schema, self.table))
+           mKeySql = (queries.query_is_relation_owner(), (self.schema, self.table))
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
            #-- Activation ou pas 
            self.plumeEdit.setEnabled(r)
@@ -746,7 +745,7 @@ class Ui_Dialog_plume(object):
     #==========================
     # == Gestion des Icons Flags dans le menu des templates
     def majQmenuExportIconFlag(self) :
-        mListExtensionExport = rdf_utils.available_formats(self.metagraph, self.shape)
+        mListExtensionExport = self.metagraph.available_formats
         self.mListExtensionExport = mListExtensionExport
         self._mObjetQMenuExport.clear()
         self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtensionExport))) * 10) + 70) + "px;}")
@@ -843,7 +842,6 @@ class Ui_Dialog_plume(object):
         self.plumeImportFile.triggered.connect(self.clickButtonsActions)
         _mObjetQMenu.addAction(self.plumeImportFile)
         #-- Importer les métadonnées depuis un fichier
-        #_mObjetQMenu.addSeparator()
         #-- Importer les métadonnées depuis un service CSW
         mText = QtWidgets.QApplication.translate("plume_main", "Importer depuis un service CSW") 
         self.plumeImportCsw = QAction("plumeImportCSW",self.plumeImport)

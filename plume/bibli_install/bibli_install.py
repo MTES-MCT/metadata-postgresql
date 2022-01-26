@@ -5,7 +5,7 @@ import subprocess
 
 #==================================================
 def manageLibrary(mBibli) :
-    if mBibli == "RDFLIB"
+    if mBibli == "RDFLIB" :
        try:
            import pip
        except ImportError:
@@ -18,7 +18,7 @@ def manageLibrary(mBibli) :
        mPathPerso = os.path.dirname(__file__) + '\\rdflib-6.0.2.tar.gz'
        mPathPerso = mPathPerso.replace("\\","/")
        subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
-    elif mBibli == "OWSLIB"
+    elif mBibli == "OWSLIB" :
        #--
        try:
            import pip

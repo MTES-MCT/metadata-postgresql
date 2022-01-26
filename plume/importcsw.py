@@ -193,24 +193,24 @@ class Ui_Dialog_ImportCSW(object):
         self.option1 = QtWidgets.QRadioButton(groupBoxOptions)
         self.option1.setGeometry(QtCore.QRect(15,15,largeur - 20,23))
         self.option1.setObjectName("option1")
-        self.option1.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Mettre à jour avec les métadonnées distantes", None))
+        self.option1.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Compléter avec les métadonnées distantes", None))
         self.option1.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
-        self.option1.setToolTip("Pour toutes les catégories de métadonnées renseignées dans la fiche du catalogue, la valeur de la fiche locale est remplacée par celle du catalogue ou ajoutée s'il n'y avait pas de valeur.")
+        self.option1.setToolTip("Pour toutes les catégories de métadonnées renseignées dans la fiche du catalogue qui n'ont pas de valeur dans la fiche locale, la valeur de la fiche distante est ajoutée.")
         #-
         self.option2 = QtWidgets.QRadioButton(groupBoxOptions)
         self.option2.setGeometry(QtCore.QRect(15,35,largeur - 20,23))
         self.option2.setObjectName("option2")
-        self.option2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Compléter avec les métadonnées distantes", None))
+        self.option2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Mettre à jour avec les métadonnées distantes", None))
         self.option2.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
-        self.option2.setToolTip("Pour toutes les catégories de métadonnées renseignées dans la fiche du catalogue qui n'ont pas de valeur dans la fiche locale, la valeur de la fiche distante est ajoutée.")
+        self.option2.setToolTip("Pour toutes les catégories de métadonnées renseignées dans la fiche du catalogue, la valeur de la fiche locale est remplacée par celle du catalogue ou ajoutée s'il n'y avait pas de valeur.")
         #-
         self.option3 = QtWidgets.QRadioButton(groupBoxOptions)
         self.option3.setGeometry(QtCore.QRect(15,55,largeur - 20,23))
         self.option3.setObjectName("option3")
-        self.option1.setChecked(True)
         self.option3.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Remplacer par les métadonnées distantes", None))
         self.option3.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
         self.option3.setToolTip("Génère une nouvelle fiche à partir des métadonnées distantes. La différence avec l'option 1 est que les informations des catégories non renseignées dans la fiche du catalogue mais qui auraient pu exister en local vont être effacées.")
+        self.option1.setChecked(True)
         #options 
         #------ 
         #----------
@@ -220,14 +220,11 @@ class Ui_Dialog_ImportCSW(object):
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Cancel", None))
         
         #Lecture du tuple avec les paramétres  # Return Url and Id   
-        if isinstance(self.Dialog.metagraph, Metagraph) :
-           url_csw, file_identifier = self.Dialog.metagraph.linked_record
-        else :   
-           url_csw, file_identifier = None, None
+        url_csw, file_identifier = self.Dialog.metagraph.linked_record
         
         if url_csw != None :
            self.mZoneUrl.setText(url_csw)
-           self.mZoneUrlId.setText(file_identifier)
+           #self.mZoneUrlId.setText(file_identifier)
         
     #===============================              
     def functionAddCsw(self):
@@ -246,16 +243,29 @@ class Ui_Dialog_ImportCSW(object):
        if self.mZoneUrl.text() == "" or self.mZoneUrlId.text() == "" :
           bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :
-          url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr","fr-120066022-jdd-1c02c1c1-cd81-4cd5-902e-acbd3d4e5527"
-          url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset","fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab"
-          
-          #Retoune l'XML de l'appel URL + ID
-          #self.returnXml( self.mZoneUrl.text(), self.mZoneUrlId.text() )                                            
-          raw_xml, old_metagraph = self.returnXml( url_csw, file_identifier ), self.Dialog.metagraph 
+          #options d'imports
+          mOptions = "always"
+          if self.option1.isChecked() :    # Compléter avec les métadonnées distantes : valeur 'always' (défaut).
+             mOptions = "always"
+          elif self.option2.isChecked() :  # Mettre à jour avec les métadonnées distantes : valeur 'if blank'.
+             mOptions = "if blank"
+          elif self.option3.isChecked() :  # Remplacer par les métadonnées distantes : valeur 'never'.
+             mOptions = "never"
 
+          #Retoune l'XML de l'appel URL + ID
+          raw_xml, old_metagraph = self.returnXml( self.mZoneUrl.text(), self.mZoneUrlId.text() ), self.Dialog.metagraph                                            
+
+          #For test
+          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr","fr-120066022-jdd-1c02c1c1-cd81-4cd5-902e-acbd3d4e5527"
+          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset","fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab"
+          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-9618cc78-9b28-4562-8bbe-bede9bee2e9f"
+          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef"
+          #
+          #raw_xml, old_metagraph = self.returnXml( url_csw, file_identifier ), self.Dialog.metagraph
+          #For test
+           
           #NEW metagraph and OlD Metagraph
-          #metagraph = metagraph_from_iso(raw_xml, old_metagraph)                                           
-          metagraph = metagraph_from_iso(raw_xml)                                           
+          metagraph = metagraph_from_iso(raw_xml, old_metagraph, mOptions)                                           
           
           #Sauvegarde l'URL et l'ID si case cochée
           if self.caseSave.isChecked() :
@@ -265,7 +275,7 @@ class Ui_Dialog_ImportCSW(object):
 
           #Regénère l'IHM
           bibli_plume.saveObjetTranslation(self.Dialog.translation)
-          self.Dialog.generationALaVolee(bibli_plume.returnObjetsMeta(self.Dialog, self.Dialog.schema, self.Dialog.table))
+          self.Dialog.generationALaVolee(bibli_plume.returnObjetsMeta(self.Dialog))
           self.close()
        return
 
