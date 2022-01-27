@@ -1,55 +1,56 @@
 # Modèles de formulaire
 
-Les modèles de formulaire sont définis par l'administrateur de données pour tous les utilisateurs de son service. Etant partagés, ils sont stockés sur le serveur PostgreSQL, dans un ensemble de tables créées par l'extension PostgreSQL appelée à ce stade *metadata*.
+Les modèles de formulaire sont définis par l'administrateur de données pour tous les utilisateurs de son service. Etant partagés, ils sont stockés sur le serveur PostgreSQL, dans un ensemble de tables créées par l'extension PostgreSQL *PlumePg*.
 
 Leur usage est totalement optionnel.
 
-[Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import par le plugin](#import-par-le-plugin)
+[Principe](#principe) • [Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import des modèles par Plume](#import-des-modèles-par-plume)
+
+
+## Principe
+
+Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [shape.ttl](https://github.com/MTES-MCT/metadata-postgresql/blob/main/plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
+
+[^metadonnees-masquées]: Du moins en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire.
+
+Parfois, c'est au contraire insuffisant. Toujours selon l'organisation du service, la table considérée et le profil de l'utilisateur, il peut être très utile voire indispensable de disposer d'informations qui ne sont pas prévues dans les catégories communes.
+
+Plume y remédie, via l'extension PostgreSQL *PlumePg*, en permettant à l'administrateur de définir des modèles de formulaire adaptés à son service, que le plugin QGIS saura exploiter.
+
+Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l'utilisateur avec leurs modalités d'affichage. Il restreint ainsi les catégories communes par un système de liste blanche, tout en autorisant l'ajout de catégories locales supplémentaires.
+
+L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées (si cela se justifie). Dans l'interface QGIS de Plume, l'utilisateur peut basculer à sa convenance d'un modèle à l'autre.
 
 
 ## Gestion dans PostgreSQL
 
-### Principe
+### Installation de l'extension *PlumePg*
 
-Par défaut, les formulaires du plugin QGIS présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes (en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire).
+L'extension PostgreSQL *PlumePg* crée une structure de données adaptée au stockage des modèles.
 
-Souvent, c'est trop : selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne sont pas les mêmes, et il est peu probable que toutes le soient.
+Ses fichiers d'installation se trouvent dans le dossier [postgresql](/postgresql) du Git :
+- plume_pg--x.x.x.sql, où x.x.x est le numéro de version de *PlumePg*, contient le code de l'extension. Celui-ci s'exécute lorsqu'elle est installée sur une base ;
+- [plume_pg.control](/postgresql/plume_pg.control) contient quelques métadonnées et des informations de paramétrage.
 
-Parfois, c'est insuffisant : toujours selon l'organisation du service, la table considérée et le profil de l'utilisateur, il peut être très utile voire indispensable de disposer d'informations qui ne sont pas prévue dans les catégories communes.
-
-L'extension PostgreSQL *metadata* y remédie en permettant à l'administrateur de définir des modèles de formulaire adaptés à son service.
-
-Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l'utilisateur avec leurs modalités d'affichage. Il restreint ainsi les catégories communes par un système de liste blanche, tout en autorisant l'ajout de catégories locales supplémentaires.
-
-L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées (si cela se justifie).
-
-### Installation de l'extension metadata
-
-L'extension PostgreSQL *metadata* crée une structure de données adaptée au stockage des modèles.
-
-Ses fichiers d'installation se trouvent dans le dossier [postgresql](/postgresql) :
-- [metadata--0.0.1.sql](/postgresql/metadata--0.0.1.sql) ;
-- [metadata.control](/postgresql/metadata.control).
+Ils doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l'installation, mais il est vraisemblable qu'il soit de la forme `C:\Program Files\PostgreSQL\xx\share\extension` sous Windows et `/usr/share/postgresql/xx/extension` sous Linux, `xx` étant la version de PostgreSQL.
 
 ```sql
 
-CREATE EXTENSION metadata ;
+CREATE EXTENSION plume_pg ;
 
 ```
 
-Il est nécessaire d'installer préalablement l'extension *pgcrypto*, qui sert en l'occurrence à générer des UUID.
-
-En une seule commande :
+Il est nécessaire d'installer préalablement l'extension *pgcrypto*, qui sert en l'occurrence à générer des UUID, ou d'exécuter la commande `CREATE EXTENSION` avec l'option `CASCADE` :
 
 ```sql
 
-CREATE EXTENSION metadata CASCADE ;
+CREATE EXTENSION plume_pg CASCADE ;
 
 ```
 
-L'installation est à réaliser par l'ADL. A priori, il ne paraît pas judicieux d'imaginer que celle-ci puisse se faire par l'intermédiaire du plugin QGIS, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL...
+L'installation est à réaliser par l'ADL. Il ne paraît pas judicieux d'imaginer que celle-ci puisse se faire via l'interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. *AsgardManager* pourrait proposer cette fonctionnalité, par contre.
 
-Tous les objets de l'extension sont créés dans le schéma `z_metadata`. Si celui-ci existait avant l'installation de l'extension, il ne sera pas marqué comme dépendant de l'extension et ne sera donc pas supprimé en cas de désinstallation.
+Tous les objets de l'extension sont créés dans le schéma `z_plume_pg`. Si celui-ci existait avant l'installation de l'extension, il ne sera pas marqué comme dépendant de l'extension et ne sera donc pas supprimé en cas de désinstallation.
 
 
 ### Création d'un modèle de formulaire
@@ -212,7 +213,7 @@ Modèles pré-configurés disponibles :
 | `'Donnée externe'` | Modèle assez complet adapté à des données externes. |
 
 
-## Import par le plugin
+## Import des modèles par Plume
 
 La gestion des modèles par le plugin fait intervenir :
 - [pg_queries.py](/plume/bibli_pg/pg_queries.py) pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
