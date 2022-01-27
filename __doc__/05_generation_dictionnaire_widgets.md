@@ -1,5 +1,7 @@
 # Génération du dictionnaire des widgets
 
+ [metagraph : le graphe des métadonnées pré-existantes](#metagraph--le-graphe-des-métadonnées-pré-existantes) • [template : le modèle de formulaire](#template--le-modèle-de-formulaire) • [columns : les descriptifs des champs](#columns--les-descriptifs-des-champs) • [data : les métadonnées calculées](#data--les-métadonnées-calculées) • [mode](#mode) • [translation](#translation) • [langList](#langlist) • [language](#language) • [readHideBlank](#readhideblank) • [editHideUnlisted](#edithideunlisted) • [readHideUnlisted](#readhideunlisted) • [editOnlyCurrentLanguage](#editonlycurrentlanguage) • [readOnlyCurrentLanguage](#readonlycurrentlanguage) • [labelLengthLimit](#labellengthlimit) • [valueLengthLimit](#valuelengthlimit) • [textEditRowSpan](#texteditrowspan) • [Résultat : un dictionnaire de widgets](#résultat--un-dictionnaire-de-widgets)
+
 Lorsqu'un utilisateur demande l'affichage de la fiche de métadonnées d'une table ou vue, le plugin :
 1. rassemble dans un "dictionnaire de widgets", c'est-à-dire un objet de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
 2. parcourt ce dictionnaire de widgets pour construire le formulaire qui sera présenté à l'utilisateur. 
@@ -26,8 +28,8 @@ Paramètres utilisateurs :
 | `langList` | `list(str)` ou `tuple(str)` | `('fr', 'en')` | [→](#langlist) |
 | `language` | `str` | `'fr'` | [→](#language) |
 | `readHideBlank` | `bool` | `True` | [→](#readhideblank) |
-| `editHideUnlisted` | `bool` | `False` | [→](#editHideunlisted) |
-| `readHideUnlisted` | `bool` | `True` | [→](#readHideunlisted) |
+| `editHideUnlisted` | `bool` | `False` | [→](#edithideunlisted) |
+| `readHideUnlisted` | `bool` | `True` | [→](#readhideunlisted) |
 | `editOnlyCurrentLanguage` | `bool` | `False` | [→](#editonlycurrentlanguage) |
 | `readOnlyCurrentLanguage` | `bool` | `True` | [→](#readonlycurrentlanguage) |
 | `labelLengthLimit` | `int` | `25` | [→](#labellengthlimit) |
