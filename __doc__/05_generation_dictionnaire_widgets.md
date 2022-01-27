@@ -1,7 +1,7 @@
 # Génération du dictionnaire des widgets
 
-Foncièrement, lorsqu'un utilisateur demande l'affichage de la fiche de métadonnées d'une table ou vue, le plugin :
-1. rassemble dans un "dictionnaire de widgets", soit un objet python de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
+Lorsqu'un utilisateur demande l'affichage de la fiche de métadonnées d'une table ou vue, le plugin :
+1. rassemble dans un "dictionnaire de widgets", c'est-à-dire un objet de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
 2. parcourt ce dictionnaire de widgets pour construire le formulaire qui sera présenté à l'utilisateur. 
 
 La première de ces étapes est traitée ici. Pour la seconde, cf. [Création d'un nouveau widget](/__doc__/10_creation_widgets.md).
@@ -12,10 +12,10 @@ Sources de données :
 
 | Nom | Type | Valeur par défaut | Détails |
 | --- | --- | --- | --- |
-| `metagraph` | [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py) | `None` | [→](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
-| `template` | [`plume.pg.template.TemplateDict`](/plume/pg/template.py) | `None` | [→](#template--le-modèle-de-formulaire) |
-| `data` | `dict` | `None` | [→](#data--les-métadonnées-calculées) |
-| `columns` | `list(tuple(str, str))` | `None` | [→](#columns--les-descriptifs-des-champs) |
+| `metagraph` | [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py) | `None` | [→ graphe des métadonnées](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
+| `template` | [`plume.pg.template.TemplateDict`](/plume/pg/template.py) | `None` | [→ modèle de formulaire](#template--le-modèle-de-formulaire) |
+| `data` | `dict` | `None` | [→ métadonnées calculées](#data--les-métadonnées-calculées) |
+| `columns` | `list(tuple(str, str))` | `None` | [→ descriptifs des champs](#columns--les-descriptifs-des-champs) |
 
 Paramètres utilisateurs :
 
@@ -84,7 +84,7 @@ conn.close()
 
 ```
 
-*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL. `table_name` et `schema_name` sont respectivement le nom de la relation (table, vue, etc.) dont on souhaite importer les métadonnées et le nom du schéma auquel elle est rattachée.*
 
 Une fois le descriptif récupéré, on l'utilisera pour générer un objet de classe  [`plume.pg.description.PgDescription`](/plume/pg/description.py), ce qui a pour effet d'en extraire les métadonnées - s'il y en avait - et les dé-sérialiser en graphe de métadonnées.
 
@@ -98,7 +98,7 @@ old_description = PgDescription(raw_old_description)
 
 Ce même objet `PgDescription` servira ultérieurement pour la création d'un nouveau descriptif PostgreSQL contenant les métadonnées mises à jour. Il mémorise en effet également le texte saisi hors des balises `<METADATA>`, qu'il s'agit de préserver. Cf. [Sauvegarde](/__doc__/16_actions_generales.md#sauvegarde) pour plus de détails.
 
-Le graphe de métadonnées, objet de classe [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py), peut être obtenu par un appel à la propriété `metagraph` de `old_description`.
+Le graphe de métadonnées, objet de classe [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py), est ensuite obtenu par un simple appel à la propriété `metagraph` de `old_description`.
 
 
 ```python
@@ -124,7 +124,7 @@ Pour plus de détails sur les modèles de formulaire, on se reportera à la part
 
 ### columns : les descriptifs des champs
 
-`columns` est la liste des champs de la table / vue courante. Plus précisément, il s'agit d'une liste de tuples dont le premier élément est le nom du champ et le second son descriptif.
+`columns` est la liste des champs de la table / vue courante. Plus précisément, il s'agit d'une liste de tuples dont le premier élément est le nom du champ et le second son descriptif, stocké tel quel en tant que descriptif PostgreSQL du champ.
 
 Elle peut être obtenue ainsi :
 
@@ -175,7 +175,7 @@ Le comportement naturel est de masquer ces champs, et c'est ce que fera le const
 
 ### readHideUnlisted
 
-`readHideUnlisted` est un booléen indiquant si, en mode lecture, il faut masquer les catégories qui n'apparaissent pas dans le modèle de formulaire à utiliser (cf. [template](#template--le-modèle-de-formulaire)) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n'est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes, c'est-à-dire les catégories locales.
+`readHideUnlisted` est un booléen indiquant si, en mode lecture, il faut masquer les catégories qui n'apparaissent pas dans le modèle de formulaire à utiliser (cf. [template](#template--le-modèle-de-formulaire)) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n'est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.
 
 Le comportement par défaut du constructeur de `WidgetsDict` est de masquer les champs en question.
 
@@ -208,13 +208,13 @@ Si `translation` n'apparaît pas dans les arguments du constructeur de `WidgetsD
 
 ### langList
 
-`langList` est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par [`language`](#language). Elle alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l'interface, permet de choisir la langue principale [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées).
+`langList` est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par [`language`](#language). Il alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l'interface, permet de choisir la langue principale [Actions générales](/__doc__/16_actions_generales.md#langue-principale-des-métadonnées).
 
-Si `langList` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, celle-ci utilisera le tuple `('fr', 'en')` (français et anglais). Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d'assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l'interface.
+Si `langList` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, celui-ci utilisera le tuple `('fr', 'en')` (français et anglais). Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d'assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l'interface.
 
 ### readOnlyCurrentLanguage
 
-`readOnlyCurrentLanguage` est un booléen qui indique si, en mode lecture, seules les métadonnées saisies dans la langue principale (cf. [language](#language)) doivent être affichées. À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs d'une autre langue seront alors affichées, en privilégiant les langues listées par [`langList`](#langlist) (priorisée selon leur ordre d'apparition dans la liste).
+`readOnlyCurrentLanguage` est un booléen qui indique si, en mode lecture, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. [language](#language) pour plus de détails.
 
 Si `readOnlyCurrentLanguage` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, il sera considéré comme valant `True`.
 
@@ -222,28 +222,27 @@ Si `readOnlyCurrentLanguage` n'apparaît pas dans les arguments du constructeur 
 
 `editOnlyCurrentLanguage` est le pendant de `readOnlyCurrentLanguage` pour le mode édition.
 
-C'est un booléen indiquant si, en mode édition **et lorsque le mode traduction n'est pas actif**, seules les métadonnées saisies dans la langue principale (cf. [language](#language)) doivent être affichées. À noter que si aucune traduction n'est disponible dans la langue demandée, les valeurs d'une autre langue seront alors affichées, en privilégiant les langues listées par [`langList`](#langlist) (priorisée selon leur ordre d'apparition dans la liste).
+C'est un booléen indiquant si, en mode édition **et lorsque le mode traduction n'est pas actif**, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. [language](#language) pour plus de détails.
 
 Si `editdOnlyCurrentLanguage` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, il sera considéré comme valant `False`.
 
 ### labelLengthLimit
 
-`labelLengthLimit` est un entier qui indique le nombre de caractères au-delà duquel l'étiquette d'une catégorie de métadonnées sera toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que pour les widgets QTextEdit le label est placé au-dessus quoi qu'il arrive.
+`labelLengthLimit` est un entier qui indique le nombre de caractères au-delà duquel l'étiquette d'une catégorie de métadonnées sera toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que pour les widgets `QTextEdit` le label est placé au-dessus quoi qu'il arrive.
 
 Si `labelLengthLimit` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, le seuil est fixé à 25 caractères.
 
 ### valueLengthLimit
 
-`valueLengthLimit` est un entier qui indique le nombre de caractères au-delà duquel une valeur qui aurait dû être affichée dans un widget QLineEdit sera présentée à la place dans un QTextEdit. Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la valeur contient un retour à la ligne.
+`valueLengthLimit` est un entier qui indique le nombre de caractères au-delà duquel une valeur qui aurait dû être affichée dans un widget `QLineEdit` sera présentée à la place dans un `QTextEdit`. Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la valeur contient un retour à la ligne.
 
 Si `valueLengthLimit` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, le seuil est fixé à 65 caractères.
 
 ### textEditRowSpan
 
-`textEditRowSpan` est un entier qui définit le nombre de lignes par défaut d'un widget QTextEdit, c'est-à-dire la valeur qui sera utilisée par `build_dict()` pour toutes les catégories telles que ni le modèle de formulaire ni le schéma des catégories communes ne fixe une valeur.
+`textEditRowSpan` est un entier qui définit le nombre de lignes par défaut d'un widget `QTextEdit`, c'est-à-dire la valeur de `rowSpan` qui sera utilisée par le constructeur de `WidgetsDict` pour toutes les catégories telles que ni le modèle de formulaire ni le schéma des catégories communes ne fixe une valeur.
 
 Si `textEditRowSpan` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, la hauteur est fixée à 6 lignes.
-
 
 
 ## Résultat : un dictionnaire de widgets
@@ -255,15 +254,15 @@ En premier lieu, le dictionnaire de widgets sert de base à la génération du f
 ```python
 
 {
-    key1 : dictionnaire_interne_key1,
-    key2 : dictionnaire_interne_key2
+    widgetkey_1 : dictionnaire_interne_1,
+    widgetkey_2 : dictionnaire_interne_2
 }
 
 ```
 
 Chaque enregistrement du dictionnaire représente l'un objets des objets suivants du formulaire : une zone de saisie, un groupe de valeurs, un groupe de propriétés, un groupe de traduction, un bouton plus ou un bouton de traduction.
 
-Les clés du dictionnaire de widgets sont des objets `plume.rdf.widgetkey.WidgetKey`. En plus d'identifier chaque objet, elles forment une structure arborescente qui, y compris lorsque des widgets sont ajoutés, supprimés, masqués suite aux actions de l'utilisateur, assure que la cohérence du positionnement de chaque widget. Elle permet aussi de recréer aisément un graphe de métadonnées à partir du dictionnaire de widgets, en vu de l'enregistrement en JSON-LD des métadonnées actualisées.
+Les clés du dictionnaire de widgets sont des objets `plume.rdf.widgetkey.WidgetKey`. Elles forment une structure arborescente qui, y compris lorsque des widgets sont ajoutés, supprimés, masqués suite aux actions de l'utilisateur, assure que la cohérence du positionnement des widgets. Elle permet aussi de recréer aisément un graphe de métadonnées à partir du dictionnaire de widgets, en vu de l'enregistrement en JSON-LD des métadonnées actualisées.
 
 Les valeurs du dictionnaire du widgets sont des objets [`plume.rdf.internaldict.InternalDict`](/plume/rdf/internaldict.py), dit "dictionnaires internes". Cette classe présente des dictionnaires de structure homogène qui contiennent toutes les informations nécessaires à la création du ou des widgets associés à l'objet et seront également utilisés pour référencer chacun des widgets créés. Outre leur fonction de référencement, les dictionnaires internes servent essentiellement à traduire les informations portées par les `WidgetKey` sous une forme plus aisément exploitable par les bibliothèques de QT.
 
