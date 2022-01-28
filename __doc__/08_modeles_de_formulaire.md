@@ -9,7 +9,7 @@ Leur usage est totalement optionnel.
 
 ## Principe
 
-Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [shape.ttl](https://github.com/MTES-MCT/metadata-postgresql/blob/main/plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
+Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [`shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/blob/main/plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
 
 [^metadonnees-masquées]: Du moins en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire.
 
@@ -28,11 +28,11 @@ L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et
 
 L'extension PostgreSQL *PlumePg* crée une structure de données adaptée au stockage des modèles.
 
-Ses fichiers d'installation se trouvent dans le dossier [postgresql](/postgresql) du Git :
-- plume_pg--x.x.x.sql, où x.x.x est le numéro de version de *PlumePg*, contient le code de l'extension. Celui-ci s'exécute lorsqu'elle est installée sur une base ;
-- [plume_pg.control](/postgresql/plume_pg.control) contient quelques métadonnées et des informations de paramétrage.
+Ses fichiers d'installation se trouvent dans le dossier [`postgresql`](/postgresql) du Git :
+- `plume_pg--x.x.x.sql` contient le code de la version `x.x.x` de l'extension *PlumePg*. Celui-ci s'exécute lorsqu'elle est installée sur une base.
+- [`plume_pg.control`](/postgresql/plume_pg.control) contient quelques métadonnées et des informations de paramétrage.
 
-Ils doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l'installation, mais il est vraisemblable qu'il soit de la forme `C:\Program Files\PostgreSQL\xx\share\extension` sous Windows et `/usr/share/postgresql/xx/extension` sous Linux, `xx` étant la version de PostgreSQL.
+Ces deux fichiers doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l'installation, mais il est vraisemblable qu'il soit de la forme `C:\Program Files\PostgreSQL\xx\share\extension` sous Windows et `/usr/share/postgresql/xx/extension` sous Linux, `xx` étant la version de PostgreSQL.
 
 ```sql
 
