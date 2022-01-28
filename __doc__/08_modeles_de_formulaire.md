@@ -24,34 +24,11 @@ L'admistrateur de données peut prévoir autant de modèles qu'il le souhaite et
 
 ## Gestion dans PostgreSQL
 
-### Installation de l'extension *PlumePg*
+L'extension PostgreSQL *PlumePg* crée une structure de données adaptée au stockage des modèles. Pour bénéficier des modèles, elle doit être installée sur toutes les bases du serveur PostgreSQL dont on souhaite gérer les métadonnées avec Plume[^base-par-base].
 
-L'extension PostgreSQL *PlumePg* crée une structure de données adaptée au stockage des modèles.
+[^base-par-base]: Plus précisément, si *PlumePg* n'est pas installée sur une base donnée, aucun modèle ne sera proposé dans l'interface de Plume pour les métadonnées des objets de cette base.
 
-Ses fichiers d'installation se trouvent dans le dossier [`postgresql`](/postgresql) du Git :
-- `plume_pg--x.x.x.sql` contient le code de la version `x.x.x` de l'extension *PlumePg*. Celui-ci s'exécute lorsqu'elle est installée sur une base.
-- [`plume_pg.control`](/postgresql/plume_pg.control) contient quelques métadonnées et des informations de paramétrage.
-
-Ces deux fichiers doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l'installation, mais il est vraisemblable qu'il soit de la forme `C:\Program Files\PostgreSQL\xx\share\extension` sous Windows et `/usr/share/postgresql/xx/extension` sous Linux, `xx` étant la version de PostgreSQL.
-
-```sql
-
-CREATE EXTENSION plume_pg ;
-
-```
-
-Il est nécessaire d'installer préalablement l'extension *pgcrypto*, qui sert en l'occurrence à générer des UUID, ou d'exécuter la commande `CREATE EXTENSION` avec l'option `CASCADE` :
-
-```sql
-
-CREATE EXTENSION plume_pg CASCADE ;
-
-```
-
-L'installation est à réaliser par l'ADL. Il ne paraît pas judicieux d'imaginer que celle-ci puisse se faire via l'interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. *AsgardManager* pourrait proposer cette fonctionnalité, par contre.
-
-Tous les objets de l'extension sont créés dans le schéma `z_plume_pg`. Si celui-ci existait avant l'installation de l'extension, il ne sera pas marqué comme dépendant de l'extension et ne sera donc pas supprimé en cas de désinstallation.
-
+Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](/__doc__/gestion_plume_pg.md) pour plus de détails sur l'installation et la maintenance de cette extension.
 
 ### Création d'un modèle de formulaire
 
