@@ -92,7 +92,6 @@ class WidgetsDict(dict):
         pour un dictionnaire produit uniquement pour la consultation.
         Certaines méthodes ne peuvent être utilisées que sur un
         dictionnaire dont l'attribut `mode` vaut ``'edit'``.
-    edit
     translation : bool
         True pour un dictionnaire comportant des fonctionnalités de
         traduction, ``False`` sinon. Certaines méthodes ne peuvent être
@@ -104,7 +103,6 @@ class WidgetsDict(dict):
         fournie à l'initialisation soit la première valeur (et
         préservant pour le reste l'ordre d'origine du paramètre
         `langList`).
-    main_language
     hideBlank : bool
         Les métadonnées sans valeur sont-elles masquées ?
     hideUnlisted : bool
@@ -641,6 +639,7 @@ class WidgetsDict(dict):
         -------
         dict
             Un dictionnaire avec les clés suivantes :
+            
             * ``new keys`` : liste de nouvelles clés du dictionnaire de widgets
               à matérialiser (:py:class:`plume.rdf.widgetkey.WidgetKey`). Elles
               sont évidemment fournies dans le bon ordre, d'abord les clés parents
@@ -675,6 +674,7 @@ class WidgetsDict(dict):
               à des widgets dont - parce qu'on a supprimé un widget antérieurement
               positionné au-dessus d'eux dans la grille - il faut à présent modifier
               la position.
+              
               * ``[0]`` est la grille (:py:class:`QtWidgets.QGridLayout`) ;
               * ``[1]`` est le widget (:py:class:`QtWidgets.QWidget`) à déplacer ;
               * ``[2]`` est le nouveau numéro de ligne du widget dans la grille (paramètre
