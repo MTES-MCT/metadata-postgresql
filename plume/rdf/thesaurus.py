@@ -32,9 +32,6 @@ class Thesaurus:
     
     Attributes
     ----------
-    collection : dict
-        Attribut de classe. Répertoire de tous les thésaurus déjà
-        compilés.
     label : str
         Le libellé du thésaurus.
     iri : URIRef
@@ -52,24 +49,6 @@ class Thesaurus:
     links_from_iri : dict
         Dictionnaire dont les clés sont les IRI des termes du
         thésaurus et les valeurs les liens associés.
-    
-    Methods
-    -------
-    values(thesaurus)
-        *Méthode de classe.* Renvoie la liste des termes du thésaurus.
-    label(thesaurus)
-        *Méthode de classe.* Renvoie le libellé du thésaurus.
-    concept_iri(thesaurus, concept_str)
-        *Méthode de classe.* Renvoie l'IRI correspondant au libellé
-        d'un terme de thésaurus.
-    concept_str(thesaurus, concept_iri)
-        *Méthode de classe.* Renvoie le libellé correspondant à l'IRI
-        d'un terme de thésaurus.
-    concept_link(thesaurus, concept_iri)
-        *Méthode de classe.* Renvoie le lien d'un terme de thésaurus.
-    concept_source(concept_iri)
-        *Méthode de classe.* Renvoie l'IRI du thésaurus auquel
-        appartient le terme.
     
     """
     
