@@ -25,12 +25,6 @@ class Metagraph(Graph):
     Un graphe de métadonnées est présumé décrire un et un seul jeu de
     données (dcat:Dataset).
     
-    Attributes
-    ----------
-    datasetid
-    available_formats
-    linked_record
-    
     Notes
     -----   
     Tous les graphes de métadonnées sont initialisés avec
@@ -283,6 +277,7 @@ class Metagraph(Graph):
             Un autre graphe de métadonnées.
         replace : bool, default False
             Mode de fusion des deux graphes :
+            
             * Si `replace` vaut ``True``, les informations du
               graphe source sont preservées pour les catégories
               de métadonnées non présentes dans le graphe complémentaire.
@@ -537,6 +532,7 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, preserve='always'):
         PostgreSQL considéré, dont on récupèrera l'identifiant.
     preserve : {'never', 'if exists', 'always'}, optional
         Mode de fusion de l'ancien et du nouveau graphe :
+        
         * Si `preserve` vaut ``'never'``, le graphe est
           est intégralement recréé à partir des informations
           disponibles sur le catalogue distant. Hormis l'identifiant,
