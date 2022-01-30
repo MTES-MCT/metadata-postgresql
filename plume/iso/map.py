@@ -62,20 +62,6 @@ class IsoToDcat:
         information est disponible dans le XML. S'il n'a pas
         été possible de l'extraire, les métadonnées seront
         présumées être en français.
-    iso639_language_codes : dict
-        Attribut de classe. Répertoire des codes de langues
-        utilisés par les métadonnées ISO 19139. Les clés sont
-        les codes sur trois caractères des métadonnées ISO, les
-        valeurs sont les codes sur deux caractères utilisés
-        préférentiellement pour les valeurs litériales RDF.
-    metadata_language
-    map_title
-    map_description
-    map_epsg
-    map_dates
-    map_keywords
-    map_subjects
-    map_organizations
     
     Notes
     -----
@@ -86,6 +72,11 @@ class IsoToDcat:
     
     iso639_language_codes = None
     """dict: Mapping des codes de langue de trois caractères en codes à deux caractères.
+    
+    Répertoire des codes de langues utilisés par les métadonnées
+    ISO 19139. Les clés sont les codes sur trois caractères des
+    métadonnées ISO, les valeurs sont les codes sur deux caractères
+    utilisés préférentiellement pour les valeurs litériales RDF.
     
     Ce dictionnaire est chargé si besoin à l'initialisation d'un nouvel
     objet, grâce à la méthode :py:meth:`IsoToDcat.load_language_codes`.
@@ -118,6 +109,7 @@ class IsoToDcat:
         with open(abspath('iso/data/iso-639-2.json')) as src:
             cls.iso639_language_codes = load(src)
     
+    @property
     def metadata_language(self):
         """str: Langue des métadonnées.
         
