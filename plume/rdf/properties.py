@@ -7,7 +7,7 @@ locales (décrites par un modèle stocké dans des tables PostgreSQL).
 La classe :py:class:`PlumeProperty` et la plupart des fonctions
 du module n'ont pas vraiment vocation à être utilisées
 directement. La plus utile - et celle qui sert au module
-:py:mod:`plume.rdf.widgetsdict` - est :py:fun:`class_properties`.
+:py:mod:`plume.rdf.widgetsdict` - est :py:func:`class_properties`.
 
 """
 
@@ -24,6 +24,7 @@ class PlumeProperty:
     ----------
     origin : {'shared', 'local', 'unknown'}
         L'origine de la catégorie :
+        
         * ``'shared'`` pour une catégorie commune issue du schéma SHACL.
           L'argument `property_node` est alors obligatoire. `template`
           et `base_path` doivent être fournis s'il y a lieu.
@@ -198,6 +199,7 @@ def class_properties(rdfclass, nsm, base_path, template=None):
     -------
     tuple(list(PlumeProperty), list(URIRef))
         Un tuple avec :
+        
         * ``[0]`` La liste des propriétés.
         * ``[1]`` La liste des IRI des propriétés (prédicats des
           triplets du graphe de métadonnées).
