@@ -2,7 +2,7 @@ __save__/
 __pycache__/
 __archives__/
 __log__/
+docs/build
 TO_DO.txt
 *.zip
 test_export_*
-tests/export/dcat_eurostat_*
