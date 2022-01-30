@@ -78,7 +78,7 @@ def data_from_file(filepath):
     
     See Also
     --------
-    plume.rdf.metagraph.graph_from_file : Import de données RDF.
+    graph_from_file : Import de données RDF.
     
     """
     pfile = Path(filepath)
@@ -146,12 +146,13 @@ def pick_translation(litlist, langlist):
     -------
     rdflib.term.Literal
         Un des éléments de `litlist`, qui peut être :
-        - le premier dont la langue est la première valeur
+        
+        * le premier dont la langue est la première valeur
           de `langlist` ;
-        - le premier dont la langue est la deuxième valeur
+        * le premier dont la langue est la deuxième valeur
           de `langlist` ;
-        - et ainsi de suite jusqu'à épuisement de `langlist` ;
-        - à défaut, le premier élément de `litlist`.
+        * et ainsi de suite jusqu'à épuisement de `langlist` ;
+        * à défaut, le premier élément de `litlist`.
 
     Notes
     -----
@@ -472,6 +473,12 @@ def graph_from_file(filepath, format=None):
     Graph
         Un graphe.
     
+    See Also
+    --------
+    plume.rdf.metagraph.metagraph_from_file
+        Désérialise le contenu d'un fichier sous forme de graphe
+        de métadonnées.
+    
     """
     pfile = Path(filepath)
     
@@ -591,7 +598,7 @@ def import_format_from_extension(extension):
     Returns
     -------
     str
-        Un nom de format. La fonction renvoie None si l'extension
+        Un nom de format. La fonction renvoie ``None`` si l'extension
         n'est pas reconnue.
     
     """
@@ -602,7 +609,7 @@ def import_format_from_extension(extension):
 def export_format_from_extension(extension):
     """Renvoie le format d'export correspondant à l'extension.
     
-     Parameters
+    Parameters
     ----------
     extension : str
         Une extension (avec point).
@@ -610,7 +617,7 @@ def export_format_from_extension(extension):
     Returns
     -------
     str
-        Un nom de format. La fonction renvoie None si l'extension
+        Un nom de format. La fonction renvoie ``None`` si l'extension
         n'est pas reconnue.
     
     """
