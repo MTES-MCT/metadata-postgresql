@@ -4,10 +4,11 @@ La classe `WidgetKey` produit les clés des dictionnaires
 de widgets (classe :py:class:`plume.rdf.widgetsdict.WidgetsDict`).
 
 Dans le contexte d'un dictionnaire, ces clés forment un arbre :
-- à la base, la clé racine, de classe :py:class:`RootKey`, est la
+
+* à la base, la clé racine, de classe :py:class:`RootKey`, est la
   seule qui n'ait pas de clé "parente". Elle est référencée dans
   l'attribut `root` du dictionnaire de widgets ;
-- toutes les autres clés descendent d'une clé parente,
+* toutes les autres clés descendent d'une clé parente,
   référencée dans leur attribut :py:attr:`WidgetKey.parent`.
   Réciproquement, les filles d'une clé sont référencées dans
   son attribut :py:attr:`GroupKey.children`.
@@ -53,82 +54,8 @@ class WidgetKey:
     
     Attributes
     ----------
-    actionsbook : plume.rdf.actionsbook.ActionsBook
-        Le carnet d'actions trace les actions à réaliser sur les widgets
-        au fil des modifications des clés. Pour le réinitialiser, on
-        utilisera la méthode de classe :py:meth:`clear_actionsbook`, et
-        :py:meth:`unload_actionsbook` pour le récupérer.
-        *Cet attribut est partagé par toutes les instances de la classe.*
-    no_computation : bool
-        Si True, inhibe temporairement la réalisation de certains calculs.
-        *Cet attribut est partagé par toutes les instances de la classe.*
-    with_language_buttons : bool
-        Mettre cet attribut à ``False`` permet d'inhiber la création
-        des boutons de choix de la langue, s'il y avait par ailleurs
-        lieu d'en créer.
-        *Cet attribut est partagé par toutes les instances de la classe.*
-        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
-        *de l'arbre de clés.*
-    with_source_buttons : bool
-        Mettre cet attribut à ``False`` permet d'inhiber la création
-        des boutons de choix de la source, s'il y avait par ailleurs
-        lieu d'en créer.
-        *Cet attribut est partagé par toutes les instances de la classe.*
-        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
-        *de l'arbre de clés.*
-    max_rowspan : int
-        Nombre maximum de lignes pouvant être occupées par un widget.
-        *Cet attribut est partagé par toutes les instances de la classe.*
-        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
-        *de l'arbre de clés.*
-    langlist : list(str)
-        Liste des langues autorisées.
-        *Cet attribut est partagé par toutes les instances de la classe.*
-        *Il ne doit sous aucun prétexte être modifié après l'initialisation*
-        *de l'arbre de clés.*
-    main_language
     uuid : UUID
         Identifiant unique de la clé.
-    parent
-    generation
-    is_ghost
-    is_hidden_m
-    is_hidden_b
-    is_single_child
-    has_minus_button
-    has_language_button
-    has_source_button
-    has_label
-    independant_label
-    row
-    rowspan
-    column
-    columnspan
-    placement
-    language_button_placement
-    source_button_placement
-    minus_button_placement
-    label_placement
-    order_idx
-    tree_idx
-    path
-    attr_to_copy
-    attr_to_update
-    
-    Methods
-    -------
-    clear_actionsbook()
-        *Méthode de classe.* Remplace le carnet d'actions par un carnet
-        vierge.
-    unload_actionsbook()
-        *Méthode de classe.* Renvoie le carnet d'actions et le remplace
-        par un carnet vierge.
-    kill()
-        Efface la clé de la mémoire de son parent.
-    copy(parent=None, empty=True)
-        Copie une clé et, le cas échéant, la branche qui en descend.
-    update(exclude_none=False, **kwargs)
-        Met à jour les attributs de la clé selon les valeurs fournies.
     
     Warnings
     --------
@@ -152,10 +79,22 @@ class WidgetKey:
     langlist = ['fr', 'en']
     """list(str): Liste des langues autorisées.
     
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
+    
     """
     
     max_rowspan = 30
     """int: Nombre maximum de lignes pouvant être occupées par un widget.
+    
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
     
     """
     
@@ -166,6 +105,12 @@ class WidgetKey:
     des boutons de choix de la langue, s'il y avait par ailleurs
     lieu d'en créer.
     
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
+    
     """
     
     with_source_buttons = True
@@ -175,10 +120,25 @@ class WidgetKey:
     des boutons de choix de la source, s'il y avait par ailleurs
     lieu d'en créer.
     
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
+    
     """
     
     actionsbook = ActionsBook()
     """plume.rdf.actionsbook.ActionsBook: Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
+    
+    Le carnet d'actions trace les actions à réaliser sur les widgets
+    au fil des modifications des clés. Pour le réinitialiser, on
+    utilisera la méthode de classe :py:meth:`clear_actionsbook`, et
+    :py:meth:`unload_actionsbook` pour le récupérer.
+    
+    Notes
+    -----
+    Cet attribut est partagé par toutes les instances de la classe.
     
     """
     
@@ -189,6 +149,10 @@ class WidgetKey:
     calcul des lignes et le calcul des langues disponibles dans les groupes de
     traduction. Il peut être préférable de réaliser ces opérations après avoir
     initialisé toutes les clés du groupe, plutôt qu'une fois pour chaque clé.
+    
+    Notes
+    -----
+    Cet attribut est partagé par toutes les instances de la classe.
     
     """
     
@@ -971,26 +935,6 @@ class ObjectKey(WidgetKey):
         La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
         n'est pris en compte que pour une clé qui a une jumelle.        
     
-    Attributes
-    ----------
-    predicate
-    path
-    label
-    description
-    m_twin
-    is_main_twin
-    
-    Methods
-    -------
-    drop()
-        Supprime une clé-objet d'un groupe de valeurs ou de traduction
-        et renvoie le carnet d'actions qui permettra de matérialiser
-        l'opération sur les widgets.
-    switch_twin()
-        Intervertit la visibilité d'un couple de jumelles et renvoie le
-        carnet d'actions qui permettra de matérialiser l'opération
-        sur les widgets.
-    
     Warnings
     --------
     Cette classe ne doit pas être utilisée directement pour créer de
@@ -1523,17 +1467,6 @@ class GroupKey(WidgetKey):
     ----------
     children : list of WidgetKey
         Liste des clés filles.
-    columnspan
-    has_real_children
-    
-    Methods
-    -------
-    real_children()
-        Générateur sur les enfants de la clé qui ne sont ni des fantômes ni
-        des boutons.
-    compute_rows()
-        Calcule les indices de ligne des filles du groupe, qui
-        définissent le placement vertical des widgets.
     
     Warnings
     --------
@@ -1820,14 +1753,6 @@ class TabKey(GroupKey):
     label : str or rdflib.term.Literal
         Etiquette de l'onglet.
     
-    Attributes
-    ----------
-    label
-    path
-    node
-    key_object
-    is_ghost
-    
     Notes
     -----
     Il n'est pas permis de créer un onglet dans un groupe contenant autre
@@ -2000,20 +1925,6 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
     rdfclass : rdflib.term.URIRef
         La classe RDF du noeud. Si la clé appartient à un groupe de valeurs,
         c'est lui qui porte cette information. Sinon, elle est obligatoire.
-    
-    Attributes
-    ----------
-    node
-    rdfclass
-    sources
-    has_source_button
-    key_object
-    is_ghost
-    
-    Methods
-    -------
-    paste_from_rdfclass(widgetkey)
-        Remplace la branche par une autre de même classe RDF.
     
     """
     
@@ -2376,27 +2287,6 @@ class GroupOfValuesKey(GroupKey):
     ----------
     button : PlusButtonKey
         Référence la clé qui représente le bouton plus du groupe.
-    predicate
-    path
-    label
-    description
-    with_minus_buttons
-    rdfclass
-    sources
-    transform
-    datatype
-    placeholder
-    input_mask
-    is_mandatory
-    is_read_only
-    regex_validator
-    regex_validator_flags
-    is_ghost
-    
-    Methods
-    -------
-    compute_single_children()
-        Détermine si les clés du groupe sont des filles uniques.
     
     """
     def _base_attributes(self, **kwargs):
@@ -3013,20 +2903,6 @@ class TranslationGroupKey(GroupOfValuesKey):
     predicate : rdflib.term.URIRef
         Le prédicat commun à toutes les valeurs du groupe.
     
-    Attributes
-    ----------
-    available_languages
-    datatype
-    key_object
-    
-    Methods
-    -------
-    language_in(value_language)
-        Marque une langue comme de nouveau disponible pour les
-        traductions.
-    language_out(value_language)
-        Sort une langue de la liste des traductions disponibles.
-    
     Warnings
     --------
     Il n'est possible de créer un groupe de traduction que si
@@ -3282,42 +3158,6 @@ class ValueKey(ObjectKey):
         valeur par défaut). Même dans un groupe de valeurs, cette propriété
         est définie indépendamment pour chaque clé, afin qu'il soit possible
         de l'adapter à la longueur effective des valeurs.
-    
-    Attributes
-    ----------
-    rowspan
-    placement
-    independant_label
-    label_placement
-    has_language_button
-    has_source_button
-    has_label
-    available_languages
-    sources
-    value
-    rdfclass
-    datatype
-    transform
-    placeholder
-    input_mask
-    is_mandatory
-    is_read_only
-    regex_validator
-    regex_validator_flags
-    value_language
-    value_source
-    do_not_save
-    is_long_text
-    key_object
-    
-    Methods
-    -------
-    change_language(value_language)
-        Change la langue d'une clé-valeur et renvoie le carnet d'actions
-        qui permettra de matérialiser l'opération sur les widgets.
-    change_source(value_source)
-        Change la source d'une clé-valeur et renvoie le carnet d'actions
-        qui permettra de matérialiser l'opération sur les widgets.
     
     """
     
@@ -4163,21 +4003,6 @@ class PlusButtonKey(WidgetKey):
         fantôme est toujours un fantôme. Tenter de créer un bouton plus
         fantôme ne produira rien.
     
-    Attributes
-    ----------
-    description
-    path
-    placement
-    key_object
-    tree_idx
-    
-    Methods
-    -------
-    add
-        Ajoute une clé vierge au groupe de valeurs ou de traduction
-        parent et renvoie le carnet d'actions qui permettra de
-        matérialiser l'opération sur les widgets.
-    
     """
     
     def __new__(cls, **kwargs):
@@ -4306,12 +4131,6 @@ class TranslationButtonKey(PlusButtonKey):
         fantôme est toujours un fantôme. Comme pour les boutons plus,
         tenter de créer un bouton de traduction fantôme ne produira rien.
     
-    Attributes
-    ----------
-    key_object
-    is_hidden_b
-    description
-    
     """
     
     def __new__(cls, **kwargs):
@@ -4374,35 +4193,6 @@ class RootKey(GroupKey):
     datasetid : rdflib.term.URIRef, optional
         L'identifiant du graphe de métadonnées. S'il n'est pas fourni
         un nouvel UUID est généré pour l'attribut :py:attr:`RootKey.node`.
-    
-    Attributes
-    ----------
-    generation
-    node
-    rdfclass
-    key_object
-    tree_idx
-    
-    Methods
-    -------
-    search_from_path(path)
-        Renvoie la première clé de l'arbre dont le chemin est `path`.
-    search_from_rdfclass(rdfclass)
-        Renvoie tous les groupes de propriétés de l'arbre dont la
-        classe RDF est `rdfclass`.
-    search_from_uuid(uuid)
-        Renvoie la clé de l'arbre dont l'identifiant est l'UUID recherché.
-    paste_from_path(widgetkey)
-        Copie et colle la clé dans l'arbre, en la plaçant selon
-        son chemin.
-    clean()
-        Balaie l'arbre de clés, supprime tous les groupes sans fille
-        et transforme en fantôme tous les groupes qui ne contiennent
-        que des fantômes.
-    build_metagraph()
-        Traduit l'arbre de clés en graphe de métadonnées.
-    tree_keys()
-        Générateur sur les clés non fantomatiques de l'arbre.
     
     Notes
     -----
