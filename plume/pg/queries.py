@@ -4,6 +4,7 @@ Ce module suppose l'usage de la bibliothèque Psycopg pour la
 communication avec le serveur PostgreSQL.
 
 Selon le cas, les paramètres des requêtes doivent être passés :
+
 * soit en argument de la fonction qui crée la requête, dans
   le cas des identifiants d'objets PostgreSQL ;
 * soit, pour les valeurs litérales, dans le tuple qui constitue le
@@ -58,10 +59,11 @@ def query_exists_extension():
         >>> metadata_exists = cur.fetchone()[0]
     
     Cette requête renverra :
-    - ``True`` si l'extension est installée ;
-    - ``False`` si elle est disponible dans le répertoire des
+    
+    * ``True`` si l'extension est installée ;
+    * ``False`` si elle est disponible dans le répertoire des
       extension du serveur mais non installée ;
-    - ``NULL`` si elle n'est pas disponible sur le serveur.
+    * ``NULL`` si elle n'est pas disponible sur le serveur.
     
     Returns
     -------
