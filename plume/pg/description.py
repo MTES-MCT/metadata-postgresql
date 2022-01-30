@@ -12,8 +12,9 @@ Si ``raw`` est le descriptif brut importé depuis PostgreSQL
     >>> raw = '...'
     >>> pgdescription = PgDescription(raw)
     
-Les métadonnées éventuellement présentes sont automatiquement
-désérialisées dans le graphe exposé par la propriété
+Les métadonnées éventuellement présentes, supposées être encodées en
+JSON-LD et placée entre des balises ``<METADATA>`` et ``</METADATA>``,
+sont automatiquement désérialisées dans le graphe exposé par la propriété
 :py:attr:`PgDescription.metagraph`:
 
     >>> metagraph = pgdescription.metagraph
@@ -49,17 +50,17 @@ class PgDescription:
     
     Attributes
     ----------
-    ante
-    jsonld
-    post
-    metagraph
+    raw : str
+        Le descriptif PostgreSQL original, tel que fourni à
+        l'initialisation. À défaut de descriptif, il s'agit
+        d'une chaîne de caractères vide.
     
     Notes
     -----
     Si la dé-sérialisation du JSON-LD contenu dans le commentaire
     PostgreSQL échoue, il sera considéré que le descriptif ne
     contenait pas de métadonnées. À la première sauvegarde, le
-    contenu des balises <METADATA> sera écrasé. Le cas échéant, les
+    contenu des balises  ``<METADATA>`` sera écrasé. Le cas échéant, les
     commentaires qui se trouvaient avant et après seront par contre
     préservés.
     
