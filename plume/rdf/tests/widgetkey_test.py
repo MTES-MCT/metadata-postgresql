@@ -3,7 +3,7 @@ import unittest
 from uuid import uuid4
 
 from plume.rdf.rdflib import URIRef, Literal
-from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF
+from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, RootKey, TabKey
@@ -31,6 +31,31 @@ class WidgetKeyTestCase(unittest.TestCase):
             getattr(widgetkey, attr)
         # TODO: à compléter pour les autres classes
 
+    def test_copy(self):
+        """Copie d'une branche complexe.
+        
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        gvs = GroupOfValuesKey(parent=t, rdfclass=DCT.Standard,
+            predicate=DCT.conformsTo)
+        sb = PlusButtonKey(parent=gvs)
+        s1 = GroupOfPropertiesKey(parent=gvs)
+        sv1 = ValueKey(parent=s1, predicate=SKOS.inScheme)
+        gvi = GroupOfValuesKey(parent=s1, predicate=DCT.identifier)
+        i1 = ValueKey(parent=gvi)
+        i2 = ValueKey(parent=gvi)
+        ib = PlusButtonKey(parent=gvi)
+        self.assertListEqual(gvi.children, [i1, i2])
+        sv2 = ValueKey(parent=s1, predicate=OWL.versionInfo)
+        self.assertListEqual(s1.children, [sv1, gvi, sv2])
+        actionsbook = gvs.button.add()
+        s2 = gvs.children[1]
+        self.assertEqual(len(s2.children), 3)
+        self.assertEqual(s2.children[2].predicate, OWL.versionInfo)
+        self.assertEqual(len(s2.children[1].children), 1)
+        self.assertEqual(len(actionsbook.create), 6)
+    
     def test_drop(self):
         """Suppression d'une branche.
         
