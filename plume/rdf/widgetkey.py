@@ -1678,7 +1678,7 @@ class GroupKey(WidgetKey):
         key = super().copy(parent=parent, empty=empty)
         for child in self.real_children():
             child.copy(parent=key, empty=empty)
-            if empty and isinstance(child, GroupOfValuesKey):
+            if empty and isinstance(self, GroupOfValuesKey):
                 # dans un groupe de valeurs ou de traduction,
                 # seule la première fille est copiée
                 break
