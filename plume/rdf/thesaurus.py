@@ -62,7 +62,7 @@ class Thesaurus:
     """
     
     @classmethod
-    def values(cls, thesaurus):
+    def get_values(cls, thesaurus):
         """Cherche ou génère un thésaurus et renvoie la liste de ses termes.
         
         Autant que possible, cette méthode va chercher les termes dans le
@@ -92,7 +92,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.values((SNUM.CrpaAuthorizedLicense, ('fr', 'en')))
+        >>> Thesaurus.get_values((SNUM.CrpaAuthorizedLicense, ('fr', 'en')))
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
         """
@@ -104,7 +104,7 @@ class Thesaurus:
         raise UnknownSource(thesaurus[0])
     
     @classmethod
-    def label(cls, thesaurus):
+    def get_label(cls, thesaurus):
         """Cherche ou génère un thésaurus et renvoie son libellé.
         
         Autant que possible, cette méthode va chercher le libellé dans le
@@ -133,7 +133,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.label((SNUM.CrpaAccessLimitations, ('fr', 'en')))
+        >>> Thesaurus.get_label((SNUM.CrpaAccessLimitations, ('fr', 'en')))
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
         """
