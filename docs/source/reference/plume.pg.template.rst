@@ -1,4 +1,4 @@
-plume.pg.template module
+Module plume.pg.template
 ========================
 
 .. automodule:: plume.pg.template

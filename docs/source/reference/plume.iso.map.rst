@@ -1,4 +1,4 @@
-plume.iso.map module
+Module plume.iso.map
 ====================
 
 .. automodule:: plume.iso.map

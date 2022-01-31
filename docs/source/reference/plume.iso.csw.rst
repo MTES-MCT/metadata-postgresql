@@ -1,4 +1,4 @@
-plume.iso.csw module
+Module plume.iso.csw
 ====================
 
 .. automodule:: plume.iso.csw

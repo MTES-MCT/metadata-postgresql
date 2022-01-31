@@ -1,4 +1,4 @@
-plume.rdf.namespaces module
+Module plume.rdf.namespaces
 ===========================
 
 .. automodule:: plume.rdf.namespaces

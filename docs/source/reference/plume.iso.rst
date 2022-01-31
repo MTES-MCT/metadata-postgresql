@@ -1,17 +1,14 @@
-plume.iso package
+Package plume.iso
 =================
 
-Submodules
-----------
+Modules
+-------
 
 .. toctree::
    :maxdepth: 4
 
    plume.iso.csw
    plume.iso.map
-
-Module contents
----------------
 
 .. automodule:: plume.iso
    :members:

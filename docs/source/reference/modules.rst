@@ -1,5 +1,5 @@
-metadata-postgresql
-===================
+Référence
+=========
 
 .. toctree::
    :maxdepth: 4

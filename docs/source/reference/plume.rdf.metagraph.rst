@@ -1,4 +1,4 @@
-plume.rdf.metagraph module
+Module plume.rdf.metagraph
 ==========================
 
 .. automodule:: plume.rdf.metagraph

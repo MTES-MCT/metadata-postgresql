@@ -1,4 +1,4 @@
-plume.rdf.thesaurus module
+Module plume.rdf.thesaurus
 ==========================
 
 .. automodule:: plume.rdf.thesaurus

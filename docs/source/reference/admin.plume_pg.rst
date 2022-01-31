@@ -1,4 +1,4 @@
-admin.plume\_pg module
+Module admin.plume\_pg
 ======================
 
 .. automodule:: admin.plume_pg

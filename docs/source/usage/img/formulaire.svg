@@ -1,0 +1,3499 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="707.38751mm"
+   height="410.52502mm"
+   viewBox="0 0 707.38752 410.52502"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="formulaire.svg"
+   inkscape:export-filename="C:\Users\leslie.lemaire\Documents\05_GIT\metadata-postgresql\__doc__\schemas\div_bouton_selection_source.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3401"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3399"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker8960"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path8958"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path5752"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path5873"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutM"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker7499"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path7497"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.4)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker6625"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL">
+      <path
+         transform="scale(0.8)"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path6623"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutM"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutM"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path5876"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.4)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect5725"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1038"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="StopM"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopM"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1041"
+         d="M 0,5.65 V -5.65"
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.4)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1259"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1257"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-4"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-2"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2811"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path2809"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-5"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2817"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path2815"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-3-4"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-5-7"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2980"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path2978"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-4-2"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-2-3"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3915"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3913"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-49"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-7"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5230"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5228"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-2"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-3"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5236"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5234"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-3-40"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-5-6"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6787"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6785"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-4-1"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-2-7"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6793"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6791"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-3-4-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-5-7-5"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6799"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6797"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-4-2-9"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-2-3-5"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6805"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6803"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-2-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-3-3"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker7224"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path7222"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-42"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-0"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1386"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1384"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-42-4"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-0-7"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1903"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1901"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-4-2-98"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-2-3-3"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3051"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3049"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-3-4-9"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-5-7-6"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3057"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3055"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-4-26"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-2-72"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3063"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3061"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-3-49"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-5-2"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3069"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3067"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-2-5"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-3-1"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4026"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4024"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-42-1"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-0-0"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4032"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4030"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-42-1-6"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-0-0-1"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4559"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4557"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-42-1-6-5"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-0-0-1-6"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5798"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5796"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="StopL-7-42-4-0"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path1038-6-0-7-2"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="StopL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker8872"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path8870"
+         d="M 0,5.65 V -5.65"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-0"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-4"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-8"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-9"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-9"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-4"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-9-5"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-4-2"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-9-5-0"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-4-2-4"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-9-5-9"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-4-2-46"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-9-5-2"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-4-2-9"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-8"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-5"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-8-3"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-5-0"
+         style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-83"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-92"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-83-8"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-92-6"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3401-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3399-4"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker3401-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path3399-6"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-3-83-8-3"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5752-8-92-6-6"
+         style="fill:#e1000f;fill-opacity:1;fill-rule:evenodd;stroke:#e1000f;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#f5f5f5"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="1679.1041"
+     inkscape:cy="409.71034"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer24"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false"
+     fit-margin-top="10"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer12"
+     inkscape:label="Divers"
+     style="display:inline"
+     transform="translate(9.6943213,-33.469762)">
+    <g
+       inkscape:groupmode="layer"
+       id="layer2"
+       inkscape:label="DIV - Fond"
+       transform="translate(287.90775,88.239369)"
+       style="display:none"
+       sodipodi:insensitive="true">
+      <rect
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect2764-4"
+         width="338.66666"
+         height="190.5"
+         x="61.118752"
+         y="155.2554" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer24"
+       inkscape:label="DIV - Mini Fond"
+       sodipodi:insensitive="true">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.80000001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect8763"
+         width="109.5375"
+         height="132.55624"
+         x="402.79108"
+         y="271.48645" />
+    </g>
+    <g
+       inkscape:label="DIV - Sélection source"
+       inkscape:groupmode="layer"
+       id="layer1"
+       transform="translate(287.90775,191.23937)"
+       sodipodi:insensitive="true">
+      <g
+         id="g5165"
+         transform="translate(134.9375,269.34574)">
+        <text
+           id="text6554-2-2-7-5"
+           y="-178.0305"
+           x="-13.931632"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#808080;stroke-width:0.26458332"
+             y="-178.0305"
+             x="-13.931632"
+             id="tspan6552-1-7-7-8"
+             sodipodi:role="line">Bouton de sélection de la source</tspan></text>
+        <text
+           id="text8250-7-9-37-0"
+           y="-172.64789"
+           x="-13.945395"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan4956"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-172.64789"
+             x="-13.945395"
+             sodipodi:role="line">pour choisir le thésaurus qui alimente la liste d'un widget</tspan><tspan
+             id="tspan4958"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-168.67914"
+             x="-13.945395"
+             sodipodi:role="line">de saisie de type QComboBox ou, si c'est permis, passer</tspan><tspan
+             id="tspan4970"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-164.71039"
+             x="-13.945395"
+             sodipodi:role="line">en « saisie manuelle »</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-160.74164"
+             x="-13.945395"
+             sodipodi:role="line"
+             id="tspan4468-8">→ widget QToolButton</tspan><tspan
+             id="tspan4972"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-156.77289"
+             x="-13.945395"
+             sodipodi:role="line" /><tspan
+             id="tspan4974"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-152.80414"
+             x="-13.945395"
+             sodipodi:role="line">Le bouton ne sera affiché que si plusieurs sources sont</tspan><tspan
+             id="tspan4992"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-148.83539"
+             x="-13.945395"
+             sodipodi:role="line">disponibles.</tspan></text>
+        <g
+           transform="translate(-1.5333891e-5,-26.458344)"
+           id="g5047">
+          <rect
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect3788-1-5-7"
+             width="49.104168"
+             height="8.09375"
+             x="-13.821555"
+             y="-108.89851" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:8.46666622px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="38.099995"
+             y="-104.33514"
+             id="text4996"><tspan
+               sodipodi:role="line"
+               id="tspan4994"
+               x="38.099995"
+               y="-104.33514"
+               style="font-size:5.64444447px;fill:#808080;stroke-width:0.26458332">...</tspan></text>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="-13.970796"
+           y="-80.426468"
+           id="text8250-3-7-0"><tspan
+             sodipodi:role="line"
+             x="-13.970796"
+             y="-80.426468"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             id="tspan2072">Passer en « saisie manuelle » revient à masquer le widget</tspan><tspan
+             sodipodi:role="line"
+             x="-13.970796"
+             y="-76.457718"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             id="tspan2088">QComboBox et à rendre visible le widget QGroupBox du groupe</tspan><tspan
+             sodipodi:role="line"
+             x="-13.970796"
+             y="-72.488968"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             id="tspan2096">de propriétés. Ces deux widgets font partie du même QGroupBox</tspan><tspan
+             sodipodi:role="line"
+             x="-13.970796"
+             y="-68.520218"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             id="tspan2098">et sont placés au même endroit dans le QGridLayout mais ne sont</tspan><tspan
+             sodipodi:role="line"
+             x="-13.970796"
+             y="-64.551468"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             id="tspan2242">jamais visibles simultanément. </tspan></text>
+        <g
+           transform="translate(-3.1961928,2.1166667)"
+           id="g5100">
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#958b62;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00000003, 0.50000001;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-2-1-6"
+             width="62.025753"
+             height="26.307007"
+             x="-10.375378"
+             y="-116.34048" />
+          <g
+             id="g3128-5-7"
+             transform="translate(-11.641663,-186.66354)">
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(-22.619956,134.0544)"
+               id="use2703-8-4-7"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72-6-8-1"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(96.09792,172.24376)" />
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(-22.619956,123.73565)"
+               id="use2703-8-9-9-6"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72-6-4-3-0"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(96.097921,161.92502)" />
+          </g>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:8.46666622px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="55.149609"
+             y="-102.67051"
+             id="text4996-2"><tspan
+               sodipodi:role="line"
+               id="tspan4994-1"
+               x="55.149609"
+               y="-102.67051"
+               style="font-size:5.64444447px;fill:#808080;stroke-width:0.26458332">...</tspan></text>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:8.46666622px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="57.299259"
+           y="-178.52812"
+           id="text4996-9"><tspan
+             sodipodi:role="line"
+             id="tspan4994-8"
+             x="57.299259"
+             y="-178.52812"
+             style="font-size:5.64444447px;fill:#808080;stroke-width:0.26458332">...</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="-14.00572"
+           y="-141.44722"
+           id="text8250-3-7-0-4"><tspan
+             sodipodi:role="line"
+             x="-14.00572"
+             y="-141.44722"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             id="tspan2098-1">Sélection de la valeur dans un thésaurus :</tspan><tspan
+             sodipodi:role="line"
+             x="-14.00572"
+             y="-137.47847"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             id="tspan2170">→ widget QComboBox</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="-14.005727"
+           y="-120.80991"
+           id="text8250-3-7-0-4-2"><tspan
+             sodipodi:role="line"
+             x="-14.005727"
+             y="-120.80991"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             id="tspan2098-1-0">Saisie manuelle :</tspan><tspan
+             sodipodi:role="line"
+             x="-14.005727"
+             y="-116.84116"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             id="tspan2172"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold'"
+               id="tspan2174">→ groupe de propriétés</tspan></tspan></text>
+      </g>
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer23"
+       inkscape:label="DIV - Paramètres utilisateur"
+       sodipodi:insensitive="true"
+       style="display:none">
+      <g
+         style="display:inline"
+         id="g2304-33-9"
+         transform="translate(641.93617,382.22825)">
+        <text
+           id="text6554-27-3"
+           y="-99.67363"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#e67f71;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#000000;stroke-width:0.26458332"
+             y="-99.67363"
+             x="-95.610069"
+             id="tspan6552-7-4"
+             sodipodi:role="line">Paramètres utilisateur généraux</tspan></text>
+        <text
+           id="text8250-0-0"
+           y="-92.703445"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2297-0-7"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-92.703445"
+             x="-95.623825"
+             sodipodi:role="line">→ lecture seule / édition / recherche</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-88.734695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2180" /><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-84.765945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2182">→ affichage des champs non renseignés en</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-80.797195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2184">lecture seule</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-76.828445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2186">masqués par défaut</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-72.859695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2218" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-68.890945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2220">La recherche n'est pas encore prise en charge.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-64.922195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2222">En lecture seule, les boutons « plus », « moins », de</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-60.953445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2224">sélection de source et de langue disparaissent. Les</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-56.984695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2226">champs vides ne sont pas affichés, sauf si l'utilisateur</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-53.015945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2228">spécifie le contraire.</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-49.047195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2178" /><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-45.078445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2176">→ « mode traduction » actif/inactif </tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-41.109695"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4282">inactif par défaut</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-37.140945"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4308" /><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-33.172195"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4280">→ langue principale des métadonnées</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-29.203445"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2198"><tspan
+   id="tspan2216"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332">français par défaut</tspan> </tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-25.234697"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2188" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-21.265947"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2190">En « mode traduction », la langue principale apparaît</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-17.297197"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4362">par défaut dans les boutons de sélection de langue.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-13.328446"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4366">Hors « mode traduction », toutes les valeurs saisies</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-9.3596964"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4368">sont présumées être dans cette langue.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-5.3909469"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4372">Elle détermine la langue d'affichage des termes issus</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-1.4221969"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4472">de thésaurus.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="2.5465531"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2230" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="6.5153031"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4336" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="10.484053"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4338">Si l'un de ces quatre paramètres est modifié, tout le</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="14.452803"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4342">dictionnaire de configuration des widgets devra être</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="18.421553"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4346">recalculé.</tspan></text>
+      </g>
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer9"
+     inkscape:label="Groupe de traduction"
+     style="display:none"
+     transform="translate(9.6943213,-33.469762)"
+     sodipodi:insensitive="true">
+    <g
+       inkscape:groupmode="layer"
+       id="layer10"
+       inkscape:label="GT - Fond"
+       sodipodi:insensitive="true"
+       style="display:none">
+      <rect
+         transform="translate(287.90776,88.23937)"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect2764"
+         width="338.66666"
+         height="190.5"
+         x="-287.60208"
+         y="155.2554" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer19"
+       inkscape:label="GT - Mini Fond"
+       sodipodi:insensitive="true">
+      <rect
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.92765415;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect4636-9"
+         width="114.9661"
+         height="116.81819"
+         x="102.94971"
+         y="257.65967" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer11"
+       inkscape:label="GT - Elements"
+       sodipodi:insensitive="true">
+      <g
+         id="g5235"
+         transform="translate(306.95776,210.55395)">
+        <g
+           transform="translate(-96.056076,157.2652)"
+           id="g2304-33">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#e67f71;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.610069"
+             y="-99.67363"
+             id="text6554-27"><tspan
+               sodipodi:role="line"
+               id="tspan6552-7"
+               x="-95.610069"
+               y="-99.67363"
+               style="font-size:4.93888903px;fill:#e67f71;stroke-width:0.26458332">GROUPE DE TRADUCTION</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.623825"
+             y="-94.820114"
+             id="text8250-0"><tspan
+               id="tspan3440"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-94.820114"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332">quand une propriété n'admet qu'une valeur, mais</tspan><tspan
+               id="tspan3444"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-90.851364"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332">qu'elle peut être traduite dans plusieurs langues</tspan><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-86.882614"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+               id="tspan2297-0">→ widgets QGroupBox + QGridLayout</tspan><tspan
+               id="tspan3430"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-82.913864"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332" /><tspan
+               id="tspan3432"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-78.945114"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">Même principe qu'un groupe de valeurs, mais</tspan><tspan
+               id="tspan3434"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-74.976364"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">uniquement quand le « mode traduction » est actif.</tspan><tspan
+               id="tspan3697"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-71.007614"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332" /><tspan
+               id="tspan3701"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-67.038864"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">Les groupes de traduction peuvent être inclus dans</tspan><tspan
+               id="tspan3703"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-63.070114"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">un groupe de propriétés, ils ne contiennent jamais</tspan><tspan
+               id="tspan3711"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-59.101364"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">d'autres groupes.</tspan></text>
+        </g>
+        <g
+           id="g2583-2"
+           transform="translate(-96.056076,191.13206)">
+          <rect
+             y="-77.908058"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-72"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#ff8d7e;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-11"
+             width="66.73114"
+             height="36.039478"
+             x="-95.278076"
+             y="-83.635895" />
+          <rect
+             y="-67.435539"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-9-0"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-33.337498"
+             y="-72.062019"
+             id="text2193-87"><tspan
+               sodipodi:role="line"
+               id="tspan2191-95"
+               x="-33.337498"
+               y="-72.062019"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">-</tspan></text>
+          <use
+             x="0"
+             y="0"
+             xlink:href="#text2193-87"
+             id="use2233-0"
+             transform="translate(0,10.472522)"
+             width="100%"
+             height="100%"
+             style="fill:#4e65ab" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-67.334846"
+             y="-52.175323"
+             id="text2193-8-2"><tspan
+               sodipodi:role="line"
+               id="tspan2191-9-0"
+               x="-67.334846"
+               y="-52.175323"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">+</tspan></text>
+          <rect
+             style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2570-6"
+             width="16.933332"
+             height="5.8208332"
+             x="-91.28125"
+             y="-86.518234" />
+          <text
+             id="text3450"
+             y="-72.862679"
+             x="-39.689152"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332"
+               y="-72.862679"
+               x="-39.689152"
+               id="tspan3448"
+               sodipodi:role="line">FR</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-39.689152"
+             y="-62.277416"
+             id="use3494"><tspan
+               sodipodi:role="line"
+               id="tspan3601"
+               x="-39.689152"
+               y="-62.277416"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">EN</tspan></text>
+        </g>
+      </g>
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer17"
+       inkscape:label="GT - Descriptions"
+       style="display:none"
+       sodipodi:insensitive="true">
+      <g
+         style="display:inline"
+         transform="translate(410.47703,320.89815)"
+         id="g2304-3-27-2">
+        <g
+           id="g4911">
+          <g
+             transform="translate(14.750395,-167.49418)"
+             id="g3950">
+            <text
+               id="text8250-3-7"
+               y="153.72978"
+               x="-190.81738"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 id="tspan2297-2-3"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+                 y="153.72978"
+                 x="-190.81738"
+                 sodipodi:role="line">Au-delà des groupes de traduction, lorsque le mode</tspan><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+                 y="157.69853"
+                 x="-190.81738"
+                 sodipodi:role="line"
+                 id="tspan3906">traduction est actif, toutes les valeurs textuelles ont un</tspan><tspan
+                 id="tspan4064"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+                 y="161.66728"
+                 x="-190.81738"
+                 sodipodi:role="line">bouton de sélection de langue</tspan></text>
+            <g
+               id="g3940">
+              <rect
+                 y="165.28699"
+                 x="-190.77898"
+                 height="8.09375"
+                 width="49.104168"
+                 id="rect3788-72-4"
+                 style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+              <text
+                 id="text3450-9"
+                 y="170.33237"
+                 x="-139.18689"
+                 style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+                 xml:space="preserve"><tspan
+                   style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332"
+                   y="170.33237"
+                   x="-139.18689"
+                   id="tspan3448-6"
+                   sodipodi:role="line">FR</tspan></text>
+            </g>
+          </g>
+          <g
+             transform="translate(-33.866667,-3.7041667)"
+             id="g4015">
+            <text
+               id="text6554-2-1-2"
+               y="-53.371548"
+               x="-142.17674"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#e67f71;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="font-size:4.23333311px;fill:#e67f71;stroke-width:0.26458332"
+                 y="-53.371548"
+                 x="-142.17674"
+                 sodipodi:role="line"
+                 id="tspan3991">Bouton de sélection de la langue </tspan></text>
+            <text
+               id="text8250-7-5-0"
+               y="-48.518032"
+               x="-142.19049"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+                 y="-48.518032"
+                 x="-142.19049"
+                 sodipodi:role="line"
+                 id="tspan3993">pour connaître et, le cas échéant, modifier</tspan><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+                 y="-44.549282"
+                 x="-142.19049"
+                 sodipodi:role="line"
+                 id="tspan4003">la langue de la valeur</tspan><tspan
+                 id="tspan2297-8-6-0"
+                 style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+                 y="-40.580532"
+                 x="-142.19049"
+                 sodipodi:role="line">→ widget QComboBox ?</tspan><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+                 y="-36.611782"
+                 x="-142.19049"
+                 sodipodi:role="line"
+                 id="tspan2336-3-5" /><tspan
+                 style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+                 y="-32.643032"
+                 x="-142.19049"
+                 sodipodi:role="line"
+                 id="tspan3997">L'action modifie la langue déclarée pour la valeur.</tspan><tspan
+                 id="tspan4870"
+                 style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+                 y="-28.674282"
+                 x="-142.19049"
+                 sodipodi:role="line" /><tspan
+                 id="tspan4872"
+                 style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+                 y="-24.705532"
+                 x="-142.19049"
+                 sodipodi:role="line">Dans un groupe de traduction, les valeurs disponibles</tspan><tspan
+                 id="tspan4874"
+                 style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+                 y="-20.736782"
+                 x="-142.19049"
+                 sodipodi:role="line">sont celles qui ne sont pas déjà utilisées par une valeur</tspan><tspan
+                 id="tspan4876"
+                 style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+                 y="-16.768032"
+                 x="-142.19049"
+                 sodipodi:role="line">du groupe.</tspan></text>
+            <text
+               id="text3450-9-6"
+               y="-53.335564"
+               x="-71.479355"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332"
+                 y="-53.335564"
+                 x="-71.479355"
+                 id="tspan3448-6-0"
+                 sodipodi:role="line">FR</tspan></text>
+          </g>
+        </g>
+      </g>
+      <g
+         style="display:inline"
+         id="g4781"
+         transform="translate(494.54735,201.55812)">
+        <g
+           id="g2304-3-2-3"
+           transform="translate(-164.59891,247.15078)">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.610069"
+             y="-96.498627"
+             id="text6554-2-2-5"><tspan
+               sodipodi:role="line"
+               id="tspan6552-1-7-6"
+               x="-95.610069"
+               y="-96.498627"
+               style="font-size:4.23333311px;fill:#e67f71;stroke-width:0.26458332">Bouton « moins » </tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.623825"
+             y="-91.645111"
+             id="text8250-7-9-3"><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-91.645111"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+               id="tspan2293-0-1-9">pour supprimer une traduction</tspan><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-87.676361"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+               id="tspan2297-8-8-8">→ widget QToolButton</tspan><tspan
+               id="tspan2336-5-5"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-83.707611"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332" /><tspan
+               id="tspan2389-7"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-79.738861"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">L'action supprime le widget et modifie en conséquence</tspan><tspan
+               id="tspan2899-4"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-75.770111"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">la position des widgets restant dans la grille.</tspan><tspan
+               id="tspan4268"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-71.801361"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332" /><tspan
+               id="tspan4270"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-67.832611"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">Le bouton n'est pas affiché s'il ne reste qu'une valeur.</tspan></text>
+          <use
+             x="0"
+             y="0"
+             xlink:href="#text2193-87"
+             id="use2233-0-9"
+             transform="translate(-23.117961,-24.199541)"
+             width="100%"
+             height="100%"
+             style="fill:#4e65ab" />
+        </g>
+        <g
+           id="g2583-2-4"
+           transform="matrix(1.0039637,0,0,0.99998228,-164.19268,269.86674)">
+          <rect
+             y="-77.908058"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-72-2"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#ff8d7e;stroke-width:0.49901643;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.9940986, 0.49901643;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-11-4"
+             width="66.46656"
+             height="24.926979"
+             x="-95.278076"
+             y="-83.635895" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-67.334846"
+             y="-63.817001"
+             id="text2193-8-2-3"><tspan
+               sodipodi:role="line"
+               id="tspan2191-9-0-1"
+               x="-67.334846"
+               y="-63.817001"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">+</tspan></text>
+          <rect
+             style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2570-6-4"
+             width="16.933332"
+             height="5.8208332"
+             x="-91.28125"
+             y="-86.518234" />
+          <text
+             id="text3450-0"
+             y="-72.862679"
+             x="-39.689152"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332"
+               y="-72.862679"
+               x="-39.689152"
+               id="tspan3448-7"
+               sodipodi:role="line">FR</tspan></text>
+        </g>
+      </g>
+      <g
+         style="display:inline"
+         id="g4868"
+         transform="translate(301.6661,266.91021)">
+        <g
+           id="g2304-3-7"
+           transform="translate(-182.40775,186.35885)">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.610069"
+             y="-109.1986"
+             id="text6554-2-5"><tspan
+               sodipodi:role="line"
+               id="tspan6552-1-1"
+               x="-95.610069"
+               y="-109.1986"
+               style="font-size:4.23333311px;fill:#e67f71;stroke-width:0.26458332">Bouton « plus » </tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.623825"
+             y="-104.34513"
+             id="text8250-7-4"><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-104.34513"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+               id="tspan2293-0-7">pour ajouter une traduction</tspan><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-100.37638"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+               id="tspan2297-8-6">→ widget QToolButton</tspan><tspan
+               id="tspan2336-2"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-96.407631"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332" /><tspan
+               id="tspan2344-3"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-92.438881"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">L'action crée un widget supplémentaire et l'ajoute</tspan><tspan
+               id="tspan4152-9"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-88.470131"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">au groupe et à sa grille.</tspan><tspan
+               id="tspan4142-6"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-84.501381"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332" /><tspan
+               id="tspan4164-4"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-80.532631"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">Le bouton n'est pas affiché si toutes les langues</tspan><tspan
+               id="tspan4302"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-76.563881"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">disponibles pour la traduction ont déjà été</tspan><tspan
+               id="tspan4304"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-72.595131"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">utilisées.</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-60.476227"
+             y="-108.4874"
+             id="text2193-8-2-8"><tspan
+               sodipodi:role="line"
+               id="tspan2191-9-0-7"
+               x="-60.476227"
+               y="-108.4874"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">+</tspan></text>
+        </g>
+        <g
+           id="g2583-2-1"
+           transform="translate(-182.35482,204.78062)">
+          <rect
+             y="-77.908058"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-72-5"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#ff8d7e;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-11-6"
+             width="66.78083"
+             height="29.210005"
+             x="-95.302925"
+             y="-83.660744" />
+          <rect
+             y="-67.435539"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-9-0-5"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-33.337498"
+             y="-72.062019"
+             id="text2193-87-2"><tspan
+               sodipodi:role="line"
+               id="tspan2191-95-7"
+               x="-33.337498"
+               y="-72.062019"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">-</tspan></text>
+          <use
+             x="0"
+             y="0"
+             xlink:href="#text2193-87-2"
+             id="use2233-0-8"
+             transform="translate(0,10.472522)"
+             width="100%"
+             height="100%"
+             style="fill:#4e65ab" />
+          <rect
+             style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2570-6-0"
+             width="16.933332"
+             height="5.8208332"
+             x="-91.28125"
+             y="-86.518234" />
+          <text
+             id="text3450-07"
+             y="-72.862679"
+             x="-39.689152"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332"
+               y="-72.862679"
+               x="-39.689152"
+               id="tspan3448-4"
+               sodipodi:role="line">FR</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#ff8d7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-39.689152"
+             y="-62.277416"
+             id="use3494-9"><tspan
+               sodipodi:role="line"
+               id="tspan3601-7"
+               x="-39.689152"
+               y="-62.277416"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:3.17499995px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#ff8d7e;stroke-width:0.26458332">EN</tspan></text>
+        </g>
+      </g>
+      <g
+         style="display:inline"
+         transform="translate(119.23611,374.26918)"
+         id="g2304-3-8-1">
+        <text
+           id="text6554-2-8-1"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#009b7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#009b7e;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-4-5"
+             sodipodi:role="line">Libellé de la propriété </tspan></text>
+        <text
+           id="text8250-7-0-3"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2344-2-6">Intégré au QGroupBox du groupe</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2633-8">de traduction</tspan></text>
+        <rect
+           style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307006, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect2570-8-8-9"
+           width="16.933332"
+           height="5.8208332"
+           x="-95.477776"
+           y="-84.943741" />
+      </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-9-5)"
+         d="m 67.321503,343.24462 74.083337,4.49791"
+         id="path6615-9-5-6"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-9-5-0)"
+         d="M 231.89415,349.7053 180.82958,329.86154"
+         id="path6615-9-5-6-3"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-9-5-9)"
+         d="m 232.6879,263.45114 -56.62083,61.91249"
+         id="path6615-9-5-6-1"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-9-5-2)"
+         d="m 42.981656,291.49697 73.554174,23.54791"
+         id="path6615-9-5-6-0"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <g
+         style="display:inline"
+         transform="translate(250.22597,474.51883)"
+         id="g2304-3-2-0-0-2">
+        <text
+           id="text6554-2-2-7-2-6"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#808080;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-7-7-4-4"
+             sodipodi:role="line">Zone de saisie</tspan></text>
+        <text
+           id="text8250-7-9-37-5-7"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2293-0-1-90-1-5"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line">pour éditer les valeurs</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4276-8-6-5">→ widget QLineEdit, QTextEdit,</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-83.707611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4468-1-2">QComboBox, QCheckBox...</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-79.738861"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12262-6-6" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-75.770111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12266-9-7">Les widgets de saisie font partie du</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-71.801361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12272-2-6">QGroupBox du groupe de traduction et</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-67.832611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12276-1-0">sont disposés verticalement sur son</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-63.863861"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan18106-1">QGridLayout.</tspan></text>
+        <rect
+           y="-60.703461"
+           x="-95.5"
+           height="8.09375"
+           width="49.104168"
+           id="rect3788-1-5-2-2"
+           style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+      </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-8-3)"
+         d="M 174.22234,373.36381 162.0515,338.4388"
+         id="path6615-6-1"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer18"
+       inkscape:label="GT - Identification">
+      <g
+         inkscape:groupmode="layer"
+         id="layer20"
+         inkscape:label="GT - Bouton de traduction"
+         style="display:none"
+         sodipodi:insensitive="true">
+        <path
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83-8)"
+           d="M 173.19183,361.18036 149.64392,349.00952"
+           id="path6615-9-08-7"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+        <text
+           id="text6554-2-3-5"
+           y="364.31177"
+           x="175.79076"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="364.31177"
+             x="175.79076"
+             id="tspan6552-1-6-7"
+             sodipodi:role="line">Bouton de</tspan><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="369.60342"
+             x="175.79076"
+             sodipodi:role="line"
+             id="tspan5782">traduction </tspan></text>
+      </g>
+      <g
+         inkscape:groupmode="layer"
+         id="layer21"
+         inkscape:label="GT - Bouton moins"
+         style="display:none">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path3391-6"
+           d="m 193.30494,326.12007 -11.90625,11.11249"
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3401-2)" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="194.84552"
+           y="319.19733"
+           id="text3395-8"><tspan
+             sodipodi:role="line"
+             id="tspan3393-9"
+             x="194.84552"
+             y="319.19733"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332">Bouton</tspan><tspan
+             sodipodi:role="line"
+             x="194.84552"
+             y="324.48898"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             id="tspan4291-5">« moins » </tspan></text>
+      </g>
+      <g
+         inkscape:groupmode="layer"
+         id="layer22"
+         inkscape:label="GT - Bouton de sélection de la langue">
+        <path
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83-8-3)"
+           d="m 185.00713,311.12331 -10.05416,13.75832"
+           id="path6615-9-08-7-2"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+        <text
+           id="text6554-2-3-5-3"
+           y="311.60886"
+           x="186.54773"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="311.60886"
+             x="186.54773"
+             id="tspan6552-1-6-7-9"
+             sodipodi:role="line">Bouton de</tspan><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="316.90051"
+             x="186.54773"
+             sodipodi:role="line"
+             id="tspan5782-5">sélection de</tspan><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="322.1922"
+             x="186.54773"
+             sodipodi:role="line"
+             id="tspan7977">la langue </tspan></text>
+      </g>
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Groupe de propriétés"
+     style="display:none"
+     transform="translate(9.6943213,-33.469762)"
+     sodipodi:insensitive="true">
+    <g
+       inkscape:groupmode="layer"
+       id="layer8"
+       inkscape:label="GP - Fond"
+       sodipodi:insensitive="true"
+       style="display:inline">
+      <rect
+         transform="translate(287.90776,88.23937)"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect2764-2"
+         width="338.66666"
+         height="190.5"
+         x="61.118752"
+         y="-44.769608" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer7"
+       inkscape:label="GP - Elements"
+       style="display:inline">
+      <g
+         id="g5333"
+         transform="translate(416.49523,156.04979)">
+        <g
+           id="g2568">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="34.07925"
+             y="-72.540825"
+             id="text6554-7"><tspan
+               sodipodi:role="line"
+               id="tspan6552-5"
+               x="34.07925"
+               y="-72.540825"
+               style="font-size:4.93888903px;fill:#867d58;stroke-width:0.26458332">GROUPE DE PROPRIÉTÉS</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="34.065495"
+             y="-67.687309"
+             id="text8250-2"><tspan
+               sodipodi:role="line"
+               x="34.065495"
+               y="-67.687309"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+               id="tspan2293-9">quand une « valeur » a elle-même des propriétés</tspan><tspan
+               sodipodi:role="line"
+               x="34.065495"
+               y="-63.718559"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+               id="tspan2297-9">→ widgets QGroupBox + QGridLayout</tspan></text>
+        </g>
+        <g
+           transform="translate(12.423506)"
+           id="g2736">
+          <rect
+             y="-56.078693"
+             x="22.015814"
+             height="68.416306"
+             width="66.564217"
+             id="rect2142-0"
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#958b62;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <g
+             id="g2726">
+            <rect
+               y="-49.465343"
+               x="46.751202"
+               height="8.09375"
+               width="35.61042"
+               id="rect3788-91"
+               style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:18.65273476;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+            <rect
+               y="-28.876564"
+               x="27.436619"
+               height="23.174999"
+               width="54.660419"
+               id="rect3788-9-1"
+               style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:39.10438538;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(118.71787,38.189349)" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-7"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(118.71787,50.006253)" />
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(0,47.095857)"
+               id="use2703"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(118.71787,85.285206)" />
+          </g>
+        </g>
+      </g>
+      <g
+         transform="translate(473.19261,279.50784)"
+         id="g2304-3-2-2">
+        <text
+           id="text6554-2-2-8"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#00ac8c;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#00ac8c;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-7-0"
+             sodipodi:role="line">Libellé de la propriété </tspan></text>
+        <text
+           id="text8250-7-9-4"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2297-8-8-9"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line">→ widget QLabel</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2336-5-2" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-83.707611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan5237">Hors groupes de traduction et groupes de valeurs, le libellé</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-79.738861"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan5241">de la propriété est positionné à côté du widget de saisie</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-75.770111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2803">si celui-ci n'est pas un QTextEdit et que sa longueur ne</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-71.801361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2805">dépasse pas un certain seuil. Sinon, il est placé au-dessus.</tspan></text>
+        <use
+           style="display:inline"
+           height="100%"
+           width="100%"
+           id="use2665-72-68"
+           xlink:href="#rect2570"
+           y="0"
+           x="0"
+           transform="translate(-4.3140001,18.436431)" />
+      </g>
+      <g
+         id="g4699"
+         transform="translate(531.85372,37.251799)">
+        <g
+           transform="translate(0,2.6458334)"
+           id="g3267">
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#5770be;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-2"
+             width="78.670845"
+             height="73.114594"
+             x="10.141664"
+             y="34.094265" />
+          <rect
+             style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2570-3"
+             width="16.933332"
+             height="5.8208332"
+             x="14.02292"
+             y="31.096355" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="80.43335"
+             y="54.716351"
+             id="use2233-4"><tspan
+               sodipodi:role="line"
+               id="tspan3026"
+               x="80.43335"
+               y="54.716351"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332">-</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="80.43335"
+             y="84.87886"
+             id="use2233-5-2"><tspan
+               sodipodi:role="line"
+               id="tspan3030"
+               x="80.43335"
+               y="84.87886"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332">-</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="50.669334"
+             y="102.48096"
+             id="text2193-8-4"><tspan
+               sodipodi:role="line"
+               id="tspan2191-9-5"
+               x="50.669334"
+               y="102.48096"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332">+</tspan></text>
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#958b62;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-2-1"
+             width="62.025753"
+             height="26.307005"
+             x="13.966289"
+             y="39.76368" />
+          <use
+             x="0"
+             y="0"
+             xlink:href="#rect2142-2-1"
+             id="use3016"
+             transform="translate(0,30.162513)"
+             width="100%"
+             height="100%" />
+          <g
+             id="g3128"
+             transform="translate(12.700002,-0.39686156)">
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(-22.619956,134.0544)"
+               id="use2703-8"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72-6"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(96.09792,172.24376)" />
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(-22.619956,123.73565)"
+               id="use2703-8-9"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72-6-4"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(96.097921,161.92502)" />
+          </g>
+          <g
+             id="g3128-5"
+             transform="translate(12.700002,-30.559375)">
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(-22.619956,134.0544)"
+               id="use2703-8-4"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72-6-8"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(96.09792,172.24376)" />
+            <use
+               height="100%"
+               width="100%"
+               transform="translate(-22.619956,123.73565)"
+               id="use2703-8-9-9"
+               xlink:href="#rect3788-91"
+               y="0"
+               x="0" />
+            <use
+               height="100%"
+               width="100%"
+               id="use2665-72-6-4-3"
+               xlink:href="#rect2570"
+               y="0"
+               x="0"
+               transform="translate(96.097921,161.92502)" />
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88055563px;line-height:1;font-family:Marianne;-inkscape-font-specification:Marianne;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="9.7805386"
+           y="24.086065"
+           id="text6554-9"><tspan
+             sodipodi:role="line"
+             id="tspan6552-2"
+             x="9.7805386"
+             y="24.086065"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';fill:#000000;stroke-width:0.26458332">Toutes les combinaisons sont possibles entre groupes</tspan><tspan
+             id="tspan4604"
+             sodipodi:role="line"
+             x="9.7805386"
+             y="27.966621"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';fill:#000000;stroke-width:0.26458332">de valeurs et groupes de propriétés...</tspan></text>
+        <g
+           transform="translate(-100.53305,73.818747)"
+           id="g3342">
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#958b62;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142-2-7"
+             width="78.688225"
+             height="68.104889"
+             x="110.67471"
+             y="42.860573" />
+          <use
+             x="0"
+             y="0"
+             xlink:href="#rect3788-91"
+             id="use2703-8-9-9-4"
+             transform="matrix(1.2006084,0,0,1,82.83045,96.924184)"
+             width="100%"
+             height="100%" />
+          <use
+             transform="translate(210.92697,135.11355)"
+             x="0"
+             y="0"
+             xlink:href="#rect2570"
+             id="use2665-72-6-4-3-4"
+             width="100%"
+             height="100%" />
+          <g
+             transform="translate(210.60832,144.07292)"
+             id="g2583-9">
+            <rect
+               style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+               id="rect3788-7"
+               width="49.104168"
+               height="8.09375"
+               x="-91.28125"
+               y="-77.908058" />
+            <rect
+               y="-83.607819"
+               x="-95.25"
+               height="45.772915"
+               width="66.674995"
+               id="rect2142-08"
+               style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#5770be;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+            <rect
+               style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+               id="rect3788-9-11"
+               width="49.104168"
+               height="8.09375"
+               x="-91.28125"
+               y="-67.435539" />
+            <rect
+               style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+               id="rect3788-0-6"
+               width="49.104168"
+               height="8.09375"
+               x="-91.28125"
+               y="-56.96302" />
+            <text
+               id="text2193-9"
+               y="-72.062019"
+               x="-37.570835"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332"
+                 y="-72.062019"
+                 x="-37.570835"
+                 id="tspan2191-2"
+                 sodipodi:role="line">-</tspan></text>
+            <use
+               style="fill:#4e65ab"
+               height="100%"
+               width="100%"
+               transform="translate(0,10.472522)"
+               id="use2233-9"
+               xlink:href="#text2193-9"
+               y="0"
+               x="0" />
+            <use
+               style="fill:#4e65ab"
+               height="100%"
+               width="100%"
+               transform="translate(9.0248618e-7,20.945041)"
+               id="use2233-5-21"
+               xlink:href="#text2193-9"
+               y="0"
+               x="0" />
+            <text
+               id="text2193-8-6"
+               y="-42.650314"
+               x="-67.334846"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332"
+                 y="-42.650314"
+                 x="-67.334846"
+                 id="tspan2191-9-4"
+                 sodipodi:role="line">+</tspan></text>
+            <rect
+               y="-86.518234"
+               x="-91.28125"
+               height="5.8208332"
+               width="16.933332"
+               id="rect2570-88"
+               style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="93.002464"
+           y="172.79886"
+           id="text6554-9-8"><tspan
+             sodipodi:role="line"
+             id="tspan6552-2-5"
+             x="93.002464"
+             y="172.79886"
+             style="font-size:3.52777767px;fill:#000000;stroke-width:0.26458332">etc.</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="92.981651"
+           y="178.48105"
+           id="text8250-7-9-4-8"><tspan
+             id="tspan2805-4"
+             sodipodi:role="line"
+             x="92.981651"
+             y="178.48105"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">y compris avec plusieurs</tspan><tspan
+             id="tspan4652"
+             sodipodi:role="line"
+             x="92.981651"
+             y="182.4498"
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">niveaux d'imbrication</tspan></text>
+      </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-9)"
+         d="m 393.04934,178.01439 70.64375,-19.57917"
+         id="path6615-9-5"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <g
+         style="display:inline"
+         transform="translate(473.22595,190.20908)"
+         id="g2304-3-2-0-0">
+        <text
+           id="text6554-2-2-7-2"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#808080;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-7-7-4"
+             sodipodi:role="line">Zone de saisie</tspan></text>
+        <text
+           id="text8250-7-9-37-5"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2293-0-1-90-1"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line">pour éditer les valeurs</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4276-8-6">→ widget QLineEdit, QTextEdit,</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-83.707611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4468-1">QComboBox, QCheckBox...</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-79.738861"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12262-6" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-75.770111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12266-9">Les widgets de saisie font partie du</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-71.801361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12272-2">QGroupBox du groupe de propriétés et</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-67.832611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12276-1">sont disposés verticalement sur son</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-63.863861"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan18106">QGridLayout.</tspan></text>
+        <rect
+           y="-60.703461"
+           x="-95.5"
+           height="8.09375"
+           width="49.104168"
+           id="rect3788-1-5-2"
+           style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+      </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-8)"
+         d="m 409.12855,92.49364 73.28958,18.52083"
+         id="path6615-6"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Groupe de valeurs"
+     style="display:none"
+     transform="translate(9.6943213,-33.469762)"
+     sodipodi:insensitive="true">
+    <g
+       inkscape:groupmode="layer"
+       id="layer5"
+       inkscape:label="GV - Fond"
+       sodipodi:insensitive="true"
+       style="display:none">
+      <rect
+         transform="translate(287.90776,88.23937)"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73124897;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect2764-0"
+         width="338.66666"
+         height="190.5"
+         x="-287.60208"
+         y="-44.769608" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer16"
+       inkscape:label="GV - Mini Fond">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.83665675;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect4636"
+         width="115.05709"
+         height="94.948761"
+         x="109.91567"
+         y="90.529778" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer3"
+       inkscape:label="GV - Elements"
+       style="display:inline">
+      <g
+         id="g5185"
+         transform="translate(219.11608,204.46853)">
+        <g
+           transform="translate(0,-3.1750001)"
+           id="g2304">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.610069"
+             y="-96.498627"
+             id="text6554"><tspan
+               sodipodi:role="line"
+               id="tspan6552"
+               x="-95.610069"
+               y="-96.498627"
+               style="font-size:4.93888903px;fill:#4e65ab;stroke-width:0.26458332">GROUPE DE VALEURS</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.623825"
+             y="-91.645111"
+             id="text8250"><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-91.645111"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+               id="tspan2293">quand une propriété admet plusieurs valeurs</tspan><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-87.676361"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+               id="tspan2297">→ widgets QGroupBox + QGridLayout</tspan></text>
+        </g>
+        <g
+           id="g2583">
+          <rect
+             y="-77.908058"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <rect
+             style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#5770be;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2142"
+             width="66.674995"
+             height="45.772915"
+             x="-95.25"
+             y="-83.607819" />
+          <rect
+             y="-67.435539"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-9"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <rect
+             y="-56.96302"
+             x="-91.28125"
+             height="8.09375"
+             width="49.104168"
+             id="rect3788-0"
+             style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-37.570835"
+             y="-72.062019"
+             id="text2193"><tspan
+               sodipodi:role="line"
+               id="tspan2191"
+               x="-37.570835"
+               y="-72.062019"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332">-</tspan></text>
+          <use
+             x="0"
+             y="0"
+             xlink:href="#text2193"
+             id="use2233"
+             transform="translate(0,10.472522)"
+             width="100%"
+             height="100%"
+             style="fill:#4e65ab" />
+          <use
+             x="0"
+             y="0"
+             xlink:href="#text2193"
+             id="use2233-5"
+             transform="translate(9.0248618e-7,20.945041)"
+             width="100%"
+             height="100%"
+             style="fill:#4e65ab" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#5770be;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-67.334846"
+             y="-42.650314"
+             id="text2193-8"><tspan
+               sodipodi:role="line"
+               id="tspan2191-9"
+               x="-67.334846"
+               y="-42.650314"
+               style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.05555534px;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';fill:#5770be;stroke-width:0.26458332">+</tspan></text>
+          <rect
+             style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+             id="rect2570"
+             width="16.933332"
+             height="5.8208332"
+             x="-91.28125"
+             y="-86.518234" />
+        </g>
+      </g>
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer13"
+       inkscape:label="GV - Descriptions"
+       style="display:none">
+      <g
+         style="display:inline"
+         id="g5205"
+         transform="translate(469.08745,94.931039)">
+        <g
+           id="g2304-3-2"
+           transform="translate(-150.80756,72.77345)">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.610069"
+             y="-96.498627"
+             id="text6554-2-2"><tspan
+               sodipodi:role="line"
+               id="tspan6552-1-7"
+               x="-95.610069"
+               y="-96.498627"
+               style="font-size:4.23333311px;fill:#4e65ab;stroke-width:0.26458332">Bouton « moins » </tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="-95.623825"
+             y="-91.645111"
+             id="text8250-7-9"><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-91.645111"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+               id="tspan2293-0-1">pour supprimer une valeur</tspan><tspan
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-87.676361"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+               id="tspan2297-8-8">→ widget QToolButton</tspan><tspan
+               id="tspan2336-5"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-83.707611"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332" /><tspan
+               id="tspan2389"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-79.738861"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">L'action supprime le widget et modifie en conséquence</tspan><tspan
+               id="tspan2899"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-75.770111"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">la position des widgets restant dans la grille.</tspan><tspan
+               id="tspan4274"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-71.801361"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332" /><tspan
+               id="tspan4276"
+               sodipodi:role="line"
+               x="-95.623825"
+               y="-67.832611"
+               style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332">Le bouton n'est pas affiché s'il ne reste qu'une valeur.</tspan></text>
+          <use
+             x="0"
+             y="0"
+             xlink:href="#text2193"
+             id="use2233-5-1"
+             transform="translate(-18.561051,-24.199541)"
+             width="100%"
+             height="100%"
+             style="fill:#4e65ab" />
+        </g>
+        <g
+           transform="translate(-74.078397,25.400001)"
+           id="g4053">
+          <g
+             transform="translate(-76.729163,69.989588)"
+             id="g2583-7">
+            <rect
+               style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+               id="rect3788-1"
+               width="49.104168"
+               height="8.09375"
+               x="-91.28125"
+               y="-77.908058" />
+            <rect
+               y="-83.607819"
+               x="-95.25"
+               height="25.135414"
+               width="66.410416"
+               id="rect2142-1"
+               style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#5770be;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+            <rect
+               y="-86.518234"
+               x="-91.28125"
+               height="5.8208332"
+               width="16.933332"
+               id="rect2570-8"
+               style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307003, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+            <use
+               transform="translate(-1.5074584,-20.79825)"
+               x="0"
+               y="0"
+               xlink:href="#text2193-8"
+               id="use2880"
+               width="100%"
+               height="100%" />
+          </g>
+        </g>
+      </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-8)"
+         d="M 220.80559,72.445643 184.55768,128.27272"
+         id="path6615-9-0"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <g
+         style="display:inline"
+         transform="translate(318.37832,266.52633)"
+         id="g2304-3">
+        <text
+           id="text6554-2"
+           y="-109.1986"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#4e65ab;stroke-width:0.26458332"
+             y="-109.1986"
+             x="-95.610069"
+             id="tspan6552-1"
+             sodipodi:role="line">Bouton « plus » </tspan></text>
+        <text
+           id="text8250-7"
+           y="-104.34513"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2293-0"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-104.34513"
+             x="-95.623825"
+             sodipodi:role="line">pour ajouter une valeur</tspan><tspan
+             id="tspan2297-8"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-100.37638"
+             x="-95.623825"
+             sodipodi:role="line">→ widget QToolButton</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-96.407631"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2336" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-92.438881"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2344">L'action crée un widget supplémentaire et l'ajoute</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-88.470131"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4152">au groupe et à sa grille.</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-84.501381"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4142" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-80.532631"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4146">Le bouton n'est pas affiché lorsque la propriété a</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-76.563881"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4148">de fait plusieurs valeurs, mais ce n'est théoriquement</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-72.595131"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4160">pas autorisé (inclut le cas où seules les traductions</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-68.626381"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4162">sont possibles, et le « mode traduction » n'est pas</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-64.657631"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4164">activé).</tspan></text>
+        <use
+           height="100%"
+           width="100%"
+           id="use2880-5"
+           xlink:href="#text2193-8"
+           y="0"
+           x="0"
+           transform="translate(6.9698858,-65.837086)" />
+      </g>
+      <g
+         style="display:inline"
+         transform="translate(134.45435,187.81282)"
+         id="g2304-3-8">
+        <text
+           id="text6554-2-8"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#009b7e;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#009b7e;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-4"
+             sodipodi:role="line">Libellé de la propriété </tspan></text>
+        <text
+           id="text8250-7-0"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2344-2">Intégré au QGroupBox du</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan2633">groupe de valeurs</tspan></text>
+        <rect
+           style="opacity:1;vector-effect:none;fill:#bfeae2;fill-opacity:1;stroke:none;stroke-width:0.42884502;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.57307006, 0.428845;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect2570-8-8"
+           width="16.933332"
+           height="5.8208332"
+           x="-95.477776"
+           y="-84.943741" />
+      </g>
+      <g
+         style="display:inline"
+         transform="translate(134.47657,268.7986)"
+         id="g2304-3-2-0">
+        <text
+           id="text6554-2-2-7"
+           y="-96.498627"
+           x="-95.610069"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#808080;stroke-width:0.26458332"
+             y="-96.498627"
+             x="-95.610069"
+             id="tspan6552-1-7-7"
+             sodipodi:role="line">Zone de saisie</tspan></text>
+        <text
+           id="text8250-7-9-37"
+           y="-91.645111"
+           x="-95.623825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             id="tspan2293-0-1-90"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:Marianne;stroke-width:0.26458332"
+             y="-91.645111"
+             x="-95.623825"
+             sodipodi:role="line">pour éditer les valeurs</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-87.676361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4276-8">→ widget QLineEdit, QTextEdit,</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-83.707611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan4468">QComboBox, QCheckBox...</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';stroke-width:0.26458332"
+             y="-79.738861"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12262" /><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-75.770111"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12266">Les widgets de saisie font partie du QGroupBox</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-71.801361"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12272">du groupe de valeurs et sont disposés</tspan><tspan
+             style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Marianne;-inkscape-font-specification:'Marianne Light Italic';stroke-width:0.26458332"
+             y="-67.832611"
+             x="-95.623825"
+             sodipodi:role="line"
+             id="tspan12276">verticalement sur son QGridLayout.</tspan></text>
+        <rect
+           y="-65.465965"
+           x="-95.5"
+           height="8.09375"
+           width="49.104168"
+           id="rect3788-1-5"
+           style="opacity:1;vector-effect:none;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:21.90348244;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+      </g>
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+         d="M 70.114582,170.02483 133.08542,152.82691"
+         id="path6615"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="use8954"
+         d="M 85.195832,91.972743 126.20625,118.16649"
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker8960)" />
+      <path
+         style="display:inline;fill:#bfbfbf;stroke:#bfbfbf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3)"
+         d="m 220.10216,155.50383 -61.91249,4.49791"
+         id="path6615-9"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer15"
+       inkscape:label="GV - Identification">
+      <g
+         inkscape:groupmode="layer"
+         id="layer14"
+         inkscape:label="GV - Bouton plus"
+         style="display:inline">
+        <path
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend-3-83)"
+           d="M 181.21335,174.17187 157.66544,162.00103"
+           id="path6615-9-08"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+        <text
+           id="text6554-2-3"
+           y="177.30325"
+           x="183.81227"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             y="177.30325"
+             x="183.81227"
+             id="tspan6552-1-6"
+             sodipodi:role="line">Bouton « plus » </tspan></text>
+      </g>
+      <g
+         inkscape:label="GV - Bouton moins"
+         id="g3397"
+         inkscape:groupmode="layer"
+         style="display:none">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path3391"
+           d="m 197.61752,128.39895 -11.90625,11.11249"
+           style="display:inline;fill:#e1000f;stroke:#e1000f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker3401)" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Bold';letter-spacing:0px;word-spacing:0px;display:inline;fill:#e1000f;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="199.1581"
+           y="121.4762"
+           id="text3395"><tspan
+             sodipodi:role="line"
+             id="tspan3393"
+             x="199.1581"
+             y="121.4762"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332">Bouton</tspan><tspan
+             sodipodi:role="line"
+             x="199.1581"
+             y="126.76786"
+             style="font-size:4.23333311px;fill:#e1000f;stroke-width:0.26458332"
+             id="tspan4291">« moins » </tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

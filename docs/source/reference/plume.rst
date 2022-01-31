@@ -1,8 +1,8 @@
-plume package
-=============
+Plugin QGIS Plume
+=================
 
-Subpackages
------------
+Packages
+--------
 
 .. toctree::
    :maxdepth: 4
@@ -10,9 +10,6 @@ Subpackages
    plume.iso
    plume.pg
    plume.rdf
-
-Module contents
----------------
 
 .. automodule:: plume
    :members:

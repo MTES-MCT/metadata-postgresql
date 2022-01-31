@@ -1,4 +1,4 @@
-plume.rdf.widgetsdict module
+Module plume.rdf.widgetsdict
 ============================
 
 .. automodule:: plume.rdf.widgetsdict

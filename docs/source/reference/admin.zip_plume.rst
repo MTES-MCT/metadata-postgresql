@@ -1,4 +1,4 @@
-admin.zip\_plume module
+Module admin.zip\_plume
 =======================
 
 .. automodule:: admin.zip_plume

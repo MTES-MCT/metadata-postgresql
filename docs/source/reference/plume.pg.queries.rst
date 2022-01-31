@@ -1,4 +1,4 @@
-plume.pg.queries module
+Module plume.pg.queries
 =======================
 
 .. automodule:: plume.pg.queries

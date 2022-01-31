@@ -1,4 +1,4 @@
-plume.rdf.properties module
+Module plume.rdf.properties
 ===========================
 
 .. automodule:: plume.rdf.properties

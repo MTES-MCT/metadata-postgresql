@@ -1,8 +1,8 @@
-plume.pg package
+Package plume.pg
 ================
 
-Submodules
-----------
+Modules
+-------
 
 .. toctree::
    :maxdepth: 4
@@ -10,9 +10,6 @@ Submodules
    plume.pg.description
    plume.pg.queries
    plume.pg.template
-
-Module contents
----------------
 
 .. automodule:: plume.pg
    :members:

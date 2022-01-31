@@ -1,4 +1,4 @@
-plume.pg.description module
+Module plume.pg.description
 ===========================
 
 .. automodule:: plume.pg.description

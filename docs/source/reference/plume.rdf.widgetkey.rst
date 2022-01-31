@@ -1,4 +1,4 @@
-plume.rdf.widgetkey module
+Module plume.rdf.widgetkey
 ==========================
 
 .. automodule:: plume.rdf.widgetkey

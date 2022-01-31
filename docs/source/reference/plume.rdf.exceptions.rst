@@ -1,4 +1,4 @@
-plume.rdf.exceptions module
+Module plume.rdf.exceptions
 ===========================
 
 .. automodule:: plume.rdf.exceptions

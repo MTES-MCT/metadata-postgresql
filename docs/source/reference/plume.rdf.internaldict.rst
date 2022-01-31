@@ -1,4 +1,4 @@
-plume.rdf.internaldict module
+Module plume.rdf.internaldict
 =============================
 
 .. automodule:: plume.rdf.internaldict

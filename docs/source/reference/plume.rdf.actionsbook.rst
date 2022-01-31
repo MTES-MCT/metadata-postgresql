@@ -1,4 +1,4 @@
-plume.rdf.actionsbook module
+Module plume.rdf.actionsbook
 ============================
 
 .. automodule:: plume.rdf.actionsbook

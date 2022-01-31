@@ -1,4 +1,4 @@
-plume.rdf package
+Package plume.rdf
 =================
 
 Submodules

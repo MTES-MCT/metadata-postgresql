@@ -1,4 +1,4 @@
-plume.rdf.utils module
+Module plume.rdf.utils
 ======================
 
 .. automodule:: plume.rdf.utils

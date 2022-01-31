@@ -1,4 +1,4 @@
-plume.rdf.rdflib module
+Module plume.rdf.rdflib
 =======================
 
 .. automodule:: plume.rdf.rdflib
