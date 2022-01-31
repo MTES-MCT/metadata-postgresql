@@ -295,7 +295,9 @@ class WidgetsDict(dict):
             prop_dict = prop.prop_dict
             prop_dict['parent'] = parent
             kind = prop_dict.get('kind', SH.Literal)
-            multilingual = bool(prop_dict.get('unilang')) and self.translation
+            multilingual = bool(prop_dict.get('unilang')) \
+                and prop_dict.get('datatype') == RDF.langString \
+                and self.translation
             multiple = bool(prop_dict.get('is_multiple')) and self.edit \
                 and not bool(prop_dict.get('unilang'))
             
@@ -551,7 +553,7 @@ class WidgetsDict(dict):
                 and not widgetkey.is_read_only:
                 # cas où il n'y a qu'une seule source, le multi-sources
                 # est traité juste après
-                internaldict['thesaurus values'] = Thesaurus.values(
+                internaldict['thesaurus values'] = Thesaurus.get_values(
                     (widgetkey.value_source, self.langlist))
 
         if isinstance(widgetkey, ObjectKey):
@@ -560,13 +562,13 @@ class WidgetsDict(dict):
                 and widgetkey.is_single_child
             if widgetkey.has_source_button:
                 if widgetkey.sources:
-                    internaldict['sources'] = [Thesaurus.label((s, self.langlist)) \
+                    internaldict['sources'] = [Thesaurus.get_label((s, self.langlist)) \
                         for s in widgetkey.sources]
                     if isinstance(widgetkey, ValueKey):
                         if widgetkey.value_source:
-                            internaldict['current source'] = Thesaurus.label(
+                            internaldict['current source'] = Thesaurus.get_label(
                                 (widgetkey.value_source, self.langlist))
-                            internaldict['thesaurus values'] = Thesaurus.values(
+                            internaldict['thesaurus values'] = Thesaurus.get_values(
                                 (widgetkey.value_source, self.langlist))
                         else:
                             internaldict['current source'] = '< non référencé >'
@@ -944,7 +946,7 @@ class WidgetsDict(dict):
                 # l'initialisation du dictionnaire de widgets, donc
                 # cette boucle sur deux ou trois valeurs maximum
                 # ne coûte pas grand chose
-                if Thesaurus.label((s, self.langlist)) == new_source:
+                if Thesaurus.get_label((s, self.langlist)) == new_source:
                     value_source = s
                     break
         
