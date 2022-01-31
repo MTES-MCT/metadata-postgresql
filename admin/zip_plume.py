@@ -67,10 +67,10 @@ def zip_plume(dest=None):
             for e in d.iterdir():
                 
                 if e.is_file():
-                    zhpy.write(e, arcname=e.relative_to(plume))
+                    zhpy.write(e, arcname=Path('plume') / e.relative_to(plume))
                         
                 elif e.is_dir() and include(e):
-                    zhpy.write(e, arcname=e.relative_to(plume))
+                    zhpy.write(e, arcname=Path('plume') / e.relative_to(plume))
                     p.append(e)
 
 
