@@ -10,7 +10,7 @@ La valeur associée à `widgetkey` dans le dictionnaire de widgets, c'est-à-dir
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.
 
-**Widget principal** : [Type](#type) • [Stockage](#stockage) • [Parent](#parent) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel) • [Placement dans la grille](#placement-dans-la-grille)
+**Widget principal** : [Type](#type) • [Stockage](#stockage) • [Placement dans la grille](#placement-dans-la-grille) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel)
 
 **Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
@@ -70,9 +70,34 @@ Le nouveau widget a vocation à être stocké dans la clé `'main widget'` du di
 
 ```python
 
-widgetsdict[widgetkey]['main widget']
+widgetsdict[widgetkey]['main widget'] = main_widget
 
 ```
+
+*Où `main_widget` est le widget principal qui vient d'être créé.*
+
+
+### Placement dans la grille
+
+*Les informations ci-après ne valent pas pour les onglets (cf. [Onglets](#onglets)).*
+
+Le nouveau widget doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
+
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
+
+```python
+
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'main widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(main_widget, row, column, rowSpan, columnSpan)
+
+```
+
+*`main_widget` est le widget principal qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget principal de la clé. La même méthode sera utilisée ensuite pour connaître le placement de ses widgets annexes, avec en second argument le nom du widget annexe considéré.*
+
+Les grilles sont elles-mêmes des widgets annexes associés aux clés de groupes. Cf. [Widget annexe : grille](#widget-annexe--grille).
+
+[↑ haut de page](#création-dun-nouveau-widget)
 
 ### Widget masqué ?
 
@@ -116,6 +141,8 @@ widgetsdict[widgetkey]['label']
 #### Autres groupes
 
 Pour tous les autres groupes, c'est-à-dire ceux pour lesquels la valeur de la clé `'object'` n'est pas `'tab'`.
+
+- La partie [Placement dans la grille](#placement-dans-la-grille) s'applique.
 
 - L'**étiquette** - paramètre `title` du `QGroupBox` - est fournie par la clé `'label'` du dictionnaire interne.
 
@@ -175,7 +202,7 @@ widgetsdict.group_kind(widgetkey)
 
 ```
 
-Comme pour les QGroupBox, on pourra utiliser les valeurs par défaut suivantes :
+Comme pour les `QGroupBox`, on pourra utiliser les valeurs par défaut suivantes :
 
 | Type de groupe | `group_kind(widgetkey)` | Couleur |
 | --- | --- | --- |
@@ -193,7 +220,7 @@ colored_svg = raw_svg.format(fill=color)
 
 ```
 
-- Le texte d'aide à afficher en infobulle sur le bouton se trouve dans la clé `text help` du dictionnaire.
+- Le texte d'aide à afficher en infobulle sur le bouton se trouve dans la clé `'text help'` du dictionnaire.
 
 ```python
 
@@ -267,22 +294,22 @@ elif mTypeValidator == 'QDoubleValidator':
 
 ```python
 
-re = QRegularExpression(widgetsdict[widgetkey]['regex validator pattern'])
+qre = QRegularExpression(widgetsdict[widgetkey]['regex validator pattern'])
 
-if "i" in widgetsdict[widgetkey]['regex validator flags']:
-    re.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
+if 'i' in widgetsdict[widgetkey]['regex validator flags']:
+    qre.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
     
-if "s" in widgetsdict[widgetkey]['regex validator flags']:
-    re.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
+if 's' in widgetsdict[widgetkey]['regex validator flags']:
+    qre.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
 
-if "m" in widgetsdict[widgetkey]['regex validator flags']:
-    re.setPatternOptions(QRegularExpression.MultilineOption)
+if 'm' in widgetsdict[widgetkey]['regex validator flags']:
+    qre.setPatternOptions(QRegularExpression.MultilineOption)
     
-if "x" in widgetsdict[widgetkey]['regex validator flags']:
-    re.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
+if 'x' in widgetsdict[widgetkey]['regex validator flags']:
+    qre.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
 
 widgetsdict[widgetkey]['main widget'].setValidator(
-    QRegularExpressionValidator(re),
+    QRegularExpressionValidator(qre),
     widgetsdict[widgetkey]['main widget'])
     )
 
@@ -348,112 +375,63 @@ widgetsdict[widgetkey]['main widget'].setOpenExternalLinks(True)
 
 ```
 
-### Placement dans la grille
 
-*Les informations ci-après ne valent pas pour les onglets (cf. [Onglets](#onglets)).*
+## Widget annexe : grille
 
-Le nouveau widget doit être placé dans le `QGridLayout` associé à son parent, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
+Pour les onglets, groupes de valeurs, groupes de propriétés et groupes de traduction (en fait dès lors que `'main widget type'` vaut `'QGroupBox'`), un widget annexe `QGridLayout` doit être créé en paralèlle du `QGroupBox`.
+
+Le widget `QGridLayout` sera stocké dans la clé `'grid widget'` du dictionnaire interne.
 
 ```python
 
-widgetsdict.parent_grid(widgetkey)
+widgetsdict[widgetkey]['grid widget'] = grid
+widgetsdict[widgetkey]['main widget'].setLayout(grid)
 
 ```
+
+*Où `grid` est l'objet `QGridLayout` qui vient d'être créé.*
+
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
+## Widget annexe : étiquette
+
+Un `QLabel` doit être créé dès lors que la clé `'has label'` du dictionnaire interne vaut `True`. En pratique, cela concernera les widgets de saisie dont la clé `'label'` contient une valeur. Le libellé à afficher correspond bien entendu à la valeur de la clé `'label'`.
+
+```python
+
+if widgetsdict[widgetkey]['has label']:
+    ...
+
+```
+
+### Stockage
+
+Le widget `QLabel` sera stocké dans la clé `'label widget'` du dictionnaire interne.
+
+```python
+
+widgetsdict[widgetkey]['label widget'] = label_widget
+
+```
+
+*Où `label_widget` est le widget d'étiquette qui vient d'être créé.*
+
+### Placement dans la grille
+
+Le `QLabel` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
 
 Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
 
 ```python
 
-row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'main widget')
-
-```
-*Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget principal de la clé. La même méthode sera utilisée ensuite pour connaître le placement de ses widgets annexes, avec en second argument le nom du widget annexe considéré.*
-
-[↑ haut de page](#création-dun-nouveau-widget)
-
-
-## Widget annexe : grille
-
-Pour les groupes de valeurs, groupes de propriétés et groupes de traduction, un widget annexe QGridLayout doit être créé en paralèlle du QGroupBox.
-
-```python
-
-widgetsdict[widgetkey]['object'] in ('group of values', 'group of properties', 'translation group')
-
-```
-
-### Stockage
-
-Le widget QGridLayout sera stocké dans la clé `'grid widget'` du dictionnaire interne.
-
-```python
-
-widgetsdict[widgetkey]['grid widget']
-
-```
-
-### Parent
-
-Le widget *parent* est le `'main widget'` de l'enregistrement.
-
-```python
-
-widgetsdict[widgetkey]['main widget']
-
-```
-
-[↑ haut de page](#création-dun-nouveau-widget)
-
-
-
-## Widget annexe : étiquette
-
-**Pour les widgets de saisie uniquement**, un QLabel doit être créé dès lors que la clé `'label'` du dictionnaire interne n'est pas nulle. Le libellé à afficher correspond bien entendu à la valeur de la clé `'label'`.
-
-```python
-
-widgetsdict[widgetkey]['object'] == 'edit' and widgetsdict[widgetkey]['label']
-
-```
-
-### Stockage
-
-Le widget QLabel sera stocké dans la clé `'label widget'` du dictionnaire interne.
-
-```python
-
-widgetsdict[widgetkey]['label widget']
-
-```
-
-### Parent
-
-Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `widgetkey`, qu'on obtiendra plutôt avec :
-
-```python
-
-widgetsdict.parent_widget(widgetkey)
-
-```
-
-### Placement dans la grille
-
-Le QLabel doit être placé dans le QGridLayout associé à son parent.
-
-```python
-
-widgetsdict.parent_grid(widgetkey)
-
-```
-
-Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
-
-```python
-
 row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'label widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(label_widget, row, column, rowSpan, columnSpan)
 
 ```
 
+*`label_widget` est le `QLabel` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget annexe d'étiquette de la clé.*
 
 ### Texte d'aide
 
