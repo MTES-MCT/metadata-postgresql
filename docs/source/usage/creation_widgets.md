@@ -1,10 +1,10 @@
 # Création d'un nouveau widget
 
-La présente page explique comment créer les widgets qui formeront le formulaire de consultation / édition des métadonnées à partir du [dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md). On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.
+La présente page explique comment créer les widgets - `QtWidgets.QWidget` - et autres objets QT (`QtWidgets.QGridLayout`, `QtWidgets.QMenu`, `QtGui.QAction`) qui formeront le formulaire de consultation / édition des métadonnées à partir du [dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md). On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.
 
 Soit :
-- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md)).
-- `widgetkey` la clé de l'enregistrement en cours de traitement.
+- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md)), objet de classe [`plume.rdf.widgetsdict.WidgetsDict`](/plume/rdf/widgetsdict.py).
+- `widgetkey` la clé de l'enregistrement en cours de traitement, objet de classe [`plume.rdf.widgetkey.WidgetKey`](/plume/rdf/widgetkey.py).
 
 La valeur associée à `widgetkey` dans le dictionnaire de widgets, c'est-à-dire `widgetsdict[widgetkey]`, est un objet de classe [`plume.rdf.internaldict.InternalDict`](/plume/rdf/internaldict.py) dit "dictionnaire interne".
 
@@ -107,7 +107,8 @@ Concrètement, le widget principal **et tous les widgets annexes** d'un enregist
 
 ```python
 
-widgetsdict[widgetkey]['hidden']
+if widgetsdict[widgetkey]['hidden']:
+    ...
 
 ```
 
@@ -183,16 +184,6 @@ On pourra utiliser les valeurs par défaut suivantes :
 ### Paramètres spécifiques aux widgets QToolButton
 
 Les seuls cas où le widget principal est un `QToolButton` sont ceux des "boutons plus" et "boutons de traduction", qui permettent à l'utilisateur d'ajouter réciproquement des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'` ou `'translation button'`.
-
-- L'action éventuellement associée à ce `QToolButton` sera stockée dans la clé `'main action'` du dictionnaire.
-
-```python
-
-widgetsdict[widgetkey]['main action']
-
-```
-
-*Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-plus-et-boutons-de-traduction).*
 
 - L'image ![plus_button.svg](/plume/icons/buttons/plus_button.svg) à utiliser est toujours [plus_button.svg](/plume/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
@@ -443,28 +434,28 @@ widgetsdict[widgetkey]['label widget'].setToolTip(widgetsdict[widgetkey]['help t
 
 ```
 
+### Widget masqué ?
+
+Le `QLabel` doit être masqué dès lors que la clé `'hidden'` vaut `True`.
+
+```python
+
+if widgetsdict[widgetkey]['hidden']:
+    ...
+
+```
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
 
-### Widget masqué ?
-
-Le QLabel doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
-
-```python
-
-widgetsdict[widgetkey]['hidden'] or widgetsdict[widgetkey]['hidden M']
-
-```
-
-
 ## Widget annexe : bouton de sélection de la source
 
-Un widget QToolButton de sélection de source doit être créé dès lors que la condition suivante est vérifiée :
+Un widget `QToolButton` de sélection de source doit être créé dès lors que la condition suivante est vérifiée :
 
 ```python
 
-widgetsdict[widgetkey]['multiple sources']
+if widgetsdict[widgetkey]['multiple sources']:
+    ...
 
 ```
 
@@ -474,39 +465,35 @@ Le widget de sélection de la source est stocké dans la clé `'switch source wi
 
 ```python
 
-widgetsdict[widgetkey]['switch source widget']
+widgetsdict[widgetkey]['switch source widget'] = source_widget
 
 ```
 
-### Parent
-
-Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `widgetkey`, qu'on obtiendra plutôt avec :
-
-```python
-
-widgetsdict.parent_widget(widgetkey)
-
-```
+*Où `source_widget` est le widget de sélection de la source qui vient d'être créé.*
 
 ### Menu
 
-Le QMenu associé au QToolButton est stocké dans la clé `'switch source menu'` du dictionnaire.
+Le `QMenu` associé au `QToolButton` est stocké dans la clé `'switch source menu'` du dictionnaire.
 
 ```python
 
-widgetsdict[widgetkey]['switch source menu']
+widgetsdict[widgetkey]['switch source menu'] = source_menu
 
 ```
 
-Ce QMenu contient une QAction par thésaurus utilisable pour la métadonnée. Les QAction sont elles-mêmes stockées dans la clé `'switch source actions'` du dictionnaire, sous la forme d'une liste.
+*Où `source_menu` est le `QMenu` qui vient d'être créé.*
+
+Ce `QMenu` contient une `QAction` par thésaurus utilisable pour la métadonnée. Les `QAction` sont elles-mêmes stockées dans la clé `'switch source actions'` du dictionnaire, sous la forme d'une liste.
 
 ```python
 
-widgetsdict[widgetkey]['switch source actions']
+widgetsdict[widgetkey]['switch source actions'].append(source_action)
 
 ```
 
-Les libellés des QAction correspondent aux noms des thésaurus et sont fournis par la liste contenue dans la clé `'sources'` du dictionnaire :
+*Où `source_action` représente chaque `QAction` venant d'être créée.*
+
+Les libellés des `QAction` correspondent aux noms des thésaurus et sont fournis par la liste contenue dans la clé `'sources'` du dictionnaire :
 
 ```python
 
@@ -516,7 +503,7 @@ widgetsdict[widgetkey]['sources']
 
 *Pour la définition des actions, cf. [15_actions_widgets](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-la-source).*
 
-Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du QComboBox - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Son nom est donné par la clé `'current source'`.
+Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Le nom de ce thésaurus courant est donné par la clé `'current source'`.
 
 ```python
 
@@ -526,24 +513,19 @@ widgetsdict[widgetkey]['current source']
 
 ### Placement dans la grille
 
-Le QToolButton doit être placé dans le QGridLayout associé à son parent.
+Le `QToolButton` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
 
-```python
-
-widgetsdict.parent_grid(widgetkey)
-
-```
-
-Le bouton de sélection de la source est toujours positionné immédiatement à droite de la zone de saisie.
-
-Concrètement, les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
 
 ```python
 
 row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'switch source widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(source_widget, row, column, rowSpan, columnSpan)
 
 ```
 
+*`source_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget annexe de sélection de la source.*
 
 ### Icône
 
@@ -562,25 +544,26 @@ On pourra afficher en infobulle sur le bouton le texte suivant :
 
 ```
 
-
 ### Widget masqué ?
 
-Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+Le `QToolButton` doit être masqué dès lors que la clé `'hidden'` vaut `True`.
 
 ```python
 
-widgetsdict[widgetkey]['hidden'] or widgetsdict[widgetkey]['hidden M']
+if widgetsdict[widgetkey]['hidden']:
+    ...
 
 ```
 
 
 ## Widget annexe : bouton de sélection de la langue
 
-Un widget QToolButton de sélection de langue doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira que si le mode traduction est actif) :
+Un widget `QToolButton` de sélection de langue doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira que si le mode traduction est actif) :
 
 ```python
 
-widgetsdict[widgetkey]['authorized languages']
+if widgetsdict[widgetkey]['authorized languages']:
+    ...
 
 ```
 
@@ -590,39 +573,35 @@ Le bouton de sélection de la langue est stocké dans la clé `'language widget'
 
 ```python
 
-widgetsdict[widgetkey]['language widget']
+widgetsdict[widgetkey]['language widget'] = language_widget
 
 ```
 
-### Parent
-
-Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `widgetkey`, qu'on obtiendra plutôt avec :
-
-```python
-
-widgetsdict.parent_widget(widgetkey)
-
-```
+*Où `language_widget` est le widget de sélection de la langue qui vient d'être créé.*
 
 ### Menu
 
-Le QMenu associé au QToolButton est stocké dans la clé `'language menu'` du dictionnaire.
+Le `QMenu` associé au `QToolButton` est stocké dans la clé `'language menu'` du dictionnaire.
 
 ```python
 
-widgetsdict[widgetkey]['language menu']
+widgetsdict[widgetkey]['language menu'] = language_menu
 
 ```
 
-Ce QMenu contient une QAction par langue disponible. Les QAction sont elles-mêmes stockées dans la clé `'language actions'` du dictionnaire, sous la forme d'une liste.
+*Où `language_menu` est le `QMenu` qui vient d'être créé.*
+
+Ce `QMenu` contient une `QAction` par langue disponible. Les `QAction` sont elles-mêmes stockées dans la clé `'language actions'` du dictionnaire, sous la forme d'une liste.
 
 ```python
 
-widgetsdict[widgetkey]['language actions']
+widgetsdict[widgetkey]['language actions'].append(language_action)
 
 ```
 
-Les libellés des QAction correspondent aux noms abrégés des langues et sont fournis par la liste contenue dans la clé `'authorized languages'` du dictionnaire :
+*Où `language_action` représente chaque `QAction` venant d'être créée.*
+
+Les libellés des `QAction` correspondent aux noms abrégés des langues et sont fournis par la liste contenue dans la clé `'authorized languages'` du dictionnaire :
 
 ```python
 
@@ -634,7 +613,7 @@ widgetsdict[widgetkey]['authorized languages']
 
 ### Rendu
 
-Au lieu d'une icône, le QToolButton de sélection de la langue montre un texte correspondant au nom abrégé de la langue sélectionnée. Celui-ci est fourni par la clé `'language value'`.
+Au lieu d'une icône, le `QToolButton` de sélection de la langue montre un texte correspondant au nom abrégé de la langue sélectionnée. Celui-ci est fourni par la clé `'language value'`.
 
 ```python
 
@@ -654,101 +633,75 @@ On pourra afficher en infobulle sur le bouton le texte suivant :
 
 ### Placement dans la grille
 
-Le QToolButton doit être placé dans le QGridLayout associé à son parent.
+Le `QToolButton` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
 
-```python
-
-widgetsdict.parent_grid(widgetkey)
-
-```
-
-Le bouton de sélection de la langue est toujours positionné immédiatement à droite de la zone de saisie. Il n'y a pas de conflit possible avec les boutons de sélection de source, car ceux-là ne peuvent apparaître que sur des objets de type *IRI* ou *BlankNode*, alors que spécifier la langue n'est possible que pour les objets de type *Literal*.
-
-Concrètement, les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
 
 ```python
 
 row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'language widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(language_widget, row, column, rowSpan, columnSpan)
+
+```
+
+*`language_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget annexe de sélection de la langue.*
+
+### Widget masqué ?
+
+Le `QToolButton` doit être masqué dès lors que la clé `'hidden'` vaut `True`.
+
+```python
+
+if widgetsdict[widgetkey]['hidden']:
+    ...
 
 ```
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
 
-### Widget masqué ?
-
-Le QToolButton doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
-
-```python
-
-widgetsdict[widgetkey]['hidden'] or widgetsdict[widgetkey]['hidden M']
-
-```
-
 
 ## Widget annexe : bouton "moins"
 
-Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets QToolButton permettent à l'utilisateur de supprimer les valeurs précédemment saisies, à condition qu'il en reste au moins une.
+Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets `QToolButton` permettent à l'utilisateur de supprimer les valeurs précédemment saisies, à condition qu'il en reste au moins une.
 
 Un tel widget doit être créé dès lors que la condition suivante est vérifiée :
 
 ```python
 
-widgetsdict[widgetkey]['has minus button']
+if widgetsdict[widgetkey]['has minus button']:
+    ...
 
 ```
 
 ### Stockage
 
-Il est stocké dans la clé `'minus widget'` du dictionnaire interne.
+Le boutoin moins est stocké dans la clé `'minus widget'` du dictionnaire interne.
 
 ```python
 
-widgetsdict[widgetkey]['minus widget']
+widgetsdict[widgetkey]['minus widget'] = minus_widget
 
 ```
 
-### Parent
-
-Le widget *parent* est le même que pour le widget principal. Il s'agit du `'main widget'` de l'enregistrement dont la clé est le second argument de `widgetkey`, qu'on obtiendra plutôt avec :
-
-```python
-
-widgetsdict.parent_widget(widgetkey)
-
-```
-
-### Action
-
-L'action associée au QToolButton est stockée dans la clé `'minus action'` du dictionnaire.
-
-```python
-
-widgetsdict[widgetkey]['minus action']
-
-```
-
-*Pour la définition de l'action, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-moins).*
+*Où `minus_widget` est le widget de sélection de la source qui vient d'être créé.*
 
 ### Placement dans la grille
 
-Le QToolButton doit être placé dans le QGridLayout associé à son parent.
+Le `QToolButton` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
 
-```python
-
-widgetsdict.parent_grid(widgetkey)
-
-```
-
-Le bouton "moins" est positionné sur la ligne de la zone de saisie, à droite du bouton de sélection de la source / de la langue s'il y en a un, sinon immédiatement à droite de la zone de saisie. À noter que, par construction, il ne peut jamais y avoir à la fois un bouton de sélection de la langue et un bouton de sélection de la source.
-
-Concrètement, les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `addWidget()` - sont donnés par la méthode `widget_placement()` de la classe `WidgetsDict`.
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
 
 ```python
 
 row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'minus widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(minus_widget, row, column, rowSpan, columnSpan)
 
 ```
+
+*`minus_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du boutoin moins.*
 
 ### Icône
 
@@ -760,7 +713,7 @@ widgetsdict.group_kind(widgetkey)
 
 ```
 
-Comme pour les QGroupBox et les boutons plus/boutons de traduction, on pourra utiliser les valeurs par défaut suivantes :
+Comme pour les `QGroupBox` et les boutons plus/boutons de traduction, on pourra utiliser les valeurs par défaut suivantes :
 
 | Type de groupe | `group_kind(widgetkey)` | Couleur |
 | --- | --- | --- |
@@ -790,19 +743,12 @@ On pourra afficher en infobulle sur le bouton le texte suivant :
 
 ### Widget masqué ?
 
-Comme tous les autres widgets, le QToolButton du bouton moins doit être masqué dès lors que la clé `'hidden'` ou la clé `'hidden M'` vaut `True`.
+Comme tous les autres widgets, le `QToolButton` doit être masqué dès lors que la clé `'hidden'` vaut `True`. Mais il devra également être masqué si le groupe de traduction ou groupe de valeurs ne contient qu'un élément, soit quand `'hide minus button'` vaut `True`.
 
 ```python
 
-widgetsdict[widgetkey]['hidden'] or widgetsdict[widgetkey]['hidden M']
-
-```
-
-Il devra également être masqué si le groupe de traduction ou groupe de valeurs ne contient qu'un élément, soit quand la condition suivante est remplie :
-
-```python
-
-widgetsdict[widgetkey]['hide minus button']
+if widgetsdict[widgetkey]['hidden'] or widgetsdict[widgetkey]['hide minus button']:
+    ...
 
 ```
 
