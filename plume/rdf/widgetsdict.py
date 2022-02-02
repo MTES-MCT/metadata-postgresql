@@ -655,7 +655,7 @@ class WidgetsDict(dict):
               à masquer. Il s'agit a priori de widgets antérieurement visibles, mais
               ce n'est pas une règle absolue.
             * ``widgets to delete`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
-              à détruire, incluant les grilles (:py:class:`QtWidgets:QGridLayout`).
+              à détruire, incluant les grilles (:py:class:`QtWidgets.QGridLayout`).
             * ``actions to delete`` : liste d'actions (:py:class:`QtGui.QAction`) à
               détruire.
             * ``menus to delete`` : liste de menus (:py:class:`QtWidgets.QMenu`) à
@@ -682,8 +682,8 @@ class WidgetsDict(dict):
               * ``[2]`` est le nouveau numéro de ligne du widget dans la grille (paramètre
                 ``row``) ;
               * ``[3]`` est l'indice (inchangé) de la colonne (paramètre ``column``) ;
-              * ``[4]`` est le nombre inchangé) de lignes occupées (paramètre ``rowSpan``) ;
-              * ``[5]`` est le nombre inchangé) de colonnes occupées (paramètre ``columnSpan``).
+              * ``[4]`` est le nombre (inchangé) de lignes occupées (paramètre ``rowSpan``) ;
+              * ``[5]`` est le nombre (inchangé) de colonnes occupées (paramètre ``columnSpan``).
         
         """
         d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
