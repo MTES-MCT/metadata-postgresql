@@ -64,7 +64,7 @@ widgetsdict = WidgetsDict(**kwa)
 
 ### metagraph : le graphe des métadonnées pré-existantes
 
-Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `old_description_raw`. Elles sont supposées se trouver entre deux balises `<METADATA>` et `</METADATA>`, et avoir été encodées au format JSON-LD.
+Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `pg_description_raw`. Elles sont supposées se trouver entre deux balises `<METADATA>` et `</METADATA>`, et avoir été encodées au format JSON-LD.
 
 Le module [plume.pg.queries](/plume/pg/queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui permet d'obtenir le descriptif de l'objet :
 
@@ -80,7 +80,7 @@ with conn:
     
         query = queries.query_get_table_comment(schema_name, table_name)
         cur.execute(query)
-        raw_old_description = cur.fetchone()[0]
+        raw_pg_description = cur.fetchone()[0]
 
 conn.close()
 
@@ -94,18 +94,19 @@ Une fois le descriptif récupéré, on l'utilisera pour générer un objet de cl
 
 from plume.pg.description import PgDescription
 
-old_description = PgDescription(raw_old_description)
+pg_description = PgDescription(raw_pg_description)
 
 ```
 
 Ce même objet `PgDescription` servira ultérieurement pour la création d'un nouveau descriptif PostgreSQL contenant les métadonnées mises à jour. Il mémorise en effet également le texte saisi hors des balises `<METADATA>`, qu'il s'agit de préserver. Cf. [Sauvegarde](/docs/source/usage/actions_generales.md#sauvegarde) pour plus de détails.
 
-Le graphe de métadonnées, objet de classe [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py), est ensuite obtenu par un simple appel à la propriété `metagraph` de `old_description`.
+Le graphe de métadonnées, objet de classe [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py), est ensuite obtenu par un simple appel à la propriété `metagraph` de `pg_description`.
 
 
 ```python
 
-metagraph = old_description.metagraph
+metagraph = pg_description.metagraph
+
 ```
 
 La propriété renverra un graphe vide si le descriptif PostgreSQL ne contenait pas les balises `<METADATA>` et `</METADATA>` entre lesquelles est supposé se trouver le JSON-LD contenant les métadonnées. C'est typiquement ce qui arrivera lorsque les métadonnées n'ont pas encore été rédigées.
