@@ -14,15 +14,13 @@ Une fiche de métadonnées peut être ouverte :
 - soit en **mode lecture**, qui permet de consulter les métadonnées mais pas de les modifier ;
 - soit en **mode édition**, qui permet de modifier les métadonnées.
 
-Du point de vue de l'utilisateur, le formulaire paraîtra très différent dans les deux modes. En mode lecture, tous les widgets de saisie sont désactivés (la clé `'read only'` du dictionnaire de widgets vaut toujours `True`). De plus, là où le mode édition affiche naturellement les champs sans valeur pour que l'utilisateur puisse les remplir, le mode lecture les masque (sauf si l'utilisateur a explicitement demandé le contraire en mettant à `False` le paramètre utilisateur `readHideBlank` - cf. [Paramètres utilisateur](/docs/source/usage/parametres_utilisateur.md)).
+Du point de vue de l'utilisateur, le formulaire paraîtra très différent dans les deux modes. En mode lecture, tous les widgets de saisie sont désactivés (la [clé `'read only'`](/docs/source/usage/creation_widgets.md#paramètres-spécifiques-aux-widgets-de-saisie) du dictionnaire de widgets vaut toujours `True`). De plus, là où le mode édition affiche naturellement les champs sans valeur pour que l'utilisateur puisse les remplir, le mode lecture les masque (sauf si l'utilisateur a explicitement demandé le contraire en mettant à `False` le [paramètre utilisateur `readHideBlank`](/docs/source/usage/generation_dictionnaire_widgets.md#readhideblank) - cf. [Paramètres utilisateur](/docs/source/usage/parametres_utilisateur.md).
 
-Concrètement, le passage d'un mode à l'autre implique simplement de regénérer le dictionnaire de widgets, c'est-à-dire relancer la fonction `build_dict()` en spécifiant le mode grâce au paramètre `mode` :
-- `mode='edit'` en mode édition (ou rien, `'edit'` étant la valeur par défaut) ;
+Concrètement, le passage d'un mode à l'autre implique simplement de [regénérer le dictionnaire de widgets](/docs/source/usage/generation_dictionnaire_widgets.md) en spécifiant le mode grâce au paramètre `mode` :
+- `mode='edit'` en mode édition ;
 - `mode='read'` en mode lecture.
 
-Cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md).
-
-Le formulaire de saisie/consultation peut ensuite être recréé à partir du nouveau dictionnaire, selon les mêmes modalités quel que soit le mode.
+Le formulaire de saisie/consultation peut ensuite être [recréé à partir du nouveau dictionnaire](/docs/source/usage/creation_widgets.md), selon les mêmes modalités quel que soit le mode.
 
 ### Autres effets
 
@@ -46,22 +44,22 @@ L'idéal serait que le texte d'aide s'adapte au mode courant :
 | lecture | `if mode == 'read'` | *Basculer en mode édition* |
 | édition | `if mode == 'edit'` | *Quitter le mode édition* |
 
-Si toutefois cela s'avère complexe à mettre en oeuvre, on se contera de *Basculer en mode édition*.
-
 Le bouton devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
-Pour s'en assurer, on utilisera la requête définie par la fonction `query_is_relation_owner()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py).
+Pour s'en assurer, on utilisera la requête définie par la fonction [`plume.pg.queries.query_is_relation_owner`](/plume/pg/queries.py).
 
 ```python
 
 import psycopg2
+from plume.pg import queries
+
 conn = psycopg2.connect(connection_string)
 
 with conn:
 	with conn.cursor() as cur:
 	
 		cur.execute(
-			pg_queries.query_is_relation_owner(),
+			queries.query_is_relation_owner(),
 			(schema_name, table_name)
 			)
 		res = cur.fetchone()
@@ -78,56 +76,53 @@ conn.close()
 
 ### Effets
 
-Le **bouton de sauvegarde** permet à l'utilisateur d'enregistrer sur le serveur PostgreSQL les informations qu'il a saisies.
+Le **bouton de sauvegarde** permet à l'utilisateur d'enregistrer sur le serveur PostgreSQL les métadonnées qu'il a saisies.
 
 En arrière plan, cela suppose plusieurs opérations successives.
 
-1. Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie. On utilisera pour ce faire la méthode `update_value()`.
+1. Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie. On utilisera pour ce faire la méthode `update_value` de la classe `plume.rdf.widgetsdict.WidgetsDict`.
 
-Cette méthode ne doit être exécutée que sur des widgets de saisie non masqué, soit (les deux modes de gestion sont possibles) quand la clé `'object'` vaut `'edit'` ou lorsque `'main widget type'` est un widget de saisie. 
+Cette opération n'a de sens que pour les widgets de saisie non masqués, néanmoins la méthode `plume.rdf.widgetkey.RootKey.build_metagraph`[^appel-roootkey-build-metagraph], qui assure ensuite la reconstruction du graphe de métadonnées mis à jour, se charge d'éliminer les clés masquées. On pourra donc simplement boucler sur toutes les clés du dictionnaire dont le widget principal est supposé contenir une valeur (pas les boutons ni les groupes, donc) et exécuter :
 
-Soit :
-- `key` la clé du widget de saisie dans le dictionnaire de widgets `widgetsdict` ;
-- `widget_value` la valeur contenue dans le widget (QWidget).
-
-Pour les widgets de saisie, on exécutera donc :
+[^appel-roootkey-build-metagraph]: Cette méthode est appelée par la méthode `build_metagraph` de `plume.rdf.widgetsdict.WidgetsDict` utilisée à l'étape suivante.
 
 ```python
 
-if not ( widgetsdict[key]['hidden'] or widgetsdict[key]['hidden M'] ):
-    widgetsdict.update_value(key, widget_value)
+widgetsdict.update_value(widgetkey, widget_value)
 
 ```
+*Où `widgetkey` est une clé du dictionnaire de widgets `widgetsdict` correspondant à un widget de saisie et `widget_value` la valeur récupérée dans ce widget.*
 
-2. Générer un graphe RDF à partir du dictionnaire de widgets actualisé.
+
+2. Générer un graphe de métadonnées à partir du dictionnaire de widgets actualisé.
 
 ```python
 
-new_metagraph = widgetsdict.build_graph(vocabulary)
+new_metagraph = widgetsdict.build_metagraph()
 
 ```
-
-*`vocabulary` est la compilation de thésaurus qui a servi à créer le dictionnaire de widgets.*
 
 3. Créer une version actualisée du descriptif PostgreSQL de l'objet.
 
-Soit `old_pg_description` le descriptif/commentaire original.
+Le descriptif, objet de classe [`plume.pg.description.PgDescription`](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) nommé ci-après `pg_description`, est mis à jour via sa propriété `metagraph`.
 
 ```python
 
-new_pg_description = rdf_utils.update_pg_description(old_pg_description, new_metagraph, geoideJSON=geoideJSON)
+pg_description.metagraph = new_metagraph
 
 ```
 
-`geoideJSON` est un [paramètre utilisateur](/docs/source/usage/parametres_utilisateur.md) qui indique si le petit JSON contenant les métadonnées prises en charge par GéoIDE doit être généré parallèlement au JSON-LD qui sérialise l'ensemble des métadonnées. Par commodité, `update_pg_description()` considère qu'il vaut `False` lorsqu'il n'est pas spécifié, mais d'une manière générale Plume devrait plutôt considérer qu'il vaut `True`, sauf si l'ADL inhibe explicitement la création des petits JSON (ce qui aurait un sens pour un service qui n'utilise pas GéoIDE). Autrement dit, il s'agit d'un paramètre à sauvegarder dans les fichiers de configuration avec une valeur par défaut à `True`.
-
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
-On utilisera la requête définie par la fonction `query_update_table_comment()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py). À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec `query_get_relation_kind()`.
+On utilisera la requête définie par la fonction `query_update_table_comment` du module [plume.pg.queries](/plume/pg/queries.py). À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec `query_get_relation_kind`.
+
+La requête doit être appliquée à `str(pg_description)`, qui renvoie une représentation sous forme de chaîne de caractères de `pg_description`.
 
 ```python
 
 import psycopg2
+from plume.pg import queries
+
 conn = psycopg2.connect(connection_string)
 
 with conn:
@@ -143,7 +138,7 @@ with conn:
         query = pg_queries.query_update_table_comment(
             schema_name, table_name, relation_kind=kind[0]
             )
-        cur.execute(query, (new_pg_description,))
+        cur.execute(query, (str(pg_description),))
 
 conn.close()
 
@@ -153,11 +148,13 @@ conn.close()
 
 5. Mettre à jour les descriptifs des champs.
 
-La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction `query_update_columns_comments()` de [pg_queries.py](/plume/bibli_pg/pg_queries.py).
+La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction `query_update_columns_comments` du module [plume.pg.queries](/plume/pg/queries.py).
 
 ```python
 
 import psycopg2
+from plume.pg import queries
+
 conn = psycopg2.connect(connection_string)
 
 with conn:
@@ -177,7 +174,7 @@ conn.close()
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on édite les métadonnées, `schema_name` est le nom de son schéma.*
 
 *La condition de non nullité sur `query` est nécessaire, car la fonction pourrait renvoyer `None` si le dictionnaire ne contenait aucun descriptif de champs. Ceci peut arriver :*
-- *si la liste des champs `columns` n'a pas été fournie en argument de `build_dict()` ;*
+- *si le paramètre [`columns`](/docs/source/usage/generation_dictionnaire_widgets.md#columns--les-descriptifs-des-champs) n'a pas été fourni en argument lors de la création du dictionnaire de widgets ;*
 - *ou si cette liste était vide, parce que la table n'a aucun champ.*
 
 ### Caractéristiques du bouton
