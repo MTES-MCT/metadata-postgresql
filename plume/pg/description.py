@@ -71,7 +71,7 @@ class PgDescription:
         self._ante = ''
         self._post = ''
         self._jsonld = ''
-        self._metagraph = None
+        self._metagraph = Metagraph()
         if raw:
             r = re.split(r'\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}', raw, flags=re.DOTALL)
             if len(r) != 3:
@@ -80,7 +80,7 @@ class PgDescription:
                 self._ante, jsonld, self._post = r
                 self._jsonld = jsonld.strip('\n')
                 try:
-                    self._metagraph = Metagraph().parse(data=self._jsonld, format='json-ld')
+                    self._metagraph.parse(data=self._jsonld, format='json-ld')
                 except:
                     self._jsonld = ''
     
@@ -113,7 +113,7 @@ class PgDescription:
         à jour de la propriété :py:attr:`PgDescription.jsonld`, et par
         suite du descriptif.
         
-        Cette propriété vaut ``None`` si le descriptif ne contenait pas
+        Cette propriété renvoie un graphe vide si le descriptif ne contenait pas
         de JSON-LD.
         
         """
