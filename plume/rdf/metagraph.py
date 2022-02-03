@@ -489,7 +489,7 @@ def copy_metagraph(src_metagraph=None, old_metagraph=None):
     
     """
     if src_metagraph is None:
-        src_metagraph = Graph()
+        src_metagraph = Metagraph()
         src_datasetid = None
     else:  
         src_datasetid = src_metagraph.datasetid
