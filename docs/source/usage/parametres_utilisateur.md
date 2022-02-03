@@ -16,9 +16,12 @@ Le tableau ci-après liste les paramètres utilisateurs définis dans les fichie
 | `readOnlyCurrentLanguage` | bool | | si `True` seules les valeurs dans la langue principale sont affichées en mode lecture | [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#readonlycurrentlanguage) |
 | `textEditRowSpan` | int | | nombre de lignes occupées par les widgets QTextEdit si non spécifié par ailleurs | [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#texteditrowspan) |
 | `translation` | bool | `False` | `True` si le mode traduction est activé | [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#translation) et [Actions générales](/docs/source/usage/actions_generales.md#activation-du-mode-traduction) |
+| `urlCsw` | list | `['http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable']`[^3] | Liste des URL de base de services CSW mémorisées. | [Actions générales](/docs/source/usage/actions_generales.md#import-de-métadonnées-depuis-un-service-csw) |
 | `valueLengthLimit` | int | | nombre de caractères au-delà duquel les valeurs des QLineEdit sont affichées à la place dans des QTextEdit | [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#valuelengthlimit) |
 
 
 [^1]: Il s'agit du nom donné au paramètre dans la présente documentation et les noms de variables des fonctions, pas nécessairement celui qui doit être utilisé dans les fichiers INI (même si ça simplifierait les choses).
 
 [^2]: Valeur par défaut à renseigner dans le fichier de configuration, s'il y a lieu (à distinguer des valeurs par défaut que certaines fonctions donneront ensuite à ces paramètres). Si cette colonne ne contient aucune valeur, alors le paramètre ne doit **pas** être automatiquement ajouté au fichier de configuration `QGIS3.ini` lorsqu'il  n'est pas explicitement défini par l'utilisateur. Quand un tel paramètre n'existe pas, on considère qu'il vaut `None`. Si une valeur par défaut est fournie, le paramètre doit être automatiquement enregristré dans `QGIS3.ini` avec la valeur en question quand il n'était présent ni dans `QGIS3.ini` ni dans `global_settings.ini`.
+
+[^3]: URL de base du service CSW de GéoIDE pour les jeux de données.
