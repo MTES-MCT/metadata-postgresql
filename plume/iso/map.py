@@ -92,7 +92,7 @@ class IsoToDcat:
             self.isoxml = etree.Element(wns('gmd:MD_Metadata'))
         self.triples = []
         self.datasetid = DatasetId(datasetid)
-        self.language = self.metadata_language() or 'fr'
+        self.language = self.metadata_language or 'fr'
         for attr in dir(self):
             if attr.startswith('map_'):
                 triples = getattr(self, attr, [])
