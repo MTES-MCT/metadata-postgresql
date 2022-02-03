@@ -27,7 +27,7 @@ class DescriptionTestCase(unittest.TestCase):
             raw = d[k]
             with self.subTest(raw=k):
                 pgdescr = PgDescription(raw=raw)
-                self.assertIsNone(pgdescr.metagraph)
+                self.assertFalse(pgdescr.metagraph)
                 self.assertEqual(str(pgdescr), raw or '')
                 widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
                 metagraph = widgetsdict.build_metagraph()
@@ -86,7 +86,7 @@ Après"""
         self.assertEqual(pgdescr.ante, 'Avant')
         self.assertEqual(pgdescr.post, 'Après')
         self.assertEqual(pgdescr.jsonld, '')
-        self.assertIsNone(pgdescr.metagraph)
+        self.assertFalse(pgdescr.metagraph)
         widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
         metagraph = widgetsdict.build_metagraph()
         pgdescr.metagraph = metagraph
@@ -100,7 +100,7 @@ Après"""
         self.assertEqual(pgdescr.post, 'Après')
         self.assertEqual(pgdescr.jsonld, ' {"key": "value"} ')
         self.assertTrue(isinstance(pgdescr.metagraph, Metagraph))
-        self.assertEqual(len(pgdescr.metagraph), 0)
+        self.assertFalse(pgdescr.metagraph)
         widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
         metagraph = widgetsdict.build_metagraph()
         pgdescr.metagraph = metagraph
@@ -113,7 +113,7 @@ Après"""
         self.assertEqual(pgdescr.ante, 'Avant')
         self.assertEqual(pgdescr.post, 'Après')
         self.assertEqual(pgdescr.jsonld, '')
-        self.assertIsNone(pgdescr.metagraph)
+        self.assertFalse(pgdescr.metagraph)
         widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
         metagraph = widgetsdict.build_metagraph()
         pgdescr.metagraph = metagraph
