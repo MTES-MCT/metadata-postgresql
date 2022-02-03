@@ -249,7 +249,8 @@ class WidgetsDict(dict):
                 valkey = ValueKey(parent=tabkey, label=label, value=Literal(value),
                     is_long_text=True, description='Description du champ',
                     rowspan=self.textEditRowSpan, predicate=SNUM.column,
-                    do_not_save=True, independant_label=True)
+                    do_not_save=True, independant_label=True,
+                    is_read_only=not self.edit)
         
         # ------ Construction récursive ------
         self._build_tree(parent=self.root, metagraph=metagraph, \
