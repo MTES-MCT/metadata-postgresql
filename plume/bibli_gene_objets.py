@@ -54,6 +54,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     if _valueObjet['main widget type'] == "QGroupBox" :
        #--                        
        _mObjetGroupBox = QtWidgets.QGroupBox()
+       _mObjetGroupBox.setObjectName(str(_mObjetGroupBox))
        #-- 
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetGroupBox.setVisible(False)
@@ -93,7 +94,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if not self.mFirst :
           if valueExiste('label', _valueObjet) :_mObjetGroupBox.setTitle(_valueObjet['label']) 
        #Tooltip                        
-       if valueExiste('help text', _valueObjet) : _mObjetGroupBox.setToolTip(_valueObjet['help text'])                                
+       if valueExiste('help text', _valueObjet) : _mObjetGroupBox.setToolTip(_valueObjet['help text'])  
+
+       """                              
+       #AJOUT 30 JANVIER 2022
+       if _valueObjet['object'] in ['group of properties', 'group of values', 'translation group'] :
+          _mObjetGroupBox.setContextMenuPolicy(Qt.CustomContextMenu)
+          _mObjetGroupBox.customContextMenuRequested.connect(lambda  : self.menuContextuelQGroupBox(_keyObjet, _mObjetGroupBox, QPoint( 15, 15)))
+       #AJOUT 30 JANVIER 2022
+       """                              
 
        self.mFirst = False
        #Dict des objets instanciés
@@ -787,7 +796,7 @@ def apparence_mObjetQToolButton(self, __keyObjet, __iconSources, __Text):
 def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
     __mObjetQLabelEtiquette = None
     # == QLABEL
-    if __valueObjet['label'] and __valueObjet['object'] == 'edit' :
+    if __valueObjet['has label'] :
        _labelBackGround  = self.labelBackGround   #Fond Qlabel
        #--                        
        __mObjetQLabelEtiquette = QtWidgets.QLabel()
@@ -802,6 +811,8 @@ def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
        __mObjetQLabelEtiquette.setText(__valueObjet['label']) 
        self.mDicObjetsInstancies[__keyObjet].update({'label widget' : __mObjetQLabelEtiquette})
        __mObjetQLabelEtiquette.setMaximumSize(QtCore.QSize(self.tabWidget.width(), 18))
+       #Tooltip                        
+       if valueExiste('help text', __valueObjet) : __mObjetQLabelEtiquette.setToolTip(__valueObjet['help text'])
 
     # == QLABEL
     return __mObjetQLabelEtiquette

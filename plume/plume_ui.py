@@ -102,6 +102,10 @@ class Ui_Dialog_plume(object):
         _iconSourcesInterrogation = _pathIcons + "/info.svg"
         _iconSourcesHelp          = _pathIcons + "/assistance.png"
         _iconSourcesAbout         = _pathIcons + "/about.png"
+        # For menu contex QGroupBox
+        self._iconSourcesCopy, self._iconSourcesPaste = _iconSourcesCopy, _iconSourcesPaste
+        _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
+        
         self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
@@ -214,9 +218,10 @@ class Ui_Dialog_plume(object):
         elif mItem == "Copy" :
            self.copyMetagraph = self.metagraph
            if self.copyMetagraph !=  None :
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées de <b>") + str(self.schema) + "</b> / <b>" + str(self.table) + "</b>"
+              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées de <b>") + str(self.schema) + "." + str(self.table) + "</b>"
            else :    
               mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées mémorisée.") 
+           self.copyMetagraphTooltip = mTextToolTip
            self.plumePaste.setToolTip(mTextToolTip)
         #**********************
         elif mItem == "Paste" :
@@ -319,6 +324,36 @@ class Ui_Dialog_plume(object):
     # == Gestion des actions du bouton Changement des langues
     #==========================
 
+    #==================================================
+    #AJOUT 30 JANVIER 2022
+    def menuContextuelQGroupBox(self, _keyObjet, _mObjetGroupBox, point):
+        _menuGroupBox = QMenu() 
+        _menuGroupBox.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + self.editStyle  + "; border-width: 0px;}")
+        #-------   
+        menuIcon = returnIcon(self._iconSourcesPaste)          
+        _menuActionQGroupBoxCopier = QAction(QIcon(menuIcon), "Copier le bloc.", _menuGroupBox)
+        _menuGroupBox.addAction(_menuActionQGroupBoxCopier)
+        _menuActionQGroupBoxCopier.triggered.connect(lambda : self.actionFonctionQGroupBox(_keyObjet, "copierQGroupBox"))
+        #-------   
+        menuIcon = returnIcon(self._iconSourcesCopy)          
+        _menuActionQGroupBoxColler = QAction(QIcon(menuIcon), "Coller le bloc.", _menuGroupBox)
+        _menuGroupBox.addAction(_menuActionQGroupBoxColler)
+        _menuActionQGroupBoxColler.triggered.connect(lambda : self.actionFonctionQGroupBox(_keyObjet, "collerQGroupBox"))
+        #-------
+        _menuGroupBox.exec_(_mObjetGroupBox.mapToGlobal(point))
+        return
+
+    #**********************
+    def actionFonctionQGroupBox(self,_keyObjet, mAction):
+        print(str(_keyObjet))
+        if mAction == "copierQGroupBox" :
+           print("copierQGroupBox")
+        elif mAction == "collerQGroupBox" :
+           print("collerQGroupBox")
+        return
+    #AJOUT 30 JANVIER 2022
+    #==================================================
+
     #==========================
     #Génération à la volée 
     #Dict des objets instanciés
@@ -357,7 +392,7 @@ class Ui_Dialog_plume(object):
     #--
     #Génération à la volée 
     #==========================
-
+    
     #---------------------------
     #---------------------------
     # == Gestion des INTERACTIONS
@@ -436,37 +471,38 @@ class Ui_Dialog_plume(object):
         self.model = iface.browserModel()
         item = self.model.dataItem(self.proxy_model.mapToSource(index))
         #issu code JD Lomenede
-        if isinstance(item, QgsLayerItem):
-            self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
-            self.getAllFromUri()
-            #--
-            if self.connectBaseOKorKO[0] :
-               self.afficheNoConnections("hide")
-               #-
-               self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
-               self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
-               self.oldMetagraph  = self.metagraph
-               self.saveMetaGraph = False
-               self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
-               self.data       = bibli_plume.returnObjetData(self)
-               self.mode = "read"
-               #-
-               self.displayToolBar(*self.listIconToolBar)
-               #-
-               if self.instalMetadata :
-                  #-
-                  tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
-                  if tpl_labelDefaut :
-                     self.template = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
-                  else :
-                     self.template = None
-                  #-
-                  self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
-                  self.majQmenuModeleIconFlag(tpl_labelDefaut)
-               else :
-                  self.template = None
-               #-
-               self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+        if isinstance(item, QgsLayerItem) :
+           if self.ifVectorPostgres(item.uri()) :
+              self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
+              self.getAllFromUri()
+              #--
+              if self.connectBaseOKorKO[0] :
+                 self.afficheNoConnections("hide")
+                 #-
+                 self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
+                 self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
+                 self.oldMetagraph  = self.metagraph
+                 self.saveMetaGraph = False
+                 self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+                 self.data       = bibli_plume.returnObjetData(self)
+                 self.mode = "read"
+                 #-
+                 self.displayToolBar(*self.listIconToolBar)
+                 #-
+                 if self.instalMetadata :
+                    #-
+                    tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
+                    if tpl_labelDefaut :
+                       self.template = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                    else :
+                       self.template = None
+                    #-
+                    self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                    self.majQmenuModeleIconFlag(tpl_labelDefaut)
+                 else :
+                    self.template = None
+                 #-
+                 self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
     #---------------------------
@@ -484,6 +520,14 @@ class Ui_Dialog_plume(object):
            zMess  = QtWidgets.QApplication.translate("plume_ui", "Authentication problem", None)
            bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
         return
+
+    #----------------------
+    def ifVectorPostgres(self, itemUri) :
+        listSousChaine = ["host=", "dbname=", "user="]
+        nbOk = 0
+        for elem in listSousChaine :
+            nbOk += 1 if itemUri.find(elem) != -1 else 0
+        return True if nbOk == len(listSousChaine) else False     
 
     #----------------------
     def connectBase(self) :
@@ -695,7 +739,7 @@ class Ui_Dialog_plume(object):
         #-ToolTip
         #-
         if self.copyMetagraph !=  None :
-           mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées de <b>") + str(self.schema) + "</b> / <b>" + str(self.table) + "</b>"
+           mTextToolTip = self.copyMetagraphTooltip
         else :    
            mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées mémorisée.") 
         self.plumePaste.setToolTip(mTextToolTip)
