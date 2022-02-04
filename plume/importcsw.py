@@ -224,7 +224,8 @@ class Ui_Dialog_ImportCSW(object):
         
         if url_csw != None :
            self.mZoneUrl.setText(url_csw)
-           #self.mZoneUrlId.setText(file_identifier)
+        if file_identifier != None :
+           self.mZoneUrlId.setText(file_identifier)
         
     #===============================              
     def functionAddCsw(self):
