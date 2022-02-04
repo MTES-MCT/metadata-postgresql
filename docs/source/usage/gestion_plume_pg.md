@@ -55,6 +55,8 @@ Si l'extension *PlumePg* est installée sur une base disposant déjà d'*Asgard*
 - de déréférencer le schéma `z_plume` pour gérer ses droits hors d'*Asgard* ;
 - de désinstaller *Asgard*.
 
+*NB. Pour que l'affectation automatique de droits sur `z_plume` ait lieu, il faudra utiliser une version d'Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n'étaient pas automatiquement référencés.*
+
 ## Mise à jour
 
 Comme pour l'installation, les fichiers de mise à jour sont disponibles dans le dossier [`postgresql`](/postgresql) du Git :
