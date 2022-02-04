@@ -367,8 +367,58 @@ Son activation par l'utilisateur ouvre une boîte de dialogue dans laquelle s'ef
 | Paramètre | Description | Mode de saisie |
 | --- | --- | --- |
 | `url_csw` | URL de base du service CSW | Ligne de saisie libre. Il serait intéressant de permettre à l'utilisateur de mémoriser les URL qu'il saisit dans un paramètre [`urlCsw`](/docs/source/usage/parametres_utilisateur.md) sauvegardé dans le fichier `QGIS3.ini`, afin qu'il n'ait pas à les réécrire à chaque import. La fenêtre de paramétrage lui permettrait de choisir entre l'une des URL de sa liste ou une nouvelle URL ajoutée manuellement, qu'il pourra ensuite enregistrer s'il le souhaite. |
-| `file_identifier` | Identifiant de la fiche de métadonnées | Ligne de saisie libre. | 
-| `preserve` | Mode de fusion du graphe de métadonnées actuel avec les métadonnées importées | Trois boutons radio correspondant aux trois modes possibles. |
+| `file_identifier` | Identifiant de la fiche de métadonnées | Ligne de saisie libre. |
+| `preserve` | Mode de fusion du graphe de métadonnées actuel avec les métadonnées importées | Trois boutons radio correspondant aux trois modes d'import possibles. |
+| `save_configuration` | La configuration d'import (URL du CSW et identifiant de la fiche) doit-elle être mémorisée dans les métadonnées ? | Case à cocher. Cochée par défaut. Libellé : *Enregistrer la configuration dans les métadonnées*. Cette option vise à faciliter d'éventuelles mises à jour ultérieures à partir de la même source distante. |
+
+Les modes d'import sont les suivants :
+
+| Valeur de `preserve` | Etiquette du bouton radio |
+| --- | --- |
+| `'always'` | Compléter avec les métadonnées distantes |
+| `'if blank'` | Mettre à jour avec les métadonnées distantes |
+| `'never'` | Remplacer par les métadonnées distantes |
+
+Par défaut, l'option `Compléter avec les métadonnées distantes` est sélectionnée.
+
+À l'ouverture de la fiche de métadonnées, on tentera de de récupérer les valeurs des paramètres `url_csw` et `file_identifier` dans le graphe de métadonnées :
+
+```python
+
+url_csw, file_identifier = old_metagraph.linked_record
+
+```
+
+*`old_metagraph` est l'ancien graphe de métadonnées de la table, c'est-à-dire le `metagraph` courant au moment de l'ouverture de la fenêtre d'import.*
+
+En pratique cette propriété `plume.rdf.metagraph.Metagraph.linked_record` interroge le graphe à la recherche des valeurs éventuelles de `snum:linkedRecord / snum:csw` et
+`snum:linkedRecord / dct:identifier`. Ce sont des métadonnées comme les autres, qui peuvent tout à fait être éditées via le formulaire de Plume.
+
+Une fois son paramétrage réalisé, l'utilise clique sur un bouton `Import`, ce qui lance une procédure en cinq temps :
+
+1. Création de la requête, avec `plume.iso.csw.getrecordbyid_request`.
+
+```python
+
+from plume.iso.csw import getrecordbyid_request
+
+request = getrecordbyid_request(url_csw, file_identifier)
+
+```
+
+2. Envoi de la requête au CSW, par exemple avec `qgis.core.QgsNetworkContentFetcher`.
+
+3. Génération du nouveau graphe de métadonnées.
+
+```python
+
+from plume.rdf.metagraph import metagraph_from_iso
+
+metagraph = metagraph_from_iso(raw_xml, old_metagraph=old_metagraph, preserve=preserve)
+
+```
+
+*`old_metagraph` est l'ancien graphe de métadonnées de la table, c'est-à-dire le `metagraph` courant au moment de l'ouverture de la fenêtre d'import.`raw_xml` est la réponse du CSW, sous forme de chaîne de caractères.*
 
 Les métadonnées ISO 19115/19139 importées sont restructurées selon les catégories de métadonnées communes de Plume. Pour l'heure, ce n'est pas exhaustif. Seules les informations suivantes sont récupérées :
 - libellé ;
@@ -383,7 +433,20 @@ Les métadonnées ISO 19115/19139 importées sont restructurées selon les caté
 - généalogie ;
 - organisations responsables, avec leur rôle, leur nom, leur numéro de téléphone, leur adresse mél, leur site internet.
 
-Il est également possible que, même pour les catégories susmentionnées, une partie des métadonnées de certains catalogues ne soient pas reconnues.
+Il est également possible que, même pour les catégories susmentionnées, une partie des métadonnées de certains catalogues ne soient pas reconnues. Tous les catalogues n'ont pas interprété les standard ISO de la même façon et la même information peut avoir un emplacement différent selon les cas. À ce stade, les tests réalisés ont porté sur des fiches de métadonnées issues de GéoIDE, d'un catalogue Prodige et d'un catalogue Géosource.
+
+4. Mémorisation éventuelle de la configuration d'import
+
+Si l'utilisateur n'a pas décoché la case à cocher `save_configuration`, on utilise la propriété `linked_record` pour mémoriser `url_csw` et `file_identifier` dans le nouveau graphe de métadonnées.
+
+```python
+
+if save_configuration:
+    metagraph.linked_record = url_csw, file_identifier
+
+```
+
+5. Comme toujours, il faudra ensuite [regénérer le dictionnaire de widgets](/docs/source/usage/generation_dictionnaire_widgets.md) avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre [`metagraph`](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) du constructeur de `plume.rdf.widgetsdict.WidgetsDict`. Le formulaire de saisie/consultation peut ensuite être [recréé à partir du nouveau dictionnaire](/docs/source/usage/creation_widgets.md).
 
 
 ## Export des métadonnées dans un fichier
@@ -392,20 +455,20 @@ Il est également possible que, même pour les catégories susmentionnées, une 
 
 Cette fonctionnalité permet d'exporter une sérialisation RDF de `metagraph` dans un fichier.
 
-Elle fait appel à la fonction `rdf_utils.export_metagraph()`.
+Elle fait appel à la méthode `export` de la classe `plume.rdf.metagraph.Metagraph`.
 
 ```python
 
 try:
-    rdf_utils.export_metagraph(metagraph, shape, filepath, format)
+    metagraph.export(filepath, format)
 except:
     ...
 
 ```
 
-*`metagraph` est le graphe des métadonnées (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes)), `shape` est le schéma SHACL de catégories communes (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#shape--le-schéma-shacl-des-métadonnées-communes)), `filepath` est le chemin complet de la destination, `format` est le format RDF d'export. Les deux derniers paramètres sont à spécifier par l'utilisateur.*
+*`metagraph` est le graphe des métadonnées (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes)), `filepath` est le chemin complet du fichier de destination, `format` est le format RDF d'export. Les deux derniers paramètres sont à spécifier par l'utilisateur.*
 
-Le contrôle d'erreur n'est pas aussi essentiel ici que pour l'import, mais on préférera être prudent. Un échec à l'export ne mérite pas un plantage du plugin.
+Le contrôle d'erreur n'est pas absolument essentiel ici, car les graphes de métadonnées de Plume sont très simples et présumés compatibles avec les fonctions d'export de RDFLib. Néanmoins l'expérience a montré que certains formats réagissaient mal aux URI basés sur des URN, par exemple. On préférera donc être prudent. Un échec à l'export ne mérite pas un plantage du plugin.
 
 C'est bien `metagraph` qui est exporté et non le contenu (potentiellement non sauvegardé) du formulaire.
 
@@ -416,11 +479,11 @@ Ce bouton utilise l'icône [export.svg](/plume/icons/general/export.svg) :
 
 Texte d'aide : *Exporter les métadonnées dans un fichier*.
 
-Une implémentation possible serait d'utiliser un QToolButton avec un menu listant les formats autorisés. Ceux-ci varient selon le contenu de `metagraph`. Pour obtenir la liste, on fera appel à la fonction `rdf_utils.available_formats()` :
+Une implémentation possible serait d'utiliser un `QToolButton` avec un menu listant les formats autorisés. Ceux-ci varient selon le contenu de `metagraph`. Pour obtenir la liste, on utilisera la propriété `available_formats` du graphe de métadonnées :
 
 ```python
 
-exportFormats = rdf_utils.available_formats(metagraph, shape)
+exportFormats = metagraph.available_formats
 
 ```
 
@@ -428,7 +491,9 @@ Pour connaître l'extension associée par défaut à un format :
 
 ```python
 
-extension = rdf_utils.export_extension_from_format(format)
+from plume.rdf.utils import export_extension_from_format
+
+extension = export_extension_from_format(format)
 
 ```
 
@@ -442,12 +507,14 @@ On utilisera la commande suivante :
 
 ```python
 
-metagraph = rdf_utils.copy_metagraph(None, old_metagraph)
+from plume.rdf.metagraph import copy_metagraph
+
+metagraph = copy_metagraph(old_metagraph=old_metagraph)
 
 ```
 *`old_metagraph` est l'ancien graphe de métadonnées de la table, soit le `metagraph` actuel, dont la fonction conserve l'identifiant.*
 
-Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md)).
+Il faudra ensuite [regénérer le dictionnaire de widgets](/docs/source/usage/generation_dictionnaire_widgets.md) avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre [`metagraph`](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) du constructeur de `plume.rdf.widgetsdict.WidgetsDict`. Le formulaire de saisie/consultation peut ensuite être [recréé à partir du nouveau dictionnaire](/docs/source/usage/creation_widgets.md).
 
 ### Caractéristiques du bouton
 
@@ -467,17 +534,18 @@ Cette fonctionnalité permet à l'utilisateur de copier l'ensemble des métadonn
 
 Concrètement :
 - l'action *Copier* (sur la table A) mémorise le `metagraph` de la table A ;
-- l'action *Coller* (sur la table B) régénère le dictionnaire de widgets en utilisant le graphe de mémorisé comme argument `metagraph` de `build_dict()` (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md)), puis re-construit le formulaire en conséquence (cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md)).
+- l'action *Coller* (sur la table B) régénère le dictionnaire de widgets en utilisant le graphe de mémorisé comme argument [`metagraph`](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) du constructeur de `plume.rdf.widgetsdict.WidgetsDict`, puis [re-construit le formulaire](/docs/source/usage/creation_widgets.md) en conséquence.
 
-Plus précisément, l'argument `metagraph` à fournir à `build_dict()` pour la table B est obtenu via :
+Plus précisément, l'argument `metagraph` à fournir au constructeur de `plume.rdf.widgetsdict.WidgetsDict` pour la table B est obtenu via :
 
 ```python
 
-metagraph = rdf_utils.copy_metagraph(src_metagraph, old_metagraph)
+from plume.rdf.metagraph import copy_metagraph
+
+metagraph = copy_metagraph(src_metagraph, old_metagraph)
 
 ```
 *`old_metagraph` est l'ancien graphe de métadonnées de la table B, soit son `metagraph` actuel, dont la fonction conserve l'identifiant. `src_metagraph` est le graphe mémorisé de la table A.*
-
 
 
 ### Caractéristiques des boutons
