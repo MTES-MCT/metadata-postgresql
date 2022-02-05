@@ -35,5 +35,5 @@ def shared_metadata_as_page():
                 path, label, description,
                 ', '.join(sources) if sources else '')
     page += '\n'
-    with open(filepath, 'w') as dest:
+    with open(filepath, 'w', encoding='utf-8') as dest:
         dest.write(page)
