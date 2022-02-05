@@ -11,3 +11,4 @@ Usage
    modeles_de_formulaire
    parametres_utilisateur
    gestion_plume_pg
+   metadonnees_communes
