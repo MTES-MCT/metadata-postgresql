@@ -44,7 +44,11 @@ class WidgetsDictTestCase(unittest.TestCase):
         d = {
             'label': 'Couverture temporelle',
             'main widget type': 'QGroupBox',
-            'object': 'group of values'
+            'object': 'group of values',
+            'help text': "Période·s décrite·s par le jeu de données. " \
+                "La date de début et la date de fin peuvent être " \
+                "confondues, par exemple dans le cas de l'extraction " \
+                "ponctuelle d'une base mise à jour au fil de l'eau."
             }
         for k, v in d.items():
             with self.subTest(internalkey = k):
@@ -74,6 +78,10 @@ class WidgetsDictTestCase(unittest.TestCase):
             'object': 'group of properties',
             'has minus button': True,
             'hide minus button': True,
+            'help text': "Période·s décrite·s par le jeu de données. " \
+                "La date de début et la date de fin peuvent être " \
+                "confondues, par exemple dans le cas de l'extraction " \
+                "ponctuelle d'une base mise à jour au fil de l'eau."
             }
         for k, v in d.items():
             with self.subTest(internalkey = k):
@@ -90,7 +98,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             'has label': True,
             'main widget type': 'QDateEdit',
             'object': 'edit',
-            'input mask': '0000-00-00',
+            'input mask': '9999-99-99',
             'regex validator pattern': '^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$'
             }
         for k, v in d.items():
@@ -200,7 +208,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertIsNotNone(key)
         d = {
             'label': 'Libellé',
-            'help text': 'Libellé explicite du jeu de données.',
+            'help text': 'Nom explicite du jeu de données.',
             'main widget type': 'QGroupBox',
             'object': 'translation group'
             }
@@ -230,7 +238,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         d = {
             'main widget type': 'QLineEdit',
             'object': 'edit',
-            'help text': 'Libellé explicite du jeu de données.',
+            'help text': 'Nom explicite du jeu de données.',
             'authorized languages': ['it', 'en', 'fr'],
             'language value': 'it',
             'has minus button': True,
