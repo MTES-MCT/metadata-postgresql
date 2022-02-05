@@ -27,7 +27,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:title ;
 		sh:name "Libellé"@fr ;
-        sh:description "Libellé explicite du jeu de données."@fr ;
+        sh:description "Nom explicite du jeu de données."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
 		sh:minCount 1 ;
@@ -58,7 +58,7 @@ snum:DatasetShape
     sh:property [
 		sh:path snum:isExternal ;
 		sh:name "Donnée externe"@fr ;
-        sh:description "S'agit-il de la reproduction d'un jeu de données produit par un tiers ?"@fr ;
+        sh:description "Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:boolean ;
         sh:maxCount 1 ;
@@ -66,7 +66,8 @@ snum:DatasetShape
 	] ;
     sh:property [
 		sh:path dcat:theme ;
-		sh:name "Thème"@fr ;
+		sh:name "Thèmes"@fr ;
+        sh:description "Classification thématique du jeu de données selon la nomenclature généraliste du portail opendata européen et/ou, s'il y a lieu, la nomemclature INSPIRE."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         snum:ontology <http://publications.europa.eu/resource/authority/data-theme>,
@@ -75,7 +76,8 @@ snum:DatasetShape
 	] ;
     sh:property [
 		sh:path dct:subject ;
-		sh:name "Catégorie ISO 19115"@fr ;
+		sh:name "Catégories thématiques"@fr ;
+        sh:description "Classification thématique du jeu données selon la nomenclature du standard ISO 19115."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
@@ -83,7 +85,8 @@ snum:DatasetShape
 	] ;
     sh:property [
 		sh:path dcat:keyword ;
-		sh:name "Mots-clé libres"@fr ;
+		sh:name "Mots-clés libres"@fr ;
+        sh:description "Mots ou très brèves expressions représentatives du jeu de données, à l'usage des moteurs de recherche."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:order 6 ;
@@ -91,6 +94,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:spatial ;
 		sh:name "Couverture géographique"@fr ;
+        sh:description "Territoire·s décrit·s par le jeu de données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:Location ;
         sh:order 9 ;
@@ -98,6 +102,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:temporal ;
 		sh:name "Couverture temporelle"@fr ;
+        sh:description "Période·s décrite·s par le jeu de données. La date de début et la date de fin peuvent être confondues, par exemple dans le cas de l'extraction ponctuelle d'une base mise à jour au fil de l'eau."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:PeriodOfTime ;
         sh:order 10 ;
@@ -105,36 +110,40 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:created ;
 		sh:name "Date de création"@fr ;
+        sh:description "Date de création du jeu de données. Il peut par exemple s'agir de la date de création de la table PostgreSQL ou de la date de la première saisie de données dans cette table."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
         sh:order 11 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dct:modified ;
 		sh:name "Date de dernière modification"@fr ;
+        sh:description "Date de la dernière modification du jeu de données. Cette date est présumée tenir compte tant des modifications de fond, tels que les ajouts d'enregistrements, que des modification purement formelles (corrections de coquilles dans les données, changement de nom d'un champ, etc.). L'absence de date de dernière modification signifie que la donnée n'a jamais été modifiée depuis sa création."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
         sh:order 12 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dct:issued ;
 		sh:name "Date de publication"@fr ;
+        sh:description "Date à laquelle le jeu de données a été diffusé. Cette date ne devrait être renseignée que pour un jeu de données effectivement mis à disposition du public ou d'utilisateur tiers via un catalogue de données ou un site internet. Pour un jeu de données mis à jour en continu, il s'agit de la date de publication initiale."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
         sh:order 13 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dct:accrualPeriodicity ;
 		sh:name "Fréquence de mise à jour"@fr ;
+        sh:description "Fréquence de mise à jour des données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class dct:Frequency ;
         sh:maxCount 1 ;
@@ -145,6 +154,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:provenance ;
 		sh:name "Généalogie"@fr ;
+        sh:description "Sources et méthodes mises en oeuvre pour produire les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:ProvenanceStatement ;
         sh:order 20 ;
@@ -179,6 +189,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dcat:temporalResolution ;
 		sh:name "Résolution temporelle"@fr ;
+        sh:description "Plus petite durée significative dans le contexte du jeu de données." ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:duration ;
         sh:order 26 ;
@@ -369,7 +380,7 @@ snum:DistributionShape
         sh:maxCount 1 ;
         sh:order 2 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dct:rights ;
@@ -457,7 +468,7 @@ snum:PeriodOfTimeShape
         sh:maxCount 1 ;
         sh:order 0 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dcat:endDate ;
@@ -467,7 +478,7 @@ snum:PeriodOfTimeShape
         sh:maxCount 1 ;
         sh:order 1 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] .
 
 snum:KindShape
@@ -692,7 +703,7 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 5 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dct:modified ;
@@ -703,7 +714,7 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 6 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path dct:created ;
@@ -714,7 +725,7 @@ snum:StandardShape
         sh:maxCount 1 ;
         sh:order 7 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
-        snum:inputMask "0000-00-00" ;
+        snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
 		sh:path foaf:page ;
