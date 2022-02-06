@@ -179,7 +179,25 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue("Système de coordonnées (registre de codes EPSG de l'OGC)"
             in widgetsdict[key]['thesaurus values'])
         self.assertTrue('' in widgetsdict[key]['thesaurus values'])
-    
+        # widget de saisie avec unités
+        key = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        d = {
+            'main widget type': 'QLineEdit',
+            'label': 'Résolution temporelle',
+            'has label': True,
+            'help text': 'Plus petite durée significative dans le contexte du jeu de données.',
+            'object': 'edit',
+            'type validator': 'QIntValidator',
+            'units': ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'],
+            'current unit': 'ans'
+            }
+        for k, v in d.items():
+            with self.subTest(internalkey = k):
+                self.assertEqual(widgetsdict[key][k], v)
+        for k, v in widgetsdict[key].items():
+            with self.subTest(internalkey = k):
+                if not k in d:
+                    self.assertFalse(v)
     
     def test_widgetsdict_empty_translation(self):
         """Génération d'un dictionnaire de widgets sans graphe ni modèle, en mode traduction.
@@ -300,6 +318,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:temporal [ a dct:PeriodOfTime ;
                     dcat:endDate "2021-01-15"^^xsd:date ;
                     dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:temporalResolution "PT10M"^^xsd:duration ;
                 dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
@@ -352,6 +371,9 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(widgetsdict[key]['multiple sources'])
         self.assertEqual(widgetsdict[key]['value'],
             '<a href="http://inspire.ec.europa.eu/theme/au">Unités administratives</a>')
+        key = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        self.assertFalse(widgetsdict[key]['units'])
+        self.assertEqual(widgetsdict[key]['value'], '10 min.')
         key = widgetsdict.root.search_from_path(DCT.accessRights)
         self.assertFalse(widgetsdict[key]['multiple sources'])
         self.assertIsNone(key.m_twin)
@@ -710,6 +732,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                     dcat:startDate "2021-01-15"^^xsd:date ] ;
                 dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                dcat:temporalResolution "P1M"^^xsd:duration,
+                    "PT12H"^^xsd:duration ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -764,6 +788,40 @@ class WidgetsDictTestCase(unittest.TestCase):
             if not k in ('widgets to hide', 'widgets to delete', 'widgets to move'):
                 self.assertFalse(actionsdict[k])
 
+        # --- suppression d'une clé avec widget de sélection de l'unité ---
+        # vérifie aussi la suppression de valeurs multiples non autorisées
+        g = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        b = g.children[0]
+        c = g.children[1]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dcat:temporalResolution>'
+        widgetsdict[b]['main widget'] = '<B QLineEdit dcat:temporalResolution>'
+        widgetsdict[b]['minus widget'] = '<B-minus QToolButton dcat:temporalResolution>'
+        widgetsdict[b]['unit widget'] = '<B-unit QToolButton dcat:temporalResolution>'
+        widgetsdict[b]['unit menu'] = '<B-unit QMenu dcat:temporalResolution>'
+        widgetsdict[b]['unit actions'] = ['<B-unit QAction n°1>', '<B-unit QAction n°2>']
+        widgetsdict[c]['main widget'] = '<C QLineEdit dcat:temporalResolution>'
+        widgetsdict[c]['minus widget'] = '<C-minus QToolButton dcat:temporalResolution>'
+        widgetsdict[c]['unit widget'] = '<C-unit QToolButton dcat:temporalResolution>'
+        widgetsdict[c]['unit menu'] = '<C-unit QMenu dcat:temporalResolution>'
+        widgetsdict[c]['unit actions'] = ['<C-unit QAction n°1>', '<C-unit QAction n°2>']
+        actionsdict = widgetsdict.drop(b)
+        self.assertEqual(len(g.children), 1)
+        self.assertFalse(b in widgetsdict)
+        self.assertListEqual(actionsdict['widgets to hide'], ['<C-minus QToolButton dcat:temporalResolution>'])
+        self.assertListEqual(actionsdict['widgets to delete'],
+            ['<B QLineEdit dcat:temporalResolution>', '<B-minus QToolButton dcat:temporalResolution>',
+             '<B-unit QToolButton dcat:temporalResolution>'])
+        self.assertListEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dcat:temporalResolution>', '<C QLineEdit dcat:temporalResolution>', 0, 0, 1, 2),
+             ('<QGridLayout dcat:temporalResolution>', '<C-minus QToolButton dcat:temporalResolution>', 0, 3, 1, 1),
+             ('<QGridLayout dcat:temporalResolution>', '<C-unit QToolButton dcat:temporalResolution>', 0, 2, 1, 1)])
+        self.assertListEqual(actionsdict['actions to delete'], ['<B-unit QAction n°1>', '<B-unit QAction n°2>'])
+        self.assertListEqual(actionsdict['menus to delete'], ['<B-unit QMenu dcat:temporalResolution>'])
+        for k in actionsdict.keys():
+            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move', 'actions to delete',
+                'menus to delete'):
+                self.assertFalse(actionsdict[k])
+        
         # --- suppression d'un groupe de propriétés ---
         g = widgetsdict.root.search_from_path(DCT.temporal)
         widgetsdict.add(g.button)
@@ -849,7 +907,42 @@ class WidgetsDictTestCase(unittest.TestCase):
             if not k in ('widgets to hide', 'widgets to delete', 'widgets to move', 'actions to delete',
                 'menus to delete'):
                 self.assertFalse(actionsdict[k])
+
+    def test_change_unit(self):
+        """Changement d'unité déclarée pour une clé du dictionnaire.
         
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dcat:temporalResolution "P1M"^^xsd:duration ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        b = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        widgetsdict[b.parent]['grid widget'] = '<QGridLayout dcat:temporalResolution>'
+        widgetsdict[b]['main widget'] = '<B QLineEdit dcat:temporalResolution>'
+        widgetsdict[b]['minus widget'] = '<B-minus QToolButton dcat:temporalResolution>'
+        widgetsdict[b]['unit widget'] = '<B-unit QToolButton dcat:temporalResolution>'
+        widgetsdict[b]['unit menu'] = '<B-unit QMenu dcat:temporalResolution>'
+        widgetsdict[b]['unit actions'] = ['<B-unit QAction n°1>', '<B-unit QAction n°2>']
+        self.assertEqual(widgetsdict[b]['current unit'], 'mois')
+        self.assertListEqual(widgetsdict[b]['units'], ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'])
+        actionsdict = widgetsdict.change_unit(b, 'jours')
+        self.assertListEqual(actionsdict['unit menu to update'], [b])
+        self.assertEqual(widgetsdict[b]['current unit'], 'jours')
+        self.assertListEqual(widgetsdict[b]['units'], ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'])
+        for k in actionsdict.keys():
+            if not k == 'unit menu to update':
+                self.assertFalse(actionsdict[k])
+    
     def test_change_source(self):
         """Changement de la source courante d'une clé du dictionnaire.
         
@@ -1353,6 +1446,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:temporal [ a dct:PeriodOfTime ;
                     dcat:endDate "2021-01-15"^^xsd:date ;
                     dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:temporalResolution "P1M"^^xsd:duration ;
                 dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
@@ -1429,6 +1523,13 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(c.value, URIRef('mailto:service@developpement-durable.gouv.fr'))
         self.assertEqual(widgetsdict[c]['value'], 'service@developpement-durable.gouv.fr')
 
+        # --- durée (avec unité) ---
+        c = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        widgetsdict.change_unit(c, 'heures')
+        widgetsdict.update_value(c, '5')
+        self.assertEqual(c.value, Literal('PT5H', datatype=XSD.duration))
+        self.assertEqual(widgetsdict[c]['value'], '5')
+
         # --- valeur de thésaurus ---
         g = widgetsdict.root.search_from_path(DCAT.theme)
         c = g.children[0]
@@ -1458,6 +1559,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:temporal [ a dct:PeriodOfTime ;
                     dcat:endDate "2021-01-15"^^xsd:date ;
                     dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:temporalResolution "PT5H"^^xsd:duration ;
                 dcat:theme <http://publications.europa.eu/resource/authority/data-theme/REGI> ;
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
                 owl:versionInfo "1.0" ;
