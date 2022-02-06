@@ -32,7 +32,7 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.namespaces import DCAT, RDF, XSD, GSP
 from plume.rdf.metagraph import Metagraph
-from plume.rdf.utils import DatasetId
+from plume.rdf.utils import DatasetId, int_from_duration
 
 class WidgetKey:
     """Clé d'un dictionnaire de widgets.
@@ -118,6 +118,21 @@ class WidgetKey:
     
     Mettre cet attribut à ``False`` permet d'inhiber la création
     des boutons de choix de la source, s'il y avait par ailleurs
+    lieu d'en créer.
+    
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
+    
+    """
+    
+    with_unit_buttons = True
+    """bool: Faut-il créer des boutons de sélection d'unité ?
+    
+    Mettre cet attribut à ``False`` permet d'inhiber la création
+    des boutons de choix de l'unité, s'il y avait par ailleurs
     lieu d'en créer.
     
     Warnings
@@ -499,6 +514,24 @@ class WidgetKey:
         return False
 
     @property
+    def has_unit_button(self):
+        """bool: Un bouton annexe de sélection de l'unité doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests, mais elle
+        vaut toujours ``False`` quand la clé n'est pas une clé-valeur
+        (:py:class:`ValueKey`).
+        
+        See Also
+        --------
+        ValueKey.has_unit_button
+        
+        """
+        return False
+
+    @property
     def has_label(self):
         """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
         
@@ -605,6 +638,30 @@ class WidgetKey:
         return (self.row, 0, self.rowspan, 2) if self else None
 
     @property
+    def unit_button_placement(self):
+        """tuple(int): Placement du bouton de sélection de l'unité dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton
+        de sélection d'unité.
+        
+        Notes
+        -----
+        Le bouton de sélection d'unité est placé immédiatement à droite
+        du widget principal.
+        
+        """
+        if not self.has_unit_button:
+            return
+        row, column, rowspan, columnspan = self.placement
+        return (row, column + columnspan, 1, 1)
+
+    @property
     def language_button_placement(self):
         """tuple(int): Placement du bouton de sélection de la langue dans la grille, le cas échéant.
         
@@ -619,14 +676,19 @@ class WidgetKey:
         
         Notes
         -----
-        Le bouton de sélection de la langue est placé immédiatement à droite
-        du widget principal.
+        Le bouton de sélection de la source est placé à droite du widget
+        principal et de l'éventuel bouton de sélection de la langue.
+        En pratique, les boutons de sélection d'unité et de sélection
+        de la langue étant liés à des types différents, ils n'apparaissent
+        jamais simultanément et le bouton de sélection de la langue sera
+        placé immédiatement à droite du widget principal.
         
         """
         if not self.has_language_button:
             return
         row, column, rowspan, columnspan = self.placement
-        return (row, column + columnspan, 1, 1)
+        column = column + columnspan + (1 if self.has_unit_button else 0) 
+        return (row, column, 1, 1)
 
     @property
     def source_button_placement(self):
@@ -644,13 +706,17 @@ class WidgetKey:
         Notes
         -----
         Le bouton de sélection de la source est placé à droite du widget
-        principal et de l'éventuel bouton de sélection de la langue.
+        principal et des éventuels boutons de sélection de l'unité
+        et bouton de sélection la langue (lesquels ne peuvent en pratique
+        jamais apparaître en même temps qu'un bouton ne sélection de
+        la source).
         
         """
         if not self.has_source_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + (1 if self.has_language_button else 0) 
+        column = column + columnspan + (1 if self.has_unit_button else 0) \
+            + (1 if self.has_language_button else 0) 
         return (row, column, 1, 1)
 
     @property
@@ -668,13 +734,15 @@ class WidgetKey:
         Notes
         -----
         Le bouton moins est placé à droite du widget principal et des éventuels
-        boutons de sélection de la langue et sélection de la source.
+        boutons de sélection de l'unité, de sélection de la langue et de
+        sélection de la source.
         
         """
         if not self.has_minus_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + (1 if self.has_language_button else 0) \
+        column = column + columnspan + + (1 if self.has_unit_button else 0) \
+            + (1 if self.has_language_button else 0) \
             + (1 if self.has_source_button else 0)
         return (row, column, 1, 1)
     
@@ -3190,6 +3258,7 @@ class ValueKey(ObjectKey):
         self._value = None
         self._value_language = None
         self._value_source = None
+        self._value_unit = None
     
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -3210,6 +3279,7 @@ class ValueKey(ObjectKey):
         self.value = kwargs.get('value')
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
+        self.value_unit = None
 
     @property
     def key_object(self):
@@ -3348,6 +3418,21 @@ class ValueKey(ObjectKey):
             and ((self.sources and len(self.sources) > 1) or bool(self.m_twin))
     
     @property
+    def has_unit_button(self):
+        """bool: Un bouton annexe de sélection de l'unité doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_unit_button`.
+        
+        Pour l'heure, de tels boutons ne sont prévus que pour les valeurs
+        de type ``xsd:duration``.
+        
+        """
+        return self and WidgetKey.with_unit_buttons \
+            and self.datatype == XSD.duration
+    
+    @property
     def has_label(self):
         """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
         
@@ -3394,6 +3479,9 @@ class ValueKey(ObjectKey):
         # envisager d'y ajouter des contrôles, notamment sur
         # le type.
         self._value = value
+        if not self._is_unborn:
+            # l'unité est réinitialisée selon la valeur
+            self.value_unit = None
 
     @property
     def rdfclass(self):
@@ -3471,6 +3559,7 @@ class ValueKey(ObjectKey):
             if not self._is_unborn:
                 self.value_language = self.value_language
                 self.is_long_text = self.is_long_text
+                self.value_unit = self.value_unit
     
     @property
     def placeholder(self):
@@ -3631,7 +3720,7 @@ class ValueKey(ObjectKey):
         
         Notes
         -----
-        Si :py:attr:`ValueKey.datatype` n'est pas ``xsd:langString``,
+        Si :py:attr:`ValueKey.datatype` n'est pas ``rdf:langString``,
         cette propriété vaudra toujours ``None``.
         
         À l'initialisation, si aucune langue n'est fournie, elle
@@ -3690,15 +3779,16 @@ class ValueKey(ObjectKey):
     
     @value_source.setter
     def value_source(self, value):
-        if not self.sources :
-            return
-        if not value and not self.value:
-            value = self.sources[0]
         old_value = self.value_source
-        if value in self.sources:
-            self._value_source = value
-        else:
+        if not self.sources:
             self._value_source = None
+        else:
+            if not value and not self.value:
+                value = self.sources[0]
+            if value in self.sources:
+                self._value_source = value
+            else:
+                self._value_source = None
         if not self._is_unborn and self.value_source != old_value:
             WidgetKey.actionsbook.sources.append(self)
             WidgetKey.actionsbook.thesaurus.append(self)
@@ -3708,6 +3798,45 @@ class ValueKey(ObjectKey):
             # le widgets mais non sauvegardées
             if self.value:
                 self.value = None
+    
+    @property
+    def value_unit(self):
+        """str: Unité de la valeur portée par la clé.
+        
+        Notes
+        -----
+        Si :py:attr:`ValueKey.datatype` n'est pas ``xsd:duration``,
+        cette propriété vaudra toujours ``None``.
+        
+        Cette propriété est déduite de :py:attr:`ValueKey.value`
+        (et mise à jour quand :py:attr:`ValueKey.value` est modifié).
+        À défaut, il s'agira de la première valeur de la liste
+        :py:attr:`ValueKey.units`.
+        
+        Modifier cette propriété ne change pas :py:attr:`ValueKey.value`.
+        Autrement dit, l'unité effectivement incluse dans la valeur
+        prévaut toujours sur cette propriété, puisque c'est elle qui
+        sera conservée lors de la transformation en graphe par
+        :py:meth:`RootKey.build_metagraph`.
+        
+        """
+        return self._value_unit
+    
+    @value_unit.setter
+    def value_unit(self, value):
+        old_value = self.value_unit
+        if not self.units:
+            self._value_unit = None
+        else:
+            if not value or not value in self.units:
+                value = None
+                if self.value:
+                    i, value = int_from_duration(self.value)
+            if not value:
+                value = self.units[0]
+            self._value_unit = value
+        if not self._is_unborn and self.value_unit != old_value:
+            WidgetKey.actionsbook.units.append(self)  
     
     @property
     def do_not_save(self):
@@ -3828,6 +3957,21 @@ class ValueKey(ObjectKey):
             return self.parent.available_languages
         elif self.datatype == RDF.langString:
             return WidgetKey.langlist
+
+    @property
+    def units(self):
+        """list(str): Renvoie la liste des unités possibles pour la clé.
+        
+        Notes
+        -----
+        Les valeurs dépendent du type - :py:attr:`ValueKey.datatype`.
+        Pour l'heure, seul ``xsd:duration`` suppose des unités, la
+        propriété renverra ``None`` pour les valeurs non littérales
+        ou de tout autre type.
+        
+        """
+        if self.datatype == XSD.duration:
+            return ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.']
 
     def _hide_m(self, value, rec=False):
         if rec and value and self.m_twin and not self.is_main_twin:
@@ -3967,6 +4111,30 @@ class ValueKey(ObjectKey):
             return ActionsBook()
         WidgetKey.clear_actionsbook()
         self.value_source = value_source
+        return WidgetKey.unload_actionsbook()
+
+    def change_unit(self, value_unit):
+        """Change l'unité d'une clé-valeur.
+        
+        Utiliser cette méthode sur une clé non visible n'a pas d'effet,
+        et le carnet d'actions renvoyé est vide.
+        
+        Parameters
+        ----------
+        value_unit : str
+            La nouvelle unité à déclarer.
+        
+        Returns
+        -------
+        plume.rdf.actionsbook.ActionsBook
+            Le carnet d'actions qui permettra de répercuter le changement
+            d'unité sur les widgets.
+        
+        """
+        if self.is_hidden:
+            return ActionsBook()
+        WidgetKey.clear_actionsbook()
+        self.value_unit = value_unit
         return WidgetKey.unload_actionsbook()
 
     def _build_metagraph(self, metagraph):
