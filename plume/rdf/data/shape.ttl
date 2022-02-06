@@ -192,6 +192,7 @@ snum:DatasetShape
         sh:description "Plus petite durée significative dans le contexte du jeu de données." ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:duration ;
+        sh:maxCount 1 ;
         sh:order 26 ;
 	] ;
     sh:property [
