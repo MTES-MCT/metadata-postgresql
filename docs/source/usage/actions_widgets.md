@@ -4,7 +4,7 @@ En plus d'être généré à la volée, le formulaire de saisie des métadonnée
 
 Toutes ces actions impliquent de mettre à jour le dictionnaire de widgets, grâce à des méthodes de la classe [`plume.rdf.widgetsdict.WidgetsDict`](/plume/rdf/widgetsdict.py). Ces méthodes renvoient à leur tour les informations nécessaires pour réaliser les opérations qui s'imposent sur les widgets eux-mêmes, sous la forme d'un dictionnaire contenant toujours les mêmes clés. Les valeurs de ces clés sont des listes qui seront vides ou non selon l'action réalisée. Elles sont décrites [ci-après](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation).
 
-[Structuration des dictionnaires contenant les informations de matérialisation](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation) • [Boutons "plus" et boutons de traduction](#boutons-plus-et-boutons-de-traduction) • [Boutons "moins"](#boutons-moins) • [Boutons de sélection de la source](#boutons-de-sélection-de-la-source) • [Boutons de sélection de la langue](#boutons-de-sélection-de-la-langue)
+[Structuration des dictionnaires contenant les informations de matérialisation](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation) • [Boutons "plus" et boutons de traduction](#boutons-plus-et-boutons-de-traduction) • [Boutons "moins"](#boutons-moins) • [Boutons de sélection de la source](#boutons-de-sélection-de-la-source) • [Boutons de sélection de la langue](#boutons-de-sélection-de-la-langue) • [Boutons de sélection de l'unité](#boutons-de-sélection-de-lunité)
 
 Pour les interactions de l'utilisateur avec la partie "fixe" de l'interface (sauvegarde, import, export, modification des paramètres utilisateur, etc.), on se reportera à [Actions générales](/docs/source/usage/actions_generales.md).
 
@@ -22,6 +22,7 @@ Les dictionnaires renvoyés par les méthodes d'actions de la classe [`plume.rdf
 | `'menus to delete'` | Liste de menus (`QtWidgets.QMenu`) à détruire. |
 | `'language menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la langue doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur la génération des menus de langues. |
 | `'switch source menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la source doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source) pour plus de détails sur la génération des menus de sélection de la source. |
+| `'unit menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de l'unité doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur la génération des menus de sélection de l'unité. |
 | `'concepts list to update'` | Liste de clés du dictionnaire (`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal est un widget `QComboBox` dont la liste de termes doit être régénérée. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#paramètres-spécifiques-aux-widgets-qcombobox). |
 | `'widgets to empty'` | Liste de widgets (`QtWidgets.QWidget`) dont le texte doit être effacé. |
 | `'widgets to move'` | Liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a supprimé un widget antérieurement positionné au-dessus d'eux dans la grille - il faut à présent modifier la position. |
@@ -149,11 +150,6 @@ Le bouton de sélection de la langue est un `QToolButton` qui accompagne un widg
 
 Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur les modalités de création de ces widgets.
 
-Soit :
-- `widgetkey` la clé du bouton de sélection de la langue considéré dans le dictionnaire de widgets `widgetsdict` ;
-- `langue` la nouvelle langue choisie par l'utilisateur.
-
-
 ### Mise à jour du dictionnaire des widgets
 
 Quand l'utilisateur sélectionne une nouvelle langue dans le menu, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode `plume.rdf.widgetsdict.WidgetsDict.change_language` :
@@ -176,3 +172,28 @@ Le résultat, ici `r`, pourra contenir des informations dans les clés suivantes
 - `'language menu to update'`. Hors groupe de traduction, cette liste contient uniquement la clé pour laquelle l'utilisateur a changé la langue. Dans un groupe de traduction, cette liste contiendra les clés de tous les widgets de saisie du groupe. Pour la clé courante, la langue à afficher sur le bouton de sélection de la langue a été modifiée. Pour les autres clés, il s'agit d'enlever la langue nouvellement choisie et de rajouter celle qui l'était précédemment dans la liste des langues disponibles pour les traductions présentée par le `QMenu`.
 -  `'widgets to hide'`. Dans de rares cas, ce liste pourra contenir le `QToolButton` du bouton "plus" du groupe de traduction (si la langue antérieurement sélectionnée n'était pas dans la [liste des langues autorisées pour les traductions](/docs/source/usage/generation_dictionnaire_widgets.md#langlist) et que, après changement, toutes les langues autorisées sont désormais utilisées).
     
+
+## Boutons de sélection de l'unité
+
+Le bouton de sélection de l'unité est un `QToolButton` qui accompagne un widget de saisie. Lors de l'édition des métadonnées, il permet à l'utilisateur de déclarer l'unité dans laquelle est exprimée la valeur qu'il vient de saisir ou va saisir.
+
+Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur les modalités de création de ces widgets.
+
+### Mise à jour du dictionnaire des widgets
+
+Quand l'utilisateur sélectionne une nouvelle unité dans le menu, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode `plume.rdf.widgetsdict.WidgetsDict.change_unit` :
+
+```python
+
+r = widgetsdict.change_unit(widgetkey, new_unit)
+
+```
+
+*`widgetkey` est la clé du dictionnaire de widgets `widgetsdict` dont le bouton de sélection de l'unité considéré est l'un des widgets annexes. `new_unit` est la nouvelle unité choisie par l'utilisateur dans le menu associé au `QToolButton`.*
+
+### ... puis du formulaire
+
+Les informations renvoyées par `change_unit` permettent de réaliser les opérations subséquentes sur les widgets.
+
+Le résultat, ici `r`, contiendra uniquement des clés vides à l'exception de `'unit menu to update'`. Celle-ci liste uniquement la clé courante, pour laquelle il faut changer l'unité affichée sur le bouton.
+
