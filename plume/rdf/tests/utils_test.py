@@ -2,11 +2,10 @@
 import unittest
 from uuid import uuid4
 
-from plume.rdf.rdflib import Literal
+from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.utils import sort_by_language, pick_translation, \
-         path_from_n3
-from plume.rdf.namespaces import PlumeNamespaceManager, DCT
-from plume.rdf.metagraph import datasetid_from_uuid
+    path_from_n3, int_from_duration, duration_from_int, str_from_duration
+from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD
 
 nsm = PlumeNamespaceManager()
 
@@ -43,8 +42,75 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(p, DCT.title / DCT.description)
         uuid = uuid4()
         p = path_from_n3('<{}>'.format(uuid.urn), nsm=nsm)
-        self.assertEqual(p, datasetid_from_uuid(uuid))
+        self.assertEqual(p, URIRef(uuid.urn))
+    
+    def test_int_from_duration(self):
+        """Extraction de l'entier le plus significatif d'une durée.
         
+        """
+        self.assertEqual(
+            int_from_duration(Literal('P2Y', datatype=XSD.duration)),
+            (2, 'ans')
+            )
+        self.assertEqual(
+            int_from_duration(Literal('P2YT1H', datatype=XSD.duration)),
+            (2, 'ans')
+            )
+        self.assertEqual(
+            int_from_duration(Literal('PYT1H', datatype=XSD.duration)),
+            (1, 'heures')
+            )
+        self.assertEqual(
+            int_from_duration(Literal('PT1H3M', datatype=XSD.duration)),
+            (1, 'heures')
+            )
+        self.assertEqual(
+            int_from_duration(Literal('PT3M', datatype=XSD.duration)),
+            (3, 'min.')
+            )
+        self.assertEqual(int_from_duration(Literal('P2Y')), (None, None))
+        self.assertEqual(int_from_duration('P2Y'), (None, None))
+        self.assertEqual(int_from_duration(None), (None, None))
+
+    def test_duration_from_int(self):
+        """Désérialisation RDF d'une durée sous forme valeur + unité.
+        
+        """
+        self.assertEqual(duration_from_int(2, 'ans'),
+            Literal('P2Y', datatype=XSD.duration))
+        self.assertEqual(duration_from_int(-2, 'ans'),
+            Literal('-P2Y', datatype=XSD.duration))
+        self.assertEqual(duration_from_int(3, 'min.'),
+            Literal('PT3M', datatype=XSD.duration))
+        self.assertEqual(duration_from_int('3', 'min.'),
+            Literal('PT3M', datatype=XSD.duration))
+        self.assertEqual(duration_from_int('-3', 'min.'),
+            Literal('-PT3M', datatype=XSD.duration))
+        self.assertIsNone(duration_from_int(3, 'chose'))
+        self.assertIsNone(duration_from_int(3, None))
+        self.assertIsNone(duration_from_int('chose', 'min.'))
+
+    def test_str_from_duration(self):
+        """Jolie représentation textuelle d'une durée.
+        
+        """
+        self.assertEqual(
+            str_from_duration(Literal('P2Y', datatype=XSD.duration)),
+            ('2 ans')
+            )
+        self.assertEqual(
+            str_from_duration(Literal('P1YT1H', datatype=XSD.duration)),
+            ('1 an')
+            )
+        self.assertEqual(
+            str_from_duration(Literal('PYT1H3M', datatype=XSD.duration)),
+            ('1 heure')
+            )
+        self.assertEqual(
+            str_from_duration(Literal('P1M', datatype=XSD.duration)),
+            ('1 mois')
+            )
+        self.assertEqual(str_from_duration(Literal('P2Y')), None)
 
 if __name__ == '__main__':
     unittest.main()
