@@ -285,24 +285,21 @@ elif mTypeValidator == 'QDoubleValidator':
 
 ```python
 
-qre = QRegularExpression(widgetsdict[widgetkey]['regex validator pattern'])
+if widgetsdict[widgetkey]['regex validator pattern']:
+    qre = QRegularExpression(widgetsdict[widgetkey]['regex validator pattern'])
 
-if 'i' in widgetsdict[widgetkey]['regex validator flags']:
-    qre.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
-    
-if 's' in widgetsdict[widgetkey]['regex validator flags']:
-    qre.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
+    if widgetsdict[widgetkey]['regex validator flags']:
+        if 'i' in widgetsdict[widgetkey]['regex validator flags']:
+            qre.setPatternOptions(QRegularExpression.CaseInsensitiveOption)        
+        if 's' in widgetsdict[widgetkey]['regex validator flags']:
+            qre.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
+        if 'm' in widgetsdict[widgetkey]['regex validator flags']:
+            qre.setPatternOptions(QRegularExpression.MultilineOption)
+        if 'x' in widgetsdict[widgetkey]['regex validator flags']:
+            qre.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
 
-if 'm' in widgetsdict[widgetkey]['regex validator flags']:
-    qre.setPatternOptions(QRegularExpression.MultilineOption)
-    
-if 'x' in widgetsdict[widgetkey]['regex validator flags']:
-    qre.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
-
-widgetsdict[widgetkey]['main widget'].setValidator(
-    QRegularExpressionValidator(qre),
-    widgetsdict[widgetkey]['main widget'])
-    )
+    widgetsdict[widgetkey]['main widget'].setValidator(
+        QRegularExpressionValidator(qre, widgetsdict[widgetkey]['main widget']))
 
 ```
 
