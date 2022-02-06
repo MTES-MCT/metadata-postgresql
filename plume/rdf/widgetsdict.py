@@ -19,7 +19,7 @@ descriptifs des champs...
 from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
 from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
     owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
-    tel_from_owlthing
+    tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -216,6 +216,7 @@ class WidgetsDict(dict):
         
         # paramètres de configuration des clés
         WidgetKey.with_source_buttons = self.edit
+        WidgetKey.with_unit_buttons = self.edit
         WidgetKey.with_language_buttons = self.translation
         WidgetKey.langlist = list(self.langlist)
         self.root.main_language = language
@@ -556,6 +557,9 @@ class WidgetsDict(dict):
                 # est traité juste après
                 internaldict['thesaurus values'] = Thesaurus.get_values(
                     (widgetkey.value_source, self.langlist))
+            if widgetkey.has_unit_button:
+                internaldict['units'] = widgetkey.units.copy()
+                internaldict['current unit'] = widgetkey.value_unit
 
         if isinstance(widgetkey, ObjectKey):
             internaldict['has minus button'] = widgetkey.has_minus_button
@@ -591,7 +595,7 @@ class WidgetsDict(dict):
         ----------
         widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
-        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'label widget'}
+        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'unit widget', 'label widget'}
             Nature du widget considéré, soit plus prosaïquement le nom
             de la clé du dictionnaire interne qui le référence.
         
@@ -622,6 +626,8 @@ class WidgetsDict(dict):
             return widgetkey.language_button_placement
         if kind == 'switch source widget':
             return widgetkey.source_button_placement
+        if kind == 'unit widget':
+            return widgetkey.unit_button_placement
         if kind == 'minus widget':
             return widgetkey.minus_button_placement
 
@@ -667,6 +673,9 @@ class WidgetsDict(dict):
             * ``switch source menu to update`` : liste de clés du dictionnaire de
               widgets (:py:class:`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le
               menu du bouton de sélection de la source doit être régénéré.
+            * ``unit menu to update`` : liste de clés du dictionnaire de widgets
+              (:py:class:`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le
+              menu du bouton de sélection de l'unité doit être régénéré.
             * ``concepts list to update`` : liste de clés du dictionnaire
               (:py:class:`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal
               est un widget ``QComboBox`` dont la liste de termes doit être
@@ -689,7 +698,8 @@ class WidgetsDict(dict):
         """
         d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
             'widgets to delete', 'actions to delete', 'menus to delete',
-            'language menu to update', 'switch source menu to update', 'concepts list to update',
+            'language menu to update', 'switch source menu to update',
+            'unit menu to update', 'concepts list to update',
             'widgets to empty', 'widgets to move')}
         
         if not actionsbook:
@@ -704,6 +714,7 @@ class WidgetsDict(dict):
         d['language menu to update'] = actionsbook.languages
         d['switch source menu to update'] = actionsbook.sources
         d['concepts list to update'] = actionsbook.thesaurus
+        d['unit menu to update'] = actionsbook.units
         
         for widgetkey in actionsbook.show:
             d['widgets to show'] += self.list_widgets(widgetkey)
@@ -732,10 +743,16 @@ class WidgetsDict(dict):
             m = self[widgetkey]['switch source menu']
             if m:
                 d['menus to delete'].append(m)
+            m = self[widgetkey]['unit menu']
+            if m:
+                d['menus to delete'].append(m)
             a = self[widgetkey]['switch source actions']
             if a:
                 d['actions to delete'] += a
             a = self[widgetkey]['language actions']
+            if a:
+                d['actions to delete'] += a
+            a = self[widgetkey]['unit actions']
             if a:
                 d['actions to delete'] += a
             del self[widgetkey]
@@ -775,7 +792,7 @@ class WidgetsDict(dict):
             return []
         l = []        
         for k in ('main widget', 'minus widget', 'switch source widget',
-            'language widget', 'label widget'):
+            'language widget', 'unit widget', 'label widget'):
             w = self[widgetkey][k]
             if w:
                 if with_kind:
@@ -965,6 +982,50 @@ class WidgetsDict(dict):
         
         return self.dictisize_actionsbook(a)
 
+    def change_unit(self, valuekey, new_unit):
+        """Change l'unité déclarée pour une clé du dictionnaire de widgets.
+        
+        Cette méthode est à exécuter lorsque l'utilisateur clique sur
+        une unité dans le menu d'un bouton de sélection d'unité.
+        
+        Parameters
+        ----------
+        valuekey : plume.rdf.widgetkey.ValueKey
+            La clé-valeur dont un item du menu des unités vient d'être
+            actionné par l'utilisateur.
+        new_unit : str
+            La nouvelle unité sélectionnée par l'utilisateur.
+        
+        Returns
+        -------
+        dict
+            Cf. :py:meth:`WidgetsDict.dictisize_actionsbook` pour la
+            description de ce dictionnaire, qui contient toutes
+            les informations qui permettront de matérialiser l'action
+            réalisée.
+        
+        Raises
+        ------
+        ForbiddenOperation
+            Quand la clé est masquée, quand la clé n'a pas de widget
+            annexe de sélection d'unité, ou quand l'unité
+            n'est pas dans la liste des unités autorisées.
+        
+        """
+        if self[valuekey]['current unit'] == new_unit:
+            return self.dictisize_actionsbook()
+        if not valuekey.has_unit_button:
+            raise ForbiddenOperation("Il faut un bouton de sélection " \
+                "de l'unité pour changer l'unité d'une clé.", valuekey)
+        if valuekey.is_hidden:
+            raise ForbiddenOperation("Il n'est pas permis de changer " \
+                "l'unité d'une clé invisible.", valuekey)
+        if not new_unit in self[valuekey]['units']:
+            raise ForbiddenOperation("L'unité {} n'est pas " \
+                'reconnue.'.format(new_unit), valuekey)
+        a = valuekey.change_unit(new_unit)
+        return self.dictisize_actionsbook(a)
+
     def widget_type(self, widgetkey):
         """Renvoie le type de widget adapté pour une clé.
         
@@ -1012,7 +1073,8 @@ class WidgetsDict(dict):
             XSD.integer: 'QIntValidator',
             XSD.decimal: 'QDoubleValidator',
             XSD.float: 'QDoubleValidator',
-            XSD.double: 'QDoubleValidator'
+            XSD.double: 'QDoubleValidator',
+            XSD.duration: 'QIntValidator'
             }
         return d.get(widgetkey.datatype)
     
@@ -1042,6 +1104,8 @@ class WidgetsDict(dict):
                 value = owlthing_from_tel(value)
             if widgetkey.value_language:
                 widgetkey.value = Literal(value, lang=widgetkey.value_language)
+            elif widgetkey.value_unit:
+                widgetkey.value = duration_from_int(value, widgetkey.value_unit)
             elif widgetkey.datatype and widgetkey.datatype != XSD.string:
                 widgetkey.value = Literal(value, datatype=widgetkey.datatype)
             elif widgetkey.datatype == XSD.string:
@@ -1087,6 +1151,11 @@ class WidgetsDict(dict):
         elif widgetkey.value_source:
             str_value = Thesaurus.concept_str((widgetkey.value_source, \
                 widgetkey.main_language), value)
+        elif widgetkey.value_unit:
+            if widgetkey.is_read_only:
+                str_value = str_from_duration(value)
+            else:
+                str_value = str(int_from_duration(value)[0])
         else:
             str_value = str(value)
         if widgetkey.is_read_only:
