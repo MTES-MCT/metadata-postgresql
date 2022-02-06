@@ -12,7 +12,7 @@ Chaque enregistrement du dictionnaire des widgets contrôle un widget principal 
 
 **Widget principal** : [Type](#type) • [Stockage](#stockage) • [Placement dans la grille](#placement-dans-la-grille) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel)
 
-**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton de sélection de l'unité](#widget-annexe--bouton-de-sélection-de-lunité) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
 Le widget principal et les widgets annexes sont totalement indépendants. Ils peuvent être simplement créés les uns à la suite des autres, de la manière suivante :
 
@@ -40,7 +40,12 @@ Le widget principal et les widgets annexes sont totalement indépendants. Ils pe
 	# la langue, s'il y a lieu :
 	if widgetsdict[widgetkey]['authorized languages']:
 		...
-		
+    
+    # commandes de création du widget annexe de sélection de
+    # l'unité, s'il y a lieu :
+    if widgetsdict[widgetkey]['units']:
+		...
+    
 	# commandes de création du widget annexe bouton moins,
 	# s'il y a lieu :
 	if widgetsdict[widgetkey]['has minus button']:
@@ -657,6 +662,113 @@ if widgetsdict[widgetkey]['hidden']:
 
 [↑ haut de page](#création-dun-nouveau-widget)
 
+
+
+## Widget annexe : bouton de sélection de l'unité
+
+Un widget `QToolButton` de sélection de l'unité doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira qu'en mode édition) :
+
+```python
+
+if widgetsdict[widgetkey]['units']:
+    ...
+
+```
+
+Pour l'heure, de tels widgets ne sont utilisés que pour spécifier les unités à associer aux durées (type RDF `xsd:duration`).
+
+### Stockage
+
+Le bouton de sélection de la langue est stocké dans la clé `'unit widget'` du dictionnaire interne.
+
+```python
+
+widgetsdict[widgetkey]['unit widget'] = unit_widget
+
+```
+
+*Où `unit_widget` est le widget de sélection de l'unité qui vient d'être créé.*
+
+### Menu
+
+Le `QMenu` associé au `QToolButton` est stocké dans la clé `'unit menu'` du dictionnaire.
+
+```python
+
+widgetsdict[widgetkey]['unit menu'] = unit_menu
+
+```
+
+*Où `unit_menu` est le `QMenu` qui vient d'être créé.*
+
+Ce `QMenu` contient une `QAction` par unité disponible. Les `QAction` sont elles-mêmes stockées dans la clé `'unit actions'` du dictionnaire, sous la forme d'une liste.
+
+```python
+
+widgetsdict[widgetkey]['unit actions'].append(unit_action)
+
+```
+
+*Où `unit_action` représente chaque `QAction` venant d'être créée.*
+
+Les libellés des `QAction` correspondent aux noms abrégés des langues et sont fournis par la liste contenue dans la clé `'units'` du dictionnaire :
+
+```python
+
+widgetsdict[widgetkey]['units']
+
+```
+
+*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-lunité).*
+
+### Rendu
+
+Au lieu d'une icône, le `QToolButton` de sélection de l'unité montre un texte correspondant à l'unité sélectionnée. Celui-ci est fourni par la clé `'current unit'`.
+
+```python
+
+widgetsdict[widgetkey]['current unit']
+
+```
+
+### Texte d'aide
+
+On pourra afficher en infobulle sur le bouton le texte suivant :
+
+```python
+
+'Sélection de l'unité de mesure'
+
+```
+
+### Placement dans la grille
+
+Le `QToolButton` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
+
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
+
+```python
+
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'unit widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(unit_widget, row, column, rowSpan, columnSpan)
+
+```
+
+*`unit_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget annexe de sélection de l'unité.*
+
+### Widget masqué ?
+
+Le `QToolButton` doit être masqué dès lors que la clé `'hidden'` vaut `True`.
+
+```python
+
+if widgetsdict[widgetkey]['hidden']:
+    ...
+
+```
+
+[↑ haut de page](#création-dun-nouveau-widget)
 
 
 ## Widget annexe : bouton "moins"
