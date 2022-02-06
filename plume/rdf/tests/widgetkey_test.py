@@ -3,7 +3,7 @@ import unittest
 from uuid import uuid4
 
 from plume.rdf.rdflib import URIRef, Literal
-from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS
+from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, RootKey, TabKey
@@ -22,14 +22,41 @@ class WidgetKeyTestCase(unittest.TestCase):
         widgetkey = RootKey()
         for attr in ('actionsbook', 'attr_to_copy', 'attr_to_update', 'children', 'columnspan',
             'has_label', 'has_language_button', 'has_minus_button', 'has_source_button',
-            'independant_label', 'is_ghost', 'is_hidden', 'is_hidden_b', 'is_hidden_m',
-            'is_single_child', 'key_object', 'label_placement', 'langlist',
-            'language_button_placement', 'main_language', 'max_rowspan',
-            'minus_button_placement', 'no_computation', 'node', 'order_idx', 'parent',
-            'path', 'placement', 'rdfclass', 'row', 'rowspan', 'source_button_placement',
-            'uuid', 'with_language_buttons', 'with_source_buttons'):
+            'has_unit_button', 'independant_label', 'is_ghost', 'is_hidden', 'is_hidden_b',
+            'is_hidden_m', 'is_single_child', 'key_object', 'label_placement', 'langlist',
+            'language_button_placement', 'main_language', 'max_rowspan', 'minus_button_placement',
+            'no_computation', 'node', 'order_idx', 'parent', 'path', 'placement', 'rdfclass',
+            'row', 'rowspan', 'source_button_placement', 'unit_button_placement',
+            'uuid', 'with_language_buttons', 'with_source_buttons', 'with_unit_buttons'):
             getattr(widgetkey, attr)
-        # TODO: à compléter pour les autres classes
+
+    def test_units(self):
+        """Clé avec bouton de sélection de l'unité.
+
+        Notes
+        -----
+        Ce test crée des clés ``dcat:temporalResolution``
+        dans un groupe de valeurs, ce qui est discutable
+        sur le fond, mais il s'agit de vérifier que les
+        boutons moins sont bien placés.
+        
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(parent=t, predicate=DCAT.temporalResolution,
+            datatype=XSD.duration)
+        v1 = ValueKey(parent=g, value=Literal('PT2M', datatype=XSD.duration))
+        self.assertEqual(v1.value_unit, 'min.')
+        v2 = ValueKey(parent=g)
+        self.assertEqual(v2.value_unit, 'ans')
+        v2.value = Literal('P2M', datatype=XSD.duration)
+        self.assertEqual(v2.value_unit, 'mois')
+        self.assertEqual(v2.placement[1], 0)
+        self.assertEqual(v2.unit_button_placement[1], 2)
+        self.assertEqual(v2.minus_button_placement[1], 3)
+        actionsbook = v1.change_unit('heures')
+        self.assertEqual(v1.value_unit, 'heures')
+        self.assertListEqual(actionsbook.units, [v1])
 
     def test_copy(self):
         """Copie d'une branche complexe.
