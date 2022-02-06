@@ -8,7 +8,7 @@ from html import escape
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
-from plume.rdf.namespaces import RDF, DCAT
+from plume.rdf.namespaces import RDF, DCAT, XSD
 
 class DatasetId(URIRef):
     """Identifiant de jeu de données.
@@ -432,12 +432,134 @@ def owlthing_from_tel(tel_str, add_fr_prefix=True):
     if tel:
         return URIRef('tel:' + tel)
 
+def int_from_duration(duration):
+    """Extrait un nombre entier et son unité d'un littéral représentant une durée.
+    
+    Cette fonction renvoie ``(None, None)`` si la valeur fournie
+    en argument n'était pas un littéral de type ``xsd:duration``
+    ou si, parce qu'il n'était pas correctement formé, il n'a pas
+    été possible d'en extaire une valeur.
+    
+    Les durées complexes faisant appel à plusieurs unités sont
+    tronquées. La fonction conserve l'entier associé à l'unité
+    la plus grande.
+    
+    Parameters
+    ----------
+    duration : rdflib.term.Literal
+        Un littéral de type ``xsd:duration``.
+    
+    Returns
+    -------
+    tuple(int, {'ans', 'mois', 'jours', 'heures', 'min.', 'sec.'})
+        Un tuple dont le premier élément est l'entier correspondant
+        à la valeur de la durée et le second l'unité de cette
+        durée.
+    
+    Examples
+    --------
+    >>> int_from_duration(Literal('P2Y', datatype=XSD.duration))
+    (2, 'ans')
+    
+    """
+    if not duration or not isinstance(duration, Literal) \
+        or not duration.datatype == XSD.duration:
+        return (None, None)
+    
+    r = re.split('T', str(duration).lstrip('P'))
+    if len(r) == 2:
+        date, time = r
+    elif len(r) == 1:
+        date, time = (r[0], None)
+    else:
+        return (None, None)
+    
+    if date:
+        date_map = {'Y': 'ans', 'M': 'mois', 'D': 'jours'}
+        for u in date_map.keys():
+            r = re.match('([0-9]+){}'.format(u), date)
+            if r:
+                return (int(r[1]), date_map[u])
+    if time:
+        time_map = {'H': 'heures', 'M': 'min.', 'S': 'sec.'}
+        for u in time_map.keys():
+            r = re.match('([0-9]+){}'.format(u), time)
+            if r:
+                return (int(r[1]), time_map[u])
+    return (None, None) 
+
+def duration_from_int(value, unit):
+    """Renvoie la représentation RDF d'une durée exprimée sous la forme d'une valeur entière et d'une unité.
+    
+    Parameters
+    ----------
+    value : int or str
+        La valeur de la durée. Elle peut être de type ``int``
+        ou ``str``, tant qu'il s'agit bien d'un nombre. Les
+        durées négative sont prises en charge.
+    unit : {'ans', 'mois', 'jours', 'heures', 'min.', 'sec.'}
+        L'unité de la durée. La fonction renverra ``None``
+        si la valeur renseignée n'est pas dans la liste
+        des unités prises en charge.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:duration``.
+    
+    Examples
+    --------
+    >>> duration_from_int(2, 'ans')
+    rdflib.term.Literal('P2Y', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+    
+    """
+    if isinstance(value, str) and re.match('^-?[0-9]+$', value):
+        value = int(value)
+    if not isinstance(value, int):
+        return None
+    if value < 0:
+        value = - value
+        signe = '-'
+    else:
+        signe = ''
+    date_map = {'ans': 'Y', 'mois': 'M', 'jours': 'D'}
+    if unit in date_map:
+        return Literal('{}P{}{}'.format(signe, value, date_map[unit]),
+            datatype=XSD.duration)
+    time_map = {'heures': 'H', 'min.': 'M', 'sec.': 'S'}
+    if unit in time_map:
+        return Literal('{}PT{}{}'.format(signe, value, time_map[unit]),
+            datatype=XSD.duration)
+
+def str_from_duration(duration):
+    """Représentation d'une durée sous forme de chaîne de caractères.
+    
+    Parameters
+    ----------
+    duration : rdflib.term.Literal
+        Un littéral de type ``xsd:duration``.
+    
+    Notes
+    -----
+    Cette fonction produit des valeurs pour un affichage en
+    lecture seule. Il n'existe pas de fonction retour pour
+    reconstruire un littéral de type ``xsd:duration`` à partir
+    d'une représentation de cette forme.
+    
+    """
+    value, unit = int_from_duration(duration)
+    if value is None:
+        return
+    if value in (0, 1, -1) and unit in ('ans', 'jours', 'heures'):
+        unit = unit.rstrip('s')
+    return '{} {}'.format(value, unit)
+
 def get_datasetid(anygraph):
     """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
     
     Parameters
     ----------
-    anygraph : Graph
+    anygraph : rdflib.graph.Graph
         Un graphe quelconque, présumé contenir la description d'un
         jeu de données (``dcat:Dataset``).
     
@@ -470,7 +592,7 @@ def graph_from_file(filepath, format=None):
     
     Returns
     -------
-    Graph
+    rdflib.graph.Graph
         Un graphe.
     
     See Also
