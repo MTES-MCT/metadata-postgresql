@@ -42,6 +42,8 @@ class ActionsBook:
         Liste des clés dont les widgets doivent être déplacés dans la grille.
     languages : NoGhostKeyList
         Liste des clés dont le menu des langues doit être mis à jour.
+    units : NoGhostKeyList
+        Liste des clés dont le menu des unités doit être mis à jour.
     sources : NoGhostKeyList
         Liste des clés dont le menu des sources doit être mis à jour.
     thesaurus : NoGhostKeyList
@@ -83,6 +85,7 @@ class ActionsBook:
             'languages', 'sources', 'thesaurus', 'modified', 'empty'])
         self.move = NoGhostKeyList(actionsbook=self)
         self.languages = NoGhostKeyList(actionsbook=self)
+        self.units = NoGhostKeyList(actionsbook=self)
         self.sources = NoGhostKeyList(actionsbook=self)
         self.thesaurus = NoGhostKeyList(actionsbook=self)
         self.empty = NoGhostKeyList(actionsbook=self)
