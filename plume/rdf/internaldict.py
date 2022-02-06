@@ -50,6 +50,9 @@ class InternalDict(dict):
       de passer en mode manuel (saisie manuelle des propriétés de l'objet, au lieu de la simple
       sélection de son IRI dans un thésaurus). À créer lorsque la valeur de ``multiple sources``
       est ``True``.
+    * ``unit widget`` : widget annexe de type ``QButtonTool`` permettant à l'utilisateur
+      de choisir l'unité de la valeur qu'il est en train de saisir. À créer lorsque la
+      valeur de la clé ``units`` n'est pas ``None``.
     
     En complément, des clés sont prévues pour les ``QMenu`` et ``QAction`` associés à certains
     widgets boutons.
@@ -62,7 +65,11 @@ class InternalDict(dict):
       ``language widget``. Ce menu présente une liste de langues (cf. ``authorized languages``),
       dont une est sélectionnée (cf. ``language value``), il permet à l'utilisateur de
       spécifier la langue du texte qu'il est en train de saisir.
-    * ``language actions`` : liste des ``QAction`` du ``language menu``.   
+    * ``language actions`` : liste des ``QAction`` du ``language menu``.
+    * ``unit menu`` : pour le ``QMenu`` associé au widget référencé par ``unit widget``.
+      Ce menu présente une liste d'unités disponibles (cf. ``units``), dont une est
+      sélectionnée (cf. ``current unit``).
+    * ``unit actions`` : liste des ``QAction`` du ``unit menu``.    
 
     Les clés suivantes contiennent les informations nécessaires au paramétrage des widgets.
     
@@ -109,6 +116,12 @@ class InternalDict(dict):
     * ``language value`` : s'il y a lieu de créer un widget annexe pour spécifier la langue
       (cf. ``authorized languages``), la langue qui devra être présentée comme actuellement
       sélectionnée par le menu associé (``language menu``).
+    * ``units`` : liste des unités disponibles, à présenter dans le menu associé au widget
+      de sélection de l'unité (``unit menu``), le cas échéant. La non nullité de cette clé
+      emporte la création d'un widget de sélection de l'unité (``unit widget``).
+    * ``current unit`` : s'il y a lieu de créer un widget pour spécifier l'unité (cf. ``units``),
+      l'unité qui devra être présentée comme actuellement sélectionné par le menu associé
+      (``unit menu``).
     
     """
     
@@ -117,14 +130,16 @@ class InternalDict(dict):
             'object', 'main widget type',
             # stockage des widgets :
             'main widget', 'grid widget', 'label widget', 'minus widget',
-            'language widget', 'switch source widget', 'switch source menu',
-            'switch source actions', 'language menu', 'language actions',
+            'language widget', 'switch source widget', 'unit widget',
+            'switch source menu', 'switch source actions', 'language menu',
+            'language actions', 'unit menu', 'unit actions',
             # paramétrage des widgets :
             'hidden', 'label', 'has label', 'help text', 'value', 'placeholder text',
             'input mask', 'is mandatory', 'read only', 'has minus button',
             'hide minus button', 'regex validator pattern', 'regex validator flags',
             'type validator', 'multiple sources', 'sources', 'current source',
-            'thesaurus values', 'authorized languages', 'language value'
+            'thesaurus values', 'authorized languages', 'language value', 'units',
+            'current unit'
             ]
         self.update({ k:None for k in keys })
 
