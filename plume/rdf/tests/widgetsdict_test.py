@@ -118,6 +118,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         d = {
             'main widget type': 'QComboBox',
             'object': 'edit',
+            'help text': "Contraintes réglementaires limitant l'accès aux données.",
             'multiple sources': True,
             'sources': [
                 '< manuel >',
@@ -142,6 +143,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         d = {
             'main widget type': 'QGroupBox',
             'object': 'group of properties',
+            'help text': "Contraintes réglementaires limitant l'accès aux données.",
             'multiple sources': True,
             'sources': [
                 '< manuel >',
@@ -185,7 +187,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             'main widget type': 'QLineEdit',
             'label': 'Résolution temporelle',
             'has label': True,
-            'help text': 'Plus petite durée significative dans le contexte du jeu de données.',
+            'help text': 'Plus petit pas de temps significatif dans le contexte du jeu de données.',
             'object': 'edit',
             'type validator': 'QIntValidator',
             'units': ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'],
