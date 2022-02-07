@@ -554,6 +554,46 @@ def str_from_duration(duration):
         unit = unit.rstrip('s')
     return '{} {}'.format(value, unit)
 
+def wkt_with_srid(wkt, srid):
+    """Ajoute un référentiel de coordonnées à la représentation WKT d'une géométrie.
+    
+    Parameters
+    ----------
+    wkt : str
+        Représentation WKT (Well Known Text) d'une géométrie.
+        La validité de ladite représentation n'est pas
+        vérifiée par la fonction.
+    srid : str
+        L'identifiant du référentiel de coordonnées utilisé
+        pour la représentation WKT, sous la forme ``'Autorité:Code'``.
+        À ce stade, ne sont reconnus que les codes EPSG
+        (ex : ``'EPSG:2154'``), les identifiants OGC (ex :
+        ``'OGC:WGS84'``) et les identifiants du registre IGN (ex :
+        ``'IGNF:WGS84G'``).
+    
+    Returns
+    -------
+    str
+        La représentation WKT de la géométrie avec le référentiel
+        explicitement déclaré, comme attendu en RDF.
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` si l'autorité n'a pas
+    été reconnue.
+    
+    """
+    if not srid or not wkt:
+        return wkt
+    ns = {
+        'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
+        'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
+        'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
+        }
+    r = re.match('^([A-Z]+)[:]([a-zA-Z0-9.]+)$', srid)
+    if r and r[1] in ns:
+        return '<{}{}> {}'.format(ns[r[1]], r[2], wkt)
+
 def get_datasetid(anygraph):
     """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
     
