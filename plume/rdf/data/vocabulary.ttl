@@ -3,6 +3,88 @@
 @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
 
 
+<https://www.iana.org/assignments/media-types/application/geopackage+sqlite3> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "GeoPackage" .
+
+<https://www.iana.org/assignments/media-types/application/geo+json> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "GeoJSON" .
+
+<https://www.iana.org/assignments/media-types/application/gml+xml> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "GML" .
+
+<https://www.iana.org/assignments/media-types/application/json> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "JSON" .
+
+<https://www.iana.org/assignments/media-types/application/sql> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "SQL" .
+
+<https://www.iana.org/assignments/media-types/application/vnd.dbf> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "DBF" .
+
+<https://www.iana.org/assignments/media-types/application/vnd.ms-excel> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "Microsoft Excel" .
+
+<https://www.iana.org/assignments/media-types/application/vnd.shp> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "ESRI Shapefile" .
+
+<https://www.iana.org/assignments/media-types/application/vnd.sqlite3> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "SQLite" .
+
+<https://www.iana.org/assignments/media-types/application/zip> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "ZIP" .
+
+<https://www.iana.org/assignments/media-types/application/vnd.oasis.opendocument.spreadsheet> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "ODS" .
+
+<https://www.iana.org/assignments/media-types/text/csv> a skos:Concept ;
+	skos:inScheme <http://www.iana.org/assignments/media-types> ;
+	skos:prefLabel "CSV" .
+
+<http://www.iana.org/assignments/media-types> a skos:ConceptScheme ;
+    skos:prefLabel "Types de médias (IANA)"@fr,
+        "Media Types (IANA)"@en .
+
+
+<http://publications.europa.eu/resource/authority/planned-availability/STABLE> a skos:Concept ;
+	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:definition "Data will remain available in the long term."@en ;
+	skos:prefLabel "stable"@en,
+		"stable"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE> a skos:Concept ;
+	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:definition "Data is available for a few years, medium term planning."@en ;
+	skos:prefLabel "available"@en,
+		"disponible"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability/EXPERIMENTAL> a skos:Concept ;
+	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:definition "Data is available on a trial basis for a short period, short term planning."@en ;
+	skos:prefLabel "experimental"@en,
+		"expérimental"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability/TEMPORARY> a skos:Concept ;
+	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:definition "Data can disappear at any time, no planning."@en ;
+	skos:prefLabel "temporary"@en,
+		"temporaire"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability> a skos:ConceptScheme ;
+    skos:prefLabel "Disponibilité prévue (UE)"@fr,
+        "Planned availability (EU)"@en .
+
+
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/farming> a skos:Concept ;
 	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
 	skos:prefLabel "Farming"@en,
