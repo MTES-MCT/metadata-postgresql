@@ -168,15 +168,16 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #QRegularExpression                        
        if _valueObjet['regex validator pattern'] != None :
           re = QRegularExpression(_valueObjet['regex validator pattern'])
-          if "i" in _valueObjet['regex validator flags']:
-             re.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
-          if "s" in _valueObjet['regex validator flags']:
-             re.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
-          if "m" in _valueObjet['regex validator flags']:
-             re.setPatternOptions(QRegularExpression.MultilineOption)
-          if "x" in _valueObjet['regex validator flags']:
-             re.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
-          _mObjetQSaisie.setValidator(QRegularExpressionValidator(re),_mObjetQSaisie)
+          if _valueObjet['regex validator flags']:
+              if "i" in _valueObjet['regex validator flags']:
+                 re.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
+              if "s" in _valueObjet['regex validator flags']:
+                 re.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
+              if "m" in _valueObjet['regex validator flags']:
+                 re.setPatternOptions(QRegularExpression.MultilineOption)
+              if "x" in _valueObjet['regex validator flags']:
+                 re.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
+          _mObjetQSaisie.setValidator(QRegularExpressionValidator(re, _mObjetQSaisie))
        
        #========== 
        #QCOMBOBOX 
@@ -324,7 +325,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #---------------------------
 
     #---------------------------
-    # == QTOOLBUTTON   Button PLUS et Button TRADUCTION
+    # == QTOOLBUTTON   Button PLUS et Button TRADUCTION et Button UNITES
     elif _valueObjet['main widget type'] in ("QToolButton") :
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
@@ -472,6 +473,66 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #apparence_mObjetQToolButton(self, _keyObjet, _iconSources, _valueObjet['current source'])
     # == QTOOLBUTTON  AUTHORIZED LANGUAGES
     #---------------------------
+    #---------------------------
+    # == QTOOLBUTTON  UNITS
+    if _valueObjet['units'] :
+       _editStyle = self.editStyle             #style saisie
+       #--
+       _mObjetQToolButton = QtWidgets.QToolButton()
+       _mObjetQToolButton.setObjectName(str(_keyObjet))
+       _mObjetQToolButton.setText(_valueObjet['current unit'])
+       #MenuQToolButton                        
+       _mObjetQMenu = QMenu()
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:80px; border-style:" + _editStyle  + "; border-width: 0px;}")
+       #------------
+       _mListActions = []
+       for elemQMenuItem in _valueObjet['units'] :
+           _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+           _mObjetQMenuItem.setText(elemQMenuItem)
+           _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+           _mObjetQMenu.addAction(_mObjetQMenuItem)
+           #- Actions
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonUnits(self, _keyObjet, _valueObjet))
+           _mListActions.append(_mObjetQMenuItem)
+       
+       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
+       _mObjetQToolButton.setMenu(_mObjetQMenu)
+       #--                        
+       #Masqué /Visible Générale                               
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
+       #--                        
+       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'unit widget')
+       _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
+       #Tooltip                        
+       _mObjetQToolButton.setToolTip("Sélection de l'unité de mesure")
+                                          
+       #Dict des objets instanciés
+       self.mDicObjetsInstancies[_keyObjet].update({'unit widget'  : _mObjetQToolButton, 
+                                                    'unit menu'    : _mObjetQMenu,
+                                                    'unit actions' : _mListActions}) 
+    # == QTOOLBUTTON  UNITS
+    #---------------------------
+    return  
+
+#==================================================
+# Traitement action sur QToolButton avec Menu UNITS
+def action_mObjetQToolButtonUnits(self, __keyObjet, __valueObjet):
+    _selectItem = self.mDicObjetsInstancies[__keyObjet]['unit menu'].sender()
+    #maj Source 
+    ret = self.mDicObjetsInstancies.change_unit(__keyObjet,  _selectItem.text() )
+    #---------------------------------------------
+    self.mDicObjetsInstancies[__keyObjet]['unit widget'].setText(__valueObjet['current unit']) 
+    #---------------------------------------------
+    #- Masquer          
+    for elem in ret['widgets to hide'] : 
+        try :
+           elem.setVisible(False)
+        except : 
+           pass   
+
+    #---------------------------------------------
+    #- Regénération du Menu 
+    regenerationMenuUnit(self, ret['unit menu to update'], __valueObjet)
 
     return  
 
@@ -655,6 +716,14 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
     #maj apparence QToolButton 
     #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
     return  
+
+
+#==================================================
+# Traitement Regénération du menu Unités avec la clé "unit menu to update" 
+# Pour le moment ne fait rien, en attente si utilisation nécessaire de la clé "unit menu to update")
+def regenerationMenuUnit(self, _ret, __valueObjet) :
+    pass
+    return
 
 #==================================================
 # Traitement Regénération du menu avec la clé "language menu to update" 

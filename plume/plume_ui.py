@@ -523,11 +523,13 @@ class Ui_Dialog_plume(object):
 
     #----------------------
     def ifVectorPostgres(self, itemUri) :
+        mStoragePostgres = True
         listSousChaine = ["host=", "dbname=", "user="]
-        nbOk = 0
         for elem in listSousChaine :
-            nbOk += 1 if itemUri.find(elem) != -1 else 0
-        return True if nbOk == len(listSousChaine) else False     
+            if itemUri.find(elem) == -1 :
+               mStoragePostgres = False
+               break
+        return mStoragePostgres     
 
     #----------------------
     def connectBase(self) :

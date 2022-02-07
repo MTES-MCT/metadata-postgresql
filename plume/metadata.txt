@@ -3,7 +3,7 @@ name = PLUME
 description=PLUGIN METADONNEES - Stockage des metadonnees dans PostGreSQL
 about=This plugin PLUGIN METADONNEES - Stockage des metadonnees dans PostGreSQL
 category = Tools
-version=0.2.8
+version=0.2.9
 qgisMinimumVersion=3.10
 # Optional items:
 changelog:
@@ -11,6 +11,11 @@ changelog:
     ==========================================================================
     = PLUme MEtadonnees
     = Stockage des metadonnees dans PostGreSQL
+    ==========================================================================
+    ** 0.2.9 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.22
+       **Complement de la classe WidgetsDict pour gerer les QToolButton des unites
+       **Correction Bug sur les QRegularExpression
     ==========================================================================
     ** 0.2.8 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.22
