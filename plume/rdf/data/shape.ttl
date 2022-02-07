@@ -1,5 +1,6 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix dcatap: <http://data.europa.eu/r5r/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dctype: <http://purl.org/dc/dcmitype/> .
 @prefix dqv: <http://www.w3.org/ns/dqv#> .
@@ -154,7 +155,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:provenance ;
 		sh:name "Généalogie"@fr ;
-        sh:description "Sources et méthodes mises en oeuvre pour produire les données."@fr ;
+        sh:description "Sources et méthodes mises en œuvre pour produire les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:ProvenanceStatement ;
         sh:order 20 ;
@@ -172,7 +173,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:conformsTo ;
 		sh:name "Conforme à"@fr ;
-        sh:description "Standard, schéma, référentiel..."@fr ;
+        sh:description "Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:Standard ;
         sh:order 22 ;
@@ -189,7 +190,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dcat:temporalResolution ;
 		sh:name "Résolution temporelle"@fr ;
-        sh:description "Plus petite durée significative dans le contexte du jeu de données." ;
+        sh:description "Plus petit pas de temps significatif dans le contexte du jeu de données."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:duration ;
         sh:maxCount 1 ;
@@ -198,6 +199,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:accessRights ;
 		sh:name "Conditions d'accès"@fr ;
+        sh:description "Contraintes réglementaires limitant l'accès aux données."@fr ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:RightsStatement ;
         sh:order 30 ;
@@ -208,6 +210,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dcat:contactPoint ;
 		sh:name "Point de contact"@fr ;
+        sh:description "Entité à contacter pour obtenir des informations sur les données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class vcard:Kind ;
         sh:order 40 ;
@@ -297,6 +300,7 @@ snum:DatasetShape
 	sh:property [
 		sh:path dcat:distribution ;
 		sh:name "Distribution"@fr ;
+        sh:description "Distribution."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dcat:Distribution ;
         sh:order 59 ;
@@ -320,6 +324,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:language ;
 		sh:name "Langue des données"@fr ;
+        sh:description "Langue·s des données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class dct:LinguisticSystem ;
         sh:order 80 ;
@@ -328,7 +333,7 @@ snum:DatasetShape
     sh:property [
 		sh:path snum:relevanceScore ;
 		sh:name "Score"@fr ;
-        sh:description "plus le score est élevé plus la donnée est mise en avant dans les résultats de recherche."@fr ;
+        sh:description "Niveau de pertinance de la donnée. Plus le score est élevé plus la donnée sera mise en avant dans les résultats de recherche."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:integer ;
         sh:maxCount 1 ;
@@ -337,6 +342,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:type ;
 		sh:name "Type de jeu de données"@fr ;
+        sh:description "Type de jeu de données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:maxCount 1 ;
@@ -346,6 +352,7 @@ snum:DatasetShape
     sh:property [
 		sh:path dct:identifier ;
 		sh:name "Identifiant interne"@fr ;
+        sh:description "Identifiant du jeu de données, attribué automatiquement par Plume."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
@@ -369,9 +376,21 @@ snum:DistributionShape
     sh:property [
 		sh:path dcat:accessURL ;
 		sh:name "URL d'accès"@fr ;
+        sh:description "URL de la page où est publiée cette distribution des données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class rdfs:Resource ;
+        sh:minCount 1 ;
         sh:order 1 ;
+	] ;
+    sh:property [
+		sh:path dct:description ;
+		sh:name "Description"@fr ;
+        sh:description "Description de la distribution."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:order 2 ;
+        snum:longText true ;
 	] ;
     sh:property [
 		sh:path dct:issued ;
@@ -379,25 +398,46 @@ snum:DistributionShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
-        sh:order 2 ;
+        sh:order 3 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
         snum:inputMask "9999-99-99" ;
 	] ;
     sh:property [
+		sh:path dcatap:availability ;
+		sh:name "Disponibilité"@fr ;
+        sh:description "Niveau de disponibilité prévu pour la distribution, permettant d'apprécier le temps pendant lequel elle est susceptible de rester accessible."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:order 4 ;
+        snum:ontology <http://publications.europa.eu/resource/authority/planned-availability> ;
+	] ;
+    sh:property [
+		sh:path dct:format ;
+		sh:name "Format"@fr ;
+        sh:description "Format de la distribution."@fr ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:class dct:MediaTypeOrExtent ;
+        sh:maxCount 1 ;
+        sh:order 5 ;
+        snum:ontology <http://www.iana.org/assignments/media-types> ;
+	] ;
+    sh:property [
 		sh:path dct:rights ;
 		sh:name "Propriété intellectuelle"@fr ;
+        sh:description "Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:RightsStatement ;
         sh:maxCount 1 ;
-        sh:order 3 ;
+        sh:order 10 ;
 	] ;
     sh:property [
 		sh:path dct:license ;
 		sh:name "Licence"@fr ;
+        sh:description "Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution."@fr ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:LicenseDocument ;
         sh:maxCount 1 ;
-        sh:order 4 ;
+        sh:order 11 ;
         snum:ontology snum:CrpaAuthorizedLicense ;
 	] .
 
@@ -454,6 +494,20 @@ snum:ProvenanceStatementShape
         sh:order 0 ;
         snum:longText true ;
         snum:rowSpan 20 ;
+	] .
+
+snum:MediaTypeOrExtentShape
+    a sh:NodeShape ;
+    sh:targetClass dct:MediaTypeOrExtent ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [
+		sh:path rdfs:label ;
+		sh:name "Nom"@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:order 0 ;
 	] .
 
 snum:PeriodOfTimeShape
