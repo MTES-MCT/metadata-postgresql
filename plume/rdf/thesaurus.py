@@ -338,7 +338,7 @@ class Thesaurus:
             t = pick_translation(slabels, langlist)
             self.label = str(t)
         else:
-            raise UnknownSource(thesaurus[0])
+            raise UnknownSource(iri)
         
         concepts = [c for c in vocabulary.subjects(SKOS.inScheme, iri)] 
 
