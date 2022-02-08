@@ -109,7 +109,7 @@ class Metagraph(Graph):
         
         """
         datasetid = self.datasetid
-        url_csw = self.value(datasetid, SNUM.linkedRecord / SNUM.csw)
+        url_csw = self.value(datasetid, SNUM.linkedRecord / DCAT.endpointURL)
         file_identifier = self.value(datasetid, SNUM.linkedRecord / DCT.identifier)
         return (str(url_csw) if url_csw else None,
             str(file_identifier) if file_identifier else None)
@@ -130,7 +130,7 @@ class Metagraph(Graph):
             return
         node = self.value(datasetid, SNUM.linkedRecord)
         if node:
-            self.remove((node, SNUM.csw, None))
+            self.remove((node, DCAT.endpointURL, None))
             self.remove((node, DCT.identifier, None))
             if value is None:
                 self.remove((datasetid, SNUM.linkedRecord, node))
@@ -140,7 +140,7 @@ class Metagraph(Graph):
         if value is not None:
             self.add((datasetid, SNUM.linkedRecord, node))
             if url_csw:
-                self.add((node, SNUM.csw, URIRef(url_csw)))
+                self.add((node, DCAT.endpointURL, URIRef(url_csw)))
             if file_identifier:
                 self.add((node, DCT.identifier, Literal(file_identifier)))
 
