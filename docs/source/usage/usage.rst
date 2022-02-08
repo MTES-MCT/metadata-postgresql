@@ -12,3 +12,4 @@ Usage
    parametres_utilisateur
    gestion_plume_pg
    metadonnees_communes
+   conformite_geodcat_ap
