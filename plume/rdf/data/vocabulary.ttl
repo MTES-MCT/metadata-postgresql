@@ -2,6 +2,26 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
 
+<https://www.ogc.org/standards/wms> a skos:Concept ;
+	skos:inScheme snum:DataServiceStandard ;
+	skos:prefLabel "OGC Web Map Service (WMS)" .
+
+<https://www.ogc.org/standards/wmts> a skos:Concept ;
+	skos:inScheme snum:DataServiceStandard ;
+	skos:prefLabel "OGC Web Map Tile Service (WMTS)" .
+
+<https://www.ogc.org/standards/wfs> a skos:Concept ;
+	skos:inScheme snum:DataServiceStandard ;
+	skos:prefLabel "OGC Web Feature Service (WFS)" .
+    
+<https://www.ogc.org/standards/ogcapi-features> ;
+	skos:inScheme snum:DataServiceStandard ;
+	skos:prefLabel "OGC API - Features" . 
+
+snum:DataServiceStandard a skos:ConceptScheme ;
+    skos:prefLabel "Standards de services de données"@fr,
+        "Data Service Standards"@en .
+
 
 <https://www.iana.org/assignments/media-types/application/geopackage+sqlite3> a skos:Concept ;
 	skos:inScheme <http://www.iana.org/assignments/media-types> ;
