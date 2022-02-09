@@ -12,44 +12,49 @@ Chaque enregistrement du dictionnaire des widgets contrôle un widget principal 
 
 **Widget principal** : [Type](#type) • [Stockage](#stockage) • [Placement dans la grille](#placement-dans-la-grille) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel)
 
-**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton de sélection de l'unité](#widget-annexe--bouton-de-sélection-de-lunité) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton de sélection de l'unité](#widget-annexe--bouton-de-sélection-de-lunité) • [Widget annexe : bouton d'aide à la saisie des géométries](#widget-annexe--bouton-daide-à-la-saisie-des-géométries) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
 Le widget principal et les widgets annexes sont totalement indépendants. Ils peuvent être simplement créés les uns à la suite des autres, de la manière suivante :
 
 ```python
-	
-	# commandes de création du widget principal, variables
-	# selon le type :
-	if widgetsdict[widgetkey]['main widget type'] == 'QGroupBox':
-		...	
-	elif widgetsdict[widgetkey]['main widget type'] == ...
-		...
-	# etc.
-	
-	# commandes de création du widget annexe d'étiquette,
-	# s'il y a lieu :
-	if widgetsdict[widgetkey]['has label']:
-		...
-	
-	# commandes de création du widget annexe de sélection de
-	# la source, s'il y a lieu :
-	if widgetsdict[widgetkey]['multiple sources']:
-		...
-		
-	# commandes de création du widget annexe de sélection de
-	# la langue, s'il y a lieu :
-	if widgetsdict[widgetkey]['authorized languages']:
-		...
-    
+
+    # commandes de création du widget principal, variables
+    # selon le type :
+    if widgetsdict[widgetkey]['main widget type'] == 'QGroupBox':
+        ...	
+    elif widgetsdict[widgetkey]['main widget type'] == ...
+        ...
+    # etc.
+
+    # commandes de création du widget annexe d'étiquette,
+    # s'il y a lieu :
+    if widgetsdict[widgetkey]['has label']:
+        ...
+
+    # commandes de création du widget annexe de sélection de
+    # la source, s'il y a lieu :
+    if widgetsdict[widgetkey]['multiple sources']:
+        ...
+        
+    # commandes de création du widget annexe de sélection de
+    # la langue, s'il y a lieu :
+    if widgetsdict[widgetkey]['authorized languages']:
+        ...
+
     # commandes de création du widget annexe de sélection de
     # l'unité, s'il y a lieu :
     if widgetsdict[widgetkey]['units']:
-		...
+        ...
     
-	# commandes de création du widget annexe bouton moins,
-	# s'il y a lieu :
-	if widgetsdict[widgetkey]['has minus button']:
-		...
+    # commandes de création du widget annexe d'aide à la saisie
+    # des géométries, s'il y a lieu :
+    if widgetsdict[widgetkey]['geo tools']:
+        ...
+    
+    # commandes de création du widget annexe bouton moins,
+    # s'il y a lieu :
+    if widgetsdict[widgetkey]['has minus button']:
+        ...
 
 ```
 
@@ -503,7 +508,7 @@ widgetsdict[widgetkey]['sources']
 
 ```
 
-*Pour la définition des actions, cf. [15_actions_widgets](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-la-source).*
+*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-la-source).*
 
 Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Le nom de ce thésaurus courant est donné par la clé `'current source'`.
 
@@ -679,7 +684,7 @@ Pour l'heure, de tels widgets ne sont utilisés que pour spécifier les unités 
 
 ### Stockage
 
-Le bouton de sélection de la langue est stocké dans la clé `'unit widget'` du dictionnaire interne.
+Le bouton de sélection de l'unité est stocké dans la clé `'unit widget'` du dictionnaire interne.
 
 ```python
 
@@ -769,6 +774,127 @@ if widgetsdict[widgetkey]['hidden']:
 ```
 
 [↑ haut de page](#création-dun-nouveau-widget)
+
+
+## Widget annexe : bouton d'aide à la saisie des géométries
+
+Un widget `QToolButton` d'aide à la saisie des géométries doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira qu'en mode édition) :
+
+```python
+
+if widgetsdict[widgetkey]['geo tools']:
+    ...
+
+```
+
+De tels widgets accompagnent les widgets de saisie appelant des valeurs de type `gsp:wktLiteral`.
+
+### Stockage
+
+Le bouton d'aide à la saisie des géométries est stocké dans la clé `'geo widget'` du dictionnaire interne.
+
+```python
+
+widgetsdict[widgetkey]['geo widget'] = geo_widget
+
+```
+
+*Où `geo_widget` est le widget d'aide à la saisie des géométries qui vient d'être créé.*
+
+### Menu
+
+Le `QMenu` associé au `QToolButton` est stocké dans la clé `'geo menu'` du dictionnaire.
+
+```python
+
+widgetsdict[widgetkey]['geo menu'] = geo_menu
+
+```
+
+*Où `geo_menu` est le `QMenu` qui vient d'être créé.*
+
+Ce `QMenu` contient une `QAction` par fonction d'assistance disponible. Les `QAction` sont elles-mêmes stockées dans la clé `'geo actions'` du dictionnaire, sous la forme d'une liste.
+
+```python
+
+widgetsdict[widgetkey]['geo actions'].append(geo_action)
+
+```
+
+*Où `geo_action` représente chaque `QAction` venant d'être créée.*
+
+### Description des actions
+
+La nature des actions disponibles dépend de la propriété considérée. Elles peuvent être déduite des valeurs listées par la clé `'geo tools'`.
+
+| Valeur incluse dans `'geo tools'` | Libellé de l'action | Texte d'aide | Description de l'effet |
+| --- | --- | --- | --- |
+| `'point'` | Tracé libre (point) | Saisie libre d'un point dans le canvas. | Permet à l'utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées. |
+| `'rectangle'` | Tracé libre (rectangle) | Saisie libre d'un rectangle dans le canvas. | Permet à l'utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées. |
+| `'linestring'` | Tracé libre (ligne) | Saisie libre d'une ligne dans le canvas.  | Permet à l'utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées. |
+| `'polygon'` | Tracé libre (polygone) | Saisie libre d'un polygone dans le canvas. | Permet à l'utilisateur de tracer un polygone dans le canvas et mémorise la géométrie dans les métadonnées. |
+| `'bbox'` | Calcul à partir des données (emprise) | Calcule le rectangle d'emprise à partir des données. | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`) et mémorise la géométrie dans les métadonnées. _NB : Cette option ne sera disponible que si le paramètre `isLayer` donné au constructeur de `plume.rdf.widgetsdict.WidgetDict` valait ``True``._ |
+| `'centroid'` | Calcul à partir des données (centroïde) | Calcule le centre du rectangle d'emprise à partir des données. | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`), puis le centre du rectangle (`QgsRectangle.centre`), et mémorise la géométrie dans les métadonnées. _NB : Cette option ne sera disponible que si le paramètre `isLayer` donné au constructeur de `plume.rdf.widgetsdict.WidgetDict` valait ``True``._ |
+
+Contrairement à tous les autres boutons du formulaire, le bouton d'aide à la saisie des géométries n'affecte pas le dictionnaire. La géométrie obtenue sera simplement saisie dans le `QLineEdit` ou `QTextEdit`, après les deux opérations suivantes :
+1. Conversion au format WKT, avec les méthodes `QgsRectangle.asWktPolygon`, `QgsPointXY.asWkt`, etc. de QGIS.
+2. Explicitation du système de coordonnées, car c'est ce qui est attendu en RDF pour les valeurs de type `gsp:wktLiteral`. On utilisera pour ce faire la fonction `plume.rdf.utils.wkt_with_srid`.
+
+```python
+
+from plume.rdf.utils import wkt_with_srid
+
+geom_wkt = wkt_with_srid(raw_wkt, srid)
+
+```
+
+*Où `raw_wkt` est le résultat de la conversion de la géométrie en WKT et `srid` le référentiel de coordonnées courant de la couche (pour les fonctionnalités de calcul automatisé) ou du canvas (pour les fonctionnalités de tracé libre).*
+
+Les valeurs résultantes seront de cette forme : `'<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.3281 6862298.5858)'`.
+
+### Icône
+
+*À venir.*
+
+### Texte d'aide
+
+On pourra afficher en infobulle sur le bouton le texte suivant :
+
+```python
+
+'Aide à la saisie des géométries'
+
+```
+
+### Placement dans la grille
+
+Le `QToolButton` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
+
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
+
+```python
+
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'geo widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(geo_widget, row, column, rowSpan, columnSpan)
+
+```
+
+*`geo_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du widget annexe d'aide à la saisie des géométries.*
+
+### Widget masqué ?
+
+Le `QToolButton` doit être masqué dès lors que la clé `'hidden'` vaut `True`.
+
+```python
+
+if widgetsdict[widgetkey]['hidden']:
+    ...
+
+```
+
+[↑ haut de page](#création-dun-nouveau-widget)
+
 
 
 ## Widget annexe : bouton "moins"
