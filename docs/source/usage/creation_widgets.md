@@ -48,7 +48,7 @@ Le widget principal et les widgets annexes sont totalement indépendants. Ils pe
     
     # commandes de création du widget annexe d'aide à la saisie
     # des géométries, s'il y a lieu :
-    if widgetsdict[widgetkey]['has geo button']:
+    if widgetsdict[widgetkey]['geo tools']:
         ...
     
     # commandes de création du widget annexe bouton moins,
