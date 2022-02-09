@@ -56,6 +56,12 @@ class WidgetsDict(dict):
         Une liste de tuples - un par champ de la table ou vue PostgreSQL
         (si l'objet considéré n'est pas un schéma) -, contenant les noms
         des champs et leurs descriptifs.
+    isLayer : bool, default False
+        Indique si l'objet PostgreSQL décrit a été chargé en tant que
+        couche dans QGIS, par opposition aux objets seulement listés dans
+        l'explorateur. Certains boutons du formulaire (et les
+        fonctionnalités qu'ils apportent) ne sont présents que quand
+        ce paramètre vaut ``True``.
     mode : {'edit', 'read'}, default 'edit'
         Indique si le dictionnaire est généré pour le mode édition
         (``'edit'``), le mode lecture (``'read'``). Le mode détermine les
@@ -74,7 +80,7 @@ class WidgetsDict(dict):
     language : str, optional
         Langue principale de rédaction des métadonnées.
         Si `language` n'est pas fourni ou n'appartient pas à `langList`,
-        la première langue de `langList` tiendra lieu de langue principale.        
+        la première langue de `langList` tiendra lieu de langue principale.
     
     Attributes
     ----------
@@ -93,7 +99,7 @@ class WidgetsDict(dict):
         Certaines méthodes ne peuvent être utilisées que sur un
         dictionnaire dont l'attribut `mode` vaut ``'edit'``.
     translation : bool
-        True pour un dictionnaire comportant des fonctionnalités de
+        ``True`` pour un dictionnaire comportant des fonctionnalités de
         traduction, ``False`` sinon. Certaines méthodes ne peuvent être
         utilisées que sur un dictionnaire dont l'attribut `translation`
         vaut ``True``.
@@ -103,6 +109,9 @@ class WidgetsDict(dict):
         fournie à l'initialisation soit la première valeur (et
         préservant pour le reste l'ordre d'origine du paramètre
         `langList`).
+    isLayer : bool
+        ``True`` si l'objet PostgreSQL décrit était chargé en tant que
+        couche dans QGIS au moment de la génération du dictionnaire.
     hideBlank : bool
         Les métadonnées sans valeur sont-elles masquées ?
     hideUnlisted : bool
@@ -169,7 +178,7 @@ class WidgetsDict(dict):
     """
     
     def __init__(self, metagraph=None, template=None, data=None, columns=None,
-        mode=None, translation=False, langList=None, language=None,
+        isLayer=False, mode=None, translation=False, langList=None, language=None,
         readHideBlank=True, editHideUnlisted=False, readHideUnlisted=True,
         editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True,
         labelLengthLimit=None, valueLengthLimit=None, textEditRowSpan=None):
@@ -180,18 +189,19 @@ class WidgetsDict(dict):
             and isinstance(langList, (list, tuple)) else ('fr', 'en')
         if not language in self.langlist:
             language = None
+        self.isLayer = bool(isLayer)
         self.labelLengthLimit = labelLengthLimit if labelLengthLimit \
             and isinstance(labelLengthLimit, int) else 25
         self.valueLengthLimit = valueLengthLimit if valueLengthLimit \
             and isinstance(valueLengthLimit, int) else 65
         self.textEditRowSpan = textEditRowSpan if textEditRowSpan \
             and isinstance(textEditRowSpan, int) else 6
-        self.translation = translation and self.edit
-        self.hideBlank = readHideBlank and not self.edit
-        self.hideUnlisted = (readHideUnlisted and not self.edit) \
-            or (editHideUnlisted and self.edit)
-        self.onlyCurrentLanguage = (readOnlyCurrentLanguage and not self.edit) \
-            or (editOnlyCurrentLanguage and self.edit and not self.translation)
+        self.translation = bool(translation) and self.edit
+        self.hideBlank = bool(readHideBlank) and not self.edit
+        self.hideUnlisted = (bool(readHideUnlisted) and not self.edit) \
+            or (bool(editHideUnlisted) and self.edit)
+        self.onlyCurrentLanguage = (bool(readOnlyCurrentLanguage) and not self.edit) \
+            or (bool(editOnlyCurrentLanguage) and self.edit and not self.translation)
         
         # ------ Racine ------
         # + gestion de l'identifiant
@@ -218,6 +228,7 @@ class WidgetsDict(dict):
         WidgetKey.with_source_buttons = self.edit
         WidgetKey.with_unit_buttons = self.edit
         WidgetKey.with_language_buttons = self.translation
+        WidgetKey.with_geo_buttons = self.isLayer and self.edit
         WidgetKey.langlist = list(self.langlist)
         self.root.main_language = language
         self.langlist = tuple(WidgetKey.langlist)
@@ -560,6 +571,8 @@ class WidgetsDict(dict):
             if widgetkey.has_unit_button:
                 internaldict['units'] = widgetkey.units.copy()
                 internaldict['current unit'] = widgetkey.value_unit
+            if widgetkey.has_geo_button:
+                internaldict['geo tools'] = widgetkey.geo_tools
 
         if isinstance(widgetkey, ObjectKey):
             internaldict['has minus button'] = widgetkey.has_minus_button
@@ -595,7 +608,7 @@ class WidgetsDict(dict):
         ----------
         widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
-        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'unit widget', 'label widget'}
+        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'unit widget', 'geo widget', 'label widget'}
             Nature du widget considéré, soit plus prosaïquement le nom
             de la clé du dictionnaire interne qui le référence.
         
@@ -628,6 +641,8 @@ class WidgetsDict(dict):
             return widgetkey.source_button_placement
         if kind == 'unit widget':
             return widgetkey.unit_button_placement
+        if kind == 'geo widget':
+            return widgetkey.geo_button_placement
         if kind == 'minus widget':
             return widgetkey.minus_button_placement
 
@@ -746,6 +761,9 @@ class WidgetsDict(dict):
             m = self[widgetkey]['unit menu']
             if m:
                 d['menus to delete'].append(m)
+            m = self[widgetkey]['geo menu']
+            if m:
+                d['menus to delete'].append(m)
             a = self[widgetkey]['switch source actions']
             if a:
                 d['actions to delete'] += a
@@ -755,6 +773,10 @@ class WidgetsDict(dict):
             a = self[widgetkey]['unit actions']
             if a:
                 d['actions to delete'] += a
+            a = self[widgetkey]['geo actions']
+            if a:
+                d['actions to delete'] += a
+            
             del self[widgetkey]
         
         for widgetkey in actionsbook.empty:
@@ -792,7 +814,7 @@ class WidgetsDict(dict):
             return []
         l = []        
         for k in ('main widget', 'minus widget', 'switch source widget',
-            'language widget', 'unit widget', 'label widget'):
+            'language widget', 'unit widget', 'geo widget', 'label widget'):
             w = self[widgetkey][k]
             if w:
                 if with_kind:
