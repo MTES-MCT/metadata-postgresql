@@ -148,7 +148,7 @@ snum:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class dct:Frequency ;
         sh:maxCount 1 ;
-        snum:ontology # <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency>,
+        snum:ontology <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency>,
             <http://publications.europa.eu/resource/authority/frequency> ;
         sh:order 14 ;
 	] ;
@@ -174,9 +174,10 @@ snum:DatasetShape
 		sh:path dct:conformsTo ;
 		sh:name "Conforme à"@fr ;
         sh:description "Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données."@fr ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Standard ;
         sh:order 22 ;
+        snum:ontology <http://www.opengis.net/def/crs/EPSG/0> ;
 	] ;
     sh:property [
 		sh:path dcat:spatialResolutionInMeters ;
@@ -315,11 +316,27 @@ snum:DatasetShape
 	] ;
     sh:property [
 		sh:path foaf:page ;
-		sh:name "Ressource associée"@fr ;
-        sh:description "Chemin d'une page internet ou d'un document en rapport avec les données."@fr ;
+		sh:name "Documentation"@fr ;
+        sh:description "URL d'accès à une documentation rédigée décrivant la donnée."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 61 ;
+	] ;
+    sh:property [
+		sh:path dct:isReferencedBy ;
+		sh:name "Cité par"@fr ;
+        sh:description "URL d'une publication qui utilise ou évoque les données."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class rdfs:Resource ;
+        sh:order 62 ;
+	] ;
+    sh:property [
+		sh:path dct:relation ;
+		sh:name "Ressource liée"@fr ;
+        sh:description "URL d'accès à une ressource en rapport avec les données."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class rdfs:Resource ;
+        sh:order 63 ;
 	] ;
     sh:property [
 		sh:path dct:language ;
@@ -347,7 +364,7 @@ snum:DatasetShape
         sh:class skos:Concept ;
         sh:maxCount 1 ;
         sh:order 82 ;
-        # snum:ontology snum:DatasetType ;
+        snum:ontology <http://publications.europa.eu/resource/authority/dataset-type> ;
 	] ;
     sh:property [
 		sh:path dct:identifier ;
@@ -695,7 +712,9 @@ snum:LocationShape
         sh:maxCount 1 ;
         sh:order 3 ;
         snum:longText true ;
-        snum:placeholder "POLYGON((2.1 48.3,2.1 50.5,1.8 50.5,1.8 48.3,2.1 48.3))" ;
+        snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))" ;
+        snum:geoTool "bbox",
+            "rectangle" ;
 	] ;
     sh:property [
 		sh:path dcat:centroid ;
@@ -705,7 +724,9 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 4 ;
-        snum:placeholder "POINT(-71.064544 42.28787)" ;
+        snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.3281 6862298.5858)" ;
+        snum:geoTool "centroid",
+            "point" ;
 	]  ;
     sh:property [
 		sh:path locn:geometry ;
@@ -716,6 +737,10 @@ snum:LocationShape
         sh:maxCount 1 ;
         sh:order 5 ;
         snum:longText true ;
+        snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))" ;
+        snum:geoTool "point",
+            "linestring",
+            "polygon" ;
 	] .
 
 snum:StandardShape
@@ -875,7 +900,8 @@ snum:DataServiceShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Standard ;
         sh:order 2 ;
-        snum:ontology snum:DataServiceStandard ;
+        snum:ontology snum:DataServiceStandard,
+            <http://www.opengis.net/def/crs/EPSG/0> ;
 	] ;
     sh:property [
 		sh:path dcat:endpointDescription ;
@@ -903,6 +929,16 @@ snum:DataServiceShape
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:order 5 ;
+	] ;
+    sh:property [
+		sh:path dct:type ;
+		sh:name "Type de service de données"@fr ;
+        sh:description "Type de service de données."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:maxCount 1 ;
+        sh:order 6 ;
+        snum:ontology <http://publications.europa.eu/resource/authority/data-service-type> ;
 	] ;
     sh:property [
 		sh:path dct:accessRights ;
