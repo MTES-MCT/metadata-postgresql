@@ -40,19 +40,22 @@ class InternalDict(dict):
     * ``label widget`` : widget annexe de type ``QLabel`` portant une étiquette qui fournit le
       libellé de la catégorie de métadonnée. À créer lorsque la valeur de ``has label`` est
       ``True``. Le libellé à afficher est la valeur de ``label``.
-    * ``minus widget`` :  widget annexe de type ``QButtonTool`` permettant à l'utilisateur
+    * ``minus widget`` :  widget annexe de type ``QToolButton`` permettant à l'utilisateur
       de supprimer le widget. À créer lorsque la valeur de ``has minus button`` est ``True``.
-    * ``language widget`` : widget annexe de type ``QButtonTool`` permettant à l'utilisateur
+    * ``language widget`` : widget annexe de type ``QToolButton`` permettant à l'utilisateur
       de spécifier la langue du texte qu'il saisit. À créer lorsque la valeur de
       ``authorized languages`` n'est pas ``None``.
-    * ``switch source widget`` : widget annexe de type ``QButtonTool`` permettant à l'utilisateur
+    * ``switch source widget`` : widget annexe de type ``QToolButton`` permettant à l'utilisateur
       de spécifier le thésaurus qu'il veut utiliser, lorsque plusieurs sont disponibles, ou
       de passer en mode manuel (saisie manuelle des propriétés de l'objet, au lieu de la simple
       sélection de son IRI dans un thésaurus). À créer lorsque la valeur de ``multiple sources``
       est ``True``.
-    * ``unit widget`` : widget annexe de type ``QButtonTool`` permettant à l'utilisateur
+    * ``unit widget`` : widget annexe de type ``QToolButton`` permettant à l'utilisateur
       de choisir l'unité de la valeur qu'il est en train de saisir. À créer lorsque la
       valeur de la clé ``units`` n'est pas ``None``.
+    * ``geo widget`` : widget annexe de type ``QToolButton`` proposant des fonctionnalités
+    d'aide à la saisie des géométries. À créer lorsque la valeur de la clé ``geo tools``
+    n'est pas ``None``.
     
     En complément, des clés sont prévues pour les ``QMenu`` et ``QAction`` associés à certains
     widgets boutons.
@@ -69,7 +72,10 @@ class InternalDict(dict):
     * ``unit menu`` : pour le ``QMenu`` associé au widget référencé par ``unit widget``.
       Ce menu présente une liste d'unités disponibles (cf. ``units``), dont une est
       sélectionnée (cf. ``current unit``).
-    * ``unit actions`` : liste des ``QAction`` du ``unit menu``.    
+    * ``unit actions`` : liste des ``QAction`` du ``unit menu``.
+    * ``geo menu`` : pour le ``QMenu`` associé au widget référencé par ``geo widget``.
+      Ce menu présente une liste fixe d'actions possibles.
+    * ``geo actions`` : liste des ``QAction`` du ``geo menu``. 
 
     Les clés suivantes contiennent les informations nécessaires au paramétrage des widgets.
     
@@ -122,6 +128,10 @@ class InternalDict(dict):
     * ``current unit`` : s'il y a lieu de créer un widget pour spécifier l'unité (cf. ``units``),
       l'unité qui devra être présentée comme actuellement sélectionné par le menu associé
       (``unit menu``).
+    * ``geo tools`` : liste des fonctionnalités d'aide à la saisie des géométries à
+      proposer. La non nullité de cette clé emporte la création d'un bouton d'aide
+      à la saisie des géométries (``geo widget``) par lequel l'utilisateur accédera
+      à ces fonctionnalités.
     
     """
     
@@ -130,16 +140,16 @@ class InternalDict(dict):
             'object', 'main widget type',
             # stockage des widgets :
             'main widget', 'grid widget', 'label widget', 'minus widget',
-            'language widget', 'switch source widget', 'unit widget',
+            'language widget', 'switch source widget', 'unit widget', 'geo widget',
             'switch source menu', 'switch source actions', 'language menu',
-            'language actions', 'unit menu', 'unit actions',
+            'language actions', 'unit menu', 'unit actions', 'geo menu', 'geo actions',
             # paramétrage des widgets :
             'hidden', 'label', 'has label', 'help text', 'value', 'placeholder text',
             'input mask', 'is mandatory', 'read only', 'has minus button',
             'hide minus button', 'regex validator pattern', 'regex validator flags',
             'type validator', 'multiple sources', 'sources', 'current source',
             'thesaurus values', 'authorized languages', 'language value', 'units',
-            'current unit'
+            'current unit', 'geo tools'
             ]
         self.update({ k:None for k in keys })
 
