@@ -143,6 +143,21 @@ class WidgetKey:
     
     """
     
+    with_geo_buttons = True
+    """bool: Faut-il créer des boutons d'aide à la saisie des géométries ?
+    
+    Mettre cet attribut à ``False`` permet d'inhiber la création
+    des boutons d'aide à la saisie des géométries, s'il y avait par ailleurs
+    lieu d'en créer.
+    
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
+    
+    """
+    
     actionsbook = ActionsBook()
     """plume.rdf.actionsbook.ActionsBook: Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
     
@@ -532,6 +547,24 @@ class WidgetKey:
         return False
 
     @property
+    def has_geo_button(self):
+        """bool: Un bouton annexe d'aide à la saisie des géométries doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests, mais elle
+        vaut toujours ``False`` quand la clé n'est pas une clé-valeur
+        (:py:class:`ValueKey`).
+        
+        See Also
+        --------
+        ValueKey.has_geo_button
+        
+        """
+        return False
+
+    @property
     def has_label(self):
         """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
         
@@ -701,14 +734,14 @@ class WidgetKey:
         * ``[3]`` est le nombre de colonnes occupées.
         
         Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton
-        de sélection de la langue.
+        de sélection de la source.
         
         Notes
         -----
         Le bouton de sélection de la source est placé à droite du widget
         principal et des éventuels boutons de sélection de l'unité
         et bouton de sélection la langue (lesquels ne peuvent en pratique
-        jamais apparaître en même temps qu'un bouton ne sélection de
+        jamais apparaître en même temps qu'un bouton de sélection de
         la source).
         
         """
@@ -717,6 +750,36 @@ class WidgetKey:
         row, column, rowspan, columnspan = self.placement
         column = column + columnspan + (1 if self.has_unit_button else 0) \
             + (1 if self.has_language_button else 0) 
+        return (row, column, 1, 1)
+
+    @property
+    def geo_button_placement(self):
+        """tuple(int): Placement du bouton d'aide à la saisie des géométries dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton
+        de sélection d'aide à la saisie des géométries.
+        
+        Notes
+        -----
+        Le bouton d'aide à la saisie des géomtries est placé à droite du
+        widget principal et des éventuels boutons de sélection de l'unité,
+        bouton de sélection la langue et bouton de sélection de la source
+        (lesquels ne peuvent en pratique jamais apparaître en même temps
+        qu'un bouton d'aide à la saisie des géométries).
+        
+        """
+        if not self.has_geo_button:
+            return
+        row, column, rowspan, columnspan = self.placement
+        column = column + columnspan + (1 if self.has_unit_button else 0) \
+            + (1 if self.has_language_button else 0) \
+            + (1 if self.has_source_button else 0) 
         return (row, column, 1, 1)
 
     @property
@@ -734,16 +797,17 @@ class WidgetKey:
         Notes
         -----
         Le bouton moins est placé à droite du widget principal et des éventuels
-        boutons de sélection de l'unité, de sélection de la langue et de
-        sélection de la source.
+        boutons de sélection de l'unité, de sélection de la langue, de
+        sélection de la source et d'aide à la saisie des géométries.
         
         """
         if not self.has_minus_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + + (1 if self.has_unit_button else 0) \
+        column = column + columnspan + (1 if self.has_unit_button else 0) \
             + (1 if self.has_language_button else 0) \
-            + (1 if self.has_source_button else 0)
+            + (1 if self.has_source_button else 0) \
+            + (1 if self.has_geo_button else 0)
         return (row, column, 1, 1)
     
     @property
@@ -2374,6 +2438,7 @@ class GroupOfValuesKey(GroupKey):
         self._is_read_only = None
         self._regex_validator = None
         self._regex_validator_flags = None
+        self._geo_tools = None
         
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -2391,6 +2456,7 @@ class GroupOfValuesKey(GroupKey):
         self.is_read_only = kwargs.get('is_read_only')
         self.regex_validator = kwargs.get('regex_validator')
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
+        self.geo_tools = kwargs.get('geo_tools')
     
     def _validate_parent(self, parent):
         return isinstance(parent, (GroupOfPropertiesKey, TabKey, RootKey))
@@ -2625,10 +2691,12 @@ class GroupOfValuesKey(GroupKey):
             value = XSD.string
         self._datatype = value
         if not self._is_unborn:
+            self.geo_tools = self.geo_tools
             for child in self.children:
                 if isinstance(child, ValueKey):
                     child.value_language = child.value_language
                     child.is_long_text = child.is_long_text
+                    child.value_unit = child.value_unit
     
     @property
     def transform(self):
@@ -2786,6 +2854,41 @@ class GroupOfValuesKey(GroupKey):
         if not self.regex_validator:
             value = None
         self._regex_validator_flags = str(value) if value else None
+
+    @property
+    def geo_tools(self):
+        """list(str): Fonctionnalités d'aide à la saisie des géométries disponibles pour les clés-valeurs du groupe.
+        
+        Notes
+        -----
+        Il n'est pas interdit de définir une valeur pour cette propriété
+        lorsque le groupe de valeurs ne contient que des groupes de 
+        propriétés, mais cela ne présente aucun intérêt.
+        
+        Cette propriété vaudra toujours ``None`` si 
+        :py:attr:`GroupOfValues.datatype` n'est pas ``gsp:wktLiteral``.
+        
+        Il est permis de fournir en argument une liste de
+        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+        
+        Seules les valeurs suivantes sont acceptées (les autres seront
+        silencieusement éliminées) :
+        ``{'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+        
+        """
+        return self._geo_tools
+    
+    @geo_tools.setter
+    def geo_tools(self, value):
+        if not self.datatype == GSP.wktLiteral:
+            value = None
+        elif not value:
+            value = []
+        else:
+            l = ['point', 'linestring', 'rectangle',
+                'polygon', 'bbox', 'centroid']
+            value = [str(o) for o in value if str(o) in l]
+        self._geo_tools = value
 
     def _hide_m(self, value, rec=False):
         super()._hide_m(value, rec=rec)
@@ -3254,7 +3357,8 @@ class ValueKey(ObjectKey):
         self._is_mandatory = None
         self._is_read_only = None
         self._regex_validator = None
-        self._regex_validator_flags = None   
+        self._regex_validator_flags = None
+        self._geo_tools = None        
         self._value = None
         self._value_language = None
         self._value_source = None
@@ -3276,6 +3380,7 @@ class ValueKey(ObjectKey):
         self.is_read_only = kwargs.get('is_read_only')
         self.regex_validator = kwargs.get('regex_validator')
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
+        self.geo_tools = kwargs.get('geo_tools')
         self.value = kwargs.get('value')
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
@@ -3386,8 +3491,8 @@ class ValueKey(ObjectKey):
     @independant_label.setter
     def independant_label(self, value):
         old_value = self.independant_label
-        if not self or not self.label or self.m_twin:
-            self._independant_label = False
+        if self.m_twin or not self.has_label:
+            value = False
         value = bool(value)
         self._independant_label = value
         if not self._is_unborn and old_value != value:
@@ -3403,7 +3508,8 @@ class ValueKey(ObjectKey):
         
         """
         return self and WidgetKey.with_language_buttons \
-            and self.datatype == RDF.langString
+            and self.datatype == RDF.langString \
+            and not self.is_read_only
     
     @property
     def has_source_button(self):
@@ -3415,7 +3521,8 @@ class ValueKey(ObjectKey):
         
         """
         return self and WidgetKey.with_source_buttons \
-            and ((self.sources and len(self.sources) > 1) or bool(self.m_twin))
+            and ((self.sources and len(self.sources) > 1) or bool(self.m_twin)) \
+            and not self.is_read_only
     
     @property
     def has_unit_button(self):
@@ -3430,7 +3537,24 @@ class ValueKey(ObjectKey):
         
         """
         return self and WidgetKey.with_unit_buttons \
-            and self.datatype == XSD.duration
+            and self.datatype == XSD.duration \
+            and not self.is_read_only
+    
+    @property
+    def has_geo_button(self):
+        """bool: Un bouton annexe d'aide à la saisie des géométries doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_geo_button`.
+        
+        Pour l'heure, de tels boutons ne sont prévus que pour les valeurs
+        de type ``gsp:wktLiteral``.
+        
+        """
+        return self and WidgetKey.with_geo_buttons \
+            and bool(self.geo_tools) \
+            and not self.is_read_only
     
     @property
     def has_label(self):
@@ -3460,7 +3584,7 @@ class ValueKey(ObjectKey):
         ValueKey.label_placement
         
         """
-        if not self:
+        if not self or not self.has_label:
             return
         row = ( self.row - 1 ) if self.independant_label else self.row
         columnspan = 2 if self.independant_label else 1
@@ -3557,6 +3681,7 @@ class ValueKey(ObjectKey):
                 value = XSD.string
             self._datatype = value
             if not self._is_unborn:
+                self.geo_tools = self.geo_tools
                 self.value_language = self.value_language
                 self.is_long_text = self.is_long_text
                 self.value_unit = self.value_unit
@@ -3683,7 +3808,7 @@ class ValueKey(ObjectKey):
     
     @property
     def regex_validator_flags(self):
-        """Paramètres associés à l'expression rationnelle de validation de la clé.
+        """str: Paramètres associés à l'expression rationnelle de validation de la clé.
         
         Notes
         -----
@@ -3709,6 +3834,44 @@ class ValueKey(ObjectKey):
             if not self.regex_validator:
                 value = None
             self._regex_validator_flags = str(value) if value else None
+    
+    @property
+    def geo_tools(self):
+        """list(str): Fonctionnalités d'aide à la saisie des géométries disponibles pour la clé.
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs, la propriété du
+        groupe parent est renvoyée. Tenter d'en modifier la valeur
+        n'aura silencieusement aucun effet.
+        
+        Cette propriété vaudra toujours ``None`` si :py:attr:`ValueKey.datatype`
+        n'est pas ``gsp:wktLiteral``.
+        
+        Il est permis de fournir en argument une liste de
+        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+        
+        Seules les valeurs suivantes sont acceptées (les autres seront
+        silencieusement éliminées) :
+        ``{'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.geo_tools
+        return self._geo_tools
+    
+    @geo_tools.setter
+    def geo_tools(self, value):
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if not self.datatype == GSP.wktLiteral:
+                value = None
+            elif not value:
+                value = []
+            else:
+                l = ['point', 'linestring', 'rectangle',
+                    'polygon', 'bbox', 'centroid']
+                value = [str(o) for o in value if str(o) in l]
+            self._geo_tools = value
     
     @property
     def value_language(self):
