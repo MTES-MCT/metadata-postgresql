@@ -1,6 +1,6 @@
 # Génération du dictionnaire des widgets
 
- [metagraph : le graphe des métadonnées pré-existantes](#metagraph--le-graphe-des-métadonnées-pré-existantes) • [template : le modèle de formulaire](#template--le-modèle-de-formulaire) • [columns : les descriptifs des champs](#columns--les-descriptifs-des-champs) • [data : les métadonnées calculées](#data--les-métadonnées-calculées) • [mode](#mode) • [translation](#translation) • [langList](#langlist) • [language](#language) • [readHideBlank](#readhideblank) • [editHideUnlisted](#edithideunlisted) • [readHideUnlisted](#readhideunlisted) • [editOnlyCurrentLanguage](#editonlycurrentlanguage) • [readOnlyCurrentLanguage](#readonlycurrentlanguage) • [labelLengthLimit](#labellengthlimit) • [valueLengthLimit](#valuelengthlimit) • [textEditRowSpan](#texteditrowspan) • [Résultat : un dictionnaire de widgets](#résultat--un-dictionnaire-de-widgets)
+ [metagraph : le graphe des métadonnées pré-existantes](#metagraph--le-graphe-des-métadonnées-pré-existantes) • [template : le modèle de formulaire](#template--le-modèle-de-formulaire) • [columns : les descriptifs des champs](#columns--les-descriptifs-des-champs) • [data : les métadonnées calculées](#data--les-métadonnées-calculées) • [isLayer](#islayer) • [mode](#mode) • [translation](#translation) • [langList](#langlist) • [language](#language) • [readHideBlank](#readhideblank) • [editHideUnlisted](#edithideunlisted) • [readHideUnlisted](#readhideunlisted) • [editOnlyCurrentLanguage](#editonlycurrentlanguage) • [readOnlyCurrentLanguage](#readonlycurrentlanguage) • [labelLengthLimit](#labellengthlimit) • [valueLengthLimit](#valuelengthlimit) • [textEditRowSpan](#texteditrowspan) • [Résultat : un dictionnaire de widgets](#résultat--un-dictionnaire-de-widgets)
 
 Lorsqu'un utilisateur demande l'affichage de la fiche de métadonnées d'une table ou vue, le plugin :
 1. rassemble dans un "dictionnaire de widgets", c'est-à-dire un objet de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
@@ -8,7 +8,7 @@ Lorsqu'un utilisateur demande l'affichage de la fiche de métadonnées d'une tab
 
 La première de ces étapes est traitée ici. Pour la seconde, cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md).
 
-La classe `WidgetsDict` est définie par le module [plume.rdf.widgetsdict](/plume/rdf/widgetsdict.py). Sa fonction d'initialisation prend deux types d'arguments : des sources de données et des paramètres utilisateur. Aucun n'est obligatoire.
+La classe `WidgetsDict` est définie par le module [plume.rdf.widgetsdict](/plume/rdf/widgetsdict.py). Sa fonction d'initialisation prend trois types d'arguments : des sources de données, des variables d'environnement et des paramètres utilisateur. Aucun n'est obligatoire.
 
 Sources de données :
 
@@ -18,6 +18,12 @@ Sources de données :
 | `template` | [`plume.pg.template.TemplateDict`](/plume/pg/template.py) | `None` | [→ modèle de formulaire](#template--le-modèle-de-formulaire) |
 | `data` | `dict` | `None` | [→ métadonnées calculées](#data--les-métadonnées-calculées) |
 | `columns` | `list(tuple(str, str))` | `None` | [→ descriptifs des champs](#columns--les-descriptifs-des-champs) |
+
+Variables d'environnement :
+
+| Nom | Type | Valeur par défaut | Détails |
+| --- | --- | --- | --- |
+| `isLayer` | `bool`| `False` | [→](#islayer) |
 
 Paramètres utilisateurs :
 
@@ -157,6 +163,12 @@ Dans le formulaire résultant, chaque champ se trouvera représenté par un widg
 `data` est un dictionnaire contenant des informations actualisées à partir de sources externes (par exemple déduites des données) qui écraseront les valeurs présentes dans `metagraph`. Les clés du dictionnaire sont des chemins SPARQL identifiant des catégories de métadonnées, ses valeurs sont des listes contenant la ou les valeurs (`str`) à faire apparaître pour les catégories en question.
 
 À ce stade, `WidgetsDict` prend parfaitement en charge le paramètre `data`, mais aucun mécanisme d'alimentation en informations externes n'a été mis en place. On pourra donc considérer qu'il vaut toujours `None`.
+
+## Variables d'environnement
+
+### isLayer
+
+`isLayer` indique si la table ou vue PostgreSQL était chargée dans QGIS en tant que couche au moment de la génération du dictionnaire. Mettre explicitement ce paramètre à ``True`` autorise notamment l'affichage des [boutons d'aide à la saisie des géométries](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-daide-à-la-saisie-des-géométries).
 
 ## Paramètres utilisateur
 
