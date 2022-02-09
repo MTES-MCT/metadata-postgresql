@@ -34,7 +34,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         cas simple d'un dictionnaire en mode édition.
         
         """
-        widgetsdict = WidgetsDict()
+        widgetsdict = WidgetsDict(isLayer=True)
         self.assertEqual(widgetsdict.main_language, 'fr')
         self.assertTrue(widgetsdict.edit)
         self.assertFalse(widgetsdict.translation)
@@ -164,11 +164,13 @@ class WidgetsDictTestCase(unittest.TestCase):
                 if not k in d:
                     self.assertFalse(v)
         # widget de saisie avec une seule source
-        key = widgetsdict.root.search_from_path(DCT.conformsTo / SKOS.inScheme)
+        key = widgetsdict.root.search_from_path(DCT.subject).children[0]
         d = {
             'main widget type': 'QComboBox',
-            'label': 'Registre',
-            'has label': True,
+            'help text': "Classification thématique du jeu données selon la nomenclature du standard ISO 19115.",
+            'has label': False,
+            'has minus button': True,
+            'hide minus button': True,
             'object': 'edit',
             }
         for k, v in d.items():
@@ -178,7 +180,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             with self.subTest(internalkey = k):
                 if not k in d and not k == 'thesaurus values':
                     self.assertFalse(v)
-        self.assertTrue("Système de coordonnées (registre de codes EPSG de l'OGC)"
+        self.assertTrue("Agriculture"
             in widgetsdict[key]['thesaurus values'])
         self.assertTrue('' in widgetsdict[key]['thesaurus values'])
         # widget de saisie avec unités
@@ -192,6 +194,27 @@ class WidgetsDictTestCase(unittest.TestCase):
             'type validator': 'QIntValidator',
             'units': ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'],
             'current unit': 'ans'
+            }
+        for k, v in d.items():
+            with self.subTest(internalkey = k):
+                self.assertEqual(widgetsdict[key][k], v)
+        for k, v in widgetsdict[key].items():
+            with self.subTest(internalkey = k):
+                if not k in d:
+                    self.assertFalse(v)
+        # widget de saisie avec aide à la saisie des géométries
+        key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
+        d = {
+            'main widget type': 'QTextEdit',
+            'label': "Rectangle d'emprise",
+            'has label': True,
+            'help text': "Rectangle d'emprise (BBox), au format textuel WKT.",
+            'object': 'edit',
+            'geo tools': ['bbox', 'rectangle'],
+            'placeholder text': '<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
+                'POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, ' \
+                '657175.3272 6867076.0360, 646417.3289 6867076.0360, ' \
+                '646417.3289 6857521.1356))'
             }
         for k, v in d.items():
             with self.subTest(internalkey = k):
@@ -304,6 +327,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         metadata = """
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix gsp: <http://www.opengis.net/ont/geosparql#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -321,6 +345,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                     dcat:endDate "2021-01-15"^^xsd:date ;
                     dcat:startDate "2021-01-15"^^xsd:date ] ;
                 dcat:temporalResolution "PT10M"^^xsd:duration ;
+                dct:spatial [ a dct:Location ;
+                    dcat:bbox "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))"^^gsp:wktLiteral ] ;
                 dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
@@ -358,7 +384,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # NB: le dictionnaire ne contient que la clé racine.
         
         # --- avec graphe, sans modèle ---
-        widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph)
+        widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph, isLayer=True)
         key = widgetsdict.root.search_from_path(DCAT.keyword)
         self.assertTrue(key in widgetsdict)
         self.assertIsNone(key.button)
@@ -381,8 +407,10 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertIsNone(key.m_twin)
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
         self.assertIsNone(key)
+        key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
+        self.assertIsNone(widgetsdict[key]['geo tools'])
         self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
-        
+
         # --- avec graphe non inclus dans le modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
             template=template)
@@ -422,7 +450,18 @@ class WidgetsDictTestCase(unittest.TestCase):
         key = widgetsdict.root.search_from_path(DCT.description)
         self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
         self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
-        
+
+    def test_widgetsdict_not_a_layer(self):
+        """Génération d'un dictionnaire de widgets lorsque la source n'est pas une couche chargée dans QGIS.
+
+        """
+        widgetsdict = WidgetsDict(isLayer=False)
+        key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
+        self.assertIsNone(widgetsdict[key]['geo tools'])
+        widgetsdict = WidgetsDict(isLayer=True)
+        key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
+        self.assertIsNotNone(widgetsdict[key]['geo tools'])
+    
     def test_widgetsdict_special_hidden_keys(self):
         """Génération d'un dictionnaire de widgets avec paramètres masquant certaines informations.
 
@@ -716,6 +755,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         metadata = """
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix gsp: <http://www.opengis.net/ont/geosparql#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -736,6 +776,9 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
                 dcat:temporalResolution "P1M"^^xsd:duration,
                     "PT12H"^^xsd:duration ;
+                dct:spatial [ a dct:Location ;
+                    dcat:bbox "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))"^^gsp:wktLiteral,
+                        "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646416.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))"^^gsp:wktLiteral ] ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -756,7 +799,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('DELETE FROM z_plume.meta_template')
         conn.close()
         template = TemplateDict(categories, tabs)
-        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template, isLayer=True)
 
         # --- suppression d'une clé simple ---
         g = widgetsdict.root.search_from_path(DCAT.keyword)
@@ -819,6 +862,39 @@ class WidgetsDictTestCase(unittest.TestCase):
              ('<QGridLayout dcat:temporalResolution>', '<C-unit QToolButton dcat:temporalResolution>', 0, 2, 1, 1)])
         self.assertListEqual(actionsdict['actions to delete'], ['<B-unit QAction n°1>', '<B-unit QAction n°2>'])
         self.assertListEqual(actionsdict['menus to delete'], ['<B-unit QMenu dcat:temporalResolution>'])
+        for k in actionsdict.keys():
+            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move', 'actions to delete',
+                'menus to delete'):
+                self.assertFalse(actionsdict[k])
+
+        # --- suppression d'une clé avec aide à la saisie des géométries ---
+        g = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
+        b = g.children[0]
+        c = g.children[1]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dcat:bbox>'
+        widgetsdict[b]['main widget'] = '<B QLineEdit dcat:bbox>'
+        widgetsdict[b]['minus widget'] = '<B-minus QToolButton dcat:bbox>'
+        widgetsdict[b]['geo widget'] = '<B-geo QToolButton dcat:bbox>'
+        widgetsdict[b]['geo menu'] = '<B-geo QMenu dcat:bbox>'
+        widgetsdict[b]['geo actions'] = ['<B-geo QAction n°1>', '<B-geo QAction n°2>']
+        widgetsdict[c]['main widget'] = '<C QLineEdit dcat:bbox>'
+        widgetsdict[c]['minus widget'] = '<C-minus QToolButton dcat:bbox>'
+        widgetsdict[c]['geo widget'] = '<C-geo QToolButton dcat:bbox>'
+        widgetsdict[c]['geo menu'] = '<C-geo QMenu dcat:bbox>'
+        widgetsdict[c]['geo actions'] = ['<C-geo QAction n°1>', '<C-geo QAction n°2>']
+        actionsdict = widgetsdict.drop(b)
+        self.assertEqual(len(g.children), 1)
+        self.assertFalse(b in widgetsdict)
+        self.assertListEqual(actionsdict['widgets to hide'], ['<C-minus QToolButton dcat:bbox>'])
+        self.assertListEqual(actionsdict['widgets to delete'],
+            ['<B QLineEdit dcat:bbox>', '<B-minus QToolButton dcat:bbox>',
+             '<B-geo QToolButton dcat:bbox>'])
+        self.assertListEqual(actionsdict['widgets to move'],
+            [('<QGridLayout dcat:bbox>', '<C QLineEdit dcat:bbox>', 0, 0, widgetsdict.textEditRowSpan, 2),
+             ('<QGridLayout dcat:bbox>', '<C-minus QToolButton dcat:bbox>', 0, 3, 1, 1),
+             ('<QGridLayout dcat:bbox>', '<C-geo QToolButton dcat:bbox>', 0, 2, 1, 1)])
+        self.assertListEqual(actionsdict['actions to delete'], ['<B-geo QAction n°1>', '<B-geo QAction n°2>'])
+        self.assertListEqual(actionsdict['menus to delete'], ['<B-geo QMenu dcat:bbox>'])
         for k in actionsdict.keys():
             if not k in ('widgets to hide', 'widgets to delete', 'widgets to move', 'actions to delete',
                 'menus to delete'):
