@@ -3,7 +3,7 @@ import unittest
 from uuid import uuid4
 
 from plume.rdf.rdflib import URIRef, Literal
-from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD
+from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD, GSP
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, RootKey, TabKey
@@ -29,6 +29,23 @@ class WidgetKeyTestCase(unittest.TestCase):
             'row', 'rowspan', 'source_button_placement', 'unit_button_placement',
             'uuid', 'with_language_buttons', 'with_source_buttons', 'with_unit_buttons'):
             getattr(widgetkey, attr)
+
+    def test_geo(self):
+        """Clé avec bouton d'aide à la saisie des géométries.
+
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        v = ValueKey(parent=t, predicate=DCAT.bbox, datatype=GSP.wktLiteral,
+            geo_tools=[Literal('bbox'), 'rectangle', Literal('chose')])
+        self.assertTrue(v.has_geo_button)
+        self.assertListEqual(v.geo_tools, ['bbox', 'rectangle'])
+        WidgetKey.with_geo_buttons = False
+        self.assertFalse(v.has_geo_button)
+        WidgetKey.with_geo_buttons = True
+        self.assertTrue(v.has_geo_button)
+        v.is_read_only = True
+        self.assertFalse(v.has_geo_button)
 
     def test_units(self):
         """Clé avec bouton de sélection de l'unité.
