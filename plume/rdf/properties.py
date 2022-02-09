@@ -257,7 +257,8 @@ def read_shape_property(shape_node):
         SH.flags: ('regex_validator_flags', False),
         SNUM.transform: ('transform', False),
         SNUM.ontology: ('sources', True),
-        SNUM.longText: ('is_long_text', False)
+        SNUM.longText: ('is_long_text', False),
+        SNUM.geoTool: ('geo_tools', True)
         }
         # le booléen indique si la propriété
         # peut prendre des valeurs multiples
