@@ -11,6 +11,23 @@ from plume.rdf.actionsbook import ActionsBook
 
 class WidgetKeyTestCase(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Réinitialisation des attributs partagés.
+        
+        Notes
+        -----
+        Précaution nécessaire quand plusieurs modules sont testés
+        successivement, car chaque appel la classe 
+        :py:class:`plume.rdf.widgetsdict.WidgetsDict` est susceptible
+        d'affecter l'état des attributs partagés. Ce n'est pas un problème
+        pour la création de nouveaux dictionnaires puisque les attributs
+        sont systématiquement redéfinis, mais ça l'est quand on opère
+        directement sur les clés comme c'est le cas ici.
+        
+        """
+        WidgetKey.reinitiate_shared_attributes()
+
     def test_get_all_attributes(self):
         """Vérifie que tous les attributs et propriétés peuvent être évalués sans erreur.
         
