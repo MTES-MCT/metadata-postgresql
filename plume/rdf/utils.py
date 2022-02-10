@@ -577,6 +577,14 @@ def wkt_with_srid(wkt, srid):
         La représentation WKT de la géométrie avec le référentiel
         explicitement déclaré, comme attendu en RDF.
     
+    Examples
+    --------
+    >>> wkt_with_srid(
+    ...     'POINT(651796.32814998598769307 6862298.58582336455583572)',
+    ...     'EPSG:2154'
+    ...      )
+    '<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.32814998598769307 6862298.58582336455583572)'
+    
     Notes
     -----
     La fonction renvoie ``None`` si l'autorité n'a pas
@@ -593,6 +601,64 @@ def wkt_with_srid(wkt, srid):
     r = re.match('^([A-Z]+)[:]([a-zA-Z0-9.]+)$', srid)
     if r and r[1] in ns:
         return '<{}{}> {}'.format(ns[r[1]], r[2], wkt)
+
+def split_rdf_wkt(rdf_wkt):
+    """Extrait le référentiel et la géométrie d'un littéral WKT.
+    
+    Parameters
+    ----------
+    rdf_wkt : str or rdflib.term.Literal
+        Une représentation WKT de la géométrie avec le référentiel
+        explicitement déclaré, comme attendu en RDF pour le
+        type ``gsp:wktLiteral``. Par défaut, le référentiel
+        sera supposé être ``'OGC:WGS84'``.
+    
+    Returns
+    -------
+    tuple(str, str)
+        Un tuple dont le premier élément est la géométrie,
+        toujours encodée en WKT mais sans référentiel, et le
+        second élément est le référentiel, sous la forme
+        ``'Autorité:Code'``.
+    
+    Examples
+    --------
+    >>> split_rdf_wkt('<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
+    ...     'POINT(651796.32814998598769307 6862298.58582336455583572)')
+    ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'EPSG:2154')
+    
+    >>> split_rdf_wkt('POINT(651796.32814998598769307 6862298.58582336455583572)')
+    ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:WGS84')
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` si l'autorité n'a pas été
+    reconnue, mais ne fait qu'un contrôle de forme superficiel
+    sur l'identifiant du référentiel (qui pourrait donc ne pas
+    être une valeur référencée). La validité de la géométrie
+    n'est pas vérifiée.
+    
+    """
+    if not rdf_wkt:
+        return
+    rdf_wkt = str(rdf_wkt)
+    r = re.match(r'^(?:<([^>]+)>\s+)?(.+)$', rdf_wkt)
+    if not r or not r[2] or not r[2].strip():
+        return
+    if not r[1]:
+        return (r[2], 'OGC:WGS84')
+    ns = {
+        'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
+        'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
+        'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
+        }
+    for auth, url in ns.items():
+        if r[1].startswith(url):
+            code = r[1].lstrip(url)
+            if re.match('^[a-zA-Z0-9.]+$', code):
+                return (r[2], '{}:{}'.format(auth, code))
+            else:
+                return
 
 def get_datasetid(anygraph):
     """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
