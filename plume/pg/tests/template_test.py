@@ -176,13 +176,18 @@ class TemplateTestCase(unittest.TestCase):
         self.assertEqual(len(template.shared), 38)
         self.assertEqual(template.local, {})
         d = {k: False for k in template.shared['dct:title'].keys()}
+        # on vérifie que chaque caractéristique prend une valeur
+        # non triviale pour au moins une propriété, sauf les trois
+        # dont on sait qu'elles ne sont pas utilisées par le
+        # modèle "Classique"
         for prop_dict in template.shared.values():
             for k, v in prop_dict.items():
                 if v and k in d:
                     del d[k]
                 if not d:
                     break
-        self.assertEqual(d, {'is_read_only': False, 'tab': False})
+        self.assertEqual(d, {'is_read_only': False, 'tab': False,
+            'geo_tools': False})
 
     def test_templatedict_homemade_template(self):
         """Génération d'un modèle avec onglets et catégories locales.
