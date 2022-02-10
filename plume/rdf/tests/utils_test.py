@@ -5,12 +5,42 @@ from uuid import uuid4
 from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.utils import sort_by_language, pick_translation, \
     path_from_n3, int_from_duration, duration_from_int, str_from_duration, \
-    wkt_with_srid
+    wkt_with_srid, split_rdf_wkt
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD
 
 nsm = PlumeNamespaceManager()
 
 class UtilsTestCase(unittest.TestCase):
+
+    def test_split_rfd_wkt(self):
+        """Extraction du référentiel et de la géométrie d'un WKT RDF.
+        
+        """
+        self.assertEqual(
+            split_rdf_wkt('<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
+                'POINT(651796.32814998598769307 6862298.58582336455583572)'),
+            ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'EPSG:2154')
+            )
+        self.assertEqual(
+            split_rdf_wkt('<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
+                '      POINT(651796.32814998598769307 6862298.58582336455583572)'),
+            ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'EPSG:2154')
+            )
+        self.assertEqual(
+            split_rdf_wkt('POINT(651796.32814998598769307 6862298.58582336455583572)'),
+            ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:WGS84')
+            )
+        self.assertIsNone(
+            split_rdf_wkt('<chose> POINT(651796.32814998598769307 ' \
+                '6862298.58582336455583572)')
+            )
+        self.assertIsNone(
+           split_rdf_wkt('<http://www.opengis.net/def/crs/EPSG/0/2154>     ')
+           )
+        self.assertIsNone(
+            split_rdf_wkt('<http://www.opengis.net/def/crs/EPSG/0/21??54> ' \
+                'POINT(651796.32814998598769307 6862298.58582336455583572)')
+            )
 
     def test_wkt_with_srid(self):
         """Explicitation du référentiel dans un WKT.
