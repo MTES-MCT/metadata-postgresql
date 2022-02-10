@@ -23,7 +23,7 @@ def shared_metadata_as_page():
     
     """
     filepath = abspath('').parents[0] / 'docs/source/usage/metadonnees_communes.md'
-    categories = table_from_shape()
+    categories = table_from_shape(no_cast=True)
     page = '# Métadonnées communes\n\n' \
         '| Chemin | Nom | Description | Thésaurus |\n' \
         '| --- | --- | --- | --- |\n'   
@@ -32,7 +32,7 @@ def shared_metadata_as_page():
             (URIRef(s), ('fr', 'en'))), s) for s in other[10] or []]
         if origin == 'shared':
             page += '| `{}` | {} | {} | {} |\n'.format(
-                path, label, description,
+                path, label, description or '',
                 ', '.join(sources) if sources else '')
     page += '\n'
     with open(filepath, 'w', encoding='utf-8') as dest:
