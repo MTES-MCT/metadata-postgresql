@@ -256,6 +256,7 @@ def query_get_categories():
             unilang,
             is_mandatory,
             sources,
+            geo_tools::text[],
             template_order,
             is_read_only,
             tab
