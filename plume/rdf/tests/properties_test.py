@@ -47,11 +47,15 @@ class PlumePropertyTestCase(unittest.TestCase):
                         ('Mon formulaire', 'dct:temporal / dcat:endDate', 'Secondaire', 4),
                         ('Mon formulaire', 'dct:title', 'Principal', 1),
                         ('Mon formulaire', 'owl:versionInfo', 'Principal', 2),
+                        ('Mon formulaire', 'dct:spatial / locn:geometry', 'Secondaire', 10),
                         ('Mon formulaire', 'dcat:theme', 'Secondaire', 5),
                         ('Mon formulaire', 'dct:subject', 'Secondaire', 6) ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['http://publications.europa.eu/resource/authority/data-theme']
                         WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dcat:theme' ;
+                    UPDATE z_plume.meta_template_categories
+                        SET geo_tools = ARRAY['point', 'rectangle']::z_plume.meta_geo_tool[]
+                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:spatial / locn:geometry' ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['https://source-inconnue']
                         WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:subject' ;
@@ -125,11 +129,13 @@ class PlumePropertyTestCase(unittest.TestCase):
                 self.assertFalse(p.prop_dict['is_multiple'])
                 self.assertTrue(p.prop_dict['is_mandatory'])
                 self.assertTrue(p.prop_dict['is_read_only'])
-            # catégorie commune hors modèle
             if p.n3_path == 'dct:spatial':
                 t += 1
+            # catégorie commune hors modèle
+            if p.n3_path == 'dct:created':
+                t += 1
                 self.assertEqual(p.prop_dict['label'],
-                    Literal('Couverture géographique', lang='fr'))
+                    Literal('Date de création', lang='fr'))
                 self.assertTrue(p.unlisted)
         # catégorie locale
         for n3_path in template.local.keys():
@@ -145,7 +151,7 @@ class PlumePropertyTestCase(unittest.TestCase):
             self.assertEqual(p.prop_dict['label'], 'Notes')
             self.assertTrue(p.prop_dict['is_long_text'])
             self.assertEqual(p.prop_dict['tab'], 'Secondaire')
-        self.assertEqual(t, 7)
+        self.assertEqual(t, 8)
         # catégorie non référencée
         p = PlumeProperty(origin='unknown', nsm=nsm,
             predicate=URIRef('urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046'))
@@ -155,7 +161,7 @@ class PlumePropertyTestCase(unittest.TestCase):
         self.assertEqual(p.n3_path, 'uuid:479fd670-32c5-4ade-a26d-0268b0ce5046')
         self.assertEqual(p.predicate, LOCAL['479fd670-32c5-4ade-a26d-0268b0ce5046'])
         self.assertEqual(p.path, LOCAL['479fd670-32c5-4ade-a26d-0268b0ce5046'])
-        # catégorie de niveau 2
+        # catégories de niveau 2
         properties, predicates = class_properties(rdfclass=DCT.PeriodOfTime,
             nsm=nsm, base_path=DCT.temporal, template=template)
         t = 0
@@ -166,6 +172,15 @@ class PlumePropertyTestCase(unittest.TestCase):
                 self.assertFalse(p.unlisted)
                 self.assertEqual(p.predicate, DCAT.startDate)
                 self.assertEqual(p.prop_dict['label'], 'Date de début')
+        self.assertEqual(t, 1)
+        properties, predicates = class_properties(rdfclass=DCT.Location,
+            nsm=nsm, base_path=DCT.spatial, template=template)
+        t = 0
+        for p in properties:
+            if p.n3_path == 'dct:spatial / locn:geometry':
+                    t += 1
+                    self.assertListEqual(p.prop_dict['geo_tools'],
+                        ['point', 'rectangle'])
         self.assertEqual(t, 1)
         
 
