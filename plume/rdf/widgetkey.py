@@ -187,6 +187,20 @@ class WidgetKey:
     """
     
     @classmethod
+    def reinitiate_shared_attributes(cls):
+        """Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.
+        
+        """
+        cls.langlist = ['fr', 'en']
+        cls.max_rowspan = 30
+        cls.with_language_buttons = True
+        cls.with_source_buttons = True
+        cls.with_unit_buttons = True
+        cls.with_geo_buttons = True
+        cls.clear_actionsbook()
+        cls.no_computation = False
+    
+    @classmethod
     def clear_actionsbook(cls, **kwargs):
         """Remplace le carnet d'actions par un carnet vierge.
         
