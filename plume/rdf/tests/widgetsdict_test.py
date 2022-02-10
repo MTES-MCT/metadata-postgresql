@@ -34,7 +34,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         cas simple d'un dictionnaire en mode édition.
         
         """
-        widgetsdict = WidgetsDict(isLayer=True)
+        widgetsdict = WidgetsDict()
         self.assertEqual(widgetsdict.main_language, 'fr')
         self.assertTrue(widgetsdict.edit)
         self.assertFalse(widgetsdict.translation)
@@ -384,7 +384,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # NB: le dictionnaire ne contient que la clé racine.
         
         # --- avec graphe, sans modèle ---
-        widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph, isLayer=True)
+        widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph)
         key = widgetsdict.root.search_from_path(DCAT.keyword)
         self.assertTrue(key in widgetsdict)
         self.assertIsNone(key.button)
@@ -450,17 +450,6 @@ class WidgetsDictTestCase(unittest.TestCase):
         key = widgetsdict.root.search_from_path(DCT.description)
         self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
         self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
-
-    def test_widgetsdict_not_a_layer(self):
-        """Génération d'un dictionnaire de widgets lorsque la source n'est pas une couche chargée dans QGIS.
-
-        """
-        widgetsdict = WidgetsDict(isLayer=False)
-        key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
-        self.assertIsNone(widgetsdict[key]['geo tools'])
-        widgetsdict = WidgetsDict(isLayer=True)
-        key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
-        self.assertIsNotNone(widgetsdict[key]['geo tools'])
     
     def test_widgetsdict_special_hidden_keys(self):
         """Génération d'un dictionnaire de widgets avec paramètres masquant certaines informations.
@@ -799,7 +788,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('DELETE FROM z_plume.meta_template')
         conn.close()
         template = TemplateDict(categories, tabs)
-        widgetsdict = WidgetsDict(metagraph=metagraph, template=template, isLayer=True)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
 
         # --- suppression d'une clé simple ---
         g = widgetsdict.root.search_from_path(DCAT.keyword)
