@@ -56,12 +56,6 @@ class WidgetsDict(dict):
         Une liste de tuples - un par champ de la table ou vue PostgreSQL
         (si l'objet considéré n'est pas un schéma) -, contenant les noms
         des champs et leurs descriptifs.
-    isLayer : bool, default False
-        Indique si l'objet PostgreSQL décrit a été chargé en tant que
-        couche dans QGIS, par opposition aux objets seulement listés dans
-        l'explorateur. Certains boutons du formulaire (et les
-        fonctionnalités qu'ils apportent) ne sont présents que quand
-        ce paramètre vaut ``True``.
     mode : {'edit', 'read'}, default 'edit'
         Indique si le dictionnaire est généré pour le mode édition
         (``'edit'``), le mode lecture (``'read'``). Le mode détermine les
@@ -109,9 +103,6 @@ class WidgetsDict(dict):
         fournie à l'initialisation soit la première valeur (et
         préservant pour le reste l'ordre d'origine du paramètre
         `langList`).
-    isLayer : bool
-        ``True`` si l'objet PostgreSQL décrit était chargé en tant que
-        couche dans QGIS au moment de la génération du dictionnaire.
     hideBlank : bool
         Les métadonnées sans valeur sont-elles masquées ?
     hideUnlisted : bool
@@ -178,7 +169,7 @@ class WidgetsDict(dict):
     """
     
     def __init__(self, metagraph=None, template=None, data=None, columns=None,
-        isLayer=False, mode=None, translation=False, langList=None, language=None,
+        mode=None, translation=False, langList=None, language=None,
         readHideBlank=True, editHideUnlisted=False, readHideUnlisted=True,
         editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True,
         labelLengthLimit=None, valueLengthLimit=None, textEditRowSpan=None):
@@ -189,7 +180,6 @@ class WidgetsDict(dict):
             and isinstance(langList, (list, tuple)) else ('fr', 'en')
         if not language in self.langlist:
             language = None
-        self.isLayer = bool(isLayer)
         self.labelLengthLimit = labelLengthLimit if labelLengthLimit \
             and isinstance(labelLengthLimit, int) else 25
         self.valueLengthLimit = valueLengthLimit if valueLengthLimit \
@@ -228,7 +218,7 @@ class WidgetsDict(dict):
         WidgetKey.with_source_buttons = self.edit
         WidgetKey.with_unit_buttons = self.edit
         WidgetKey.with_language_buttons = self.translation
-        WidgetKey.with_geo_buttons = self.isLayer and self.edit
+        WidgetKey.with_geo_buttons = self.edit
         WidgetKey.langlist = list(self.langlist)
         self.root.main_language = language
         self.langlist = tuple(WidgetKey.langlist)
