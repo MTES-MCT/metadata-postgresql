@@ -13,12 +13,26 @@ from plume.pg.tests.connection import ConnectionString
 
 nsm = PlumeNamespaceManager()
 
-def table_from_shape():
+def table_from_shape(no_cast=False):
     """Renvoie une représentation du schéma SHACL sous forme de table.
     
     Le résultat correspond au contenu de la table
     ``z_plume.meta_shared_categorie`` de l'extension PostgreSQL
     PlumePg, en vue de la mise à jour de celle-ci.
+    
+    Les valeurs nécessitant une conversion explicite de
+    type sont représentées par des tuples dont le premier élément
+    est ``'cast'``, le second la valeur, le troisième le type.
+    
+    Parameters
+    ----------
+    no_cast : bool, default False
+        Si ``True``, les valeurs qui auraient nécessité une
+        conversion explicite de type seront représentées
+        comme les autres et non par des tuples contenant
+        l'information sur le type. Un tel résulat ne pourra
+        être utilisé pour construire une requête SQL, mais peut
+        avoir d'autres usages.
     
     Returns
     -------
@@ -26,10 +40,10 @@ def table_from_shape():
     
     """
     categories = []
-    _table_from_shape(categories, DCAT.Dataset)
+    _table_from_shape(categories, DCAT.Dataset, no_cast=no_cast)
     return categories
     
-def _table_from_shape(categories, rdfclass, path=None):
+def _table_from_shape(categories, rdfclass, path=None, no_cast=False):
     properties, predicates = class_properties(rdfclass=rdfclass,
         nsm=nsm, base_path=path)
     for prop in properties:
@@ -38,6 +52,7 @@ def _table_from_shape(categories, rdfclass, path=None):
         datatype = prop_dict.get('datatype')
         order_idx = prop_dict.get('order_idx')
         sources = prop_dict.get('sources')
+        geo_tools = prop_dict.get('geo_tools')
         rowspan = prop_dict.get('rowspan')
         category = (
             prop.n3_path,
@@ -56,11 +71,14 @@ def _table_from_shape(categories, rdfclass, path=None):
             bool(prop_dict.get('unilang')),
             prop_dict.get('is_mandatory', False),
             [str(s) for s in sources] if sources else None,
+            ('cast', geo_tools, 'z_plume.meta_geo_tool[]') if geo_tools \
+                and not no_cast else geo_tools,
             order_idx[1] if order_idx else None
             )
         categories.append(category)
         if kind in (SH.BlankNode, SH.BlankNodeOrIRI):
-            _table_from_shape(categories, prop_dict.get('rdfclass'), prop.path)
+            _table_from_shape(categories, prop_dict.get('rdfclass'),
+                path=prop.path, no_cast=no_cast)
 
 
 def query_from_shape():
@@ -87,13 +105,15 @@ def query_from_shape():
         path, origin, label, description, special,
         is_node, datatype, is_long_text, rowspan,
         placeholder, input_mask, is_multiple, unilang,
-        is_mandatory, sources, template_order
+        is_mandatory, sources, geo_tools, template_order
     ) VALUES
     {} ;""").format(
         sql.SQL(",\n    ").join(
             [ sql.SQL("({})").format(
                 sql.SQL(", ").join(
-                    [ sql.Literal(e) for e in v ]
+                    [ sql.SQL("{}::{}").format(sql.Literal(e[1]), sql.SQL(e[2])) 
+                        if isinstance(e, tuple) and e[0] == 'cast'
+                        else sql.Literal(e) for e in v ]
                     )
                 ) for v in t ]
             )
