@@ -463,7 +463,8 @@ snum:DistributionShape
         sh:class dct:LicenseDocument ;
         sh:maxCount 1 ;
         sh:order 11 ;
-        snum:ontology snum:CrpaAuthorizedLicense ;
+        snum:ontology snum:CrpaAuthorizedLicense,
+            <http://publications.europa.eu/resource/authority/licence> ;
 	] ;
     sh:property [
 		sh:path dct:accessRights ;
@@ -959,7 +960,8 @@ snum:DataServiceShape
         sh:class dct:LicenseDocument ;
         sh:maxCount 1 ;
         sh:order 21 ;
-        snum:ontology snum:CrpaAuthorizedLicense ;
+        snum:ontology snum:CrpaAuthorizedLicense,
+            <http://publications.europa.eu/resource/authority/licence> ;
 	] ;
     sh:property [
 		sh:path dcat:contactPoint ;
