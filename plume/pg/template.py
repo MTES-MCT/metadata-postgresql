@@ -5,7 +5,7 @@
 import re
 
 from plume.rdf.rdflib import URIRef, from_n3
-from plume.rdf.utils import path_from_n3
+from plume.rdf.utils import path_from_n3, forbidden_char
 from plume.rdf.namespaces import SH, PlumeNamespaceManager
 
 nsm = PlumeNamespaceManager()
@@ -50,8 +50,8 @@ class TemplateDict:
         for path, origin, label, description, special, \
             is_node, datatype, is_long_text, rowspan, \
             placeholder, input_mask, is_multiple, unilang, \
-            is_mandatory, sources, template_order, is_read_only, \
-            tab in sorted(categories, reverse=True):
+            is_mandatory, sources, geo_tools, template_order, \
+            is_read_only, tab in sorted(categories, reverse=True):
             
             config = {
                 'label': label,
@@ -64,7 +64,9 @@ class TemplateDict:
                 'is_multiple': is_multiple,
                 'unilang': unilang,
                 'is_mandatory': is_mandatory,
-                'sources': [URIRef(s) for s in sources or []],
+                'sources': [URIRef(s) for s in sources or []
+                    if not forbidden_char(s)],
+                'geo_tools': geo_tools,
                 'template_order': template_order,
                 'is_read_only': is_read_only,
                 'tab': tab
