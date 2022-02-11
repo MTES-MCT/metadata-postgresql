@@ -210,7 +210,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             'has label': True,
             'help text': "Rectangle d'emprise (BBox), au format textuel WKT.",
             'object': 'edit',
-            'geo tools': ['bbox', 'rectangle'],
+            'geo tools': ['show', 'bbox', 'rectangle'],
             'placeholder text': '<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
                 'POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, ' \
                 '657175.3272 6867076.0360, 646417.3289 6867076.0360, ' \
