@@ -2887,7 +2887,7 @@ class GroupOfValuesKey(GroupKey):
         
         Seules les valeurs suivantes sont acceptées (les autres seront
         silencieusement éliminées) :
-        ``{'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+        ``{'show', 'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
         
         """
         return self._geo_tools
@@ -2899,7 +2899,7 @@ class GroupOfValuesKey(GroupKey):
         elif not value:
             value = []
         else:
-            l = ['point', 'linestring', 'rectangle',
+            l = ['show', 'point', 'linestring', 'rectangle',
                 'polygon', 'bbox', 'centroid']
             value = [str(o) for o in value if str(o) in l]
         self._geo_tools = value
@@ -3867,8 +3867,8 @@ class ValueKey(ObjectKey):
         
         Seules les valeurs suivantes sont acceptées (les autres seront
         silencieusement éliminées) :
-        ``{'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
-        
+        ``{'show', 'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+
         """
         if isinstance(self.parent, GroupOfValuesKey):
             return self.parent.geo_tools
@@ -3882,7 +3882,7 @@ class ValueKey(ObjectKey):
             elif not value:
                 value = []
             else:
-                l = ['point', 'linestring', 'rectangle',
+                l = ['show', 'point', 'linestring', 'rectangle',
                     'polygon', 'bbox', 'centroid']
                 value = [str(o) for o in value if str(o) in l]
             self._geo_tools = value
