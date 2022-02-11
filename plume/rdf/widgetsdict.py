@@ -1181,16 +1181,35 @@ class WidgetsDict(dict):
                 str_value = text_with_link(str_value, value)
         return str_value
     
-    def build_metagraph(self):
+    def build_metagraph(self, preserve_metadata_date=False):
         """Construit un graphe de métadonnées à partir du contenu du dictionnaire.
+        
+        Parameters
+        ----------
+        preserve_metadata_date : bool, default False
+            Si ``True`` la date de dernière modification du
+            graphe ne sera pas incrémentée.
         
         Returns
         -------
         plume.rdf.metagraph.Metagraph
         
+        Notes
+        -----
+        Sauf lorsque `preserve_metadata_date` vaut ``True``, la date
+        de mise à jour des métadonnées est silencieusement actualisée
+        lors de la génération du nouveau graphe. Cette modification n'est
+        pas répercuté sur le dictionnaire (et son arbre de clés), ni donc
+        sur les widgets. Elle ne sera visible de l'utilisateur que si
+        un nouveau dictionnaire est généré à partir du nouveau graphe, par
+        exemple lorsqu'il quittera le mode édition.
+        
         """
         if self.root:
-            return self.root.build_metagraph()
+            metagraph = self.root.build_metagraph()
+            if not preserve_metadata_date:
+                metagraph.update_metadata_date()
+            return metagraph
 
     def group_kind(self, widgetkey):
         """Renvoie la nature du groupe auquel appartient la clé.
