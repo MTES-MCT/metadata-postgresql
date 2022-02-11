@@ -776,7 +776,8 @@ snum:LocationShape
         sh:order 3 ;
         snum:longText true ;
         snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))" ;
-        snum:geoTool "bbox",
+        snum:geoTool "show",
+            "bbox",
             "rectangle" ;
 	] ;
     sh:property [
@@ -788,7 +789,8 @@ snum:LocationShape
         sh:maxCount 1 ;
         sh:order 4 ;
         snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.3281 6862298.5858)" ;
-        snum:geoTool "centroid",
+        snum:geoTool "show",
+            "centroid",
             "point" ;
 	]  ;
     sh:property [
@@ -801,7 +803,8 @@ snum:LocationShape
         sh:order 5 ;
         snum:longText true ;
         snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POLYGON((646417.3289 6857521.1356, 657175.3272 6857521.1356, 657175.3272 6867076.0360, 646417.3289 6867076.0360, 646417.3289 6857521.1356))" ;
-        snum:geoTool "point",
+        snum:geoTool "show",
+            "point",
             "linestring",
             "polygon" ;
 	] .
