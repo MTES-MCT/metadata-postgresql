@@ -48,7 +48,7 @@ Les propriétés suivantes sont modifiées par Plume :
 | --- | --- | --- | --- |
 | *access rights* | `dct:accessRights` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
-| *type* | `dct:type` | Simplification d'une source de vocabulaire contrôlé, suppression d'une autre. | Le registre INSPIRE des types de ressources n'est pas utilisé, car seule sa valeur `'Spatial data set'` aurait un sens pour une relation PostgreSQL. Le [registre EU](http://publications.europa.eu/resource/authority/dataset-type) est expurgé de quelques valeurs difficiles à rendre intelligibles des utilisateurs de Plume et qui ne sont de toute façon pas susceptibles d'être utilisées pour des relations PostgreSQL. |
+| *type* | `dct:type` | Simplification d'une source de vocabulaire contrôlé, suppression d'une autre. | Le registre INSPIRE des types de ressources n'est pas utilisé, car seule sa valeur `'Spatial data set'` aurait un sens pour une relation PostgreSQL. Le [registre EU](https://op.europa.eu/s/vM9N) est expurgé de quelques valeurs difficiles à rendre intelligibles des utilisateurs de Plume et qui ne sont de toute façon pas susceptibles d'être utilisées pour des relations PostgreSQL. |
 
 Les propriétés suivantes sont ajoutées par Plume :
 
@@ -71,7 +71,7 @@ Les propriétés suivantes sont modifiées par Plume :
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
 | *access rights* | `dct:accessRights` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). |
-| *license* | `dct:license` | Ajout d'une source de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
+| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
 
 Les propriétés suivantes sont ajoutées par Plume :
@@ -95,7 +95,7 @@ Les propriétés suivantes ne sont pas prises en charge par Plume :
 | *identifier* | `dct:identifier` | Plume n'ayant pas vocation à cataloguer les services, il ne leur attribue pas d'identifiant. |
 | *qualified attribution* | `prov:qualifiedAttribution` | Sans grand intérêt pour les services dans le contexte de Plume. De plus, comme pour les jeux de données, on privilégie l'usage des propriétés qui définissent directement des organisations pour chaque rôle (comme recommandé par GeoDCAT-AP). |
 | *service category* | `dct:type` | Le registre INSPIRE associé à cette propriété - [Classification des services de données géographiques](https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceCategory) - contient une longue liste de catégories de services dont l'objet n'est le plus souvent pas de mettre à diposition des données. Si cette information peut être utile pour décrire les services en général, elle semble sans grand intérêt dans le contexte de Plume, où les seuls services présentés sont ceux qui donnent accès à des distributions. _NB : Il reste bien une propriété `dct:type` pour les services, mais sa [source de vocabulaire contrôlé](http://publications.europa.eu/resource/authority/data-service-type) est issue du registre UE._ |
-| *service type* | `dct:type` | Le registre INSPIRE associé à cette propriété - [Type de service de données géographiques](https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType) - propose une catégorisation très vague, sans intérêt dans le contexte de Plume. _NB : Il reste bien une propriété `dct:type` pour les services, mais sa [source de vocabulaire contrôlé](http://publications.europa.eu/resource/authority/data-service-type) est issue du registre UE._ |
+| *service type* | `dct:type` | Le registre INSPIRE associé à cette propriété - [Type de service de données géographiques](https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType) - propose une catégorisation très vague, sans intérêt dans le contexte de Plume. _NB : Il reste bien une propriété `dct:type` pour les services, mais sa source de vocabulaire contrôlé est issue du [registre UE](https://op.europa.eu/s/vM9M)._ |
 | *spatial resolution* | `dqv:hasQualityMeasurement` | |
 | *spatial resolution as text* | `rdfs:comment` | |
 | *theme / category* | `dcat:theme` | Catégorisation sans intérêt dans le contexte de Plume. |
@@ -115,10 +115,18 @@ Les propriétés suivantes sont modifiées par Plume :
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
 | *access rights* | `dct:accessRights` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). |
-| *license* | `dct:license` | Ajout d'une source de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
+| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
 | *conforms to* | `dct:conformsTo` | Ajout d'une source de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose un thésaurus maison contenant les URI des principaux standards utilisés pour les services de données géographiques. |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
-| *type* | `dct:type` | Changement de source de vocabulaire contrôlé. | Avec le registre INSPIRE, il s'agirait d'une propriété à valeur fixe (`<http://inspire.ec.europa.eu/metadata-codelist/ResourceType/service>`), redondante avec l'existence même d'un service de données, ce qui présente peu d'intérêt. Plume utilise à la place le [registre EU](http://publications.europa.eu/resource/authority/data-service-type). |
+| *type* | `dct:type` | Changement de source de vocabulaire contrôlé. | Avec le registre INSPIRE, il s'agirait d'une propriété à valeur fixe (`<http://inspire.ec.europa.eu/metadata-codelist/ResourceType/service>`), redondante avec l'existence même d'un service de données, ce qui présente peu d'intérêt. Plume utilise à la place le [registre EU](https://op.europa.eu/s/vM9M). |
+
+## Enregistrement du catalogue
+
+_Classe `dcat:CatalogRecord`._
+
+Dans le contexte de Plume, la classe `dcat:CatalogRecord` sert exclusivement à renseigner les métadonnées sur les métadonnées. Elle est introduite par la propriété `foaf:isPrimaryTopicOf` dans la description d'un `dcat:Dataset`, et le sujet du triplet `[] a dcat:CatalogRecord` est toujours un noeud anonyme.
+
+Pour l'heure, la seule propriété de cette classe qui soit prise en charge par Plume est *update / modification date* - `dct:modified` -, que Plume renseigne automatiquement.
 
 ## Fiches de métadonnées liées
 
