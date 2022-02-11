@@ -5,7 +5,9 @@
 from plume.rdf.rdflib import Graph, Namespace, NamespaceManager
 
 ADMS = Namespace('http://www.w3.org/ns/adms#')
+CNT = Namespace('http://www.w3.org/2011/content#')
 DCAT = Namespace('http://www.w3.org/ns/dcat#')
+DCATAP = Namespace('http://data.europa.eu/r5r/')
 DCT = Namespace('http://purl.org/dc/terms/')
 DCTYPE = Namespace('http://purl.org/dc/dcmitype/')
 DQV = Namespace('http://www.w3.org/ns/dqv#')
@@ -27,7 +29,9 @@ LOCAL = Namespace('urn:uuid:')
 
 namespaces = {
     'adms': ADMS,
+    'cnt': CNT,
     'dcat': DCAT,
+    'dcatap': DCATAP,
     'dct': DCT,
     'dctype': DCTYPE,
     'dqv': DQV,
