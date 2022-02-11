@@ -825,32 +825,7 @@ widgetsdict[widgetkey]['geo actions'].append(geo_action)
 
 ### Description des actions
 
-La nature des actions disponibles dépend de la propriété considérée. Elles peuvent être déduite des valeurs listées par la clé `'geo tools'`.
-
-| Valeur incluse dans `'geo tools'` | Libellé de l'action | Texte d'aide | Description de l'effet |
-| --- | --- | --- | --- |
-| `'point'` | Tracé libre (point) | Saisie libre d'un point dans le canvas. | Permet à l'utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées. |
-| `'rectangle'` | Tracé libre (rectangle) | Saisie libre d'un rectangle dans le canvas. | Permet à l'utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées. |
-| `'linestring'` | Tracé libre (ligne) | Saisie libre d'une ligne dans le canvas.  | Permet à l'utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées. |
-| `'polygon'` | Tracé libre (polygone) | Saisie libre d'un polygone dans le canvas. | Permet à l'utilisateur de tracer un polygone dans le canvas et mémorise la géométrie dans les métadonnées. |
-| `'bbox'` | Calcul à partir des données (emprise) | Calcule le rectangle d'emprise à partir des données. | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`) et mémorise la géométrie dans les métadonnées. _NB : Cette option ne sera disponible que si le paramètre `isLayer` donné au constructeur de `plume.rdf.widgetsdict.WidgetDict` valait ``True``._ |
-| `'centroid'` | Calcul à partir des données (centroïde) | Calcule le centre du rectangle d'emprise à partir des données. | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`), puis le centre du rectangle (`QgsRectangle.centre`), et mémorise la géométrie dans les métadonnées. _NB : Cette option ne sera disponible que si le paramètre `isLayer` donné au constructeur de `plume.rdf.widgetsdict.WidgetDict` valait ``True``._ |
-
-Contrairement à tous les autres boutons du formulaire, le bouton d'aide à la saisie des géométries n'affecte pas le dictionnaire. La géométrie obtenue sera simplement saisie dans le `QLineEdit` ou `QTextEdit`, après les deux opérations suivantes :
-1. Conversion au format WKT, avec les méthodes `QgsRectangle.asWktPolygon`, `QgsPointXY.asWkt`, etc. de QGIS.
-2. Explicitation du système de coordonnées, car c'est ce qui est attendu en RDF pour les valeurs de type `gsp:wktLiteral`. On utilisera pour ce faire la fonction `plume.rdf.utils.wkt_with_srid`.
-
-```python
-
-from plume.rdf.utils import wkt_with_srid
-
-geom_wkt = wkt_with_srid(raw_wkt, srid)
-
-```
-
-*Où `raw_wkt` est le résultat de la conversion de la géométrie en WKT et `srid` le référentiel de coordonnées courant de la couche (pour les fonctionnalités de calcul automatisé) ou du canvas (pour les fonctionnalités de tracé libre).*
-
-Les valeurs résultantes seront de cette forme : `'<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.3281 6862298.5858)'`.
+Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometrie.md).
 
 ### Icône
 
