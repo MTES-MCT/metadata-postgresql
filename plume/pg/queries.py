@@ -55,8 +55,8 @@ def query_exists_extension():
     À utiliser comme suit:
     
         >>> query = query_exists_extension()
-        >>> cur.execute(query, ("nom de l'extension",))
-        >>> metadata_exists = cur.fetchone()[0]
+        >>> cur.execute(query, ('nom de l'extension',))
+        >>> extension_exists = cur.fetchone()[0]
     
     Cette requête renverra :
     
@@ -428,4 +428,201 @@ def query_update_columns_comments(schema_name, table_name, widgetsdict):
             for colname, coldescr in updated_columns
             ])
 
+def query_get_geom_srid():
+    """Requête de récupération du référentiel de coordonnées d'une couche.
+    
+    À utiliser comme suit:
+    
+        >>> query = query_get_geom_srid()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
+        ...     'nom du champ de géométrie'))
+        >>> cur.execute(query)
+        >>> srid = cur.fetchone()[0]
+    
+    Le référentiel ainsi obtenu est de la forme ``'Autorité:Code'``.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Warnings
+    --------
+    Cette requête échouera si PostGIS n'est pas installé sur la
+    base. Il est donc fortement recommandé de vérifier d'abord
+    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    
+        >>> query = query_exists_extension()
+        >>> cur.execute(query, ('postgis',))
+        >>> postgis_exists = cur.fetchone()[0]
+    
+    """
+    return sql.SQL("""
+        SELECT
+            auth_name || ':' || auth_srid
+            FROM geometry_columns
+                LEFT JOIN spatial_ref_sys
+                    ON geometry_columns.srid = spatial_ref_sys.srid
+            WHERE f_table_schema = %s
+                AND f_table_name = %s
+                AND f_geometry_column = %s
+                AND auth_name ~ '^[A-Z]+$'
+                AND auth_srid IS NOT NULL
+        """)
 
+def query_get_srid_list():
+    """Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d'une relation.
+    
+    À utiliser comme suit:
+    
+        >>> query = query_get_srid_list()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> cur.execute(query)
+        >>> srid_list = cur.fetchone()[0]
+    
+    La liste ainsi obtenue contient des identifiants de référentiels
+    sous la forme ``'Autorité:Code'``.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Warnings
+    --------
+    Cette requête échouera si PostGIS n'est pas installé sur la
+    base. Il est donc fortement recommandé de vérifier d'abord
+    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    
+        >>> query = query_exists_extension()
+        >>> cur.execute(query, ('postgis',))
+        >>> postgis_exists = cur.fetchone()[0]
+    
+    """
+    return sql.SQL("""
+        SELECT
+            array_agg(DISTINCT auth_name || ':' || auth_srid
+                ORDER BY auth_name || ':' || auth_srid)
+            FROM geometry_columns
+                LEFT JOIN spatial_ref_sys
+                    ON geometry_columns.srid = spatial_ref_sys.srid
+            WHERE f_table_schema = %s
+                AND f_table_name = %s
+                AND auth_name ~ '^[A-Z]+$'
+                AND auth_srid IS NOT NULL
+        """)
+
+def query_get_geom_extent(schema_name, table_name, geom_name):
+    """Requête de calcul côté serveur du rectangle d'emprise d'une couche.
+    
+    À utiliser comme suit:
+    
+        >>> query = query_get_geom_extent('nom du schéma',
+        ...     'nom de la relation', 'nom du champ de géométrie')
+        >>> cur.execute(query)
+        >>> bbox_geom = cur.fetchone()[0]
+    
+    À noter que le résultat est une géométrie dont le
+    système de coordonnées n'est pas explicité. Il faudra
+    le récupérer via :py:func:`query_get_geom_srid`, puis
+    appliquer la fonction :py:fun:`plume.rdf.utils.wkt_with_srid`
+    pour obtenir la représention du rectangle d'emprise
+    attendue en RDF:
+    
+        >>> from plume.rdf.utils import wkt_with_srid
+        >>> query = query_get_geom_srid()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
+        ...     'nom du champ de géométrie'))
+        >>> srid = cur.fetchone()[0]
+        >>> bbox = wkt_with_srid(bbox_geom, srid)
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    geom_name : str
+        Nom du champ de géométrie.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Warnings
+    --------
+    Cette requête échouera si PostGIS n'est pas installé sur la
+    base. Il est donc fortement recommandé de vérifier d'abord
+    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    
+        >>> query = query_exists_extension()
+        >>> cur.execute(query, ('postgis',))
+        >>> postgis_exists = cur.fetchone()[0]
+    
+    """
+    return sql.SQL("""
+        SELECT
+            ST_AsText(ST_Extent({geom}))
+            FROM {relation}
+        """).format(
+            relation=sql.Identifier(schema_name, table_name),
+            geom=sql.Identifier(geom_name)
+            )
+
+def query_get_geom_centroid(schema_name, table_name, geom_name):
+    """Requête de calcul côté serveur du centre du rectangle d'emprise d'une couche.
+    
+    À utiliser comme suit:
+    
+        >>> query = query_get_geom_centroid('nom du schéma',
+        ...     'nom de la relation', 'nom du champ de géométrie')
+        >>> cur.execute(query)
+        >>> centroid_geom = cur.fetchone()[0]
+    
+    À noter que le résultat est une géométrie dont le
+    système de coordonnées n'est pas explicité. Il faudra
+    le récupérer via :py:func:`query_get_geom_srid`, puis
+    appliquer la fonction :py:fun:`plume.rdf.utils.wkt_with_srid`
+    pour obtenir la représention du centroïde attendue en RDF:
+    
+        >>> from plume.rdf.utils import wkt_with_srid
+        >>> query = query_get_geom_srid()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
+        ...     'nom du champ de géométrie'))
+        >>> srid = cur.fetchone()[0]
+        >>> centroid = wkt_with_srid(centroid_geom, srid)
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    geom_name : str
+        Nom du champ de géométrie.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Warnings
+    --------
+    Cette requête échouera si PostGIS n'est pas installé sur la
+    base. Il est donc fortement recommandé de vérifier d'abord
+    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    
+        >>> query = query_exists_extension()
+        >>> cur.execute(query, ('postgis',))
+        >>> postgis_exists = cur.fetchone()[0]
+    
+    """
+    return sql.SQL("""
+        SELECT
+            ST_AsText(ST_Centroid(ST_Extent({geom})))
+            FROM {relation}
+        """).format(
+            relation=sql.Identifier(schema_name, table_name),
+            geom=sql.Identifier(geom_name)
+            )
