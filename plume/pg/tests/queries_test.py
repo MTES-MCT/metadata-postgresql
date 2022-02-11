@@ -16,9 +16,11 @@ import unittest, psycopg2
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
-     query_get_relation_kind, query_update_table_comment, query_get_table_comment, \
-     query_list_templates, query_get_categories, query_template_tabs, \
-     query_get_columns, query_update_column_comment, query_update_columns_comments
+    query_get_relation_kind, query_update_table_comment, query_get_table_comment, \
+    query_list_templates, query_get_categories, query_template_tabs, \
+    query_get_columns, query_update_column_comment, query_update_columns_comments, \
+    query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
+    query_get_geom_centroid
 from plume.rdf.widgetsdict import WidgetsDict
 
 connection_string = ConnectionString()
@@ -494,6 +496,137 @@ class QueriesTestCase(unittest.TestCase):
             'z_plume', 'table_test', d
             )
         self.assertIsNone(query)
+
+    def test_query_get_geom_extent(self):
+        """Requête de récupération du rectangle d'emprise.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test (
+                        geom1 geometry(POINT, 4326),
+                        "GEOM 2" geometry(POINT, 4326)
+                        ) ;
+                    INSERT INTO z_plume.table_test VALUES
+                        (ST_SetSRID(ST_MakePoint(-70, 40), 4326), ST_SetSRID(ST_MakePoint(70, 40), 4326)),
+                        (ST_SetSRID(ST_MakePoint(70, -40), 4326), ST_SetSRID(ST_MakePoint(-70, -40), 4326)) ;
+                    ''')
+                query = query_get_geom_extent(
+                    'z_plume', 'table_test', 'geom1'
+                    )
+                cur.execute(query)
+                bbox_geom1 = cur.fetchone()[0]
+                query = query_get_geom_extent(
+                    'z_plume', 'table_test', 'GEOM 2'
+                    )
+                cur.execute(query)
+                bbox_geom2 = cur.fetchone()[0]
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertEqual(bbox_geom1, 'POLYGON((-70 -40,-70 40,70 40,70 -40,-70 -40))')
+        self.assertEqual(bbox_geom2, 'POLYGON((-70 -40,-70 40,70 40,70 -40,-70 -40))')
+
+    def test_query_get_geom_centroid(self):
+        """Requête de récupération du centre du rectangle d'emprise.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test (
+                        geom1 geometry(POINT, 4326),
+                        "GEOM 2" geometry(POINT, 4326)
+                        ) ;
+                    INSERT INTO z_plume.table_test VALUES
+                        (ST_SetSRID(ST_MakePoint(-90, 40), 4326), ST_SetSRID(ST_MakePoint(70, 40), 4326)),
+                        (ST_SetSRID(ST_MakePoint(70, -20), 4326), ST_SetSRID(ST_MakePoint(-90, -20), 4326)) ;
+                    ''')
+                query = query_get_geom_centroid(
+                    'z_plume', 'table_test', 'geom1'
+                    )
+                cur.execute(query)
+                centroid_geom1 = cur.fetchone()[0]
+                query = query_get_geom_centroid(
+                    'z_plume', 'table_test', 'GEOM 2'
+                    )
+                cur.execute(query)
+                centroid_geom2 = cur.fetchone()[0]
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertEqual(centroid_geom1, 'POINT(-10 10)')
+        self.assertEqual(centroid_geom2, 'POINT(-10 10)')
+
+    def test_query_get_geom_srid(self):
+        """Requête de récupération du référentiel d'un champ de géométries donné.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test (
+                        geom1 geometry(POINT, 2154),
+                        "GEOM 2" geometry(POINT, 4326),
+                        geom3 geometry,
+                        geom4 text
+                        ) ;
+                    ''')
+                query = query_get_geom_srid()
+                cur.execute(query, 
+                    ('z_plume', 'table_test', 'geom1'))
+                srid_geom1 = cur.fetchone()[0]
+                query = query_get_geom_srid()
+                cur.execute(query,
+                    ('z_plume', 'table_test', 'GEOM 2'))
+                srid_geom2 = cur.fetchone()[0]
+                query = query_get_geom_srid()
+                cur.execute(query,
+                    ('z_plume', 'table_test', 'geom3'))
+                l_srid_geom3 = cur.fetchone()
+                query = query_get_geom_srid()
+                cur.execute(query,
+                    ('z_plume', 'table_test', 'geom4'))
+                l_srid_geom4 = cur.fetchone()
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertEqual(srid_geom1, 'EPSG:2154')
+        self.assertEqual(srid_geom2, 'EPSG:4326')
+        self.assertFalse(l_srid_geom3)
+        self.assertFalse(l_srid_geom4)
+        
+    def test_query_get_srid_list(self):
+        """Requête de récupération de la liste des référentiels de coordonnées utilisés par une relation.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test (
+                        geom1 geometry(POINT, 2154),
+                        "GEOM 2" geometry(POINT, 4326),
+                        geom3 geometry,
+                        geom4 text,
+                        geom5 geometry(POLYGON, 2154)
+                        ) ;
+                    ''')
+                query = query_get_srid_list()
+                cur.execute(query, ('z_plume', 'table_test'))
+                srid_list = cur.fetchone()[0]
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertListEqual(srid_list, ['EPSG:2154', 'EPSG:4326'])
 
 if __name__ == '__main__':
     unittest.main()
