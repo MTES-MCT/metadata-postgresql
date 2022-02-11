@@ -52,9 +52,9 @@ Les propriétés suivantes sont modifiées par Plume :
 
 Les propriétés suivantes sont ajoutées par Plume :
 
-| Propriété | IRI | Commentaire |
-| --- | --- | --- |
-| | | |
+| IRI | Description |
+| --- | --- |
+| | |
 
 ## Distributions
 
@@ -76,9 +76,9 @@ Les propriétés suivantes sont modifiées par Plume :
 
 Les propriétés suivantes sont ajoutées par Plume :
 
-| Propriété | IRI | Commentaire |
+| IRI | Description | Commentaire |
 | --- | --- | --- |
-| | | |
+| `dct:type` | Type de distribution. | Bizaremment non présent dans DCAT-AP et GeoDCAT-AP alors qu'il existe un [thésaurus dédié](https://op.europa.eu/s/vNbJ) dans le registre européen. |
 
 ## Services de données
 
@@ -127,6 +127,12 @@ _Classe `dcat:CatalogRecord`._
 Dans le contexte de Plume, la classe `dcat:CatalogRecord` sert exclusivement à renseigner les métadonnées sur les métadonnées. Elle est introduite par la propriété `foaf:isPrimaryTopicOf` dans la description d'un `dcat:Dataset`, et le sujet du triplet `[] a dcat:CatalogRecord` est toujours un noeud anonyme.
 
 Pour l'heure, la seule propriété de cette classe qui soit prise en charge par Plume est *update / modification date* - `dct:modified` -, que Plume renseigne automatiquement.
+
+## Type de média ou extension
+
+_Classe `dct:MediaTypeOrExtent`._
+
+GeoDCAT-AP n'associe aucune propriété à cette classe. Plume ajoute une propriété `rdfs:label` pour la saisie manuelle, comme le fait déjà GeoDCAT-AP pour la classe `dct:MediaType`.
 
 ## Fiches de métadonnées liées
 
