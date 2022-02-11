@@ -5,9 +5,63 @@ from plume.rdf.rdflib import isomorphic, URIRef, Literal
 from plume.rdf.utils import abspath, data_from_file, DatasetId
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, \
     metagraph_from_iso
-from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL
+from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF
 
 class MetagraphTestCase(unittest.TestCase):
+
+    def test_update_metadata_date(self):
+        """Mise à jour de la date de modification des métadonnées.
+        
+        """
+        # --- pas de date dans le graphe d'origine ---
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        metagraph.update_metadata_date()
+        bnode = metagraph.value(metagraph.datasetid, FOAF.isPrimaryTopicOf)
+        self.assertIsNotNone(bnode)
+        self.assertTrue((bnode, RDF.type, DCAT.CatalogRecord) in metagraph)
+        date = metagraph.value(bnode, DCT.modified)
+        self.assertTrue(isinstance(date, Literal))
+        self.assertEqual(date.datatype, XSD.dateTime)
+        self.assertRegex(str(date), '^[0-9]{4}[-][0-9]{2}[-][0-9]{2}T[0-9]{2}[:][0-9]{2}[:][0-9]{2}$')
+        
+        # --- avec date dans le graphe d'origine ---
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
+                    dct:modified "2022-01-01T00:00:00"^^xsd:dateTime ] .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        metagraph.update_metadata_date()
+        bnode = metagraph.value(metagraph.datasetid, FOAF.isPrimaryTopicOf)
+        self.assertIsNotNone(bnode)
+        self.assertTrue((bnode, RDF.type, DCAT.CatalogRecord) in metagraph)
+        date = metagraph.value(bnode, DCT.modified)
+        self.assertTrue(isinstance(date, Literal))
+        self.assertEqual(date.datatype, XSD.dateTime)
+        self.assertRegex(str(date), '^[0-9]{4}[-][0-9]{2}[-][0-9]{2}T[0-9]{2}[:][0-9]{2}[:][0-9]{2}$')
+        self.assertGreater(str(date), "2022-01-01T00:00:00")
 
     def test_delete_branch(self):
         """Suppression d'une branche libre du graphe.
