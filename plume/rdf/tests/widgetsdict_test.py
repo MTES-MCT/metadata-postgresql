@@ -122,11 +122,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             'multiple sources': True,
             'sources': [
                 '< manuel >',
-                "Restriction d'accès public INSPIRE (UE)",
+                "Restriction d'accès public (INSPIRE)",
                 "Droits d'accès (UE)",
                 "Restrictions d'accès en application du Code des relations entre le public et l'administration"
                 ],
-            'current source': "Restriction d'accès public INSPIRE (UE)",
+            'current source': "Restriction d'accès public (INSPIRE)",
             'has minus button': True,
             'hide minus button': True
             }
@@ -147,7 +147,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             'multiple sources': True,
             'sources': [
                 '< manuel >',
-                "Restriction d'accès public INSPIRE (UE)",
+                "Restriction d'accès public (INSPIRE)",
                 "Droits d'accès (UE)",
                 "Restrictions d'accès en application du Code des relations entre le public et l'administration"
                 ],
@@ -409,7 +409,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertIsNone(key)
         key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
         self.assertIsNone(widgetsdict[key]['geo tools'])
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
 
         # --- avec graphe non inclus dans le modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
@@ -433,7 +434,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(widgetsdict[key]['read only'])
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
         self.assertIsNone(key)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- avec un modèle vide ---
         template = TemplateDict([])
@@ -449,7 +451,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(widgetsdict[key]['read only'])
         key = widgetsdict.root.search_from_path(DCT.description)
         self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
     
     def test_widgetsdict_special_hidden_keys(self):
         """Génération d'un dictionnaire de widgets avec paramètres masquant certaines informations.
@@ -511,7 +514,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(key in widgetsdict)
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
         self.assertTrue(key in widgetsdict)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- editHideUnlisted sans modèle ---
         widgetsdict = WidgetsDict(metagraph=metagraph, editHideUnlisted=True)
@@ -519,7 +523,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(key in widgetsdict)
         key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
         self.assertIsNone(key)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- editHideUnlisted avec un modèle vide ---
         widgetsdict = WidgetsDict(metagraph=metagraph, template=TemplateDict([]),
@@ -532,7 +537,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
         key = widgetsdict.root.search_from_path(DCT.description)
         self.assertEqual(widgetsdict.parent_grid(key), '<Grid onglet "Autres">')
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- editOnlyCurrentLanguage ---
         widgetsdict = WidgetsDict(metagraph=metagraph, language='it',
@@ -546,7 +552,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(len(key.children), 4)
         for child in key.children:
             self.assertTrue(child in widgetsdict)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         widgetsdict = WidgetsDict(metagraph=metagraph,
             editOnlyCurrentLanguage=True, language='it',
@@ -564,7 +571,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(key.children[1].is_ghost)
         self.assertTrue(widgetsdict[key.children[0]]['value'],
             'ADMIN EXPRESS - Départements de métropole')
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         widgetsdict = WidgetsDict(metagraph=metagraph,
             editOnlyCurrentLanguage=True, language='en')
@@ -574,20 +582,23 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(key.children[1].is_ghost)
         self.assertTrue(widgetsdict[key.children[0]]['value'],
             'ADMIN EXPRESS - Metropolitan Departments')
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- readHideBlank ---
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             mode='read', readHideBlank=False)
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
         self.assertTrue(key in widgetsdict)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read',
             readHideBlank=False)
         key = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license)
         self.assertTrue(key in widgetsdict)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- readHideUnlisted ---
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read')
@@ -606,7 +617,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(widgetsdict.hideUnlisted)
         key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
         self.assertTrue(key in widgetsdict)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             mode='read', readHideUnlisted=False, readHideBlank=False)
@@ -615,7 +627,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         # readHideBlank permet d'afficher des champs vides, mais pas ceux
         # hors modèle, même combiné avec readHideUnlisted (sinon à quoi
         # bon utiliser un modèle ?)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
         # --- readOnlyCurrentLanguage ---
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read')
@@ -636,7 +649,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(len(key.children), 4)
         for child in key.children:
             self.assertTrue(child in widgetsdict)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
     def test_add(self):
         """Ajout d'une clé dans le dictionnaire.
@@ -1051,7 +1065,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- Multiples thésaurus ---
         a = widgetsdict.root.search_from_path(DCAT.theme).children[0]
         widgetsdict[a]['main widget'] = '<A QComboBox dcat:theme>'
-        self.assertEqual(widgetsdict[a]['current source'], 'Thème INSPIRE (UE)')
+        self.assertEqual(widgetsdict[a]['current source'], 'Thème (INSPIRE)')
         actionsdict = widgetsdict.change_source(a, 'Thème de données (UE)')
         self.assertEqual(widgetsdict[a]['current source'], 'Thème de données (UE)')
         self.assertEqual(actionsdict['switch source menu to update'], [a])
@@ -1636,7 +1650,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        self.assertTrue(isomorphic(metagraph, widgetsdict.build_metagraph()))
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
         
 
 if __name__ == '__main__':
