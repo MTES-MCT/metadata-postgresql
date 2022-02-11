@@ -6,7 +6,7 @@ from plume.pg.description import PgDescription
 from plume.rdf.utils import abspath, data_from_file
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.metagraph import Metagraph
-from plume.rdf.namespaces import RDF, DCAT, DCT
+from plume.rdf.namespaces import RDF, DCAT, DCT, FOAF
 
 pg_description_1 = data_from_file(abspath('pg/tests/samples/pg_description_1.txt'))
 pg_description_2 = data_from_file(abspath('pg/tests/samples/pg_description_2.txt'))
@@ -33,6 +33,7 @@ class DescriptionTestCase(unittest.TestCase):
                 metagraph = widgetsdict.build_metagraph()
                 self.assertTrue((None, RDF.type, DCAT.Dataset) in metagraph)
                 self.assertTrue((None, DCT.identifier, None) in metagraph)
+                self.assertTrue((None, FOAF.isPrimaryTopicOf, None) in metagraph)
                 pgdescr.metagraph = metagraph
                 self.assertTrue(str(pgdescr))
 
@@ -52,7 +53,7 @@ class DescriptionTestCase(unittest.TestCase):
                 self.assertTrue(pgdescr.metagraph)
                 self.assertTrue(str(pgdescr))
                 widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
-                metagraph = widgetsdict.build_metagraph()
+                metagraph = widgetsdict.build_metagraph(preserve_metadata_date=True)
                 self.assertTrue(isomorphic(metagraph, pgdescr.metagraph))
                 pgdescr.metagraph = metagraph
                 self.assertEqual(str(pgdescr), raw)
@@ -88,7 +89,7 @@ Après"""
         self.assertEqual(pgdescr.jsonld, '')
         self.assertFalse(pgdescr.metagraph)
         widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
-        metagraph = widgetsdict.build_metagraph()
+        metagraph = widgetsdict.build_metagraph(preserve_metadata_date=True)
         pgdescr.metagraph = metagraph
         self.assertEqual(str(pgdescr), new_comment.format(
             str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
@@ -102,7 +103,7 @@ Après"""
         self.assertTrue(isinstance(pgdescr.metagraph, Metagraph))
         self.assertFalse(pgdescr.metagraph)
         widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
-        metagraph = widgetsdict.build_metagraph()
+        metagraph = widgetsdict.build_metagraph(preserve_metadata_date=True)
         pgdescr.metagraph = metagraph
         self.assertEqual(str(pgdescr), new_comment.format(
             str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
@@ -115,7 +116,7 @@ Après"""
         self.assertEqual(pgdescr.jsonld, '')
         self.assertFalse(pgdescr.metagraph)
         widgetsdict = WidgetsDict(metagraph=pgdescr.metagraph)
-        metagraph = widgetsdict.build_metagraph()
+        metagraph = widgetsdict.build_metagraph(preserve_metadata_date=True)
         pgdescr.metagraph = metagraph
         self.assertEqual(str(pgdescr), new_comment.format(
             str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
