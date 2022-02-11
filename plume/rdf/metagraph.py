@@ -4,10 +4,11 @@
 
 from uuid import UUID, uuid4
 from pathlib import Path
+from time import strftime, localtime
 
 from plume.rdf.rdflib import Graph, URIRef, BNode, Literal
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
-    LOCAL, SNUM, DCT, predicate_map
+    LOCAL, SNUM, DCT, FOAF, XSD, predicate_map
 from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
     export_extension_from_format, export_format_from_extension, export_formats, \
     forbidden_char
@@ -385,6 +386,22 @@ class Metagraph(Graph):
                 o = triple[2]
                 if isinstance(o, BNode):
                     self.copy_branch(alt_metagraph, o)
+
+    def update_metadata_date(self):
+        """Met à jour la date de dernière modification des métadonnées.
+        
+        """
+        datasetid = self.datasetid
+        date = Literal(strftime("%Y-%m-%dT%H:%M:%S", localtime()),
+            datatype=XSD.dateTime)
+        bnode = self.value(datasetid, FOAF.isPrimaryTopicOf)
+        if not bnode:
+            bnode = BNode()
+            self.add((datasetid, FOAF.isPrimaryTopicOf, bnode))
+            self.add((bnode, RDF.type, DCAT.CatalogRecord))
+        else:
+            self.remove((bnode, DCT.modified, None))
+        self.add((bnode, DCT.modified, date))
 
 def metagraph_from_file(filepath, format=None, old_metagraph=None):
     """Crée un graphe de métadonnées à partir d'un fichier.
