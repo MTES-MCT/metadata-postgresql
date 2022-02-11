@@ -436,7 +436,6 @@ def query_get_geom_srid():
         >>> query = query_get_geom_srid()
         >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
         ...     'nom du champ de géométrie'))
-        >>> cur.execute(query)
         >>> srid = cur.fetchone()[0]
     
     Le référentiel ainsi obtenu est de la forme ``'Autorité:Code'``.
@@ -477,7 +476,6 @@ def query_get_srid_list():
     
         >>> query = query_get_srid_list()
         >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
-        >>> cur.execute(query)
         >>> srid_list = cur.fetchone()[0]
     
     La liste ainsi obtenue contient des identifiants de référentiels
