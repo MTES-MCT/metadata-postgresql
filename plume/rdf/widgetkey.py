@@ -1729,8 +1729,8 @@ class GroupKey(WidgetKey):
             n += child.rowspan 
         return n
 
-    def _search_from_path(self, path):
-        for child in self.real_children():
+    def _search_from_path(self, path, allow_ghosts=False):
+        for child in (self.children if allow_ghosts else self.real_children()):
             if path == child.path:
                 if isinstance(child, ObjectKey) and \
                     child.m_twin and not child.is_main_twin:
@@ -1743,7 +1743,7 @@ class GroupKey(WidgetKey):
                 # le parti de comparer des chaînes de caractères
                 # "not child.path" est là pour les onglets rattachés
                 # à la racine, dont le chemin est vide
-                target = child._search_from_path(path)
+                target = child._search_from_path(path, allow_ghosts=allow_ghosts)
                 if target:
                     return target
 
@@ -4644,7 +4644,7 @@ class RootKey(GroupKey):
     def kill(self):
         return
 
-    def search_from_path(self, path):
+    def search_from_path(self, path, allow_ghosts=False):
         """Renvoie la première clé de l'arbre dont le chemin correspond à celui recherché.
         
         Si une clé et son parent ont le même chemin (cas d'un groupe
@@ -4657,19 +4657,22 @@ class RootKey(GroupKey):
         vaut ``True``) qui est renvoyée.
         
         Si le chemin n'existe pas dans l'arbre, la méthode ne renvoie
-        rien. Les clés fantômes ne sont pas prises en compte.
+        rien. Les clés fantômes ne sont pas prises en compte, sauf si
+        le paramètre `allow_ghosts` est explicitement mis à ``True``.
         
         Parameters
         ----------
         path : rdflib.paths.SequencePath
             Le chemin à chercher.
+        allow_ghosts : bool, default False
+            Si ``True``, les clés fantômes seront prises en compte.
         
         Returns
         -------
         WidgetKey
         
         """
-        return self._search_from_path(path)
+        return self._search_from_path(path, allow_ghosts=allow_ghosts)
 
     def search_from_rdfclass(self, rdfclass):
         """Renvoie la liste des groupes de propriétés du type recherché.
