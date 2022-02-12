@@ -218,7 +218,11 @@ class WidgetsDict(dict):
         WidgetKey.with_source_buttons = self.edit
         WidgetKey.with_unit_buttons = self.edit
         WidgetKey.with_language_buttons = self.translation
-        WidgetKey.with_geo_buttons = self.edit
+        WidgetKey.with_geo_buttons = True
+        # NB: les boutons d'aide à la saisie des géométries
+        # sont autorisés en mode lecture. Le fait que la clé
+        # soit en lecture seule limitera les fonctionnalités
+        # disponibles à celles qui ont trait à la visualisation.
         WidgetKey.langlist = list(self.langlist)
         self.root.main_language = language
         self.langlist = tuple(WidgetKey.langlist)
