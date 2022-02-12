@@ -2688,11 +2688,11 @@ class GroupOfValuesKey(GroupKey):
         ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé comme valeur
         par défaut.
         
-        Modifier cette propriété emporte la mise en cohérence des
-        propriétés :py:attr:`ValueKey.value_language` et
-        :py:attr:`ValueKey.is_long_text` pour toutes les clés-valeurs
-        du groupe.
-        
+        Modifier cette propriété emporte la mise en cohérence de
+        :py:attr:`GroupOfValuesKey.geo_tools`, ainsi que des
+        propriétés :py:attr:`ValueKey.value_language`,
+        :py:attr:`ValueKey.is_long_text` et :py:attr:`ValueKey.value_unit`
+        pour toutes les clés-valeurs du groupe.
         
         """
         return self._datatype
@@ -2705,7 +2705,10 @@ class GroupOfValuesKey(GroupKey):
             value = XSD.string
         self._datatype = value
         if not self._is_unborn:
-            self.geo_tools = self.geo_tools
+            self.geo_tools = self._geo_tools
+            # on réinitialise bien avec _geo_tools
+            # et pas geo_tools, car le second tronque
+            # la liste si la clé est en lecture seule
             for child in self.children:
                 if isinstance(child, ValueKey):
                     child.value_language = child.value_language
@@ -2881,15 +2884,26 @@ class GroupOfValuesKey(GroupKey):
         
         Cette propriété vaudra toujours ``None`` si 
         :py:attr:`GroupOfValues.datatype` n'est pas ``gsp:wktLiteral``.
-        
-        Il est permis de fournir en argument une liste de
-        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+        Pour le type ``gsp:wktLiteral``, il s'agira toujours d'une liste,
+        quitte à ce qu'elle soit vide.
         
         Seules les valeurs suivantes sont acceptées (les autres seront
         silencieusement éliminées) :
         ``{'show', 'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
         
+        Lorsque la clé est en lecture seule, soit quand la propriété
+        :py:attr:`GroupOfValuesKey.is_read_only` vaut  ``True``, la liste
+        contiendra au plus `'show'`. C'est le getter de la propriété qui 
+        génère à la volée une liste tronquée à partir de la liste mémorisée,
+        afin de préserver toutes les valeurs pour le cas où
+        :py:attr:`GroupOfValuesKey.is_read_only` reviendrait à ``False``.
+        
+        Il est permis de fournir en argument une liste de
+        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+        
         """
+        if self.is_read_only and self._geo_tools:
+            return ['show'] if 'show' in self._geo_tools else []
         return self._geo_tools
     
     @geo_tools.setter
@@ -3565,10 +3579,16 @@ class ValueKey(ObjectKey):
         Pour l'heure, de tels boutons ne sont prévus que pour les valeurs
         de type ``gsp:wktLiteral``.
         
+        Au contraire de la plupart des autres boutons, des boutons d'aide à la
+        saisie des géométries peuvent accompagner des clés en lecture seule
+        (c'est-à-dire pour lesquelles la propriété :py:attr:`ValueKey.is_read_only`
+        vaut  ``True``), car ils portent aussi des fonctionnalités de visualisation.
+        C'est la propriété :py:attr:`ValueKey.geo_tools` qui se charge d'éliminer
+        les fonctionnalités d'édition.        
+        
         """
         return self and WidgetKey.with_geo_buttons \
-            and bool(self.geo_tools) \
-            and not self.is_read_only
+            and bool(self.geo_tools)
     
     @property
     def has_label(self):
@@ -3675,11 +3695,15 @@ class ValueKey(ObjectKey):
         comme valeur par défaut.
         
         Modifier cette propriété emporte la mise en cohérence des
-        propriétés :py:attr:`ValueKey.value_language` et
-        :py:attr:`ValueKey.is_long_text`. En particulier, si
+        propriétés :py:attr:`ValueKey.value_language`,
+        :py:attr:`ValueKey.is_long_text`, :py:attr:`ValueKey.value_unit`,
+        :py:attr:`ValueKey.geo_tools`. En particulier, si
         :py:attr:`ValueKey.value_language` contient une langue mais
         que :py:attr:`ValueKey.datatype` n'est plus ``rdf:langString``,
-        la langue sera silencieusement effacée.
+        la langue sera silencieusement effacée. De même, la liste
+        de fonctionnalités d'aide à la saisie contenue dans 
+        :py:attr:`ValueKey.geo_tools` sera définitivement perdue
+        si :py:attr:`ValueKey.datatype` n'est plus ``gsp:wktLiteral``.
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
@@ -3695,7 +3719,10 @@ class ValueKey(ObjectKey):
                 value = XSD.string
             self._datatype = value
             if not self._is_unborn:
-                self.geo_tools = self.geo_tools
+                self.geo_tools = self._geo_tools
+                # on réinitialise bien avec _geo_tools
+                # et pas geo_tools, car le second tronque
+                # la liste si la clé est en lecture seule
                 self.value_language = self.value_language
                 self.is_long_text = self.is_long_text
                 self.value_unit = self.value_unit
@@ -3860,18 +3887,28 @@ class ValueKey(ObjectKey):
         n'aura silencieusement aucun effet.
         
         Cette propriété vaudra toujours ``None`` si :py:attr:`ValueKey.datatype`
-        n'est pas ``gsp:wktLiteral``.
-        
-        Il est permis de fournir en argument une liste de
-        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+        n'est pas ``gsp:wktLiteral``. Pour le type ``gsp:wktLiteral``, il s'agira
+        toujours d'une liste, quitte à ce qu'elle soit vide.
         
         Seules les valeurs suivantes sont acceptées (les autres seront
         silencieusement éliminées) :
         ``{'show', 'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+        
+        Lorsque la clé est en lecture seule, soit quand la propriété
+        :py:attr:`ValueKey.is_read_only` vaut ``True``, la liste
+        contiendra au plus `'show'`. C'est le getter de la propriété qui 
+        génère à la volée une liste tronquée à partir de la liste mémorisée,
+        afin de préserver toutes les valeurs pour le cas où
+        :py:attr:`ValueKey.is_read_only` reviendrait à ``False``.
+        
+        Il est permis de fournir en argument une liste de
+        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
 
         """
         if isinstance(self.parent, GroupOfValuesKey):
             return self.parent.geo_tools
+        if self.is_read_only and self._geo_tools:
+            return ['show'] if 'show' in self._geo_tools else []
         return self._geo_tools
     
     @geo_tools.setter
