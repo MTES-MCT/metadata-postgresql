@@ -836,7 +836,7 @@ Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouv
 
 ### Cas particulier de la visualisation seule
 
-Lorsque la clé `'geo_tools'` vaut exactement `['show']`, c'est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :
+Lorsque la clé `'geo tools'` vaut exactement `['show']`, c'est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :
 - utiliser l'image d'oeil comme icône pour le bouton ;
 - ne pas créer de menu et simplement lancer la visualisation quand l'utilisateur clique sur le bouton.
 
