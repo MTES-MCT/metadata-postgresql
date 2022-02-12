@@ -7,6 +7,7 @@ Usage
    generation_dictionnaire_widgets
    creation_widgets
    actions_widgets
+   outils_saisie_geometries
    actions_generales
    modeles_de_formulaire
    parametres_utilisateur
