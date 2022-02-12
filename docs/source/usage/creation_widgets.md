@@ -538,8 +538,6 @@ grid.addWidget(source_widget, row, column, rowSpan, columnSpan)
 
 L'icône ![source_button.svg](/plume/icons/buttons/source_button.svg) à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/plume/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
 
-[↑ haut de page](#création-dun-nouveau-widget)
-
 
 ### Texte d'aide
 
@@ -561,6 +559,8 @@ if widgetsdict[widgetkey]['hidden']:
     ...
 
 ```
+
+[↑ haut de page](#création-dun-nouveau-widget)
 
 
 ## Widget annexe : bouton de sélection de la langue
@@ -778,7 +778,7 @@ if widgetsdict[widgetkey]['hidden']:
 
 ## Widget annexe : bouton d'aide à la saisie des géométries
 
-Un widget `QToolButton` d'aide à la saisie des géométries doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira qu'en mode édition) :
+Un widget `QToolButton` d'aide à la saisie des géométries doit être créé dès lors que la condition suivante est vérifiée :
 
 ```python
 
@@ -788,6 +788,8 @@ if widgetsdict[widgetkey]['geo tools']:
 ```
 
 De tels widgets accompagnent les widgets de saisie appelant des valeurs de type `gsp:wktLiteral`.
+
+*NB : Contrairement aux autres boutons, les boutons d'aide à la saisie peuvent apparaître en mode lecture. Ils n'offrent alors, bien évidemment, que des fonctionnalités de visualisation.*
 
 ### Stockage
 
@@ -825,9 +827,25 @@ widgetsdict[widgetkey]['geo actions'].append(geo_action)
 
 Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometries.md).
 
-### Icône
+### Icônes
 
-*À venir.*
+L'icône ![geo_button.svg](/plume/icons/buttons/geo_button.svg) à faire apparaître sur le bouton d'aide à la saisie des géométries est fournie par le fichier [geo_button.svg](/plume/icons/buttons/geo_button.svg). Sa couleur est fixe.
+
+Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](/plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometries.md) pour les noms des fichiers.
+
+
+### Cas particulier de la visualisation seule
+
+Lorsque la clé `'geo_tools'` vaut exactement `['show']`, c'est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :
+- utiliser l'image d'oeil comme icône pour le bouton ;
+- ne pas créer de menu et simplement lancer la visualisation quand l'utilisateur clique sur le bouton.
+
+```python
+
+if widgetsdict[widgetkey]['geo tools'] == ['show']:
+    ...
+
+```
 
 ### Texte d'aide
 
