@@ -408,7 +408,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
         self.assertIsNone(key)
         key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
-        self.assertIsNone(widgetsdict[key]['geo tools'])
+        self.assertListEqual(widgetsdict[key]['geo tools'], ['show'])
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))
 
