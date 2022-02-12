@@ -823,9 +823,7 @@ widgetsdict[widgetkey]['geo actions'].append(geo_action)
 
 *Où `geo_action` représente chaque `QAction` venant d'être créée.*
 
-### Description des actions
-
-Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometrie.md).
+Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometries.md).
 
 ### Icône
 
