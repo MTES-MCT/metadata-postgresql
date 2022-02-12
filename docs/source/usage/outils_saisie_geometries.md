@@ -19,7 +19,7 @@ Une action doit :
 Dès lors qu'elles sont listées par `'geo tools'`, les actions suivantes n'auront jamais besoin d'être désactivées.
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Texte d'aide | Description de l'effet |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | *Visualisation* | `'show'` | *Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.* | Montre la géométrie, sans que celle-ci ne soit nécessairement éditable. D'autant que de besoin, l'utilisateur pourra activer l'une des autres actions du menu pour créer une nouvelle géométrie si l'actuelle ne lui convient pas. Cf. aussi [Remarques sur la visualisation](#remarques-sur-la-visualisation). |
 | *Tracé manuel : point* | `'point'` | *Saisie libre d'un point dans le canevas.* | Permet à l'utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées. |
 | *Tracé manuel : rectangle* | `'rectangle'` | *Saisie libre d'un rectangle dans le canevas.* | Permet à l'utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées. |
@@ -31,7 +31,7 @@ Dès lors qu'elles sont listées par `'geo tools'`, les actions suivantes n'auro
 ... et si la couche sélectionnée est géométrique.
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Texte d'aide | Description de l'effet |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | *Calcul du rectangle d'emprise (PostGIS)*  | `'bbox'` | *Calcule le rectangle d'emprise à partir des données. Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.* | Calcule l'emprise de la couche par des requêtes sur le serveur PostgreSQL et mémorise la géométrie dans les métadonnées. Cf. [Les calculs de géométries côté serveur](#les-calculs-de-géométries-côté-serveur). |
 | *Calcul du centroïde (PostGIS)*  | `'centroid'` | *Calcule le centre du rectangle d'emprise à partir des données.  Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.* | Calcule le centre du rectangle d'emprise par des requêtes sur le serveur PostgreSQL, et mémorise la géométrie dans les métadonnées. Cf. [Les calculs de géométries côté serveur](#les-calculs-de-géométries-côté-serveur). |
 
@@ -61,7 +61,7 @@ conn.close()
 ... et si la couche sélectionnée est géométrique.
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Texte d'aide | Description de l'effet |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | *Calcul du rectangle d'emprise (QGIS)*  | `'bbox'` | *Calcule le rectangle d'emprise à partir des données, via les fonctionnalités de QGIS.* | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`) et mémorise la géométrie dans les métadonnées. Cf. [Les calculs et tracé manuels côté QGIS](#les-calculs-et-tracés-manuels-côté-qgis). |
 | *Calcul du centroïde (QGIS)*  | `'centroid'` | *Calcule le centre du rectangle d'emprise à partir des données, via les fonctionnalités de QGIS.* | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`), puis le centre du rectangle (`QgsRectangle.centre`), et mémorise la géométrie dans les métadonnées. Cf. [Les calculs et tracé manuels côté QGIS](#les-calculs-et-tracés-manuels-côté-qgis). |
 
@@ -88,7 +88,7 @@ if r:
 
 `wkt_with_srid` peut renvoyer `None` si `rdf_wkt` n'était pas exploitable, ce qui peut arriver en cas de modification manuelle. À défaut de référentiel explicitement déclaré dans `rdf_wkt`, il sera considéré que la géométrie était implicitement en `'OGC:WGS84'`.
 
-Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n'assure a priori qu'elles soient valides. Cette opération supposera donc de la gestion d'erreurs.
+Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n'assure a priori qu'elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d'erreurs.
 
 ## Les calculs de géométries côté serveur
 
