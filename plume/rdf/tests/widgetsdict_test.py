@@ -10,7 +10,7 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -429,7 +429,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(isinstance(key, GroupOfPropertiesKey))
         # pas de groupe de valeurs, puisqu'il n'y a qu'un objet
         key = widgetsdict.root.search_from_path(DCT.temporal / DCAT.startDate)
-        self.assertEqual(widgetsdict[key]['value'], '2021-01-15')
+        self.assertEqual(widgetsdict[key]['value'], '15/01/2021')
         self.assertFalse(widgetsdict[key]['has minus button'])
         self.assertTrue(widgetsdict[key]['read only'])
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
@@ -1511,6 +1511,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         metadata = """
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -1530,6 +1531,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dcat:temporalResolution "P1M"^^xsd:duration ;
                 dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
+                    dct:modified "2022-02-13T15:30:15"^^xsd:dateTime ] ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -1578,11 +1581,17 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(c.value, Literal('1.0'))
         self.assertEqual(widgetsdict[c]['value'], '1.0')
 
-        # --- litéral avec un type particulier ---
+        # --- date ---
         c = widgetsdict.root.search_from_path(DCT.modified)
-        widgetsdict.update_value(c, '2021-01-21')
+        widgetsdict.update_value(c, '21/01/2021 00:00:00')
         self.assertEqual(c.value, Literal('2021-01-21', datatype=XSD.date))
-        self.assertEqual(widgetsdict[c]['value'], '2021-01-21')
+        self.assertEqual(widgetsdict[c]['value'], '21/01/2021')
+
+        # --- date et heure ---
+        c = widgetsdict.root.search_from_path(FOAF.isPrimaryTopicOf / DCT.modified)
+        widgetsdict.update_value(c, '21/01/2021')
+        self.assertEqual(c.value, Literal('2021-01-21T00:00:00', datatype=XSD.dateTime))
+        self.assertEqual(widgetsdict[c]['value'], '21/01/2021 00:00:00')
 
         # --- URI basique ---
         g = widgetsdict.root.search_from_path(DCAT.landingPage)
@@ -1622,6 +1631,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         metadata = """
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix owl: <http://www.w3.org/2002/07/owl#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix uuid: <urn:uuid:> .
@@ -1647,6 +1657,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dcat:contactPoint [ a vcard:Kind ;
                     vcard:hasTelephone <tel:+33-1-23-45-67-89> ;
                     vcard:hasEmail <mailto:service@developpement-durable.gouv.fr> ] ;
+                foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
+                    dct:modified "2021-01-21T00:00:00"^^xsd:dateTime ] ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
