@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 from uuid import UUID, uuid4
 from html import escape
+from datetime import datetime, date
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
@@ -539,6 +540,15 @@ def str_from_duration(duration):
     duration : rdflib.term.Literal
         Un littéral de type ``xsd:duration``.
     
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> str_from_duration(Literal('P2Y', datatype=XSD.duration))
+    '2 ans'
+    
     Notes
     -----
     Cette fonction produit des valeurs pour un affichage en
@@ -553,6 +563,139 @@ def str_from_duration(duration):
     if value in (0, 1, -1) and unit in ('ans', 'jours', 'heures'):
         unit = unit.rstrip('s')
     return '{} {}'.format(value, unit)
+
+def str_from_date(datelit):
+    """Représentation d'une date sous forme de chaîne de caractères.
+    
+    Parameters
+    ----------
+    datetimelit : rdflib.term.Literal
+        Un littéral de type ``xsd:date``.
+    
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> str_from_date(Literal('2022-02-12', datatype=XSD.date))
+    '12/02/2022'
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` pour une valeur mal formée
+    ou qui n'est pas un littéral de type ``xsd:date``.
+    
+    """
+    if not datelit or not isinstance(datelit, Literal) \
+        or not datelit.datatype == XSD.date:
+        return
+    trans = datelit.toPython()
+    if isinstance(trans, date):
+        return trans.strftime('%d/%m/%Y')
+
+def date_from_str(value):
+    """Renvoie la représentation RDF d'une date exprimée comme chaîne de caractères.
+    
+    Parameters
+    ----------
+    value : str
+        La date, sous la forme `'jj/mm/aaaa'`, sans quoi
+        la fonction renverra ``None``.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:date``.
+    
+    Examples
+    --------
+    >>> date_from_str('13/02/2022')
+    rdflib.term.Literal('2022-02-13', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#date'))
+    
+    Notes
+    -----
+    La fonction tolère des informations excédentaires après la date
+    (par exemple une heure). Elle tronque alors la valeur pour ne
+    conserver que la date.
+    
+    """
+    if not value:
+        return
+    r = re.match('^([0-9]{2}[/][0-9]{2}[/][0-9]{4})', value)
+    if not r:
+        return
+    return Literal(datetime.strptime(r[1], '%d/%m/%Y').date(), datatype=XSD.date)
+
+def str_from_datetime(datetimelit):
+    """Représentation d'une date avec heure sous forme de chaîne de caractères.
+    
+    Parameters
+    ----------
+    datetimelit : rdflib.term.Literal
+        Un littéral de type ``xsd:dateTime``.
+    
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> str_from_datetime(Literal('2022-02-12T00:00:00', datatype=XSD.dateTime))
+    '12/02/2022 00:00:00'
+    
+    Notes
+    -----
+    Cette fonction produit des valeurs pour un affichage en
+    lecture seule. Il n'existe pas de fonction retour pour
+    reconstruire un littéral de type ``xsd:dateTime`` à partir
+    d'une représentation de cette forme.
+    
+    La fonction renvoie ``None`` pour une valeur mal formée
+    ou qui n'est pas un littéral de type ``xsd:dateTime``.
+    
+    """
+    if not datetimelit or not isinstance(datetimelit, Literal) \
+        or not datetimelit.datatype == XSD.dateTime:
+        return
+    trans = datetimelit.toPython()
+    if isinstance(trans, datetime):
+        return trans.strftime('%d/%m/%Y %H:%M:%S')
+
+def datetime_from_str(value):
+    """Renvoie la représentation RDF d'une date exprimée comme chaîne de caractères.
+    
+    Parameters
+    ----------
+    value : str
+        La date, sous la forme `'jj/mm/aaaa hh:mm:ss'`, sans
+        quoi la fonction renverra ``None``.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:dateTime``.
+    
+    Examples
+    --------
+    >>> datetime_from_str('13/02/2022 15:30:14')
+    rdflib.term.Literal('2022-02-13T15:30:14', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
+    
+    Notes
+    -----
+    La fonction tolère qu'on ne lui fournisse qu'une date (informations
+    relatives à l'heure manquantes). Il est alors considéré que
+    l'heure était ``'00:00:00'``.
+    
+    """
+    if not value:
+        return
+    r = re.match(r'^([0-9]{2}[/][0-9]{2}[/][0-9]{4})' \
+        '(?:[T\s]([0-9]{2}:[0-9]{2}:[0-9]{2}))?$', value)
+    if not r:
+        return
+    value = '{} {}'.format(r[1], r[2] or '00:00:00')
+    return Literal(datetime.strptime(value, '%d/%m/%Y %H:%M:%S'), datatype=XSD.dateTime)
 
 def wkt_with_srid(wkt, srid):
     """Ajoute un référentiel de coordonnées à la représentation WKT d'une géométrie.
