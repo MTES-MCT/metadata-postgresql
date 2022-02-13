@@ -5,12 +5,74 @@ from uuid import uuid4
 from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.utils import sort_by_language, pick_translation, \
     path_from_n3, int_from_duration, duration_from_int, str_from_duration, \
-    wkt_with_srid, split_rdf_wkt
+    wkt_with_srid, split_rdf_wkt, str_from_datetime, str_from_date, \
+    datetime_from_str, date_from_str
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD
 
 nsm = PlumeNamespaceManager()
 
 class UtilsTestCase(unittest.TestCase):
+
+    def test_datetime_from_str(self):
+        """Désérialisation en littéral RDF d'une date avec heure sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            datetime_from_str('13/02/2022 15:30:14'),
+            Literal('2022-02-13T15:30:14', datatype=XSD.dateTime)
+            )
+        self.assertEqual(
+            datetime_from_str('13/02/2022'),
+            Literal('2022-02-13T00:00:00', datatype=XSD.dateTime)
+            )
+        self.assertIsNone(datetime_from_str(None))
+        self.assertIsNone(datetime_from_str('chose'))
+
+    def test_date_from_str(self):
+        """Désérialisation en littéral RDF d'une date sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            date_from_str('13/02/2022'),
+            Literal('2022-02-13', datatype=XSD.date)
+            )
+        self.assertEqual(
+            date_from_str('13/02/2022 15:30:14'),
+            Literal('2022-02-13', datatype=XSD.date)
+            )
+        self.assertIsNone(date_from_str(None))
+        self.assertIsNone(date_from_str('chose'))
+
+    def test_str_from_date(self):
+        """Représentation d'une date sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            str_from_date(Literal('2022-02-12', datatype=XSD.date)),
+            '12/02/2022'
+            )
+        self.assertEqual(
+            str_from_date(Literal('2022-02-12T03:00:00', datatype=XSD.date)),
+            '12/02/2022'
+            )
+        self.assertIsNone(str_from_date(None))
+        self.assertIsNone(str_from_date('chose'))
+        self.assertIsNone(str_from_date(Literal('chose')))
+        self.assertIsNone(str_from_date(Literal('chose', datatype=XSD.date)))
+
+    def test_str_from_datetime(self):
+        """Représentation d'une date avec heure sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            str_from_datetime(Literal('2022-02-12T03:00:00', datatype=XSD.dateTime)),
+            '12/02/2022 03:00:00'
+            )
+        self.assertIsNone(str_from_datetime(None))
+        self.assertIsNone(str_from_datetime('chose'))
+        self.assertIsNone(str_from_datetime(Literal('chose')))
+        self.assertIsNone(str_from_datetime(Literal('chose', datatype=XSD.dateTime)))
+        self.assertIsNone(str_from_datetime(Literal('2022-02-12', datatype=XSD.dateTime)))
 
     def test_split_rfd_wkt(self):
         """Extraction du référentiel et de la géométrie d'un WKT RDF.
