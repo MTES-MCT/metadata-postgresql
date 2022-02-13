@@ -19,7 +19,8 @@ descriptifs des champs...
 from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
 from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
     owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
-    tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration
+    tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration, \
+    str_from_datetime, str_from_date, datetime_from_str, date_from_str
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -1122,6 +1123,10 @@ class WidgetsDict(dict):
                 widgetkey.value = Literal(value, lang=widgetkey.value_language)
             elif widgetkey.value_unit:
                 widgetkey.value = duration_from_int(value, widgetkey.value_unit)
+            elif widgetkey.datatype == XSD.date:
+                widgetkey.value = date_from_str(value)
+            elif widgetkey.datatype == XSD.dateTime:
+                widgetkey.value = datetime_from_str(value)
             elif widgetkey.datatype and widgetkey.datatype != XSD.string:
                 widgetkey.value = Literal(value, datatype=widgetkey.datatype)
             elif widgetkey.datatype == XSD.string:
@@ -1172,6 +1177,10 @@ class WidgetsDict(dict):
                 str_value = str_from_duration(value)
             else:
                 str_value = str(int_from_duration(value)[0])
+        elif widgetkey.datatype == XSD.date:
+            str_value = str_from_date(value)
+        elif widgetkey.datatype == XSD.dateTime:
+            str_value = str_from_datetime(value)
         else:
             str_value = str(value)
         if widgetkey.is_read_only:
