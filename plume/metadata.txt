@@ -16,6 +16,7 @@ changelog:
                Version under Qgis 3.22
        **Complement de la classe WidgetsDict pour gerer les QToolButton des unites
        **Correction Bug sur les QRegularExpression
+       ** Gestion des dates et times avec la classe QgsDateTimeEdit et chgt de format  
     ==========================================================================
     ** 0.2.8 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.22

@@ -221,17 +221,17 @@ def saveMetaIhm(self, _schema, _table) :
     for _keyObjet, _valueObjet in self.mDicObjetsInstancies.items() :
         if _valueObjet['main widget type'] != None :
            value = None
-           if _valueObjet['main widget type'] in ("QLineEdit") :
+           if _valueObjet['main widget type'] in ("QLineEdit",) :
                value = _valueObjet['main widget'].text()
-           elif _valueObjet['main widget type'] in ("QTextEdit") :
+           elif _valueObjet['main widget type'] in ("QTextEdit",) :
                value = _valueObjet['main widget'].toPlainText()
-           elif _valueObjet['main widget type'] in ("QComboBox") :
+           elif _valueObjet['main widget type'] in ("QComboBox",) :
                value = _valueObjet['main widget'].currentText()                   
-           elif _valueObjet['main widget type'] in ("QDateEdit") :
-               value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
-           elif _valueObjet['main widget type'] in ("QDateTimeEdit") :
-              value = _valueObjet['main widget'].date().toString("yyyy-MM-dd")
-           elif _valueObjet['main widget type'] in ("QCheckBox") :
+           elif _valueObjet['main widget type'] in ("QDateEdit",) :
+               value = _valueObjet['main widget'].date().toString("dd/MM/yyyy")
+           elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
+              value = _valueObjet['main widget'].dateTime().toString("yyyy-MM-dd")
+           elif _valueObjet['main widget type'] in ("QCheckBox",) :
               value = True if _valueObjet['main widget'].isChecked() else False
 
            if _valueObjet['object'] == "edit" and not (_valueObjet['hidden']): 

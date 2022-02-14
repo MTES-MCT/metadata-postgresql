@@ -239,16 +239,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignLeft)
         #Valeur 
        if valueExiste('value', _valueObjet) :
-          try : 
-            _valueDate = tuple(map(int, _valueObjet['value'].split('-')))                      
-            _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
-          except :
-            # Is QDateTimeEdit
-            try : 
-              _valueDate = tuple(map(int, _valueObjet['value'][0:10].split('-')))                      
-              _mObjetQDateEdit.setDate(QDate(_valueDate[0], _valueDate[1], _valueDate[2]))
-            except :
-              pass  
+           _mObjetQDateEdit.setDate(QDate.fromString( _valueObjet['value'], _displayFormat)) 
        else :
           _mObjetQDateEdit.clear()
           _mObjetQDateEdit.setDate(QDate.fromString( None, _displayFormat))
@@ -292,7 +283,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QDATETIMEEDIT
     elif _valueObjet['main widget type'] == "QDateTimeEdit" :
        #--                        
-       _mObjetQDateTime = QDateTimeEdit()
+       _mObjetQDateTime = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQDateTime.setVisible(False)
        #--                        
@@ -308,7 +299,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQDateTime, row, column, rowSpan, columnSpan, Qt.AlignLeft)
        #Valeur
        if valueExiste('value', _valueObjet) :  
-          _mObjetQDateTime.setDate(QDate.fromString( _valueObjet['value'], _displayFormat))       
+          _mObjetQDateTime.setDateTime(QDateTime.fromString( _valueObjet['value'], _displayFormat))       
        else :
           _mObjetQDateTime.clear()
           _mObjetQDateTime.setDate(QDate.fromString( None, _displayFormat))
@@ -359,7 +350,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QLABEL
     _mObjetQLabelEtiquette = generationLabel(self, _keyObjet, _valueObjet, _mParentEnCours)
     # == QLABEL
-
+    
     #---------------------------
     # == QTOOLBUTTON   Button MOINS
     if _valueObjet['has minus button'] :
