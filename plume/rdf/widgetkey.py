@@ -2414,6 +2414,11 @@ class GroupOfValuesKey(GroupKey):
         Le cas échéant, le type des valeurs litérales du groupe. La valeur de
         ce paramètre est ignorée si :py:attr:`GroupOfValuesKey.rdfclass` est
         renseigné, sinon ``xsd:string`` fait office de valeur par défaut.
+        Seuls les types suivants sont pris en charge, pour les autres
+        ``xsd:string`` serait utilisé à la place : ``xsd:string``,
+        ``xsd:integer``, ``xsd:decimal``, ``xsd:boolean``, ``xsd:date``,
+        ``xsd:time``, ``xsd:dateTime``, ``xsd:duration``, ``gsp:wktLiteral``,
+        ``rdf:langString``.
     placeholder : str or rdflib.term.Literal, optional
         Texte de substitution à utiliser pour les clés du groupe.
     input_mask : str or rdflib.term.Literal, optional
@@ -2688,6 +2693,12 @@ class GroupOfValuesKey(GroupKey):
         ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé comme valeur
         par défaut.
         
+        Seuls les types suivants sont pris en charge, pour les autres
+        ``xsd:string`` serait utilisé à la place : ``xsd:string``,
+        ``xsd:integer``, ``xsd:decimal``, ``xsd:boolean``, ``xsd:date``,
+        ``xsd:time``, ``xsd:dateTime``, ``xsd:duration``, ``gsp:wktLiteral``,
+        ``rdf:langString``.
+        
         Modifier cette propriété emporte la mise en cohérence de
         :py:attr:`GroupOfValuesKey.geo_tools`, ainsi que des
         propriétés :py:attr:`ValueKey.value_language`,
@@ -2699,9 +2710,12 @@ class GroupOfValuesKey(GroupKey):
     
     @datatype.setter
     def datatype(self, value):
+        tlist = [XSD.string, XSD.integer, XSD.decimal,
+            XSD.boolean, XSD.date, XSD.time, XSD.dateTime,
+            XSD.duration, GSP.wktLiteral, RDF.langString]
         if self.rdfclass:
             value = None
-        elif not value:
+        elif not value in tlist:
             value = XSD.string
         self._datatype = value
         if not self._is_unborn:
@@ -2826,7 +2840,7 @@ class GroupOfValuesKey(GroupKey):
         """str: Expression rationnelle de validation à utiliser pour les clés-valeurs du groupe.
         
         Notes
-        -----
+        -----        
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
         
@@ -2940,7 +2954,7 @@ class GroupOfValuesKey(GroupKey):
         return ['order_idx', 'predicate', 'label', 'description', 'rdfclass',
             'sources', 'datatype', 'transform', 'placeholder', 'input_mask',
             'is_mandatory', 'is_read_only', 'regex_validator',
-            'regex_validator_flags', 'with_minus_buttons']
+            'regex_validator_flags', 'with_minus_buttons', 'geo_tools']
 
     @property
     def attr_to_copy(self):
@@ -2969,7 +2983,7 @@ class GroupOfValuesKey(GroupKey):
             'with_minus_buttons' : True, 'label': True, 'description': True,
             'placeholder': True, 'input_mask': True, 'is_mandatory': True,
             'is_read_only': True, 'regex_validator': True,
-            'regex_validator_flags': True }
+            'regex_validator_flags': True, 'geo_tools': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -3329,6 +3343,11 @@ class ValueKey(ObjectKey):
         si :py:attr:`ValueKey.rdfclass` n'est pas nul, il sera toujours
         considéré que :py:attr:`ValueKey.datatype` l'est. Sinon, ``xsd:string``
         est utilisé comme valeur par défaut.
+        Seuls les types suivants sont pris en charge, pour les autres
+        ``xsd:string`` serait utilisé à la place : ``xsd:string``,
+        ``xsd:integer``, ``xsd:decimal``, ``xsd:boolean``, ``xsd:date``,
+        ``xsd:time``, ``xsd:dateTime``, ``xsd:duration``, ``gsp:wktLiteral``,
+        ``rdf:langString``.
     do_not_save : bool, default False
         ``True`` si la valeur de la clé (:py:attr:`ValueKey.value`) ne doit
         pas être sauvegardée.
@@ -3694,6 +3713,12 @@ class ValueKey(ObjectKey):
         anonyme, et le second ne peut qu'être nul. Sinon, ``xsd:string`` est utilisé
         comme valeur par défaut.
         
+        Seuls les types suivants sont pris en charge, pour les autres
+        ``xsd:string`` serait utilisé à la place : ``xsd:string``,
+        ``xsd:integer``, ``xsd:decimal``, ``xsd:boolean``, ``xsd:date``,
+        ``xsd:time``, ``xsd:dateTime``, ``xsd:duration``, ``gsp:wktLiteral``,
+        ``rdf:langString``.
+        
         Modifier cette propriété emporte la mise en cohérence des
         propriétés :py:attr:`ValueKey.value_language`,
         :py:attr:`ValueKey.is_long_text`, :py:attr:`ValueKey.value_unit`,
@@ -3713,9 +3738,12 @@ class ValueKey(ObjectKey):
     @datatype.setter
     def datatype(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
+            tlist = [XSD.string, XSD.integer, XSD.decimal,
+                XSD.boolean, XSD.date, XSD.time, XSD.dateTime,
+                XSD.duration, GSP.wktLiteral, RDF.langString]
             if self.rdfclass:
                 value = None
-            elif not value:
+            elif not value in tlist:
                 value = XSD.string
             self._datatype = value
             if not self._is_unborn:
@@ -3829,6 +3857,11 @@ class ValueKey(ObjectKey):
         la propriété du groupe parent est renvoyée. Tenter d'en modifier
         la valeur n'aura silencieusement aucun effet.
         
+        Dans le cas d'une clé prenant pour valeur des IRI libres
+        (non issues d'un thésaurus) et pour laquelle aucune expression
+        rationnelle n'est explicitement définie, y compris par héritage,
+        la propriété renvoie une expression rationnelle permettant
+        
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
         
@@ -3836,9 +3869,13 @@ class ValueKey(ObjectKey):
         :py:attr:`ValueKey.regex_validator_flags`.
         
         """
-        if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.regex_validator
-        return self._regex_validator
+        rv = self.parent.regex_validator \
+            if isinstance(self.parent, GroupOfValuesKey) \
+            else self._regex_validator
+        if not rv and self.rdfclass and not self.sources:
+            return r'^[^<>"\s{}|\\^`]*$'
+        else:
+            return rv
 
     @regex_validator.setter
     def regex_validator(self, value):
@@ -4205,7 +4242,8 @@ class ValueKey(ObjectKey):
             'rowspan', 'value', 'rdfclass', 'datatype', 'placeholder',
             'input_mask', 'is_mandatory', 'is_read_only', 'regex_validator', 
             'regex_validator_flags', 'value_language', 'value_source',
-            'do_not_save', 'is_long_text', 'transform', 'sources', 'independant_label']
+            'do_not_save', 'is_long_text', 'transform', 'sources', 'independant_label',
+            'value_unit', 'geo_tools']
 
     @property
     def attr_to_copy(self):
@@ -4236,7 +4274,7 @@ class ValueKey(ObjectKey):
             'value_source': False, 'placeholder': True, 'input_mask': True,
             'is_mandatory': True, 'is_read_only': True, 'regex_validator': True,
             'regex_validator_flags': True, 'is_long_text': True,
-            'independant_label': True }
+            'independant_label': True, 'value_unit': False, 'geo_tools': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
