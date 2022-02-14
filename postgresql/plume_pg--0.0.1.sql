@@ -136,8 +136,8 @@ COMMENT ON TYPE z_plume.meta_special IS 'Valeurs admises pour les mises en forme
 -- Type: z_plume.meta_datatype
 
 CREATE TYPE z_plume.meta_datatype AS ENUM (
-	'xsd:string', 'xsd:integer', 'xsd:decimal', 'xsd:float', 'xsd:double',
-    'xsd:boolean', 'xsd:date', 'xsd:time', 'xsd:dateTime', 'xsd:duration',
+	'xsd:string', 'xsd:integer', 'xsd:decimal', 'xsd:boolean',
+    'xsd:date', 'xsd:time', 'xsd:dateTime', 'xsd:duration',
     'gsp:wktLiteral', 'rdf:langString'
 	) ;
 	
