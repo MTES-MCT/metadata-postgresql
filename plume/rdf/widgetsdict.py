@@ -23,7 +23,8 @@ from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
     owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
     tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration, \
     str_from_datetime, str_from_date, str_from_time, datetime_from_str, \
-    date_from_str, time_from_str, decimal_from_str, str_from_decimal
+    date_from_str, time_from_str, decimal_from_str, str_from_decimal, \
+    main_datatype
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -32,7 +33,7 @@ from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     UnknownParameterValue, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP, RDFS
 from plume.rdf.properties import PlumeProperty, class_properties
 
 class WidgetsDict(dict):
@@ -305,13 +306,6 @@ class WidgetsDict(dict):
         for prop in properties:
             prop_dict = prop.prop_dict
             prop_dict['parent'] = parent
-            kind = prop_dict.get('kind', SH.Literal)
-            multilingual = bool(prop_dict.get('unilang')) \
-                and prop_dict.get('datatype') == RDF.langString \
-                and self.translation
-            multiple = bool(prop_dict.get('is_multiple')) and self.edit \
-                and not bool(prop_dict.get('unilang'))
-            
             if not self.edit:
                 prop_dict['is_read_only'] = True
             
@@ -332,6 +326,24 @@ class WidgetsDict(dict):
                     prop.predicate)] or [None]
             else:
                 values = [None]
+
+            # ------ Type des propriétés non référencées ------
+            if prop.origin == 'unknown':
+                prop_dict['datatype'] = main_datatype(values)
+                if not prop_dict['datatype']:
+                    prop_dict['rdfclass'] = RDFS.Resource
+                    # on aurait pu choisir n'importe quelle classe,
+                    # l'essentiel est qu'il y en ait une afin que
+                    # la valeur soit identifiée comme un IRI et non
+                    # un littéral.
+
+            # ------ Principales variables ------
+            kind = prop_dict.get('kind', SH.Literal)
+            multilingual = bool(prop_dict.get('unilang')) \
+                and prop_dict.get('datatype') == RDF.langString \
+                and self.translation
+            multiple = bool(prop_dict.get('is_multiple')) and self.edit \
+                and not bool(prop_dict.get('unilang'))
 
             # ------ Exclusion ------
             # exclusion des catégories qui ne sont pas prévues par
@@ -1200,8 +1212,7 @@ class WidgetsDict(dict):
         if value is None:
             return
         str_value = None
-        tmap = {XSD.integer: int, XSD.string: str,
-            RDF.langString: str, XSD.boolean: bool}
+        tmap = {XSD.integer: int, XSD.boolean: bool}
         if widgetkey.transform == 'email':
             str_value = email_from_owlthing(value)
         elif widgetkey.transform == 'phone':
@@ -1341,5 +1352,9 @@ class WidgetsDict(dict):
                 print('[...]', end=' ')
             if self[widgetkey]['authorized languages']:
                 print('[{}]'.format(self[widgetkey]['language value']), end=' ')
+            if self[widgetkey]['geo tools']:
+                print('[GEO]', end=' ')
+            if self[widgetkey]['units']:
+                print('[{}]'.format(self[widgetkey]['current unit']), end=' ')
             print()
 
