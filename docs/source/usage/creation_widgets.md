@@ -10,7 +10,7 @@ La valeur associée à `widgetkey` dans le dictionnaire de widgets, c'est-à-dir
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.
 
-**Widget principal** : [Type](#type) • [Stockage](#stockage) • [Placement dans la grille](#placement-dans-la-grille) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel)
+**Widget principal** : [Type](#type) • [Stockage](#stockage) • [Placement dans la grille](#placement-dans-la-grille) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit](#paramètres-spécifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel)
 
 **Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton de sélection de l'unité](#widget-annexe--bouton-de-sélection-de-lunité) • [Widget annexe : bouton d'aide à la saisie des géométries](#widget-annexe--bouton-daide-à-la-saisie-des-géométries) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
 
@@ -341,6 +341,16 @@ Comme les `QTextEdit` et `QLineEdit`, les widgets `QComboBox` peuvent afficher u
 widgetsdict[widgetkey]['main widget'].setPlaceholderText(widgetsdict[widgetkey]['placeholder text'])
 
 ```
+
+### Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit
+
+Les formats d'entrée (argument de `QDateTime.fromString`, `QDate.fromString` ou `QTime.fromString`), de sortie (argument de `QDateTime.toString`, `QDate.toString` ou `QTime.toString`) et d'affichage (argument de `QDateTimeEdit.setDisplayFormat`, `QDateEdit.setDisplayFormat` ou `QTimeEdit.setDisplayFormat`) sont toujours identiques :
+
+| Type de widget | Format |
+| --- | --- |
+| `QDate` | `'dd/MM/yyyy'` |
+| `QDateTime` | `'dd/MM/yyyy hh:mm:ss'` |
+| `QTime` | `'hh:mm:ss'` |
 
 
 ### Paramètres spécifiques aux widgets QLabel
