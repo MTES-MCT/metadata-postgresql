@@ -6,7 +6,7 @@ import re
 
 from plume.rdf.rdflib import URIRef, from_n3
 from plume.rdf.utils import path_from_n3, forbidden_char
-from plume.rdf.namespaces import SH, PlumeNamespaceManager
+from plume.rdf.namespaces import RDFS, SH, PlumeNamespaceManager
 
 nsm = PlumeNamespaceManager()
 
@@ -77,6 +77,10 @@ class TemplateDict:
                 
             if special:
                 config['kind'] = SH.IRI
+                config['rdfclass'] = RDFS.Resource
+                # NB: rdfs:Resource est un choix arbitraire et sans
+                # incidence. L'essentiel est qu'il y ait une valeur
+                # au moment de la construction de la clé.
                 config['transform'] = special
                 
             if origin == 'shared':
