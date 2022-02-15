@@ -1642,9 +1642,9 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict.update_value(c, 'chose')
         self.assertIsNone(c.value)
         self.assertIsNone(widgetsdict[c]['value'])
-        widgetsdict.update_value(c, 999.99)
+        widgetsdict.update_value(c, '999,99')
         self.assertEqual(c.value, Literal('999.99', datatype=XSD.decimal))
-        self.assertEqual(widgetsdict[c]['value'], '999.99')
+        self.assertEqual(widgetsdict[c]['value'], '999,99')
 
         # --- boolean ---
         c = widgetsdict.root.search_from_path(SNUM.isExternal)
