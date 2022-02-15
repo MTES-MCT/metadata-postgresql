@@ -564,6 +564,78 @@ def str_from_duration(duration):
         unit = unit.rstrip('s')
     return '{} {}'.format(value, unit)
 
+def str_from_decimal(decimal):
+    """Représentation d'un nombre décimal sous forme de chaîne de caractères.
+    
+    Parameters
+    ----------
+    decimal : rdflib.term.Literal
+        Un littéral de type ``xsd:decimal``.
+    
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> str_from_decimal(Literal('1.25', datatype=XSD.decimal))
+    '1,25'
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` pour une valeur mal formée
+    ou qui n'est pas un littéral de type ``xsd:decimal``.
+    
+    """
+    if decimal is None or not isinstance(decimal, Literal) \
+        or not decimal.datatype == XSD.decimal:
+        return
+    l = decimal.split('.', maxsplit=1)
+    if l[0]:
+        if not re.match('([+]|-)?[0-9]+', l[0]):
+            return
+        trans = l[0].lstrip('+')
+    else:
+        trans = '0'
+    if len(l) > 1 and l[1]:
+        if not l[1].isdecimal():
+            return
+        trans = '{},{}'.format(trans, l[1])
+    return trans
+
+def decimal_from_str(value):
+    """Renvoie la représentation RDF d'un nombre décimal exprimé comme chaîne de caractères.
+    
+    Parameters
+    ----------
+    value : str
+        Le nombre décimal. La virgule et le point
+        sont tous deux acceptés comme séparateurs
+        entre la partie entière et la partie
+        décimale.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:decimal``.
+    
+    Examples
+    --------
+    >>> decimal_from_str('-1,25')
+    rdflib.term.Literal('-1.25', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` pour une valeur mal formée.
+    
+    """
+    if value is None:
+        return
+    clean_value = str(value).replace(' ', '').replace(',', '.')
+    if not re.match('^([+]|-)?([0-9]+([.][0-9]*)?|[.][0-9]+)$', clean_value):
+        return
+    return Literal(clean_value, datatype=XSD.decimal)
+
 def str_from_date(datelit):
     """Représentation d'une date sous forme de chaîne de caractères.
     
