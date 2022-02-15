@@ -10,7 +10,8 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, SNUM, LOCAL
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, \
+    SNUM, LOCAL, RDF
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -1730,6 +1731,81 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:ae75b755-97e7-4d56-be15-00c143b37af0 "12:00:01"^^xsd:time ;
                 uuid:7a656b67-45a6-4b85-948b-334caca7671f "999"^^xsd:integer ;
                 uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9 "999.99"^^xsd:decimal .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
+
+    def test_unknown_categories(self):
+        """Gestion des catégories non référencées.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:ae070a1a-190f-4541-8913-b5946ed46296 4.5 ;
+                uuid:e22f03b3-e571-45d9-97c1-44e2737c12f2 8 ;
+                uuid:6e855e63-5f6e-47eb-ab28-4db4124c172e "2022-02-15T15:27:31"^^xsd:dateTime,
+                    "2022-02-14"^^xsd:date ;
+                uuid:3028ca2c-73eb-4707-80ea-69210eeffb97 <https://github.com/MTES-MCT/metadata-postgresql> ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        k = widgetsdict.root.search_from_path(LOCAL['ae070a1a-190f-4541-8913-b5946ed46296'])
+        self.assertEqual(k.datatype, XSD.decimal)
+        self.assertEqual(widgetsdict[k]['value'], '4,5')
+        k = widgetsdict.root.search_from_path(LOCAL['e22f03b3-e571-45d9-97c1-44e2737c12f2'])
+        self.assertEqual(k.datatype, XSD.integer)
+        self.assertEqual(widgetsdict[k]['value'], '8')
+        widgetsdict.update_value(k, 10)
+        k = widgetsdict.root.search_from_path(
+            LOCAL['6e855e63-5f6e-47eb-ab28-4db4124c172e']).children[0]
+        self.assertEqual(k.datatype, XSD.dateTime)
+        self.assertEqual(widgetsdict[k]['value'], '15/02/2022 15:27:31')
+        k = widgetsdict.root.search_from_path(
+            LOCAL['6e855e63-5f6e-47eb-ab28-4db4124c172e']).children[1]
+        self.assertEqual(k.datatype, XSD.dateTime)
+        self.assertEqual(widgetsdict[k]['value'], '14/02/2022 00:00:00')
+        k = widgetsdict.root.search_from_path(LOCAL['3028ca2c-73eb-4707-80ea-69210eeffb97'])
+        self.assertIsNone(k.datatype)
+        self.assertIsNotNone(k.rdfclass)
+        self.assertEqual(widgetsdict[k]['regex validator pattern'],
+            r'^[^<>"\s{}|\\^`]*$')
+        self.assertEqual(widgetsdict[k]['value'], 
+            'https://github.com/MTES-MCT/metadata-postgresql')
+        k = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
+        self.assertEqual(k.datatype, RDF.langString)
+        self.assertEqual(widgetsdict[k]['language value'], 'fr')
+        self.assertEqual(widgetsdict[k]['value'], 'À mettre à jour !')
+        for k, v in widgetsdict.items():
+            # mise à jour indifférenciée, semblable à ce qui est
+            # fait lorsque l'utilisateur demande l'enregistrement
+            # dans l'interface de Plume
+            widgetsdict.update_value(k, v['value'])
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:ae070a1a-190f-4541-8913-b5946ed46296 4.5 ;
+                uuid:e22f03b3-e571-45d9-97c1-44e2737c12f2 10 ;
+                uuid:6e855e63-5f6e-47eb-ab28-4db4124c172e "2022-02-15T15:27:31"^^xsd:dateTime,
+                    "2022-02-14T00:00:00"^^xsd:dateTime ;
+                uuid:3028ca2c-73eb-4707-80ea-69210eeffb97 <https://github.com/MTES-MCT/metadata-postgresql> ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
         self.assertTrue(isomorphic(metagraph,
