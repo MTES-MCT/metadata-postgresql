@@ -10,7 +10,7 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, SNUM, LOCAL
 from plume.rdf.widgetkey import GroupOfPropertiesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -223,6 +223,23 @@ class WidgetsDictTestCase(unittest.TestCase):
             with self.subTest(internalkey = k):
                 if not k in d:
                     self.assertFalse(v)
+        # simple URL
+        key = widgetsdict.root.search_from_path(FOAF.page).children[0]
+        d = {
+            'main widget type': 'QLineEdit',
+            'help text': "URL d'accès à une documentation rédigée décrivant la donnée.",
+            'object': 'edit',
+            'regex validator pattern': r'^[^<>"\s{}|\\^`]*$',
+            'has minus button': True,
+            'hide minus button': True
+            }
+        for k, v in d.items():
+            with self.subTest(internalkey = k):
+                self.assertEqual(widgetsdict[key][k], v)
+        for k, v in widgetsdict[key].items():
+            with self.subTest(internalkey = k):
+                if not k in d:
+                    self.assertFalse(v) 
     
     def test_widgetsdict_empty_translation(self):
         """Génération d'un dictionnaire de widgets sans graphe ni modèle, en mode traduction.
@@ -1513,6 +1530,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix dct: <http://purl.org/dc/terms/> .
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -1533,6 +1551,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
                 foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
                     dct:modified "2022-02-13T15:30:15"^^xsd:dateTime ] ;
+                snum:isExternal true ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -1540,6 +1559,16 @@ class WidgetsDictTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute("""
+                    INSERT INTO z_plume.meta_categorie (path, label, datatype)
+                        VALUES ('uuid:ae75b755-97e7-4d56-be15-00c143b37af0', 'test heure', 'xsd:time'),
+                            ('uuid:7a656b67-45a6-4b85-948b-334caca7671f', 'test entier', 'xsd:integer'),
+                            ('uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9', 'test décimal', 'xsd:decimal') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path)
+                        VALUES ('Classique', 'uuid:ae75b755-97e7-4d56-be15-00c143b37af0'),
+                            ('Classique', 'uuid:7a656b67-45a6-4b85-948b-334caca7671f'),
+                            ('Classique', 'uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9') ;
+                    """)
                 cur.execute(
                     query_get_categories(),
                     ('Classique',)
@@ -1550,7 +1579,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     ('Classique',)
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
@@ -1592,6 +1621,42 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict.update_value(c, '21/01/2021')
         self.assertEqual(c.value, Literal('2021-01-21T00:00:00', datatype=XSD.dateTime))
         self.assertEqual(widgetsdict[c]['value'], '21/01/2021 00:00:00')
+        
+        # --- heure ---
+        c = widgetsdict.root.search_from_path(LOCAL['ae75b755-97e7-4d56-be15-00c143b37af0'])
+        widgetsdict.update_value(c, '12:00:01.3333')
+        self.assertEqual(c.value, Literal('12:00:01', datatype=XSD.time))
+        self.assertEqual(widgetsdict[c]['value'], '12:00:01')
+
+        # --- entier ---
+        c = widgetsdict.root.search_from_path(LOCAL['7a656b67-45a6-4b85-948b-334caca7671f'])
+        widgetsdict.update_value(c, 'chose')
+        self.assertIsNone(c.value)
+        self.assertIsNone(widgetsdict[c]['value'])
+        widgetsdict.update_value(c, '999')
+        self.assertEqual(c.value, Literal('999', datatype=XSD.integer))
+        self.assertEqual(widgetsdict[c]['value'], '999')
+        
+        # --- décimal ---
+        c = widgetsdict.root.search_from_path(LOCAL['9ade6b00-a16a-424c-af8f-9c4bfb2a92f9'])
+        widgetsdict.update_value(c, 'chose')
+        self.assertIsNone(c.value)
+        self.assertIsNone(widgetsdict[c]['value'])
+        widgetsdict.update_value(c, '999,99')
+        self.assertEqual(c.value, Literal('999.99', datatype=XSD.decimal))
+        self.assertEqual(widgetsdict[c]['value'], '999,99')
+
+        # --- boolean ---
+        c = widgetsdict.root.search_from_path(SNUM.isExternal)
+        widgetsdict.update_value(c, None)
+        self.assertIsNone(c.value)
+        self.assertIsNone(widgetsdict[c]['value'])
+        widgetsdict.update_value(c, False)
+        self.assertEqual(c.value, Literal('false', datatype=XSD.boolean))
+        self.assertEqual(widgetsdict[c]['value'], 'False')
+        widgetsdict.update_value(c, 'True')
+        self.assertEqual(c.value, Literal('true', datatype=XSD.boolean))
+        self.assertEqual(widgetsdict[c]['value'], 'True')
 
         # --- URI basique ---
         g = widgetsdict.root.search_from_path(DCAT.landingPage)
@@ -1634,6 +1699,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix owl: <http://www.w3.org/2002/07/owl#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
             @prefix uuid: <urn:uuid:> .
             @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -1659,7 +1725,11 @@ class WidgetsDictTestCase(unittest.TestCase):
                     vcard:hasEmail <mailto:service@developpement-durable.gouv.fr> ] ;
                 foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
                     dct:modified "2021-01-21T00:00:00"^^xsd:dateTime ] ;
-                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+                snum:isExternal true ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr ;
+                uuid:ae75b755-97e7-4d56-be15-00c143b37af0 "12:00:01"^^xsd:time ;
+                uuid:7a656b67-45a6-4b85-948b-334caca7671f "999"^^xsd:integer ;
+                uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9 "999.99"^^xsd:decimal .
             """
         metagraph = Metagraph().parse(data=metadata)
         self.assertTrue(isomorphic(metagraph,

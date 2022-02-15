@@ -5,7 +5,9 @@ import re
 from pathlib import Path
 from uuid import UUID, uuid4
 from html import escape
-from datetime import datetime, date
+from datetime import datetime, date, time
+from locale import setlocale, LC_NUMERIC, str as locstr
+from decimal import Decimal
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
@@ -564,12 +566,80 @@ def str_from_duration(duration):
         unit = unit.rstrip('s')
     return '{} {}'.format(value, unit)
 
+def str_from_decimal(decimal):
+    """Représentation d'un nombre décimal sous forme de chaîne de caractères.
+    
+    Parameters
+    ----------
+    decimal : rdflib.term.Literal
+        Un littéral de type ``xsd:decimal``.
+    
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> str_from_decimal(Literal('1.25', datatype=XSD.decimal))
+    '1,25'
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` pour une valeur mal formée
+    ou qui n'est pas un littéral de type ``xsd:decimal``.
+    
+    Elle prend en compte les paramètres de localisation
+    système pour choisir le séparateur (virgule ou
+    point) à utiliser.
+    
+    """
+    if decimal is None or not isinstance(decimal, Literal) \
+        or not decimal.datatype == XSD.decimal:
+        return
+    trans = decimal.toPython()
+    if isinstance(trans, (float, Decimal)):
+        setlocale(LC_NUMERIC, '')
+        return locstr(trans)
+
+def decimal_from_str(value):
+    """Renvoie la représentation RDF d'un nombre décimal exprimé comme chaîne de caractères.
+    
+    Parameters
+    ----------
+    value : str
+        Le nombre décimal. La virgule et le point
+        sont tous deux acceptés comme séparateurs
+        entre la partie entière et la partie
+        décimale.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:decimal``.
+    
+    Examples
+    --------
+    >>> decimal_from_str('-1,25')
+    rdflib.term.Literal('-1.25', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` pour une valeur mal formée.
+    
+    """
+    if value is None:
+        return
+    clean_value = str(value).replace(' ', '').replace(',', '.')
+    if not re.match('^([+]|-)?([0-9]+([.][0-9]*)?|[.][0-9]+)$', clean_value):
+        return
+    return Literal(clean_value, datatype=XSD.decimal)
+
 def str_from_date(datelit):
     """Représentation d'une date sous forme de chaîne de caractères.
     
     Parameters
     ----------
-    datetimelit : rdflib.term.Literal
+    datelit : rdflib.term.Literal
         Un littéral de type ``xsd:date``.
     
     Returns
@@ -622,7 +692,9 @@ def date_from_str(value):
     """
     if not value:
         return
-    r = re.match('^([0-9]{2}[/][0-9]{2}[/][0-9]{4})', value)
+    r = re.match('^((?:0[1-9]|[12][0-9]|3[01])[/]' \
+        '(?:0[1-9]|1[0-2])[/](?:[1-9][0-9]{3}|0[0-9]{3}))',
+        value)
     if not r:
         return
     return Literal(datetime.strptime(r[1], '%d/%m/%Y').date(), datatype=XSD.date)
@@ -653,6 +725,9 @@ def str_from_datetime(datetimelit):
     
     La fonction renvoie ``None`` pour une valeur mal formée
     ou qui n'est pas un littéral de type ``xsd:dateTime``.
+    
+    À ce stade, les heures sont tronquées à la seconde et
+    les fuseaux horaires effacés.
     
     """
     if not datetimelit or not isinstance(datetimelit, Literal) \
@@ -687,15 +762,86 @@ def datetime_from_str(value):
     relatives à l'heure manquantes). Il est alors considéré que
     l'heure était ``'00:00:00'``.
     
+    La fonction tolère des informations excédentaires après
+    la valeur des secondes (ou après la date sans heure),
+    mais elles seront silencieusement effacées.
+    
     """
     if not value:
         return
-    r = re.match(r'^([0-9]{2}[/][0-9]{2}[/][0-9]{4})' \
-        '(?:[T\s]([0-9]{2}:[0-9]{2}:[0-9]{2}))?$', value)
+    r = re.match(r'^((?:0[1-9]|[12][0-9]|3[01])' \
+        r'[/](?:0[1-9]|1[0-2])[/](?:[1-9][0-9]{3}|0[0-9]{3}))' \
+        r'(?:[T\s](([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]|(24:00:00)))?', value)
     if not r:
         return
     value = '{} {}'.format(r[1], r[2] or '00:00:00')
     return Literal(datetime.strptime(value, '%d/%m/%Y %H:%M:%S'), datatype=XSD.dateTime)
+
+def str_from_time(timelit):
+    """Représentation d'une heure sous forme de chaîne de caractères.
+    
+    Parameters
+    ----------
+    timelit : rdflib.term.Literal
+        Un littéral de type ``xsd:time``.
+    
+    Returns
+    -------
+    str
+    
+    Examples
+    --------
+    >>> str_from_time(Literal('15:30:14', datatype=XSD.time))
+    '15:30:14'
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` pour une valeur mal formée
+    ou qui n'est pas un littéral de type ``xsd:time``.
+    
+    À ce stade, les heures sont tronquées à la seconde et
+    les fuseaux horaires effacés.
+    
+    """
+    if not timelit or not isinstance(timelit, Literal) \
+        or not timelit.datatype == XSD.time:
+        return
+    trans = timelit.toPython()
+    if isinstance(trans, time):
+        return trans.strftime('%H:%M:%S')
+
+def time_from_str(value):
+    """Renvoie la représentation RDF d'une heure exprimée comme chaîne de caractères.
+    
+    Parameters
+    ----------
+    value : str
+        L'heure, sous la forme `'hh:mm:ss'`, sans quoi
+        la fonction renverra ``None``.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:time``.
+    
+    Examples
+    --------
+    >>> time_from_str('15:30:14')
+    rdflib.term.Literal('15:30:14', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#time'))
+    
+    Notes
+    -----
+    La fonction tolère des informations excédentaires après
+    la valeur des secondes, mais elles ne seront pas prises
+    en compte.
+    
+    """
+    if not value:
+        return
+    r = re.match('^(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]|(24:00:00))', value)
+    if not r:
+        return
+    return Literal(datetime.strptime(r[1], '%H:%M:%S').time(), datatype=XSD.time)
 
 def wkt_with_srid(wkt, srid):
     """Ajoute un référentiel de coordonnées à la représentation WKT d'une géométrie.

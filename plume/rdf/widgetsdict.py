@@ -16,11 +16,14 @@ descriptifs des champs...
 
 """
 
+import re
+
 from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
 from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
     owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
     tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration, \
-    str_from_datetime, str_from_date, datetime_from_str, date_from_str
+    str_from_datetime, str_from_date, str_from_time, datetime_from_str, \
+    date_from_str, time_from_str, decimal_from_str, str_from_decimal
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -1104,9 +1107,16 @@ class WidgetsDict(dict):
             Une clé-valeur de dictionnaire de widgets.
         value : str
             La valeur, exprimée sous la forme d'une chaîne de caractères.
+            La fonction tolère d'autres types, mais sans garantie que
+            les valeurs soient acceptées.
         override : bool, default False
             Si ``True``, permet de modifier la valeur d'une clé
             en lecture seule.
+        
+        Notes
+        -----
+        Cette méthode intègre une validation minimale basée sur le type.
+        Les valeurs incorrectes sont silencieusement effacées.        
         
         """
         if not isinstance(widgetkey, ValueKey) \
@@ -1115,33 +1125,58 @@ class WidgetsDict(dict):
         if value in (None, ''):
             widgetkey.value = None
         else:
+            # --- pré-traitement ---
             if widgetkey.transform == 'email':
-                value = owlthing_from_email(value)
+                value = owlthing_from_email(str(value))
             if widgetkey.transform == 'phone':
-                value = owlthing_from_tel(value)
+                value = owlthing_from_tel(str(value))
+            # --- validation ---
+            # type RDF.langString
             if widgetkey.value_language:
-                widgetkey.value = Literal(value, lang=widgetkey.value_language)
+                widgetkey.value = Literal(str(value), lang=widgetkey.value_language)
+            # type XSD.boolean
+            elif widgetkey.datatype == XSD.boolean:
+                widgetkey.value = Literal(bool(value), datatype=XSD.boolean)
+            # type XSD.duration
             elif widgetkey.value_unit:
                 widgetkey.value = duration_from_int(value, widgetkey.value_unit)
+            # type XSD.date
             elif widgetkey.datatype == XSD.date:
-                widgetkey.value = date_from_str(value)
+                widgetkey.value = date_from_str(str(value))
+            # type XSD.dateTime
             elif widgetkey.datatype == XSD.dateTime:
-                widgetkey.value = datetime_from_str(value)
-            elif widgetkey.datatype and widgetkey.datatype != XSD.string:
-                widgetkey.value = Literal(value, datatype=widgetkey.datatype)
+                widgetkey.value = datetime_from_str(str(value))
+            # type XSD.time
+            elif widgetkey.datatype == XSD.time:
+                widgetkey.value = time_from_str(str(value))
+            # type XSD.decimal
+            elif widgetkey.datatype == XSD.decimal:
+                widgetkey.value = decimal_from_str(str(value))
+            # type XSD.string
             elif widgetkey.datatype == XSD.string:
-                widgetkey.value = Literal(value)
+                widgetkey.value = Literal(str(value))
+            elif widgetkey.datatype:
+                # type XSD.integer
+                if widgetkey.datatype == XSD.integer and not (isinstance(value, int) \
+                    or str(value).isdecimal()):
+                    widgetkey.value = None
+                else:
+                    widgetkey.value = Literal(str(value), datatype=widgetkey.datatype)
+            # IRI avec valeur issue d'un thésaurus
             elif widgetkey.value_source:
                 res = Thesaurus.concept_iri((widgetkey.value_source, \
-                    widgetkey.main_language), value)
+                    widgetkey.main_language), str(value))
                 if res:
                     widgetkey.value = res
+                else:
+                    widgetkey.value = None
+            # autre IRI
             else:
-                f = forbidden_char(value)
+                f = forbidden_char(str(value))
                 if f:
-                    raise ForbiddenOperation("Le caractère '{}' " \
-                        "n'est pas autorisé dans un IRI.".format(f), widgetkey)
-                widgetkey.value = URIRef(value)
+                    widgetkey.value = None
+                else:
+                    widgetkey.value = URIRef(str(value))
         if widgetkey in self:
             self.internalize(widgetkey)
     
@@ -1165,6 +1200,8 @@ class WidgetsDict(dict):
         if value is None:
             return
         str_value = None
+        tmap = {XSD.integer: int, XSD.string: str,
+            RDF.langString: str, XSD.boolean: bool}
         if widgetkey.transform == 'email':
             str_value = email_from_owlthing(value)
         elif widgetkey.transform == 'phone':
@@ -1181,6 +1218,16 @@ class WidgetsDict(dict):
             str_value = str_from_date(value)
         elif widgetkey.datatype == XSD.dateTime:
             str_value = str_from_datetime(value)
+        elif widgetkey.datatype == XSD.time:
+            str_value = str_from_time(value)
+        elif widgetkey.datatype == XSD.decimal:
+            str_value = str_from_decimal(value)
+        elif widgetkey.datatype in tmap:
+            py_value = value.toPython()
+            if not isinstance(py_value, tmap[widgetkey.datatype]):
+                str_value = None
+            else:
+                str_value = str(py_value)
         else:
             str_value = str(value)
         if widgetkey.is_read_only:

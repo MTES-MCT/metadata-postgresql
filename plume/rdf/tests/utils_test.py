@@ -6,12 +6,62 @@ from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.utils import sort_by_language, pick_translation, \
     path_from_n3, int_from_duration, duration_from_int, str_from_duration, \
     wkt_with_srid, split_rdf_wkt, str_from_datetime, str_from_date, \
-    datetime_from_str, date_from_str
+    str_from_time, datetime_from_str, date_from_str, time_from_str, \
+    str_from_decimal, decimal_from_str
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD
 
 nsm = PlumeNamespaceManager()
 
 class UtilsTestCase(unittest.TestCase):
+
+    def test_decimal_from_str(self):
+        """Désérialisation en littéral RDF d'un nombre décimal sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            Literal('0.25', datatype=XSD.decimal),
+            decimal_from_str('0,25')
+            )
+        self.assertEqual(
+            Literal('-1.25', datatype=XSD.decimal),
+            decimal_from_str('-1,25')
+            )
+        self.assertEqual(
+            Literal('+100000.25', datatype=XSD.decimal),
+            decimal_from_str('+100 000.25')
+            )
+        self.assertEqual(
+            Literal('.25', datatype=XSD.decimal),
+            decimal_from_str('.25')
+            )
+        self.assertEqual(
+            Literal('25', datatype=XSD.decimal),
+            decimal_from_str('25')
+            )
+        self.assertEqual(
+            Literal('0', datatype=XSD.decimal),
+            decimal_from_str('0')
+            )
+        self.assertIsNone(decimal_from_str(None))
+        self.assertIsNone(decimal_from_str('chose'))
+
+    def test_time_from_str(self):
+        """Désérialisation en littéral RDF d'une heure sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            time_from_str('15:30:14'),
+            Literal('15:30:14', datatype=XSD.time)
+            )
+        self.assertEqual(
+            time_from_str('15:30:14.444'),
+            Literal('15:30:14', datatype=XSD.time)
+            )
+        self.assertIsNone(time_from_str(None))
+        self.assertIsNone(time_from_str('chose'))
+        self.assertIsNone(time_from_str('24:30:14'))
+        self.assertIsNone(time_from_str('21:70:14'))
+        self.assertIsNone(time_from_str('21:10:84'))
 
     def test_datetime_from_str(self):
         """Désérialisation en littéral RDF d'une date avec heure sous forme de chaîne de caractères.
@@ -22,7 +72,15 @@ class UtilsTestCase(unittest.TestCase):
             Literal('2022-02-13T15:30:14', datatype=XSD.dateTime)
             )
         self.assertEqual(
+            datetime_from_str('13/02/2022 15:30:14.444'),
+            Literal('2022-02-13T15:30:14', datatype=XSD.dateTime)
+            )
+        self.assertEqual(
             datetime_from_str('13/02/2022'),
+            Literal('2022-02-13T00:00:00', datatype=XSD.dateTime)
+            )
+        self.assertEqual(
+            datetime_from_str('13/02/2022 chose'),
             Literal('2022-02-13T00:00:00', datatype=XSD.dateTime)
             )
         self.assertIsNone(datetime_from_str(None))
@@ -42,6 +100,55 @@ class UtilsTestCase(unittest.TestCase):
             )
         self.assertIsNone(date_from_str(None))
         self.assertIsNone(date_from_str('chose'))
+        self.assertIsNone(date_from_str('13/02/24'))
+        self.assertIsNone(date_from_str('32/02/2022'))
+        self.assertIsNone(date_from_str('10/13/2022'))
+
+    def test_str_from_decimal(self):
+        """Représentation d'un décimal RDF sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            str_from_decimal(Literal('0.25', datatype=XSD.decimal)),
+            '0,25'
+            )
+        self.assertEqual(
+            str_from_decimal(Literal('-1.25', datatype=XSD.decimal)),
+            '-1,25'
+            )
+        self.assertEqual(
+            str_from_decimal(Literal('.25', datatype=XSD.decimal)),
+            '0,25'
+            )
+        self.assertEqual(
+            str_from_decimal(Literal('25', datatype=XSD.decimal)),
+            '25'
+            )
+        self.assertEqual(
+            str_from_decimal(Literal('0', datatype=XSD.decimal)),
+            '0'
+            )
+        self.assertIsNone(str_from_decimal(None))
+        self.assertIsNone(str_from_decimal('chose'))
+        self.assertIsNone(str_from_decimal(Literal('chose')))
+        self.assertIsNone(str_from_decimal(Literal('chose', datatype=XSD.decimal)))
+
+    def test_str_from_time(self):
+        """Représentation d'une heure sous forme de chaîne de caractères.
+        
+        """
+        self.assertEqual(
+            str_from_time(Literal('15:30:14', datatype=XSD.time)),
+            '15:30:14'
+            )
+        self.assertEqual(
+            str_from_time(Literal('15:30:14.444', datatype=XSD.time)),
+            '15:30:14'
+            )
+        self.assertIsNone(str_from_time(None))
+        self.assertIsNone(str_from_time('chose'))
+        self.assertIsNone(str_from_time(Literal('chose')))
+        self.assertIsNone(str_from_time(Literal('chose', datatype=XSD.time)))
 
     def test_str_from_date(self):
         """Représentation d'une date sous forme de chaîne de caractères.
