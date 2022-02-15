@@ -1736,6 +1736,64 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))
 
+    def test_local_categories(self):
+        """Quelques contrôles sur la gestion des catégories locales.
+        
+        """
+        connection_string = ConnectionString()
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_categorie (path, label, datatype)
+                        VALUES
+                            ('uuid:5cf84c0d-0f9c-42b7-831b-3f28be735ff0', 'test datatype time', 'xsd:time'),
+                            ('uuid:a4178b2c-153d-4a26-b319-2c32589afbed', 'test datatype date', 'xsd:date'),
+                            ('uuid:4f507de9-cc01-40f3-a0c3-45f134299110', 'test datatype dateTime', 'xsd:dateTime'),
+                            ('uuid:14363668-e379-4dcb-8612-48f9c76fc778', 'test datatype duration', 'xsd:duration'),
+                            ('uuid:19a3b882-ea1c-44de-a0c4-a6cbac3f9750', 'test datatype string', 'xsd:string'),
+                            ('uuid:0da96c90-b2a1-4bbf-97e5-d3701aa1cb47', 'test datatype langString', 'rdf:langString'),
+                            ('uuid:15bad182-883a-439e-a510-7abd6896bec7', 'test datatype integer', 'xsd:integer'),
+                            ('uuid:97130125-3c03-4372-bc3e-da6d3a654a52', 'test datatype decimal', 'xsd:decimal'),
+                            ('uuid:c2dc9756-8088-4f99-b6d7-d3897513406b', 'test datatype wktLiteral', 'gsp:wktLiteral'),
+                            ('uuid:de2aa975-5663-4a72-b390-dd9aab1c2810', 'test datatype iri', NULL) ;
+                    UPDATE z_plume.meta_categorie
+                        SET geo_tools = ARRAY['show', 'rectangle', 'polygon', 'centroid']::z_plume.meta_geo_tool[]
+                        WHERE label = 'test datatype wktLiteral' ;
+                    UPDATE z_plume.meta_categorie
+                        SET special = 'url'
+                        WHERE label = 'test datatype iri' ;
+                    INSERT INTO z_plume.meta_template(tpl_label) VALUES ('Datatype') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path)
+                        (SELECT 'Datatype', path FROM z_plume.meta_categorie WHERE label ~ 'test.datatype') ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Datatype',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(template=template, translation=True)
+        k = widgetsdict.root.search_from_path(LOCAL['de2aa975-5663-4a72-b390-dd9aab1c2810'])
+        self.assertEqual(widgetsdict[k]['regex validator pattern'],
+            r'^[^<>"\s{}|\\^`]*$')
+        k = widgetsdict.root.search_from_path(LOCAL['c2dc9756-8088-4f99-b6d7-d3897513406b'])
+        self.assertListEqual(widgetsdict[k]['geo tools'],
+            ['show', 'rectangle', 'polygon', 'centroid'])
+        k = widgetsdict.root.search_from_path(LOCAL['14363668-e379-4dcb-8612-48f9c76fc778'])
+        self.assertListEqual(widgetsdict[k]['units'],
+            ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'])
+        self.assertEqual(widgetsdict[k]['current unit'], 'ans')
+        k = widgetsdict.root.search_from_path(LOCAL['0da96c90-b2a1-4bbf-97e5-d3701aa1cb47'])
+        self.assertListEqual(widgetsdict[k]['authorized languages'], ['fr', 'en'])
+        self.assertEqual(widgetsdict[k]['language value'], 'fr')
+        k = widgetsdict.root.search_from_path(LOCAL['15bad182-883a-439e-a510-7abd6896bec7'])
+        self.assertEqual(widgetsdict[k]['type validator'], 'QIntValidator')
+        k = widgetsdict.root.search_from_path(LOCAL['97130125-3c03-4372-bc3e-da6d3a654a52'])
+        self.assertEqual(widgetsdict[k]['type validator'], 'QDoubleValidator')
+        
     def test_unknown_categories(self):
         """Gestion des catégories non référencées.
         
