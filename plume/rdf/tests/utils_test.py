@@ -7,12 +7,59 @@ from plume.rdf.utils import sort_by_language, pick_translation, \
     path_from_n3, int_from_duration, duration_from_int, str_from_duration, \
     wkt_with_srid, split_rdf_wkt, str_from_datetime, str_from_date, \
     str_from_time, datetime_from_str, date_from_str, time_from_str, \
-    str_from_decimal, decimal_from_str
-from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD
+    str_from_decimal, decimal_from_str, main_datatype
+from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
 nsm = PlumeNamespaceManager()
 
 class UtilsTestCase(unittest.TestCase):
+
+    def test_main_datatype(self):
+        """Identification du type de valeur littéral dominant.
+        
+        """
+        self.assertIsNone(main_datatype([]))
+        self.assertIsNone(main_datatype([URIRef('uri1')]))
+        self.assertEqual(
+            main_datatype([Literal('12.3', datatype=XSD.decimal)]),
+            XSD.decimal
+            )
+        self.assertIsNone(main_datatype([URIRef('uri1'), URIRef('uri2')]))
+        self.assertEqual(
+            main_datatype([Literal('abc', lang='fr'),
+                Literal('def', lang='en')]),
+            RDF.langString
+            )
+        self.assertEqual(
+            main_datatype([Literal('12.3', datatype=XSD.decimal),
+                Literal('abc', lang='fr')]),
+            RDF.langString
+            )
+        self.assertEqual(
+            main_datatype([Literal('12.3', datatype=XSD.decimal),
+                Literal('8.9', datatype=XSD.decimal)]),
+            XSD.decimal
+            )
+        self.assertEqual(
+            main_datatype([Literal('12', datatype=XSD.integer),
+                Literal('8.9', datatype=XSD.decimal)]),
+            XSD.decimal
+            )
+        self.assertEqual(
+            main_datatype([Literal('2020-01-01', datatype=XSD.date),
+                Literal('2020-01-01T15:30:00', datatype=XSD.dateTime)]),
+            XSD.dateTime
+            )
+        self.assertEqual(
+            main_datatype([Literal('12.3', datatype=XSD.decimal),
+                Literal('2020-01-01', datatype=XSD.date)]),
+            XSD.string
+            )
+        self.assertEqual(
+            main_datatype([URIRef('uri1'), URIRef('uri2'),
+                Literal('2020-01-01', datatype=XSD.date)]),
+            XSD.string
+            )
 
     def test_decimal_from_str(self):
         """Désérialisation en littéral RDF d'un nombre décimal sous forme de chaîne de caractères.
@@ -128,6 +175,10 @@ class UtilsTestCase(unittest.TestCase):
             str_from_decimal(Literal('0', datatype=XSD.decimal)),
             '0'
             )
+        self.assertEqual(
+            str_from_decimal(Literal('20', datatype=XSD.integer)),
+            '20'
+            )
         self.assertIsNone(str_from_decimal(None))
         self.assertIsNone(str_from_decimal('chose'))
         self.assertIsNone(str_from_decimal(Literal('chose')))
@@ -161,6 +212,10 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(
             str_from_date(Literal('2022-02-12T03:00:00', datatype=XSD.date)),
             '12/02/2022'
+            ),
+        self.assertEqual(
+            str_from_date(Literal('2022-02-12T03:00:00', datatype=XSD.dateTime)),
+            '12/02/2022'
             )
         self.assertIsNone(str_from_date(None))
         self.assertIsNone(str_from_date('chose'))
@@ -175,11 +230,23 @@ class UtilsTestCase(unittest.TestCase):
             str_from_datetime(Literal('2022-02-12T03:00:00', datatype=XSD.dateTime)),
             '12/02/2022 03:00:00'
             )
+        self.assertEqual(
+            str_from_datetime(Literal('2022-02-12T03:00:00+09:30', datatype=XSD.dateTime)),
+            '12/02/2022 03:00:00'
+            )
+        self.assertEqual(
+            str_from_datetime(Literal('2022-02-12', datatype=XSD.dateTime)),
+            '12/02/2022 00:00:00'
+            )
+        self.assertEqual(
+            str_from_datetime(Literal('2022-02-12', datatype=XSD.date)),
+            '12/02/2022 00:00:00'
+            )
         self.assertIsNone(str_from_datetime(None))
         self.assertIsNone(str_from_datetime('chose'))
         self.assertIsNone(str_from_datetime(Literal('chose')))
         self.assertIsNone(str_from_datetime(Literal('chose', datatype=XSD.dateTime)))
-        self.assertIsNone(str_from_datetime(Literal('2022-02-12', datatype=XSD.dateTime)))
+        self.assertIsNone(str_from_datetime(Literal('2022-15-12', datatype=XSD.dateTime)))
 
     def test_split_rfd_wkt(self):
         """Extraction du référentiel et de la géométrie d'un WKT RDF.
