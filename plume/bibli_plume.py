@@ -144,9 +144,6 @@ def generationTemplateAndTabs(self, tpl_label):
     mKeySql = (queries.query_get_categories(), (tpl_label,))
     categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         
-    # Génération de template
-    self.template = template_utils.build_template(categories)
-
     # Récupération des TEMPLATES associés au modèle retenu
     mKeySql = (queries.query_template_tabs(), (tpl_label,))
     tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
@@ -230,7 +227,7 @@ def saveMetaIhm(self, _schema, _table) :
            elif _valueObjet['main widget type'] in ("QDateEdit",) :
                value = _valueObjet['main widget'].date().toString("dd/MM/yyyy")
            elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
-              value = _valueObjet['main widget'].dateTime().toString("yyyy-MM-dd")
+              value = _valueObjet['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss")
            elif _valueObjet['main widget type'] in ("QCheckBox",) :
               value = True if _valueObjet['main widget'].isChecked() else False
 
