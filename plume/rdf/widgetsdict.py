@@ -17,7 +17,6 @@ descriptifs des champs...
 """
 
 import re
-from decimal import Decimal
 
 from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
 from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
