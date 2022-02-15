@@ -6,6 +6,8 @@ from pathlib import Path
 from uuid import UUID, uuid4
 from html import escape
 from datetime import datetime, date, time
+from locale import setlocale, LC_NUMERIC, str as locstr
+from decimal import Decimal
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
@@ -586,22 +588,18 @@ def str_from_decimal(decimal):
     La fonction renvoie ``None`` pour une valeur mal formée
     ou qui n'est pas un littéral de type ``xsd:decimal``.
     
+    Elle prend en compte les paramètres de localisation
+    système pour choisir le séparateur (virgule ou
+    point) à utiliser.
+    
     """
     if decimal is None or not isinstance(decimal, Literal) \
         or not decimal.datatype == XSD.decimal:
         return
-    l = decimal.split('.', maxsplit=1)
-    if l[0]:
-        if not re.match('([+]|-)?[0-9]+', l[0]):
-            return
-        trans = l[0].lstrip('+')
-    else:
-        trans = '0'
-    if len(l) > 1 and l[1]:
-        if not l[1].isdecimal():
-            return
-        trans = '{},{}'.format(trans, l[1])
-    return trans
+    trans = decimal.toPython()
+    if isinstance(trans, (float, Decimal)):
+        setlocale(LC_NUMERIC, '')
+        return locstr(trans)
 
 def decimal_from_str(value):
     """Renvoie la représentation RDF d'un nombre décimal exprimé comme chaîne de caractères.
