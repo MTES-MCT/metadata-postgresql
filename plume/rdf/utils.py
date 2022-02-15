@@ -125,7 +125,7 @@ def sort_by_language(litlist, langlist):
     ----------
     litlist : list(rdflib.term.Literal)
         Une liste de valeurs litérales, présumées de type
-        ``xsd:string``.
+        ``xsd:string`` ou ``rdf:langString``.
     langlist : list(str) or tuple(str)
         Une liste de langues, triées par priorité décroissante.
 
@@ -140,7 +140,7 @@ def pick_translation(litlist, langlist):
     ----------
     litlist : list(rdflib.term.Literal)
         Une liste de valeurs litérales, présumées de type
-        ``xsd:string``.
+        ``xsd:string`` ou ``rdf:langString``.
     langlist : list(str) or tuple(str) or str
         Une langue ou une liste de langues triées par priorité
         décroissante.
@@ -184,16 +184,75 @@ def pick_translation(litlist, langlist):
         val = litlist[0]
         
     return val
+
+def main_datatype(values):
+    """Renvoie le type de littéral pré-dominant d'une liste de valeurs.
     
+    Parameters
+    ----------
+    values : list(rdflib.term.Literal or rdflib.term.URIRef or rdflib.term.BNode)
+        Une liste de valeurs.
+    
+    Returns
+    -------
+    rdflib.term.URIRef
+        Un type de valeur littérale, sous la forme d'un
+        IRI RDF.
+    
+    Notes
+    -----
+    La fonction renvoie ``None`` si la liste ne contenait aucune
+    valeur littérale (y compris pour une liste vide).
+    Sinon, le type sera :
+    
+        * ``rdf:langString`` si la liste contient au moins une
+          valeur littérale dont la langue est déclarée.
+        * Si toutes les valeurs sont littérales et de même type,
+          ledit type.
+        * ``xsd:decimal`` si toutes les valeurs sont littérales
+          et de type ``xsd:decimal`` ou ``xsd:integer``.
+        * ``xsd:dateTime`` si toutes les valeurs sont littérales
+          et de type ``xsd:date`` ou ``xsd:dateTime``.
+        * ``xsd:string`` dans tous les autres cas.
+    
+    """
+    datatype = None
+    other = False
+    for v in values:
+        if isinstance(v, Literal):
+            if other:
+                return XSD.string
+            vdt = RDF.langString if v.language else (v.datatype or XSD.string)
+            if not datatype:
+                datatype = vdt
+            elif datatype != vdt:
+                if datatype in (XSD.decimal, XSD.integer) \
+                    and vdt in (XSD.decimal, XSD.integer):
+                        datatype = XSD.decimal
+                elif datatype in (XSD.date, XSD.dateTime) \
+                    and vdt in (XSD.date, XSD.dateTime):
+                        datatype = XSD.dateTime
+                elif datatype == RDF.langString or vdt == RDF.langString:
+                    return RDF.langString
+                else:
+                    return XSD.string
+        else:
+            other = True
+    return datatype
+
 def path_n3(path, nsm):
     """Renvoie la représentation N3 d'un chemin d'IRI.
     
     Parameters
     ----------
-    path : URIRef or rdflib.paths.Path
+    path : rdflib.term.URIRef or rdflib.paths.Path
         Un chemin d'IRI.
     nsm : plume.rdf.namespaces.PlumeNamespaceManager
         Un gestionnaire d'espaces de nommage.
+    
+    Returns
+    -------
+    str
     
     Notes
     -----
@@ -572,7 +631,8 @@ def str_from_decimal(decimal):
     Parameters
     ----------
     decimal : rdflib.term.Literal
-        Un littéral de type ``xsd:decimal``.
+        Un littéral de type ``xsd:decimal``. Les valeurs
+        de type ``xsd:integer`` sont tolérées.
     
     Returns
     -------
@@ -594,10 +654,10 @@ def str_from_decimal(decimal):
     
     """
     if decimal is None or not isinstance(decimal, Literal) \
-        or not decimal.datatype == XSD.decimal:
+        or not decimal.datatype in (XSD.decimal, XSD.integer):
         return
     trans = decimal.toPython()
-    if isinstance(trans, (float, Decimal)):
+    if isinstance(trans, (float, Decimal, int)):
         setlocale(LC_NUMERIC, '')
         return locstr(trans)
 
@@ -640,7 +700,9 @@ def str_from_date(datelit):
     Parameters
     ----------
     datelit : rdflib.term.Literal
-        Un littéral de type ``xsd:date``.
+        Un littéral de type ``xsd:date``. Les valeurs
+        de type ``xsd::dateTime`` sont tolérées (et
+        seront tronquées).
     
     Returns
     -------
@@ -658,10 +720,10 @@ def str_from_date(datelit):
     
     """
     if not datelit or not isinstance(datelit, Literal) \
-        or not datelit.datatype == XSD.date:
+        or not datelit.datatype in (XSD.date, XSD.dateTime):
         return
     trans = datelit.toPython()
-    if isinstance(trans, date):
+    if isinstance(trans, (date, datetime)):
         return trans.strftime('%d/%m/%Y')
 
 def date_from_str(value):
@@ -705,7 +767,8 @@ def str_from_datetime(datetimelit):
     Parameters
     ----------
     datetimelit : rdflib.term.Literal
-        Un littéral de type ``xsd:dateTime``.
+        Un littéral de type ``xsd:dateTime``. Les valeurs
+        de type ``xsd::date`` sont tolérées.
     
     Returns
     -------
@@ -718,24 +781,29 @@ def str_from_datetime(datetimelit):
     
     Notes
     -----
-    Cette fonction produit des valeurs pour un affichage en
-    lecture seule. Il n'existe pas de fonction retour pour
-    reconstruire un littéral de type ``xsd:dateTime`` à partir
-    d'une représentation de cette forme.
-    
     La fonction renvoie ``None`` pour une valeur mal formée
-    ou qui n'est pas un littéral de type ``xsd:dateTime``.
+    ou qui n'est pas un littéral de type ``xsd:dateTime`` ou
+    ``xsd:date``.
     
     À ce stade, les heures sont tronquées à la seconde et
     les fuseaux horaires effacés.
     
     """
     if not datetimelit or not isinstance(datetimelit, Literal) \
-        or not datetimelit.datatype == XSD.dateTime:
+        or not datetimelit.datatype in (XSD.dateTime, XSD.date):
         return
     trans = datetimelit.toPython()
     if isinstance(trans, datetime):
         return trans.strftime('%d/%m/%Y %H:%M:%S')
+    elif isinstance(trans, date):
+        return '{} 00:00:00'.format(trans.strftime('%d/%m/%Y'))
+    # La méthode `Literal.toPython` de RDFLib
+    # ne reconnaître pas les date+heure sans heure,
+    # quand bien même c'est permis par le standard.
+    # On teste donc ce cas manuellement :
+    trans = str_from_date(Literal(str(datetimelit), datatype=XSD.date))
+    if trans:
+        return '{} 00:00:00'.format(trans)
 
 def datetime_from_str(value):
     """Renvoie la représentation RDF d'une date exprimée comme chaîne de caractères.
