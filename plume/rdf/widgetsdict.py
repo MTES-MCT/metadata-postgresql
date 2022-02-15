@@ -24,7 +24,7 @@ from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
     owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
     tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration, \
     str_from_datetime, str_from_date, str_from_time, datetime_from_str, \
-    date_from_str, time_from_str
+    date_from_str, time_from_str, decimal_from_str, str_from_decimal
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
@@ -1150,6 +1150,9 @@ class WidgetsDict(dict):
             # type XSD.time
             elif widgetkey.datatype == XSD.time:
                 widgetkey.value = time_from_str(str(value))
+            # type XSD.decimal
+            elif widgetkey.datatype == XSD.decimal:
+                widgetkey.value = decimal_from_str(str(value))
             # type XSD.string
             elif widgetkey.datatype == XSD.string:
                 widgetkey.value = Literal(str(value))
@@ -1157,10 +1160,6 @@ class WidgetsDict(dict):
                 # type XSD.integer
                 if widgetkey.datatype == XSD.integer and not (isinstance(value, int) \
                     or str(value).isdecimal()):
-                    widgetkey.value = None
-                # type XSD.decimal
-                elif widgetkey.datatype == XSD.decimal and not (isinstance(value, float) \
-                    or re.match('([+]|-)?([0-9]+([.][0-9]*)?|[.][0-9]+)', str(value))):
                     widgetkey.value = None
                 else:
                     widgetkey.value = Literal(str(value), datatype=widgetkey.datatype)
@@ -1202,9 +1201,8 @@ class WidgetsDict(dict):
         if value is None:
             return
         str_value = None
-        tmap = {XSD.integer: int, XSD.decimal: (float, Decimal),
-            XSD.string: str, RDF.langString: str,
-            XSD.boolean: bool}
+        tmap = {XSD.integer: int, XSD.string: str,
+            RDF.langString: str, XSD.boolean: bool}
         if widgetkey.transform == 'email':
             str_value = email_from_owlthing(value)
         elif widgetkey.transform == 'phone':
@@ -1223,6 +1221,8 @@ class WidgetsDict(dict):
             str_value = str_from_datetime(value)
         elif widgetkey.datatype == XSD.time:
             str_value = str_from_time(value)
+        elif widgetkey.datatype == XSD.decimal:
+            str_value = str_from_decimal(value)
         elif widgetkey.datatype in tmap:
             py_value = value.toPython()
             if not isinstance(py_value, tmap[widgetkey.datatype]):
