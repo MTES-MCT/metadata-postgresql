@@ -159,7 +159,8 @@ def merge_property_dict(shape_dict, template_dict):
     
     """
     restricted = ['predicate', 'kind', 'datatype', 'is_multiple',
-        'unilang', 'transform', 'sources', 'order_idx', 'is_mandatory']
+        'unilang', 'transform', 'sources', 'order_idx', 'is_mandatory',
+        'rdfclass']
         # propriétés que le modèle n'a pas le droit d'écraser, ou
         # du moins pas brutalement
     for key, value in template_dict.items():
