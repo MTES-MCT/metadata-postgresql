@@ -187,6 +187,45 @@ class WidgetKey:
     """
     
     @classmethod
+    def width(cls, kind):
+        """Renvoie le nombre de colonnes occupées par l'élément.
+    
+        Parameters
+        ----------
+        kind : {'grid', 'label', 'unit button', 'language button', 'source button', 'geo button', 'minus button', 'plus button'}
+            Une chaîne de caractère correspondant au nom de l'élément :
+            
+            * `'grid'` pour la largeur totale de la grille.
+            * `'label'` pour une étiquette positionnée sur la même
+              ligne que le widget de saisie. La largeur n'est pas
+              fixe pour les étiquettes indépendantes (quand
+              :py:attr:`WidgetKey.independant_label` vaut ``True``),
+              mais calée sur le nombre de colonnes occupées par le
+              widget de saisie.
+            * `'unit button'` pour un bouton de sélection de
+              l'unité.
+            * `'language button'` pour un bouton de sélection de
+              la langue.
+            * `'source button'` pour un bouton de sélection de
+              la source.
+            * `'geo button'` pour un bouton d'aide à la saisie des
+              géométries.
+            * `'minus button'` pour un bouton moins.
+            * `'plus button'` pour un bouton plus.
+        
+        Returns
+        -------
+        int
+        
+        """
+        d = {'grid': 5, 'label': 1, 'unit button': 2, 'language button': 1,
+            'source button': 1, 'geo button': 1, 'minus button': 1,
+            'plus button': 1}
+        # grid = label + minus button + max(language button, source button
+        # geo button, unit button) + 1
+        return d.get(kind)
+    
+    @classmethod
     def reinitiate_shared_attributes(cls):
         """Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.
         
@@ -670,6 +709,7 @@ class WidgetKey:
         """tuple(int): Placement du widget principal de la clé dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -679,16 +719,34 @@ class WidgetKey:
         
         See Also
         --------
-        ValueKey.placement, ButtonKey.placement
+        PlusButtonKey.placement, RootKey.placement, TabKey.placement
         
         """
-        return (self.row, 0, self.rowspan, 2) if self else None
+        if not self:
+            return
+        columnspan = WidgetKey.width('grid') \
+            - (WidgetKey.width('unit button') \
+                if self.has_unit_button else 0) \
+            - (WidgetKey.width('language button') \
+                if self.has_language_button else 0) \
+            - (WidgetKey.width('source button') \
+                if self.has_source_button else 0) \
+            - (WidgetKey.width('geo button') \
+                if self.has_geo_button else 0) \
+            - (WidgetKey.width('minus button') \
+                if self.has_minus_button else 0) \
+            - (WidgetKey.width('label') if self.has_label \
+                and not self.independant_label else 0)
+        column = WidgetKey.width('label') if self.has_label \
+            and not self.independant_label else 0
+        return (self.row, column, self.rowspan, columnspan)
 
     @property
     def unit_button_placement(self):
         """tuple(int): Placement du bouton de sélection de l'unité dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -706,13 +764,14 @@ class WidgetKey:
         if not self.has_unit_button:
             return
         row, column, rowspan, columnspan = self.placement
-        return (row, column + columnspan, 1, 1)
+        return (row, column + columnspan, 1, WidgetKey.width('unit button'))
 
     @property
     def language_button_placement(self):
         """tuple(int): Placement du bouton de sélection de la langue dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -734,14 +793,17 @@ class WidgetKey:
         if not self.has_language_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + (1 if self.has_unit_button else 0) 
-        return (row, column, 1, 1)
+        column = column + columnspan \
+            + (WidgetKey.width('unit button') \
+                if self.has_unit_button else 0) 
+        return (row, column, 1, WidgetKey.width('language button'))
 
     @property
     def source_button_placement(self):
         """tuple(int): Placement du bouton de sélection de la source dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -762,15 +824,19 @@ class WidgetKey:
         if not self.has_source_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + (1 if self.has_unit_button else 0) \
-            + (1 if self.has_language_button else 0) 
-        return (row, column, 1, 1)
+        column = column + columnspan \
+            + (WidgetKey.width('unit button') \
+                if self.has_unit_button else 0) \
+            + (WidgetKey.width('language button') \
+                if self.has_language_button else 0) 
+        return (row, column, 1, WidgetKey.width('source button'))
 
     @property
     def geo_button_placement(self):
         """tuple(int): Placement du bouton d'aide à la saisie des géométries dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -791,16 +857,21 @@ class WidgetKey:
         if not self.has_geo_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + (1 if self.has_unit_button else 0) \
-            + (1 if self.has_language_button else 0) \
-            + (1 if self.has_source_button else 0) 
-        return (row, column, 1, 1)
+        column = column + columnspan \
+            + (WidgetKey.width('unit button') \
+                if self.has_unit_button else 0) \
+            + (WidgetKey.width('language button') \
+                if self.has_language_button else 0) \
+            + (WidgetKey.width('source button') \
+                if self.has_source_button else 0)
+        return (row, column, 1, WidgetKey.width('geo button'))
 
     @property
     def minus_button_placement(self):
         """tuple(int): Placement du bouton moins dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -818,17 +889,23 @@ class WidgetKey:
         if not self.has_minus_button:
             return
         row, column, rowspan, columnspan = self.placement
-        column = column + columnspan + (1 if self.has_unit_button else 0) \
-            + (1 if self.has_language_button else 0) \
-            + (1 if self.has_source_button else 0) \
-            + (1 if self.has_geo_button else 0)
-        return (row, column, 1, 1)
+        column = column + columnspan \
+            + (WidgetKey.width('unit button') \
+                if self.has_unit_button else 0) \
+            + (WidgetKey.width('language button') \
+                if self.has_language_button else 0) \
+            + (WidgetKey.width('source button') \
+                if self.has_source_button else 0) \
+            + (WidgetKey.width('geo button') \
+                if self.has_geo_button else 0)
+        return (row, column, 1, WidgetKey.width('minus button'))
     
     @property
     def label_placement(self):
         """tuple(int): Placement de l'étiquette dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
@@ -837,19 +914,14 @@ class WidgetKey:
         Elle vaut ``None`` pour une clé fantôme, qui n'a pas d'étiquette
         ou dont l'étiquette est intégrée au widget principal.
         
-        Notes
-        -----
-        Cette propriété est en lecture seule. Elle est définie sur la classe
-        :py:class:`WidgetKey` pour simplifier les tests, mais elle vaut
-        toujours ``None`` quand la clé n'est pas une clé-valeur
-        (:py:class:`ValueKey`).
-        
-        See Also
-        --------
-        ValueKey.label_placement
-        
         """
-        return
+        if not self.has_label:
+            return
+        row, column, rowspan, columnspan = self.placement
+        row = ( row - 1 ) if self.independant_label else row
+        if not self.independant_label:
+            columnspan = WidgetKey.width('label')
+        return (row, 0, 1, columnspan)
 
     @property
     def is_single_child(self):
@@ -2938,7 +3010,7 @@ class GroupOfValuesKey(GroupKey):
             self.button._hide_m(value, rec=rec)
 
     def _search_from_uuid(self, uuid):
-        super._search_from_uuid(uuid)
+        super()._search_from_uuid(uuid)
         if self.button and str(self.button.uuid) == str(uuid):
             return self.button
 
@@ -3487,29 +3559,6 @@ class ValueKey(ObjectKey):
             self.parent.compute_rows()
     
     @property
-    def placement(self):
-        """tuple(int): Placement du widget principal de la clé dans la grille, le cas échéant.
-        
-        Cette propriété est un tuple formé de quatre éléments :
-        * ``[0]`` est l'indice de ligne.
-        * ``[1]`` est l'indice de colonne.
-        * ``[2]`` est le nombre de lignes occupées.
-        * ``[3]`` est le nombre de colonnes occupées.
-        
-        Elle vaut ``None`` pour une clé fantôme, un onglet ou une clé-racine.
-        
-        Notes
-        -----
-        Réécriture de la propriété :py:attr:`WidgetKey.placement`.
-        
-        """
-        if not self:
-            return
-        column = 0 if self.independant_label or not self.has_label else 1
-        columnspan = 2 if self.independant_label or not self.has_label else 1
-        return (self.row, column, self.rowspan, columnspan)
-    
-    @property
     def independant_label(self):
         """bool: L'étiquette de la clé occupe-t-elle sa propre ligne de la grille ?
         
@@ -3615,33 +3664,6 @@ class ValueKey(ObjectKey):
         
         """
         return bool(self and self.label)
-        
-    @property
-    def label_placement(self):
-        """tuple(int): Placement de l'étiquette dans la grille, le cas échéant.
-        
-        Cette propriété est un tuple formé de quatre éléments :
-        * ``[0]`` est l'indice de ligne.
-        * ``[1]`` est l'indice de colonne.
-        * ``[2]`` est le nombre de lignes occupées.
-        * ``[3]`` est le nombre de colonnes occupées.
-        
-        Elle vaut ``None`` pour une clé fantôme.
-        
-        Notes
-        -----
-        Réécriture de la propriété :py:attr:`WidgetKey.label_placement`.
-        
-        See Also
-        --------
-        ValueKey.label_placement
-        
-        """
-        if not self or not self.has_label:
-            return
-        row = ( self.row - 1 ) if self.independant_label else self.row
-        columnspan = 2 if self.independant_label else 1
-        return (row, 0, 1, columnspan)
     
     @property
     def value(self):
@@ -4475,20 +4497,26 @@ class PlusButtonKey(WidgetKey):
     
     @property
     def placement(self):
-        """tuple(int): Placement du bouton dans la grille, le cas échéant.
+        """tuple(int): Placement du widget principal de la clé dans la grille, le cas échéant.
         
         Cette propriété est un tuple formé de quatre éléments :
+        
         * ``[0]`` est l'indice de ligne.
         * ``[1]`` est l'indice de colonne.
         * ``[2]`` est le nombre de lignes occupées.
         * ``[3]`` est le nombre de colonnes occupées.
         
+        Elle vaut ``None`` pour une clé fantôme, un onglet ou une clé-racine.
+        
         Notes
         -----
         Réécriture de la propriété :py:attr:`WidgetKey.placement`.
+        Les boutons plus sont toujours placés en colonne 0 et
+        occupent une seule colonne.
         
         """
-        return (self.row, 0, self.rowspan, 1) if self else None
+        return (self.row, 0, self.rowspan, WidgetKey.width('plus button')) \
+            if self else None
     
     def kill(self):
         """Efface une clé bouton de la mémoire de son parent.
