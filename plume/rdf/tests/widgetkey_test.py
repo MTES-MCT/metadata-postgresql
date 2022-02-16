@@ -87,7 +87,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(v2.value_unit, 'mois')
         self.assertEqual(v2.placement[1], 0)
         self.assertEqual(v2.unit_button_placement[1], 2)
-        self.assertEqual(v2.minus_button_placement[1], 3)
+        self.assertEqual(v2.minus_button_placement[1], 4)
         actionsbook = v1.change_unit('heures')
         self.assertEqual(v1.value_unit, 'heures')
         self.assertListEqual(actionsbook.units, [v1])
