@@ -1358,3 +1358,63 @@ class WidgetsDict(dict):
                 print('[{}]'.format(self[widgetkey]['current unit']), end=' ')
             print()
 
+    def check_grids(self):
+        """Contrôle rapide de la cohérence du placement des widgets.
+        
+        Raises
+        ------
+        plume.exceptions.IntegrityBreach
+            Si une erreur est détectée.
+        
+        Notes
+        -----
+        Par principe, les widgets masqués parce que leur clé `'hidden'`
+        vaut ``True`` ne sont pas contrôlés. Les boutons moins masqués
+        avec `'hidden'` valant ``False`` mais `'hide minus button'` 
+        sont l'exception qui confirme la règle.
+        
+        """
+        for widgetkey in self:
+            if self[widgetkey]['main widget type'] == 'QGroupBox':
+                self[widgetkey]['grid check'] = []
+            if widgetkey == self.root or self[widgetkey]['object'] == 'tab' \
+                or self[widgetkey]['hidden']:
+                continue
+            grid = self[widgetkey.parent].get('grid check')
+            if grid is None:
+                raise IntegrityBreach("La grille du groupe parent n'a pas encore été créée.", widgetkey)
+            for kind in ('main widget', 'minus widget', 'switch source widget',
+                'language widget', 'unit widget', 'geo widget', 'label widget'):
+                if kind == 'minus widget' and not self[widgetkey]['has minus button'] \
+                    or kind == 'language widget' and not self[widgetkey]['authorized languages'] \
+                    or kind == 'unit widget' and not self[widgetkey]['units'] \
+                    or kind == 'geo widget' and not self[widgetkey]['geo tools'] \
+                    or kind == 'switch source widget' and not self[widgetkey]['multiple sources'] \
+                    or kind == 'label widget' and not self[widgetkey]['has label']:
+                    continue
+                row, column, rowspan, columnspan = self.widget_placement(widgetkey, kind)
+                if len(grid) <= row + rowspan:
+                    grid += [[False] * WidgetKey.width('grid') \
+                        for i in range(row + rowspan - len(grid))]
+                for r in range(row, row + rowspan):
+                    for c in range(column, column + columnspan):
+                        if grid[r][c]:
+                            raise IntegrityBreach('Superposition en ligne {},' \
+                                ' colonne {} ({}).'.format(r, c, kind), widgetkey)
+                        grid[r][c] = True
+        for widgetkey in self:
+            if self[widgetkey]['main widget type'] == 'QGroupBox' and \
+                not widgetkey == self.root and not self[widgetkey]['hidden']:
+                grid = self[widgetkey].get('grid check')
+                if not grid:
+                    raise IntegrityBreach('Grille vide.', widgetkey)
+                for r in range(len(grid)):
+                    b = True
+                    for c in range(WidgetKey.width('grid')):
+                        if b and not grid[r][c]:
+                            b = False
+                        elif not b and grid[r][c]:
+                            raise IntegrityBreach('Trou en ligne {},' \
+                                ' colonne {}.'.format(r, c), widgetkey)
+                del self[widgetkey]['grid check']
+
