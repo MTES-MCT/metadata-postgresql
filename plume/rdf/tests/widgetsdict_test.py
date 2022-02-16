@@ -25,6 +25,10 @@ connection_string = ConnectionString()
 
 
 class WidgetsDictTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.grid = 5 # largeur de la grille
     
     def test_widgetsdict_empty_edit(self):
         """Génération d'un dictionnaire de widgets sans graphe ni modèle.
@@ -36,6 +40,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         """
         widgetsdict = WidgetsDict()
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertEqual(widgetsdict.main_language, 'fr')
         self.assertTrue(widgetsdict.edit)
         self.assertFalse(widgetsdict.translation)
@@ -256,6 +261,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         """
         widgetsdict = WidgetsDict(translation = True,
             langList = ['en', 'fr'], language = 'it')
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertEqual(widgetsdict.main_language, 'en')
         self.assertEqual(widgetsdict.langlist, ('en', 'fr'))
         widgetsdict = WidgetsDict(translation = True,
@@ -395,6 +401,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- sans graphe, sans modèle ---
         widgetsdict = WidgetsDict(mode = 'read')
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertEqual(widgetsdict.mode, 'read')
         self.assertFalse(widgetsdict.edit)
         self.assertTrue(widgetsdict.root in widgetsdict)
@@ -403,6 +410,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- avec graphe, sans modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph)
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(DCAT.keyword)
         self.assertTrue(key in widgetsdict)
         self.assertIsNone(key.button)
@@ -433,6 +441,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- avec graphe non inclus dans le modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
             template=template)
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_tab('Autres')
         self.assertIsNone(key)
         for child in widgetsdict.root.children:
@@ -459,6 +468,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         template = TemplateDict([])
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
             template=template)
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertEqual(len(widgetsdict), 4)
         # racine + onglet + titre + description
         key = widgetsdict.root.search_tab()
@@ -526,6 +536,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- editHideUnlisted ---
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             editHideUnlisted=True)
+        self.assertIsNone(widgetsdict.check_grids())
         for key in widgetsdict.keys():
             self.assertNotEqual(key.path, DCAT.keyword)
         key = widgetsdict.root.search_from_path(DCT.temporal)
@@ -537,6 +548,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- editHideUnlisted sans modèle ---
         widgetsdict = WidgetsDict(metagraph=metagraph, editHideUnlisted=True)
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(DCAT.keyword)
         self.assertTrue(key in widgetsdict)
         key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
@@ -547,6 +559,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- editHideUnlisted avec un modèle vide ---
         widgetsdict = WidgetsDict(metagraph=metagraph, template=TemplateDict([]),
             editHideUnlisted=True)
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertEqual(len(widgetsdict), 6)
         key = widgetsdict.root.search_tab()
         self.assertEqual(widgetsdict[key]['label'], 'Autres')
@@ -561,6 +574,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- editOnlyCurrentLanguage ---
         widgetsdict = WidgetsDict(metagraph=metagraph, language='it',
             langList=['fr', 'it', 'en'])
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(DCT.title)
         self.assertEqual(len(key.children), 2)
         for child in key.children:
@@ -576,6 +590,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict = WidgetsDict(metagraph=metagraph,
             editOnlyCurrentLanguage=True, language='it',
             langList=['fr', 'it', 'en'])
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertTrue(widgetsdict.onlyCurrentLanguage)
         key = widgetsdict.root.search_from_path(DCAT.keyword)
         n = 0
@@ -594,6 +609,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         widgetsdict = WidgetsDict(metagraph=metagraph,
             editOnlyCurrentLanguage=True, language='en')
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(DCT.title)
         self.assertTrue(key in widgetsdict)
         self.assertEqual(len(key.children), 2)
@@ -606,6 +622,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- readHideBlank ---
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             mode='read', readHideBlank=False)
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(OWL.versionInfo)
         self.assertTrue(key in widgetsdict)
         self.assertTrue(isomorphic(metagraph,
@@ -613,6 +630,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read',
             readHideBlank=False)
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license)
         self.assertTrue(key in widgetsdict)
         self.assertTrue(isomorphic(metagraph,
@@ -620,18 +638,21 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- readHideUnlisted ---
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read')
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertTrue(widgetsdict.hideUnlisted)
         key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
         self.assertIsNone(key)
         
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read',
             readHideUnlisted=False)
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertFalse(widgetsdict.hideUnlisted)
         key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
         self.assertTrue(key in widgetsdict)
         
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             mode='read', readHideUnlisted=False)
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertFalse(widgetsdict.hideUnlisted)
         key = widgetsdict.root.search_from_path(LOCAL['218c1245-6ba7-4163-841e-476e0d5582af'])
         self.assertTrue(key in widgetsdict)
@@ -640,6 +661,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             mode='read', readHideUnlisted=False, readHideBlank=False)
+        self.assertIsNone(widgetsdict.check_grids())
         key = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license)
         self.assertIsNone(key)
         # readHideBlank permet d'afficher des champs vides, mais pas ceux
@@ -650,6 +672,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- readOnlyCurrentLanguage ---
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read')
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertTrue(widgetsdict.onlyCurrentLanguage)
         key = widgetsdict.root.search_from_path(DCT.title)
         self.assertEqual(len(key.children), 2)
@@ -658,6 +681,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         widgetsdict = WidgetsDict(metagraph=metagraph, mode='read',
             readOnlyCurrentLanguage=False)
+        self.assertIsNone(widgetsdict.check_grids())
         self.assertFalse(widgetsdict.onlyCurrentLanguage)
         key = widgetsdict.root.search_from_path(DCT.title)
         self.assertEqual(len(key.children), 2)
@@ -716,6 +740,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- ajout d'un simple widget de saisie ---
         g = widgetsdict.root.search_from_path(DCAT.keyword)
@@ -729,7 +754,10 @@ class WidgetsDictTestCase(unittest.TestCase):
             self.assertTrue(widgetsdict[child]['has minus button'])
             self.assertFalse(widgetsdict[child]['hide minus button'])
         self.assertTrue(g.children[4] in actionsdict['new keys'])
-        self.assertEqual(widgetsdict.widget_placement(g.children[4], 'main widget'), (4, 0, 1, 2))
+        self.assertEqual(widgetsdict.widget_placement(g.children[4], 'main widget'),
+            (4, 0, 1, WidgetsDictTestCase.grid - 1))
+        self.assertEqual(widgetsdict.widget_placement(g.children[4], 'minus widget'),
+            (4, WidgetsDictTestCase.grid - 1, 1, 1))
         self.assertEqual(actionsdict['widgets to move'], [('<QGridLayout dcat:keyword>',
             '<QToolButton dcat:keyword>', 5, 0, 1, 1)])
 
@@ -751,7 +779,10 @@ class WidgetsDictTestCase(unittest.TestCase):
                 self.assertTrue(grandchild in widgetsdict)
         self.assertEqual(len(actionsdict['new keys']), 3)
         self.assertTrue(g.children[1] in actionsdict['new keys'])
-        self.assertEqual(widgetsdict.widget_placement(g.children[1], 'main widget'), (1, 0, 1, 2))
+        self.assertEqual(widgetsdict.widget_placement(g.children[1], 'main widget'),
+            (1, 0, 1, WidgetsDictTestCase.grid - 1))
+        self.assertEqual(widgetsdict.widget_placement(g.children[1], 'minus widget'),
+            (1, WidgetsDictTestCase.grid - 1, 1, 1))
         self.assertTrue(g.children[1].children[0] in actionsdict['new keys'])
         self.assertTrue(g.children[1].children[1] in actionsdict['new keys'])
         self.assertEqual(actionsdict['widgets to move'], [('<QGridLayout dct:temporal>',
@@ -768,6 +799,9 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(widgetsdict[g.children[3]]['hidden'])
         self.assertFalse(widgetsdict[g.children[2]]['hidden'])
         self.assertEqual(widgetsdict[g.children[2]]['object'], 'group of properties')
+        
+        # --- contrôle final de la cohérence du placement ---
+        self.assertIsNone(widgetsdict.check_grids())
 
     def test_drop(self):
         """Suppression d'une clé du dictionnaire.
@@ -821,35 +855,40 @@ class WidgetsDictTestCase(unittest.TestCase):
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- suppression d'une clé simple ---
         g = widgetsdict.root.search_from_path(DCAT.keyword)
         b = g.children[1]
         widgetsdict[g]['grid widget'] = '<QGridLayout dcat:keyword>'
         widgetsdict[b]['main widget'] = '<B QLineEdit dcat:keyword>'
-        widgetsdict[b]['minus widget'] = '<B QToolButton dcat:keyword>'
+        widgetsdict[b]['minus widget'] = '<B-minus QToolButton dcat:keyword>'
         c = g.children[2]
         widgetsdict[c]['main widget'] = '<C QLineEdit dcat:keyword>'
-        widgetsdict[c]['minus widget'] = '<C QToolButton dcat:keyword>'
+        widgetsdict[c]['minus widget'] = '<C-minus QToolButton dcat:keyword>'
         widgetsdict[g.button]['main widget'] = '<P QToolButton dcat:keyword>'
         self.assertEqual(len(g.children), 4)
         self.assertTrue(widgetsdict.widget_placement(b, 'main widget'),
-            (1, 0, 1, 2))
+            (1, 0, 1, WidgetsDictTestCase.grid - 1))
         actionsdict = widgetsdict.drop(b)
         self.assertEqual(len(g.children), 3)
         self.assertFalse(b in widgetsdict)
         self.assertEqual(actionsdict['widgets to delete'],
-            ['<B QLineEdit dcat:keyword>', '<B QToolButton dcat:keyword>'])
+            ['<B QLineEdit dcat:keyword>', '<B-minus QToolButton dcat:keyword>'])
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dcat:keyword>', '<C QLineEdit dcat:keyword>', 1, 0, 1, 2),
-             ('<QGridLayout dcat:keyword>', '<C QToolButton dcat:keyword>', 1, 2, 1, 1),
-             ('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 3, 0, 1, 1)])
+            [('<QGridLayout dcat:keyword>', '<C QLineEdit dcat:keyword>',
+                1, 0, 1, WidgetsDictTestCase.grid - 1),
+             ('<QGridLayout dcat:keyword>', '<C-minus QToolButton dcat:keyword>',
+                1, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>',
+                3, 0, 1, 1)])
         actionsdict = widgetsdict.drop(g.children[0])
         actionsdict = widgetsdict.drop(g.children[1])
         self.assertEqual(len(g.children), 1)
-        self.assertEqual(actionsdict['widgets to hide'], ['<C QToolButton dcat:keyword>'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<C-minus QToolButton dcat:keyword>'])
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 1, 0, 1, 1)])
+            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>',
+                1, 0, 1, 1)])
         for k in actionsdict.keys():
             if not k in ('widgets to hide', 'widgets to delete', 'widgets to move'):
                 self.assertFalse(actionsdict[k])
@@ -878,9 +917,12 @@ class WidgetsDictTestCase(unittest.TestCase):
             ['<B QLineEdit dcat:temporalResolution>', '<B-minus QToolButton dcat:temporalResolution>',
              '<B-unit QToolButton dcat:temporalResolution>'])
         self.assertListEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dcat:temporalResolution>', '<C QLineEdit dcat:temporalResolution>', 0, 0, 1, 2),
-             ('<QGridLayout dcat:temporalResolution>', '<C-minus QToolButton dcat:temporalResolution>', 0, 3, 1, 1),
-             ('<QGridLayout dcat:temporalResolution>', '<C-unit QToolButton dcat:temporalResolution>', 0, 2, 1, 1)])
+            [('<QGridLayout dcat:temporalResolution>', '<C QLineEdit dcat:temporalResolution>',
+                0, 0, 1, WidgetsDictTestCase.grid - 3),
+             ('<QGridLayout dcat:temporalResolution>', '<C-minus QToolButton dcat:temporalResolution>',
+                0, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dcat:temporalResolution>', '<C-unit QToolButton dcat:temporalResolution>',
+                0, WidgetsDictTestCase.grid - 3, 1, 2)])
         self.assertListEqual(actionsdict['actions to delete'], ['<B-unit QAction n°1>', '<B-unit QAction n°2>'])
         self.assertListEqual(actionsdict['menus to delete'], ['<B-unit QMenu dcat:temporalResolution>'])
         for k in actionsdict.keys():
@@ -911,9 +953,12 @@ class WidgetsDictTestCase(unittest.TestCase):
             ['<B QLineEdit dcat:bbox>', '<B-minus QToolButton dcat:bbox>',
              '<B-geo QToolButton dcat:bbox>'])
         self.assertListEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dcat:bbox>', '<C QLineEdit dcat:bbox>', 0, 0, widgetsdict.textEditRowSpan, 2),
-             ('<QGridLayout dcat:bbox>', '<C-minus QToolButton dcat:bbox>', 0, 3, 1, 1),
-             ('<QGridLayout dcat:bbox>', '<C-geo QToolButton dcat:bbox>', 0, 2, 1, 1)])
+            [('<QGridLayout dcat:bbox>', '<C QLineEdit dcat:bbox>',
+                0, 0, widgetsdict.textEditRowSpan, WidgetsDictTestCase.grid - 2),
+             ('<QGridLayout dcat:bbox>', '<C-minus QToolButton dcat:bbox>',
+                0, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dcat:bbox>', '<C-geo QToolButton dcat:bbox>',
+                0, WidgetsDictTestCase.grid - 2, 1, 1)])
         self.assertListEqual(actionsdict['actions to delete'], ['<B-geo QAction n°1>', '<B-geo QAction n°2>'])
         self.assertListEqual(actionsdict['menus to delete'], ['<B-geo QMenu dcat:bbox>'])
         for k in actionsdict.keys():
@@ -929,25 +974,28 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict[g]['grid widget'] = '<QGridLayout dct:temporal>'
         widgetsdict[g.button]['main widget'] = '<P QToolButton dct:temporal>'
         widgetsdict[b]['main widget'] = '<B QGroupBox dct:temporal>'
-        widgetsdict[b]['minus widget'] = '<B QToolButton dct:temporal>'
+        widgetsdict[b]['minus widget'] = '<B-minus QToolButton dct:temporal>'
         widgetsdict[b.children[0]]['main widget'] = '<B QGroupBox dcat:startDate>'
         widgetsdict[b.children[1]]['main widget'] = '<B QGroupBox dcat:endDate>'
         widgetsdict[c]['main widget'] = '<C QGroupBox dct:temporal>'
-        widgetsdict[c]['minus widget'] = '<C QToolButton dct:temporal>'
+        widgetsdict[c]['minus widget'] = '<C-minus QToolButton dct:temporal>'
         actionsdict = widgetsdict.drop(b)
         self.assertEqual(len(g.children), 1)
         self.assertFalse(b in widgetsdict)
         self.assertFalse(b.children[0] in widgetsdict)
         self.assertFalse(b.children[1] in widgetsdict)
         self.assertTrue(widgetsdict[c]['hide minus button'])
-        self.assertEqual(actionsdict['widgets to hide'], ['<C QToolButton dct:temporal>'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<C-minus QToolButton dct:temporal>'])
         self.assertEqual(actionsdict['widgets to delete'],
-            ['<B QGroupBox dct:temporal>', '<B QToolButton dct:temporal>',
+            ['<B QGroupBox dct:temporal>', '<B-minus QToolButton dct:temporal>',
              '<B QGroupBox dcat:startDate>', '<B QGroupBox dcat:endDate>'])
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dct:temporal>', '<C QGroupBox dct:temporal>', 0, 0, 1, 2),
-             ('<QGridLayout dct:temporal>', '<C QToolButton dct:temporal>', 0, 2, 1, 1),
-             ('<QGridLayout dct:temporal>', '<P QToolButton dct:temporal>', 1, 0, 1, 1)])
+            [('<QGridLayout dct:temporal>', '<C QGroupBox dct:temporal>',
+                0, 0, 1, WidgetsDictTestCase.grid - 1),
+             ('<QGridLayout dct:temporal>', '<C-minus QToolButton dct:temporal>',
+                0, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dct:temporal>', '<P QToolButton dct:temporal>',
+                1, 0, 1, 1)])
         for k in actionsdict.keys():
             if not k in ('widgets to hide', 'widgets to delete', 'widgets to move'):
                 self.assertFalse(actionsdict[k])
@@ -991,13 +1039,20 @@ class WidgetsDictTestCase(unittest.TestCase):
              '<B2 QComboBox dct:accessRights>', '<B2-minus QToolButton dct:accessRights>',
              '<B2-source QToolButton dct:accessRights>'])
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dct:accessRights>', '<C1 QGroupBox dct:accessRights>', 0, 0, 1, 2),
-             ('<QGridLayout dct:accessRights>', '<C1-minus QToolButton dct:accessRights>', 0, 3, 1, 1),
-             ('<QGridLayout dct:accessRights>', '<C1-source QToolButton dct:accessRights>', 0, 2, 1, 1),
-             ('<QGridLayout dct:accessRights>', '<C2 QComboBox dct:accessRights>', 0, 0, 1, 2),
-             ('<QGridLayout dct:accessRights>', '<C2-minus QToolButton dct:accessRights>', 0, 3, 1, 1),
-             ('<QGridLayout dct:accessRights>', '<C2-source QToolButton dct:accessRights>', 0, 2, 1, 1),
-             ('<QGridLayout dct:accessRights>', '<P QToolButton dct:accessRights>', 1, 0, 1, 1)])
+            [('<QGridLayout dct:accessRights>', '<C1 QGroupBox dct:accessRights>',
+                0, 0, 1, WidgetsDictTestCase.grid - 2),
+             ('<QGridLayout dct:accessRights>', '<C1-minus QToolButton dct:accessRights>',
+                0, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<C1-source QToolButton dct:accessRights>',
+                0, WidgetsDictTestCase.grid - 2, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<C2 QComboBox dct:accessRights>',
+                0, 0, 1, WidgetsDictTestCase.grid - 2),
+             ('<QGridLayout dct:accessRights>', '<C2-minus QToolButton dct:accessRights>',
+                0, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<C2-source QToolButton dct:accessRights>',
+                0, WidgetsDictTestCase.grid - 2, 1, 1),
+             ('<QGridLayout dct:accessRights>', '<P QToolButton dct:accessRights>',
+                1, 0, 1, 1)])
         self.assertEqual(actionsdict['actions to delete'], ['<B1-source QAction n°1',
             '<B1-source QAction n°2', '<B2-source QAction n°1', '<B2-source QAction n°2'])
         self.assertEqual(actionsdict['menus to delete'], ['<B1-source QMenu dct:accessRights>',
@@ -1006,6 +1061,9 @@ class WidgetsDictTestCase(unittest.TestCase):
             if not k in ('widgets to hide', 'widgets to delete', 'widgets to move', 'actions to delete',
                 'menus to delete'):
                 self.assertFalse(actionsdict[k])
+        
+        # --- contrôle final de la cohérence du placement ---
+        self.assertIsNone(widgetsdict.check_grids())
 
     def test_change_unit(self):
         """Changement d'unité déclarée pour une clé du dictionnaire.
@@ -1025,6 +1083,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             """
         metagraph = Metagraph().parse(data=metadata)
         widgetsdict = WidgetsDict(metagraph=metagraph)
+        self.assertIsNone(widgetsdict.check_grids())
         b = widgetsdict.root.search_from_path(DCAT.temporalResolution)
         widgetsdict[b.parent]['grid widget'] = '<QGridLayout dcat:temporalResolution>'
         widgetsdict[b]['main widget'] = '<B QLineEdit dcat:temporalResolution>'
@@ -1041,6 +1100,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         for k in actionsdict.keys():
             if not k == 'unit menu to update':
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
     
     def test_change_source(self):
         """Changement de la source courante d'une clé du dictionnaire.
@@ -1079,6 +1139,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- Multiples thésaurus ---
         a = widgetsdict.root.search_from_path(DCAT.theme).children[0]
@@ -1094,6 +1155,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             if not k in ('switch source menu to update', 'concepts list to update',
                 'widgets to empty'):
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- Sortie du mode manuel ---
         g = widgetsdict.root.search_from_path(DCT.accessRights)
@@ -1133,6 +1195,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             if not k in ('switch source menu to update', 'concepts list to update',
                 'widgets to show', 'widgets to hide', 'widgets to empty'):
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- Entrée en mode manuel ---
         actionsdict = widgetsdict.change_source(b2, '< manuel >')
@@ -1148,6 +1211,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         for k in actionsdict.keys():
             if not k in ('widgets to show', 'widgets to hide'):
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
         
         # --- Item non référencé vers thésaurus ---
         g = widgetsdict.root.search_from_path(DCT.accessRights)
@@ -1173,9 +1237,11 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(not '< non référencé >' in widgetsdict[b1]['sources'])
         self.assertTrue(widgetsdict[b2]['thesaurus values'], 'public')
         self.assertListEqual(actionsdict['switch source menu to update'], [b2])
+        self.assertIsNone(widgetsdict.check_grids())
         
         # --- Item non référencé vers manuel ---
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        self.assertIsNone(widgetsdict.check_grids())
         g = widgetsdict.root.search_from_path(DCT.accessRights)
         b1 = g.children[2]
         b2 = g.children[3]
@@ -1204,6 +1270,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertListEqual(actionsdict['switch source menu to update'], [b2])
         with self.assertRaises(ForbiddenOperation):
             actionsdict = widgetsdict.change_source(b2, '< non référencé >')
+        self.assertIsNone(widgetsdict.check_grids())
 
     def test_twins_and_template(self):
         """Quelques contrôles sur le comportement des clés jumelles hors modèle.
@@ -1249,7 +1316,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(len(g.children), 1)
         c = g.children[0]
         self.assertIsNone(c.m_twin)
-        self.assertFalse('< manuel >' in widgetsdict[c]['sources'])    
+        self.assertFalse('< manuel >' in widgetsdict[c]['sources'])   
+        self.assertIsNone(widgetsdict.check_grids())        
 
     def test_translation_actions(self):
         """Changement de langue courante pour une clé.
@@ -1302,6 +1370,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             translation=True, langList=['fr', 'en', 'it'])
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- ajout d'une clé dans un groupe de traduction ---
         g = widgetsdict.root.search_from_path(DCT.title)
@@ -1358,6 +1427,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             if not k in ('new keys', 'language menu to update',
                 'widgets to move', 'widgets to hide'):
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- suppression d'une clé dans un groupe de traduction ---
         actionsdict = widgetsdict.drop(fr)
@@ -1375,17 +1445,25 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(actionsdict['menus to delete'], ['<FR-language QMenu dct:title>'])
         self.assertEqual(actionsdict['language menu to update'], [en, it])
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dct:title>', '<EN QLineEdit dct:title>', 0, 0, 1, 2),
-             ('<QGridLayout dct:title>', '<EN-minus QToolButton dct:title>', 0, 3, 1, 1),
-             ('<QGridLayout dct:title>', '<EN-language QToolButton dct:title>', 0, 2, 1, 1),
-             ('<QGridLayout dct:title>', '<IT QLineEdit dct:title>', 1, 0, 1, 2),
-             ('<QGridLayout dct:title>', '<IT-minus QToolButton dct:title>', 1, 3, 1, 1),
-             ('<QGridLayout dct:title>', '<IT-language QToolButton dct:title>', 1, 2, 1, 1),
-             ('<QGridLayout dct:title>', '<P QToolButton dct:title>', 2, 0, 1, 1)])
+            [('<QGridLayout dct:title>', '<EN QLineEdit dct:title>',
+                0, 0, 1, WidgetsDictTestCase.grid - 2),
+             ('<QGridLayout dct:title>', '<EN-minus QToolButton dct:title>',
+                0, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dct:title>', '<EN-language QToolButton dct:title>',
+                0, WidgetsDictTestCase.grid - 2, 1, 1),
+             ('<QGridLayout dct:title>', '<IT QLineEdit dct:title>',
+                1, 0, 1, WidgetsDictTestCase.grid - 2),
+             ('<QGridLayout dct:title>', '<IT-minus QToolButton dct:title>',
+                1, WidgetsDictTestCase.grid - 1, 1, 1),
+             ('<QGridLayout dct:title>', '<IT-language QToolButton dct:title>',
+                1, WidgetsDictTestCase.grid - 2, 1, 1),
+             ('<QGridLayout dct:title>', '<P QToolButton dct:title>',
+                2, 0, 1, 1)])
         for k in actionsdict.keys():
             if not k in ('widgets to show', 'widgets to delete', 'actions to delete',
                 'menus to delete', 'language menu to update', 'widgets to move'):
-                self.assertFalse(actionsdict[k])       
+                self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- changement de langue dans un groupe de traduction ---
         actionsdict = widgetsdict.change_language(en, 'fr')
@@ -1396,7 +1474,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(actionsdict['language menu to update'], [en, it])
         for k in actionsdict.keys():
             if not k in ('language menu to update'):
-                self.assertFalse(actionsdict[k])        
+                self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
         
         # --- ajout d'une clé hors groupe de traduction ---
         g = widgetsdict.root.search_from_path(DCAT.keyword)
@@ -1412,11 +1491,13 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict[c]['authorized languages'], ['fr', 'en', 'it'])
         self.assertEqual(widgetsdict[c]['language value'], 'fr')
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 5, 0, 1, 1)])
+            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>',
+                5, 0, 1, 1)])
         self.assertEqual(actionsdict['new keys'], [c])
         for k in actionsdict.keys():
             if not k in ('widgets to move', 'new keys'):
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
         
         # --- suppression d'une clé hors groupe de traduction ---
         actionsdict = widgetsdict.drop(c)
@@ -1428,11 +1509,13 @@ class WidgetsDictTestCase(unittest.TestCase):
             '<C-language QAction n°2'])
         self.assertEqual(actionsdict['menus to delete'], ['<C-language QMenu dcat:keyword>'])
         self.assertEqual(actionsdict['widgets to move'],
-            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>', 4, 0, 1, 1)])
+            [('<QGridLayout dcat:keyword>', '<P QToolButton dcat:keyword>',
+                4, 0, 1, 1)])
         for k in actionsdict.keys():
             if not k in ('widgets to delete', 'actions to delete',
                 'menus to delete', 'widgets to move'):
                 self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
         
         # --- changement de langue hors groupe de traduction ---
         c = g.children[0]
@@ -1448,7 +1531,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(actionsdict['language menu to update'], [c])
         for k in actionsdict.keys():
             if not k in ('language menu to update'):
-                self.assertFalse(actionsdict[k])  
+                self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
 
     def test_translation_unauthorized_language(self):
         """Contrôle du comportement en présence de langues non autorisées.
@@ -1513,6 +1597,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         actionsdict = widgetsdict.drop(g.children[0])
         self.assertEqual(widgetsdict[g.children[0]]['language value'], 'it')
         self.assertEqual(widgetsdict[g.children[0]]['authorized languages'], ['it', 'fr'])
+        self.assertIsNone(widgetsdict.check_grids())
         with self.assertRaises(ForbiddenOperation):
             actionsdict = widgetsdict.change_language(g.children[0], 'en')
 
@@ -1585,6 +1670,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
             translation=True)
+        self.assertIsNone(widgetsdict.check_grids())
 
         # --- suppression de la valeur ---
         g = widgetsdict.root.search_from_path(DCAT.keyword)
@@ -1776,6 +1862,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         conn.close()
         template = TemplateDict(categories)
         widgetsdict = WidgetsDict(template=template, translation=True)
+        self.assertIsNone(widgetsdict.check_grids())
         k = widgetsdict.root.search_from_path(LOCAL['de2aa975-5663-4a72-b390-dd9aab1c2810'])
         self.assertEqual(widgetsdict[k]['regex validator pattern'],
             r'^[^<>"\s{}|\\^`]*$')
@@ -1817,6 +1904,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             """
         metagraph = Metagraph().parse(data=metadata)
         widgetsdict = WidgetsDict(metagraph=metagraph)
+        self.assertIsNone(widgetsdict.check_grids())
         k = widgetsdict.root.search_from_path(LOCAL['ae070a1a-190f-4541-8913-b5946ed46296'])
         self.assertEqual(k.datatype, XSD.decimal)
         self.assertEqual(widgetsdict[k]['value'], '4,5')
