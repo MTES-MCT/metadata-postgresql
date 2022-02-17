@@ -3,7 +3,70 @@
 @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
 
 
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+<http://publications.europa.eu/resource/authority/dataset-status/COMPLETED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "completed"@en,
+        "achevé"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/DEPRECATED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "deprecated"@en,
+        "obsolète"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/DEVELOP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "under development"@en,
+        "en cours d'élaboration"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/DISCONT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "discontinued"@en,
+        "abandonné"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/WITHDRAWN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "withdrawn"@en,
+        "retiré"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status> a skos:ConceptScheme ;
+    skos:prefLabel "Statut du jeu de données (UE)"@fr,
+        "Dataset status (EU)"@en .
+
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/grid> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Grid"@en,
+        "Grille (données maillées, raster...)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/stereoModel> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Stereo model"@en,
+        "Modèle stéréoscopique"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/textTable> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Text table"@en,
+        "Table de texte"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/tin> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "TIN (Triangulated irregular network)"@en,
+        "TIN (Réseau triangulé irrégulier)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Vector"@en,
+        "Vecteur"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/video> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Video"@en,
+        "Vidéo"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> a skos:ConceptScheme ;
+    skos:prefLabel "Type de représentation géographique (INSPIRE)"@fr,
+        "Spatial representation type (INSPIRE)"@en .
+
 
 <http://publications.europa.eu/resource/authority/file-type/7Z> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
@@ -748,36 +811,47 @@
 
 
 <https://tools.ietf.org/html/rfc4287> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
+    skos:inScheme snum:DataServiceStandard ;
     skos:prefLabel "ATOM Syndication Format"@en .
 
 <http://www.opengis.net/def/serviceType/ogc/csw> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
-    skos:prefLabel "OGC Catalogue Service for the Web"@en .
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC Catalogue Service for the Web (CSW)"@en ;
+    foaf:page <http://www.ogc.org/standards/cat> .
 
 <http://www.opengis.net/def/serviceType/ogc/sos> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
-    skos:prefLabel "OGC Sensor Observation Service"@en .
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC Sensor Observation Service (SOS)"@en ;
+    foaf:page <http://www.ogc.org/standards/sos> .
 
 <http://www.opengis.net/def/serviceType/ogc/wcs> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
-    skos:prefLabel "OGC Web Coverage Service"@en .
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC Web Coverage Service (WCS)"@en ;
+    foaf:page <http://www.ogc.org/standards/wcs> .
 
 <http://www.opengis.net/def/serviceType/ogc/wfs> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
-    skos:prefLabel "OGC Web Feature Service"@en .
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC Web Feature Service (WFS)"@en ;
+    foaf:page <http://www.ogc.org/standards/wfs> .
 
 <http://www.opengis.net/def/serviceType/ogc/wms> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
-    skos:prefLabel "OGC Web Map Service"@en .
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC Web Map Service (WMS)"@en ;
+    foaf:page <https://www.ogc.org/standards/wms> .
 
 <http://www.opengis.net/def/serviceType/ogc/wmts> a skos:Concept ;
-    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
-    skos:prefLabel "OGC Web Map Tile Service"@en .
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC Web Map Tile Service (WMTS)"@en ;
+    foaf:page <https://www.ogc.org/standards/wmts> .
 
-<http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> a skos:ConceptScheme ;
-    skos:prefLabel "Protocol values (INSPIRE)"@en,
-        "Protocoles (INSPIRE)"@fr.
+<http://www.opengis.net/def/interface/ogcapi-features> a skos:Concept ;
+    skos:inScheme snum:DataServiceStandard ;
+    skos:prefLabel "OGC API - Features"@en ;
+    foaf:page <https://www.ogc.org/standards/ogcapi-features> .
+
+snum:DataServiceStandard a skos:ConceptScheme ;
+    skos:prefLabel "Data Service Standards"@en,
+        "Standards de services de données"@fr.
 
 
 <http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> a skos:Concept ;
@@ -1956,27 +2030,6 @@
 <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> a skos:ConceptScheme ;
     skos:prefLabel "Fréquence d'actualisation (INSPIRE)"@fr,
         "Maintenance frequency (INSPIRE)"@en .
-        
-
-<https://www.ogc.org/standards/wms> a skos:Concept ;
-	skos:inScheme snum:DataServiceStandard ;
-	skos:prefLabel "OGC Web Map Service (WMS)" .
-
-<https://www.ogc.org/standards/wmts> a skos:Concept ;
-	skos:inScheme snum:DataServiceStandard ;
-	skos:prefLabel "OGC Web Map Tile Service (WMTS)" .
-
-<https://www.ogc.org/standards/wfs> a skos:Concept ;
-	skos:inScheme snum:DataServiceStandard ;
-	skos:prefLabel "OGC Web Feature Service (WFS)" .
-    
-<https://www.ogc.org/standards/ogcapi-features> ;
-	skos:inScheme snum:DataServiceStandard ;
-	skos:prefLabel "OGC API - Features" . 
-
-snum:DataServiceStandard a skos:ConceptScheme ;
-    skos:prefLabel "Standards de services de données"@fr,
-        "Data Service Standards"@en .
 
 
 <http://publications.europa.eu/resource/authority/planned-availability/STABLE> a skos:Concept ;
@@ -2111,7 +2164,7 @@ snum:DataServiceStandard a skos:ConceptScheme ;
 <http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
     skos:inScheme snum:StandardsRegister ;
     skos:prefLabel "OGC EPSG Coordinate Reference Systems Register"@en,
-        "Système de coordonnées (registre de codes EPSG de l'OGC)"@fr .
+        "Registre EPSG de l'OGC (systèmes de coordonnées)"@fr .
 
 snum:StandardsRegister a skos:ConceptScheme ;
     skos:prefLabel "Registre de standards"@fr,
@@ -2638,7 +2691,6 @@ snum:InseeGeoIndex a skos:ConceptScheme ;
     skos:prefLabel "Access right (EU)"@en,
         "Droits d'accès (UE)"@fr .
 
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://purl.org/adms/licencetype/Attribution> a skos:Concept ;
     skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
