@@ -351,7 +351,7 @@ snum:DatasetShape
     sh:property [
 		sh:path snum:relevanceScore ;
 		sh:name "Score"@fr ;
-        sh:description "Niveau de pertinance de la donnée. Plus le score est élevé plus la donnée sera mise en avant dans les résultats de recherche."@fr ;
+        sh:description "Niveau de pertinence de la donnée. Plus le score est élevé plus la donnée sera mise en avant dans les résultats de recherche."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:integer ;
         sh:maxCount 1 ;
@@ -410,22 +410,51 @@ snum:DistributionShape
         sh:order 1 ;
 	] ;
     sh:property [
+		sh:path dct:title ;
+		sh:name "Libellé"@fr ;
+        sh:description "Nom de la distribution."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:order 2 ;
+	] ;
+    sh:property [
 		sh:path dct:description ;
 		sh:name "Description"@fr ;
         sh:description "Description de la distribution."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
-        sh:order 2 ;
+        sh:order 3 ;
         snum:longText true ;
+	] ;
+    sh:property [
+		sh:path dcat:downloadURL ;
+		sh:name "Lien de téléchargement direct"@fr ;
+        sh:description "URL de téléchargement direct du ou des fichiers de la distribution."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class rdfs:Resource ;
+        sh:order 4 ;
 	] ;
     sh:property [
 		sh:path dct:issued ;
 		sh:name "Date de publication"@fr ;
+        sh:description "Date à laquelle la distribution a été diffusée."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
-        sh:order 3 ;
+        sh:order 5 ;
+        sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
+        snum:inputMask "9999-99-99" ;
+	] ;
+    sh:property [
+		sh:path dct:modified ;
+		sh:name "Date de dernière modification"@fr ;
+        sh:description "Date de la dernière modification de la distribution."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:date ;
+        sh:maxCount 1 ;
+        sh:order 12 ;
         sh:pattern "^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$" ;
         snum:inputMask "9999-99-99" ;
 	] ;
@@ -435,8 +464,19 @@ snum:DistributionShape
         sh:description "Niveau de disponibilité prévu pour la distribution, permettant d'apprécier le temps pendant lequel elle est susceptible de rester accessible."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
-        sh:order 4 ;
+        sh:maxCount 1 ;
+        sh:order 7 ;
         snum:ontology <http://publications.europa.eu/resource/authority/planned-availability> ;
+	] ;
+    sh:property [
+		sh:path adms:status ;
+		sh:name "Statut"@fr ;
+        sh:description "Niveau de maturité de la distribution."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:maxCount 1 ;
+        sh:order 8 ;
+        snum:ontology <http://publications.europa.eu/resource/authority/dataset-status> ;
 	] ;
     sh:property [
 		sh:path dct:type ;
@@ -444,7 +484,8 @@ snum:DistributionShape
         sh:description "Type de distribution."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
-        sh:order 5 ;
+        sh:maxCount 1 ;
+        sh:order 10 ;
         snum:ontology <http://publications.europa.eu/resource/authority/distribution-type> ;
 	] ;
     sh:property [
@@ -454,17 +495,27 @@ snum:DistributionShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:MediaTypeOrExtent ;
         sh:maxCount 1 ;
-        sh:order 6 ;
+        sh:order 11 ;
         snum:ontology <http://publications.europa.eu/resource/authority/file-type> ;
 	] ;
     sh:property [
 		sh:path dcat:compressFormat ;
 		sh:name "Format de compression"@fr ;
-        sh:description "Format du fichier contenant les données sous une forme compressée."@fr ;
+        sh:description "Format du fichier contenant les données sous une forme compressée, afin de réduire leur volume."@fr ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:MediaType ;
         sh:maxCount 1 ;
-        sh:order 6 ;
+        sh:order 12 ;
+        snum:ontology <http://publications.europa.eu/resource/authority/file-type> ;
+	] ;
+    sh:property [
+		sh:path dcat:packageFormat ;
+		sh:name "Format d'empaquatage"@fr ;
+        sh:description "Format du fichier rassemblant les différents fichiers contenant les données pour permettre leur téléchargement conjoint."@fr ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:class dct:MediaType ;
+        sh:maxCount 1 ;
+        sh:order 13 ;
         snum:ontology <http://publications.europa.eu/resource/authority/file-type> ;
 	] ;
     sh:property [
@@ -473,7 +524,34 @@ snum:DistributionShape
         sh:description "Service donnant accès aux données."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dcat:DataService ;
-        sh:order 7 ;
+        sh:order 14 ;
+	] ;
+    sh:property [
+		sh:path adms:representationTechnique ;
+		sh:name "Mode de représentation géographique"@fr ;
+        sh:description "Type de représentation technique de l'information géographique présentée par la distribution, le cas échéant."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:maxCount 1 ;
+        sh:order 15 ;
+        snum:ontology <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+	] ;
+    sh:property [
+		sh:path foaf:page ;
+		sh:name "Documentation"@fr ;
+        sh:description "Documentation ou page internet contenant des informations relative à la distribution."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class foaf:Document ;
+        sh:order 16 ;
+	] ;
+    sh:property [
+		sh:path dct:conformsTo ;
+		sh:name "Conforme à"@fr ;
+        sh:description "Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données de la distribution."@fr ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:class dct:Standard ;
+        sh:order 17 ;
+        snum:ontology <http://www.opengis.net/def/crs/EPSG/0> ;
 	] ;
     sh:property [
 		sh:path cnt:characterEncoding ;
@@ -483,7 +561,16 @@ snum:DistributionShape
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
         snum:placeholder "ex : UTF-8, ISO-8859-1, US-ASCII..." ;
-        sh:order 8 ;
+        sh:order 20 ;
+	] ;
+    sh:property [
+		sh:path dct:language ;
+		sh:name "Langue"@fr ;
+        sh:description "Langue·s des données de la distribution."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class dct:LinguisticSystem ;
+        sh:order 21 ;
+        snum:ontology <http://publications.europa.eu/resource/authority/language> ;
 	] ;
     sh:property [
 		sh:path dcat:byteSize ;
@@ -492,7 +579,25 @@ snum:DistributionShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:decimal ;
         sh:maxCount 1 ;
-        sh:order 9 ;
+        sh:order 22 ;
+	] ;
+    sh:property [
+		sh:path dcat:temporalResolution ;
+		sh:name "Résolution temporelle"@fr ;
+        sh:description "Plus petit pas de temps significatif dans le contexte de la distribution."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:duration ;
+        sh:maxCount 1 ;
+        sh:order 23 ;
+	] ;
+    sh:property [
+		sh:path dcat:spatialResolutionInMeters ;
+		sh:name "Résolution spatiale en mètres"@fr ;
+        sh:description "Résolution des données de la distribution, exprimée en mètres."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:decimal ;
+        sh:maxCount 1 ;
+        sh:order 24 ;
 	] ;
     sh:property [
 		sh:path dct:rights ;
@@ -501,7 +606,7 @@ snum:DistributionShape
         sh:nodeKind sh:BlankNode ;
         sh:class dct:RightsStatement ;
         sh:maxCount 1 ;
-        sh:order 10 ;
+        sh:order 30 ;
 	] ;
     sh:property [
 		sh:path dct:license ;
@@ -510,7 +615,7 @@ snum:DistributionShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:LicenseDocument ;
         sh:maxCount 1 ;
-        sh:order 11 ;
+        sh:order 31 ;
         snum:ontology snum:CrpaAuthorizedLicense,
             <http://publications.europa.eu/resource/authority/licence> ;
 	] ;
@@ -520,7 +625,7 @@ snum:DistributionShape
         sh:description "Contraintes réglementaires limitant l'accès à la distribution."@fr ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:RightsStatement ;
-        sh:order 12 ;
+        sh:order 32 ;
         snum:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
             <http://publications.europa.eu/resource/authority/access-right>,
             snum:CrpaAccessLimitations ;
@@ -534,12 +639,12 @@ snum:RightsStatementShape
     sh:property [
 		sh:path rdfs:label ;
 		sh:name "Mention"@fr ;
+        sh:description "Description des contraintes réglementaires et des modalités pratiques pour s'y conformer."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
         sh:order 1 ;
         snum:longText true ;
-        snum:rowSpan 4 ;
 	] .
 
 snum:LicenseDocumentShape
@@ -550,6 +655,7 @@ snum:LicenseDocumentShape
     sh:property [
 		sh:path dct:type ;
 		sh:name "Type"@fr ;
+        sh:decision "Caractéristiques de la licence."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:order 1 ;
@@ -558,6 +664,7 @@ snum:LicenseDocumentShape
     sh:property [
 		sh:path rdfs:label ;
 		sh:name "Termes"@fr ;
+        sh:decision "Termes de la licence."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
@@ -573,6 +680,7 @@ snum:ProvenanceStatementShape
     sh:property [
 		sh:path rdfs:label ;
 		sh:name "Texte"@fr ;
+        sh:description "Informations sur l'origine des données : sources, méthodes de recueil ou de traitement..."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
@@ -589,6 +697,7 @@ snum:MediaTypeOrExtentShape
     sh:property [
 		sh:path rdfs:label ;
 		sh:name "Nom"@fr ;
+        sh:description "Libellé du format."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
@@ -603,6 +712,7 @@ snum:MediaTypeShape
     sh:property [
 		sh:path rdfs:label ;
 		sh:name "Nom"@fr ;
+        sh:description "Libellé du format."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
@@ -643,26 +753,28 @@ snum:KindShape
     sh:property [
 		sh:path vcard:fn ;
 		sh:name "Nom"@fr ;
+        sh:description "Nom du point de contact."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
         sh:maxCount 1 ;
+        sh:minCount 1 ;
         sh:order 1 ;
 	] ;
     sh:property [
 		sh:path vcard:hasEmail ;
 		sh:name "Courriel"@fr ;
+        sh:description "Adresse mél."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
-        sh:maxCount 1 ;
         sh:order 2 ;
         snum:transform "email" ;
 	] ;
     sh:property [
 		sh:path vcard:hasTelephone ;
 		sh:name "Téléphone"@fr ;
+        sh:description "Numéro de téléphone."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
-        sh:maxCount 1 ;
         sh:order 3 ;
         snum:transform "phone" ;
         snum:placeholder "+33-1-23-45-67-89" ;
@@ -670,6 +782,7 @@ snum:KindShape
     sh:property [
 		sh:path vcard:hasURL ;
 		sh:name "Site internet"@fr ;
+        sh:description "Site internet."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
         sh:maxCount 1 ;
@@ -677,7 +790,7 @@ snum:KindShape
 	] ;
     sh:property [
 		sh:path vcard:organization-name ;
-		sh:name "Organisme"@fr ;
+		sh:name "Appartient à"@fr ;
         sh:description "Le cas échéant, organisation dont le point de contact fait partie."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:string ;
@@ -693,6 +806,7 @@ snum:AgentShape
     sh:property [
 		sh:path foaf:name ;
 		sh:name "Nom"@fr ;
+        sh:description "Nom de l'organisation."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
@@ -701,6 +815,7 @@ snum:AgentShape
     sh:property [
 		sh:path dct:type ;
 		sh:name "Type"@fr ;
+        sh:description "Type d'organisation."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:maxCount 1 ;
@@ -710,18 +825,18 @@ snum:AgentShape
     sh:property [
 		sh:path foaf:mbox ;
 		sh:name "Courriel"@fr ;
+        sh:description "Adresse mél."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
-        sh:maxCount 1 ;
         sh:order 2 ;
         snum:transform "email" ;
 	] ;
     sh:property [
 		sh:path foaf:phone ;
 		sh:name "Téléphone"@fr ;
+        sh:description "Numéro de téléphone."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class owl:Thing ;
-        sh:maxCount 1 ;
         sh:order 3 ;
         snum:transform "phone" ;
         snum:placeholder "+33-1-23-45-67-89" ;
@@ -729,6 +844,7 @@ snum:AgentShape
     sh:property [
 		sh:path foaf:workplaceHomepage ;
 		sh:name "Site internet"@fr ;
+        sh:description "Site internet."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:maxCount 1 ;
@@ -761,6 +877,7 @@ snum:LocationShape
     sh:property [
 		sh:path skos:prefLabel ;
 		sh:name "Libellé"@fr ;
+        sh:description "Dénomination explicite du lieu."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:order 2 ;
@@ -818,6 +935,7 @@ snum:StandardShape
     sh:property [
 		sh:path skos:inScheme ;
 		sh:name "Registre"@fr ;
+        sh:description "Registre de référence auquel appartient le standard." ;
         sh:nodeKind sh:IRI ;
         sh:class skos:ConceptScheme ;
         snum:ontology snum:StandardsRegister ;
@@ -900,15 +1018,6 @@ snum:StandardShape
         sh:nodeKind sh:IRI ;
         sh:class foaf:Document ;
         sh:order 8 ;
-	] ;
-    sh:property [
-		sh:path dct:type ;
-		sh:name "Type de standard"@fr ;
-        sh:nodeKind sh:IRI ;
-        sh:class skos:Concept ;
-        sh:maxCount 1 ;
-        sh:order 9 ;
-        # snum:ontology snum:StandardType ;
 	] .
 
 snum:LinkedRecordShape
@@ -922,6 +1031,7 @@ snum:LinkedRecordShape
 		sh:description "URL de base du service CSW, sans aucun paramètre."@fr ;
         sh:nodeKind sh:IRI ;
         sh:maxCount 1 ;
+        sh:class rdfs:Resource ;
         sh:order 0 ;
         snum:placeholder "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable" ;
 	] ;
@@ -984,9 +1094,8 @@ snum:DataServiceShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Standard ;
         sh:order 2 ;
-        snum:ontology snum:DataServiceStandard,
-            <http://www.opengis.net/def/crs/EPSG/0>,
-            <http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue> ;
+        snum:ontology <http://www.opengis.net/def/crs/EPSG/0>,
+            snum:DataServiceStandard ;
 	] ;
     sh:property [
 		sh:path dcat:endpointDescription ;
