@@ -131,6 +131,8 @@ Plume n'associe aucune propriété à cette classe. Il est attendu de l'utilisat
 
 _Classe `dct:Location`._
 
+Les propriétés suivantes sont modifiées par Plume :
+
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
 | *bounding box* | `dcat:bbox` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
@@ -231,6 +233,8 @@ Les propriétés suivantes sont ajoutées par Plume :
 | IRI | Classe de l'objet | Cardinalité | Description |
 | --- | --- | --- | --- |
 | `foaf:isPrimaryTopicOf` | [`dcat:CatalogRecord`](#enregistrement-du-catalogue) | `1..1` | Métadonnées sur les métadonnées. Cette propriété est gérée automatiquement par Plume. |
+| `snum:isExternal` | `rdfs:Literal typed as xsd:boolean` | `0..1` | Ce jeu de données est-il la reproduction de données produites par un tiers ? Cette propriété permet de distinguer immédiatement les données externes qui, dans le contexte de Plume, pourront se voir appliquer des modèles de formulaires spécifiques. |
+| `snum:relevanceScore` | `rdfs:Literal typed as xsd:integer` | `0..1` | Niveau de pertinence de la donnée. Cette propriété anticipe sur de futures fonctionnalités de recherche qui mettront davantage en évidence les jeux de données avec un score élevé dans les listes de résultats. |
 
 ## Licence
 
