@@ -2,6 +2,8 @@
 
 _Référence : GeoDCAT-AP Version 2.0.0 - https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0_.
 
+Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble-de-concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
+
 ## Généralités
 
 Les métadonnées RDF produites par Plume ont les spécificités suivantes :
@@ -98,12 +100,14 @@ Les propriétés suivantes sont modifiées par Plume :
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
 | *access rights* | `dct:accessRights` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). |
-| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
-| *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
-| *compression format* | `dcat:compressFormat` | Changement de source de vocabulaire contrôlé. | Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). |
-| *packaging format* | `dcat:packageFormat` | Changement de source de vocabulaire contrôlé. | Idem *compression format*. Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). |
+| *compression format* | `dcat:compressFormat` | Changement de source de vocabulaire contrôlé. | Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). | 
 | *encoding* | `cnt:characterEncoding` | Changement de cardinalité. Avant : `0..n`. Après : `0..1`. | |
+| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
+| *packaging format* | `dcat:packageFormat` | Changement de source de vocabulaire contrôlé. | Idem *compression format*. Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). |
+| *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
+| *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *status* | `adms:status` | Changement de source de vocabulaire contrôlé. | Utilisation du thésaurus dédié du [registre européen](https://op.europa.eu/s/vR2T). La valeur *discontinued* (traduite en *abandonné*) est incluse bien que non listée par GeoDCAT-AP, car elle apporte une nuance intéressante par rapport à *deprecated* / *obsolète* (une distribution peut ne plus être maintenue sans que les données ait perdu leur valeur) et *withdrawn* / *retiré* (une distribution peut ne plus être maintenue sans qu'il y ait de volonté de la rendre inaccessible). |
+| *update / modification date* | `dct:modified` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 
 Les propriétés suivantes sont ajoutées par Plume :
 
@@ -116,6 +120,18 @@ Les propriétés suivantes sont ajoutées par Plume :
 _Classe `foaf:Document`._
 
 Plume n'associe aucune propriété à cette classe. Il est attendu de l'utilisateur qu'il saisisse une URL, qui tiendra lieu d'IRI et sera la seule information relative au document sauvegardée dans les métadonnées.
+
+## Emplacement
+
+_Classe `dct:Location`._
+
+| Propriété | IRI | Nature de la modification | Commentaire |
+| --- | --- | --- | --- |
+| *bounding box* | `dcat:bbox` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
+| *centroid* | `dcat:centroid` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
+| *gazetteer* | `skos:inScheme` | Ajout d'une source de vocabulaire contrôlé. | Thésaurus maison `snum:InseeGeoIndex`, basé sur le [registre de l'INSEE](http://id.insee.fr) qui répertorie les divisions administratives. |
+| *geographic name* | `skos:prefLabel` | Changement de cardinalité. Avant : `1..n`. Après : `0..n`. | Rendre le nom obligatoire est discutable quand l'emplacement est un rectangle d'emprise ou autre géométrie calculée à partir des données (il pourrait d'ailleurs s'agir d'une coquille dans GeoDCAT-AP, considérant que les propriétés obligatoires sont usuellement listées à part). |
+| *geometry* | `locn:geometry` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
 
 ## Enregistrement du catalogue
 
@@ -161,6 +177,12 @@ Propriétés :
 | `dcat:endpointURL` | URL de base du service CSW, sans aucun paramètre. |
 | `dct:identifier` | Identifiant de la fiche de métadonnées. |
 
+## Généalogie
+
+_Classe `dct:ProvenanceStatement`._
+
+Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
+
 ## Identifiant
 
 _Classe `adms:Identifier`._
@@ -192,8 +214,11 @@ Les propriétés suivantes sont modifiées par Plume :
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
 | *access rights* | `dct:accessRights` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). |
+| *creation date* | `dct:created` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
+| *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *type* | `dct:type` | Simplification d'une source de vocabulaire contrôlé, suppression d'une autre. | Le registre INSPIRE des types de ressources n'est pas utilisé, car seule sa valeur `'Spatial data set'` aurait un sens pour une relation PostgreSQL. Le [registre EU](https://op.europa.eu/s/vM9N) est expurgé de quelques valeurs difficiles à rendre intelligibles des utilisateurs de Plume et qui ne sont de toute façon pas susceptibles d'être utilisées pour des relations PostgreSQL. |
+| *update / modification date* | `dct:modified` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 
 Les propriétés suivantes sont ajoutées par Plume :
 
@@ -207,7 +232,24 @@ _Classe `dct:LicenseDocument`._
 
 Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
 
-## Services de données
+## Métrique
+
+_Classe `dqv:Metric`._
+
+Cette classe n'est pas prise en charge.
+
+## Période
+
+_Classe `dct:PeriodOfTime`._
+
+Les propriétés suivantes sont modifiées par Plume :
+
+| Propriété | IRI | Nature de la modification | Commentaire |
+| --- | --- | --- | --- |
+| *end date* | `dcat:endDate` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
+| *start date* | `dcat:startDate` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
+
+## Service de données
 
 _Classe `dcat:DataService`._
 
@@ -245,6 +287,7 @@ Les propriétés suivantes sont modifiées par Plume :
 | *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
 | *conforms to* | `dct:conformsTo` | Ajout d'une source de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose un thésaurus maison contenant les URI des principaux standards utilisés pour les services de données géographiques. |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
+| *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *type* | `dct:type` | Changement de source de vocabulaire contrôlé. | Avec le registre INSPIRE, il s'agirait d'une propriété à valeur fixe (`<http://inspire.ec.europa.eu/metadata-codelist/ResourceType/service>`), redondante avec l'existence même d'un service de données, ce qui présente peu d'intérêt. Plume utilise à la place le [registre EU](https://op.europa.eu/s/vM9M). |
 
 ## Somme de contrôle
@@ -253,8 +296,14 @@ _Classe `spdx:Checksum`._
 
 Cette classe n'est pas prise en charge.
 
+## Type de média
+
+_Classe `dct:MediaType`._
+
+Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
+
 ## Type de média ou extension
 
 _Classe `dct:MediaTypeOrExtent`._
 
-GeoDCAT-AP n'associe aucune propriété à cette classe. Plume ajoute une propriété `rdfs:label` pour la saisie manuelle, comme le fait déjà GeoDCAT-AP pour la classe `dct:MediaType`.
+GeoDCAT-AP n'associe aucune propriété à cette classe. Plume ajoute une propriété `rdfs:label` pour la saisie manuelle, comme le fait déjà GeoDCAT-AP pour la classe [`dct:MediaType`](#type-de-média).
