@@ -2,7 +2,7 @@
 
 _Référence : GeoDCAT-AP Version 2.0.0 - https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0_.
 
-Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble-de-concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
+Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble de concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
 
 ## Généralités
 
@@ -81,6 +81,12 @@ Des propriétés supplémentaires peuvent être disponibles pour certains concep
 
 Seul l'IRI du concept est enregistré dans les métadonnées.
 
+## Déclaration de droits
+
+_Classe `dct:RightsStatement`._
+
+Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
+
 ## Distribution
 
 _Classe `dcat:Distribution`._
@@ -111,9 +117,9 @@ Les propriétés suivantes sont modifiées par Plume :
 
 Les propriétés suivantes sont ajoutées par Plume :
 
-| IRI | Description | Commentaire |
-| --- | --- | --- |
-| `dct:type` | Type de distribution. | Bizaremment non présent dans DCAT-AP et GeoDCAT-AP alors qu'il existe un [thésaurus dédié](https://op.europa.eu/s/vNbJ) dans le registre européen. |
+| IRI | Classe de l'objet | Cardinalité | Description |
+| --- | --- | --- | --- |
+| `dct:type` | `skos:Concept` | `0..1` | Type de distribution. Bizaremment non présent dans DCAT-AP et GeoDCAT-AP alors qu'il existe un [thésaurus dédié](https://op.europa.eu/s/vNbJ) dans le registre européen. |
 
 ## Document
 
@@ -172,10 +178,10 @@ Cette classe est ajoutée par Plume. Elle représente une fiche de métadonnées
 
 Propriétés :
 
-| IRI | Description |
-| --- | --- |
-| `dcat:endpointURL` | URL de base du service CSW, sans aucun paramètre. |
-| `dct:identifier` | Identifiant de la fiche de métadonnées. |
+| IRI | Classe de l'objet | Cardinalité | Description |
+| --- | --- | --- | --- |
+| `dcat:endpointURL` | [`rdfs:Resource`](#ressource) | `0..1` | URL de base du service CSW, sans aucun paramètre. |
+| `dct:identifier` | `rdfs:Literal type as xsd:string` | `0..1` | Identifiant de la fiche de métadonnées. |
 
 ## Généalogie
 
@@ -222,15 +228,21 @@ Les propriétés suivantes sont modifiées par Plume :
 
 Les propriétés suivantes sont ajoutées par Plume :
 
-| IRI | Description |
-| --- | --- |
-| | |
+| IRI | Classe de l'objet | Cardinalité | Description |
+| --- | --- | --- | --- |
+| `foaf:isPrimaryTopicOf` | [`dcat:CatalogRecord`](#enregistrement-du-catalogue) | `1..1` | Métadonnées sur les métadonnées. Cette propriété est gérée automatiquement par Plume. |
 
 ## Licence
 
 _Classe `dct:LicenseDocument`._
 
 Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
+
+## Mesure de qualité
+
+_Classe `dqv:QualityMeasurement`._
+
+Cette classe n'est pas prise en charge.
 
 ## Métrique
 
@@ -248,6 +260,18 @@ Les propriétés suivantes sont modifiées par Plume :
 | --- | --- | --- | --- |
 | *end date* | `dcat:endDate` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *start date* | `dcat:startDate` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
+
+## Relation
+
+_Classe `dcat:Relationship`._
+
+Cette classe n'est pas prise en charge.
+
+## Ressource
+
+_Classe `rdfs:Resource`._
+
+GeoDCAT-AP n'associe explicitement aucune propriété à cette classe. De la même façon, Plume propose à l'utilisateur de saisir des URL pour les propriétés qui ont des valeurs de ce type et traite lesdites URL comme des IRI.
 
 ## Service de données
 
@@ -296,6 +320,31 @@ _Classe `spdx:Checksum`._
 
 Cette classe n'est pas prise en charge.
 
+## Standard
+
+_Classe `dct:Standard`._
+
+Les propriétés suivantes ne sont pas prises en charge par Plume :
+
+| Propriété | IRI | Commentaire |
+| --- | --- | --- |
+| *type* | `dct:type` | Il n'existe pas de vocabulaire contrôlé à ce stade et l'approche évoquée par GeoDCAT-AP (à savoir lister ces deux IRI : http://inspire.ec.europa.eu/glossary/CRS et http://inspire.ec.europa.eu/glossary/TemporalReferenceSystem) n'apporte pas grand chose - on préférera encourager l'usage de la propriété `skos:inScheme` ou, mieux, l'utilisation des thésaurus plutôt que la saisie manuelle pour les propriétés `dct:conformsTo`. |
+
+Les propriétés suivantes sont modifiées par Plume :
+
+| Propriété | IRI | Nature de la modification | Commentaire |
+| --- | --- | --- | --- |
+| *creation date* | `dct:created` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
+| *reference register* | `skos:inScheme` | Ajout d'une source de vocabulaire contrôlé. | Thésaurus maison `snum:StandardsRegister`, qui ne référence à date que le registre EPSG de l'OGC. |
+| *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
+| *update / modification date* | `dct:modified` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
+
+Les propriétés suivantes sont ajoutées par Plume :
+
+| IRI | Classe de l'objet | Cardinalité | Description |
+| --- | --- | --- | --- |
+| `foaf:page` | [`foaf:Document`](#document) | `0..n` | Chemin d'accès au standard ou URL d'une page contenant des informations sur le standard. Considérant que la majorité des standards de données géographiques n'ont pas d'URI à ce jour, les référencer dans un thésaurus n'est pas envisageable. Les utilisateurs devront les saisir manuellement et qu'ils puissent malgré tout renseigner une URL d'accès paraît essentiel. |
+
 ## Type de média
 
 _Classe `dct:MediaType`._
@@ -307,3 +356,9 @@ Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
 _Classe `dct:MediaTypeOrExtent`._
 
 GeoDCAT-AP n'associe aucune propriété à cette classe. Plume ajoute une propriété `rdfs:label` pour la saisie manuelle, comme le fait déjà GeoDCAT-AP pour la classe [`dct:MediaType`](#type-de-média).
+
+Les propriétés suivantes sont ajoutées par Plume :
+
+| IRI | Classe de l'objet | Cardinalité | Description |
+| --- | --- | --- | --- |
+| `rdfs:label` | `rdfs:Literal typed as rdf:langString` | `0..n` (une valeur par langue) | Libellé du format. |
