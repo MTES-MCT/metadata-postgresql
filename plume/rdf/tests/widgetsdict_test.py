@@ -1754,13 +1754,13 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict[c]['value'], 'https://www.postgresql.org/docs/14/index.html')
 
         # --- téléphone ---
-        c = widgetsdict.root.search_from_path(DCAT.contactPoint / VCARD.hasTelephone)
+        c = widgetsdict.root.search_from_path(DCAT.contactPoint / VCARD.hasTelephone).children[0]
         widgetsdict.update_value(c, '0123456789')
         self.assertEqual(c.value, URIRef('tel:+33-1-23-45-67-89'))
         self.assertEqual(widgetsdict[c]['value'], '+33-1-23-45-67-89')
 
         # --- mél ---
-        c = widgetsdict.root.search_from_path(DCAT.contactPoint / VCARD.hasEmail)
+        c = widgetsdict.root.search_from_path(DCAT.contactPoint / VCARD.hasEmail).children[0]
         widgetsdict.update_value(c, 'service@developpement-durable.gouv.fr')
         self.assertEqual(c.value, URIRef('mailto:service@developpement-durable.gouv.fr'))
         self.assertEqual(widgetsdict[c]['value'], 'service@developpement-durable.gouv.fr')
