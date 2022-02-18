@@ -655,7 +655,7 @@ snum:LicenseDocumentShape
     sh:property [
 		sh:path dct:type ;
 		sh:name "Type"@fr ;
-        sh:decision "Caractéristiques de la licence."@fr ;
+        sh:description "Caractéristiques de la licence."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:order 1 ;
@@ -664,7 +664,7 @@ snum:LicenseDocumentShape
     sh:property [
 		sh:path rdfs:label ;
 		sh:name "Termes"@fr ;
-        sh:decision "Termes de la licence."@fr ;
+        sh:description "Termes de la licence."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype rdf:langString ;
         sh:uniqueLang true ;
@@ -727,6 +727,7 @@ snum:PeriodOfTimeShape
     sh:property [
 		sh:path dcat:startDate ;
 		sh:name "Date de début"@fr ;
+        sh:description "Date de début de la période."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
@@ -737,6 +738,7 @@ snum:PeriodOfTimeShape
     sh:property [
 		sh:path dcat:endDate ;
 		sh:name "Date de fin"@fr ;
+        sh:description "Date de fin de la période."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:date ;
         sh:maxCount 1 ;
