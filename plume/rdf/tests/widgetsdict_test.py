@@ -102,6 +102,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         d = {
             'label': 'Date de début',
             'has label': True,
+            'help text': 'Date de début de la période.',
             'main widget type': 'QDateEdit',
             'object': 'edit',
             'input mask': '9999-99-99',
