@@ -1937,6 +1937,11 @@ snum:DataServiceStandard a skos:ConceptScheme ;
 	skos:prefLabel "Thesaurus"@en,
 		"Thésaurus"@fr .
 
+<http://publications.europa.eu/resource/authority/dataset-type/APROF> a skos:Concept ;
+	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+	skos:prefLabel "Application profile"@en,
+		"Profil d'application"@fr .
+
 <http://publications.europa.eu/resource/authority/dataset-type> a skos:ConceptScheme ;
     skos:prefLabel "Types de jeux de données (UE)"@fr,
         "Dataset type (EU)"@en .
