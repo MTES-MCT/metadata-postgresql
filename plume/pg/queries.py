@@ -523,7 +523,7 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     À noter que le résultat est une géométrie dont le
     système de coordonnées n'est pas explicité. Il faudra
     le récupérer via :py:func:`query_get_geom_srid`, puis
-    appliquer la fonction :py:fun:`plume.rdf.utils.wkt_with_srid`
+    appliquer la fonction :py:func:`plume.rdf.utils.wkt_with_srid`
     pour obtenir la représention du rectangle d'emprise
     attendue en RDF:
     
@@ -581,7 +581,7 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     À noter que le résultat est une géométrie dont le
     système de coordonnées n'est pas explicité. Il faudra
     le récupérer via :py:func:`query_get_geom_srid`, puis
-    appliquer la fonction :py:fun:`plume.rdf.utils.wkt_with_srid`
+    appliquer la fonction :py:func:`plume.rdf.utils.wkt_with_srid`
     pour obtenir la représention du centroïde attendue en RDF:
     
         >>> from plume.rdf.utils import wkt_with_srid
