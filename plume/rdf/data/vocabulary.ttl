@@ -2216,6 +2216,10 @@ snum:StandardsRegister a skos:ConceptScheme ;
     skos:inScheme <http://www.opengis.net/def/crs/EPSG/0> ;
     skos:prefLabel "EPSG 4326 : WGS 84" .
 
+<http://www.opengis.net/def/crs/EPSG/0/9794> a skos:Concept ;
+    skos:inScheme <http://www.opengis.net/def/crs/EPSG/0> ;
+    skos:prefLabel "EPSG 9794 : RGF93 v2b / Lambert-93 (France métropolitaine)" .
+
 <http://www.opengis.net/def/crs/EPSG/0> a skos:ConceptScheme ;
     skos:prefLabel "Système de coordonnées (registre EPSG de l'OGC)"@fr,
         "EPSG coordinate reference systems (OGC register)"@en.
