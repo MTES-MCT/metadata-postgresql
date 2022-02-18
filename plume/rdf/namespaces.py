@@ -15,6 +15,7 @@ FOAF = Namespace('http://xmlns.com/foaf/0.1/')
 GEODCAT = Namespace('http://data.europa.eu/930/')
 GSP = Namespace('http://www.opengis.net/ont/geosparql#')
 LOCN = Namespace('http://www.w3.org/ns/locn#')
+ORG = Namespace('http://www.w3.org/ns/org#')
 OWL = Namespace('http://www.w3.org/2002/07/owl#')
 PROV = Namespace('http://www.w3.org/ns/prov#')
 RDF = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -39,6 +40,7 @@ namespaces = {
     'geodcat': GEODCAT,
     'gsp': GSP,
     'locn': LOCN,
+    'org': ORG,
     'owl': OWL,
     'prov': PROV,
     'rdf': RDF,
@@ -60,8 +62,27 @@ predicate_map = {
 """Mapping de prédicats qui ont notoirement tendance à être mal écrits.
 
 Coquilles, formes obsolètes... Ce dictionnaire sert notamment au nettoyage
-des graphes importées de sources externes par la fonction 
+des graphes importés de sources externes par la fonction 
 :py:func:`plume.rdf.metagraph.clean_metagraph`.
+
+"""
+
+class_map = {
+    ORG.Organization: FOAF.Agent,
+    FOAF.Organization: FOAF.Agent,
+    ORG.OrganizationalUnit: FOAF.Agent,
+    ORG.FormalOrganization: FOAF.Agent,
+    VCARD.Individual: VCARD.Kind,
+    VCARD.Organization: VCARD.Kind,
+    VCARD.Location: VCARD.Kind,
+    VCARD.Group: VCARD.Kind
+    }
+"""Mapping de classes.
+
+Principalement des sous-classes susceptibles d'apparaître dans
+des graphes importés de sources externes, qui sont mappées
+vers la classe parente utilisée par Plume. Ce dictionnaire sert
+notamment à la fonction :py:func:`plume.rdf.metagraph.clean_metagraph`.
 
 """
 
