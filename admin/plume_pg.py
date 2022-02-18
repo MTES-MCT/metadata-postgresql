@@ -1,5 +1,9 @@
 """Administration des données de l'extension PostgreSQL PlumePg.
 
+Pour regénérer la requête d'import des métadonnées communes:
+
+    >>> query_from_shape()
+
 """
 
 import re
