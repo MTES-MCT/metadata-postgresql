@@ -54,8 +54,8 @@ class InternalDict(dict):
       de choisir l'unité de la valeur qu'il est en train de saisir. À créer lorsque la
       valeur de la clé ``units`` n'est pas ``None``.
     * ``geo widget`` : widget annexe de type ``QToolButton`` proposant des fonctionnalités
-    d'aide à la saisie des géométries. À créer lorsque la valeur de la clé ``geo tools``
-    n'est pas ``None``.
+      d'aide à la saisie des géométries. À créer lorsque la valeur de la clé ``geo tools``
+      n'est pas ``None``.
     
     En complément, des clés sont prévues pour les ``QMenu`` et ``QAction`` associés à certains
     widgets boutons.
