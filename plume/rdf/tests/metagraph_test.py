@@ -4,10 +4,55 @@ import unittest
 from plume.rdf.rdflib import isomorphic, URIRef, Literal
 from plume.rdf.utils import abspath, data_from_file, DatasetId
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, \
-    metagraph_from_iso
+    metagraph_from_iso, clean_metagraph
 from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF
 
 class MetagraphTestCase(unittest.TestCase):
+
+    def test_clean_metagraph_classmap(self):
+        """Nettoyage d'un graphe avec mapping de classes et de prédicats.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix org: <http://www.w3.org/ns/org#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dct:creator [ a org:Organization ;
+                    foaf:name "IGN"@fr ] ;
+                dcat:pointOfContact [ a vcard:Organization ;
+                    vcard:fn "Un service de l'IGN"@fr ;
+                    vcard:organisation-name "Institut géographique national"@fr ] .
+            """
+        raw_metagraph = Metagraph().parse(data=metadata)
+        metagraph = clean_metagraph(raw_metagraph, raw_metagraph)
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix org: <http://www.w3.org/ns/org#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dct:creator [ a foaf:Agent ;
+                    foaf:name "IGN"@fr ] ;
+                dcat:pointOfContact [ a vcard:Kind ;
+                    vcard:fn "Un service de l'IGN"@fr ;
+                    vcard:organization-name "Institut géographique national"@fr ] .
+            """
+        new_metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph, new_metagraph))
 
     def test_update_metadata_date(self):
         """Mise à jour de la date de modification des métadonnées.
