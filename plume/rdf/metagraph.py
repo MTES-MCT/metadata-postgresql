@@ -8,7 +8,7 @@ from time import strftime, localtime
 
 from plume.rdf.rdflib import Graph, URIRef, BNode, Literal
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
-    LOCAL, SNUM, DCT, FOAF, XSD, predicate_map
+    LOCAL, SNUM, DCT, FOAF, XSD, predicate_map, class_map
 from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
     export_extension_from_format, export_format_from_extension, export_formats, \
     forbidden_char
@@ -232,15 +232,12 @@ class Metagraph(Graph):
         return l
 
     def _clean_metagraph(self, raw_metagraph, raw_subject, triple, memory):
-        l = [(p, o) for p, o in raw_metagraph.predicate_objects(raw_subject)]
-        
-        # si la liste ne contient que la classe de l'IRI
-        # ou du noeud anonyme, on passe
-        if (len(l) == 1 and l[0][0] == RDF.type):
-            l = []
+        l = [(p, o) for p, o in raw_metagraph.predicate_objects(raw_subject) \
+            if not p == RDF.type]
         
         if l:
-            rdfclass = raw_metagraph.value(raw_subject, RDF.type)
+            raw_rdfclass = raw_metagraph.value(raw_subject, RDF.type)
+            rdfclass = class_map.get(raw_rdfclass, raw_rdfclass)
             # s'il n'y a pas de classe, ou que la classe n'est pas décrite
             # dans shape, un IRI ou Literal sera écrit tel quel,
             # sans ses descendants, un BNode est effacé
@@ -249,6 +246,8 @@ class Metagraph(Graph):
                 l = []
                 if isinstance(raw_subject, BNode):
                     return
+            else:
+                l.append((RDF.type, rdfclass))
 
         # suppression des noeuds anonymes terminaux
         if not l and isinstance(raw_subject, BNode):
