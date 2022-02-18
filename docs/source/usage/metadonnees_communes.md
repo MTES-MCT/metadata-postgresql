@@ -17,8 +17,8 @@
 | `dct:spatial / dcat:centroid` | Centroïde | Localisant du centre géographique des données, au format textuel WKT. |  |
 | `dct:spatial / locn:geometry` | Géométrie | Emprise géométrique, au format textuel WKT. |  |
 | `dct:temporal` | Couverture temporelle | Période·s décrite·s par le jeu de données. La date de début et la date de fin peuvent être confondues, par exemple dans le cas de l'extraction ponctuelle d'une base mise à jour au fil de l'eau. |  |
-| `dct:temporal / dcat:startDate` | Date de début |  |  |
-| `dct:temporal / dcat:endDate` | Date de fin |  |  |
+| `dct:temporal / dcat:startDate` | Date de début | Date de début de la période. |  |
+| `dct:temporal / dcat:endDate` | Date de fin | Date de fin de la période. |  |
 | `dct:created` | Date de création | Date de création du jeu de données. Il peut par exemple s'agir de la date de création de la table PostgreSQL ou de la date de la première saisie de données dans cette table. |  |
 | `dct:modified` | Date de dernière modification | Date de la dernière modification du jeu de données. Cette date est présumée tenir compte tant des modifications de fond, tels que les ajouts d'enregistrements, que des modification purement formelles (corrections de coquilles dans les données, changement de nom d'un champ, etc.). L'absence de date de dernière modification signifie que la donnée n'a jamais été modifiée depuis sa création. |  |
 | `dct:issued` | Date de publication | Date à laquelle le jeu de données a été diffusé. Cette date ne devrait être renseignée que pour un jeu de données effectivement mis à disposition du public ou d'utilisateur tiers via un catalogue de données ou un site internet. Pour un jeu de données mis à jour en continu, il s'agit de la date de publication initiale. |  |
@@ -142,8 +142,8 @@
 | `dcat:distribution / dcat:accessService / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès au service. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations) |
 | `dcat:distribution / dcat:accessService / dct:accessRights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
 | `dcat:distribution / dcat:accessService / dct:license` | Licence | Licence de mise à diposition des données via le service, ou conditions d'utilisation du service. | [Licences admises pour les informations publiques des administrations françaises](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
-| `dcat:distribution / dcat:accessService / dct:license / dct:type` | Type |  | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
-| `dcat:distribution / dcat:accessService / dct:license / rdfs:label` | Termes |  |  |
+| `dcat:distribution / dcat:accessService / dct:license / dct:type` | Type | Caractéristiques de la licence. | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
+| `dcat:distribution / dcat:accessService / dct:license / rdfs:label` | Termes | Termes de la licence. |  |
 | `dcat:distribution / dcat:accessService / dcat:contactPoint` | Point de contact | Entité à contacter pour obtenir des informations sur le service. |  |
 | `dcat:distribution / dcat:accessService / dcat:contactPoint / vcard:fn` | Nom | Nom du point de contact. |  |
 | `dcat:distribution / dcat:accessService / dcat:contactPoint / vcard:hasEmail` | Courriel | Adresse mél. |  |
@@ -179,8 +179,8 @@
 | `dcat:distribution / dcat:accessService / dct:spatial / locn:geometry` | Géométrie | Emprise géométrique, au format textuel WKT. |  |
 | `dcat:distribution / dcat:accessService / dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Résolution des données mises à disposition par le service, exprimée en mètres. |  |
 | `dcat:distribution / dcat:accessService / dct:temporal` | Couverture temporelle | Période pour laquelle des données sont mises à disposition par le service. |  |
-| `dcat:distribution / dcat:accessService / dct:temporal / dcat:startDate` | Date de début |  |  |
-| `dcat:distribution / dcat:accessService / dct:temporal / dcat:endDate` | Date de fin |  |  |
+| `dcat:distribution / dcat:accessService / dct:temporal / dcat:startDate` | Date de début | Date de début de la période. |  |
+| `dcat:distribution / dcat:accessService / dct:temporal / dcat:endDate` | Date de fin | Date de fin de la période. |  |
 | `dcat:distribution / dcat:accessService / dcat:temporalResolution` | Résolution temporelle | Résolution temporelle des données mises à disposition par le service. |  |
 | `dcat:distribution / adms:representationTechnique` | Mode de représentation géographique | Type de représentation technique de l'information géographique présentée par la distribution, le cas échéant. | [Type de représentation géographique (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType) |
 | `dcat:distribution / foaf:page` | Documentation | Documentation ou page internet contenant des informations relative à la distribution. |  |
@@ -202,8 +202,8 @@
 | `dcat:distribution / dct:rights` | Propriété intellectuelle | Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données. |  |
 | `dcat:distribution / dct:rights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
 | `dcat:distribution / dct:license` | Licence | Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution. | [Licences admises pour les informations publiques des administrations françaises](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
-| `dcat:distribution / dct:license / dct:type` | Type |  | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
-| `dcat:distribution / dct:license / rdfs:label` | Termes |  |  |
+| `dcat:distribution / dct:license / dct:type` | Type | Caractéristiques de la licence. | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
+| `dcat:distribution / dct:license / rdfs:label` | Termes | Termes de la licence. |  |
 | `dcat:distribution / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès à la distribution. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations) |
 | `dcat:distribution / dct:accessRights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
 | `dcat:landingPage` | Page internet | URL de la fiche de métadonnées sur internet. |  |
