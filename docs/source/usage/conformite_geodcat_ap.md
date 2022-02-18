@@ -2,7 +2,7 @@
 
 _Référence : GeoDCAT-AP Version 2.0.0 - https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0_.
 
-Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble de concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Ressource](#ressource) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
+Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble de concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Fréquence](#fréquence) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Ressource](#ressource) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Système linguistique](#système-linguistique) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
 
 ## Généralités
 
@@ -13,16 +13,17 @@ Les métadonnées RDF produites par Plume ont les spécificités suivantes :
 - Aucun IRI ne peut être sujet d'un triplet hormis l'identifiant du jeu de données. Ainsi, tous les autres sujets sont des noeuds anonymes.
     Concrètement, pour les propriétés pouvant admettre comme objets des IRI et telles que GeoDCAT-AP définit des propriétés explicites pour la classe de l'objet, l'utilisateur de Plume aura la possibilité de choisir entre renseigner un IRI sans aucune propriété attachée (soit en saisie libre, soit choisi dans un thésaurus), ou renseigner manuellement les propriétés attachées sans saisir d'IRI. Le sujet des propriétés sera alors un noeud anonyme. Ceci concerne par exemple la propriété `dct:license` et ses objets `dct:LicenseDocument`.
 - Avec Plume, les propriétés sont identifiées par leur IRI. Dès lors, il n'est pas possible de distinguer des propriétés différentes rattachées à un même IRI comme le fait GeoDCAT-AP avec par exemple les propriétés des services de données ([`dcat:DataService`](#service-de-données)) *service category*, *service type* et *type*, toutes trois correspondant à l'IRI `dct:type`, ou encore les propriétés *conforms to* et *reference system* des jeux de données (`dcat:Dataset`), dont l'IRI est dans les deux cas `dct:conformsTo`.
-- Plume ne permet pas de choisir entre plusieurs types de littéral pour une propriété donnée. Dès lors, toutes les géométries sont exprimées comme `gsp:wktLiteral` (alors que GeoDCAT-AP admet aussi le type `gsp:gmlLiteral`) et toutes les dates soit comme `xsd:date` soit comme `xsd:dateTime`, alors que GeoDCAT-AP permet en principe de mélanger les deux pour une même propriété.
+- Plume ne permet pas de choisir entre plusieurs types de littéral pour une propriété donnée. Dès lors, toutes les géométries sont exprimées comme `gsp:wktLiteral` (alors que GeoDCAT-AP admet aussi le type `gsp:gmlLiteral`) et toutes les dates soit comme `xsd:date` soit comme `xsd:dateTime`, alors que GeoDCAT-AP permet en principe de mélanger les deux pour une même propriété. Plus généralement, lorsque Plume reçoit une valeur qui n'est pas du type attendu, il tentera de la convertir et, en cas d'échec, l'effacera[^validation].
 - De même, la classe de l'objet d'une propriété est fixe et unique avec Plume. Lorsque l'agent est une organisation, GeoDCAT-AP recommande l'usage des classes `org:Organization`, `org:OrganizationalUnit` et `org:FormalOrganization` de l'[Ontologie des organisations VOCAB-ORG](https://www.w3.org/TR/vocab-org/) au lieu de `foaf:Agent`, mais Plume en reste à [`foaf:Agent`](#agent). De même, Plume utilise la classe [`vcard:Kind`](#entité) et non ses sous-classes `vcard:Individual`, `vcard:Organization`, `vcard:Location` et `vcard:Group` pour représenter les entités. Ces sous-classes seront toutefois reconnues à l'import, et Plume leur substituera `foaf:Agent` ou `vcard:Kind` selon le cas.
+- Plume tolère qu'une propriété supposée n'admettre qu'une seule valeur en ait *de facto* plusieurs. L'utilisateur les verra dans l'interface, pourra les modifier ou les supprimer, mais pas en ajouter d'autres (pas de bouton ![plus_button.svg](/plume/icons/buttons/plus_button.svg)). Elles sont sauvegardées normalement.
 
 [^uuid-valide]: Plume vérifie aussi que l'identifiant est un UUID valide. S'il avait été corrompu (là encore nécessairement par une manipulation externe à Plume), il serait remplacé à la première sauvegarde dans l'interface de saisie de Plume.
+
+[^validation]: Ce mécanisme de validation est mise en oeuvre par la méthode `update_value` de la classe `plume.rdf.widgetsdict.WidgetsDict` lors de la [sauvegarde des métadonnées par l'utilisateur](/docs/source/usage/actions_generales.md#sauvegarde) et non au moment de l'import depuis une source externe. L'utilisateur a ainsi la possibilité de contrôler visuellement les valeurs.
 
 Lorsque des métadonnées externes sont importées via les fonctionnalités de Plume, elles sont retraitées pour être conformes à ces règles ou deviennent conformes de fait compte tenu des mécanismes internes de Plume.
 
 Les propriétés prévues par GeoDCAT-AP mais non gérées par Plume, les propriétés de GeoDCAT-AP sur lesquelles des modifications ont été opérées, et les propriétés ajoutées par Plume sont listées dans la suite.
-
-D'une manière générale, on pourra noter que, pour l'heure, Plume ne prend pas en charge toutes les propriétés visant à établir des relations entre jeux de données.
 
 ## Activité
 
@@ -76,7 +77,7 @@ Cette classe n'est pas prise en charge.
 
 _Classe `skos:Concept`._
 
-Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier [vocabulary.ttl](/plume/rdf/data/vocabulary.ttl)). Pour chaque concept, celui-ci présente obligatoirement les propriétés *category scheme* (`skos:inScheme`) et *preferred label* (`skos:prefLabel`), avec le plus souvent une valeur en anglais et une valeur en français.
+Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier [vocabulary.ttl](/plume/rdf/data/vocabulary.ttl)). Pour chaque concept, celui-ci présente obligatoirement les propriétés *category scheme* (`skos:inScheme`) et *preferred label* (`skos:prefLabel`), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d'origine n'en contenait pas.
 
 Des propriétés supplémentaires peuvent être disponibles pour certains concepts, dont une seule utilisée à ce stade par Plume : `foaf:page`. Celle-ci fournit l'URL d'une page web pertinente pour le concept. En mode lecture, la métadonnée portera un hyperlien pointant sur cette page ou, à défaut, sur l'IRI du concept.
 
@@ -148,7 +149,7 @@ _Classe `dcat:CatalogRecord`._
 
 Dans le contexte de Plume, la classe `dcat:CatalogRecord` sert exclusivement à renseigner les métadonnées sur les métadonnées. Elle est introduite par la propriété `foaf:isPrimaryTopicOf` dans la description d'un `dcat:Dataset`, et le sujet du triplet `[] a dcat:CatalogRecord` est toujours un noeud anonyme.
 
-Pour l'heure, la seule propriété de cette classe qui soit prise en charge par Plume est *update / modification date* - `dct:modified` -, que Plume renseigne automatiquement.
+Pour l'heure, la seule propriété de cette classe qui soit prise en charge par Plume est *update / modification date* - `dct:modified` -, que Plume renseigne automatiquement à chaque sauvegarde.
 
 ## Ensemble de concepts
 
@@ -185,6 +186,12 @@ Propriétés :
 | --- | --- | --- | --- |
 | `dcat:endpointURL` | [`rdfs:Resource`](#ressource) | `0..1` | URL de base du service CSW, sans aucun paramètre. |
 | `dct:identifier` | `rdfs:Literal type as xsd:string` | `0..1` | Identifiant de la fiche de métadonnées. |
+
+## Fréquence
+
+_Classe `dct:Frequency`._
+
+Cette classe est prise en charge selon les mêmes modalités que [`skos:Concept`](#concept).
 
 ## Généalogie
 
@@ -224,7 +231,8 @@ Les propriétés suivantes sont modifiées par Plume :
 | --- | --- | --- | --- |
 | *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison `snum:CrpaAccessLimitations` qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
 | *creation date* | `dct:created` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
-| *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
+| *identifier* | `dct:identifier` | Verrouillé. | Avec Plume l'identifiant présenté dans `dct:identifier` est toujours l'IRI du `dcat:Dataset`. Plume s'en assure à chaque chargement de la fiche de métadonnées. |
+| *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857) et EPSG 4326. Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
 | *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *type* | `dct:type` | Simplification d'une source de vocabulaire contrôlé, suppression d'une autre. | Le registre INSPIRE des types de ressources n'est pas utilisé, car seule sa valeur `'Spatial data set'` aurait un sens pour une relation PostgreSQL. Le [registre EU](https://op.europa.eu/s/vM9N) est expurgé de quelques valeurs difficiles à rendre intelligibles des utilisateurs de Plume et qui ne sont de toute façon pas susceptibles d'être utilisées pour des relations PostgreSQL. |
 | *update / modification date* | `dct:modified` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
@@ -349,6 +357,12 @@ Les propriétés suivantes sont ajoutées par Plume :
 | IRI | Classe de l'objet | Cardinalité | Description |
 | --- | --- | --- | --- |
 | `foaf:page` | [`foaf:Document`](#document) | `0..n` | Chemin d'accès au standard ou URL d'une page contenant des informations sur le standard. Considérant que la majorité des standards de données géographiques n'ont pas d'URI à ce jour, les référencer dans un thésaurus n'est pas envisageable. Les utilisateurs devront les saisir manuellement et qu'ils puissent malgré tout renseigner une URL d'accès paraît essentiel. |
+
+## Système linguistique
+
+_Classe `dct:LinguisticSystem`._
+
+Cette classe est prise en charge selon les mêmes modalités que [`skos:Concept`](#concept).
 
 ## Type de média
 
