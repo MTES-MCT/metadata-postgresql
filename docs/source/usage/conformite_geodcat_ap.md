@@ -7,13 +7,14 @@ Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adr
 ## Généralités
 
 Les métadonnées RDF produites par Plume ont les spécificités suivantes :
-- Si elles ne sont pas vides, elles contiennent un et un seul objet de classe `dcat:Dataset`.
+- Si elles ne sont pas vides, elles contiennent un et un seul objet de classe [`dcat:Dataset`](#jeu-de-données).
 - L'identifiant du `dcat:Dataset` (sujet de ses propriétés et rappelé en objet de la propriété `dct:identifier`) est un URN. Ex : `<urn:uuid:e0479f0f-c6f7-4127-87bc-137d34113a86> a dcat:Dataset`.
     Cet identifiant est généré par Plume lors de la première saisie de métadonnées sur l'objet PostgreSQL. Il est pérenne, sauf à ce que les métadonnées contenues dans le descriptif PostgreSQL soit détruites par une manipulation externes à Plume[^uuid-valide].
 - Aucun IRI ne peut être sujet d'un triplet hormis l'identifiant du jeu de données. Ainsi, tous les autres sujets sont des noeuds anonymes.
     Concrètement, pour les propriétés pouvant admettre comme objets des IRI et telles que GeoDCAT-AP définit des propriétés explicites pour la classe de l'objet, l'utilisateur de Plume aura la possibilité de choisir entre renseigner un IRI sans aucune propriété attachée (soit en saisie libre, soit choisi dans un thésaurus), ou renseigner manuellement les propriétés attachées sans saisir d'IRI. Le sujet des propriétés sera alors un noeud anonyme. Ceci concerne par exemple la propriété `dct:license` et ses objets `dct:LicenseDocument`.
-- Avec Plume, les propriétés sont identifiées par leur IRI. Dès lors, il n'est pas possible de distinguer des propriétés différentes rattachées à un même IRI comme le fait GeoDCAT-AP avec par exemple les propriétés des services de données (`dcat:DataService`) *service category*, *service type* et *type*, toutes trois correspondant à l'IRI `dct:type`, ou encore les propriétés *conforms to* et *reference system* des jeux de données (`dcat:Dataset`), dont l'IRI est dans les deux cas `dct:conformsTo`.
+- Avec Plume, les propriétés sont identifiées par leur IRI. Dès lors, il n'est pas possible de distinguer des propriétés différentes rattachées à un même IRI comme le fait GeoDCAT-AP avec par exemple les propriétés des services de données ([`dcat:DataService`](#service-de-données)) *service category*, *service type* et *type*, toutes trois correspondant à l'IRI `dct:type`, ou encore les propriétés *conforms to* et *reference system* des jeux de données (`dcat:Dataset`), dont l'IRI est dans les deux cas `dct:conformsTo`.
 - Plume ne permet pas de choisir entre plusieurs types de littéral pour une propriété donnée. Dès lors, toutes les géométries sont exprimées comme `gsp:wktLiteral` (alors que GeoDCAT-AP admet aussi le type `gsp:gmlLiteral`) et toutes les dates soit comme `xsd:date` soit comme `xsd:dateTime`, alors que GeoDCAT-AP permet en principe de mélanger les deux pour une même propriété.
+- De même, la classe de l'objet d'une propriété est fixe et unique avec Plume. Lorsque l'agent est une organisation, GeoDCAT-AP recommande l'usage des classes `org:Organization`, `org:OrganizationalUnit` et `org:FormalOrganization` de l'[Ontologie des organisations VOCAB-ORG](https://www.w3.org/TR/vocab-org/) au lieu de `foaf:Agent`, mais Plume en reste à [`foaf:Agent`](#agent). De même, Plume utilise la classe [`vcard:Kind`](#entité) et non ses sous-classes `vcard:Individual`, `vcard:Organization`, `vcard:Location` et `vcard:Group` pour représenter les entités. Ces sous-classes seront toutefois reconnues à l'import, et Plume leur substituera `foaf:Agent` ou `vcard:Kind` selon le cas.
 
 [^uuid-valide]: Plume vérifie aussi que l'identifiant est un UUID valide. S'il avait été corrompu (là encore nécessairement par une manipulation externe à Plume), il serait remplacé à la première sauvegarde dans l'interface de saisie de Plume.
 
@@ -50,7 +51,7 @@ Les propriétés suivantes ne sont pas prises en charge par Plume :
 | Propriété | IRI | Commentaire |
 | --- | --- | --- |
 | *address* | `locn:address` | |
-| *affiliation* | `org:memberOf` | GeoDCAT-AP prévoit que cette propriété ait des objets de classe `org:Organization` - donc pas une valeur littérale comme le `vcard:organization-name` de [`vcard:Kind`](#entité) - et sans associer explicitement de propriétés à cette classe. |
+| *affiliation* | `org:memberOf` | GeoDCAT-AP prévoit que cette propriété ait des objets de classe `org:Organization` - donc pas une valeur littérale comme le `vcard:organization-name` de [`vcard:Kind`](#entité) - et sans associer explicitement de propriétés à cette classe, même si on peut supposer qu'il s'agirait des mêmes que `foaf:Agent`. |
 
 Les propriétés suivantes sont modifiées par Plume :
 
