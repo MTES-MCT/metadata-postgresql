@@ -66,7 +66,7 @@ D'une manière générale, toute commande renvoyant un booléen peut être utili
 
 [
     {
-        "snum:isExternal": True,
+        "snum:isExternal": true,
         "dcat:keyword": "IGN"
     },
     {
