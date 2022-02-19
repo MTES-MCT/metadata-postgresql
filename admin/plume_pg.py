@@ -57,6 +57,7 @@ def _table_from_shape(categories, rdfclass, path=None, no_cast=False):
         order_idx = prop_dict.get('order_idx')
         sources = prop_dict.get('sources')
         geo_tools = prop_dict.get('geo_tools')
+        compute = prop_dict.get('compute')
         rowspan = prop_dict.get('rowspan')
         category = (
             prop.n3_path,
@@ -77,8 +78,13 @@ def _table_from_shape(categories, rdfclass, path=None, no_cast=False):
             [str(s) for s in sources] if sources else None,
             ('cast', geo_tools, 'z_plume.meta_geo_tool[]') if geo_tools \
                 and not no_cast else geo_tools,
+            ('cast', compute, 'z_plume.meta_compute[]') if compute \
+                and not no_cast else compute,
             order_idx[1] if order_idx else None
             )
+            # lorsqu'il est nécessaire de caster la valeur, on
+            # donne à category un tuple ('cast', valeur, 'nom du type'),
+            # comme pour geo_tools
         categories.append(category)
         if kind in (SH.BlankNode, SH.BlankNodeOrIRI):
             _table_from_shape(categories, prop_dict.get('rdfclass'),
@@ -109,7 +115,8 @@ def query_from_shape():
         path, origin, label, description, special,
         is_node, datatype, is_long_text, rowspan,
         placeholder, input_mask, is_multiple, unilang,
-        is_mandatory, sources, geo_tools, template_order
+        is_mandatory, sources, geo_tools, compute,
+        template_order
     ) VALUES
     {} ;""").format(
         sql.SQL(",\n    ").join(
