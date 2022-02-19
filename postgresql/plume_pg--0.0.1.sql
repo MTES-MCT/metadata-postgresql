@@ -42,6 +42,7 @@
 -- - Type: z_plume.meta_special
 -- - Type: z_plume.meta_datatype
 -- - Type: z_plume.meta_geo_tool
+-- - Type: z_plume.meta_compute
 -- - Table: z_plume.meta_categorie
 -- - Table: z_plume.meta_shared_categorie
 -- - Function: z_plume.meta_shared_categorie_before_insert()
@@ -153,6 +154,16 @@ CREATE TYPE z_plume.meta_geo_tool AS ENUM (
 	
 COMMENT ON TYPE z_plume.meta_geo_tool IS 'Types de fonctionnalités d''aide à la saisie des géométries supportées par Plume.' ;
 
+
+-- Type: z_plume.meta_compute
+
+CREATE TYPE z_plume.meta_compute AS ENUM (
+	'auto', 'manual'
+	) ;
+	
+COMMENT ON TYPE z_plume.meta_compute IS 'Types de fonctionnalités de calcul des métadonnées supportées par Plume.' ;
+
+
 --Table: z_plume.meta_categorie
 
 CREATE TABLE z_plume.meta_categorie (
@@ -172,6 +183,7 @@ CREATE TABLE z_plume.meta_categorie (
     is_mandatory boolean,
     sources text[],
     geo_tools z_plume.meta_geo_tool[],
+    compute z_plume.meta_compute[],
     template_order int,
     CONSTRAINT meta_categorie_origin_check CHECK (origin IN ('local', 'shared')),
     CONSTRAINT meta_categorie_rowspan_check CHECK (rowspan BETWEEN 1 AND 99)
@@ -196,6 +208,7 @@ COMMENT ON COLUMN z_plume.meta_categorie.unilang IS 'True si la catégorie n''ad
 COMMENT ON COLUMN z_plume.meta_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. À noter que ce champ permet de rendre obligatoire une catégorie commune optionnelle, pas l''inverse.' ;
 COMMENT ON COLUMN z_plume.meta_categorie.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Cette information n''est considérée que pour les catégories communes. Il n''est pas possible d''ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.' ;
 COMMENT ON COLUMN z_plume.meta_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
 
@@ -225,6 +238,7 @@ COMMENT ON COLUMN z_plume.meta_shared_categorie.unilang IS 'True si la catégori
 COMMENT ON COLUMN z_plume.meta_shared_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. À noter que ce champ permet de rendre obligatoire une catégorie commune optionnelle, pas l''inverse.' ;
 COMMENT ON COLUMN z_plume.meta_shared_categorie.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Il n''est pas possible d''ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.' ;
 COMMENT ON COLUMN z_plume.meta_shared_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Pour retirer toutes les fonctionnalités proposées par défaut pour la catégorie commune, on saisira une liste vide.' ;
+COMMENT ON COLUMN z_plume.meta_shared_categorie.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_shared_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
 -- la table est marquée comme table de configuration de l'extension
@@ -531,6 +545,7 @@ COMMENT ON COLUMN z_plume.meta_local_categorie.unilang IS 'True si la catégorie
 COMMENT ON COLUMN z_plume.meta_local_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie.' ;
 COMMENT ON COLUMN z_plume.meta_local_categorie.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Cette information n''est pas considérée que pour les catégories locales.' ;
 COMMENT ON COLUMN z_plume.meta_local_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''.' ;
+COMMENT ON COLUMN z_plume.meta_local_categorie.compute IS 'Ignoré pour les catégories locales.' ;
 COMMENT ON COLUMN z_plume.meta_local_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
 
 -- la table est marquée comme table de configuration de l'extension
@@ -660,6 +675,7 @@ CREATE TABLE z_plume.meta_template_categories (
     is_mandatory boolean,
     sources text[],
     geo_tools z_plume.meta_geo_tool[],
+    compute z_plume.meta_compute[],
     template_order int,
     is_read_only boolean,
     tab varchar(48),
@@ -703,6 +719,7 @@ COMMENT ON COLUMN z_plume.meta_template_categories.unilang IS 'True si la catég
 COMMENT ON COLUMN z_plume.meta_template_categories.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. À noter que ce champ permet de rendre obligatoire une catégorie commune optionnelle, pas l''inverse.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. Cette information n''est considérée que pour les catégories communes. Il n''est pas possible d''ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
+COMMENT ON COLUMN z_plume.meta_template_categories.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.is_read_only IS 'True si la catégorie est en lecture seule.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle dans la présente table ou, à défaut, dans un onglet "Général".' ;
@@ -734,6 +751,7 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
         coalesce(tc.is_mandatory, c.is_mandatory) AS is_mandatory,
         coalesce(tc.sources, c.sources) AS sources,
         coalesce(tc.geo_tools, c.geo_tools) AS geo_tools,
+        coalesce(tc.compute, c.compute) AS compute,
         coalesce(tc.template_order, c.template_order) AS template_order,
         tc.is_read_only,
         tc.tab
@@ -764,6 +782,7 @@ COMMENT ON COLUMN z_plume.meta_template_categories_full.unilang IS 'True si la c
 COMMENT ON COLUMN z_plume.meta_template_categories_full.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes. À noter que ce champ permet de rendre obligatoire une catégorie commune optionnelle, pas l''inverse.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Cette information n''est considérée que pour les catégories communes. Il n''est pas possible d''ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+COMMENT ON COLUMN z_plume.meta_template_categories_full.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Plume classe les catégories selon l''ordre spécifié par le présent modèle, puis selon l''ordre défini par le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.is_read_only IS 'True si la catégorie est en lecture seule.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, à défaut, dans un onglet "Général".' ;
