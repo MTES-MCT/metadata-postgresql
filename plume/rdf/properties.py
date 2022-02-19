@@ -113,9 +113,7 @@ class PlumeProperty:
             self.prop_dict = {'predicate': self.predicate}
         
         else:
-            raise RuntimeError("Pas assez d'arguments pour définir une propriété.")
-            
-    
+            raise RuntimeError("Pas assez d'arguments pour définir une propriété.")    
 
 def merge_property_dict(shape_dict, template_dict):
     """Fusionne deux dictionnaires décrivant une même catégorie de métadonnées.
@@ -259,7 +257,8 @@ def read_shape_property(shape_node):
         SNUM.transform: ('transform', False),
         SNUM.ontology: ('sources', True),
         SNUM.longText: ('is_long_text', False),
-        SNUM.geoTool: ('geo_tools', True)
+        SNUM.geoTool: ('geo_tools', True),
+        SNUM.compute: ('compute', True)
         }
         # le booléen indique si la propriété
         # peut prendre des valeurs multiples
