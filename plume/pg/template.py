@@ -50,8 +50,9 @@ class TemplateDict:
         for path, origin, label, description, special, \
             is_node, datatype, is_long_text, rowspan, \
             placeholder, input_mask, is_multiple, unilang, \
-            is_mandatory, sources, geo_tools, template_order, \
-            is_read_only, tab in sorted(categories, reverse=True):
+            is_mandatory, sources, geo_tools, compute, \
+            template_order, is_read_only, tab \
+            in sorted(categories, reverse=True):
             
             config = {
                 'label': label,
@@ -67,6 +68,7 @@ class TemplateDict:
                 'sources': [URIRef(s) for s in sources or []
                     if not forbidden_char(s)],
                 'geo_tools': geo_tools,
+                'compute': compute,
                 'template_order': template_order,
                 'is_read_only': is_read_only,
                 'tab': tab
