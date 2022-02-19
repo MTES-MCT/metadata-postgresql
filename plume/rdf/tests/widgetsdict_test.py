@@ -28,7 +28,7 @@ class WidgetsDictTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.grid = 5 # largeur de la grille
+        cls.grid = 6 # largeur de la grille
     
     def test_widgetsdict_empty_edit(self):
         """Génération d'un dictionnaire de widgets sans graphe ni modèle.
