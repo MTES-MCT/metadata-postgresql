@@ -112,5 +112,5 @@ experimental = True
 deprecated = False
 
 # Author contact information
-author=Ministères français de la transition écologique, de la cohésion des territoires et de la mer - Leslie Lemaire (SNUM).
-email=leslie.lemaire@developpement-durable.gouv.fr  
+author=Ministères français de la transition écologique, de la cohésion des territoires et de la mer - Didier LECLERC / Leslie LEMAIRE (SNUM).
+email=leslie.lemaire@developpement-durable.gouv.fr, didier.leclerc@developpement-durable.gouv.fr  
