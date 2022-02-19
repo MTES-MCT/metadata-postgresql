@@ -158,6 +158,20 @@ class WidgetKey:
     
     """
     
+    with_compute_buttons = True
+    """bool: Faut-il créer des boutons de calcul des métadonnées ?
+    
+    Mettre cet attribut à ``False`` permet d'inhiber la création
+    des boutons de calcul, s'il y avait par ailleurs lieu d'en créer.
+    
+    Warnings
+    --------
+    Cet attribut est partagé par toutes les instances de la classe.
+    Il ne doit sous aucun prétexte être modifié après l'initialisation
+    de l'arbre de clés.
+    
+    """
+    
     actionsbook = ActionsBook()
     """plume.rdf.actionsbook.ActionsBook: Carnet d'actions, qui trace les actions à réaliser sur les widgets suite aux modifications des clés.
     
@@ -192,7 +206,7 @@ class WidgetKey:
     
         Parameters
         ----------
-        kind : {'grid', 'label', 'unit button', 'language button', 'source button', 'geo button', 'minus button', 'plus button'}
+        kind : str
             Une chaîne de caractère correspondant au nom de l'élément :
             
             * `'grid'` pour la largeur totale de la grille.
@@ -210,6 +224,7 @@ class WidgetKey:
               la source.
             * `'geo button'` pour un bouton d'aide à la saisie des
               géométries.
+            * `'compute button'` pour un bouton de calcul.
             * `'minus button'` pour un bouton moins.
             * `'plus button'` pour un bouton plus.
         
@@ -218,11 +233,11 @@ class WidgetKey:
         int
         
         """
-        d = {'grid': 5, 'label': 1, 'unit button': 2, 'language button': 1,
-            'source button': 1, 'geo button': 1, 'minus button': 1,
-            'plus button': 1}
+        d = {'grid': 6, 'label': 1, 'unit button': 2, 'language button': 1,
+            'source button': 1, 'geo button': 1, 'compute button': 1,
+            'minus button': 1, 'plus button': 1}
         # grid = label + minus button + max(language button, source button
-        # geo button, unit button) + 1
+        # geo button, unit button) + compute button + 1
         return d.get(kind)
     
     @classmethod
@@ -236,6 +251,7 @@ class WidgetKey:
         cls.with_source_buttons = True
         cls.with_unit_buttons = True
         cls.with_geo_buttons = True
+        cls.with_compute_buttons = True
         cls.clear_actionsbook()
         cls.no_computation = False
     
@@ -618,6 +634,24 @@ class WidgetKey:
         return False
 
     @property
+    def has_compute_button(self):
+        """bool: Un bouton annexe de calcul de la métadonnée doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests, mais elle
+        vaut toujours ``False`` quand la clé n'est pas une clé-valeur
+        (:py:class:`ValueKey`) ou un groupe de valeurs.
+        
+        See Also
+        --------
+        ValueKey.has_compute_button, GroupOfValuesKey.has_compute_button
+        
+        """
+        return False
+
+    @property
     def has_label(self):
         """bool: Une étiquette non intégrée au widget principal doit-elle être créée pour la clé ?
         
@@ -733,6 +767,8 @@ class WidgetKey:
                 if self.has_source_button else 0) \
             - (WidgetKey.width('geo button') \
                 if self.has_geo_button else 0) \
+            - (WidgetKey.width('compute button') \
+                if self.has_compute_button else 0) \
             - (WidgetKey.width('minus button') \
                 if self.has_minus_button else 0) \
             - (WidgetKey.width('label') if self.has_label \
@@ -847,7 +883,7 @@ class WidgetKey:
         
         Notes
         -----
-        Le bouton d'aide à la saisie des géomtries est placé à droite du
+        Le bouton d'aide à la saisie des géométries est placé à droite du
         widget principal et des éventuels boutons de sélection de l'unité,
         bouton de sélection la langue et bouton de sélection de la source
         (lesquels ne peuvent en pratique jamais apparaître en même temps
@@ -867,6 +903,42 @@ class WidgetKey:
         return (row, column, 1, WidgetKey.width('geo button'))
 
     @property
+    def compute_button_placement(self):
+        """tuple(int): Placement du bouton de calcul dans la grille, le cas échéant.
+        
+        Cette propriété est un tuple formé de quatre éléments :
+        
+        * ``[0]`` est l'indice de ligne.
+        * ``[1]`` est l'indice de colonne.
+        * ``[2]`` est le nombre de lignes occupées.
+        * ``[3]`` est le nombre de colonnes occupées.
+        
+        Elle vaut ``None`` pour une clé fantôme ou qui n'a pas de bouton
+        de calcul.
+        
+        Notes
+        -----
+        Le bouton de calcul est placé à droite du widget principal et des
+        éventuels boutons de sélection de l'unité, bouton de sélection la langue
+        et bouton de sélection de la source et bouton d'aide à la saisie des
+        géométries (en supposant qu'ils puissent apparaître ensemble).
+        
+        """
+        if not self.has_compute_button:
+            return
+        row, column, rowspan, columnspan = self.placement
+        column = column + columnspan \
+            + (WidgetKey.width('unit button') \
+                if self.has_unit_button else 0) \
+            + (WidgetKey.width('language button') \
+                if self.has_language_button else 0) \
+            + (WidgetKey.width('source button') \
+                if self.has_source_button else 0) \
+            + (WidgetKey.width('geo button') \
+                if self.has_geo_button else 0)
+        return (row, column, 1, WidgetKey.width('compute button'))
+
+    @property
     def minus_button_placement(self):
         """tuple(int): Placement du bouton moins dans la grille, le cas échéant.
         
@@ -883,7 +955,8 @@ class WidgetKey:
         -----
         Le bouton moins est placé à droite du widget principal et des éventuels
         boutons de sélection de l'unité, de sélection de la langue, de
-        sélection de la source et d'aide à la saisie des géométries.
+        sélection de la source, d'aide à la saisie des géométries et
+        de calcul.
         
         """
         if not self.has_minus_button:
@@ -897,7 +970,9 @@ class WidgetKey:
             + (WidgetKey.width('source button') \
                 if self.has_source_button else 0) \
             + (WidgetKey.width('geo button') \
-                if self.has_geo_button else 0)
+                if self.has_geo_button else 0) \
+            + (WidgetKey.width('compute button') \
+                if self.has_compute_button else 0)
         return (row, column, 1, WidgetKey.width('minus button'))
     
     @property
@@ -2505,6 +2580,14 @@ class GroupOfValuesKey(GroupKey):
     regex_validator_flags : str, optional
         Paramètres associés à l'expression rationnelle de validation des
         clés du groupe.
+    geo_tools : list(str or rdflib.term.Literal)
+        Liste de fonctionnalités d'aide à la saisie des géométries
+        disponibles pour les clés du groupe. Seules les valeurs suivantes
+        seront prises en compte : ``'show'``, ``'point'``, ``'linestring'``,
+        ``'rectangle'``, ``'polygon'``, ``'bbox'``, ``'centroid'``. 
+    compute : list(str or rdflib.term.Literal)
+        Liste de modes de calcul disponibles pour le groupe. Seules les
+        valeurs `'manual'` et `'auto'` sont reconnues à ce stade.
     
     Attributes
     ----------
@@ -2530,6 +2613,7 @@ class GroupOfValuesKey(GroupKey):
         self._regex_validator = None
         self._regex_validator_flags = None
         self._geo_tools = None
+        self._compute = None
         
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -2548,6 +2632,7 @@ class GroupOfValuesKey(GroupKey):
         self.regex_validator = kwargs.get('regex_validator')
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
         self.geo_tools = kwargs.get('geo_tools')
+        self.compute = kwargs.get('compute')
     
     def _validate_parent(self, parent):
         return isinstance(parent, (GroupOfPropertiesKey, TabKey, RootKey))
@@ -3004,6 +3089,46 @@ class GroupOfValuesKey(GroupKey):
             value = [str(o) for o in value if str(o) in l]
         self._geo_tools = value
 
+    @property
+    def has_compute_button(self):
+        """bool: Un bouton annexe de calcul de la métadonnée doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_compute_button`.
+        
+        Contrairement à beaucoup d'autre propriétés qui valent 
+        pour les clés du groupe et non pour le groupe lui-même,
+        celle-ci porte bien sur le groupe de valeurs.
+        
+        """
+        return self and WidgetKey.with_compute_buttons \
+            and bool(self.compute) and 'manual' in self.compute \
+            and not self.is_read_only
+    
+    @property
+    def compute(self):
+        """list(str): Méthodes de calcul définies pour la clé.
+        
+        Notes
+        -----
+        Contrairement à beaucoup d'autre propriétés qui valent 
+        pour les clés du groupe et non pour le groupe lui-même,
+        celle-ci porte bien sur le groupe de valeurs.
+        
+        Il est permis de fournir en argument une liste de
+        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+
+        """
+        return self._compute
+    
+    @compute.setter
+    def compute(self, value):
+        if value:
+            l = ['manual', 'auto']
+            value = [str(o) for o in value if str(o) in l]
+        self._compute = value or []
+
     def _hide_m(self, value, rec=False):
         super()._hide_m(value, rec=rec)
         if self.button:
@@ -3026,7 +3151,8 @@ class GroupOfValuesKey(GroupKey):
         return ['order_idx', 'predicate', 'label', 'description', 'rdfclass',
             'sources', 'datatype', 'transform', 'placeholder', 'input_mask',
             'is_mandatory', 'is_read_only', 'regex_validator',
-            'regex_validator_flags', 'with_minus_buttons', 'geo_tools']
+            'regex_validator_flags', 'with_minus_buttons', 'geo_tools',
+            'compute']
 
     @property
     def attr_to_copy(self):
@@ -3055,7 +3181,7 @@ class GroupOfValuesKey(GroupKey):
             'with_minus_buttons' : True, 'label': True, 'description': True,
             'placeholder': True, 'input_mask': True, 'is_mandatory': True,
             'is_read_only': True, 'regex_validator': True,
-            'regex_validator_flags': True, 'geo_tools': True }
+            'regex_validator_flags': True, 'geo_tools': True, 'compute': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -3448,6 +3574,14 @@ class ValueKey(ObjectKey):
         valeur par défaut). Même dans un groupe de valeurs, cette propriété
         est définie indépendamment pour chaque clé, afin qu'il soit possible
         de l'adapter à la longueur effective des valeurs.
+    geo_tools : list(str or rdflib.term.Literal)
+        Liste de fonctionnalités d'aide à la saisie des géométries
+        disponibles pour la clé. Seules les valeurs suivantes seront prises
+        en compte : ``'show'``, ``'point'``, ``'linestring'``, ``'rectangle'``,
+        ``'polygon'``, ``'bbox'``, ``'centroid'``.
+    compute : list(str or rdflib.term.Literal)
+        Liste de modes de calcul disponibles pour la clé. Seules les valeurs
+        `'manual'` et `'auto'` sont reconnues à ce stade.
     
     """
     
@@ -3477,7 +3611,8 @@ class ValueKey(ObjectKey):
         self._is_read_only = None
         self._regex_validator = None
         self._regex_validator_flags = None
-        self._geo_tools = None        
+        self._geo_tools = None
+        self._compute = None        
         self._value = None
         self._value_language = None
         self._value_source = None
@@ -3500,6 +3635,7 @@ class ValueKey(ObjectKey):
         self.regex_validator = kwargs.get('regex_validator')
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
         self.geo_tools = kwargs.get('geo_tools')
+        self.compute = kwargs.get('compute')
         self.value = kwargs.get('value')
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
@@ -3657,6 +3793,24 @@ class ValueKey(ObjectKey):
         """
         return self and WidgetKey.with_geo_buttons \
             and bool(self.geo_tools)
+    
+    @property
+    def has_compute_button(self):
+        """bool: Un bouton annexe de calcul de la métadonnée doit-il être créé pour la clé ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.has_compute_button`.
+        
+        Il n'y a jamais de bouton de calcul quand un bouton
+        d'aide à la saisie des géométries est présent, car les
+        deux seraient redondants.
+        
+        """
+        return self and WidgetKey.with_compute_buttons \
+            and bool(self.compute) and 'manual' in self.compute \
+            and not self.has_geo_button \
+            and not self.is_read_only
     
     @property
     def has_label(self):
@@ -3982,6 +4136,34 @@ class ValueKey(ObjectKey):
                     'polygon', 'bbox', 'centroid']
                 value = [str(o) for o in value if str(o) in l]
             self._geo_tools = value
+        else:
+            self._geo_tools = None
+    
+    @property
+    def compute(self):
+        """list(str): Méthodes de calcul définies pour la clé.
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs, cette propriété
+        vaudra toujours ``None``.
+        
+        Il est permis de fournir en argument une liste de
+        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            return self._compute
+    
+    @compute.setter
+    def compute(self, value):
+        if not isinstance(self.parent, GroupOfValuesKey):
+            if value:
+                l = ['manual', 'auto']
+                value = [str(o) for o in value if str(o) in l]
+            self._compute = value or []
+        else:
+            self._compute = None
     
     @property
     def value_language(self):
@@ -4265,7 +4447,7 @@ class ValueKey(ObjectKey):
             'input_mask', 'is_mandatory', 'is_read_only', 'regex_validator', 
             'regex_validator_flags', 'value_language', 'value_source',
             'do_not_save', 'is_long_text', 'transform', 'sources', 'independant_label',
-            'value_unit', 'geo_tools']
+            'value_unit', 'geo_tools', 'compute']
 
     @property
     def attr_to_copy(self):
@@ -4296,7 +4478,8 @@ class ValueKey(ObjectKey):
             'value_source': False, 'placeholder': True, 'input_mask': True,
             'is_mandatory': True, 'is_read_only': True, 'regex_validator': True,
             'regex_validator_flags': True, 'is_long_text': True,
-            'independant_label': True, 'value_unit': False, 'geo_tools': True }
+            'independant_label': True, 'value_unit': False, 'geo_tools': True,
+            'compute': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
