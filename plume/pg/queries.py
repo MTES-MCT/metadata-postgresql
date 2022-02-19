@@ -257,6 +257,7 @@ def query_get_categories():
             is_mandatory,
             sources,
             geo_tools::text[],
+            compute::text[],
             template_order,
             is_read_only,
             tab
