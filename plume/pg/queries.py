@@ -470,22 +470,32 @@ def query_get_geom_srid():
                 AND auth_srid IS NOT NULL
         """)
 
-def query_get_srid_list():
+def query_get_srid_list(schema_name, table_name):
     """Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d'une relation.
     
     À utiliser comme suit:
     
-        >>> query = query_get_srid_list()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
-        >>> srid_list = cur.fetchone()[0]
+        >>> query = query_get_srid_list('nom du schéma', 'nom de la relation')
+        >>> cur.execute(*query)
+        >>> srid_list = cur.fetchall()
     
-    La liste ainsi obtenue contient des identifiants de référentiels
-    sous la forme ``'Autorité:Code'``.
+    La liste ainsi obtenue contient des tuples dont le premier
+    élément est l'identifiant de l'autorité qui référence le
+    référentiel et le second élément est le code du référentiel
+    dans le registre de cette autorité.
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
     
     Returns
     -------
-    psycopg2.sql.Composed
-        Une requête prête à être envoyée au serveur PostgreSQL.
+    tuple(psycopg2.sql.SQL, tuple(str, str))
+        Une requête prête à être envoyée au serveur PostgreSQL
+        et son tuple de paramètres.
     
     Warnings
     --------
@@ -497,11 +507,15 @@ def query_get_srid_list():
         >>> cur.execute(query, ('postgis',))
         >>> postgis_exists = cur.fetchone()[0]
     
+    Notes
+    -----
+    Cette fonction est référencée par le module
+    :py:mod:`plume.pg.computer`.
+    
     """
-    return sql.SQL("""
+    return (sql.SQL("""
         SELECT
-            array_agg(DISTINCT auth_name || ':' || auth_srid
-                ORDER BY auth_name || ':' || auth_srid)
+            DISTINCT auth_name, auth_srid::text
             FROM geometry_columns
                 LEFT JOIN spatial_ref_sys
                     ON geometry_columns.srid = spatial_ref_sys.srid
@@ -509,7 +523,8 @@ def query_get_srid_list():
                 AND f_table_name = %s
                 AND auth_name ~ '^[A-Z]+$'
                 AND auth_srid IS NOT NULL
-        """)
+            ORDER BY auth_name, auth_srid
+        """), (schema_name, table_name))
 
 def query_get_geom_extent(schema_name, table_name, geom_name):
     """Requête de calcul côté serveur du rectangle d'emprise d'une couche.
