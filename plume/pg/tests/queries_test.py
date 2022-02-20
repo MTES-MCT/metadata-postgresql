@@ -620,13 +620,13 @@ class QueriesTestCase(unittest.TestCase):
                         geom5 geometry(POLYGON, 2154)
                         ) ;
                     ''')
-                query = query_get_srid_list()
-                cur.execute(query, ('z_plume', 'table_test'))
-                srid_list = cur.fetchone()[0]
+                query = query_get_srid_list('z_plume', 'table_test')
+                cur.execute(*query)
+                srid_list = cur.fetchall()
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
         conn.close()
-        self.assertListEqual(srid_list, ['EPSG:2154', 'EPSG:4326'])
+        self.assertListEqual(srid_list, [('EPSG', '2154'), ('EPSG', '4326')])
 
 if __name__ == '__main__':
     unittest.main()
