@@ -56,6 +56,9 @@ class InternalDict(dict):
     * ``geo widget`` : widget annexe de type ``QToolButton`` proposant des fonctionnalités
       d'aide à la saisie des géométries. À créer lorsque la valeur de la clé ``geo tools``
       n'est pas ``None``.
+    * ``compute widget`` : widget annexe de type ``QToolButton`` permettant à l'utilisateur
+      de mettre à jour la métadonnée par un calcul plutôt que par saisie manuelle. À créer
+      lorsque ``has compute button`` vaut ``True``.
     
     En complément, des clés sont prévues pour les ``QMenu`` et ``QAction`` associés à certains
     widgets boutons.
@@ -132,6 +135,14 @@ class InternalDict(dict):
       proposer. La non nullité de cette clé emporte la création d'un bouton d'aide
       à la saisie des géométries (``geo widget``) par lequel l'utilisateur accédera
       à ces fonctionnalités.
+    * ``has compute button`` : ``True`` si un bouton de calcul de la métadonnée doit être
+      créé. Il sera alors référencé dans ``compute widget``.  La méthode de calcul est
+      fournie par la clé ``compute method``.
+    * ``auto compute`` : ``True`` si la métadonnée doit être calculée automatiquement à
+      la création du dictionnaire. La méthode de calcul est fournie par la clé
+      ``compute method``.
+    * ``compute method`` : un objet :py:class:`plume.pg.computer.ComputeMethod` qui porte
+      les informations nécessaires pour exécuter le calcul de la métadonnée.
     
     """
     
@@ -141,6 +152,8 @@ class InternalDict(dict):
             # stockage des widgets :
             'main widget', 'grid widget', 'label widget', 'minus widget',
             'language widget', 'switch source widget', 'unit widget', 'geo widget',
+            'compute widget',
+            # stockage des menus, actions, etc. :
             'switch source menu', 'switch source actions', 'language menu',
             'language actions', 'unit menu', 'unit actions', 'geo menu', 'geo actions',
             # paramétrage des widgets :
@@ -149,7 +162,8 @@ class InternalDict(dict):
             'hide minus button', 'regex validator pattern', 'regex validator flags',
             'type validator', 'multiple sources', 'sources', 'current source',
             'thesaurus values', 'authorized languages', 'language value', 'units',
-            'current unit', 'geo tools'
+            'current unit', 'geo tools', 'has compute button', 'auto compute',
+            'compute method'
             ]
         self.update({ k:None for k in keys })
 
