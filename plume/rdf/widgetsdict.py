@@ -35,6 +35,7 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
 from plume.rdf.thesaurus import Thesaurus
 from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP, RDFS
 from plume.rdf.properties import PlumeProperty, class_properties
+from plume.pg.computer import computation_method
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -228,6 +229,7 @@ class WidgetsDict(dict):
         # sont autorisés en mode lecture. Le fait que la clé
         # soit en lecture seule limitera les fonctionnalités
         # disponibles à celles qui ont trait à la visualisation.
+        WidgetKey.with_compute_buttons = self.edit
         WidgetKey.langlist = list(self.langlist)
         self.root.main_language = language
         self.langlist = tuple(WidgetKey.langlist)
@@ -558,6 +560,14 @@ class WidgetsDict(dict):
         internaldict['multiple sources'] = widgetkey.has_source_button
         internaldict['has label'] = widgetkey.has_label
         
+        if isinstance(widgetkey, (ValueKey, GroupOfValuesKey)) and widgetkey.compute \
+            and ('auto' in widgetkey.compute or widgetkey.has_compute_button):
+            method = computation_method(widgetkey.path)
+            if method:
+                internaldict['has compute button'] = widgetkey.has_compute_button
+                internaldict['compute method'] = method
+                internaldict['auto compute'] = 'auto' in widgetkey.compute
+        
         if isinstance(widgetkey, ValueKey):
             internaldict['placeholder text'] = widgetkey.placeholder
             internaldict['input mask'] = widgetkey.input_mask
@@ -618,7 +628,7 @@ class WidgetsDict(dict):
         ----------
         widgetkey : plume.rdf.widgetkey.WidgetKey
             Une clé du dictionnaire de widgets.
-        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'unit widget', 'geo widget', 'label widget'}
+        kind : {'main widget', 'minus widget', 'switch source widget', 'language widget', 'unit widget', 'geo widget', 'compute widget', 'label widget'}
             Nature du widget considéré, soit plus prosaïquement le nom
             de la clé du dictionnaire interne qui le référence.
         
@@ -653,6 +663,8 @@ class WidgetsDict(dict):
             return widgetkey.unit_button_placement
         if kind == 'geo widget':
             return widgetkey.geo_button_placement
+        if kind == 'compute widget':
+            return widgetkey.compute_button_placement
         if kind == 'minus widget':
             return widgetkey.minus_button_placement
 
@@ -824,7 +836,8 @@ class WidgetsDict(dict):
             return []
         l = []        
         for k in ('main widget', 'minus widget', 'switch source widget',
-            'language widget', 'unit widget', 'geo widget', 'label widget'):
+            'language widget', 'unit widget', 'geo widget', 'compute widget',
+            'label widget'):
             w = self[widgetkey][k]
             if w:
                 if with_kind:
@@ -1110,6 +1123,96 @@ class WidgetsDict(dict):
             }
         return d.get(widgetkey.datatype)
     
+    def computing_query(self, widgetkey, schema_name, table_name):
+        """Renvoie la requête de calcul de la métadonnée côté serveur.
+        
+        Cette méthode est à utiliser ainsi:
+            >>> query = widgetsdict.computing_query(widgetkey,
+            ...     'nom du schéma', 'nom de la relation')
+            >>> cur.execute(*query)
+            >>> computed_values = cur.fetchall()
+        
+        Parameters
+        ----------
+        widgetkey : plume.rdf.widgetkey.WidgetKey
+            Une clé de dictionnaire de widgets.
+        schema_name : str
+            Nom du schéma de la table ou vue dont le
+            dictionnaire de widgets porte les métadonnées.
+        table_name : str
+            Nom de la table ou vue dont le dictionnaire
+            de widgets porte les métadonnées.
+        
+        Returns
+        -------
+        tuple
+            Un tuple dont le premier élément est toujours la
+            requête (objet :py:class:`psycopg2.sql.Composed`
+            ou :py:class:`psycopg2.sql.SQL`) à envoyer au serveur
+            et le second, s'il y a lieu, un tuple contenant les
+            paramètres de cette requête.
+        
+        Notes
+        -----
+        Cette fonction renverra toujours ``None`` si la clé
+        ``compute method`` du dictionnaire interne associé à la clé
+        considérée vaut ``None``.
+        
+        """
+        method = self[widgetkey]['compute method']
+        if not method:
+            return
+        return method.query_builder.__call__(schema_name, table_name)
+    
+    def computing_update(self, widgetkey, result):
+        """Met à jour le dictionnaire de widgets avec des valeurs calculées.
+        
+        Parameters
+        ----------
+        widgetkey : plume.rdf.widgetkey.WidgetKey
+            Une clé de dictionnaire de widgets.
+        result : list of tuples
+            Le résultat de la requête sur le serveur.
+        
+        Returns
+        -------
+        dict
+            Cf. :py:meth:`WidgetsDict.dictisize_actionsbook` pour la
+            description de ce dictionnaire, qui contient toutes
+            les informations qui permettront de matérialiser les actions
+            réalisées.
+        
+        Notes
+        -----
+        Si la requête n'a pas renvoyé de résultat, cette méthode n'aura
+        aucun effet. Elle n'efface notamment pas les valeurs qui auraient
+        pu être renseignées.
+        
+        """
+        method = self[widgetkey]['compute method']
+        if not method or not result:
+            return
+        if isinstance(widgetkey, ValueKey):
+            result=result[:1]
+            # on ne garde que la première valeur, même s'il
+            # y en avait davantage
+        cr_list = []
+        for e in result:
+            cr = method.parser.__call__(e)
+            if cr:
+                # TODO: désérialisation RDF de value et
+                # source. Pour value, le plus simple serait de séparer
+                # la validation de la mise à jour dans update_value,
+                # en faisant porter la première par une fonction
+                # à part.
+                cr_list.append(cr)
+        if not cr_list:
+            # cas hypothétique où aucune des valeurs renvoyées
+            # par le serveur ne passe la validation
+            return
+        #a = widgetkey.computing_update(cr_list)
+        #return self.dictisize_actionsbook(a)
+    
     def update_value(self, widgetkey, value, override=False):
         """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
         
@@ -1344,16 +1447,18 @@ class WidgetsDict(dict):
                 print(self[widgetkey]['label'], ':', end=' ')
             if self[widgetkey]['value']:
                 print(self[widgetkey]['value'], end=' ')
-            if self[widgetkey]['hide minus button']:
-                print('*', end='')
-            if self[widgetkey]['has minus button']:
-                print('[-]', end=' ')
             if self[widgetkey]['multiple sources']:
                 print('[...]', end=' ')
             if self[widgetkey]['authorized languages']:
                 print('[{}]'.format(self[widgetkey]['language value']), end=' ')
             if self[widgetkey]['geo tools']:
                 print('[GEO]', end=' ')
+            if self[widgetkey]['has compute button']:
+                print('[PG]', end=' ')
+            if self[widgetkey]['hide minus button']:
+                print('*', end='')
+            if self[widgetkey]['has minus button']:
+                print('[-]', end=' ')
             if self[widgetkey]['units']:
                 print('[{}]'.format(self[widgetkey]['current unit']), end=' ')
             print()
@@ -1384,12 +1489,13 @@ class WidgetsDict(dict):
             if grid is None:
                 raise IntegrityBreach("La grille du groupe parent n'a pas encore été créée.", widgetkey)
             for kind in ('main widget', 'minus widget', 'switch source widget',
-                'language widget', 'unit widget', 'geo widget', 'label widget'):
+                'language widget', 'unit widget', 'geo widget', 'compute widget', 'label widget'):
                 if kind == 'minus widget' and not self[widgetkey]['has minus button'] \
                     or kind == 'language widget' and not self[widgetkey]['authorized languages'] \
                     or kind == 'unit widget' and not self[widgetkey]['units'] \
                     or kind == 'geo widget' and not self[widgetkey]['geo tools'] \
                     or kind == 'switch source widget' and not self[widgetkey]['multiple sources'] \
+                    or kind == 'compute widget' and not self[widgetkey]['has compute button'] \
                     or kind == 'label widget' and not self[widgetkey]['has label']:
                     continue
                 row, column, rowspan, columnspan = self.widget_placement(widgetkey, kind)
