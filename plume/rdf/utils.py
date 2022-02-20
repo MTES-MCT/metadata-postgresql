@@ -13,6 +13,15 @@ from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
 from plume.rdf.namespaces import RDF, DCAT, XSD
 
+crs_ns = {
+    'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
+    'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
+    'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
+    }
+"""Espaces de nommage des référentiels de coordonnées.
+
+"""
+
 class DatasetId(URIRef):
     """Identifiant de jeu de données.
     
@@ -950,14 +959,9 @@ def wkt_with_srid(wkt, srid):
     """
     if not srid or not wkt:
         return wkt
-    ns = {
-        'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
-        'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
-        'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
-        }
     r = re.match('^([A-Z]+)[:]([a-zA-Z0-9.]+)$', srid)
-    if r and r[1] in ns:
-        return '<{}{}> {}'.format(ns[r[1]], r[2], wkt)
+    if r and r[1] in crs_ns:
+        return '<{}{}> {}'.format(crs_ns[r[1]], r[2], wkt)
 
 def split_rdf_wkt(rdf_wkt):
     """Extrait le référentiel et la géométrie d'un littéral WKT.
@@ -1004,12 +1008,7 @@ def split_rdf_wkt(rdf_wkt):
         return
     if not r[1]:
         return (r[2], 'OGC:WGS84')
-    ns = {
-        'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
-        'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
-        'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
-        }
-    for auth, url in ns.items():
+    for auth, url in crs_ns.items():
         if r[1].startswith(url):
             code = r[1].lstrip(url)
             if re.match('^[a-zA-Z0-9.]+$', code):
