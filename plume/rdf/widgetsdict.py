@@ -1005,7 +1005,7 @@ class WidgetsDict(dict):
         value_source = None
         if not new_source in ('< manuel >', '< URI >', '< non référencé >'):
             for s in objectkey.sources:
-                # tous ces thésaurus ont déjà été chargé à
+                # tous ces thésaurus ont déjà été chargés à
                 # l'initialisation du dictionnaire de widgets, donc
                 # cette boucle sur deux ou trois valeurs maximum
                 # ne coûte pas grand chose
@@ -1169,7 +1169,7 @@ class WidgetsDict(dict):
         
         Parameters
         ----------
-        widgetkey : plume.rdf.widgetkey.WidgetKey
+        widgetkey : plume.rdf.widgetkey.ValueKey or plume.rdf.widgetkey.GroupOfValuesKey
             Une clé de dictionnaire de widgets.
         result : list of tuples
             Le résultat de la requête sur le serveur.
@@ -1192,26 +1192,123 @@ class WidgetsDict(dict):
         method = self[widgetkey]['compute method']
         if not method or not result:
             return
+        WidgetKey.clear_actionsbook()
+        # on réinitialise ici le carnet d'actions. Ensuite il
+        # sera complété au fur et à mesure et non réinitialisé
+        # après chaque opération grâce aux paramètres append_book
+        # et preserve_book.
+        a = WidgetsDict.unload_actionsbook(preserve_book=True)
         if isinstance(widgetkey, ValueKey):
             result=result[:1]
             # on ne garde que la première valeur, même s'il
             # y en avait davantage
-        cr_list = []
-        for e in result:
-            cr = method.parser.__call__(e)
-            if cr:
-                # TODO: désérialisation RDF de value et
-                # source. Pour value, le plus simple serait de séparer
-                # la validation de la mise à jour dans update_value,
-                # en faisant porter la première par une fonction
-                # à part.
-                cr_list.append(cr)
-        if not cr_list:
-            # cas hypothétique où aucune des valeurs renvoyées
-            # par le serveur ne passe la validation
+        e_list = []
+        for r in result:
+            e = method.parser.__call__(r)
+            if e.value or e.value_str:
+                e_list.append(e)
+        if not e_list:
             return
-        #a = widgetkey.computing_update(cr_list)
-        #return self.dictisize_actionsbook(a)
+        # on commence par créer les widgets dans lesquels
+        # seront ensuite intégrées les valeurs
+        if isinstance(widgetkey, GroupOfValuesKey):
+            keys = widgetkey.shrink_expend(len(e_list),
+                sources=method.sources, append_book=True)
+        else:
+            keys = [widgetkey]
+        # puis on saisit les valeurs dans les widgets
+        for i in range(len(e_list)):
+            k = keys[i]
+            e = e_list[i]
+            if k.sources and e.value:
+                if not e.source:
+                    e.source = Thesaurus.concept_source(value)
+                if not e.source or not e.source in k.sources:
+                    continue
+                    # les valeurs non référencées ne sont pas conservées.
+                    # dans ce cas, on aura un widget vide.
+                elif e.source != k.value_source:
+                    k.change_source(e.source, append_book=True)
+            if e.value is None and e.str_value is not None:
+                if e.language and e.language != k.value_language:
+                    k.change_language(e.language, append_book=True)
+                if e.unit and e.unit != k.value_unit:
+                    k.change_unit(e.unit, append_book=True)
+                e.value = self.prepare_value(k, e.str_value)
+            if e.value is not None:
+                k.value = e.value
+        return self.dictisize_actionsbook(a)
+    
+    def prepare_value(self, widgetkey, value):
+        """Prépare une valeur en vue de son enregistrement dans une clé-valeur du dictionnaire de widgets.
+        
+        Parameters
+        ----------
+        widgetkey : plume.rdf.widgetkey.ValueKey
+            Une clé-valeur de dictionnaire de widgets.
+        value : str
+            La valeur, exprimée sous la forme d'une chaîne de caractères.
+            La fonction tolère d'autres types, mais sans garantie que
+            les valeurs soient acceptées.
+        
+        Returns
+        -------
+        rdflib.term.URIRef or rdflib.term.Literal
+        
+        Notes
+        -----
+        Cette méthode intègre une validation minimale basée sur le type.
+        Les valeurs incorrectes sont silencieusement effacées.        
+        
+        """
+        # pas de valeur ou pas une clé-valeur
+        if not isinstance(widgetkey, ValueKey) or value in (None, ''):
+            return
+        # type RDF.langString
+        if widgetkey.value_language:
+            return Literal(str(value), lang=widgetkey.value_language)
+        # type XSD.boolean
+        elif widgetkey.datatype == XSD.boolean:
+            return Literal(bool(value), datatype=XSD.boolean)
+        # type XSD.duration
+        elif widgetkey.value_unit:
+            return duration_from_int(value, widgetkey.value_unit)
+        # type XSD.date
+        elif widgetkey.datatype == XSD.date:
+            return date_from_str(str(value))
+        # type XSD.dateTime
+        elif widgetkey.datatype == XSD.dateTime:
+            return datetime_from_str(str(value))
+        # type XSD.time
+        elif widgetkey.datatype == XSD.time:
+            return time_from_str(str(value))
+        # type XSD.decimal
+        elif widgetkey.datatype == XSD.decimal:
+            return decimal_from_str(str(value))
+        # type XSD.string
+        elif widgetkey.datatype == XSD.string:
+            return Literal(str(value))
+        elif widgetkey.datatype:
+            # type XSD.integer
+            if widgetkey.datatype == XSD.integer and not (isinstance(value, int) \
+                or str(value).isdecimal()):
+                return
+            else:
+                return Literal(str(value), datatype=widgetkey.datatype)
+        # IRI avec valeur issue d'un thésaurus
+        elif widgetkey.value_source:
+            res = Thesaurus.concept_iri((widgetkey.value_source, \
+                widgetkey.main_language), str(value))
+            return res if res else None
+        # autre IRI
+        else:
+            f = forbidden_char(str(value))
+            if not f:
+                if widgetkey.transform == 'email':
+                    return owlthing_from_email(str(value))
+                if widgetkey.transform == 'phone':
+                    return owlthing_from_tel(str(value))
+                return URIRef(str(value))
     
     def update_value(self, widgetkey, value, override=False):
         """Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.
@@ -1226,72 +1323,13 @@ class WidgetsDict(dict):
             les valeurs soient acceptées.
         override : bool, default False
             Si ``True``, permet de modifier la valeur d'une clé
-            en lecture seule.
-        
-        Notes
-        -----
-        Cette méthode intègre une validation minimale basée sur le type.
-        Les valeurs incorrectes sont silencieusement effacées.        
+            en lecture seule. 
         
         """
         if not isinstance(widgetkey, ValueKey) \
             or (widgetkey.is_read_only and not override):
             return
-        if value in (None, ''):
-            widgetkey.value = None
-        else:
-            # --- pré-traitement ---
-            if widgetkey.transform == 'email':
-                value = owlthing_from_email(str(value))
-            if widgetkey.transform == 'phone':
-                value = owlthing_from_tel(str(value))
-            # --- validation ---
-            # type RDF.langString
-            if widgetkey.value_language:
-                widgetkey.value = Literal(str(value), lang=widgetkey.value_language)
-            # type XSD.boolean
-            elif widgetkey.datatype == XSD.boolean:
-                widgetkey.value = Literal(bool(value), datatype=XSD.boolean)
-            # type XSD.duration
-            elif widgetkey.value_unit:
-                widgetkey.value = duration_from_int(value, widgetkey.value_unit)
-            # type XSD.date
-            elif widgetkey.datatype == XSD.date:
-                widgetkey.value = date_from_str(str(value))
-            # type XSD.dateTime
-            elif widgetkey.datatype == XSD.dateTime:
-                widgetkey.value = datetime_from_str(str(value))
-            # type XSD.time
-            elif widgetkey.datatype == XSD.time:
-                widgetkey.value = time_from_str(str(value))
-            # type XSD.decimal
-            elif widgetkey.datatype == XSD.decimal:
-                widgetkey.value = decimal_from_str(str(value))
-            # type XSD.string
-            elif widgetkey.datatype == XSD.string:
-                widgetkey.value = Literal(str(value))
-            elif widgetkey.datatype:
-                # type XSD.integer
-                if widgetkey.datatype == XSD.integer and not (isinstance(value, int) \
-                    or str(value).isdecimal()):
-                    widgetkey.value = None
-                else:
-                    widgetkey.value = Literal(str(value), datatype=widgetkey.datatype)
-            # IRI avec valeur issue d'un thésaurus
-            elif widgetkey.value_source:
-                res = Thesaurus.concept_iri((widgetkey.value_source, \
-                    widgetkey.main_language), str(value))
-                if res:
-                    widgetkey.value = res
-                else:
-                    widgetkey.value = None
-            # autre IRI
-            else:
-                f = forbidden_char(str(value))
-                if f:
-                    widgetkey.value = None
-                else:
-                    widgetkey.value = URIRef(str(value))
+        widgetkey.value = self.prepare_value(widgetkey, value)
         if widgetkey in self:
             self.internalize(widgetkey)
     
