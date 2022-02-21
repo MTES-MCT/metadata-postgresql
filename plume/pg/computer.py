@@ -73,48 +73,57 @@ def ComputationResult():
     
     Parameters
     ----------
-    value : str, optional
-        La nouvelle valeur.
-    value_iri : rdflib.term.URIRef, optional
-        La nouvelle valeur sous forme d'IRI. `value_iri` est
-        ignoré s'il est renseigné alors que `value` est
-        présent.
+    value : rdflib.term.URIRef or rdflib.term.Literal, optional
+        La nouvelle valeur sous forme d'IRI ou de littéral RDF.
+        Ces valeurs ont vocation à être directement intégrées
+        à l'arbre de clés du dictionnaire de widgets.
+    str_value : str, optional
+        La nouvelle valeur sous forme de chaîne de caractères.
+        Ces valeurs seront désérialisées via 
+        :py:meth:`plume.rdf.widgetsdict.WidgetsDict.prepare_value`
+        avant intégration dans l'arbre de clés du dictionnaire de
+        widgets. Si `value` est renseigné, `str_value` n'est pas
+        pris en compte.
     unit : str, optional
-        L'unité de la valeur, s'il y a lieu.
+        L'unité de la valeur, s'il y a lieu. Cette information ne
+        sera considérée que si la valeur est fournie via 
+        `str_value`.
     language : str, optional
-        La langue de la valeur, s'il y a lieu.
-    source : str, optional
-        La source de la valeur, s'il y a lieu.
-    source_iri : rdflib.term.URIRef, optional
-        La source de la valeur sous forme d'IRI. `source_iri` est
-        ignoré s'il est renseigné alors que `source` est
-        présent.
+        La langue de la valeur, s'il y a lieu. Cette information ne
+        sera considérée que si la valeur est fournie via 
+        `str_value`.
+    source : rdflib.term.URIRef, optional
+        La source de la valeur, le cas échéant. Elle sera
+        déduite de `value` si non renseignée et que `value` est présent,
+        et il est généralement préférable de ne pas fournir manuellement
+        cette information dans ce cas, sauf à être certain que la valeur
+        est bien l'un des concepts de la source considérée.
+        Si seul `str_value` est disponible, il est souhaitable de
+        fournir la source, sans quoi c'est la source courante du
+        widget qui sera utilisée.
     
     Attributes
     ----------
-    value : str
-        La nouvelle valeur.
-    value_iri : rdflib.term.URIRef
-        La nouvelle valeur sous forme d'IRI.
+    value : rdflib.term.URIRef or rdflib.term.Literal, optional
+        La nouvelle valeur sous forme d'IRI ou de littéral RDF.
+    str_value : str, optional
+        La nouvelle valeur sous forme de chaîne de caractères.
     unit : str
-        L'unité éventuelle de la valeur.
+        L'unité éventuelle de `str_value`.
     language : str, optional
-        La langue éventuelle de la valeur.
-    source : str, optional
-        La source éventuelle de la valeur.
-    source_iri : rdflib.term.URIRef, optional
-        La source éventuelle de la valeur sous forme d'IRI.
+        La langue éventuelle de `str_value`.
+    source : rdflib.term.URIRef
+        La source éventuelle de `value`.
     
     """
     
-    def __init__(self, value=None, value_iri=None, unit=None, language=None,
-        source=None, source_iri=None):
+    def __init__(self, value=None, str_value=None, unit=None, language=None,
+        source=None):
         self.value = value
-        self.value_iri = value_iri if self.value is None else None
-        self.unit = unit
-        self.language = language
+        self.str_value = str_value if self.value is None else None
+        self.unit = unit if self.str_value else None
+        self.language = language if self.str_value else None
         self.source = source
-        self.source_iri = source_iri if self.source is None else None
 
 def default_parser(*result):
     """Fonction qui fera office de dé-sérialiseur par défaut.
@@ -131,17 +140,23 @@ def default_parser(*result):
     
     Notes
     -----
-    Cette fonction basique suppose que la métadonnée considérée
-    n'a ni langue, ni source, ni unité et ne touche donc pas
-    à ces attributs. Elle part aussi du principe que le résultat
-    ne comportait qu'un seul champ, ou du moins que la valeur à
-    utiliser pour la mise à jour se trouvait dans le premier
-    champ.
+    Cette fonction basique suppose :
+    
+    * que la métadonnée considérée n'a ni langue, ni source,
+      ni unité. Elle ne touche donc pas à ces attributs.
+    * que le résultat ne comportait qu'un seul champ, ou du
+      moins que la valeur à utiliser pour la mise à jour se
+      trouvait dans le premier champ.
+    * que les valeurs sont sérialisées de la même manière
+      que pour leur présentation dans le formulaire de
+      Plume. Ceci sous-entend qu'il sera possible d'obtenir
+      leurs équivalents RDF en appliquant la méthode
+      :py:meth:`plume.rdf.widgetsdict.WidgetsDict.prepare_value`.
     
     """
     if not result:
         return ComputationResult()
-    return ComputationResult(value=result[0])
+    return ComputationResult(str_value=result[0])
 
 def crs_parser(crs_auth, crs_code):
     """Renvoie l'URI complet d'un référentiel de coordonnées.
@@ -162,9 +177,8 @@ def crs_parser(crs_auth, crs_code):
     if not crs_auth in crs_ns or not crs_code or \
         not re.match('^[a-zA-Z0-9.]+$', crs_code):
         return
-    value_iri = URIRef('{}{}').format(crs_ns[crs_auth], crs_code)
-    return ComputationResult(value_iri=value_iri,
-        source_iri=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+    value = URIRef('{}{}').format(crs_ns[crs_auth], crs_code)
+    return ComputationResult(value=value)
 
 methods = {
     DCT.conformsTo : ComputationMethod(
@@ -174,6 +188,15 @@ methods = {
         parser=crs_parser
         )
     }
+"""Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.
+
+Les clés du dictionnaire sont les chemins (:py:class:`rdflib.paths.SequencePath`)
+des catégories de métadonnées. Les valeurs sont des objets :py:class:`ComputationMethod`
+décrivant la méthode de calcul disponible pour la catégorie. N'apparaissent dans
+ce dictionnaire que les catégories qui ont effectivement une méthode de calcul
+associée.
+
+"""
 
 def computation_method(path):
     """Renvoie l'éventuelle méthode de calcul définie pour la catégorie de métadonnées.
@@ -185,7 +208,7 @@ def computation_method(path):
     
     Returns
     -------
-    ComputeMethod or None
+    ComputationMethod or None
     
     """
     return methods.get(path)
