@@ -269,8 +269,15 @@ class WidgetKey:
         cls.actionsbook = ActionsBook(**kwargs)
     
     @classmethod
-    def unload_actionsbook(cls):
+    def unload_actionsbook(cls, preserve_book=False):
         """Renvoie le carnet d'actions et le remplace par un carnet vierge.
+        
+        Parameters
+        ----------
+        preserve_book : bool, default False
+            Si ``True`` le carnet d'actions n'est pas
+            réinitialisé après récupération de son
+            contenu.
         
         Returns
         -------
@@ -278,7 +285,8 @@ class WidgetKey:
         
         """
         book = cls.actionsbook
-        cls.clear_actionsbook()
+        if not preserve_book:
+            cls.clear_actionsbook()
         return book
     
     @property
@@ -1684,11 +1692,18 @@ class ObjectKey(WidgetKey):
                 # pour lui rendre sa visibilité si besoin
                 self.m_twin.m_twin = None
 
-    def drop(self):
+    def drop(self, append_book=False):
         """Supprime une clé d'un groupe de valeur ou de traduction.
         
         Utiliser cette méthode sur une clé sans bouton moins n'a pas d'effet,
         et le carnet d'actions renvoyé est vide.
+        
+        Parameters
+        ----------
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant exécution, mais complété avec les nouvelles
+            opérations réalisées.
         
         Returns
         -------
@@ -1699,11 +1714,12 @@ class ObjectKey(WidgetKey):
         """
         if not self.has_minus_button:
             return ActionsBook()
-        WidgetKey.clear_actionsbook()
+        if not append_book:
+            WidgetKey.clear_actionsbook()
         self.kill()
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
-    def switch_twin(self, value_source=None):
+    def switch_twin(self, value_source=None, append_book=False):
         """Intervertit la visibilité d'un couple de jumelles.
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
@@ -1716,6 +1732,10 @@ class ObjectKey(WidgetKey):
             Si la clé qui redevient visible est la clé-valeur, la
             source à utiliser pour celle-ci. Si non fourni, la
             source antérieure est conservée.
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant exécution, mais complété avec les nouvelles
+            opérations réalisées.
         
         Returns
         -------
@@ -1726,11 +1746,12 @@ class ObjectKey(WidgetKey):
         """
         if self.is_hidden:
             return ActionsBook()
-        WidgetKey.clear_actionsbook()
+        if not append_book:
+            WidgetKey.clear_actionsbook()
         self.is_hidden_m = True
         if isinstance(self.m_twin, ValueKey) and value_source:
             self.m_twin.value_source = value_source
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
 class GroupKey(WidgetKey):
     """Clé de groupe.
@@ -3832,9 +3853,11 @@ class ValueKey(ObjectKey):
         # envisager d'y ajouter des contrôles, notamment sur
         # le type.
         self._value = value
-        if not self._is_unborn:
+        if not self._is_unborn and value:
             # l'unité est réinitialisée selon la valeur
             self.value_unit = None
+            # idem pour la langue
+            self.value_language = None
 
     @property
     def rdfclass(self):
@@ -4522,7 +4545,7 @@ class ValueKey(ObjectKey):
         else:
             return super().copy(parent=parent, empty=empty)
 
-    def change_language(self, value_language):
+    def change_language(self, value_language, append_book=False):
         """Change la langue d'une clé-valeur.
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
@@ -4532,6 +4555,10 @@ class ValueKey(ObjectKey):
         ----------
         value_language : str
             La nouvelle langue à déclarer.
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant exécution, mais complété avec les nouvelles
+            opérations réalisées.
         
         Returns
         -------
@@ -4542,11 +4569,12 @@ class ValueKey(ObjectKey):
         """
         if self.is_hidden:
             return ActionsBook()
-        WidgetKey.clear_actionsbook()
+        if not append_book:
+            WidgetKey.clear_actionsbook()
         self.value_language = value_language
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
     
-    def change_source(self, value_source):
+    def change_source(self, value_source, append_book=False):
         """Change la source d'une clé-valeur.
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
@@ -4556,6 +4584,10 @@ class ValueKey(ObjectKey):
         ----------
         value_source : rdflib.term.URIRef
             La nouvelle source à déclarer.
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant exécution, mais complété avec les nouvelles
+            opérations réalisées.
         
         Returns
         -------
@@ -4566,11 +4598,12 @@ class ValueKey(ObjectKey):
         """
         if self.is_hidden:
             return ActionsBook()
-        WidgetKey.clear_actionsbook()
+        if not append_book:
+            WidgetKey.clear_actionsbook()
         self.value_source = value_source
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
-    def change_unit(self, value_unit):
+    def change_unit(self, value_unit, append_book=False):
         """Change l'unité d'une clé-valeur.
         
         Utiliser cette méthode sur une clé non visible n'a pas d'effet,
@@ -4580,6 +4613,10 @@ class ValueKey(ObjectKey):
         ----------
         value_unit : str
             La nouvelle unité à déclarer.
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant exécution, mais complété avec les nouvelles
+            opérations réalisées.
         
         Returns
         -------
@@ -4590,9 +4627,10 @@ class ValueKey(ObjectKey):
         """
         if self.is_hidden:
             return ActionsBook()
-        WidgetKey.clear_actionsbook()
+        if not append_book:
+            WidgetKey.clear_actionsbook()
         self.value_unit = value_unit
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
     def _build_metagraph(self, metagraph):
         if self.do_not_save or self.is_hidden_m or self.value is None:
@@ -4714,8 +4752,15 @@ class PlusButtonKey(WidgetKey):
         """
         self.parent.button = None
 
-    def add(self):
+    def add(self, append_book=False):
         """Ajoute une clé vierge dans le groupe parent du bouton.
+        
+        Parameters
+        ----------
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant exécution, mais complété avec les nouvelles
+            opérations réalisées.
         
         Returns
         -------
@@ -4732,11 +4777,12 @@ class PlusButtonKey(WidgetKey):
         """
         if self.is_hidden:
             return ActionsBook()
-        WidgetKey.clear_actionsbook()
+        if not append_book:
+            WidgetKey.clear_actionsbook()
         for child in self.parent.real_children():
             child.copy(parent=self.parent, empty=True)
             break
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
     
 
 class TranslationButtonKey(PlusButtonKey):
