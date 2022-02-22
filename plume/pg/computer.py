@@ -34,7 +34,7 @@ class ComputationMethod():
         concernées par le calcul. Concrètement, les clés-valeurs
         dont la source courante fait partie de cette liste seront
         remplacées par les valeurs calculées tandis que les autres
-        seront préservées. Si ce paramètres est ``None`` ou une
+        seront préservées. Si ce paramètre est ``None`` ou une
         liste vide, toutes les clés (clés-valeurs et groupes de
         propriétés) seront remplacées, quelle que soit leur source.
         Cette information n'est considérée que dans un groupe de
