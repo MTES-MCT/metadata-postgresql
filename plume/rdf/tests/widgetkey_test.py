@@ -3,7 +3,8 @@ import unittest
 from uuid import uuid4
 
 from plume.rdf.rdflib import URIRef, Literal
-from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD, GSP
+from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD, \
+    GSP, SNUM
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, RootKey, TabKey
@@ -27,6 +28,70 @@ class WidgetKeyTestCase(unittest.TestCase):
         
         """
         WidgetKey.reinitiate_shared_attributes()
+
+    def test_shrink_expend(self):
+        """Préparation d'un groupe de valeurs en vue d'un import massif.
+        
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(parent=t, predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard, sources=[
+            URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            SNUM.DataServiceStandard])
+        b = PlusButtonKey(parent=g)
+        p1 = GroupOfPropertiesKey(parent=g)
+        v1 = ValueKey(parent=g, m_twin=p1, is_hidden_m=True,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        p2 = GroupOfPropertiesKey(parent=g)
+        v2 = ValueKey(parent=g, m_twin=p2, is_hidden_m=False,
+            value_source=URIRef(SNUM.DataServiceStandard))
+        p3 = GroupOfPropertiesKey(parent=g)
+        v3 = ValueKey(parent=g, m_twin=p3, is_hidden_m=False,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        # --- en préservant tout ---
+        WidgetKey.clear_actionsbook()
+        l1 = g.shrink_expend(2, sources=[])
+        a = WidgetKey.unload_actionsbook()
+        self.assertTrue(all(k in g.children for k in (p1, v1, p2, v2, p3, v3)))
+        self.assertFalse(any(k in l1 for k in (p1, v1, p2, v2, p3, v3)))
+        self.assertEqual(len(l1), 2)
+        self.assertEqual(len(g.children), 10)
+        self.assertTrue(all(isinstance(k, ValueKey) for k in l1))
+        self.assertTrue(v1.is_hidden)
+        self.assertFalse(any(k.is_hidden for k in l1))
+        self.assertTrue(all(k in a.create for k in l1))
+        self.assertTrue(all(k.m_twin in a.create for k in l1))
+        self.assertEqual(len(a.create), 4)
+        self.assertFalse(a.drop)
+        # --- en ne réinitialisant qu'une seule source ---
+        WidgetKey.clear_actionsbook()
+        l2 = g.shrink_expend(1, sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')])
+        a = WidgetKey.unload_actionsbook()
+        self.assertTrue(all(k in g.children for k in (p1, v1, p2, v2, p3, v3)))
+        self.assertFalse(any(k in g.children for k in l1))
+        self.assertFalse(any(k.m_twin in g.children for k in l1))
+        self.assertTrue(v3 in l2)
+        self.assertFalse(any(k in l2 for k in (p1, v1, p2, v2)))
+        self.assertFalse(any(k in l2 for k in l1))
+        self.assertEqual(len(l2), 1)
+        self.assertEqual(len(g.children), 6)
+        self.assertTrue(v1.is_hidden)
+        self.assertFalse(v3.is_hidden)
+        self.assertFalse(a.create)
+        self.assertTrue(all(k in a.drop for k in l1))
+        self.assertTrue(all(k.m_twin in a.drop for k in l1))
+        self.assertEqual(len(a.drop), 4)
+        # --- en réinitialisant toutes les sources ---
+        WidgetKey.clear_actionsbook()
+        l3 = g.shrink_expend(2)
+        a = WidgetKey.unload_actionsbook()
+        self.assertListEqual(g.children, [p1, v1, p2, v2])
+        self.assertListEqual(l3, [v1, v2])
+        self.assertFalse(any(k.is_hidden for k in l3))
+        self.assertListEqual(a.drop, [v3, p3])
+        self.assertFalse(a.create)
+        self.assertListEqual(a.hide, [p1])
 
     def test_get_all_attributes(self):
         """Vérifie que tous les attributs et propriétés peuvent être évalués sans erreur.
