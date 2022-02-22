@@ -1213,7 +1213,7 @@ class WidgetsDict(dict):
         # seront ensuite intégrées les valeurs
         if isinstance(widgetkey, GroupOfValuesKey):
             keys = widgetkey.shrink_expend(len(e_list),
-                sources=method.sources, append_book=True)
+                sources=method.sources)
         else:
             keys = [widgetkey]
         # puis on saisit les valeurs dans les widgets
