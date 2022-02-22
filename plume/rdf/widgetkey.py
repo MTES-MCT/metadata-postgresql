@@ -3291,6 +3291,81 @@ class GroupOfValuesKey(GroupKey):
                 child._is_single_child = True
                 WidgetKey.actionsbook.hide_minus_button.append(child) 
 
+    def shrink_expend(self, length, sources=None):
+        """Supprime et recrée les clés filles du groupe en vue d'une saisie massive des valeurs.
+        
+        Parameters
+        ----------
+        length : int
+            Nombre de clés attendues.
+        sources : list(rdflib.term.URIRef), optional
+            Liste de sources de vocabulaire contrôlé concernées.
+            Si des sources sont définies pour le groupe, les
+            clés-valeurs dont la source courante fait partie de
+            cette liste seront supprimées-recrées, tandis que les
+            autres seront préservées (incluant les groupes de
+            propriétés qui sont la jumelle principale, même si
+            la source courante de la clé-valeur associée est dans
+            la liste). Si ce paramètres est ``None``, toutes les clés
+            (clés-valeurs et groupes de propriétés) seront remplacées,
+            quelle que soit leur source. Si ce paramètre est une 
+            liste vide, toutes les clés existantes sont préservées.
+        
+        Returns
+        -------
+        list(ValueKey)
+            Une liste de longueur `length` contenant les
+            clés-valeurs prêtes à recevoir de nouvelles valeurs.
+        
+        Notes
+        -----
+        Cette méthode renvoie une liste vide si elle est appliquée à un
+        groupe de valeurs sans bouton.
+        
+        """
+        if self.is_hidden or not length or length < 1 \
+            or not self.button:
+            return []
+        old_children = self.children.copy()
+        n = length
+        l = []
+        d = []
+        for child in self.real_children():
+            if isinstance(child, GroupOfPropertiesKey):
+                continue
+            if child.m_twin and not child.is_main_twin:
+                if sources is None:
+                    if n:
+                        child.m_twin.switch_twin(append_book=True)
+                        n -= 1
+                        l.append(child)
+                    else:
+                        d.append(child.m_twin)
+                else:
+                    continue
+            elif sources is None or child.value_source in sources:
+                if n:
+                    n -= 1
+                    l.append(child)
+                else:
+                    d.append(child)
+        for child in d:
+            child.drop(append_book=True)
+        for i in range(n):
+            self.button.add(append_book=True)
+            # à la recherche de la clé qui vient d'être ajoutée...
+            for child in self.real_children():
+                if child.m_twin and not child.is_main_twin:
+                    continue
+                if not child in old_children and not child in l:
+                    if isinstance(child, GroupOfPropertiesKey):
+                        child.switch_twin(append_book=True)
+                        l.append(child.m_twin)
+                    else:
+                        l.append(child)
+                    break
+        return l
+
     def _tree_keys(self):
         if self:
             yield from super()._tree_keys()
