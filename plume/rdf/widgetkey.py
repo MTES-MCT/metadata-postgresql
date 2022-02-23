@@ -1686,6 +1686,8 @@ class ObjectKey(WidgetKey):
             if not preserve_twin:
                 self.parent.children.remove(self.m_twin)
                 WidgetKey.actionsbook.drop.append(self.m_twin)
+                if isinstance(self.m_twin, GroupKey):
+                    self.m_twin._notify_dead_children()
             else:
                 # on déréfence toujours la jumelle sur
                 # la clé qui a vocation à être conservée,
@@ -3346,6 +3348,7 @@ class GroupOfValuesKey(GroupKey):
             elif sources is None or child.value_source in sources:
                 if n:
                     n -= 1
+                    child.value = None
                     l.append(child)
                 else:
                     d.append(child)
@@ -3928,11 +3931,19 @@ class ValueKey(ObjectKey):
         # envisager d'y ajouter des contrôles, notamment sur
         # le type.
         self._value = value
-        if not self._is_unborn and value:
-            # l'unité est réinitialisée selon la valeur
-            self.value_unit = None
-            # idem pour la langue
-            self.value_language = None
+        if not self._is_unborn:
+            if value:
+                # l'unité est réinitialisée selon la valeur
+                self.value_unit = None
+                # idem pour la langue
+                self.value_language = None
+            # on considère que la valeur du widget de saisie
+            # devra être actualisée même si la nouvelle
+            # valeur de value est identique à l'ancienne,
+            # car cela permet de réinitialiser des valeurs
+            # saisies dans les widgets sans avoir encore été
+            # transmises aux clés
+            WidgetKey.actionsbook.update.append(self)
 
     @property
     def rdfclass(self):
@@ -4345,12 +4356,11 @@ class ValueKey(ObjectKey):
         if not self._is_unborn and self.value_source != old_value:
             WidgetKey.actionsbook.sources.append(self)
             WidgetKey.actionsbook.thesaurus.append(self)
-            WidgetKey.actionsbook.empty.append(self)
-            # NB: même s'il n'y a pas de valeur dans la clé,
-            # car on veut aussi effacer les valeurs saisies dans
-            # le widgets mais non sauvegardées
-            if self.value:
-                self.value = None
+            # même si l'ancienne valeur était déjà None,
+            # car on veut réinitialiser la valeur contenue
+            # dans le widget même si elle n'a pas été transmise
+            # à la clé
+            self.value = None
     
     @property
     def value_unit(self):
