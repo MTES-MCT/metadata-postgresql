@@ -12,7 +12,7 @@ import unittest, psycopg2
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, \
     SNUM, LOCAL, RDF
-from plume.rdf.widgetkey import GroupOfPropertiesKey
+from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
 from plume.rdf.exceptions import ForbiddenOperation
@@ -20,6 +20,7 @@ from plume.rdf.exceptions import ForbiddenOperation
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs
 from plume.pg.template import TemplateDict
+from plume.pg.computer import methods, ComputationMethod, default_parser
 
 connection_string = ConnectionString()
 
@@ -1151,10 +1152,11 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(actionsdict['switch source menu to update'], [a])
         self.assertEqual(actionsdict['concepts list to update'], [a])
         self.assertEqual(actionsdict['widgets to empty'], ['<A QComboBox dcat:theme>'])
+        self.assertEqual(actionsdict['value to update'], [a])
         self.assertTrue('Régions et villes' in widgetsdict[a]['thesaurus values'])
         for k in actionsdict.keys():
             if not k in ('switch source menu to update', 'concepts list to update',
-                'widgets to empty'):
+                'widgets to empty', 'value to update'):
                 self.assertFalse(actionsdict[k])
         self.assertIsNone(widgetsdict.check_grids())
 
@@ -1192,9 +1194,11 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(actionsdict['switch source menu to update'], [b2])
         self.assertEqual(actionsdict['concepts list to update'], [b2])
         self.assertEqual(actionsdict['widgets to empty'], ['<B2 QComboBox dct:accessRights>'])
+        self.assertEqual(actionsdict['value to update'], [b2])
         for k in actionsdict.keys():
             if not k in ('switch source menu to update', 'concepts list to update',
-                'widgets to show', 'widgets to hide', 'widgets to empty'):
+                'widgets to show', 'widgets to hide', 'widgets to empty',
+                'value to update'):
                 self.assertFalse(actionsdict[k])
         self.assertIsNone(widgetsdict.check_grids())
 
@@ -1957,7 +1961,223 @@ class WidgetsDictTestCase(unittest.TestCase):
         metagraph = Metagraph().parse(data=metadata)
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))
+    
+    def test_computing_update(self):
+        """Mise à jour à partir d'informations calculées.
         
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dct:conformsTo [ a dct:Standard ;
+                    skos:inScheme <http://www.opengis.net/def/crs/EPSG/0> ;
+                    dct:identifier "2154" ] ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        c = widgetsdict.root.search_from_path(DCT.conformsTo)
+        r1g = c.children[0]
+        r1v = c.children[1]
+        widgetsdict[c]['grid widget'] = '<QGridLayout dct:conformsTo>'
+        widgetsdict[c.button]['main widget'] = '<P QToolButton dct:conformsTo>'
+        widgetsdict[r1g]['main widget'] = '<r1g QGroupBox dct:conformsTo>'
+        widgetsdict[r1g]['minus widget'] = '<r1g-minus QToolButton dct:conformsTo>'
+        widgetsdict[r1g]['switch source widget'] = '<r1g-source QToolButton dct:conformsTo>'
+        widgetsdict[r1g]['switch source menu'] = '<r1g-source QMenu dct:conformsTo>'
+        widgetsdict[r1g]['switch source actions'] = ['<r1g-source QAction n°1', '<r1g-source QAction n°2']
+        widgetsdict[r1v]['main widget'] = '<r1v QComboBox dct:conformsTo>'
+        widgetsdict[r1v]['minus widget'] = '<r1v-minus QToolButton dct:conformsTo>'
+        widgetsdict[r1v]['switch source widget'] = '<r1v-source QToolButton dct:conformsTo>'
+        widgetsdict[r1v]['switch source menu'] = '<r1v-source QMenu dct:conformsTo>'
+        widgetsdict[r1v]['switch source actions'] = ['<r1v-source QAction n°1', '<r1v-source QAction n°2']
+        
+        # --- avec une valeur invalide ---
+        actionsdict = widgetsdict.computing_update(c, [('EPSG', '0000'), ('EPSG', '2154')])
+        self.assertTrue(len(c.children), 4)
+        self.assertTrue(o in c.children for o in (r1g, r1v))
+        self.assertTrue(r1g.is_main_twin)
+        r2g = c.children[2]
+        r2v = c.children[3]
+        self.assertTrue(isinstance(r2v, ValueKey))
+        self.assertTrue(r2v.is_main_twin)
+        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+        self.assertTrue(all(o in actionsdict['new keys'] for o in (r2v, r2g)))
+        self.assertTrue(all(o in (r2v, r2g) or o.generation > r2v.generation for o in actionsdict['new keys']))
+        self.assertListEqual(actionsdict['widgets to show'], ['<r1g-minus QToolButton dct:conformsTo>'])
+        self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
+            '<P QToolButton dct:conformsTo>', 2, 0, 1, 1)])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in  ('new keys', 'widgets to show', 'widgets to move'):
+                    self.assertFalse(l)
+        
+        widgetsdict[r2g]['main widget'] = '<r2g QGroupBox dct:conformsTo>'
+        widgetsdict[r2g]['minus widget'] = '<r2g-minus QToolButton dct:conformsTo>'
+        widgetsdict[r2g]['switch source widget'] = '<r2g-source QToolButton dct:conformsTo>'
+        widgetsdict[r2g]['switch source menu'] = '<r2g-source QMenu dct:conformsTo>'
+        widgetsdict[r2g]['switch source actions'] = ['<r2g-source QAction n°1', '<r2g-source QAction n°2']
+        widgetsdict[r2v]['main widget'] = '<r2v QComboBox dct:conformsTo>'
+        widgetsdict[r2v]['minus widget'] = '<r2v-minus QToolButton dct:conformsTo>'
+        widgetsdict[r2v]['switch source widget'] = '<r2v-source QToolButton dct:conformsTo>'
+        widgetsdict[r2v]['switch source menu'] = '<r2v-source QMenu dct:conformsTo>'
+        widgetsdict[r2v]['switch source actions'] = ['<r2v-source QAction n°1', '<r2v-source QAction n°2']
+        
+        # --- plus de valeurs ---
+        actionsdict = widgetsdict.computing_update(c, [('EPSG', '2154'), ('EPSG', '4326')])
+        self.assertEqual(len(c.children), 6)
+        self.assertTrue(o in c.children for o in (r1g, r1v, r2g, r2v))
+        self.assertTrue(r1g.is_main_twin)
+        self.assertTrue(r2v.is_main_twin)
+        r3g = c.children[4]
+        r3v = c.children[5]
+        self.assertTrue(isinstance(r3v, ValueKey))
+        self.assertTrue(r2v.is_main_twin)
+        self.assertTrue(r3v.is_main_twin)
+        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+        self.assertEqual(r3v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+        self.assertTrue(all(o in actionsdict['new keys'] for o in (r3v, r3g)))
+        self.assertTrue(all(o in (r3v, r3g) or o.generation > r3v.generation for o in actionsdict['new keys']))
+        self.assertListEqual(actionsdict['value to update'], [r2v])
+        self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
+            '<P QToolButton dct:conformsTo>', 3, 0, 1, 1)])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in  ('new keys', 'value to update', 'widgets to move'):
+                    self.assertFalse(l)
+        
+        widgetsdict[r3g]['main widget'] = '<r3g QGroupBox dct:conformsTo>'
+        widgetsdict[r3g]['minus widget'] = '<r3g-minus QToolButton dct:conformsTo>'
+        widgetsdict[r3g]['switch source widget'] = '<r3g-source QToolButton dct:conformsTo>'
+        widgetsdict[r3g]['switch source menu'] = '<r3g-source QMenu dct:conformsTo>'
+        widgetsdict[r3g]['switch source actions'] = ['<r3g-source QAction n°1', '<r3g-source QAction n°2']
+        widgetsdict[r3v]['main widget'] = '<r3v QComboBox dct:conformsTo>'
+        widgetsdict[r3v]['minus widget'] = '<r3v-minus QToolButton dct:conformsTo>'
+        widgetsdict[r3v]['switch source widget'] = '<r3v-source QToolButton dct:conformsTo>'
+        widgetsdict[r3v]['switch source menu'] = '<r3v-source QMenu dct:conformsTo>'
+        widgetsdict[r3v]['switch source actions'] = ['<r3v-source QAction n°1', '<r3v-source QAction n°2']
+        
+        # --- autant de valeurs ---
+        actionsdict = widgetsdict.computing_update(c, [('EPSG', '2154'), ('EPSG', '2975')])
+        self.assertListEqual(c.children, [r1g, r1v, r2g, r2v, r3g, r3v])
+        self.assertTrue(r2v.is_main_twin)
+        self.assertTrue(r3v.is_main_twin)
+        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+        self.assertEqual(r3v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2975'))
+        self.assertListEqual(actionsdict['value to update'], [r2v, r3v])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('value to update',):
+                    self.assertFalse(l)
+        
+        # --- moins de valeurs ---
+        actionsdict = widgetsdict.computing_update(c, [('EPSG', '4326'), ('EPSG', '0000'), ('EPSG', '0000')])
+        self.assertListEqual(c.children, [r1g, r1v, r2g, r2v])
+        self.assertTrue(r2v.is_main_twin)
+        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+        self.assertListEqual(actionsdict['value to update'], [r2v])
+        self.assertListEqual(actionsdict['widgets to delete'], ['<r3v QComboBox dct:conformsTo>',
+            '<r3v-minus QToolButton dct:conformsTo>', '<r3v-source QToolButton dct:conformsTo>',
+            '<r3g QGroupBox dct:conformsTo>', '<r3g-minus QToolButton dct:conformsTo>',
+            '<r3g-source QToolButton dct:conformsTo>'])
+        self.assertListEqual(actionsdict['actions to delete'], ['<r3v-source QAction n°1',
+            '<r3v-source QAction n°2', '<r3g-source QAction n°1', '<r3g-source QAction n°2'])
+        self.assertListEqual(actionsdict['menus to delete'], ['<r3v-source QMenu dct:conformsTo>',
+            '<r3g-source QMenu dct:conformsTo>'])
+        self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
+            '<P QToolButton dct:conformsTo>', 2, 0, 1, 1)])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in  ('value to update', 'widgets to delete', 'actions to delete',
+                    'menus to delete', 'widgets to move'):
+                    self.assertFalse(l)
+        
+        # --- aucune valeur ---
+        actionsdict = widgetsdict.computing_update(c, [])
+        self.assertListEqual(c.children, [r1g, r1v, r2g, r2v])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                self.assertFalse(l)
+        
+        # --- que des valeurs invalides ---
+        actionsdict = widgetsdict.computing_update(c, [('EPSG', '0000'), ('EPSG', '0000')])
+        self.assertListEqual(c.children, [r1g, r1v])
+        self.assertListEqual(actionsdict['widgets to delete'], ['<r2v QComboBox dct:conformsTo>',
+            '<r2v-minus QToolButton dct:conformsTo>', '<r2v-source QToolButton dct:conformsTo>',
+            '<r2g QGroupBox dct:conformsTo>', '<r2g-minus QToolButton dct:conformsTo>',
+            '<r2g-source QToolButton dct:conformsTo>'])
+        self.assertListEqual(actionsdict['actions to delete'], ['<r2v-source QAction n°1',
+            '<r2v-source QAction n°2', '<r2g-source QAction n°1', '<r2g-source QAction n°2'])
+        self.assertListEqual(actionsdict['menus to delete'], ['<r2v-source QMenu dct:conformsTo>',
+            '<r2g-source QMenu dct:conformsTo>'])
+        self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
+            '<P QToolButton dct:conformsTo>', 1, 0, 1, 1)])
+        self.assertListEqual(actionsdict['widgets to hide'], ['<r1g-minus QToolButton dct:conformsTo>'])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('widgets to hide', 'widgets to delete', 'actions to delete',
+                    'menus to delete', 'widgets to move'):
+                    self.assertFalse(l)
+
+    def test_computing_update_default_parser(self):
+        """Mise à jour à partir d'informations calculées, en utilisant le parser par défaut.
+        
+        """
+        connection_string = ConnectionString()
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute('''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['manual', 'auto']::z_plume.meta_compute[]
+                        WHERE path = 'dct:created' ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        m = methods.get(DCT.created)
+        methods[DCT.created] = ComputationMethod(query_builder=None,
+            parser=default_parser)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        c = widgetsdict.root.search_from_path(DCT.created)
+        actionsdict = widgetsdict.computing_update(c, [('01/01/2020',), ('01/01/2021')])
+        self.assertEqual(widgetsdict[c]['value'], '01/01/2020')
+        self.assertEqual(c.value, Literal('2020-01-01', datatype=XSD.date))
+        self.assertListEqual(actionsdict['value to update'], [c])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('value to update',):
+                    self.assertFalse(l)
+        if m:
+            methods[DCT.created] = m
+        else:
+            del methods[DCT.created]
 
 if __name__ == '__main__':
     unittest.main()
