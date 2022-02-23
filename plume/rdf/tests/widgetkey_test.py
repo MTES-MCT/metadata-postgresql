@@ -547,81 +547,109 @@ class WidgetKeyTestCase(unittest.TestCase):
         buttonkey2 = TranslationButtonKey(parent=groupkey2)
         valkey2a = ValueKey(parent=groupkey2, rowspan=2, is_long_text=True,
             value_language='en')
+        valkey3 = ValueKey(parent=rootkey, predicate=DCAT.temporalResolution,
+            datatype=XSD.duration)
+
+        lattr = ('modified', 'show', 'show_minus_button', 'hide',
+            'hide_minus_button', 'create', 'move', 'languages', 'units',
+            'sources', 'thesaurus', 'drop', 'update')
 
         WidgetKey.clear_actionsbook()
         valkey1d = ValueKey(parent=groupkey1, rowspan=1)
         actionsbook = WidgetKey.unload_actionsbook()
         self.assertEqual(actionsbook.create, [valkey1d])
-        self.assertEqual(actionsbook.drop, [])
         self.assertEqual(actionsbook.move, [buttonkey1])
-        self.assertEqual(actionsbook.show_minus_button, [])
-        self.assertEqual(actionsbook.hide_minus_button, [])
-        self.assertEqual(actionsbook.show, [])
-        self.assertEqual(actionsbook.hide, [])
-        self.assertEqual(actionsbook.languages, [])
+        self.assertEqual(actionsbook.modified, [buttonkey1])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'create', 'move'):
+                    self.assertFalse(getattr(actionsbook, a))
 
         actionsbook = valkey1a.switch_twin()
-        self.assertEqual(actionsbook.create, [])
-        self.assertEqual(actionsbook.drop, [])
-        self.assertEqual(actionsbook.move, [])
-        self.assertEqual(actionsbook.show_minus_button, [])
-        self.assertEqual(actionsbook.hide_minus_button, [])
         self.assertEqual(actionsbook.show, [valkey1b])
         self.assertEqual(actionsbook.hide, [valkey1a])
-        self.assertEqual(actionsbook.languages, [])
+        self.assertEqual(actionsbook.modified, [valkey1a, valkey1b])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'show', 'hide'):
+                    self.assertFalse(getattr(actionsbook, a))
 
         valkey2b = ValueKey(parent=groupkey2, rowspan=2, value_language='fr')
         actionsbook = WidgetKey.unload_actionsbook()
         self.assertEqual(actionsbook.create, [valkey2b])
-        self.assertEqual(actionsbook.drop, [])
         self.assertEqual(actionsbook.move, [buttonkey2])
         self.assertEqual(actionsbook.show_minus_button, [valkey2a])
-        self.assertEqual(actionsbook.hide_minus_button, [])
-        self.assertEqual(actionsbook.show, [])
-        self.assertEqual(actionsbook.hide, [])
         self.assertEqual(actionsbook.languages, [valkey2a])
+        self.assertEqual(actionsbook.modified, [valkey2a, buttonkey2])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'create', 'move',
+                    'show_minus_button', 'languages'):
+                    self.assertFalse(getattr(actionsbook, a))
 
         valkey2c = ValueKey(parent=groupkey2, rowspan=2, value_language='it')
         actionsbook = WidgetKey.unload_actionsbook()
         self.assertEqual(actionsbook.create, [valkey2c])
-        self.assertEqual(actionsbook.drop, [])
         self.assertEqual(actionsbook.move, [buttonkey2])
-        self.assertEqual(actionsbook.show_minus_button, [])
-        self.assertEqual(actionsbook.hide_minus_button, [])
-        self.assertEqual(actionsbook.show, [])
         self.assertEqual(actionsbook.hide, [buttonkey2])
         self.assertEqual(actionsbook.languages, [valkey2a, valkey2b])
+        self.assertEqual(actionsbook.modified, [valkey2a, valkey2b, buttonkey2])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'create', 'move',
+                    'hide', 'languages'):
+                    self.assertFalse(getattr(actionsbook, a))
 
         actionsbook = valkey2a.drop()
-        self.assertEqual(actionsbook.create, [])
         self.assertEqual(actionsbook.drop, [valkey2a])
         self.assertEqual(actionsbook.move, [valkey2b, valkey2c, buttonkey2])
-        self.assertEqual(actionsbook.show_minus_button, [])
-        self.assertEqual(actionsbook.hide_minus_button, [])
         self.assertEqual(actionsbook.show, [buttonkey2])
-        self.assertEqual(actionsbook.hide, [])
         self.assertEqual(actionsbook.languages, [valkey2b, valkey2c])
+        self.assertEqual(actionsbook.modified, [valkey2b, valkey2c, buttonkey2])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'drop', 'move', 'show',
+                    'languages'):
+                    self.assertFalse(getattr(actionsbook, a))
 
         actionsbook = valkey2c.change_language('en')
-        self.assertEqual(actionsbook.create, [])
-        self.assertEqual(actionsbook.drop, [])
-        self.assertEqual(actionsbook.move, [])
-        self.assertEqual(actionsbook.show_minus_button, [])
-        self.assertEqual(actionsbook.hide_minus_button, [])
-        self.assertEqual(actionsbook.show, [])
-        self.assertEqual(actionsbook.hide, [])
         self.assertEqual(actionsbook.languages, [valkey2b, valkey2c])
+        self.assertEqual(actionsbook.modified, [valkey2b, valkey2c])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'languages'):
+                    self.assertFalse(getattr(actionsbook, a))
 
         actionsbook = valkey2b.drop()
-        self.assertEqual(actionsbook.create, [])
         self.assertEqual(actionsbook.drop, [valkey2b])
         self.assertEqual(actionsbook.move, [valkey2c, buttonkey2])
-        self.assertEqual(actionsbook.show_minus_button, [])
         self.assertEqual(actionsbook.hide_minus_button, [valkey2c])
-        self.assertEqual(actionsbook.show, [])
-        self.assertEqual(actionsbook.hide, [])
         self.assertEqual(actionsbook.languages, [valkey2c])
- 
+        self.assertEqual(actionsbook.modified, [valkey2c, buttonkey2])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'drop', 'languages',
+                    'hide_minus_button', 'move'):
+                    self.assertFalse(getattr(actionsbook, a))
+
+        actionsbook = valkey3.change_unit('jours')
+        self.assertEqual(actionsbook.units, [valkey3])
+        self.assertEqual(actionsbook.modified, [valkey3])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'units'):
+                    self.assertFalse(getattr(actionsbook, a))
+        
+        valkey3.value = Literal('PT3H20M')
+        actionsbook = WidgetKey.unload_actionsbook()
+        self.assertEqual(actionsbook.update, [valkey3])
+        self.assertEqual(actionsbook.units, [valkey3])
+        self.assertEqual(actionsbook.modified, [valkey3])
+        for a in lattr:
+            with self.subTest(actionsbook_attr = a):
+                if not a in ('modified', 'units', 'update'):
+                    self.assertFalse(getattr(actionsbook, a))
+        
 
 if __name__ == '__main__':
     unittest.main()
