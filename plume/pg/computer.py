@@ -2,6 +2,8 @@
 
 """
 
+import re
+
 from plume.rdf.rdflib import URIRef
 from plume.rdf.utils import crs_ns
 from plume.rdf.namespaces import DCT
@@ -53,8 +55,9 @@ class ComputationMethod():
     parser: function
         Fonction qui servira à retraiter le résultat retourné
         par le serveur avant de le passer aux clés du dictionnaire
-        de widgets. Elle prend pour argument une valeur et en
-        renvoie une autre.
+        de widgets. Elle prend pour argument les éléments des tuples
+        résultant de la requête et renvoie un objet
+        :py:class:`ComputationResult`.
     sources : list(rdflib.term.URIRef)
         Pour les métadonnées prenant leurs valeurs dans plusieurs
         sources de vocabulaire contrôlé, les sources concernées
@@ -68,7 +71,7 @@ class ComputationMethod():
         self.sources = sources or []
         self.parser = parser or default_parser
 
-def ComputationResult():
+class ComputationResult():
     """Résultat d'un calcul de métadonnées, sous une forme adaptée pour l'alimentation du dictionnaire de widgets.
     
     Parameters
@@ -117,8 +120,8 @@ def ComputationResult():
     
     """
     
-    def __init__(self, value=None, str_value=None, unit=None, language=None,
-        source=None):
+    def __init__(self, value=None, str_value=None, unit=None,
+        language=None, source=None):
         self.value = value
         self.str_value = str_value if self.value is None else None
         self.unit = unit if self.str_value else None
@@ -177,7 +180,7 @@ def crs_parser(crs_auth, crs_code):
     if not crs_auth in crs_ns or not crs_code or \
         not re.match('^[a-zA-Z0-9.]+$', crs_code):
         return
-    value = URIRef('{}{}').format(crs_ns[crs_auth], crs_code)
+    value = URIRef('{}{}'.format(crs_ns[crs_auth], crs_code))
     return ComputationResult(value=value)
 
 methods = {
