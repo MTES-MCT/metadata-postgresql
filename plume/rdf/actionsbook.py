@@ -48,13 +48,13 @@ class ActionsBook:
         Liste des clés dont le menu des sources doit être mis à jour.
     thesaurus : NoGhostKeyList
         Liste des clés dont la liste de valeurs doit être recalculée.
-    empty : NoGhostKeyList
-        Liste des clés pour lesquelles le texte saisi doit être effacé.
     drop : NoGhostKeyList or KeyList
         Liste des clés dont les widgets doivent être supprimés. `drop`
         est une liste sans fantômes (:py:class:`NoGhostKeyList`),
         sauf si le carnet d'actions a été initialisé avec le paramètre
         `allow_ghosts` valant ``True``.
+    update : NoGhostKeyList
+        Liste de clés dont les valeurs doivent être mises à jour.
 
     Parameters
     ----------
@@ -82,16 +82,17 @@ class ActionsBook:
             erase=['show_minus_button'])
         self.create = NoGhostKeyList(actionsbook=self, erase=['show',
             'show_minus_button', 'hide', 'hide_minus_button', 'move',
-            'languages', 'sources', 'thesaurus', 'modified', 'empty'])
+            'languages', 'units', 'sources', 'thesaurus', 'modified',
+            'update'])
         self.move = NoGhostKeyList(actionsbook=self)
         self.languages = NoGhostKeyList(actionsbook=self)
         self.units = NoGhostKeyList(actionsbook=self)
         self.sources = NoGhostKeyList(actionsbook=self)
         self.thesaurus = NoGhostKeyList(actionsbook=self)
-        self.empty = NoGhostKeyList(actionsbook=self)
+        self.update = NoGhostKeyList(actionsbook=self)
         l=['show', 'show_minus_button', 'hide', 'hide_minus_button',
-            'create', 'move', 'languages', 'sources', 'thesaurus',
-            'modified', 'empty']
+            'create', 'move', 'languages', 'units', 'sources',
+            'thesaurus', 'modified', 'update']
         if allow_ghosts:
             self.drop = KeyList(actionsbook=self, erase=l)
         else:
