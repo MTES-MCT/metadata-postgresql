@@ -217,6 +217,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        _mObjetQLabel.setWordWrap(True)
        _mObjetQLabel.setOpenExternalLinks(True)
+       #Dict des objets instanciés
+       self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQLabel})
     # == QLABEL
     #---------------------------
     #---------------------------
