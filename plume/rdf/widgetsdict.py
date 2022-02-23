@@ -723,6 +723,10 @@ class WidgetsDict(dict):
               à des widgets dont - parce qu'on a supprimé un widget antérieurement
               positionné au-dessus d'eux dans la grille - il faut à présent modifier
               la position.
+            * ``value to update`` : liste de clés du dictionnaire de widgets
+              (:py:class:`plume.rdf.widgetkey.WidgetKey`) telles que la valeur
+              du widget principal doit être mise à jour selon la valeur disponible
+              dans la clé ``'value'`` du dictionnaire interne.
               
               * ``[0]`` est la grille (:py:class:`QtWidgets.QGridLayout`) ;
               * ``[1]`` est le widget (:py:class:`QtWidgets.QWidget`) à déplacer ;
@@ -736,8 +740,8 @@ class WidgetsDict(dict):
         d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
             'widgets to delete', 'actions to delete', 'menus to delete',
             'language menu to update', 'switch source menu to update',
-            'unit menu to update', 'concepts list to update',
-            'widgets to empty', 'widgets to move')}
+            'unit menu to update', 'concepts list to update', 'widgets to empty',
+            'widgets to move', 'value to update')}
         
         if not actionsbook:
             return d
@@ -752,6 +756,7 @@ class WidgetsDict(dict):
         d['switch source menu to update'] = actionsbook.sources
         d['concepts list to update'] = actionsbook.thesaurus
         d['unit menu to update'] = actionsbook.units
+        d['value to update'] = actionsbook.update
         
         for widgetkey in actionsbook.show:
             d['widgets to show'] += self.list_widgets(widgetkey)
@@ -801,10 +806,13 @@ class WidgetsDict(dict):
             
             del self[widgetkey]
         
-        for widgetkey in actionsbook.empty:
-            w = self[widgetkey]['main widget']
-            if w:
-                d['widgets to empty'].append(w)
+        # à supprimer dès que possible (ainsi que la
+        # clé qui va avec) !
+        for widgetkey in actionsbook.update:
+            if self[widgetkey]['value'] is None:
+                w = self[widgetkey]['main widget']
+                if w:
+                    d['widgets to empty'].append(w)
         
         for widgetkey in actionsbook.move:
             g = self.parent_grid(widgetkey)
@@ -1191,42 +1199,41 @@ class WidgetsDict(dict):
         """
         method = self[widgetkey]['compute method']
         if not method or not result:
-            return
+            return self.dictisize_actionsbook(ActionsBook())
         WidgetKey.clear_actionsbook()
         # on réinitialise ici le carnet d'actions. Ensuite il
         # sera complété au fur et à mesure et non réinitialisé
-        # après chaque opération grâce aux paramètres append_book
-        # et preserve_book.
-        a = WidgetsDict.unload_actionsbook(preserve_book=True)
+        # après chaque opération, grâce aux paramètres append_book
+        # des méthodes d'actions sur les clés.
         if isinstance(widgetkey, ValueKey):
             result=result[:1]
             # on ne garde que la première valeur, même s'il
             # y en avait davantage
         e_list = []
         for r in result:
-            e = method.parser.__call__(r)
-            if e.value or e.value_str:
+            e = method.parser.__call__(*r)
+            if e.value is not None or e.str_value is not None:
                 e_list.append(e)
         if not e_list:
-            return
-        # on commence par créer les widgets dans lesquels
+            return self.dictisize_actionsbook(ActionsBook())
+        # on commence par préparer les clés dans lesquelles
         # seront ensuite intégrées les valeurs
         if isinstance(widgetkey, GroupOfValuesKey):
             keys = widgetkey.shrink_expend(len(e_list),
                 sources=method.sources)
         else:
             keys = [widgetkey]
-        # puis on saisit les valeurs dans les widgets
+        # puis on saisit les valeurs dans les clés
+        done = []
         for i in range(len(e_list)):
             k = keys[i]
             e = e_list[i]
             if k.sources and e.value:
                 if not e.source:
-                    e.source = Thesaurus.concept_source(value)
+                    e.source = Thesaurus.concept_source(e.value)
                 if not e.source or not e.source in k.sources:
                     continue
-                    # les valeurs non référencées ne sont pas conservées.
-                    # dans ce cas, on aura un widget vide.
+                    # les valeurs non référencées ne sont pas conservées
                 elif e.source != k.value_source:
                     k.change_source(e.source, append_book=True)
             if e.value is None and e.str_value is not None:
@@ -1237,6 +1244,18 @@ class WidgetsDict(dict):
                 e.value = self.prepare_value(k, e.str_value)
             if e.value is not None:
                 k.value = e.value
+            if k.value is not None:
+                done.append(k)
+        for k in keys:
+            # on supprime les clés qui n'ont finalement pas été utilisées
+            # car les valeurs qui auraient dû y être stockées n'ont pas
+            # passé la validation
+            if not k in done:
+                k.drop(append_book=True)
+                # NB: la méthode est sans effet sur une clé qui n'a
+                # pas de bouton moins, par exemple parce que c'est
+                # la dernière du groupe.
+        a = WidgetKey.unload_actionsbook()
         return self.dictisize_actionsbook(a)
     
     def prepare_value(self, widgetkey, value):
