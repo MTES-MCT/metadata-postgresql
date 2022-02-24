@@ -4,7 +4,7 @@ En plus d'être généré à la volée, le formulaire de saisie des métadonnée
 
 Toutes ces actions impliquent de mettre à jour le dictionnaire de widgets, grâce à des méthodes de la classe [`plume.rdf.widgetsdict.WidgetsDict`](/plume/rdf/widgetsdict.py). Ces méthodes renvoient à leur tour les informations nécessaires pour réaliser les opérations qui s'imposent sur les widgets eux-mêmes, sous la forme d'un dictionnaire contenant toujours les mêmes clés. Les valeurs de ces clés sont des listes qui seront vides ou non selon l'action réalisée. Elles sont décrites [ci-après](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation).
 
-[Structuration des dictionnaires contenant les informations de matérialisation](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation) • [Boutons "plus" et boutons de traduction](#boutons-plus-et-boutons-de-traduction) • [Boutons "moins"](#boutons-moins) • [Boutons de sélection de la source](#boutons-de-sélection-de-la-source) • [Boutons de sélection de la langue](#boutons-de-sélection-de-la-langue) • [Boutons de sélection de l'unité](#boutons-de-sélection-de-lunité)
+[Structuration des dictionnaires contenant les informations de matérialisation](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation) • [Boutons "plus" et boutons de traduction](#boutons-plus-et-boutons-de-traduction) • [Boutons "moins"](#boutons-moins) • [Boutons de sélection de la source](#boutons-de-sélection-de-la-source) • [Boutons de sélection de la langue](#boutons-de-sélection-de-la-langue) • [Boutons de sélection de l'unité](#boutons-de-sélection-de-lunité) • [Boutons de calcul](#boutons-de-calcul)
 
 Pour les interactions de l'utilisateur avec la partie "fixe" de l'interface (sauvegarde, import, export, modification des paramètres utilisateur, etc.), on se reportera à [Actions générales](/docs/source/usage/actions_generales.md).
 
@@ -196,4 +196,10 @@ r = widgetsdict.change_unit(widgetkey, new_unit)
 Les informations renvoyées par `change_unit` permettent de réaliser les opérations subséquentes sur les widgets.
 
 Le résultat, ici `r`, contiendra uniquement des clés vides à l'exception de `'unit menu to update'`. Celle-ci liste uniquement la clé courante, pour laquelle il faut changer l'unité affichée sur le bouton.
+
+
+## Boutons de calcul
+
+Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-calcul) pour plus de détails sur les modalités de création de ces widgets et [Métadonnées calculées](/docs/source/usage/metadonnees_calculees.md#implémentation-du-calcul-à-déclenchement-manuel) pour les actions à déclencher lorsque l'utilisateur clique sur le bouton.
+
 
