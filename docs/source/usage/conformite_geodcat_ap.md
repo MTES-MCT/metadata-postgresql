@@ -2,6 +2,8 @@
 
 _Référence : GeoDCAT-AP Version 2.0.0 - https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0_.
 
+[Généralités](#généralités) • [Types de valeurs littérales](#types-de-valeurs-littérales)
+
 Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble de concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Fréquence](#fréquence) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Ressource](#ressource) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Système linguistique](#système-linguistique) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
 
 ## Généralités
@@ -24,6 +26,24 @@ Les métadonnées RDF produites par Plume ont les spécificités suivantes :
 Lorsque des métadonnées externes sont importées via les fonctionnalités de Plume, elles sont retraitées pour être conformes à ces règles ou deviennent conformes de fait compte tenu des mécanismes internes de Plume.
 
 Les propriétés prévues par GeoDCAT-AP mais non gérées par Plume, les propriétés de GeoDCAT-AP sur lesquelles des modifications ont été opérées, et les propriétés ajoutées par Plume sont listées dans la suite.
+
+## Types de valeurs littérales
+
+Parmi les types explicitement cités par GeoDCAT-AP (pour les classes et propriétés prises en charges par Plume), seul le type `gsp:gmlLiteral` n'est pas reconnu par Plume. En cas d'import de métadonnées externes, les éventuelles valeurs de ce type seront traitées comme `xsd:string` et aucune des fonctionnalités permettant d'interagir avec les géométries ne sera disponible.
+
+Les types suivants sont pris en charge sans limitation : `xsd:string`, `rdf:langString` (`xsd:string` avec langue), `xsd:integer`, `xsd:decimal`, `xsd:boolean`.
+
+Les types suivants sont gérés par Plume, mais avec quelques limites :
+
+| Type | Limites |
+| --- | --- |
+| `xsd:duration` | Plume tronque les durées en ne conservant que la valeur pour la plus grande unité. Par exemple `'P1DT2H'` (un jour et deux heures) deviendra `'P1D'` (1 jour). |
+| `xsd:date` | Les fuseaux horaires ne sont pas pris en charge à ce stade. Si présents, Plume les retire. |
+| `xsd:dateTime` | Les fuseaux horaires et les millisecondes ne sont pas pris en charge à ce stade. Si présents, Plume les retire. |
+| `xsd:time` | Les fuseaux horaires et les millisecondes ne sont pas pris en charge à ce stade. Si présents, Plume les retire. |
+| `gsp:wktLiteral` | Dans l'hypothèse où elle aurait été demandée pour la catégorie de métadonnées considérée, la fonctionnalité de visualisation des géométries sera désactivée si la géométrie n'est pas de type `POINT`, `LINESTRING` ou `POLYGON`. |
+
+D'une manière général, toute valeur d'un type non listé ci-avant sera considérée comme de type `xsd:string`.
 
 ## Activité
 
