@@ -18,7 +18,7 @@ from plume.rdf.rdflib import isomorphic, Literal, URIRef
 from plume.rdf.exceptions import ForbiddenOperation
 
 from plume.pg.tests.connection import ConnectionString
-from plume.pg.queries import query_get_categories, query_template_tabs
+from plume.pg.queries import query_get_categories, query_template_tabs, query_exists_extension
 from plume.pg.template import TemplateDict
 from plume.pg.computer import methods, ComputationMethod, default_parser
 
@@ -2101,13 +2101,6 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- aucune valeur ---
         actionsdict = widgetsdict.computing_update(c, [])
-        self.assertListEqual(c.children, [r1g, r1v, r2g, r2v])
-        for a, l in actionsdict.items():
-            with self.subTest(action = a):
-                self.assertFalse(l)
-        
-        # --- que des valeurs invalides ---
-        actionsdict = widgetsdict.computing_update(c, [('EPSG', '0000'), ('EPSG', '0000')])
         self.assertListEqual(c.children, [r1g, r1v])
         self.assertListEqual(actionsdict['widgets to delete'], ['<r2v QComboBox dct:conformsTo>',
             '<r2v-minus QToolButton dct:conformsTo>', '<r2v-source QToolButton dct:conformsTo>',
@@ -2124,6 +2117,22 @@ class WidgetsDictTestCase(unittest.TestCase):
             with self.subTest(action = a):
                 if not a in ('widgets to hide', 'widgets to delete', 'actions to delete',
                     'menus to delete', 'widgets to move'):
+                    self.assertFalse(l)
+        
+        # --- que des valeurs invalides ---
+        actionsdict = widgetsdict.computing_update(c, [('EPSG', '0000'), ('EPSG', '0000')])
+        self.assertListEqual(c.children, [r1g, r1v])
+        self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
+            '<P QToolButton dct:conformsTo>', 1, 0, 1, 1)])
+        self.assertListEqual(actionsdict['widgets to hide'], ['<r1g-minus QToolButton dct:conformsTo>'])
+        # NB: ce sont des actions inutiles (masquer un widget déjà masqué, "déplacer"
+        # un widget sur place), mais le fait est que dans la succession d'actions
+        # le widget a réellement été visible et a réellement bougé avant de revenir
+        # à sa place. Il paraît admissible que le carnet d'actions ne sache pas dire
+        # que l'état final est le même que l'état initial.
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('widgets to hide', 'widgets to move'):
                     self.assertFalse(l)
 
     def test_computing_update_default_parser(self):
@@ -2178,6 +2187,134 @@ class WidgetsDictTestCase(unittest.TestCase):
             methods[DCT.created] = m
         else:
             del methods[DCT.created]
+
+    def test_compute_conformsto(self):
+        """Processus complet de calcul des métadonnées pour dct:conformsTo.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute('''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['manual', 'auto']::z_plume.meta_compute[]
+                        WHERE path = 'dct:conformsTo' ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(template=template)
+        c = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertTrue(widgetsdict[c]['has compute button'])
+        self.assertTrue(widgetsdict[c]['auto compute'])
+        
+        # --- dépendances ---
+        dependances = widgetsdict[c]['compute method'].dependances
+        if dependances:
+            conn = psycopg2.connect(connection_string)
+            dependances_ok = True
+            with conn:
+                with conn.cursor() as cur:
+                    for extension in dependances:
+                        cur.execute(query_exists_extension(), (extension,))
+                        dependances_ok = dependances_ok and cur.fetchone()[0]
+                        if not dependances_ok:
+                            break
+            conn.close()
+        self.assertTrue(dependances_ok)
+        self.assertEqual(dependances, ['postgis'])
+        
+        # --- requête ---
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test (
+                        geom1 geometry(POINT, 2154),
+                        "GEOM 2" geometry(POINT, 4326),
+                        geom3 geometry(POLYGON, 2000),
+                        geom4 text,
+                        geom5 geometry(POLYGON, 2154)
+                        ) ;
+                    ''')
+                query = widgetsdict.computing_query(c, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertListEqual(result, [('EPSG', '2000'), ('EPSG', '2154'),
+            ('EPSG', '4326')])
+        
+        r1g = c.children[0]
+        r1v = c.children[1]
+        widgetsdict[c]['grid widget'] = '<QGridLayout dct:conformsTo>'
+        widgetsdict[c.button]['main widget'] = '<P QToolButton dct:conformsTo>'
+        widgetsdict[r1g]['main widget'] = '<r1g QGroupBox dct:conformsTo>'
+        widgetsdict[r1g]['minus widget'] = '<r1g-minus QToolButton dct:conformsTo>'
+        widgetsdict[r1g]['switch source widget'] = '<r1g-source QToolButton dct:conformsTo>'
+        widgetsdict[r1g]['switch source menu'] = '<r1g-source QMenu dct:conformsTo>'
+        widgetsdict[r1g]['switch source actions'] = ['<r1g-source QAction n°1', '<r1g-source QAction n°2']
+        widgetsdict[r1v]['main widget'] = '<r1v QComboBox dct:conformsTo>'
+        widgetsdict[r1v]['minus widget'] = '<r1v-minus QToolButton dct:conformsTo>'
+        widgetsdict[r1v]['switch source widget'] = '<r1v-source QToolButton dct:conformsTo>'
+        widgetsdict[r1v]['switch source menu'] = '<r1v-source QMenu dct:conformsTo>'
+        widgetsdict[r1v]['switch source actions'] = ['<r1v-source QAction n°1', '<r1v-source QAction n°2']
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(c, result)
+        # les clés r1v/r1g ont été supprimées car l'EPSG 2000 qui aurait
+        # dû y être référencé n'a pas passé la validation
+        r2g = c.children[0]
+        r2v = c.children[1]
+        r3g = c.children[2]
+        r3v = c.children[3]
+        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+        self.assertEqual(r3v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+        self.assertTrue(all(o in actionsdict['new keys'] for o in (r2v, r2g, r3v, r3g)))
+        self.assertTrue(all(o in (r2v, r2g, r3v, r3g) or o.generation > r2v.generation for o in actionsdict['new keys']))
+        self.assertListEqual(actionsdict['widgets to delete'], ['<r1v QComboBox dct:conformsTo>',
+            '<r1v-minus QToolButton dct:conformsTo>', '<r1v-source QToolButton dct:conformsTo>',
+            '<r1g QGroupBox dct:conformsTo>', '<r1g-minus QToolButton dct:conformsTo>',
+            '<r1g-source QToolButton dct:conformsTo>'])
+        self.assertListEqual(actionsdict['actions to delete'], ['<r1v-source QAction n°1',
+            '<r1v-source QAction n°2', '<r1g-source QAction n°1', '<r1g-source QAction n°2'])
+        self.assertListEqual(actionsdict['menus to delete'], ['<r1v-source QMenu dct:conformsTo>',
+            '<r1g-source QMenu dct:conformsTo>'])
+        self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
+            '<P QToolButton dct:conformsTo>', 2, 0, 1, 1)])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in  ('new keys', 'widgets to move', 'widgets to delete',
+                    'actions to delete', 'menus to delete'):
+                    self.assertFalse(l)
+        
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix owl: <http://www.w3.org/2002/07/owl#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:{uuid} a dcat:Dataset ;
+                dct:conformsTo <http://www.opengis.net/def/crs/EPSG/0/2154>,
+                    <http://www.opengis.net/def/crs/EPSG/0/4326> ;
+                dct:identifier "{uuid}" .
+            """.format(uuid=widgetsdict.datasetid.uuid)
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
 
 if __name__ == '__main__':
     unittest.main()
