@@ -3294,12 +3294,17 @@ class GroupOfValuesKey(GroupKey):
                 WidgetKey.actionsbook.hide_minus_button.append(child) 
 
     def shrink_expend(self, length, sources=None):
-        """Supprime et recrée les clés filles du groupe en vue d'une saisie massive des valeurs.
+        """Prépare les clés filles du groupe en vue d'une saisie massive des valeurs.
+        
+        Cette méthode retire les valeurs des clés et, selon
+        le nombre de clés demandées, supprime les clés excédentaires
+        ou crée celles qui manquent.
         
         Parameters
         ----------
         length : int
-            Nombre de clés attendues.
+            Nombre de clés attendues. Si `length` est inférieur
+            à ``1``, il sera considéré qu'il vaut ``1``.
         sources : list(rdflib.term.URIRef), optional
             Liste de sources de vocabulaire contrôlé concernées.
             Si des sources sont définies pour le groupe, les
@@ -3325,9 +3330,10 @@ class GroupOfValuesKey(GroupKey):
         groupe de valeurs sans bouton.
         
         """
-        if self.is_hidden or not length or length < 1 \
-            or not self.button:
+        if self.is_hidden or not self.button:
             return []
+        if not length or length < 1:
+            length = 1
         old_children = self.children.copy()
         n = length
         l = []
