@@ -921,7 +921,7 @@ widgetsdict[widgetkey]['minus widget'] = minus_widget
 
 ```
 
-*Où `minus_widget` est le widget de sélection de la source qui vient d'être créé.*
+*Où `minus_widget` est le widget bouton moins qui vient d'être créé.*
 
 ### Placement dans la grille
 
@@ -1014,7 +1014,7 @@ widgetsdict[widgetkey]['compute widget'] = compute_widget
 
 ```
 
-*Où `compute_widget` est le widget de calcul qui vient d'être créé.*
+*Où `compute_widget` est le widget bouton de calcul qui vient d'être créé.*
 
 ### Placement dans la grille
 
@@ -1030,7 +1030,7 @@ grid.addWidget(compute_widget, row, column, rowSpan, columnSpan)
 
 ```
 
-*`compute_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du boutoin de calcul.*
+*`compute_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du bouton de calcul.*
 
 ### Icône
 
