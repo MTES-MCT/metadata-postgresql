@@ -12,7 +12,7 @@ Chaque enregistrement du dictionnaire des widgets contrôle un widget principal 
 
 **Widget principal** : [Type](#type) • [Stockage](#stockage) • [Placement dans la grille](#placement-dans-la-grille) • [Widget masqué ?](#widget-masqué-) • [Paramètres spécifiques aux widgets QGroupBox](#paramètres-spécifiques-aux-widgets-qgroupbox) • [Paramètres spécifiques aux widgets QToolButton](#paramètres-spécifiques-aux-widgets-qtoolbutton) • [Paramètres spécifiques aux widgets de saisie](#paramètres-spécifiques-aux-widgets-de-saisie) • [Paramètres spécifiques aux widgets QLineEdit et QTextEdit](#paramètres-spécifiques-aux-widgets-qlineedit-et-qtextedit) • [Paramètres spécifiques aux widgets QComboBox](#paramètres-spécifiques-aux-widgets-qcombobox) • [Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit](#paramètres-spécifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit) • [Paramètres spécifiques aux widgets QLabel](#paramètres-spécifiques-aux-widgets-qlabel)
 
-**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton de sélection de l'unité](#widget-annexe--bouton-de-sélection-de-lunité) • [Widget annexe : bouton d'aide à la saisie des géométries](#widget-annexe--bouton-daide-à-la-saisie-des-géométries) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins)
+**Widgets annexes** : [Widget annexe : grille](#widget-annexe--grille) • [Widget annexe : étiquette](#widget-annexe--étiquette) • [Widget annexe : bouton de sélection de la source](#widget-annexe--bouton-de-sélection-de-la-source) • [Widget annexe : bouton de sélection de la langue](#widget-annexe--bouton-de-sélection-de-la-langue) • [Widget annexe : bouton de sélection de l'unité](#widget-annexe--bouton-de-sélection-de-lunité) • [Widget annexe : bouton d'aide à la saisie des géométries](#widget-annexe--bouton-daide-à-la-saisie-des-géométries) • [Widget annexe : bouton "moins"](#widget-annexe--bouton-moins) • [Widget annexe : bouton de calcul](#widget-annexe--bouton-de-calcul)
 
 Le widget principal et les widgets annexes sont totalement indépendants. Ils peuvent être simplement créés les uns à la suite des autres, de la manière suivante :
 
@@ -989,3 +989,74 @@ if widgetsdict[widgetkey]['hidden'] or widgetsdict[widgetkey]['hide minus button
 ```
 
 [↑ haut de page](#création-dun-nouveau-widget)
+
+
+## Widget annexe : bouton de calcul
+
+Les boutons de calcul sont une alternative à la saisie manuelle des métadonnées. Ils permettent de calculer leurs valeurs par requête sur le serveur PostgreSQL.
+
+Un tel widget doit être créé dès lors que la condition suivante est vérifiée :
+
+```python
+
+if widgetsdict[widgetkey]['has compute button']:
+    ...
+
+```
+
+### Stockage
+
+Le boutoin de calcul est stocké dans la clé `'compute widget'` du dictionnaire interne.
+
+```python
+
+widgetsdict[widgetkey]['compute widget'] = compute_widget
+
+```
+
+*Où `compute_widget` est le widget de calcul qui vient d'être créé.*
+
+### Placement dans la grille
+
+Le `QToolButton` doit être placé dans le `QGridLayout` associé à la clé parente, obtenu grâce à la méthode `plume.rdf.widgetsdict.WidgetsDict.parent_grid`.
+
+Les paramètres de placement du widget dans la grille - soit les arguments `row`, `column`, `rowSpan` et `columnSpan` de la méthode `QGridLayout.addWidget` - sont donnés par la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement`.
+
+```python
+
+row, column, rowSpan, columnSpan = widgetsdict.widget_placement(widgetkey, 'compute widget')
+grid = widgetsdict.parent_grid(widgetkey)
+grid.addWidget(compute_widget, row, column, rowSpan, columnSpan)
+
+```
+
+*`compute_widget` est le `QToolButton` qui vient d'être créé. Le second paramètre de `widget_placement` indique que les coordonnées demandées sont celles du boutoin de calcul.*
+
+### Icône
+
+L'image ![compute_button.svg](/plume/icons/buttons/compute_button.svg) à utiliser pour un bouton de calcul est toujours [compute_button.svg](/plume/icons/buttons/compute_button.svg).
+
+### Texte d'aide
+
+On pourra afficher en infobulle sur le bouton le texte suivant :
+
+```python
+
+'Calculer côté serveur'
+
+```
+
+### Widget masqué ?
+
+Comme tous les autres widgets, le `QToolButton` doit être masqué dès lors que la clé `'hidden'` vaut `True`.
+
+```python
+
+if widgetsdict[widgetkey]['hidden']:
+    ...
+
+```
+
+[↑ haut de page](#création-dun-nouveau-widget)
+
+
