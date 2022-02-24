@@ -56,6 +56,11 @@ Le widget principal et les widgets annexes sont totalement indépendants. Ils pe
     if widgetsdict[widgetkey]['has minus button']:
         ...
 
+    # commandes de création du widget annexe de calcul,
+    # s'il y a lieu :
+    if widgetsdict[widgetkey]['has compute button']:
+        ...
+
 ```
 
 Les commandes à exécuter sont détaillées dans la suite.
