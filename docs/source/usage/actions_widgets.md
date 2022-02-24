@@ -24,8 +24,8 @@ Les dictionnaires renvoyés par les méthodes d'actions de la classe [`plume.rdf
 | `'switch source menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la source doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source) pour plus de détails sur la génération des menus de sélection de la source. |
 | `'unit menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de l'unité doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur la génération des menus de sélection de l'unité. |
 | `'concepts list to update'` | Liste de clés du dictionnaire (`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal est un widget `QComboBox` dont la liste de termes doit être régénérée. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#paramètres-spécifiques-aux-widgets-qcombobox). |
-| `'widgets to empty'` | Liste de widgets (`QtWidgets.QWidget`) dont le texte doit être effacé. |
 | `'widgets to move'` | Liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a supprimé un widget antérieurement positionné au-dessus d'eux dans la grille - il faut à présent modifier la position. |
+| `'value to update'` | Liste de clés (`plume.rdf.widgetkey.ValueKey`) tels que la valeur renseignée dans le widget principal doit être mise à jour selon celle de la clé `'value'` du dictionnaire interne. |
 
 Chaque tuple de la clé `'widgets to move'` est composé de six éléments :
 - `[0]` est la grille (`QtWidgets.QGridLayout`) contenant le widget ;
@@ -135,7 +135,7 @@ Les informations renvoyées par `change_source` permettent de réaliser les opé
 
 Le résultat, ici `r`, pourra contenir des informations dans les clés suivantes :
 - `'concepts list to update'`. Cette liste, si elle n'est pas vide, contiendra soit la clé courante, soit celle dont on affichera les widgets à la place.
-- `'widgets to empty'`. Cette liste, si elle n'est pas vide, ne contiendra jamais que la clé de l'enregistrement courant.
+- `'value to update'`. Cette liste, si elle n'est pas vide, ne contiendra jamais que la clé de l'enregistrement courant.
 - `'switch source menu to update'`. Cette liste, si elle n'est pas vide, contiendra soit la clé de l'enregistrement courant, soit celle dont on affichera les widgets à la place. Dans la grande majorité des cas, les items du menu ne changent pas, seulement la source identifiée comme sélectionnée (toujours fournie par la clé `'current source'`), mais on préférera régénérer intégralement tous les objets `QMenu` et `QAction` par précaution.
 - `'widgets to show'`. Lors d'une bascule en "mode manuel", il faudra afficher le groupe de propriétés dans lequel se fera la saisie manuelle, ainsi que tous les widgets qu'il contient. En cas de sortie du mode manuel, il s'agira d'afficher le widget de saisie `QComboBox` (si thésaurus) ou `QLineEdit` (si saisie libre d'URI) que l'utilisateur devra désormais utiliser pour la catégorie de métadonnées concernée.
 - `'widgets to hide'`. Lors d'une bascule en mode manuel ou sortie du mode manuel, les widgets utilisés pour l'ancien mode doivent être masqués.
