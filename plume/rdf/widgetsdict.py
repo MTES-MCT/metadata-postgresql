@@ -84,7 +84,7 @@ class WidgetsDict(dict):
     
     Attributes
     ----------
-    datasetid : URIRef
+    datasetid : plume.rdf.utils.DatasetId
         L'identifiant du jeu de données dont le dictionnaire présente les
         métadonnées.
     root : RootKey
@@ -1138,7 +1138,7 @@ class WidgetsDict(dict):
             >>> query = widgetsdict.computing_query(widgetkey,
             ...     'nom du schéma', 'nom de la relation')
             >>> cur.execute(*query)
-            >>> computed_values = cur.fetchall()
+            >>> result = cur.fetchall()
         
         Parameters
         ----------
@@ -1198,14 +1198,14 @@ class WidgetsDict(dict):
         
         """
         method = self[widgetkey]['compute method']
-        if not method or not result:
+        if not method or result is None:
             return self.dictisize_actionsbook(ActionsBook())
         WidgetKey.clear_actionsbook()
         # on réinitialise ici le carnet d'actions. Ensuite il
         # sera complété au fur et à mesure et non réinitialisé
         # après chaque opération, grâce aux paramètres append_book
         # des méthodes d'actions sur les clés.
-        if isinstance(widgetkey, ValueKey):
+        if result and isinstance(widgetkey, ValueKey):
             result=result[:1]
             # on ne garde que la première valeur, même s'il
             # y en avait davantage
@@ -1214,8 +1214,6 @@ class WidgetsDict(dict):
             e = method.parser.__call__(*r)
             if e.value is not None or e.str_value is not None:
                 e_list.append(e)
-        if not e_list:
-            return self.dictisize_actionsbook(ActionsBook())
         # on commence par préparer les clés dans lesquelles
         # seront ensuite intégrées les valeurs
         if isinstance(widgetkey, GroupOfValuesKey):
@@ -1223,6 +1221,7 @@ class WidgetsDict(dict):
                 sources=method.sources)
         else:
             keys = [widgetkey]
+            widgetkey.value = None
         # puis on saisit les valeurs dans les clés
         done = []
         for i in range(len(e_list)):
