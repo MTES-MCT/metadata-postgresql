@@ -3,9 +3,10 @@
 """
 
 import re
+from json import load
 
 from plume.rdf.rdflib import URIRef, from_n3
-from plume.rdf.utils import path_from_n3, forbidden_char
+from plume.rdf.utils import path_from_n3, forbidden_char, abspath
 from plume.rdf.namespaces import RDFS, SH, PlumeNamespaceManager
 
 nsm = PlumeNamespaceManager()
@@ -129,6 +130,30 @@ class TemplateDict:
             elif origin == 'local':
                 del config['sources']
                 self.local[path] = config
+
+class LocalTemplatesCollection(dict):
+    """Répertoire des modèles disponibles en local.
+    
+    Les modèles locaux se substitueront aux modèles importés
+    du serveur PostgreSQL si l'extension PlumePg n'est
+    pas installée sur la base courante.
+    
+    Un objet de classe :py:class:`LocalTemplatesCollection`
+    est un dictionnaire dont les clés sont des noms des modèles
+    et les valeurs sont les modèles en tant que tels (objets
+    :py:class:TemplateDict).
+    
+    """
+    def __init__(self):
+        self.labels = []
+        with open(abspath('pg/data/templates.json'), encoding='utf-8') as src:
+            data = load(src)
+        if data:
+            for label, v in data.items():
+                if not v:
+                    continue
+                self[label] = TemplateDict(v.get('categories', []), v.get('tabs'))
+                self.labels.append(label)
 
 def search_template(templates, metagraph=None):
     """Déduit d'un graphe de métadonnées le modèle de formulaire à utiliser.
