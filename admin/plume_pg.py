@@ -8,11 +8,14 @@ Pour regénérer la requête d'import des métadonnées communes:
 
 import re
 from psycopg2 import sql, connect
+from json import dump
 
 from rdflib.term import URIRef
 
 from plume.rdf.namespaces import DCAT, SH, PlumeNamespaceManager
+from plume.rdf.utils import abspath
 from plume.rdf.properties import class_properties
+from plume.pg.queries import query_get_categories, query_template_tabs
 from plume.pg.tests.connection import ConnectionString
 
 nsm = PlumeNamespaceManager()
@@ -90,7 +93,6 @@ def _table_from_shape(categories, rdfclass, path=None, no_cast=False):
             _table_from_shape(categories, prop_dict.get('rdfclass'),
                 path=prop.path, no_cast=no_cast)
 
-
 def query_from_shape():
     """Génère la requête permettant de reconstituer la table des catégories communes de PgPlume.
 
@@ -133,4 +135,35 @@ def query_from_shape():
     
     print(s)
     return s
+
+def store_sample_templates():
+    """Importe depuis PostgreSQL et écrit dans le fichier dédié les modèles pré-configurés de PlumePg.
+    
+    """
+    connection_string = ConnectionString()
+    data = {}
+    conn = connect(connection_string)
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute('DROP EXTENSION IF EXISTS plume_pg ; CREATE EXTENSION plume_pg')
+            cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+            cur.execute('SELECT array_agg(tpl_label ORDER BY priority) FROM z_plume.meta_template')
+            labels = cur.fetchone()[0]
+            for label in labels:
+                cur.execute(
+                    query_get_categories(),
+                    (label,)
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    query_template_tabs(),
+                    (label,)
+                    )
+                tabs = cur.fetchall()
+                data[label] = {'categories': categories, 'tabs': tabs}
+            cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+    conn.close()
+    with open(abspath('pg/data/templates.json'), 'w',
+        encoding='utf-8') as dest:
+        dump(data, dest, ensure_ascii=False, indent=4)
 
