@@ -480,11 +480,6 @@
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
     skos:prefLabel "ODT"@en .
 
-<http://publications.europa.eu/resource/authority/file-type/OP_DATPRO> a skos:Concept ;
-    skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Provisional data"@en,
-        "Données provisoires"@fr .
-
 <http://publications.europa.eu/resource/authority/file-type/OVF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
     skos:prefLabel "OVF"@en .
@@ -1717,11 +1712,6 @@ snum:DataServiceStandard a skos:ConceptScheme ;
         "OPL-2.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "OSET Public License version 2.1"@en .
-
-<http://publications.europa.eu/resource/authority/licence/OP_DATPRO> a skos:Concept ;
-    skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Provisional data"@en,
-        "Données provisoires"@fr .
 
 <http://publications.europa.eu/resource/authority/licence/OSL_1_0> a skos:Concept ;
     skos:altLabel "OSL-1.0"@en,
