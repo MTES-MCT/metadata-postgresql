@@ -175,6 +175,7 @@ class IsoToDcat:
         for elem in self.isoxml.findall('./gmd:referenceSystemInfo/'
             'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
             'gmd:RS_Identifier/gmd:code', namespaces=ns):
+            epsg = None
             epsg_txt = elem.findtext('./gmx:Anchor',
                 namespaces=ns)
             if not epsg_txt:
