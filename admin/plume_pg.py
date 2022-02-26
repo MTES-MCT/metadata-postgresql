@@ -4,6 +4,12 @@ Pour regénérer la requête d'import des métadonnées communes:
 
     >>> query_from_shape()
 
+Pour importer en local les modèles préconfigurés de PlumePg:
+
+    >>> store_sample_templates()
+
+Cette commande met à jour le fichier ``/plume/pg/data/templates.json``.
+
 """
 
 import re
@@ -150,6 +156,9 @@ def store_sample_templates():
             cur.execute('SELECT array_agg(tpl_label ORDER BY priority) FROM z_plume.meta_template')
             labels = cur.fetchone()[0]
             for label in labels:
+                cur.execute('SELECT * FROM z_plume.meta_template WHERE tpl_label = %s',
+                    (label,))
+                conditions = cur.fetchone()
                 cur.execute(
                     query_get_categories(),
                     (label,)
@@ -160,7 +169,7 @@ def store_sample_templates():
                     (label,)
                     )
                 tabs = cur.fetchall()
-                data[label] = {'categories': categories, 'tabs': tabs}
+                data[label] = {'categories': categories, 'tabs': tabs, 'conditions': conditions}
             cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
     conn.close()
     with open(abspath('pg/data/templates.json'), 'w',
