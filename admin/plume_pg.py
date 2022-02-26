@@ -153,7 +153,7 @@ def store_sample_templates():
         with conn.cursor() as cur:
             cur.execute('DROP EXTENSION IF EXISTS plume_pg ; CREATE EXTENSION plume_pg')
             cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
-            cur.execute('SELECT array_agg(tpl_label ORDER BY priority) FROM z_plume.meta_template')
+            cur.execute('SELECT array_agg(tpl_label ORDER BY tpl_label) FROM z_plume.meta_template')
             labels = cur.fetchone()[0]
             for label in labels:
                 cur.execute('SELECT * FROM z_plume.meta_template WHERE tpl_label = %s',
