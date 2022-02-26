@@ -20,6 +20,7 @@ https://www.psycopg.org
 """
 
 from psycopg2 import sql
+from psycopg2.extras import Json
 
 from plume.rdf.exceptions import UnknownParameterValue
 from plume.rdf.namespaces import SNUM
@@ -47,7 +48,6 @@ def query_is_relation_owner():
             WHERE relnamespace = quote_ident(%s)::regnamespace
                 AND relname = %s
         """)
-    
 
 def query_exists_extension():
     """Requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
@@ -78,7 +78,6 @@ def query_exists_extension():
                 AND installed_version IS NOT NULL
         """)
 
-
 def query_get_relation_kind(schema_name, table_name):
     """Requête qui récupère le type d'une relation PostgreSQL.
     
@@ -108,7 +107,6 @@ def query_get_relation_kind(schema_name, table_name):
         """).format(
             sql.Identifier(schema_name, table_name)
             )
-
 
 def query_update_table_comment(schema_name, table_name, relation_kind='r'):
     """Requête de mise à jour du descriptif d'une table ou vue.
@@ -154,7 +152,6 @@ def query_update_table_comment(schema_name, table_name, relation_kind='r'):
             sql.Identifier(schema_name, table_name)
             )
 
-
 def query_get_table_comment(schema_name, table_name):
     """Requête de récupération du descriptif d'une table ou vue.
     
@@ -183,7 +180,6 @@ def query_get_table_comment(schema_name, table_name):
         ).format(
             sql.Identifier(schema_name, table_name)
             )
-
 
 def query_list_templates():
     """Requête d'import de la liste des modèles disponibles.
@@ -218,6 +214,53 @@ def query_list_templates():
             ORDER BY tpl_label
         """)
 
+def query_evaluate_local_templates(templates_collection):
+    """Requête qui évalue côté serveur les conditions d'application des modèles locaux.
+    
+    À utiliser comme suit:
+    
+        >>> query = query_evaluate_local_templates()
+        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> templates = cur.fetchall()
+    
+    Parameters
+    ----------
+    templates_collection : plume.pg.template.LocalTemplatesCollection
+        Le répertoire des modèles stockés localement,
+        qui aura été instancié parce que PlumePg
+        n'est pas activée sur la base de la table
+        dont on affiche les métadonnées.
+    
+    Returns
+    -------
+    psycopg2.sql.Composed
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    Notes
+    -----
+    La forme du résultat des requêtes créées avec cette fonction est
+    identique à celle de :py:func:`query_list_templates`, ce qui 
+    permet ensuite d'appliquer dans les deux cas la fonction
+    :py:func:`plume.pg.template.search_template` pour obtenir le
+    nom du modèle à appliquer.
+    
+    """
+    return sql.SQL('''
+        WITH meta_template (tpl_label, sql_filter, md_conditions, priority, comment) AS (VALUES {})
+        SELECT
+            tpl_label,
+            z_plume.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
+            md_conditions::jsonb,
+            priority
+            FROM meta_template
+            ORDER BY tpl_label
+        ''').format(
+            sql.SQL(', ').join(
+                sql.SQL('({})').format(sql.SQL(', ').join(
+                    sql.Literal(Json(v) if isinstance(v, list) else v) for v in l)
+                    ) for l in templates_collection.conditions
+                )
+            )  
 
 def query_get_categories():
     """Requête d'import des catégories à afficher dans un modèle donné.
@@ -265,7 +308,6 @@ def query_get_categories():
             WHERE tpl_label = %s
         """)
 
-
 def query_template_tabs():
     """Requête d'import des onglets utilisés par un modèle.
     
@@ -311,7 +353,6 @@ def query_template_tabs():
             ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab
         """)
 
-
 def query_get_columns(schema_name, table_name):
     """Requête de récupération des descriptifs des champs d'une table ou vue.
     
@@ -348,7 +389,6 @@ def query_get_columns(schema_name, table_name):
             attrelid=sql.Identifier(schema_name, table_name)
             )
 
-
 def query_update_column_comment(schema_name, table_name, column_name):
     """Requête de mise à jour du descriptif d'un champ.
     
@@ -378,7 +418,6 @@ def query_update_column_comment(schema_name, table_name, column_name):
         ).format(
             sql.Identifier(schema_name, table_name, column_name)
             )
-
 
 def query_update_columns_comments(schema_name, table_name, widgetsdict):
     """Requête de mise à jour des descriptifs des champs d'une table.
