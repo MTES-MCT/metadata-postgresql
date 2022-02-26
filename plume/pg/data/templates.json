@@ -156,7 +156,14 @@
                 null
             ]
         ],
-        "tabs": []
+        "tabs": [],
+        "conditions": [
+            "Basique",
+            null,
+            null,
+            0,
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-02-26 à 15:07:04."
+        ]
     },
     "Classique": {
         "categories": [
@@ -1013,7 +1020,14 @@
                 null
             ]
         ],
-        "tabs": []
+        "tabs": [],
+        "conditions": [
+            "Classique",
+            "$1 ~ '^c_'",
+            null,
+            5,
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-02-26 à 15:07:04."
+        ]
     },
     "Donnée externe": {
         "categories": [
@@ -1827,6 +1841,17 @@
                 null
             ]
         ],
-        "tabs": []
+        "tabs": [],
+        "conditions": [
+            "Donnée externe",
+            "$1 ~ ANY(ARRAY['^r_', '^e_'])",
+            [
+                {
+                    "snum:isExternal": true
+                }
+            ],
+            10,
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-02-26 à 15:07:04."
+        ]
     }
 }
