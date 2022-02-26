@@ -11,11 +11,12 @@ import unittest, psycopg2
 
 from plume.rdf.utils import data_from_file, abspath
 from plume.rdf.namespaces import RDF
-from plume.pg.template import TemplateDict, search_template
+from plume.pg.template import TemplateDict, search_template, \
+    LocalTemplatesCollection
 from plume.pg.description import PgDescription
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_list_templates, query_get_categories, \
-     query_template_tabs
+     query_template_tabs, query_evaluate_local_templates
 
 connection_string = ConnectionString()
 
@@ -250,6 +251,49 @@ class TemplateTestCase(unittest.TestCase):
         self.assertTrue('Principal' in template.tabs)
         self.assertTrue('Secondaire' in template.tabs)
 
+    def test_local_templates(self):
+        """Processus de sélection du modèle avec modèles stockés en local.
+        
+        """
+        templates_collection = LocalTemplatesCollection()
+        self.assertEqual(len(templates_collection.labels), 3)
+        self.assertTrue('Basique' in templates_collection.labels)
+        pg_description_1 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_1.txt')))
+        pg_description_2 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_2.txt')))
+        conn = psycopg2.connect(connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    query_evaluate_local_templates(templates_collection),
+                    ('s_schema', 'table')
+                    )
+                templates_a = cur.fetchall()
+                cur.execute(
+                    query_evaluate_local_templates(templates_collection),
+                    ('r_admin_express', 'departement_2154')
+                    )
+                templates_b = cur.fetchall()
+                cur.execute(
+                    query_evaluate_local_templates(templates_collection),
+                    ('c_amgt_urb_zon_amgt', 'l_zac_075')
+                    )
+                templates_c = cur.fetchall()
+        conn.close()
+        self.assertIsNone(
+            search_template(templates_a)
+            )
+        self.assertEqual(
+            search_template(templates_b),
+            'Donnée externe'
+            )
+        self.assertEqual(
+            search_template(templates_a, pg_description_1.metagraph),
+            'Donnée externe'
+            )
+        self.assertEqual(
+            search_template(templates_c, pg_description_2.metagraph),
+            'Classique'
+            )
 
 if __name__ == '__main__':
     unittest.main()
