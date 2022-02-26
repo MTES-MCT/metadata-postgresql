@@ -143,9 +143,21 @@ class LocalTemplatesCollection(dict):
     et les valeurs sont les modèles en tant que tels (objets
     :py:class:TemplateDict).
     
+    Attributes
+    ----------
+    labels : list(str)
+        Liste des noms des modèles locaux.
+    conditions : list(tuple)
+        Liste des modèles avec leurs conditions
+        d'application automatique. Concrètement, il s'agit
+        des informations qu'on aurait trouvées dans la table
+        ``z_plume.meta_template`` si PlumePg avait été
+        active sur la base.
+    
     """
     def __init__(self):
         self.labels = []
+        self.conditions = []
         with open(abspath('pg/data/templates.json'), encoding='utf-8') as src:
             data = load(src)
         if data:
@@ -154,6 +166,7 @@ class LocalTemplatesCollection(dict):
                     continue
                 self[label] = TemplateDict(v.get('categories', []), v.get('tabs'))
                 self.labels.append(label)
+                self.conditions.append(v['conditions'])
 
 def search_template(templates, metagraph=None):
     """Déduit d'un graphe de métadonnées le modèle de formulaire à utiliser.
