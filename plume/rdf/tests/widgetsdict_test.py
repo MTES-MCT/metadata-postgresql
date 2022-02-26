@@ -19,7 +19,7 @@ from plume.rdf.exceptions import ForbiddenOperation
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs, query_exists_extension
-from plume.pg.template import TemplateDict
+from plume.pg.template import TemplateDict, LocalTemplatesCollection
 from plume.pg.computer import methods, ComputationMethod, default_parser
 
 connection_string = ConnectionString()
@@ -2315,6 +2315,40 @@ class WidgetsDictTestCase(unittest.TestCase):
         metagraph = Metagraph().parse(data=metadata)
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))
+
+    def test_local_template(self):
+        """Génération du dictionnaire avec un modèle local et non issu de PlumePg.
+        
+        """
+        templates_collection = LocalTemplatesCollection()
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=templates_collection['Basique'])
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))   
 
 if __name__ == '__main__':
     unittest.main()
