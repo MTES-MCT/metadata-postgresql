@@ -20,7 +20,8 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
     query_list_templates, query_get_categories, query_template_tabs, \
     query_get_columns, query_update_column_comment, query_update_columns_comments, \
     query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
-    query_get_geom_centroid
+    query_get_geom_centroid, query_evaluate_local_templates
+from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.widgetsdict import WidgetsDict
 
 connection_string = ConnectionString()
@@ -272,6 +273,22 @@ class QueriesTestCase(unittest.TestCase):
                 templates = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
                 # suppression des modèles pré-configurés
+        conn.close()
+        self.assertEqual(len(templates), 3)
+
+    def test_query_evaluate_local_templates(self):
+        """Requête qui exécute côté serveur les conditions d'application des modèles locaux.
+        
+        """
+        conn = psycopg2.connect(connection_string)
+        templates_collection = LocalTemplatesCollection()
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    query_evaluate_local_templates(templates_collection),
+                    ('r_schema', 'table')
+                    )
+                templates = cur.fetchall()
         conn.close()
         self.assertEqual(len(templates), 3)
 
