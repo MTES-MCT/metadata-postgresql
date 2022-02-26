@@ -4,7 +4,7 @@ Les modèles de formulaire sont définis par l'administrateur de données pour t
 
 Leur usage est totalement optionnel.
 
-[Principe](#principe) • [Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import des modèles par Plume](#import-des-modèles-par-plume)
+[Principe](#principe) • [Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import des modèles par Plume](#import-des-modèles-par-plume) • [Avec les modèles stockés en local](#avec-les-modèles-stockés-en-local)
 
 
 ## Principe
@@ -216,7 +216,7 @@ Soit :
 
 ### Présence de l'extension *PlumePg*
 
-Si l'extension n'est pas installée sur la base d'où provient la table considérée, on peut d'ores-et-déjà conclure qu'il n'y a pas de modèle de formulaire à appliquer (`template` vaut `None`) et en rester là.
+La première étape consiste à déterminer si l'extension *PlumePg* est installée sur la base d'où provient la table considérée.
 
 Pour le vérifier :
 
@@ -237,7 +237,9 @@ conn.close()
 
 ```
 
-Si `plume_pg_exists` vaut `True`, on poursuit avec les opérations suivantes.
+Si `plume_pg_exists` vaut `True`, *PlumePg* est bien disponible. On pourra donc poursuivre avec les opérations suivantes.
+
+Dans le cas contraire, on se reportera à la partie [Avec les modèles stockés en local](#avec-les-modèles-stockés-en-local).
 
 
 ### Récupération de la liste des modèles
@@ -353,3 +355,54 @@ template = TemplateDict(categories, tabs)
 ```
 
 Le modèle de formulaire ainsi obtenu peut être passé dans l'argument `template` du constructeur de `plume.rdf.widgetsdict.WigdetsDict`. Cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#template--le-modèle-de-formulaire).
+
+
+## Avec les modèles stockés en local
+
+Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l'extension PostgreSQL *PlumePg* n'est pas active sur la base cible (cf. [Présence de l'extension *PlumePg*](#présence-de-lextension-plumepg) pour le test). Le processus est similaire à celui décrit dans la partie [Import des modèles par Plume](#import-des-modèles-par-plume), si ce n'est que certaines étapes ne sont plus nécessaires.
+
+Faute de pouvoir importer les modèles personnalisés par l'administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de *PlumePg*. Ceux-ci sont stockés dans le fichier [templates.json](/plume/pg/data/templates.json), dont on chargera le contenu en créant un objet de classe `plume.pg.template.LocalTemplatesCollection`. Celui-ci n'étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans *PlumePg* et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.
+
+```python
+
+from plume.pg.template import LocalTemplatesCollection
+
+templates_collection = LocalTemplatesCollection()
+
+```
+
+Pour connaître l'éventuel modèle à appliquer automatiquement à une table donnée, on procédera comme décrit dans la partie [Sélection automatique du modèle](#sélection-automatique-du-modèle). La seule différence est que la variable `templates` ne résulte pas d'une requête générée par `plume.pg.queries.query_list_templates` mais par `plume.pg.queries.query_evaluate_local_templates`.
+
+
+```python
+
+import psycopg2
+from plume.pg import queries
+from plume.pg.template import search_template
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+    with conn.cursor() as cur:
+    
+        query = queries.query_evaluate_local_templates(templates_collection)
+        cur.execute(query, (schema_name, table_name))
+        templates = cur.fetchall()
+
+conn.close()
+
+tpl_label = search_template(templates, metagraph)
+
+```
+
+*Où `table_name` est le nom de la table ou vue dont on affiche les métadonnées, `schema_name` le nom de son schéma, et `metagraph` le graphe contenant ses métadonnées.*
+
+Puisque les modèles sont stockés localement, il n'est pas nécessaire d'envoyer des requêtes pour connaître les catégories de métadonnées et onglets associés (autrement dit, les parties [Récupération des catégories associées au modèle retenu](#récupération-des-catégories-associées-au-modèle-retenu) et [Récupération des onglets associés au modèle retenu](#récupération-des-onglets-associés-au-modèle-retenu) n'ont pas d'équivalent ici). On obtiendra directement l'objet `plume.pg.template.TemplateDict` à fournir en argument au constructeur de `plume.rdf.widgetsdict.WidgetsDict` en interrogeant le répertoire des modèles locaux.
+
+```python
+
+template = templates_collection[tpl_label] if tpl_label else None
+
+```
+
+
