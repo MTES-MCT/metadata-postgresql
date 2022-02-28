@@ -18,7 +18,7 @@ Une fiche de métadonnées peut être ouverte :
 
 Du point de vue de l'utilisateur, le formulaire paraîtra très différent dans les deux modes. En mode lecture, tous les widgets de saisie sont désactivés (la [clé `'read only'`](./creation_widgets.md#paramètres-spécifiques-aux-widgets-de-saisie) du dictionnaire de widgets vaut toujours `True`). De plus, là où le mode édition affiche naturellement les champs sans valeur pour que l'utilisateur puisse les remplir, le mode lecture les masque[^readhideblank].
 
-[^readhideblank]: Sauf si l'utilisateur a explicitement demandé le contraire en mettant à `False` le paramètre utilisateur [`readHideBlank`](./generation_dictionnaire_widgets.md#readhideblank) - cf. [](./parametres_utilisateur.md).
+[^readhideblank]: Sauf si l'utilisateur a explicitement demandé le contraire en mettant à `False` le paramètre utilisateur [`readHideBlank`](./generation_dictionnaire_widgets.md#readhideblank) - cf. [Paramètres utilisateur](./parametres_utilisateur.md).
 
 Concrètement, le passage d'un mode à l'autre implique simplement de [regénérer le dictionnaire de widgets](./generation_dictionnaire_widgets.md) en spécifiant le mode grâce au paramètre [`mode`](./generation_dictionnaire_widgets.md#mode) du constructeur de la classe `plume.rdf.widgetsdict.WidgetsDict` :
 - `mode='edit'` en mode édition ;
@@ -50,7 +50,7 @@ L'idéal serait que le texte d'aide s'adapte au mode courant :
 
 Le bouton devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
-Pour s'en assurer, on utilisera la requête définie par la fonction [`plume.pg.queries.query_is_relation_owner`](../../../plume/pg/queries.py).
+Pour s'en assurer, on utilisera la requête définie par la fonction `plume.pg.queries.query_is_relation_owner`.
 
 ```python
 
@@ -118,7 +118,7 @@ pg_description.metagraph = new_metagraph
 
 4. Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.
 
-On utilisera la requête définie par la fonction `query_update_table_comment` du module [plume.pg.queries](../../../plume/pg/queries.py). À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec `query_get_relation_kind`.
+On utilisera la requête définie par la fonction `query_update_table_comment` du module `plume.pg.queries`. À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec `query_get_relation_kind`.
 
 La requête doit être appliquée à `str(pg_description)`, qui renvoie une représentation sous forme de chaîne de caractères de `pg_description`.
 
@@ -152,7 +152,7 @@ conn.close()
 
 5. Mettre à jour les descriptifs des champs.
 
-La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction `query_update_columns_comments` du module [plume.pg.queries](../../../plume/pg/queries.py).
+La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction `query_update_columns_comments` du module `plume.pg.queries`.
 
 ```python
 
@@ -225,7 +225,7 @@ Ce paramètre pourra être systématiquement sauvegardé dans le fichier `QGIS3.
 
 ### Effets
 
-Le modèle de formulaire détermine les catégories de métadonnées affichées dans le formulaire et la manière dont elles sont présentées - cf. [](./modeles_de_formulaire.md).
+Le modèle de formulaire détermine les catégories de métadonnées affichées dans le formulaire et la manière dont elles sont présentées - cf. [Modèles de formulaire](./modeles_de_formulaire.md).
 
 Dès lors que des modèles sont disponibles, c'est-à-dire que [`templateLabels`](./modeles_de_formulaire.md#récupération-de-la-liste-des-modèles) n'est pas `None` ou une liste vide, l'utilisateur doit avoir la possibilité de basculer à tout moment d'un modèle pré-défini à l'autre ou de ne pas appliquer de modèle du tout.
 
@@ -250,7 +250,7 @@ Texte d'aide : *Choisir un modèle de formulaire*.
 
 ### Initialisation
 
-La démarche à suivre à l'ouverture d'une fiche de métadonnées est décrite dans [](./modeles_de_formulaire.md#import-par-le-plugin). On commencera par récupérer les paramètres `preferedTemplate` et `enforcePreferedTemplate` dans les fichiers de configuration, si tant est qu'ils soient présents.
+La démarche à suivre à l'ouverture d'une fiche de métadonnées est décrite dans [Modèles de formulaire](./modeles_de_formulaire.md#import-par-le-plugin). On commencera par récupérer les paramètres `preferedTemplate` et `enforcePreferedTemplate` dans les fichiers de configuration, si tant est qu'ils soient présents.
 
 
 ## Langue principale des métadonnées
@@ -585,6 +585,6 @@ Les seuls boutons actifs sont alors :
 
 **Définir une nouvelle table source ne doit être possible qu'en mode lecture.** Il est important que l'utilisateur ne perde pas involontairement toutes ses modifications en cours à cause d'un clic malencontreux dans l'explorateur... Il n'est bien sûr pas question d'empêcher l'utilisateur de sélectionner des objets dans les panneaux de QGIS, mais le plugin ne devra pas le prendre en compte tant que le mode édition reste actif.
 
-Lorsqu'une nouvelle tables ou vue est sélectionnée, le plugin devra d'abord extraire les métadonnées contenues dans son descriptif PostgreSQL - cf. [metagraph : le graphe des métadonnées pré-existantes](./generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes). Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [](./generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [](./creation_widgets.md)).
+Lorsqu'une nouvelle tables ou vue est sélectionnée, le plugin devra d'abord extraire les métadonnées contenues dans son descriptif PostgreSQL - cf. [metagraph : le graphe des métadonnées pré-existantes](./generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes). Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées `metagraph` ainsi obtenu (cf. [Génération du dictionnaire des widgets](./generation_dictionnaire_widgets.md)), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. [Création d'un nouveau widget](./creation_widgets.md)).
 
 

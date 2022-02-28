@@ -2,7 +2,7 @@
 
 Pour faciliter la saisie des métadonnées prenant pour valeur des géométries, le widget de saisie - `QLineEdit` ou `QTextEdit` selon les cas - est accompagné d'un bouton annexe proposant des outils de calcul à partir des données et/ou de saisie manuelle dans le canevas principal de QGIS.
 
-Les modalités de création de ces boutons d'aide à la saisie des géométries sont décrites dans [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-daide-à-la-saisie-des-géométries). La présente page précise l'effet des différentes fonctionnalités proposées, ainsi que quand et comment les mettre en oeuvre.
+Les modalités de création de ces boutons d'aide à la saisie des géométries sont décrites dans [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-daide-à-la-saisie-des-géométries). La présente page précise l'effet des différentes fonctionnalités proposées, ainsi que quand et comment les mettre en oeuvre.
 
 ## Les actions possibles
 
@@ -20,11 +20,11 @@ Dès lors qu'elles sont listées par `'geo tools'`, les actions suivantes n'auro
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Icône | Texte d'aide | Description de l'effet |
 | --- | --- | --- | --- | --- |
-| *Visualisation* | `'show'` |  ![show.svg](/plume/icons/buttons/geo/show.svg) [show.svg](/plume/icons/buttons/geo/show.svg) | *Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.* | Montre la géométrie, sans que celle-ci ne soit nécessairement éditable. D'autant que de besoin, l'utilisateur pourra activer l'une des autres actions du menu pour créer une nouvelle géométrie si l'actuelle ne lui convient pas. Cf. aussi [Remarques sur la visualisation](#remarques-sur-la-visualisation). |
-| *Tracé manuel : point* | `'point'` |  ![point.svg](/plume/icons/buttons/geo/point.svg) [point.svg](/plume/icons/buttons/geo/point.svg) | *Saisie libre d'un point dans le canevas.* | Permet à l'utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées. |
-| *Tracé manuel : rectangle* | `'rectangle'` |  ![rectangle.svg](/plume/icons/buttons/geo/rectangle.svg) [rectangle.svg](/plume/icons/buttons/geo/rectangle.svg) | *Saisie libre d'un rectangle dans le canevas.* | Permet à l'utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées. |
-| *Tracé manuel : ligne* | `'linestring'` |  ![linestring.svg](/plume/icons/buttons/geo/linestring.svg) [linestring.svg](/plume/icons/buttons/geo/linestring.svg) | *Saisie libre d'une ligne dans le canevas.*  | Permet à l'utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées. |
-| *Tracé manuel : polygone* | `'polygon'` |  ![polygon.svg](/plume/icons/buttons/geo/polygon.svg) [polygon.svg](/plume/icons/buttons/geo/polygon.svg) | *Saisie libre d'un polygone dans le canevas.* | Permet à l'utilisateur de tracer un polygone dans le canvas et mémorise la géométrie dans les métadonnées. |
+| *Visualisation* | `'show'` |  ![show.svg](../../../plume/icons/buttons/geo/show.svg) [show.svg](../../../plume/icons/buttons/geo/show.svg) | *Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.* | Montre la géométrie, sans que celle-ci ne soit nécessairement éditable. D'autant que de besoin, l'utilisateur pourra activer l'une des autres actions du menu pour créer une nouvelle géométrie si l'actuelle ne lui convient pas. Cf. aussi [Remarques sur la visualisation](#remarques-sur-la-visualisation). |
+| *Tracé manuel : point* | `'point'` |  ![point.svg](../../../plume/icons/buttons/geo/point.svg) [point.svg](../../../plume/icons/buttons/geo/point.svg) | *Saisie libre d'un point dans le canevas.* | Permet à l'utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : rectangle* | `'rectangle'` |  ![rectangle.svg](../../../plume/icons/buttons/geo/rectangle.svg) [rectangle.svg](../../../plume/icons/buttons/geo/rectangle.svg) | *Saisie libre d'un rectangle dans le canevas.* | Permet à l'utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : ligne* | `'linestring'` |  ![linestring.svg](../../../plume/icons/buttons/geo/linestring.svg) [linestring.svg](../../../plume/icons/buttons/geo/linestring.svg) | *Saisie libre d'une ligne dans le canevas.*  | Permet à l'utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : polygone* | `'polygon'` |  ![polygon.svg](../../../plume/icons/buttons/geo/polygon.svg) [polygon.svg](../../../plume/icons/buttons/geo/polygon.svg) | *Saisie libre d'un polygone dans le canevas.* | Permet à l'utilisateur de tracer un polygone dans le canvas et mémorise la géométrie dans les métadonnées. |
 
 ### Actions à activer uniquement si l'extension PostGIS est disponible sur la base
 
@@ -32,10 +32,10 @@ Dès lors qu'elles sont listées par `'geo tools'`, les actions suivantes n'auro
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Texte d'aide | Description de l'effet |
 | --- | --- | --- | --- |
-| *Calcul du rectangle d'emprise (PostGIS)*  | `'bbox'` |  ![bbox_pg.svg](/plume/icons/buttons/geo/bbox_pg.svg) [bbox_pg.svg](/plume/icons/buttons/geo/bbox_pg.svg) | *Calcule le rectangle d'emprise à partir des données. Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.* | Calcule l'emprise de la couche par des requêtes sur le serveur PostgreSQL et mémorise la géométrie dans les métadonnées. Cf. [Les calculs de géométries côté serveur](#les-calculs-de-géométries-côté-serveur). |
-| *Calcul du centroïde (PostGIS)*  | `'centroid'` |  ![centroid_pg.svg](/plume/icons/buttons/geo/centroid_pg.svg) [centroid_pg.svg](/plume/icons/buttons/geo/centroid_pg.svg) | *Calcule le centre du rectangle d'emprise à partir des données.  Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.* | Calcule le centre du rectangle d'emprise par des requêtes sur le serveur PostgreSQL, et mémorise la géométrie dans les métadonnées. Cf. [Les calculs de géométries côté serveur](#les-calculs-de-géométries-côté-serveur). |
+| *Calcul du rectangle d'emprise (PostGIS)*  | `'bbox'` |  ![bbox_pg.svg](../../../plume/icons/buttons/geo/bbox_pg.svg) [bbox_pg.svg](../../../plume/icons/buttons/geo/bbox_pg.svg) | *Calcule le rectangle d'emprise à partir des données. Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.* | Calcule l'emprise de la couche par des requêtes sur le serveur PostgreSQL et mémorise la géométrie dans les métadonnées. Cf. [Les calculs de géométries côté serveur](#les-calculs-de-géométries-côté-serveur). |
+| *Calcul du centroïde (PostGIS)*  | `'centroid'` |  ![centroid_pg.svg](../../../plume/icons/buttons/geo/centroid_pg.svg) [centroid_pg.svg](../../../plume/icons/buttons/geo/centroid_pg.svg) | *Calcule le centre du rectangle d'emprise à partir des données.  Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.* | Calcule le centre du rectangle d'emprise par des requêtes sur le serveur PostgreSQL, et mémorise la géométrie dans les métadonnées. Cf. [Les calculs de géométries côté serveur](#les-calculs-de-géométries-côté-serveur). |
 
-Pour déterminer si PostGIS est installée sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction [`plume.pg.queries.query_exists_extension`](/plume/pg/queries.py).
+Pour déterminer si PostGIS est installée sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction `plume.pg.queries.query_exists_extension`.
 
 ```python
 
@@ -62,8 +62,8 @@ conn.close()
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Texte d'aide | Description de l'effet |
 | --- | --- | --- | --- |
-| *Calcul du rectangle d'emprise (QGIS)*  | `'bbox'` |  ![bbox_qgis.svg](/plume/icons/buttons/geo/bbox_qgis.svg) [bbox_qgis.svg](/plume/icons/buttons/geo/bbox_qgis.svg) | *Calcule le rectangle d'emprise à partir des données, via les fonctionnalités de QGIS.* | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`) et mémorise la géométrie dans les métadonnées. Cf. [Les calculs et tracé manuels côté QGIS](#les-calculs-et-tracés-manuels-côté-qgis). |
-| *Calcul du centroïde (QGIS)*  | `'centroid'` |  ![centroid_qgis.svg](/plume/icons/buttons/geo/centroid_qgis.svg) [centroid_qgis.svg](/plume/icons/buttons/geo/centroid_qgis.svg) | *Calcule le centre du rectangle d'emprise à partir des données, via les fonctionnalités de QGIS.* | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`), puis le centre du rectangle (`QgsRectangle.centre`), et mémorise la géométrie dans les métadonnées. Cf. [Les calculs et tracé manuels côté QGIS](#les-calculs-et-tracés-manuels-côté-qgis). |
+| *Calcul du rectangle d'emprise (QGIS)*  | `'bbox'` |  ![bbox_qgis.svg](../../../plume/icons/buttons/geo/bbox_qgis.svg) [bbox_qgis.svg](../../../plume/icons/buttons/geo/bbox_qgis.svg) | *Calcule le rectangle d'emprise à partir des données, via les fonctionnalités de QGIS.* | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`) et mémorise la géométrie dans les métadonnées. Cf. [Les calculs et tracé manuels côté QGIS](#les-calculs-et-tracés-manuels-côté-qgis). |
+| *Calcul du centroïde (QGIS)*  | `'centroid'` |  ![centroid_qgis.svg](../../../plume/icons/buttons/geo/centroid_qgis.svg) [centroid_qgis.svg](../../../plume/icons/buttons/geo/centroid_qgis.svg) | *Calcule le centre du rectangle d'emprise à partir des données, via les fonctionnalités de QGIS.* | Calcule l'emprise de la couche grâce aux méthodes de QGIS (`QgsVectorLayer.extent`), puis le centre du rectangle (`QgsRectangle.centre`), et mémorise la géométrie dans les métadonnées. Cf. [Les calculs et tracé manuels côté QGIS](#les-calculs-et-tracés-manuels-côté-qgis). |
 
 *Il n'est pas gênant de proposer à la fois le calcul dans QGIS et sous PostgreSQL. On peut supposer PostGIS plus rapide sur les très grosses tables, et QGIS a notamment l'intérêt de permettre de reprojeter une couche à la volée, si l'utilisateur ne veut pas que son rectangle d'emprise soit calculé dans le référentiel déclaré à PostGIS pour le champ de géométrie.*
 
@@ -71,7 +71,7 @@ conn.close()
 
 QGIS sait construire des géométries à partir de représentations WKT, mais il ne sait pas lire les WKT incluant un référentiel qu'on trouvera en valeur des widgets. Celui-ci doit être spécifié à part.
 
-Pour extraire la géométrie seule (toujours en WKT) d'une part, et le référentiel seul d'autre part, on exécutera [`plume.rdf.utils.split_rdf_wkt`](/plume/rdf/utils.py):
+Pour extraire la géométrie seule (toujours en WKT) d'une part, et le référentiel seul d'autre part, on exécutera `plume.rdf.utils.split_rdf_wkt` :
 
 ```python
 
@@ -92,7 +92,7 @@ Il est important de noter que seul un contrôle de forme superficiel est réalis
 
 ## Les calculs de géométries côté serveur
 
-Pour l'action *Calcul du rectangle d'emprise (PostGIS)*, on transmettra successivement les requêtes renvoyées par les fonctions [`plume.pg.queries.query_get_geom_extent`](/plume/pg/queries.py) et [`plume.pg.queries.query_get_geom_srid`](/plume/pg/queries.py). La première renvoie la géométrie du rectangle d'emprise de la couche au format WKT. La seconde fournit le référentiel de coordonnées appliqué pour ladite géométrie.
+Pour l'action *Calcul du rectangle d'emprise (PostGIS)*, on transmettra successivement les requêtes renvoyées par les fonctions `plume.pg.queries.query_get_geom_extent` et `plume.pg.queries.query_get_geom_srid`. La première renvoie la géométrie du rectangle d'emprise de la couche au format WKT. La seconde fournit le référentiel de coordonnées appliqué pour ladite géométrie.
 
 ```python
 
@@ -121,7 +121,7 @@ conn.close()
 
 *`table_name` est le nom de la table ou vue à documenter. `schema_name` est le nom de son schéma. `geom_name` est le nom du champ de géométrie de la couche sélectionnée dans le panneau des couches ou l'explorateur. C'est pour ce champ de géométrie que sera calculé l'emprise.*
 
-Pour l'action *Calcul du centroïde (QGIS)*, le principe est le même, mais avec la fonction `query_get_geom_centroid` de [`plume.pg.queries`](/plume/pg/queries.py) au lieu de `query_get_geom_extent`.
+Pour l'action *Calcul du centroïde (QGIS)*, le principe est le même, mais avec la fonction `query_get_geom_centroid` de `plume.pg.queries` au lieu de `query_get_geom_extent`.
 
 Dans les deux cas, la fonction `plume.rdf.utils.wkt_with_srid` permet ensuite d'inclure le référentiel dans le WKT :
 

@@ -9,7 +9,7 @@ Leur usage est totalement optionnel.
 
 ## Principe
 
-Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [`shape.ttl`](/plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
+Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [`shape.ttl`](../../../plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
 
 [^metadonnees-masquées]: Du moins en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire.
 
@@ -28,7 +28,7 @@ L'extension PostgreSQL *PlumePg* crée une structure de données adaptée au sto
 
 [^base-par-base]: Plus précisément, si *PlumePg* n'est pas installée sur une base donnée, aucun modèle ne sera proposé dans l'interface de Plume pour les métadonnées des objets de cette base.
 
-Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](/docs/source/usage/gestion_plume_pg.md) pour plus de détails sur l'installation et la maintenance de cette extension.
+Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plume_pg.md) pour plus de détails sur l'installation et la maintenance de cette extension.
 
 *PlumePg* crée dans le schéma `z_plume` un ensemble de tables permettant de définir les modèles de formulaires :
 - `meta_template` liste les modèles.
@@ -102,7 +102,7 @@ Avant d'y affecter des catégories, les onglets doivent être définis dans la t
 
 ### Catégories de métadonnées
 
-La table `z_plume.meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](/plume/rdf/data/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
+La table `z_plume.meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](../../../plume/rdf/data/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
 
 Il s'agit en fait d'une table partitionnée avec deux tables filles :
 - `z_plume.meta_shared_categorie` pour les catégories communes (`origin` vaut `shared`) ;
@@ -134,7 +134,7 @@ Les champs sur lesquels l'ADL peut intervenir sont :
 | `compute` | Liste des fonctionnalités de calcul à proposer, parmis, `'auto'` (déclenchement automatique lorsque la fiche de métadonnées est générée), `'manuel'` (déclenchement à la demande, lorsque l'utilisateur clique sur le bouton qui apparaîtra alors à côté du champ de saisie dans le formulaire). | Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide, soit `ARRAY[]::z_plume.meta_compute[]`. |
 | `order_key` | Ordre d'apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier, il n'est pas nécessaire que les numéros se suivent. Dans le cas des catégories communes, qui ont une structure arborescente, il s'agit de l'ordre parmi les catégories de même niveau dans la branche. | |
 
-[^langString]: Si une catégorie de métadonnée est de type `'rdf:langString'`, l'interface de Plume permettra, lorsque les modes édition et traduction sont simultanément activés, d'associer une langue à la métadonnée. Par défaut, les valeurs saisies hors mode traduction seront présumées être dans la [langue principale des métadonnées](/docs/source/usage/actions_generales.md#langue-principale-des-métadonnées). Une catégorie de type `'xsd:string'` est une chaîne de caractères sans langue, ce qui est adapté pour toutes les catégories apparentées à des identifiants (nom d'application, nom d'objet PostgreSQL...), qui n'ont pas vocation à être traduites. Pour toutes les autres, `'rdf:langString'` est généralement préférables.
+[^langString]: Si une catégorie de métadonnée est de type `'rdf:langString'`, l'interface de Plume permettra, lorsque les modes édition et traduction sont simultanément activés, d'associer une langue à la métadonnée. Par défaut, les valeurs saisies hors mode traduction seront présumées être dans la [langue principale des métadonnées](./actions_generales.md#langue-principale-des-métadonnées). Une catégorie de type `'xsd:string'` est une chaîne de caractères sans langue, ce qui est adapté pour toutes les catégories apparentées à des identifiants (nom d'application, nom d'objet PostgreSQL...), qui n'ont pas vocation à être traduites. Pour toutes les autres, `'rdf:langString'` est généralement préférables.
 
 Les champs `path` (chemin SPARQL identifiant la catégorie), `origin` et `is_node` sont calculés automatiquement. Il est fortement recommandé de ne pas les modifier à la main.
 
@@ -193,8 +193,8 @@ Modèles pré-configurés disponibles :
 ## Import des modèles par Plume
 
 La gestion des modèles par le plugin fait intervenir :
-- le module [`plume.pg.queries`](/plume/pg/queries.py) pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
-- le module [`plume.pg.template`](/plume/pg/template.py) pour le traitement du résultat de ces requêtes.
+- le module `plume.pg.queries` pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;
+- le module `plume.pg.template` pour le traitement du résultat de ces requêtes.
 
 Aucune des fonctions de ces deux modules n'envoie à proprement parler de requête au serveur PostgreSQL.
 
@@ -283,9 +283,9 @@ tpl_label = search_template(templates, metagraph)
 
 ```
 
-*`metagraph` est le graphe contenant les métadonnées de la table ou vue considérée. Cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes).*
+*`metagraph` est le graphe contenant les métadonnées de la table ou vue considérée. Cf. [Génération du dictionnaire des widgets](./generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes).*
 
-Il est tout à possible que la fonction `search_template` ne renvoie rien, d'autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d'application automatique des modèles. Dans ce cas, on utilisera le "modèle préféré" (`preferedTemplate`) désigné dans les [paramètres de configuration de l'utilisateur](/docs/source/usage/parametres_utilisateur.md) -- sous réserve qu'il soit défini et fasse bien partie de `templateLabels` -- ou, à défaut, aucun modèle (`template` vaut `None`).
+Il est tout à possible que la fonction `search_template` ne renvoie rien, d'autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d'application automatique des modèles. Dans ce cas, on utilisera le "modèle préféré" (`preferedTemplate`) désigné dans les [paramètres de configuration de l'utilisateur](./parametres_utilisateur.md) -- sous réserve qu'il soit défini et fasse bien partie de `templateLabels` -- ou, à défaut, aucun modèle (`template` vaut `None`).
 
 À noter que l'utilisateur peut décider que son modèle préféré prévaut sur toute sélection automatique, en mettant à `True` le paramètre utilisateur `enforcePreferedTemplate`. Dans ce cas, il n'est même pas utile de lancer `search_template`, on a directement :
 
@@ -344,7 +344,7 @@ Si `tabs` est une liste vide, toutes les catégories seront affectées à un uni
 
 ### Génération de *template*
 
-À ce stade, `categories` est une liste de tuples, qui doit être consolidée avant de pouvoir être utilisée pour générer le [dictionnaire de widgets](/docs/source/usage/generation_dictionnaire_widgets.md).
+À ce stade, `categories` est une liste de tuples, qui doit être consolidée avant de pouvoir être utilisée pour générer le [dictionnaire de widgets](./generation_dictionnaire_widgets.md).
 
 Concrètement, il s'agit de créer un objet `plume.pg.template.TemplateDict` à partir de `categories` et `tabs` :
 
@@ -354,14 +354,14 @@ template = TemplateDict(categories, tabs)
 
 ```
 
-Le modèle de formulaire ainsi obtenu peut être passé dans l'argument `template` du constructeur de `plume.rdf.widgetsdict.WigdetsDict`. Cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md#template--le-modèle-de-formulaire).
+Le modèle de formulaire ainsi obtenu peut être passé dans l'argument `template` du constructeur de `plume.rdf.widgetsdict.WigdetsDict`. Cf. [Génération du dictionnaire des widgets](./generation_dictionnaire_widgets.md#template--le-modèle-de-formulaire).
 
 
 ## Avec les modèles stockés en local
 
 Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l'extension PostgreSQL *PlumePg* n'est pas active sur la base cible (cf. [Présence de l'extension *PlumePg*](#présence-de-lextension-plumepg) pour le test). Le processus est similaire à celui décrit dans la partie [Import des modèles par Plume](#import-des-modèles-par-plume), si ce n'est que certaines étapes ne sont plus nécessaires.
 
-Faute de pouvoir importer les modèles personnalisés par l'administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de *PlumePg*. Ceux-ci sont stockés dans le fichier [templates.json](/plume/pg/data/templates.json), dont on chargera le contenu en créant un objet de classe `plume.pg.template.LocalTemplatesCollection`. Celui-ci n'étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans *PlumePg* et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.
+Faute de pouvoir importer les modèles personnalisés par l'administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de *PlumePg*. Ceux-ci sont stockés dans le fichier [templates.json](../../../plume/pg/data/templates.json), dont on chargera le contenu en créant un objet de classe `plume.pg.template.LocalTemplatesCollection`. Celui-ci n'étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans *PlumePg* et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.
 
 ```python
 
