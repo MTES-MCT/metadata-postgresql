@@ -78,3 +78,12 @@ html_logo = html_favicon = '../../plume/icons/logo/plume.svg'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- Myst options -------------------------------------------------------------
+
+## Markdown support
+## See docs : https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+
+myst_heading_anchors = 5
+
