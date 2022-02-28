@@ -1,5 +1,5 @@
-Usage
-=====
+Mécanique interne
+=================
 
 .. toctree::
    :maxdepth: 4
