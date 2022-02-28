@@ -1,115 +1,332 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Génération du dictionnaire des widgets &mdash; Documentation Plume 0.3.0-beta</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Génération du dictionnaire des widgets &#8212; Documentation Plume 0.3.0-beta</title>
+    
+    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/translations.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <link rel="stylesheet"
+      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
+    
+    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
     <link rel="next" title="Création d’un nouveau widget" href="creation_widgets.html" />
-    <link rel="prev" title="Usage" href="usage.html" /> 
-</head>
+    <link rel="prev" title="Usage" href="usage.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="fr">
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Plume
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Génération du dictionnaire des widgets</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sources-de-donnees">Sources de données</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#metagraph-le-graphe-des-metadonnees-pre-existantes">metagraph : le graphe des métadonnées pré-existantes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#template-le-modele-de-formulaire">template : le modèle de formulaire</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#columns-les-descriptifs-des-champs">columns : les descriptifs des champs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-les-metadonnees-calculees">data : les métadonnées calculées</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#parametres-utilisateur">Paramètres utilisateur</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#mode">mode</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#readhideblank">readHideBlank</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#readhideunlisted">readHideUnlisted</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#edithideunlisted">editHideUnlisted</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#language">language</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#translation">translation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#langlist">langList</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#readonlycurrentlanguage">readOnlyCurrentLanguage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#editonlycurrentlanguage">editOnlyCurrentLanguage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#labellengthlimit">labelLengthLimit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#valuelengthlimit">valueLengthLimit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#texteditrowspan">textEditRowSpan</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#resultat-un-dictionnaire-de-widgets">Résultat : un dictionnaire de widgets</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
-</ul>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-        </div>
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">Plume</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../reference/modules.html">
+  Référence
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../mechanism/mechanism.html">
+  Usage
+ </a>
+</li>
+
+    
+</ul>
       </div>
-    </nav>
+      
+    </div>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Plume</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="usage.html">Usage</a> &raquo;</li>
-      <li>Génération du dictionnaire des widgets</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/usage/generation_dictionnaire_widgets.md.txt" rel="nofollow"> Afficher la source de la page</a>
-      </li>
-  </ul>
-  <hr/>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/MTES-MCT/metadata-postgresql" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Génération du dictionnaire des widgets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="creation_widgets.html">
+   Création d’un nouveau widget
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="actions_widgets.html">
+   Actions contrôlées par les widgets du formulaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="outils_saisie_geometries.html">
+   Outils d’aide à la saisie des géométries
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="metadonnees_calculees.html">
+   Métadonnées calculées
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="actions_generales.html">
+   Actions générales
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="modeles_de_formulaire.html">
+   Modèles de formulaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="parametres_utilisateur.html">
+   Paramètres utilisateurs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="gestion_plume_pg.html">
+   Installation et gestion de l’extension PostgreSQL
+   <em>
+    PlumePg
+   </em>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="metadonnees_communes.html">
+   Métadonnées communes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="conformite_geodcat_ap.html">
+   Conformité au profil GeoDCAT-AP
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sources-de-donnees">
+   Sources de données
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#metagraph-le-graphe-des-metadonnees-pre-existantes">
+     metagraph : le graphe des métadonnées pré-existantes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#template-le-modele-de-formulaire">
+     template : le modèle de formulaire
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#columns-les-descriptifs-des-champs">
+     columns : les descriptifs des champs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-les-metadonnees-calculees">
+     data : les métadonnées calculées
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parametres-utilisateur">
+   Paramètres utilisateur
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mode">
+     mode
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#readhideblank">
+     readHideBlank
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#readhideunlisted">
+     readHideUnlisted
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#edithideunlisted">
+     editHideUnlisted
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#language">
+     language
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#translation">
+     translation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#langlist">
+     langList
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#readonlycurrentlanguage">
+     readOnlyCurrentLanguage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#editonlycurrentlanguage">
+     editOnlyCurrentLanguage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#labellengthlimit">
+     labelLengthLimit
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#valuelengthlimit">
+     valueLengthLimit
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#texteditrowspan">
+     textEditRowSpan
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resultat-un-dictionnaire-de-widgets">
+   Résultat : un dictionnaire de widgets
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <section id="generation-du-dictionnaire-des-widgets">
-<h1>Génération du dictionnaire des widgets<a class="headerlink" href="#generation-du-dictionnaire-des-widgets" title="Lien permanent vers ce titre"></a></h1>
+<h1>Génération du dictionnaire des widgets<a class="headerlink" href="#generation-du-dictionnaire-des-widgets" title="Lien permanent vers ce titre">¶</a></h1>
 <p><span class="xref myst">metagraph : le graphe des métadonnées pré-existantes</span> • <span class="xref myst">template : le modèle de formulaire</span> • <span class="xref myst">columns : les descriptifs des champs</span> • <span class="xref myst">data : les métadonnées calculées</span> • <span class="xref myst">mode</span> • <span class="xref myst">translation</span> • <span class="xref myst">langList</span> • <span class="xref myst">language</span> • <span class="xref myst">readHideBlank</span> • <span class="xref myst">editHideUnlisted</span> • <span class="xref myst">readHideUnlisted</span> • <span class="xref myst">editOnlyCurrentLanguage</span> • <span class="xref myst">readOnlyCurrentLanguage</span> • <span class="xref myst">labelLengthLimit</span> • <span class="xref myst">valueLengthLimit</span> • <span class="xref myst">textEditRowSpan</span> • <span class="xref myst">Résultat : un dictionnaire de widgets</span></p>
 <p>Lorsqu’un utilisateur demande l’affichage de la fiche de métadonnées d’une table ou vue, le plugin :</p>
 <ol class="arabic simple">
@@ -119,7 +336,7 @@
 <p>La première de ces étapes est traitée ici. Pour la seconde, cf. <span class="xref myst">Création d’un nouveau widget</span>.</p>
 <p>La classe <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> est définie par le module <span class="xref myst">plume.rdf.widgetsdict</span>. Sa fonction d’initialisation prend deux types d’arguments : des sources de données et des paramètres utilisateur. Aucun n’est obligatoire.</p>
 <p>Sources de données :</p>
-<table class="colwidths-auto docutils align-default">
+<table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Nom</p></th>
 <th class="head"><p>Type</p></th>
@@ -151,7 +368,7 @@
 </tbody>
 </table>
 <p>Paramètres utilisateurs :</p>
-<table class="colwidths-auto docutils align-default">
+<table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Nom</p></th>
 <th class="head"><p>Type</p></th>
@@ -241,9 +458,9 @@
 </pre></div>
 </div>
 <section id="sources-de-donnees">
-<h2>Sources de données<a class="headerlink" href="#sources-de-donnees" title="Lien permanent vers ce titre"></a></h2>
+<h2>Sources de données<a class="headerlink" href="#sources-de-donnees" title="Lien permanent vers ce titre">¶</a></h2>
 <section id="metagraph-le-graphe-des-metadonnees-pre-existantes">
-<h3>metagraph : le graphe des métadonnées pré-existantes<a class="headerlink" href="#metagraph-le-graphe-des-metadonnees-pre-existantes" title="Lien permanent vers ce titre"></a></h3>
+<h3>metagraph : le graphe des métadonnées pré-existantes<a class="headerlink" href="#metagraph-le-graphe-des-metadonnees-pre-existantes" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après <code class="docutils literal notranslate"><span class="pre">pg_description_raw</span></code>. Elles sont supposées se trouver entre deux balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et <code class="docutils literal notranslate"><span class="pre">&lt;/METADATA&gt;</span></code>, et avoir été encodées au format JSON-LD.</p>
 <p>Le module <span class="xref myst">plume.pg.queries</span> propose une requête pré-configurée <code class="docutils literal notranslate"><span class="pre">query_get_table_comment()</span></code>, qui permet d’obtenir le descriptif de l’objet :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -283,7 +500,7 @@
 <p>Si le contenu des balises n’est pas un JSON-LD valide, la propriété renverra également un graphe de métadonnées vide.</p>
 </section>
 <section id="template-le-modele-de-formulaire">
-<h3>template : le modèle de formulaire<a class="headerlink" href="#template-le-modele-de-formulaire" title="Lien permanent vers ce titre"></a></h3>
+<h3>template : le modèle de formulaire<a class="headerlink" href="#template-le-modele-de-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">template</span></code> est un objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code></span> contenant les informations relatives au modèle de formulaire à utiliser.</p>
 <p>Les modèles de formulaires sont définis à l’échelle du service et stockés dans la base PostgreSQL. Ils permettent :</p>
 <ul class="simple">
@@ -294,7 +511,7 @@
 <p>Pour plus de détails sur les modèles de formulaire, on se reportera à la partie <span class="xref myst">Modèles de formulaire</span>, et plus particulièrement à sa sous-partie <span class="xref myst">Import par le plugin</span>, qui explique comment générer <code class="docutils literal notranslate"><span class="pre">template</span></code>.</p>
 </section>
 <section id="columns-les-descriptifs-des-champs">
-<h3>columns : les descriptifs des champs<a class="headerlink" href="#columns-les-descriptifs-des-champs" title="Lien permanent vers ce titre"></a></h3>
+<h3>columns : les descriptifs des champs<a class="headerlink" href="#columns-les-descriptifs-des-champs" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">columns</span></code> est la liste des champs de la table / vue courante. Plus précisément, il s’agit d’une liste de tuples dont le premier élément est le nom du champ et le second son descriptif, stocké tel quel en tant que descriptif PostgreSQL du champ.</p>
 <p>Elle peut être obtenue ainsi :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -317,38 +534,38 @@
 <p>Dans le formulaire résultant, chaque champ se trouvera représenté par un widget <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> placé dans l’onglet <em>Champs</em>.</p>
 </section>
 <section id="data-les-metadonnees-calculees">
-<h3>data : les métadonnées calculées<a class="headerlink" href="#data-les-metadonnees-calculees" title="Lien permanent vers ce titre"></a></h3>
+<h3>data : les métadonnées calculées<a class="headerlink" href="#data-les-metadonnees-calculees" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">data</span></code> est un dictionnaire contenant des informations actualisées à partir de sources externes (par exemple déduites des données) qui écraseront les valeurs présentes dans <code class="docutils literal notranslate"><span class="pre">metagraph</span></code>. Les clés du dictionnaire sont des chemins SPARQL identifiant des catégories de métadonnées, ses valeurs sont des listes contenant la ou les valeurs (<code class="docutils literal notranslate"><span class="pre">str</span></code>) à faire apparaître pour les catégories en question.</p>
 <p>À ce stade, <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> prend parfaitement en charge le paramètre <code class="docutils literal notranslate"><span class="pre">data</span></code>, mais aucun mécanisme d’alimentation en informations externes n’a été mis en place. On pourra donc considérer qu’il vaut toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </section>
 </section>
 <section id="parametres-utilisateur">
-<h2>Paramètres utilisateur<a class="headerlink" href="#parametres-utilisateur" title="Lien permanent vers ce titre"></a></h2>
+<h2>Paramètres utilisateur<a class="headerlink" href="#parametres-utilisateur" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Sauf indication contraire, tous les paramètres utilisateur évoqués ci-après sont à récupérer dans les fichiers de configuration. Si un paramètre n’y est pas explicitement spécifié (parce que l’utilisateur n’a pas éprouvé le besoin de modifier le comportement par défaut), il ne devra pas non plus apparaître dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>.</p>
 <section id="mode">
-<h3>mode<a class="headerlink" href="#mode" title="Lien permanent vers ce titre"></a></h3>
+<h3>mode<a class="headerlink" href="#mode" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">mode</span></code> est un paramètre utilisateur au sens où il est déterminé par l’utilisateur, mais <strong>il ne doit pas être sauvegardé dans le fichier de configuration</strong>.</p>
 <p>Comme détaillé dans <span class="xref myst">Actions générales</span>, il devra toujours valoir <code class="docutils literal notranslate"><span class="pre">'read'</span></code> (mode lecture) lors de l’ouverture initiale de la fiche. Si ses privilèges sont suffisants, l’utilisateur peut ensuite activer le mode édition, et <code class="docutils literal notranslate"><span class="pre">mode</span></code> vaudra alors <code class="docutils literal notranslate"><span class="pre">'edit'</span></code>.</p>
 <p>Il est préférable de toujours spécifier explicitement ce paramètre dans la liste des arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> (où sa valeur par défaut est <code class="docutils literal notranslate"><span class="pre">'edit'</span></code>).</p>
 </section>
 <section id="readhideblank">
-<h3>readHideBlank<a class="headerlink" href="#readhideblank" title="Lien permanent vers ce titre"></a></h3>
+<h3>readHideBlank<a class="headerlink" href="#readhideblank" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">readHideBlank</span></code> est un booléen indiquant si les champs vides doivent être masqués en mode lecture.</p>
 <p>Le comportement naturel est de masquer ces champs, et c’est ce que fera le constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> si ce paramètre n’est pas spécifié.</p>
 </section>
 <section id="readhideunlisted">
-<h3>readHideUnlisted<a class="headerlink" href="#readhideunlisted" title="Lien permanent vers ce titre"></a></h3>
+<h3>readHideUnlisted<a class="headerlink" href="#readhideunlisted" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">readHideUnlisted</span></code> est un booléen indiquant si, en mode lecture, il faut masquer les catégories qui n’apparaissent pas dans le modèle de formulaire à utiliser (cf. <span class="xref myst">template</span>) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n’est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.</p>
 <p>Le comportement par défaut du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> est de masquer les champs en question.</p>
 </section>
 <section id="edithideunlisted">
-<h3>editHideUnlisted<a class="headerlink" href="#edithideunlisted" title="Lien permanent vers ce titre"></a></h3>
+<h3>editHideUnlisted<a class="headerlink" href="#edithideunlisted" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">editHideUnlisted</span></code> est le pendant de <code class="docutils literal notranslate"><span class="pre">readHideUnlisted</span></code> pour le mode édition.</p>
 <p>C’est un booléen indiquant si, en mode édition, il faut masquer les catégories qui n’apparaissent pas dans le modèle de formulaire à utiliser (cf. <span class="xref myst">template</span>) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n’est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.</p>
 <p>Le comportement par défaut du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> est d’afficher les champs en question.</p>
 </section>
 <section id="language">
-<h3>language<a class="headerlink" href="#language" title="Lien permanent vers ce titre"></a></h3>
+<h3>language<a class="headerlink" href="#language" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">language</span></code> est une chaîne de caractères indiquant la langue principale de saisie des métadonnées. Ce paramètre peut être modifié via un widget dans l’interface fixe du plugin - cf. <span class="xref myst">Actions générales</span>.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">language</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré que les métadonnées sont saisies dans la première langue de la liste des langues autorisées, <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span>. Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
 <p>La documentation invitera l’utilisateur à privilégier les codes de langues sur deux caractères, comme attendu en RDF. Référence : <a class="reference external" href="https://www.iso.org/iso-639-language-codes.html">ISO 639</a>.</p>
@@ -360,44 +577,44 @@
 </ul>
 </section>
 <section id="translation">
-<h3>translation<a class="headerlink" href="#translation" title="Lien permanent vers ce titre"></a></h3>
+<h3>translation<a class="headerlink" href="#translation" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">translation</span></code> est un booléen indiquant si le mode traduction est actif. Comme <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">language</span></code></span>, ce paramètre peut être modifié via un widget dans l’interface fixe du plugin - cf. <span class="xref myst">Actions générales</span>. Il est ignoré quand le dictionnaire n’est pas généré en mode édition (<span class="xref myst"><code class="docutils literal notranslate"><span class="pre">mode</span></code></span> valant <code class="docutils literal notranslate"><span class="pre">'edit'</span></code>).</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">translation</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré que le mode traduction n’est pas actif. Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
 </section>
 <section id="langlist">
-<h3>langList<a class="headerlink" href="#langlist" title="Lien permanent vers ce titre"></a></h3>
+<h3>langList<a class="headerlink" href="#langlist" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">langList</span></code> est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">language</span></code></span>. Il alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l’interface, permet de choisir la langue principale <span class="xref myst">Actions générales</span>.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">langList</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, celui-ci utilisera le tuple <code class="docutils literal notranslate"><span class="pre">('fr',</span> <span class="pre">'en')</span></code> (français et anglais). Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
 </section>
 <section id="readonlycurrentlanguage">
-<h3>readOnlyCurrentLanguage<a class="headerlink" href="#readonlycurrentlanguage" title="Lien permanent vers ce titre"></a></h3>
+<h3>readOnlyCurrentLanguage<a class="headerlink" href="#readonlycurrentlanguage" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> est un booléen qui indique si, en mode lecture, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. <span class="xref myst">language</span> pour plus de détails.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré comme valant <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </section>
 <section id="editonlycurrentlanguage">
-<h3>editOnlyCurrentLanguage<a class="headerlink" href="#editonlycurrentlanguage" title="Lien permanent vers ce titre"></a></h3>
+<h3>editOnlyCurrentLanguage<a class="headerlink" href="#editonlycurrentlanguage" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">editOnlyCurrentLanguage</span></code> est le pendant de <code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> pour le mode édition.</p>
 <p>C’est un booléen indiquant si, en mode édition <strong>et lorsque le mode traduction n’est pas actif</strong>, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. <span class="xref myst">language</span> pour plus de détails.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">editdOnlyCurrentLanguage</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré comme valant <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </section>
 <section id="labellengthlimit">
-<h3>labelLengthLimit<a class="headerlink" href="#labellengthlimit" title="Lien permanent vers ce titre"></a></h3>
+<h3>labelLengthLimit<a class="headerlink" href="#labellengthlimit" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">labelLengthLimit</span></code> est un entier qui indique le nombre de caractères au-delà duquel l’étiquette d’une catégorie de métadonnées sera toujours affiché au-dessus du widget de saisie et non sur la même ligne. À noter que pour les widgets <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> le label est placé au-dessus quoi qu’il arrive.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">labelLengthLimit</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, le seuil est fixé à 25 caractères.</p>
 </section>
 <section id="valuelengthlimit">
-<h3>valueLengthLimit<a class="headerlink" href="#valuelengthlimit" title="Lien permanent vers ce titre"></a></h3>
+<h3>valueLengthLimit<a class="headerlink" href="#valuelengthlimit" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">valueLengthLimit</span></code> est un entier qui indique le nombre de caractères au-delà duquel une valeur qui aurait dû être affichée dans un widget <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> sera présentée à la place dans un <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code>. Indépendemment du nombre de caractères, la substitution sera aussi réalisée si la valeur contient un retour à la ligne.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">valueLengthLimit</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, le seuil est fixé à 65 caractères.</p>
 </section>
 <section id="texteditrowspan">
-<h3>textEditRowSpan<a class="headerlink" href="#texteditrowspan" title="Lien permanent vers ce titre"></a></h3>
+<h3>textEditRowSpan<a class="headerlink" href="#texteditrowspan" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">textEditRowSpan</span></code> est un entier qui définit le nombre de lignes par défaut d’un widget <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code>, c’est-à-dire la valeur de <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> qui sera utilisée par le constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> pour toutes les catégories telles que ni le modèle de formulaire ni le schéma des catégories communes ne fixe une valeur.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">textEditRowSpan</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, la hauteur est fixée à 6 lignes.</p>
 </section>
 </section>
 <section id="resultat-un-dictionnaire-de-widgets">
-<h2>Résultat : un dictionnaire de widgets<a class="headerlink" href="#resultat-un-dictionnaire-de-widgets" title="Lien permanent vers ce titre"></a></h2>
+<h2>Résultat : un dictionnaire de widgets<a class="headerlink" href="#resultat-un-dictionnaire-de-widgets" title="Lien permanent vers ce titre">¶</a></h2>
 <p>La classe <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> hérite de <code class="docutils literal notranslate"><span class="pre">dict</span></code> et définit des méthodes supplémentaires qui gèrent notamment l’actualisation du dictionnaire en fonction des actions de l’utilisateur (cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>).</p>
 <p>En premier lieu, le dictionnaire de widgets sert de base à la génération du formulaire de saisie / consultation des métadonnées. Pour ce faire, on bouclera sur les clés du dictionnaire et créera au fur et à mesure les widgets qu’elles définissent, comme expliqué dans <span class="xref myst">Création d’un nouveau widget</span>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -424,34 +641,50 @@
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
-        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
-        <a href="creation_widgets.html" class="btn btn-neutral float-right" title="Création d’un nouveau widget" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, République française.</p>
-  </div>
-
-  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
-    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="usage.html" title="précédent page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">précédent</p>
+            <p class="prev-next-title">Usage</p>
         </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+    <a class='right-next' id="next-link" href="creation_widgets.html" title="suivant page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">Création d’un nouveau widget</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
 
-</body>
+      </div>
+    </div>
+  
+    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, République française.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

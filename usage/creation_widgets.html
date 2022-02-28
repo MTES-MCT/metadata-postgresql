@@ -1,167 +1,568 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Création d’un nouveau widget &mdash; Documentation Plume 0.3.0-beta</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Création d’un nouveau widget &#8212; Documentation Plume 0.3.0-beta</title>
+    
+    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/translations.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <link rel="stylesheet"
+      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
+    
+    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
     <link rel="next" title="Actions contrôlées par les widgets du formulaire" href="actions_widgets.html" />
-    <link rel="prev" title="Génération du dictionnaire des widgets" href="generation_dictionnaire_widgets.html" /> 
-</head>
+    <link rel="prev" title="Génération du dictionnaire des widgets" href="generation_dictionnaire_widgets.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="fr">
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Plume
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Création d’un nouveau widget</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#widget-principal">Widget principal</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#type">Type</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#stockage">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#placement-dans-la-grille">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#widget-masque">Widget masqué ?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-qgroupbox">Paramètres spécifiques aux widgets QGroupBox</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-qtoolbutton">Paramètres spécifiques aux widgets QToolButton</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-de-saisie">Paramètres spécifiques aux widgets de saisie</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit">Paramètres spécifiques aux widgets QLineEdit et QTextEdit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-qcombobox">Paramètres spécifiques aux widgets QComboBox</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit">Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#parametres-specifiques-aux-widgets-qlabel">Paramètres spécifiques aux widgets QLabel</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-grille">Widget annexe : grille</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-etiquette">Widget annexe : étiquette</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#texte-d-aide">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3">Widget masqué ?</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-source">Widget annexe : bouton de sélection de la source</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id4">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#menu">Menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id5">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#icone">Icône</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id6">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id7">Widget masqué ?</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-langue">Widget annexe : bouton de sélection de la langue</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id8">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id9">Menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#rendu">Rendu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id10">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id11">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id12">Widget masqué ?</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-bouton-de-selection-de-l-unite">Widget annexe : bouton de sélection de l’unité</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id13">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id14">Menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id15">Rendu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id16">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id17">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id18">Widget masqué ?</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries">Widget annexe : bouton d’aide à la saisie des géométries</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id19">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id20">Menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#icones">Icônes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cas-particulier-de-la-visualisation-seule">Cas particulier de la visualisation seule</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id21">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id22">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id23">Widget masqué ?</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-bouton-moins">Widget annexe : bouton « moins »</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id24">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id25">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id26">Icône</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id27">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id28">Widget masqué ?</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#widget-annexe-bouton-de-calcul">Widget annexe : bouton de calcul</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id29">Stockage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id30">Placement dans la grille</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id31">Icône</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id32">Texte d’aide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id33">Widget masqué ?</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
-</ul>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-        </div>
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">Plume</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../reference/modules.html">
+  Référence
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../mechanism/mechanism.html">
+  Usage
+ </a>
+</li>
+
+    
+</ul>
       </div>
-    </nav>
+      
+    </div>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Plume</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="usage.html">Usage</a> &raquo;</li>
-      <li>Création d’un nouveau widget</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/usage/creation_widgets.md.txt" rel="nofollow"> Afficher la source de la page</a>
-      </li>
-  </ul>
-  <hr/>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/MTES-MCT/metadata-postgresql" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generation_dictionnaire_widgets.html">
+   Génération du dictionnaire des widgets
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Création d’un nouveau widget
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="actions_widgets.html">
+   Actions contrôlées par les widgets du formulaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="outils_saisie_geometries.html">
+   Outils d’aide à la saisie des géométries
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="metadonnees_calculees.html">
+   Métadonnées calculées
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="actions_generales.html">
+   Actions générales
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="modeles_de_formulaire.html">
+   Modèles de formulaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="parametres_utilisateur.html">
+   Paramètres utilisateurs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="gestion_plume_pg.html">
+   Installation et gestion de l’extension PostgreSQL
+   <em>
+    PlumePg
+   </em>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="metadonnees_communes.html">
+   Métadonnées communes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="conformite_geodcat_ap.html">
+   Conformité au profil GeoDCAT-AP
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-principal">
+   Widget principal
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#type">
+     Type
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stockage">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#placement-dans-la-grille">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#widget-masque">
+     Widget masqué ?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-qgroupbox">
+     Paramètres spécifiques aux widgets QGroupBox
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#onglets">
+       Onglets
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#autres-groupes">
+       Autres groupes
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-qtoolbutton">
+     Paramètres spécifiques aux widgets QToolButton
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-de-saisie">
+     Paramètres spécifiques aux widgets de saisie
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit">
+     Paramètres spécifiques aux widgets QLineEdit et QTextEdit
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-qcombobox">
+     Paramètres spécifiques aux widgets QComboBox
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#liste-des-termes">
+       Liste des termes
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#placeholder">
+       Placeholder
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit">
+     Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametres-specifiques-aux-widgets-qlabel">
+     Paramètres spécifiques aux widgets QLabel
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-grille">
+   Widget annexe : grille
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-etiquette">
+   Widget annexe : étiquette
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#texte-d-aide">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-bouton-de-selection-de-la-source">
+   Widget annexe : bouton de sélection de la source
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#menu">
+     Menu
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#icone">
+     Icône
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-bouton-de-selection-de-la-langue">
+   Widget annexe : bouton de sélection de la langue
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id9">
+     Menu
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rendu">
+     Rendu
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id10">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id11">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id12">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-bouton-de-selection-de-l-unite">
+   Widget annexe : bouton de sélection de l’unité
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id13">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id14">
+     Menu
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id15">
+     Rendu
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id16">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id17">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id18">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries">
+   Widget annexe : bouton d’aide à la saisie des géométries
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id19">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id20">
+     Menu
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#icones">
+     Icônes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cas-particulier-de-la-visualisation-seule">
+     Cas particulier de la visualisation seule
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id21">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id22">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id23">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-bouton-moins">
+   Widget annexe : bouton « moins »
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id24">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id25">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id26">
+     Icône
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id27">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id28">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#widget-annexe-bouton-de-calcul">
+   Widget annexe : bouton de calcul
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id29">
+     Stockage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id30">
+     Placement dans la grille
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id31">
+     Icône
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id32">
+     Texte d’aide
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id33">
+     Widget masqué ?
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <section id="creation-d-un-nouveau-widget">
-<h1>Création d’un nouveau widget<a class="headerlink" href="#creation-d-un-nouveau-widget" title="Lien permanent vers ce titre"></a></h1>
+<h1>Création d’un nouveau widget<a class="headerlink" href="#creation-d-un-nouveau-widget" title="Lien permanent vers ce titre">¶</a></h1>
 <p>La présente page explique comment créer les widgets - <code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code> - et autres objets QT (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>, <code class="docutils literal notranslate"><span class="pre">QtWidgets.QMenu</span></code>, <code class="docutils literal notranslate"><span class="pre">QtGui.QAction</span></code>) qui formeront le formulaire de consultation / édition des métadonnées à partir du <span class="xref myst">dictionnaire des widgets</span>. On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.</p>
 <p>Soit :</p>
 <ul class="simple">
@@ -221,9 +622,9 @@
 </div>
 <p>Les commandes à exécuter sont détaillées dans la suite.</p>
 <section id="widget-principal">
-<h2>Widget principal<a class="headerlink" href="#widget-principal" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget principal<a class="headerlink" href="#widget-principal" title="Lien permanent vers ce titre">¶</a></h2>
 <section id="type">
-<h3>Type<a class="headerlink" href="#type" title="Lien permanent vers ce titre"></a></h3>
+<h3>Type<a class="headerlink" href="#type" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le type du widget principal (<code class="docutils literal notranslate"><span class="pre">QGroupBox</span></code>, <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code>, <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code>…) est fourni par la clé <code class="docutils literal notranslate"><span class="pre">'main</span> <span class="pre">widget</span> <span class="pre">type'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;main widget type&#39;</span><span class="p">]</span>
@@ -233,7 +634,7 @@
 <p><em>Si <code class="docutils literal notranslate"><span class="pre">'main</span> <span class="pre">widget</span> <span class="pre">type'</span></code> ne contient aucune valeur, il n’y a pas lieu de créer de widget. Ceci ne se produit en pratique que pour la clé-racine du dictionnaire, qui est également référencée par l’attribut <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.root</span></code> et n’appelle aucune action.</em></p>
 </section>
 <section id="stockage">
-<h3>Stockage<a class="headerlink" href="#stockage" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#stockage" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le nouveau widget a vocation à être stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'main</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;main widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_widget</span>
@@ -243,7 +644,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">main_widget</span></code> est le widget principal qui vient d’être créé.</em></p>
 </section>
 <section id="placement-dans-la-grille">
-<h3>Placement dans la grille<a class="headerlink" href="#placement-dans-la-grille" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#placement-dans-la-grille" title="Lien permanent vers ce titre">¶</a></h3>
 <p><em>Les informations ci-après ne valent pas pour les onglets (cf. <span class="xref myst">Onglets</span>).</em></p>
 <p>Le nouveau widget doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
@@ -259,7 +660,7 @@
 <p><span class="xref myst">↑ haut de page</span></p>
 </section>
 <section id="widget-masque">
-<h3>Widget masqué ?<a class="headerlink" href="#widget-masque" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#widget-masque" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Certains widgets seront à masquer ou afficher selon les actions de l’utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu’une métadonnée peut être saisie au choix sous la forme d’un URI ou d’un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l’utilisateur ne décide pas de changer de source (cf. <span class="xref myst">Widget annexe : bouton de sélection de la source</span>).</p>
 <p>Concrètement, le widget principal <strong>et tous les widgets annexes</strong> d’un enregistrement devront être masqués dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -270,10 +671,10 @@
 </div>
 </section>
 <section id="parametres-specifiques-aux-widgets-qgroupbox">
-<h3>Paramètres spécifiques aux widgets QGroupBox<a class="headerlink" href="#parametres-specifiques-aux-widgets-qgroupbox" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets QGroupBox<a class="headerlink" href="#parametres-specifiques-aux-widgets-qgroupbox" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Deux cas doivent être distingués lorsque <code class="docutils literal notranslate"><span class="pre">'main</span> <span class="pre">widget</span> <span class="pre">type'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">'QGroupBox'</span></code> : les onglets et les autres groupes.</p>
 <section id="onglets">
-<h4>Onglets<a class="headerlink" href="#onglets" title="Lien permanent vers ce titre"></a></h4>
+<h4>Onglets<a class="headerlink" href="#onglets" title="Lien permanent vers ce titre">¶</a></h4>
 <p>Les onglets sont reconnaissables au fait que la condition suivante est remplie :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;object&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tab&#39;</span><span class="p">:</span>
@@ -290,7 +691,7 @@
 </div>
 </section>
 <section id="autres-groupes">
-<h4>Autres groupes<a class="headerlink" href="#autres-groupes" title="Lien permanent vers ce titre"></a></h4>
+<h4>Autres groupes<a class="headerlink" href="#autres-groupes" title="Lien permanent vers ce titre">¶</a></h4>
 <p>Pour tous les autres groupes, c’est-à-dire ceux pour lesquels la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'object'</span></code> n’est pas <code class="docutils literal notranslate"><span class="pre">'tab'</span></code>.</p>
 <ul class="simple">
 <li><p>La partie <span class="xref myst">Placement dans la grille</span> s’applique.</p></li>
@@ -319,7 +720,7 @@
 </pre></div>
 </div>
 <p>On pourra utiliser les valeurs par défaut suivantes :</p>
-<table class="colwidths-auto docutils align-default">
+<table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Type de groupe</p></th>
 <th class="head"><p><code class="docutils literal notranslate"><span class="pre">group_kind(widgetkey)</span></code></p></th>
@@ -344,7 +745,7 @@
 </section>
 </section>
 <section id="parametres-specifiques-aux-widgets-qtoolbutton">
-<h3>Paramètres spécifiques aux widgets QToolButton<a class="headerlink" href="#parametres-specifiques-aux-widgets-qtoolbutton" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets QToolButton<a class="headerlink" href="#parametres-specifiques-aux-widgets-qtoolbutton" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Les seuls cas où le widget principal est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> sont ceux des « boutons plus » et « boutons de traduction », qui permettent à l’utilisateur d’ajouter réciproquement des valeurs ou traductions supplémentaires. La clé <code class="docutils literal notranslate"><span class="pre">'object'</span></code> vaut alors <code class="docutils literal notranslate"><span class="pre">'plus</span> <span class="pre">button'</span></code> ou <code class="docutils literal notranslate"><span class="pre">'translation</span> <span class="pre">button'</span></code>.</p>
 <ul class="simple">
 <li><p>L’image <img alt="plus_button.svg" src="plume/icons/buttons/plus_button.svg" /> à utiliser est toujours <span class="xref myst">plus_button.svg</span>, mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :</p></li>
@@ -355,7 +756,7 @@
 </pre></div>
 </div>
 <p>Comme pour les <code class="docutils literal notranslate"><span class="pre">QGroupBox</span></code>, on pourra utiliser les valeurs par défaut suivantes :</p>
-<table class="colwidths-auto docutils align-default">
+<table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Type de groupe</p></th>
 <th class="head"><p><code class="docutils literal notranslate"><span class="pre">group_kind(widgetkey)</span></code></p></th>
@@ -394,7 +795,7 @@
 </div>
 </section>
 <section id="parametres-specifiques-aux-widgets-de-saisie">
-<h3>Paramètres spécifiques aux widgets de saisie<a class="headerlink" href="#parametres-specifiques-aux-widgets-de-saisie" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets de saisie<a class="headerlink" href="#parametres-specifiques-aux-widgets-de-saisie" title="Lien permanent vers ce titre">¶</a></h3>
 <ul class="simple">
 <li><p>Lorsqu’elle existe (car préalablement renseignée dans la fiche de métadonnées), la <strong>valeur à afficher</strong> dans le widget est fournie par la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> du dictionnaire.</p></li>
 </ul>
@@ -422,7 +823,7 @@
 </div>
 </section>
 <section id="parametres-specifiques-aux-widgets-qlineedit-et-qtextedit">
-<h3>Paramètres spécifiques aux widgets QLineEdit et QTextEdit<a class="headerlink" href="#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets QLineEdit et QTextEdit<a class="headerlink" href="#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Pour les widgets d’édition de texte, le dictionnaire apporte divers paramètres complémentaires. Ils sont tous optionnels. Si la clé ne contient pas de valeur, c’est qu’il n’y a pas lieu d’utiliser le paramètre.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'placeholder</span> <span class="pre">text'</span></code> donne la <strong>valeur fictive</strong> à afficher dans le widget :</p></li>
@@ -479,9 +880,9 @@
 <p><em>Seules les options <code class="docutils literal notranslate"><span class="pre">i</span></code>, <code class="docutils literal notranslate"><span class="pre">s</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span></code> et <code class="docutils literal notranslate"><span class="pre">x</span></code> sont à la fois admises en SHACL et par QT, ce sont donc les seules à être gérées.</em></p>
 </section>
 <section id="parametres-specifiques-aux-widgets-qcombobox">
-<h3>Paramètres spécifiques aux widgets QComboBox<a class="headerlink" href="#parametres-specifiques-aux-widgets-qcombobox" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets QComboBox<a class="headerlink" href="#parametres-specifiques-aux-widgets-qcombobox" title="Lien permanent vers ce titre">¶</a></h3>
 <section id="liste-des-termes">
-<h4>Liste des termes<a class="headerlink" href="#liste-des-termes" title="Lien permanent vers ce titre"></a></h4>
+<h4>Liste des termes<a class="headerlink" href="#liste-des-termes" title="Lien permanent vers ce titre">¶</a></h4>
 <p>La <strong>liste des termes</strong> à afficher dans le <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> est fournie par la clé <code class="docutils literal notranslate"><span class="pre">'thesaurus</span> <span class="pre">values'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;thesaurus values&#39;</span><span class="p">]</span>
@@ -492,7 +893,7 @@
 <p>Autant que possible - considérant la quantité de termes dans certains thésaurus - les <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> devraient afficher une ligne de saisie avec <strong>auto-complétion</strong>. Il est par contre important qu’ils <strong>ne permettent pas d’entrer d’autres valeurs que celles des thésaurus</strong>.</p>
 </section>
 <section id="placeholder">
-<h4>Placeholder<a class="headerlink" href="#placeholder" title="Lien permanent vers ce titre"></a></h4>
+<h4>Placeholder<a class="headerlink" href="#placeholder" title="Lien permanent vers ce titre">¶</a></h4>
 <p>Comme les <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> et <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code>, les widgets <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> peuvent afficher une <strong>valeur fictive</strong> fournie par la clé <code class="docutils literal notranslate"><span class="pre">'placeholder</span> <span class="pre">text'</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;main widget&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;placeholder text&#39;</span><span class="p">])</span>
@@ -502,9 +903,9 @@
 </section>
 </section>
 <section id="parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit">
-<h3>Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit<a class="headerlink" href="#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit<a class="headerlink" href="#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Les formats d’entrée (argument de <code class="docutils literal notranslate"><span class="pre">QDateTime.fromString</span></code>, <code class="docutils literal notranslate"><span class="pre">QDate.fromString</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTime.fromString</span></code>), de sortie (argument de <code class="docutils literal notranslate"><span class="pre">QDateTime.toString</span></code>, <code class="docutils literal notranslate"><span class="pre">QDate.toString</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTime.toString</span></code>) et d’affichage (argument de <code class="docutils literal notranslate"><span class="pre">QDateTimeEdit.setDisplayFormat</span></code>, <code class="docutils literal notranslate"><span class="pre">QDateEdit.setDisplayFormat</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTimeEdit.setDisplayFormat</span></code>) sont toujours identiques :</p>
-<table class="colwidths-auto docutils align-default">
+<table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Type de widget</p></th>
 <th class="head"><p>Format</p></th>
@@ -524,7 +925,7 @@
 </table>
 </section>
 <section id="parametres-specifiques-aux-widgets-qlabel">
-<h3>Paramètres spécifiques aux widgets QLabel<a class="headerlink" href="#parametres-specifiques-aux-widgets-qlabel" title="Lien permanent vers ce titre"></a></h3>
+<h3>Paramètres spécifiques aux widgets QLabel<a class="headerlink" href="#parametres-specifiques-aux-widgets-qlabel" title="Lien permanent vers ce titre">¶</a></h3>
 <p><em>NB : il n’est pas question dans cette partie des <span class="xref myst">widgets annexes d’étiquettes</span> mais du cas où le widget principal lui-même est un QLabel.</em></p>
 <p>En mode lecture, des widgets <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> remplacent la plupart des widgets de saisie (à ce jour tous sauf les <code class="docutils literal notranslate"><span class="pre">QCheckBox</span></code>). Ils permettent notamment d’afficher des hyperliens cliquables.</p>
 <p>Comme pour les véritables widgets de saisie, la <strong>valeur à afficher</strong> est fournie par la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> du dictionnaire.</p>
@@ -548,7 +949,7 @@
 </section>
 </section>
 <section id="widget-annexe-grille">
-<h2>Widget annexe : grille<a class="headerlink" href="#widget-annexe-grille" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : grille<a class="headerlink" href="#widget-annexe-grille" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Pour les onglets, groupes de valeurs, groupes de propriétés et groupes de traduction (en fait dès lors que <code class="docutils literal notranslate"><span class="pre">'main</span> <span class="pre">widget</span> <span class="pre">type'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">'QGroupBox'</span></code>), un widget annexe <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> doit être créé en paralèlle du <code class="docutils literal notranslate"><span class="pre">QGroupBox</span></code>.</p>
 <p>Le widget <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> sera stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'grid</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -561,7 +962,7 @@
 <p><span class="xref myst">↑ haut de page</span></p>
 </section>
 <section id="widget-annexe-etiquette">
-<h2>Widget annexe : étiquette<a class="headerlink" href="#widget-annexe-etiquette" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : étiquette<a class="headerlink" href="#widget-annexe-etiquette" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Un <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> doit être créé dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'has</span> <span class="pre">label'</span></code> du dictionnaire interne vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. En pratique, cela concernera les widgets de saisie dont la clé <code class="docutils literal notranslate"><span class="pre">'label'</span></code> contient une valeur. Le libellé à afficher correspond bien entendu à la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'label'</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;has label&#39;</span><span class="p">]:</span>
@@ -570,7 +971,7 @@
 </pre></div>
 </div>
 <section id="id1">
-<h3>Stockage<a class="headerlink" href="#id1" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id1" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le widget <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> sera stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'label</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;label widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label_widget</span>
@@ -580,7 +981,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">label_widget</span></code> est le widget d’étiquette qui vient d’être créé.</em></p>
 </section>
 <section id="id2">
-<h3>Placement dans la grille<a class="headerlink" href="#id2" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id2" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -593,7 +994,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">label_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du widget annexe d’étiquette de la clé.</em></p>
 </section>
 <section id="texte-d-aide">
-<h3>Texte d’aide<a class="headerlink" href="#texte-d-aide" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#texte-d-aide" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Lorsqu’elle est renseignée, la clé <code class="docutils literal notranslate"><span class="pre">'help</span> <span class="pre">text'</span></code> fournit un <strong>texte d’aide</strong> (descriptif de la catégorie de métadonnée), qui pourrait alimenter un <code class="docutils literal notranslate"><span class="pre">toolTip</span></code> (voire un <code class="docutils literal notranslate"><span class="pre">whatsThis</span></code>).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;label widget&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;help text&#39;</span><span class="p">])</span>
@@ -602,7 +1003,7 @@
 </div>
 </section>
 <section id="id3">
-<h3>Widget masqué ?<a class="headerlink" href="#id3" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id3" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -614,7 +1015,7 @@
 </section>
 </section>
 <section id="widget-annexe-bouton-de-selection-de-la-source">
-<h2>Widget annexe : bouton de sélection de la source<a class="headerlink" href="#widget-annexe-bouton-de-selection-de-la-source" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : bouton de sélection de la source<a class="headerlink" href="#widget-annexe-bouton-de-selection-de-la-source" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Un widget <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> de sélection de source doit être créé dès lors que la condition suivante est vérifiée :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;multiple sources&#39;</span><span class="p">]:</span>
@@ -623,7 +1024,7 @@
 </pre></div>
 </div>
 <section id="id4">
-<h3>Stockage<a class="headerlink" href="#id4" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id4" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le widget de sélection de la source est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'switch</span> <span class="pre">source</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;switch source widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_widget</span>
@@ -633,7 +1034,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">source_widget</span></code> est le widget de sélection de la source qui vient d’être créé.</em></p>
 </section>
 <section id="menu">
-<h3>Menu<a class="headerlink" href="#menu" title="Lien permanent vers ce titre"></a></h3>
+<h3>Menu<a class="headerlink" href="#menu" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'switch</span> <span class="pre">source</span> <span class="pre">menu'</span></code> du dictionnaire.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;switch source menu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_menu</span>
@@ -663,7 +1064,7 @@
 </div>
 </section>
 <section id="id5">
-<h3>Placement dans la grille<a class="headerlink" href="#id5" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id5" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -676,11 +1077,11 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">source_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du widget annexe de sélection de la source.</em></p>
 </section>
 <section id="icone">
-<h3>Icône<a class="headerlink" href="#icone" title="Lien permanent vers ce titre"></a></h3>
+<h3>Icône<a class="headerlink" href="#icone" title="Lien permanent vers ce titre">¶</a></h3>
 <p>L’icône <img alt="source_button.svg" src="plume/icons/buttons/source_button.svg" /> à utiliser pour le bouton de sélection de la source est fournie par le fichier <span class="xref myst">source_button.svg</span>. Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.</p>
 </section>
 <section id="id6">
-<h3>Texte d’aide<a class="headerlink" href="#id6" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#id6" title="Lien permanent vers ce titre">¶</a></h3>
 <p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="s1">&#39;Sélection du thésaurus ou mode de saisie&#39;</span>
@@ -689,7 +1090,7 @@
 </div>
 </section>
 <section id="id7">
-<h3>Widget masqué ?<a class="headerlink" href="#id7" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id7" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -701,7 +1102,7 @@
 </section>
 </section>
 <section id="widget-annexe-bouton-de-selection-de-la-langue">
-<h2>Widget annexe : bouton de sélection de la langue<a class="headerlink" href="#widget-annexe-bouton-de-selection-de-la-langue" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : bouton de sélection de la langue<a class="headerlink" href="#widget-annexe-bouton-de-selection-de-la-langue" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Un widget <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> de sélection de langue doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira que si le mode traduction est actif) :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;authorized languages&#39;</span><span class="p">]:</span>
@@ -710,7 +1111,7 @@
 </pre></div>
 </div>
 <section id="id8">
-<h3>Stockage<a class="headerlink" href="#id8" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id8" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le bouton de sélection de la langue est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;language widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">language_widget</span>
@@ -720,7 +1121,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">language_widget</span></code> est le widget de sélection de la langue qui vient d’être créé.</em></p>
 </section>
 <section id="id9">
-<h3>Menu<a class="headerlink" href="#id9" title="Lien permanent vers ce titre"></a></h3>
+<h3>Menu<a class="headerlink" href="#id9" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu'</span></code> du dictionnaire.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;language menu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">language_menu</span>
@@ -744,7 +1145,7 @@
 <p><em>Pour la définition des actions, cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>.</em></p>
 </section>
 <section id="rendu">
-<h3>Rendu<a class="headerlink" href="#rendu" title="Lien permanent vers ce titre"></a></h3>
+<h3>Rendu<a class="headerlink" href="#rendu" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Au lieu d’une icône, le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> de sélection de la langue montre un texte correspondant au nom abrégé de la langue sélectionnée. Celui-ci est fourni par la clé <code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">value'</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;language value&#39;</span><span class="p">]</span>
@@ -753,7 +1154,7 @@
 </div>
 </section>
 <section id="id10">
-<h3>Texte d’aide<a class="headerlink" href="#id10" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#id10" title="Lien permanent vers ce titre">¶</a></h3>
 <p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="s1">&#39;Sélection de la langue de la métadonnée&#39;</span>
@@ -762,7 +1163,7 @@
 </div>
 </section>
 <section id="id11">
-<h3>Placement dans la grille<a class="headerlink" href="#id11" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id11" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -775,7 +1176,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">language_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du widget annexe de sélection de la langue.</em></p>
 </section>
 <section id="id12">
-<h3>Widget masqué ?<a class="headerlink" href="#id12" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id12" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -787,7 +1188,7 @@
 </section>
 </section>
 <section id="widget-annexe-bouton-de-selection-de-l-unite">
-<h2>Widget annexe : bouton de sélection de l’unité<a class="headerlink" href="#widget-annexe-bouton-de-selection-de-l-unite" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : bouton de sélection de l’unité<a class="headerlink" href="#widget-annexe-bouton-de-selection-de-l-unite" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Un widget <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> de sélection de l’unité doit être créé dès lors que la condition suivante est vérifiée (ce qui ne se produira qu’en mode édition) :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]:</span>
@@ -797,7 +1198,7 @@
 </div>
 <p>Pour l’heure, de tels widgets ne sont utilisés que pour spécifier les unités à associer aux durées (type RDF <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code>).</p>
 <section id="id13">
-<h3>Stockage<a class="headerlink" href="#id13" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id13" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le bouton de sélection de l’unité est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'unit</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;unit widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit_widget</span>
@@ -807,7 +1208,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">unit_widget</span></code> est le widget de sélection de l’unité qui vient d’être créé.</em></p>
 </section>
 <section id="id14">
-<h3>Menu<a class="headerlink" href="#id14" title="Lien permanent vers ce titre"></a></h3>
+<h3>Menu<a class="headerlink" href="#id14" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'unit</span> <span class="pre">menu'</span></code> du dictionnaire.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;unit menu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit_menu</span>
@@ -831,7 +1232,7 @@
 <p><em>Pour la définition des actions, cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>.</em></p>
 </section>
 <section id="id15">
-<h3>Rendu<a class="headerlink" href="#id15" title="Lien permanent vers ce titre"></a></h3>
+<h3>Rendu<a class="headerlink" href="#id15" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Au lieu d’une icône, le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> de sélection de l’unité montre un texte correspondant à l’unité sélectionnée. Celui-ci est fourni par la clé <code class="docutils literal notranslate"><span class="pre">'current</span> <span class="pre">unit'</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;current unit&#39;</span><span class="p">]</span>
@@ -840,7 +1241,7 @@
 </div>
 </section>
 <section id="id16">
-<h3>Texte d’aide<a class="headerlink" href="#id16" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#id16" title="Lien permanent vers ce titre">¶</a></h3>
 <p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="s1">&#39;Sélection de l&#39;</span><span class="n">unité</span> <span class="n">de</span> <span class="n">mesure</span><span class="s1">&#39;</span>
@@ -849,7 +1250,7 @@
 </div>
 </section>
 <section id="id17">
-<h3>Placement dans la grille<a class="headerlink" href="#id17" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id17" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -862,7 +1263,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">unit_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du widget annexe de sélection de l’unité.</em></p>
 </section>
 <section id="id18">
-<h3>Widget masqué ?<a class="headerlink" href="#id18" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id18" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -874,7 +1275,7 @@
 </section>
 </section>
 <section id="widget-annexe-bouton-d-aide-a-la-saisie-des-geometries">
-<h2>Widget annexe : bouton d’aide à la saisie des géométries<a class="headerlink" href="#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : bouton d’aide à la saisie des géométries<a class="headerlink" href="#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Un widget <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> d’aide à la saisie des géométries doit être créé dès lors que la condition suivante est vérifiée :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;geo tools&#39;</span><span class="p">]:</span>
@@ -885,7 +1286,7 @@
 <p>De tels widgets accompagnent les widgets de saisie appelant des valeurs de type <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>.</p>
 <p><em>NB : Contrairement aux autres boutons, les boutons d’aide à la saisie peuvent apparaître en mode lecture. Ils n’offrent alors, bien évidemment, que des fonctionnalités de visualisation.</em></p>
 <section id="id19">
-<h3>Stockage<a class="headerlink" href="#id19" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id19" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le bouton d’aide à la saisie des géométries est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;geo widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geo_widget</span>
@@ -895,7 +1296,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">geo_widget</span></code> est le widget d’aide à la saisie des géométries qui vient d’être créé.</em></p>
 </section>
 <section id="id20">
-<h3>Menu<a class="headerlink" href="#id20" title="Lien permanent vers ce titre"></a></h3>
+<h3>Menu<a class="headerlink" href="#id20" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">menu'</span></code> du dictionnaire.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;geo menu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geo_menu</span>
@@ -913,12 +1314,12 @@
 <p>Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code>. Elles sont détaillées par <span class="xref myst">Outils d’aide à la saisie des géométries</span>.</p>
 </section>
 <section id="icones">
-<h3>Icônes<a class="headerlink" href="#icones" title="Lien permanent vers ce titre"></a></h3>
+<h3>Icônes<a class="headerlink" href="#icones" title="Lien permanent vers ce titre">¶</a></h3>
 <p>L’icône <img alt="geo_button.svg" src="plume/icons/buttons/geo_button.svg" /> à faire apparaître sur le bouton d’aide à la saisie des géométries est fournie par le fichier <span class="xref myst">geo_button.svg</span>. Sa couleur est fixe.</p>
 <p>Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire <span class="xref myst">/plume/icons/buttons/geo</span>, cf. <span class="xref myst">Outils d’aide à la saisie des géométries</span> pour les noms des fichiers.</p>
 </section>
 <section id="cas-particulier-de-la-visualisation-seule">
-<h3>Cas particulier de la visualisation seule<a class="headerlink" href="#cas-particulier-de-la-visualisation-seule" title="Lien permanent vers ce titre"></a></h3>
+<h3>Cas particulier de la visualisation seule<a class="headerlink" href="#cas-particulier-de-la-visualisation-seule" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Lorsque la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code> vaut exactement <code class="docutils literal notranslate"><span class="pre">['show']</span></code>, c’est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :</p>
 <ul class="simple">
 <li><p>utiliser l’image d’oeil <img alt="show.svg" src="plume/icons/buttons/geo/show.svg" /> comme icône pour le bouton ;</p></li>
@@ -932,7 +1333,7 @@
 </div>
 </section>
 <section id="id21">
-<h3>Texte d’aide<a class="headerlink" href="#id21" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#id21" title="Lien permanent vers ce titre">¶</a></h3>
 <p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="s1">&#39;Aide à la saisie des géométries&#39;</span>
@@ -941,7 +1342,7 @@
 </div>
 </section>
 <section id="id22">
-<h3>Placement dans la grille<a class="headerlink" href="#id22" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id22" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -954,7 +1355,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">geo_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du widget annexe d’aide à la saisie des géométries.</em></p>
 </section>
 <section id="id23">
-<h3>Widget masqué ?<a class="headerlink" href="#id23" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id23" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -966,7 +1367,7 @@
 </section>
 </section>
 <section id="widget-annexe-bouton-moins">
-<h2>Widget annexe : bouton « moins »<a class="headerlink" href="#widget-annexe-bouton-moins" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : bouton « moins »<a class="headerlink" href="#widget-annexe-bouton-moins" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Pour les propriétés admettant des valeurs multiples ou des traductions, des widgets <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> permettent à l’utilisateur de supprimer les valeurs précédemment saisies, à condition qu’il en reste au moins une.</p>
 <p>Un tel widget doit être créé dès lors que la condition suivante est vérifiée :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -976,7 +1377,7 @@
 </pre></div>
 </div>
 <section id="id24">
-<h3>Stockage<a class="headerlink" href="#id24" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id24" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le boutoin moins est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'minus</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;minus widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minus_widget</span>
@@ -986,7 +1387,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">minus_widget</span></code> est le widget bouton moins qui vient d’être créé.</em></p>
 </section>
 <section id="id25">
-<h3>Placement dans la grille<a class="headerlink" href="#id25" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id25" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -999,7 +1400,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">minus_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du boutoin moins.</em></p>
 </section>
 <section id="id26">
-<h3>Icône<a class="headerlink" href="#id26" title="Lien permanent vers ce titre"></a></h3>
+<h3>Icône<a class="headerlink" href="#id26" title="Lien permanent vers ce titre">¶</a></h3>
 <p>L’image <img alt="minus_button.svg" src="plume/icons/buttons/minus_button.svg" /> à utiliser pour un bouton moins est toujours <span class="xref myst">minus_button.svg</span>, mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="o">.</span><span class="n">group_kind</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">)</span>
@@ -1007,7 +1408,7 @@
 </pre></div>
 </div>
 <p>Comme pour les <code class="docutils literal notranslate"><span class="pre">QGroupBox</span></code> et les boutons plus/boutons de traduction, on pourra utiliser les valeurs par défaut suivantes :</p>
-<table class="colwidths-auto docutils align-default">
+<table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Type de groupe</p></th>
 <th class="head"><p><code class="docutils literal notranslate"><span class="pre">group_kind(widgetkey)</span></code></p></th>
@@ -1038,7 +1439,7 @@
 </div>
 </section>
 <section id="id27">
-<h3>Texte d’aide<a class="headerlink" href="#id27" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#id27" title="Lien permanent vers ce titre">¶</a></h3>
 <p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="s1">&#39;Supprimer l&#39;</span><span class="n">élément</span><span class="s1">&#39;</span>
@@ -1047,7 +1448,7 @@
 </div>
 </section>
 <section id="id28">
-<h3>Widget masqué ?<a class="headerlink" href="#id28" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id28" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Comme tous les autres widgets, le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. Mais il devra également être masqué si le groupe de traduction ou groupe de valeurs ne contient qu’un élément, soit quand <code class="docutils literal notranslate"><span class="pre">'hide</span> <span class="pre">minus</span> <span class="pre">button'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hide minus button&#39;</span><span class="p">]:</span>
@@ -1059,7 +1460,7 @@
 </section>
 </section>
 <section id="widget-annexe-bouton-de-calcul">
-<h2>Widget annexe : bouton de calcul<a class="headerlink" href="#widget-annexe-bouton-de-calcul" title="Lien permanent vers ce titre"></a></h2>
+<h2>Widget annexe : bouton de calcul<a class="headerlink" href="#widget-annexe-bouton-de-calcul" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Les boutons de calcul sont une alternative à la saisie manuelle des métadonnées. Ils permettent de calculer leurs valeurs par requête sur le serveur PostgreSQL.</p>
 <p>Un tel widget doit être créé dès lors que la condition suivante est vérifiée :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -1069,7 +1470,7 @@
 </pre></div>
 </div>
 <section id="id29">
-<h3>Stockage<a class="headerlink" href="#id29" title="Lien permanent vers ce titre"></a></h3>
+<h3>Stockage<a class="headerlink" href="#id29" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le boutoin de calcul est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'compute</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;compute widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_widget</span>
@@ -1079,7 +1480,7 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">compute_widget</span></code> est le widget bouton de calcul qui vient d’être créé.</em></p>
 </section>
 <section id="id30">
-<h3>Placement dans la grille<a class="headerlink" href="#id30" title="Lien permanent vers ce titre"></a></h3>
+<h3>Placement dans la grille<a class="headerlink" href="#id30" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -1092,11 +1493,11 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">compute_widget</span></code> est le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du bouton de calcul.</em></p>
 </section>
 <section id="id31">
-<h3>Icône<a class="headerlink" href="#id31" title="Lien permanent vers ce titre"></a></h3>
+<h3>Icône<a class="headerlink" href="#id31" title="Lien permanent vers ce titre">¶</a></h3>
 <p>L’image <img alt="compute_button.svg" src="plume/icons/buttons/compute_button.svg" /> à utiliser pour un bouton de calcul est toujours <span class="xref myst">compute_button.svg</span>.</p>
 </section>
 <section id="id32">
-<h3>Texte d’aide<a class="headerlink" href="#id32" title="Lien permanent vers ce titre"></a></h3>
+<h3>Texte d’aide<a class="headerlink" href="#id32" title="Lien permanent vers ce titre">¶</a></h3>
 <p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="s1">&#39;Calculer côté serveur&#39;</span>
@@ -1105,7 +1506,7 @@
 </div>
 </section>
 <section id="id33">
-<h3>Widget masqué ?<a class="headerlink" href="#id33" title="Lien permanent vers ce titre"></a></h3>
+<h3>Widget masqué ?<a class="headerlink" href="#id33" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Comme tous les autres widgets, le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> doit être masqué dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -1119,34 +1520,50 @@
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
-        <a href="generation_dictionnaire_widgets.html" class="btn btn-neutral float-left" title="Génération du dictionnaire des widgets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
-        <a href="actions_widgets.html" class="btn btn-neutral float-right" title="Actions contrôlées par les widgets du formulaire" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, République française.</p>
-  </div>
-
-  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
-    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="generation_dictionnaire_widgets.html" title="précédent page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">précédent</p>
+            <p class="prev-next-title">Génération du dictionnaire des widgets</p>
         </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+    <a class='right-next' id="next-link" href="actions_widgets.html" title="suivant page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">suivant</p>
+        <p class="prev-next-title">Actions contrôlées par les widgets du formulaire</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
 
-</body>
+      </div>
+    </div>
+  
+    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, République française.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>
