@@ -35,8 +35,8 @@
             
   <section id="aide-memoire">
 <h1>Aide-mémoire<a class="headerlink" href="#aide-memoire" title="Lien permanent vers ce titre">¶</a></h1>
-<p>Cette page récapitule les actions à réaliser pour modifier différents aspects du fonctionnement de Plume.</p>
-<p><span class="xref myst">Exécution des tests</span> • <span class="xref myst">Modifier les catégories de métadonnées communes</span> • <span class="xref myst">Ajouter une option de configuration des catégories de métadonnées</span></p>
+<p>Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.</p>
+<p><span class="xref myst">Exécution des tests</span> • <span class="xref myst">Générer un ZIP propre du plugin</span> • <span class="xref myst">Modifier les catégories de métadonnées communes</span> • <span class="xref myst">Ajouter une option de configuration des catégories de métadonnées</span> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span></p>
 <section id="execution-des-tests">
 <h2>Exécution des tests<a class="headerlink" href="#execution-des-tests" title="Lien permanent vers ce titre">¶</a></h2>
 <p>On lancera le script <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/admin/tests.py</span></code></span> qui compile les tests de tous les modules de Plume.</p>
@@ -268,13 +268,26 @@
 <section id="generation-du-formulaire">
 <h3>Génération du formulaire<a class="headerlink" href="#generation-du-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
 <p><em>TODO</em></p>
+</section>
+</section>
+<section id="modifier-les-modeles-pre-configures-de-plumepg">
+<h2>Modifier les modèles pré-configurés de <em>PlumePg</em><a class="headerlink" href="#modifier-les-modeles-pre-configures-de-plumepg" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Les modèles pré-configurés de l’extension PostgreSQL <em>PlumePg</em> sont définis dans le code de l’extension (fichier <code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x.sql</span></code> du répertoire <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/postgresql</span></code></span>) et plus précisément dans le corps de la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.meta_import_sample_template(text)</span></code>. Comme pour tout changement dans le code de <em>PlumePg</em>, leur modification devra donner lieu à une nouvelle version de <em>PlumePg</em>, outillée par un fichier <code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x-y.y.y.sql</span></code> permettant de passer de la version <code class="docutils literal notranslate"><span class="pre">x.x.x</span></code> à la version <code class="docutils literal notranslate"><span class="pre">y.y.y</span></code>.</p>
+<p>Plume inclut par ailleurs des copies locales des modèles pré-configurés, qui permettent de bénéficier de quelques modèles basiques même si <em>PlumePg</em> n’est pas installée sur la base contenant la table ou vue à documenter. Ils sont stockés dans le fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/plume/pg/data/templates.json</span></code></span>.</p>
+<p>Une fois <em>PlumePg</em> modifiée, on pourra mettre à jour ce fichier avec la commande suivante :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">admin.plume_pg</span> <span class="kn">import</span> <span class="n">store_sample_templates</span>
+
+<span class="n">store_sample_templates</span><span class="p">()</span>
+
+</pre></div>
+</div>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="local"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>La seule exception à cette règle est la variable <code class="docutils literal notranslate"><span class="pre">LOCAL</span></code>, qui a été choisie pour représenter le préfixe <code class="docutils literal notranslate"><span class="pre">uuid</span></code> parce qu”<code class="docutils literal notranslate"><span class="pre">UUID</span></code> est une classe du module <code class="docutils literal notranslate"><span class="pre">uuid</span></code> utilisée par ailleurs par Plume.</p>
 </dd>
 </dl>
-</section>
 </section>
 </section>
 

@@ -1,8 +1,8 @@
 # Aide-mémoire
 
-Cette page récapitule les actions à réaliser pour modifier différents aspects du fonctionnement de Plume.
+Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.
 
-[Exécution des tests](#exécution-des-tests) • [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes) • [Ajouter une option de configuration des catégories de métadonnées](#ajouter-une-option-de-configuration-des-catégories-de-métadonnées)
+[Exécution des tests](#exécution-des-tests) • [Générer un ZIP propre du plugin](#générer-un-zip-propre-du-plugin) • [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes) • [Ajouter une option de configuration des catégories de métadonnées](#ajouter-une-option-de-configuration-des-catégories-de-métadonnées) • [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-ré-configurés-de-plumepg)
 
 ## Exécution des tests
 
@@ -278,3 +278,23 @@ Classe `GroupOfValuesKey` (car cette propriété doit être identique pour toute
 ### Génération du formulaire
 
 *TODO*
+
+
+## Modifier les modèles pré-configurés de *PlumePg*
+
+Les modèles pré-configurés de l'extension PostgreSQL *PlumePg* sont définis dans le code de l'extension (fichier `plume_pg--x.x.x.sql` du répertoire [`/postgresql`](/postgresql)) et plus précisément dans le corps de la fonction `z_plume.meta_import_sample_template(text)`. Comme pour tout changement dans le code de *PlumePg*, leur modification devra donner lieu à une nouvelle version de *PlumePg*, outillée par un fichier `plume_pg--x.x.x-y.y.y.sql` permettant de passer de la version `x.x.x` à la version `y.y.y`.
+
+Plume inclut par ailleurs des copies locales des modèles pré-configurés, qui permettent de bénéficier de quelques modèles basiques même si *PlumePg* n'est pas installée sur la base contenant la table ou vue à documenter. Ils sont stockés dans le fichier [`/plume/pg/data/templates.json`](/plume/pg/data/templates.json).
+
+Une fois *PlumePg* modifiée, on pourra mettre à jour ce fichier avec la commande suivante :
+
+```python
+
+from admin.plume_pg import store_sample_templates
+
+store_sample_templates()
+
+```
+
+
+
