@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Plume's documentation!
-=================================
+Plume : gestion des métadonnées du patrimoine PostgreSQL
+========================================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Documentation technique
 
    usage/usage
    reference/modules
@@ -16,8 +16,8 @@ Welcome to Plume's documentation!
 
 
 
-Indices and tables
-==================
+Navigation
+==========
 
 * :ref:`genindex`
 * :ref:`modindex`
