@@ -33,7 +33,6 @@ release = '0.3.0-beta'
 extensions = [
     'sphinx.ext.githubpages',
     'myst_parser', # Markdown support
-    'sphinx_rtd_theme', # ReadTheDocs theme
     'sphinx.ext.autodoc',
     'numpydoc' # NumPy support
 ]
@@ -57,7 +56,8 @@ exclude_patterns = [
     'plume/*.py',
     'plume/bibli_install',
     'plume/i18n',
-    'postgresql'
+    'postgresql',
+    '_build'
 ]
 
 
@@ -66,7 +66,11 @@ exclude_patterns = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'pydata_sphinx_theme'
+
+html_theme_options = {
+    'github_url': 'https://github.com/MTES-MCT/metadata-postgresql'
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
