@@ -88,7 +88,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../mechanism/mechanism.html">
-  Usage
+  Mécanique interne
  </a>
 </li>
 
@@ -318,7 +318,7 @@
 <h1>Modèles de formulaire<a class="headerlink" href="#modeles-de-formulaire" title="Lien permanent vers ce titre">¶</a></h1>
 <p>Les modèles de formulaire sont définis par l’administrateur de données pour tous les utilisateurs de son service. Etant partagés, ils sont stockés sur le serveur PostgreSQL, dans un ensemble de tables créées par l’extension PostgreSQL <em>PlumePg</em>.</p>
 <p>Leur usage est totalement optionnel.</p>
-<p><span class="xref myst">Principe</span> • <span class="xref myst">Gestion dans PostgreSQL</span> • <span class="xref myst">Import des modèles par Plume</span> • <span class="xref myst">Avec les modèles stockés en local</span></p>
+<p><a class="reference internal" href="#principe"><span class="std std-doc">Principe</span></a> • <a class="reference internal" href="#gestion-dans-postgresql"><span class="std std-doc">Gestion dans PostgreSQL</span></a> • <a class="reference internal" href="#import-des-modeles-par-plume"><span class="std std-doc">Import des modèles par Plume</span></a> • <a class="reference internal" href="#avec-les-modeles-stockes-en-local"><span class="std std-doc">Avec les modèles stockés en local</span></a></p>
 <section id="principe">
 <h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span><a class="footnote-reference brackets" href="#metadonnees-masquees" id="id1">1</a>. Souvent, c’est trop. Selon l’organisation du service, selon la table considérée, selon le profil de l’utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.</p>
@@ -570,7 +570,7 @@
 </pre></div>
 </div>
 <p>Si <code class="docutils literal notranslate"><span class="pre">plume_pg_exists</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, <em>PlumePg</em> est bien disponible. On pourra donc poursuivre avec les opérations suivantes.</p>
-<p>Dans le cas contraire, on se reportera à la partie <span class="xref myst">Avec les modèles stockés en local</span>.</p>
+<p>Dans le cas contraire, on se reportera à la partie <a class="reference internal" href="#avec-les-modeles-stockes-en-local"><span class="std std-doc">Avec les modèles stockés en local</span></a>.</p>
 </section>
 <section id="recuperation-de-la-liste-des-modeles">
 <h3>Récupération de la liste des modèles<a class="headerlink" href="#recuperation-de-la-liste-des-modeles" title="Lien permanent vers ce titre">¶</a></h3>
@@ -674,7 +674,7 @@
 </section>
 <section id="avec-les-modeles-stockes-en-local">
 <h2>Avec les modèles stockés en local<a class="headerlink" href="#avec-les-modeles-stockes-en-local" title="Lien permanent vers ce titre">¶</a></h2>
-<p>Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l’extension PostgreSQL <em>PlumePg</em> n’est pas active sur la base cible (cf. <span class="xref myst">Présence de l’extension <em>PlumePg</em></span> pour le test). Le processus est similaire à celui décrit dans la partie <span class="xref myst">Import des modèles par Plume</span>, si ce n’est que certaines étapes ne sont plus nécessaires.</p>
+<p>Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l’extension PostgreSQL <em>PlumePg</em> n’est pas active sur la base cible (cf. <a class="reference internal" href="#presence-de-l-extension-plumepg"><span class="std std-doc">Présence de l’extension <em>PlumePg</em></span></a> pour le test). Le processus est similaire à celui décrit dans la partie <a class="reference internal" href="#import-des-modeles-par-plume"><span class="std std-doc">Import des modèles par Plume</span></a>, si ce n’est que certaines étapes ne sont plus nécessaires.</p>
 <p>Faute de pouvoir importer les modèles personnalisés par l’administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de <em>PlumePg</em>. Ceux-ci sont stockés dans le fichier <span class="xref myst">templates.json</span>, dont on chargera le contenu en créant un objet de classe <code class="docutils literal notranslate"><span class="pre">plume.pg.template.LocalTemplatesCollection</span></code>. Celui-ci n’étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans <em>PlumePg</em> et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span> <span class="nn">plume.pg.template</span> <span class="kn">import</span> <span class="n">LocalTemplatesCollection</span>
@@ -683,7 +683,7 @@
 
 </pre></div>
 </div>
-<p>Pour connaître l’éventuel modèle à appliquer automatiquement à une table donnée, on procédera comme décrit dans la partie <span class="xref myst">Sélection automatique du modèle</span>. La seule différence est que la variable <code class="docutils literal notranslate"><span class="pre">templates</span></code> ne résulte pas d’une requête générée par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_list_templates</span></code> mais par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_evaluate_local_templates</span></code>.</p>
+<p>Pour connaître l’éventuel modèle à appliquer automatiquement à une table donnée, on procédera comme décrit dans la partie <a class="reference internal" href="#selection-automatique-du-modele"><span class="std std-doc">Sélection automatique du modèle</span></a>. La seule différence est que la variable <code class="docutils literal notranslate"><span class="pre">templates</span></code> ne résulte pas d’une requête générée par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_list_templates</span></code> mais par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_evaluate_local_templates</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -705,7 +705,7 @@
 </pre></div>
 </div>
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue dont on affiche les métadonnées, <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> le nom de son schéma, et <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> le graphe contenant ses métadonnées.</em></p>
-<p>Puisque les modèles sont stockés localement, il n’est pas nécessaire d’envoyer des requêtes pour connaître les catégories de métadonnées et onglets associés (autrement dit, les parties <span class="xref myst">Récupération des catégories associées au modèle retenu</span> et <span class="xref myst">Récupération des onglets associés au modèle retenu</span> n’ont pas d’équivalent ici). On obtiendra directement l’objet <code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code> à fournir en argument au constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> en interrogeant le répertoire des modèles locaux.</p>
+<p>Puisque les modèles sont stockés localement, il n’est pas nécessaire d’envoyer des requêtes pour connaître les catégories de métadonnées et onglets associés (autrement dit, les parties <a class="reference internal" href="#recuperation-des-categories-associees-au-modele-retenu"><span class="std std-doc">Récupération des catégories associées au modèle retenu</span></a> et <a class="reference internal" href="#recuperation-des-onglets-associes-au-modele-retenu"><span class="std std-doc">Récupération des onglets associés au modèle retenu</span></a> n’ont pas d’équivalent ici). On obtiendra directement l’objet <code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code> à fournir en argument au constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> en interrogeant le répertoire des modèles locaux.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">template</span> <span class="o">=</span> <span class="n">templates_collection</span><span class="p">[</span><span class="n">tpl_label</span><span class="p">]</span> <span class="k">if</span> <span class="n">tpl_label</span> <span class="k">else</span> <span class="kc">None</span>
 

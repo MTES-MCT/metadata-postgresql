@@ -88,7 +88,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../mechanism/mechanism.html">
-  Usage
+  Mécanique interne
  </a>
 </li>
 
@@ -330,7 +330,7 @@
                 
   <section id="generation-du-dictionnaire-des-widgets">
 <h1>Génération du dictionnaire des widgets<a class="headerlink" href="#generation-du-dictionnaire-des-widgets" title="Lien permanent vers ce titre">¶</a></h1>
-<p><span class="xref myst">metagraph : le graphe des métadonnées pré-existantes</span> • <span class="xref myst">template : le modèle de formulaire</span> • <span class="xref myst">columns : les descriptifs des champs</span> • <span class="xref myst">data : les métadonnées calculées</span> • <span class="xref myst">mode</span> • <span class="xref myst">translation</span> • <span class="xref myst">langList</span> • <span class="xref myst">language</span> • <span class="xref myst">readHideBlank</span> • <span class="xref myst">editHideUnlisted</span> • <span class="xref myst">readHideUnlisted</span> • <span class="xref myst">editOnlyCurrentLanguage</span> • <span class="xref myst">readOnlyCurrentLanguage</span> • <span class="xref myst">labelLengthLimit</span> • <span class="xref myst">valueLengthLimit</span> • <span class="xref myst">textEditRowSpan</span> • <span class="xref myst">Résultat : un dictionnaire de widgets</span></p>
+<p><a class="reference internal" href="#metagraph-le-graphe-des-metadonnees-pre-existantes"><span class="std std-doc">metagraph : le graphe des métadonnées pré-existantes</span></a> • <a class="reference internal" href="#template-le-modele-de-formulaire"><span class="std std-doc">template : le modèle de formulaire</span></a> • <a class="reference internal" href="#columns-les-descriptifs-des-champs"><span class="std std-doc">columns : les descriptifs des champs</span></a> • <a class="reference internal" href="#data-les-metadonnees-calculees"><span class="std std-doc">data : les métadonnées calculées</span></a> • <a class="reference internal" href="#mode"><span class="std std-doc">mode</span></a> • <a class="reference internal" href="#translation"><span class="std std-doc">translation</span></a> • <a class="reference internal" href="#langlist"><span class="std std-doc">langList</span></a> • <a class="reference internal" href="#language"><span class="std std-doc">language</span></a> • <a class="reference internal" href="#readhideblank"><span class="std std-doc">readHideBlank</span></a> • <a class="reference internal" href="#edithideunlisted"><span class="std std-doc">editHideUnlisted</span></a> • <a class="reference internal" href="#readhideunlisted"><span class="std std-doc">readHideUnlisted</span></a> • <a class="reference internal" href="#editonlycurrentlanguage"><span class="std std-doc">editOnlyCurrentLanguage</span></a> • <a class="reference internal" href="#readonlycurrentlanguage"><span class="std std-doc">readOnlyCurrentLanguage</span></a> • <a class="reference internal" href="#labellengthlimit"><span class="std std-doc">labelLengthLimit</span></a> • <a class="reference internal" href="#valuelengthlimit"><span class="std std-doc">valueLengthLimit</span></a> • <a class="reference internal" href="#texteditrowspan"><span class="std std-doc">textEditRowSpan</span></a> • <a class="reference internal" href="#resultat-un-dictionnaire-de-widgets"><span class="std std-doc">Résultat : un dictionnaire de widgets</span></a></p>
 <p>Lorsqu’un utilisateur demande l’affichage de la fiche de métadonnées d’une table ou vue, le plugin :</p>
 <ol class="arabic simple">
 <li><p>rassemble dans un « dictionnaire de widgets », c’est-à-dire un objet de classe <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;</p></li>
@@ -351,22 +351,22 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></p></td>
 <td><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph</span></code></span></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
-<td><p><span class="xref myst">→ graphe des métadonnées</span></p></td>
+<td><p><a class="reference internal" href="#metagraph-le-graphe-des-metadonnees-pre-existantes"><span class="std std-doc">→ graphe des métadonnées</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">template</span></code></p></td>
 <td><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code></span></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
-<td><p><span class="xref myst">→ modèle de formulaire</span></p></td>
+<td><p><a class="reference internal" href="#template-le-modele-de-formulaire"><span class="std std-doc">→ modèle de formulaire</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
-<td><p><span class="xref myst">→ métadonnées calculées</span></p></td>
+<td><p><a class="reference internal" href="#data-les-metadonnees-calculees"><span class="std std-doc">→ métadonnées calculées</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">columns</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">list(tuple(str,</span> <span class="pre">str))</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
-<td><p><span class="xref myst">→ descriptifs des champs</span></p></td>
+<td><p><a class="reference internal" href="#columns-les-descriptifs-des-champs"><span class="std std-doc">→ descriptifs des champs</span></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -383,62 +383,62 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mode</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'edit'</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#mode"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">translation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#translation"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">langList</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">list(str)</span></code> ou <code class="docutils literal notranslate"><span class="pre">tuple(str)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">('fr',</span> <span class="pre">'en')</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#langlist"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">language</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'fr'</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#language"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">readHideBlank</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#readhideblank"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">editHideUnlisted</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#edithideunlisted"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">readHideUnlisted</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#readhideunlisted"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">editOnlyCurrentLanguage</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#editonlycurrentlanguage"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#readonlycurrentlanguage"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">labelLengthLimit</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">25</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#labellengthlimit"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">valueLengthLimit</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">65</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#valuelengthlimit"><span class="std std-doc">→</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">textEditRowSpan</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">6</span></code></p></td>
-<td><p><span class="xref myst">→</span></p></td>
+<td><p><a class="reference internal" href="#texteditrowspan"><span class="std std-doc">→</span></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -558,46 +558,46 @@
 </section>
 <section id="readhideunlisted">
 <h3>readHideUnlisted<a class="headerlink" href="#readhideunlisted" title="Lien permanent vers ce titre">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">readHideUnlisted</span></code> est un booléen indiquant si, en mode lecture, il faut masquer les catégories qui n’apparaissent pas dans le modèle de formulaire à utiliser (cf. <span class="xref myst">template</span>) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n’est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">readHideUnlisted</span></code> est un booléen indiquant si, en mode lecture, il faut masquer les catégories qui n’apparaissent pas dans le modèle de formulaire à utiliser (cf. <a class="reference internal" href="#template-le-modele-de-formulaire"><span class="std std-doc">template</span></a>) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n’est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.</p>
 <p>Le comportement par défaut du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> est de masquer les champs en question.</p>
 </section>
 <section id="edithideunlisted">
 <h3>editHideUnlisted<a class="headerlink" href="#edithideunlisted" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">editHideUnlisted</span></code> est le pendant de <code class="docutils literal notranslate"><span class="pre">readHideUnlisted</span></code> pour le mode édition.</p>
-<p>C’est un booléen indiquant si, en mode édition, il faut masquer les catégories qui n’apparaissent pas dans le modèle de formulaire à utiliser (cf. <span class="xref myst">template</span>) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n’est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.</p>
+<p>C’est un booléen indiquant si, en mode édition, il faut masquer les catégories qui n’apparaissent pas dans le modèle de formulaire à utiliser (cf. <a class="reference internal" href="#template-le-modele-de-formulaire"><span class="std std-doc">template</span></a>) mais pour lesquelles des métadonnées ont été saisies antérieurement. Si aucun modèle n’est défini, les catégories concernées sont celles qui ne sont pas répertoriées dans le schéma des catégories communes.</p>
 <p>Le comportement par défaut du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code> est d’afficher les champs en question.</p>
 </section>
 <section id="language">
 <h3>language<a class="headerlink" href="#language" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">language</span></code> est une chaîne de caractères indiquant la langue principale de saisie des métadonnées. Ce paramètre peut être modifié via un widget dans l’interface fixe du plugin - cf. <span class="xref myst">Actions générales</span>.</p>
-<p>Si <code class="docutils literal notranslate"><span class="pre">language</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré que les métadonnées sont saisies dans la première langue de la liste des langues autorisées, <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span>. Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
+<p>Si <code class="docutils literal notranslate"><span class="pre">language</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré que les métadonnées sont saisies dans la première langue de la liste des langues autorisées, <a class="reference internal" href="#langlist"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span></a>. Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
 <p>La documentation invitera l’utilisateur à privilégier les codes de langues sur deux caractères, comme attendu en RDF. Référence : <a class="reference external" href="https://www.iso.org/iso-639-language-codes.html">ISO 639</a>.</p>
 <p>La langue principale de saisie des métadonnées a trois usages :</p>
 <ul class="simple">
-<li><p>les métadonnées identifiées comme traduisibles (par exemple le libellé du jeu de données et son descriptif sont traduisibles, mais pas sa date de création ni son identifiant) sont représentées en RDF avec une information sur leur langue<a class="footnote-reference brackets" href="#rdflangstring" id="id2">2</a>. Cette langue sera toujours la langue principale de saisie des métadonnées, sauf lorsque le mode traduction (cf. <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">translation</span></code></span>) est actif.</p></li>
+<li><p>les métadonnées identifiées comme traduisibles (par exemple le libellé du jeu de données et son descriptif sont traduisibles, mais pas sa date de création ni son identifiant) sont représentées en RDF avec une information sur leur langue<a class="footnote-reference brackets" href="#rdflangstring" id="id2">2</a>. Cette langue sera toujours la langue principale de saisie des métadonnées, sauf lorsque le mode traduction (cf. <a class="reference internal" href="#translation"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">translation</span></code></span></a>) est actif.</p></li>
 <li><p>en mode lecture, lorsque des valeurs dans plusieurs langues sont disponibles pour une catégorie de métadonnées, le comportement par défaut de Plume est d’afficher uniquement les valeurs dans la langue principale (à défaut il tente les langues de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span> dans l’ordre et, à défaut, choisit une langue disponible au hasard). Il est possible d’inhiber ce comportement avec le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code></span>, ou de forcer le même comportement en mode édition avec <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">editOnlyCurrentLanguage</span></code></span> ;</p></li>
 <li><p>lorsqu’une métadonnées prend ses valeurs dans un thésaurus, lesdites valeurs sont représentées en RDF sous la forme d’URI. Ces URI sont référencés dans le fichier <span class="xref myst">vocabulary.ttl</span>, qui fournit pour chacun d’entre eux des libellés lisibles par un être humain. Il existe toujours un libellé en français et souvent en anglais. La langue principale de saisie détermine la langue des libellés affichés dans l’interface. À défaut de libellé dans la langue principale, les langues de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span> sont testées dans l’ordre et, à défaut, une traduction est choisie au hasard.</p></li>
 </ul>
 </section>
 <section id="translation">
 <h3>translation<a class="headerlink" href="#translation" title="Lien permanent vers ce titre">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">translation</span></code> est un booléen indiquant si le mode traduction est actif. Comme <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">language</span></code></span>, ce paramètre peut être modifié via un widget dans l’interface fixe du plugin - cf. <span class="xref myst">Actions générales</span>. Il est ignoré quand le dictionnaire n’est pas généré en mode édition (<span class="xref myst"><code class="docutils literal notranslate"><span class="pre">mode</span></code></span> valant <code class="docutils literal notranslate"><span class="pre">'edit'</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">translation</span></code> est un booléen indiquant si le mode traduction est actif. Comme <a class="reference internal" href="#language"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">language</span></code></span></a>, ce paramètre peut être modifié via un widget dans l’interface fixe du plugin - cf. <span class="xref myst">Actions générales</span>. Il est ignoré quand le dictionnaire n’est pas généré en mode édition (<a class="reference internal" href="#mode"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">mode</span></code></span></a> valant <code class="docutils literal notranslate"><span class="pre">'edit'</span></code>).</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">translation</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré que le mode traduction n’est pas actif. Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
 </section>
 <section id="langlist">
 <h3>langList<a class="headerlink" href="#langlist" title="Lien permanent vers ce titre">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">langList</span></code> est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">language</span></code></span>. Il alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l’interface, permet de choisir la langue principale <span class="xref myst">Actions générales</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">langList</span></code> est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par <a class="reference internal" href="#language"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">language</span></code></span></a>. Il alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l’interface, permet de choisir la langue principale <span class="xref myst">Actions générales</span>.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">langList</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, celui-ci utilisera le tuple <code class="docutils literal notranslate"><span class="pre">('fr',</span> <span class="pre">'en')</span></code> (français et anglais). Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d’assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l’interface.</p>
 </section>
 <section id="readonlycurrentlanguage">
 <h3>readOnlyCurrentLanguage<a class="headerlink" href="#readonlycurrentlanguage" title="Lien permanent vers ce titre">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> est un booléen qui indique si, en mode lecture, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. <span class="xref myst">language</span> pour plus de détails.</p>
+<p><code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> est un booléen qui indique si, en mode lecture, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. <a class="reference internal" href="#language"><span class="std std-doc">language</span></a> pour plus de détails.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré comme valant <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </section>
 <section id="editonlycurrentlanguage">
 <h3>editOnlyCurrentLanguage<a class="headerlink" href="#editonlycurrentlanguage" title="Lien permanent vers ce titre">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">editOnlyCurrentLanguage</span></code> est le pendant de <code class="docutils literal notranslate"><span class="pre">readOnlyCurrentLanguage</span></code> pour le mode édition.</p>
-<p>C’est un booléen indiquant si, en mode édition <strong>et lorsque le mode traduction n’est pas actif</strong>, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. <span class="xref myst">language</span> pour plus de détails.</p>
+<p>C’est un booléen indiquant si, en mode édition <strong>et lorsque le mode traduction n’est pas actif</strong>, seules les métadonnées saisies dans la langue principale doivent être affichées. Cf. <a class="reference internal" href="#language"><span class="std std-doc">language</span></a> pour plus de détails.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">editdOnlyCurrentLanguage</span></code> n’apparaît pas dans les arguments du constructeur de <code class="docutils literal notranslate"><span class="pre">WidgetsDict</span></code>, il sera considéré comme valant <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </section>
 <section id="labellengthlimit">
@@ -637,7 +637,7 @@
 <dd><p>Ce sujet concerne surtout les paramètres booléens. Pour les autres, les valeurs par défaut sont appliquées dans le corps de la fonction d’initialisation et non déclarées dans les paramètres. Ainsi, elles s’appliqueront aussi dans le cas où une valeur <code class="docutils literal notranslate"><span class="pre">None</span></code> est explicitement fournie en argument.</p>
 </dd>
 <dt class="label" id="rdflangstring"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>Ces catégories « traduisibles » sont celles dont le type est <code class="docutils literal notranslate"><span class="pre">rdf:langstring</span></code>. Ce type est spécificié par le schéma des métadonnées communes, <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span>, ou par le <span class="xref myst">modèle de formulaire</span> dans le cas d’une catégorie locale.</p>
+<dd><p>Ces catégories « traduisibles » sont celles dont le type est <code class="docutils literal notranslate"><span class="pre">rdf:langstring</span></code>. Ce type est spécificié par le schéma des métadonnées communes, <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span>, ou par le <a class="reference internal" href="#template-le-modele-de-formulaire"><span class="std std-doc">modèle de formulaire</span></a> dans le cas d’une catégorie locale.</p>
 </dd>
 </dl>
 </section>

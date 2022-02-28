@@ -88,7 +88,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../mechanism/mechanism.html">
-  Usage
+  Mécanique interne
  </a>
 </li>
 
@@ -273,7 +273,7 @@
                 
   <section id="metadonnees-calculees">
 <h1>Métadonnées calculées<a class="headerlink" href="#metadonnees-calculees" title="Lien permanent vers ce titre">¶</a></h1>
-<p><span class="xref myst">Principe</span> • <span class="xref myst">Processus de calcul</span> • <span class="xref myst">Implémentation du calcul automatique</span> • <span class="xref myst">Implémentation du calcul à déclenchement manuel</span></p>
+<p><a class="reference internal" href="#principe"><span class="std std-doc">Principe</span></a> • <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">Processus de calcul</span></a> • <a class="reference internal" href="#implementation-du-calcul-automatique"><span class="std std-doc">Implémentation du calcul automatique</span></a> • <a class="reference internal" href="#implementation-du-calcul-a-declenchement-manuel"><span class="std std-doc">Implémentation du calcul à déclenchement manuel</span></a></p>
 <p>Dans la suite, on considère :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <span class="xref myst">Génération du dictionnaire des widgets</span>), objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>.</p></li>
@@ -361,7 +361,7 @@
 </section>
 <section id="modification-des-widgets-en-consequence">
 <h3>Modification des widgets en conséquence<a class="headerlink" href="#modification-des-widgets-en-consequence" title="Lien permanent vers ce titre">¶</a></h3>
-<p>Quand le calcul est réalisé alors que le formulaire est déjà intégralement constitué (cas du <span class="xref myst">calcul à déclenchement manuel</span>), les modifications effectuées par <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> sur le dictionnaire et son arbre de clés doivent être répercutées sur les widgets eux-mêmes.</p>
+<p>Quand le calcul est réalisé alors que le formulaire est déjà intégralement constitué (cas du <a class="reference internal" href="#implementation-du-calcul-a-declenchement-manuel"><span class="std std-doc">calcul à déclenchement manuel</span></a>), les modifications effectuées par <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> sur le dictionnaire et son arbre de clés doivent être répercutées sur les widgets eux-mêmes.</p>
 <p>Pour ce faire, <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> renvoie, comme toutes les méthodes d’interaction avec le formulaire, un dictionnaire contenant toutes les informations de matérialisation. Cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span> pour plus de détails.</p>
 </section>
 </section>
@@ -374,7 +374,7 @@
 
 </pre></div>
 </div>
-<p>On suivra les étapes du <span class="xref myst">processus de calcul</span> décrit précédemment avec deux points d’attention :</p>
+<p>On suivra les étapes du <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">processus de calcul</span></a> décrit précédemment avec deux points d’attention :</p>
 <ul class="simple">
 <li><p>Lorsque la clé correspond à un widget de saisie, le calcul doit avoir lieu <strong>avant la saisie de la valeur dans le widget</strong>.</p></li>
 <li><p>Le dictionnaire renvoyé par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.computing_update</span></code> <strong>ne doit pas être considéré</strong>, car les modifications résultant du calcul concernent des clés qui seront traitées ensuite.</p></li>
@@ -382,7 +382,7 @@
 </section>
 <section id="implementation-du-calcul-a-declenchement-manuel">
 <h2>Implémentation du calcul à déclenchement manuel<a class="headerlink" href="#implementation-du-calcul-a-declenchement-manuel" title="Lien permanent vers ce titre">¶</a></h2>
-<p>Lorsque l’utilisateur clique sur un bouton de calcul du formulaire, toutes les étapes du <span class="xref myst">processus de calcul</span> sont à réaliser.</p>
+<p>Lorsque l’utilisateur clique sur un bouton de calcul du formulaire, toutes les étapes du <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">processus de calcul</span></a> sont à réaliser.</p>
 <p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour les modalités de création de ces boutons.</p>
 </section>
 </section>

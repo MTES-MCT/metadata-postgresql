@@ -88,7 +88,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../mechanism/mechanism.html">
-  Usage
+  Mécanique interne
  </a>
 </li>
 
@@ -349,7 +349,7 @@
 <li><p>un nouveau fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume_pg.control</span></code></span> remplaçant le précédent. Ce fichier change en principe peu d’une version à l’autre, si ce n’est pour la <em>version par défaut</em> qu’il spécifie, qui sera toujours la version la plus récente.</p></li>
 <li><p>un fichier <code class="docutils literal notranslate"><span class="pre">plume_pg--y.y.y.sql</span></code> contenant le code complet de la version <code class="docutils literal notranslate"><span class="pre">y.y.y</span></code> de l’extension <em>PlumePg</em>. Celui-ci n’est pas utilisé lors de la mise à jour, mais pourra servir par la suite, notamment en cas de sauvegarde/restauration de la base, ou pour l’installation de <em>PlumePg</em> sur une nouvelle base.</p></li>
 </ul>
-<p>Cf. <span class="xref myst">Installation</span> pour l’emplacement du répertoire où ces fichiers doivent être copiés.</p>
+<p>Cf. <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> pour l’emplacement du répertoire où ces fichiers doivent être copiés.</p>
 <p>Sur toutes les bases où <em>PlumePg</em> était installée, on exécutera ensuite :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;y.y.y&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -372,7 +372,7 @@
 <h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Pour que les données de <em>PlumePg</em> soient préservées lors de la restauration, notamment les <span class="xref myst">modèles de formulaire</span>, il est essentiel de <strong>ne pas chercher à réinstaller manuellement l’extension sur la base de restauration</strong>. Tout est automatique. On veillera seulement à ce que :</p>
 <ul class="simple">
-<li><p>les fichiers d’installation de <em>PlumePg</em> soient disponibles dans le répertoire des extensions du serveur de restauration (cf. <span class="xref myst">Installation</span> pour l’emplacement de ce répertoire) ;</p></li>
+<li><p>les fichiers d’installation de <em>PlumePg</em> soient disponibles dans le répertoire des extensions du serveur de restauration (cf. <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> pour l’emplacement de ce répertoire) ;</p></li>
 <li><p>la version par défaut de <em>PlumePg</em> sur le serveur de restauration soit identique à celle qui est effectivement installée sur la base à sauvegarder.</p></li>
 </ul>
 <p>Cette <em>version par défaut</em> apparaît dans le fichier <code class="docutils literal notranslate"><span class="pre">plume_pg.control</span></code> et peut également être consultée avec la requête (à exécuter sur n’importe quelle base du serveur de restauration) :</p>

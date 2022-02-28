@@ -88,7 +88,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../mechanism/mechanism.html">
-  Usage
+  Mécanique interne
  </a>
 </li>
 
@@ -574,8 +574,8 @@
 </ul>
 <p>La valeur associée à <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> dans le dictionnaire de widgets, c’est-à-dire <code class="docutils literal notranslate"><span class="pre">widgetsdict[widgetkey]</span></code>, est un objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.internaldict.InternalDict</span></code></span> dit « dictionnaire interne ».</p>
 <p>Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.</p>
-<p><strong>Widget principal</strong> : <span class="xref myst">Type</span> • <span class="xref myst">Stockage</span> • <span class="xref myst">Placement dans la grille</span> • <span class="xref myst">Widget masqué ?</span> • <span class="xref myst">Paramètres spécifiques aux widgets QGroupBox</span> • <span class="xref myst">Paramètres spécifiques aux widgets QToolButton</span> • <span class="xref myst">Paramètres spécifiques aux widgets de saisie</span> • <span class="xref myst">Paramètres spécifiques aux widgets QLineEdit et QTextEdit</span> • <span class="xref myst">Paramètres spécifiques aux widgets QComboBox</span> • <span class="xref myst">Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit</span> • <span class="xref myst">Paramètres spécifiques aux widgets QLabel</span></p>
-<p><strong>Widgets annexes</strong> : <span class="xref myst">Widget annexe : grille</span> • <span class="xref myst">Widget annexe : étiquette</span> • <span class="xref myst">Widget annexe : bouton de sélection de la source</span> • <span class="xref myst">Widget annexe : bouton de sélection de la langue</span> • <span class="xref myst">Widget annexe : bouton de sélection de l’unité</span> • <span class="xref myst">Widget annexe : bouton d’aide à la saisie des géométries</span> • <span class="xref myst">Widget annexe : bouton « moins »</span> • <span class="xref myst">Widget annexe : bouton de calcul</span></p>
+<p><strong>Widget principal</strong> : <a class="reference internal" href="#type"><span class="std std-doc">Type</span></a> • <a class="reference internal" href="#stockage"><span class="std std-doc">Stockage</span></a> • <a class="reference internal" href="#placement-dans-la-grille"><span class="std std-doc">Placement dans la grille</span></a> • <a class="reference internal" href="#widget-masque"><span class="std std-doc">Widget masqué ?</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qgroupbox"><span class="std std-doc">Paramètres spécifiques aux widgets QGroupBox</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qtoolbutton"><span class="std std-doc">Paramètres spécifiques aux widgets QToolButton</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-de-saisie"><span class="std std-doc">Paramètres spécifiques aux widgets de saisie</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit"><span class="std std-doc">Paramètres spécifiques aux widgets QLineEdit et QTextEdit</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qcombobox"><span class="std std-doc">Paramètres spécifiques aux widgets QComboBox</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit"><span class="std std-doc">Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qlabel"><span class="std std-doc">Paramètres spécifiques aux widgets QLabel</span></a></p>
+<p><strong>Widgets annexes</strong> : <a class="reference internal" href="#widget-annexe-grille"><span class="std std-doc">Widget annexe : grille</span></a> • <a class="reference internal" href="#widget-annexe-etiquette"><span class="std std-doc">Widget annexe : étiquette</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-source"><span class="std std-doc">Widget annexe : bouton de sélection de la source</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-langue"><span class="std std-doc">Widget annexe : bouton de sélection de la langue</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-l-unite"><span class="std std-doc">Widget annexe : bouton de sélection de l’unité</span></a> • <a class="reference internal" href="#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries"><span class="std std-doc">Widget annexe : bouton d’aide à la saisie des géométries</span></a> • <a class="reference internal" href="#widget-annexe-bouton-moins"><span class="std std-doc">Widget annexe : bouton « moins »</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-calcul"><span class="std std-doc">Widget annexe : bouton de calcul</span></a></p>
 <p>Le widget principal et les widgets annexes sont totalement indépendants. Ils peuvent être simplement créés les uns à la suite des autres, de la manière suivante :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
     <span class="c1"># commandes de création du widget principal, variables</span>
@@ -648,7 +648,7 @@
 </section>
 <section id="placement-dans-la-grille">
 <h3>Placement dans la grille<a class="headerlink" href="#placement-dans-la-grille" title="Lien permanent vers ce titre">¶</a></h3>
-<p><em>Les informations ci-après ne valent pas pour les onglets (cf. <span class="xref myst">Onglets</span>).</em></p>
+<p><em>Les informations ci-après ne valent pas pour les onglets (cf. <a class="reference internal" href="#onglets"><span class="std std-doc">Onglets</span></a>).</em></p>
 <p>Le nouveau widget doit être placé dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associé à la clé parente, obtenu grâce à la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.parent_grid</span></code>.</p>
 <p>Les paramètres de placement du widget dans la grille - soit les arguments <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code>, <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code> et <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code> de la méthode <code class="docutils literal notranslate"><span class="pre">QGridLayout.addWidget</span></code> - sont donnés par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -659,12 +659,12 @@
 </pre></div>
 </div>
 <p><em><code class="docutils literal notranslate"><span class="pre">main_widget</span></code> est le widget principal qui vient d’être créé. Le second paramètre de <code class="docutils literal notranslate"><span class="pre">widget_placement</span></code> indique que les coordonnées demandées sont celles du widget principal de la clé. La même méthode sera utilisée ensuite pour connaître le placement de ses widgets annexes, avec en second argument le nom du widget annexe considéré.</em></p>
-<p>Les grilles sont elles-mêmes des widgets annexes associés aux clés de groupes. Cf. <span class="xref myst">Widget annexe : grille</span>.</p>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p>Les grilles sont elles-mêmes des widgets annexes associés aux clés de groupes. Cf. <a class="reference internal" href="#widget-annexe-grille"><span class="std std-doc">Widget annexe : grille</span></a>.</p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 <section id="widget-masque">
 <h3>Widget masqué ?<a class="headerlink" href="#widget-masque" title="Lien permanent vers ce titre">¶</a></h3>
-<p>Certains widgets seront à masquer ou afficher selon les actions de l’utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu’une métadonnée peut être saisie au choix sous la forme d’un URI ou d’un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l’utilisateur ne décide pas de changer de source (cf. <span class="xref myst">Widget annexe : bouton de sélection de la source</span>).</p>
+<p>Certains widgets seront à masquer ou afficher selon les actions de l’utilisateur. Ceci concerne par exemple les boutons de traduction, qui devront être masqués si une traduction a déjà été saisie pour chacune des langues autorisées. Autre cas : lorsqu’une métadonnée peut être saisie au choix sous la forme d’un URI ou d’un ensemble de propriétés littérales, les widgets servant pour la forme non sélectionnée sont masqués tant que l’utilisateur ne décide pas de changer de source (cf. <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-source"><span class="std std-doc">Widget annexe : bouton de sélection de la source</span></a>).</p>
 <p>Concrètement, le widget principal <strong>et tous les widgets annexes</strong> d’un enregistrement devront être masqués dès lors que la clé <code class="docutils literal notranslate"><span class="pre">'hidden'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;hidden&#39;</span><span class="p">]:</span>
@@ -685,7 +685,7 @@
 
 </pre></div>
 </div>
-<p>Ils correspondent aux onglets du formulaire. Contrairement à tous les autres widgets, ils n’auront donc pas vocation à être placés dans un <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> (la partie <span class="xref myst">Placement dans la grille</span> ne s’applique pas à eux), mais devront être insérés en tant que pages dans le <code class="docutils literal notranslate"><span class="pre">QTabWidget</span></code> qui portera le formulaire. Le <code class="docutils literal notranslate"><span class="pre">QTabWidget</span></code> en question ne fait pas l’objet d’un enregistrement du dictionnaire et devra avoir été créé au préalable.</p>
+<p>Ils correspondent aux onglets du formulaire. Contrairement à tous les autres widgets, ils n’auront donc pas vocation à être placés dans un <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> (la partie <a class="reference internal" href="#placement-dans-la-grille"><span class="std std-doc">Placement dans la grille</span></a> ne s’applique pas à eux), mais devront être insérés en tant que pages dans le <code class="docutils literal notranslate"><span class="pre">QTabWidget</span></code> qui portera le formulaire. Le <code class="docutils literal notranslate"><span class="pre">QTabWidget</span></code> en question ne fait pas l’objet d’un enregistrement du dictionnaire et devra avoir été créé au préalable.</p>
 <p>Les libellés des onglets sont, comme pour toutes les étiquettes, fournis par la clé <code class="docutils literal notranslate"><span class="pre">'label'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
@@ -697,7 +697,7 @@
 <h4>Autres groupes<a class="headerlink" href="#autres-groupes" title="Lien permanent vers ce titre">¶</a></h4>
 <p>Pour tous les autres groupes, c’est-à-dire ceux pour lesquels la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'object'</span></code> n’est pas <code class="docutils literal notranslate"><span class="pre">'tab'</span></code>.</p>
 <ul class="simple">
-<li><p>La partie <span class="xref myst">Placement dans la grille</span> s’applique.</p></li>
+<li><p>La partie <a class="reference internal" href="#placement-dans-la-grille"><span class="std std-doc">Placement dans la grille</span></a> s’applique.</p></li>
 <li><p>L”<strong>étiquette</strong> - paramètre <code class="docutils literal notranslate"><span class="pre">title</span></code> du <code class="docutils literal notranslate"><span class="pre">QGroupBox</span></code> - est fournie par la clé <code class="docutils literal notranslate"><span class="pre">'label'</span></code> du dictionnaire interne.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -962,7 +962,7 @@
 </pre></div>
 </div>
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">grid</span></code> est l’objet <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> qui vient d’être créé.</em></p>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 <section id="widget-annexe-etiquette">
 <h2>Widget annexe : étiquette<a class="headerlink" href="#widget-annexe-etiquette" title="Lien permanent vers ce titre">¶</a></h2>
@@ -1014,7 +1014,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 <section id="widget-annexe-bouton-de-selection-de-la-source">
@@ -1101,7 +1101,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 <section id="widget-annexe-bouton-de-selection-de-la-langue">
@@ -1187,7 +1187,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 <section id="widget-annexe-bouton-de-selection-de-l-unite">
@@ -1274,7 +1274,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 <section id="widget-annexe-bouton-d-aide-a-la-saisie-des-geometries">
@@ -1366,7 +1366,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 <section id="widget-annexe-bouton-moins">
@@ -1459,7 +1459,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 <section id="widget-annexe-bouton-de-calcul">
@@ -1517,7 +1517,7 @@
 
 </pre></div>
 </div>
-<p><span class="xref myst">↑ haut de page</span></p>
+<p><a class="reference internal" href="#creation-d-un-nouveau-widget"><span class="std std-doc">↑ haut de page</span></a></p>
 </section>
 </section>
 </section>

@@ -36,7 +36,7 @@
     <link rel="shortcut icon" href="../_static/plume.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
-    <link rel="prev" title="Usage" href="mechanism.html" />
+    <link rel="prev" title="Mécanique interne" href="mechanism.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="fr">
     
@@ -87,7 +87,7 @@
 
 <li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="mechanism.html">
-  Usage
+  Mécanique interne
  </a>
 </li>
 
@@ -286,7 +286,7 @@
   <section id="aide-memoire">
 <h1>Aide-mémoire<a class="headerlink" href="#aide-memoire" title="Lien permanent vers ce titre">¶</a></h1>
 <p>Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.</p>
-<p><span class="xref myst">Exécution des tests</span> • <span class="xref myst">Générer un ZIP propre du plugin</span> • <span class="xref myst">Modifier les catégories de métadonnées communes</span> • <span class="xref myst">Ajouter une option de configuration des catégories de métadonnées</span> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span></p>
+<p><a class="reference internal" href="#execution-des-tests"><span class="std std-doc">Exécution des tests</span></a> • <a class="reference internal" href="#generer-un-zip-propre-du-plugin"><span class="std std-doc">Générer un ZIP propre du plugin</span></a> • <a class="reference internal" href="#modifier-les-categories-de-metadonnees-communes"><span class="std std-doc">Modifier les catégories de métadonnées communes</span></a> • <a class="reference internal" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees"><span class="std std-doc">Ajouter une option de configuration des catégories de métadonnées</span></a> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span></p>
 <section id="execution-des-tests">
 <h2>Exécution des tests<a class="headerlink" href="#execution-des-tests" title="Lien permanent vers ce titre">¶</a></h2>
 <p>On lancera le script <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/admin/tests.py</span></code></span> qui compile les tests de tous les modules de Plume.</p>
@@ -409,7 +409,7 @@
 <h3>Extension <em>PlumePg</em><a class="headerlink" href="#extension-plumepg" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Le plus souvent, une nouvelle option de configuration se manifestera dans <em>PlumePg</em> par un champ supplémentaire dans les tables <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> (ainsi que ses partitions <code class="docutils literal notranslate"><span class="pre">z_plume.meta_shared_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_local_categorie</span></code>) et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code>, ainsi que la vue <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories_full</span></code>. Autant que possible, le nom du champ sera identique au nom python de l’option de configuration correspondante (le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code> évoqué dans le paragraphe précédent), soit <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code> pour l’exemple considéré.</p>
 <p>Si le champ n’admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à <code class="docutils literal notranslate"><span class="pre">z_plume.meta_datatype</span></code>.</p>
-<p>Pour l’actualisation des informations relatives aux métadonnées communes incluses dans <em>PlumePg</em>, on se reportera à <span class="xref myst">Mise à jour des catégories communes dans les scripts de <em>PlumePg</em></span>. Il faudra néanmoins commencer par modifier les fonctions <code class="docutils literal notranslate"><span class="pre">_table_from_shape</span></code> et <code class="docutils literal notranslate"><span class="pre">query_from_shape</span></code> pour qu’elles prennent en compte le nouveau champ.</p>
+<p>Pour l’actualisation des informations relatives aux métadonnées communes incluses dans <em>PlumePg</em>, on se reportera à <a class="reference internal" href="#mise-a-jour-des-categories-communes-dans-les-scripts-de-plumepg"><span class="std std-doc">Mise à jour des catégories communes dans les scripts de <em>PlumePg</em></span></a>. Il faudra néanmoins commencer par modifier les fonctions <code class="docutils literal notranslate"><span class="pre">_table_from_shape</span></code> et <code class="docutils literal notranslate"><span class="pre">query_from_shape</span></code> pour qu’elles prennent en compte le nouveau champ.</p>
 <p>Dans <code class="docutils literal notranslate"><span class="pre">_table_from_shape</span></code>, il s’agira d’ajouter le champ au tuple <code class="docutils literal notranslate"><span class="pre">category</span></code>. Dans le cas général, <code class="docutils literal notranslate"><span class="pre">prop_dict.get('option')</span></code> suffit (où <code class="docutils literal notranslate"><span class="pre">option</span></code> est le nom python de l’option de configuration). S’il est nécessaire de caster la valeur, on utilisera la même syntaxe que pour <code class="docutils literal notranslate"><span class="pre">geo_tool</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
         <span class="o">...</span>
@@ -460,7 +460,7 @@
 
 </pre></div>
 </div>
-<p>La clé de <code class="docutils literal notranslate"><span class="pre">config</span></code> doit impérativement porter le nom <span class="xref myst">déclaré dans <code class="docutils literal notranslate"><span class="pre">read_shape_property</span></code></span> (premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code>).</p>
+<p>La clé de <code class="docutils literal notranslate"><span class="pre">config</span></code> doit impérativement porter le nom <a class="reference internal" href="#deserialisation-du-schema-des-metadonnees-communes"><span class="std std-doc">déclaré dans <code class="docutils literal notranslate"><span class="pre">read_shape_property</span></code></span></a> (premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code>).</p>
 <p><em>NB. D’une manière générale, la validation et les conversions sont plutôt du ressort du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey</span></code></span>, le constructeur de <code class="docutils literal notranslate"><span class="pre">TemplateDict</span></code> tend donc à reprendre telles quelles les informations issues du modèle. Il peut cependant être nécessaire de retraiter les valeurs à ce niveau dans le cas particulier d’une option pour laquelle les valeurs issues du modèle ne remplacent pas simplement les valeurs du schéma des métadonnées communes, mais nécessitent d’être comparées (cf. paragraphe suivant), ce qui supposent que les formats soient comparables.</em></p>
 </section>
 <section id="croisement-du-schema-et-du-modele">
@@ -475,7 +475,7 @@
 <section id="arbre-des-cles">
 <h3>Arbre des clés<a class="headerlink" href="#arbre-des-cles" title="Lien permanent vers ce titre">¶</a></h3>
 <p>L’arbre des clés est la colonne vertébrale de Plume. Il porte la structure des formulaires de saisie, garantie leur cohérence et permet leur évolution dynamique selon les commandes de l’utilisateur.</p>
-<p>Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code> et autres classes de clés héritant de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></span>) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour <span class="xref myst">la clé de <code class="docutils literal notranslate"><span class="pre">config</span></code></span> et/ou <span class="xref myst">le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code></span>, soit <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code> dans le cas des fonctionnalités d’aide à la saisie des géométries.</p>
+<p>Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code> et autres classes de clés héritant de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></span>) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour <a class="reference internal" href="#deserialisation-des-modeles-de-formulaire"><span class="std std-doc">la clé de <code class="docutils literal notranslate"><span class="pre">config</span></code></span></a> et/ou <a class="reference internal" href="#deserialisation-du-schema-des-metadonnees-communes"><span class="std std-doc">le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code></span></a>, soit <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code> dans le cas des fonctionnalités d’aide à la saisie des géométries.</p>
 <p>Ce que font les clés de cette information peut être très variable. Pour <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code>, il s’agissait de définir un nouveau bouton annexe et ses caractéristiques, et cela a nécessité les opérations suivantes.</p>
 <p>Classe <code class="docutils literal notranslate"><span class="pre">WidgetKey</span></code> :</p>
 <ul class="simple">
@@ -551,7 +551,7 @@
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">précédent</p>
-            <p class="prev-next-title">Usage</p>
+            <p class="prev-next-title">Mécanique interne</p>
         </div>
     </a>
 </div>
