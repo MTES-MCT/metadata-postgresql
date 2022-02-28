@@ -1,0 +1,701 @@
+
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Actions générales &#8212; Documentation Plume 0.3.0-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Modèles de formulaire" href="modeles_de_formulaire.html" />
+    <link rel="prev" title="Métadonnées calculées" href="metadonnees_calculees.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="actions-generales">
+<h1>Actions générales<a class="headerlink" href="#actions-generales" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Sont décrites ici les actions que l’utilisateur peut réaliser dans la partie fixe de l’interface du plugin. Pour les interactions de l’utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>.</p>
+<p>Barre d’outils de Plume : <span class="xref myst">Mode lecture, mode édition</span> • <span class="xref myst">Sauvegarde</span> • <span class="xref myst">Activation du mode traduction</span> • <span class="xref myst">Choix de la trame de formulaire</span> • <span class="xref myst">Langue principale des métadonnées</span> • <span class="xref myst">Import de métadonnées depuis un fichier</span> • <span class="xref myst">Export des métadonnées dans un fichier</span> • <span class="xref myst">Réinitialisation</span> • <span class="xref myst">Copier / coller d’une fiche complète</span></p>
+<p>Détail des fonctionnalités d’import : <span class="xref myst">Import de métadonnées depuis un fichier</span> • <span class="xref myst">Import de métadonnées depuis un service CSW</span></p>
+<p>Autres actions : <span class="xref myst">Sélection de la table à documenter</span></p>
+<section id="mode-lecture-mode-edition">
+<h2>Mode lecture, mode édition<a class="headerlink" href="#mode-lecture-mode-edition" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="effet-sur-le-formulaire">
+<h3>Effet sur le formulaire<a class="headerlink" href="#effet-sur-le-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Une fiche de métadonnées peut être ouverte :</p>
+<ul class="simple">
+<li><p>soit en <strong>mode lecture</strong>, qui permet de consulter les métadonnées mais pas de les modifier ;</p></li>
+<li><p>soit en <strong>mode édition</strong>, qui permet de modifier les métadonnées.</p></li>
+</ul>
+<p>Du point de vue de l’utilisateur, le formulaire paraîtra très différent dans les deux modes. En mode lecture, tous les widgets de saisie sont désactivés (la <span class="xref myst">clé <code class="docutils literal notranslate"><span class="pre">'read</span> <span class="pre">only'</span></code></span> du dictionnaire de widgets vaut toujours <code class="docutils literal notranslate"><span class="pre">True</span></code>). De plus, là où le mode édition affiche naturellement les champs sans valeur pour que l’utilisateur puisse les remplir, le mode lecture les masque<a class="footnote-reference brackets" href="#readhideblank" id="id1">1</a>.</p>
+<p>Concrètement, le passage d’un mode à l’autre implique simplement de <span class="xref myst">regénérer le dictionnaire de widgets</span> en spécifiant le mode grâce au paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">mode</span></code></span> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode='edit'</span></code> en mode édition ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode='read'</span></code> en mode lecture.</p></li>
+</ul>
+<p>Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>, selon les mêmes modalités quel que soit le mode.</p>
+</section>
+<section id="autres-effets">
+<h3>Autres effets<a class="headerlink" href="#autres-effets" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Certaines des actions générales décrites dans la suite ne devraient être disponibles qu’en mode édition :</p>
+<ul class="simple">
+<li><p>la sauvegarde des modifications ;</p></li>
+<li><p>l’activation ou la désactivation du mode traduction ;</p></li>
+<li><p>l’import de métadonnées depuis un fichier ;</p></li>
+<li><p>la réinitialisation de la fiche.</p></li>
+</ul>
+</section>
+<section id="caracteristiques-du-bouton">
+<h3>Caractéristiques du bouton<a class="headerlink" href="#caracteristiques-du-bouton" title="Lien permanent vers ce titre">¶</a></h3>
+<p><strong>Initialement, toutes les fiches s’ouvrent en mode lecture</strong>. L’utilisateur doit cliquer sur le bouton d’activation du mode édition pour basculer dans ce dernier.</p>
+<p>Le bouton utilise l’icône <span class="xref myst">read.svg</span> :
+<img alt="read.svg" src="plume/icons/general/read.svg" />.</p>
+<p>L’idéal serait que le texte d’aide s’adapte au mode courant :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode actif</p></th>
+<th class="head"><p>Condition</p></th>
+<th class="head"><p>Infobulle</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>lecture</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">mode</span> <span class="pre">==</span> <span class="pre">'read'</span></code></p></td>
+<td><p><em>Basculer en mode édition</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>édition</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">mode</span> <span class="pre">==</span> <span class="pre">'edit'</span></code></p></td>
+<td><p><em>Quitter le mode édition</em></p></td>
+</tr>
+</tbody>
+</table>
+<p>Le bouton devra être inactif quand l’utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n’est pas membre du rôle propriétaire de l’objet.</p>
+<p>Pour s’en assurer, on utilisera la requête définie par la fonction <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_is_relation_owner</span></code></span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+	<span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+	
+		<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+			<span class="n">queries</span><span class="o">.</span><span class="n">query_is_relation_owner</span><span class="p">(),</span>
+			<span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
+			<span class="p">)</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+		<span class="n">is_owner</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">res</span> <span class="k">else</span> <span class="kc">False</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> est la chaîne de connexion à la base de données PostgreSQL, <code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue dont on affiche les métadonnées, <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> est le nom de son schéma.</em></p>
+</section>
+</section>
+<section id="sauvegarde">
+<h2>Sauvegarde<a class="headerlink" href="#sauvegarde" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="effets">
+<h3>Effets<a class="headerlink" href="#effets" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le <strong>bouton de sauvegarde</strong> permet à l’utilisateur d’enregistrer sur le serveur PostgreSQL les métadonnées qu’il a saisies.</p>
+<p>En arrière plan, cela suppose plusieurs opérations successives.</p>
+<ol class="arabic simple">
+<li><p>Enregistrer dans le dictionnaire de widgets les valeurs contenues dans les widgets de saisie. On utilisera pour ce faire la méthode <code class="docutils literal notranslate"><span class="pre">update_value</span></code> de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p></li>
+</ol>
+<p>Cette opération n’a de sens que pour les widgets de saisie non masqués, néanmoins la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.RootKey.build_metagraph</span></code><a class="footnote-reference brackets" href="#appel-roootkey-build-metagraph" id="id2">2</a>, qui assure ensuite la reconstruction du graphe de métadonnées mis à jour, se charge d’éliminer les clés masquées. On pourra donc simplement boucler sur toutes les clés du dictionnaire dont le widget principal est supposé contenir une valeur (pas les boutons ni les groupes, donc) et exécuter :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">widgetsdict</span><span class="o">.</span><span class="n">update_value</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span> <span class="n">widget_value</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est une clé du dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> correspondant à un widget de saisie et <code class="docutils literal notranslate"><span class="pre">widget_value</span></code> la valeur récupérée dans ce widget.</em></p>
+<ol class="arabic simple" start="2">
+<li><p>Générer un graphe de métadonnées à partir du dictionnaire de widgets actualisé.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">new_metagraph</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">build_metagraph</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Créer une version actualisée du descriptif PostgreSQL de l’objet.</p></li>
+</ol>
+<p>Le descriptif, objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.description.PgDescription</span></code></span> nommé ci-après <code class="docutils literal notranslate"><span class="pre">pg_description</span></code>, est mis à jour via sa propriété <code class="docutils literal notranslate"><span class="pre">metagraph</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">pg_description</span><span class="o">.</span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">new_metagraph</span>
+
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.</p></li>
+</ol>
+<p>On utilisera la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_table_comment</span></code> du module <span class="xref myst">plume.pg.queries</span>. À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec <code class="docutils literal notranslate"><span class="pre">query_get_relation_kind</span></code>.</p>
+<p>La requête doit être appliquée à <code class="docutils literal notranslate"><span class="pre">str(pg_description)</span></code>, qui renvoie une représentation sous forme de chaîne de caractères de <code class="docutils literal notranslate"><span class="pre">pg_description</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">pg_queries</span><span class="o">.</span><span class="n">query_get_relation_kind</span><span class="p">(</span>
+                <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        
+        <span class="n">query</span> <span class="o">=</span> <span class="n">pg_queries</span><span class="o">.</span><span class="n">query_update_table_comment</span><span class="p">(</span>
+            <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">relation_kind</span><span class="o">=</span><span class="n">kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pg_description</span><span class="p">),))</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> est la chaîne de connexion à la base de données PostgreSQL, <code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue dont on édite les métadonnées, <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> est le nom de son schéma.</em></p>
+<ol class="arabic simple" start="5">
+<li><p>Mettre à jour les descriptifs des champs.</p></li>
+</ol>
+<p>La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_columns_comments</span></code> du module <span class="xref myst">plume.pg.queries</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+	<span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+	
+        <span class="n">query</span> <span class="o">=</span> <span class="n">pg_queries</span><span class="o">.</span><span class="n">query_update_columns_comments</span><span class="p">(</span>
+            <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">widgetsdict</span>
+            <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> est la chaîne de connexion à la base de données PostgreSQL, <code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue dont on édite les métadonnées, <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> est le nom de son schéma.</em></p>
+<p><em>La condition de non nullité sur <code class="docutils literal notranslate"><span class="pre">query</span></code> est nécessaire, car la fonction pourrait renvoyer <code class="docutils literal notranslate"><span class="pre">None</span></code> si le dictionnaire ne contenait aucun descriptif de champs. Ceci peut arriver :</em></p>
+<ul class="simple">
+<li><p><em>si le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">columns</span></code></span> n’a pas été fourni en argument lors de la création du dictionnaire de widgets ;</em></p></li>
+<li><p><em>ou si cette liste était vide, parce que la table n’a aucun champ.</em></p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id3" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Comme susmentionné, ce bouton ne doit être actif qu’en <span class="xref myst">mode édition</span>.</p>
+<p>Il utilise l’icône <span class="xref myst">save.svg</span> :
+<img alt="save.svg" src="plume/icons/general/save.svg" /></p>
+<p>Texte d’aide : <em>Enregistrer les métadonnées</em>.</p>
+</section>
+</section>
+<section id="activation-du-mode-traduction">
+<h2>Activation du mode traduction<a class="headerlink" href="#activation-du-mode-traduction" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="id4">
+<h3>Effets<a class="headerlink" href="#id4" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Lorsque le mode traduction est actif, l’utilisateur a la possibilité de définir la langue des valeurs qu’il saisit (sinon c’est le paramètre utilisateur <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">language</span></code></span> qui est systématiquement utilisé). Il pourra également saisir des traductions pour des catégories qui n’acceptent qu’une valeur par langue, comme le libellé de la donnée.</p>
+<p>Concrètement, l’activation ou la désactivation du mode traduction impliquera de <span class="xref myst">regénérer le dictionnaire de widgets</span> avec la valeur adéquate pour le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">translation</span></code></span> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">translation=True</span></code> si le mode traduction est actif ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">translation=False</span></code> s’il ne l’est pas.</p></li>
+</ul>
+<p>Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>, selon les mêmes modalités que le mode traduction soit actif ou non.</p>
+</section>
+<section id="id5">
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id5" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce bouton ne doit être actif qu’en <span class="xref myst">mode édition</span>.</p>
+<p>Il utilise l’icône <span class="xref myst">translation.svg</span> :
+<img alt="translation.svg" src="plume/icons/general/translation.svg" /></p>
+<p>L’idéal serait que le texte d’aide s’adapte selon que le mode traduction est actif ou non :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode traduction activé</p></th>
+<th class="head"><p>Condition</p></th>
+<th class="head"><p>Infobulle</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>non</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">not</span> <span class="pre">translation</span></code></p></td>
+<td><p><em>Activer les fonctions de traduction</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>oui</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">translation</span></code></p></td>
+<td><p><em>Désactiver les fonctions de traduction</em></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="initialisation">
+<h3>Initialisation<a class="headerlink" href="#initialisation" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce paramètre pourra être systématiquement sauvegardé dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, et initialisé à l’activation du mode édition à partir de la valeur récupérée dans les fichiers de configuration (ou <code class="docutils literal notranslate"><span class="pre">False</span></code> à défaut).</p>
+</section>
+</section>
+<section id="choix-de-la-trame-de-formulaire">
+<h2>Choix de la trame de formulaire<a class="headerlink" href="#choix-de-la-trame-de-formulaire" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="id6">
+<h3>Effets<a class="headerlink" href="#id6" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le modèle de formulaire détermine les catégories de métadonnées affichées dans le formulaire et la manière dont elles sont présentées - cf. <span class="xref myst">Modèles de formulaire</span>.</p>
+<p>Dès lors que des modèles sont disponibles, c’est-à-dire que <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">templateLabels</span></code></span> n’est pas <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une liste vide, l’utilisateur doit avoir la possibilité de basculer à tout moment d’un modèle pré-défini à l’autre ou de ne pas appliquer de modèle du tout.</p>
+<p>Lorsque l’utilisateur change de modèle, il faut <span class="xref myst">regénérer le dictionnaire de widgets</span> avec la valeur adaptée pour le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">template</span></code></span> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> quand l’utilisateur a choisi l’option <code class="docutils literal notranslate"><span class="pre">'Aucun'</span></code> ;</p></li>
+<li><p>l’objet <code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code> généré à partir du nom du modèle sélectionné (<code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>) en suivant la méthode décrite dans <span class="xref myst">Modèles de formulaire</span> (étape <span class="xref myst">Récupération des catégories associées au modèle retenu</span> et suivantes).</p></li>
+</ul>
+<p>Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>, selon les mêmes modalités quel que soit le modèle.</p>
+</section>
+<section id="caracteristiques-du-widget">
+<h3>Caractéristiques du widget<a class="headerlink" href="#caracteristiques-du-widget" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le widget de sélection du modèle est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> similaire aux <span class="xref myst">boutons de sélection de la source</span> qui apparaissent dans le formulaire.</p>
+<p>Les valeurs disponibles dans son menu sont les noms de modèles listés par <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">templateLabels</span></code></span>, auxquelles ont ajoutera un item <code class="docutils literal notranslate"><span class="pre">'Aucun'</span></code> (ou autre nom similaire).</p>
+<p>Si <code class="docutils literal notranslate"><span class="pre">templateLabels</span></code> est <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une liste vide, on pourra désactiver le widget, voire ne pas l’afficher. <code class="docutils literal notranslate"><span class="pre">template</span></code> vaudra simplement toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>D’autant que de besoin, le bouton utilise l’icône <span class="xref myst">template.svg</span> :
+<img alt="template.svg" src="plume/icons/general/template.svg" /></p>
+<p>Texte d’aide : <em>Choisir un modèle de formulaire</em>.</p>
+</section>
+<section id="id7">
+<h3>Initialisation<a class="headerlink" href="#id7" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La démarche à suivre à l’ouverture d’une fiche de métadonnées est décrite dans <span class="xref myst">Modèles de formulaire</span>. On commencera par récupérer les paramètres <code class="docutils literal notranslate"><span class="pre">preferedTemplate</span></code> et <code class="docutils literal notranslate"><span class="pre">enforcePreferedTemplate</span></code> dans les fichiers de configuration, si tant est qu’ils soient présents.</p>
+</section>
+</section>
+<section id="langue-principale-des-metadonnees">
+<h2>Langue principale des métadonnées<a class="headerlink" href="#langue-principale-des-metadonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="id8">
+<h3>Effets<a class="headerlink" href="#id8" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La langue principale des métadonnées correspond au paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">language</span></code></span> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p>
+<p>Hors mode traduction, toutes les métadonnées saisies qui ne soient pas des dates, nombres, URL ou autres types indépendants de la langue seront présumées être dans cette langue. C’est aussi dans cette langue que seront affichées les valeurs issues des thésaurus (autant que possible, car les thésaurus ne contiennent pas de traductions pour toutes les langues imaginables).</p>
+<p>Lorsque l’utilisateur modifie la langue principale, il est nécessaire de <span class="xref myst">regénérer le dictionnaire de widgets</span> avec la nouvelle valeur de <code class="docutils literal notranslate"><span class="pre">language</span></code>. Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>, selon les mêmes modalités quel que soit la langue.</p>
+</section>
+<section id="id9">
+<h3>Caractéristiques du widget<a class="headerlink" href="#id9" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le widget de choix de la langue principale est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> similaire aux <span class="xref myst">boutons de sélection de la langue</span> affichés dans le formulaire. Les valeurs disponibles dans le menu sont les langues listées par le paramètre utilisateur <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span>.</p>
+<p>Texte d’aide : <em>Modifier la langue principale des métadonnées</em>.</p>
+</section>
+<section id="id10">
+<h3>Initialisation<a class="headerlink" href="#id10" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le paramètre <code class="docutils literal notranslate"><span class="pre">language</span></code> pourra être systématiquement sauvegardé dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, et initialisé à l’activation du plugin à partir de la valeur récupérée dans les fichiers de configuration.</p>
+<p>Un point important est que <code class="docutils literal notranslate"><span class="pre">language</span></code> doit toujours être l’une des langues listées par le paramètre utilisateur <code class="docutils literal notranslate"><span class="pre">langList</span></code>. Si ce n’est pas le cas avec les valeurs issues des fichiers de configuration, on pourra soit ajouter <code class="docutils literal notranslate"><span class="pre">language</span></code> à <code class="docutils literal notranslate"><span class="pre">langList</span></code>, soit choisir pour <code class="docutils literal notranslate"><span class="pre">language</span></code> une des valeurs effectives de <code class="docutils literal notranslate"><span class="pre">langList</span></code> (sous réserve que ce dernier soit renseigné). Et si aucun de ces paramètres n’est défini, on pourra utiliser les mêmes valeurs par défaut que celles du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>, à savoir <code class="docutils literal notranslate"><span class="pre">'fr'</span></code> pour <code class="docutils literal notranslate"><span class="pre">language</span></code> et <code class="docutils literal notranslate"><span class="pre">['fr',</span> <span class="pre">'en']</span></code> pour <code class="docutils literal notranslate"><span class="pre">langList</span></code>.</p>
+</section>
+</section>
+<section id="import-de-metadonnees">
+<h2>Import de métadonnées<a class="headerlink" href="#import-de-metadonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Le bouton d’import de métadonnées depuis des sources externes n’est actif qu’en mode édition.</p>
+<p>Il s’agit d’un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> dont le menu contient à ce jour deux items, correspondant aux deux sources possibles :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">fichier</span></code> ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">service</span> <span class="pre">CSW</span></code>.</p></li>
+</ul>
+<p>Leur effet est décrit ci-après.</p>
+<p>Le bouton utilise l’icône <span class="xref myst">import.svg</span> :
+<img alt="import.svg" src="plume/icons/general/import.svg" /></p>
+<p>Texte d’aide : <em>Importer les métadonnées depuis un fichier ou un service CSW</em>.</p>
+</section>
+<section id="import-de-metadonnees-depuis-un-fichier">
+<h2>Import de métadonnées depuis un fichier<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées depuis un fichier. L’import ne fonctionnera que si les métadonnées sont encodées dans un format RDF et il ne donnera un résulat concluant que si elles respectent les profils DCAT-AP, GeoDCAT-AP, ou le profil GeoDCAT-AP étendu mis en oeuvre par le plugin.</p>
+<p>L’import est réalisé via la fonction <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_file</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.metagraph</span> <span class="kn">import</span> <span class="n">metagraph_from_file</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">metagraph</span> <span class="o">=</span> <span class="n">metagraph_from_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">old_metagraph</span><span class="o">=</span><span class="n">old_metagraph</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="c1"># notamment si ce n&#39;était pas du RDF </span>
+    <span class="o">...</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">filepath</span></code> est le chemin complet du fichier source, <code class="docutils literal notranslate"><span class="pre">format</span></code> est le format RDF des métadonnées qu’il contient. Ces deux paramètres sont à spécifier par l’utilisateur. <code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table, soit le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> actuel, dont la fonction récupère l’identifiant.</em></p>
+<p>Si le format n’est pas déterminé, la fonction est généralement capable de le déduire de l’extension du fichier (sinon elle renverra une erreur). Il serait donc admissible de ne pas le demander et se contenter de :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.metagraph</span> <span class="kn">import</span> <span class="n">metagraph_from_file</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">metagraph</span> <span class="o">=</span> <span class="n">metagraph_from_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">old_metagraph</span><span class="o">=</span><span class="n">old_metagraph</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="c1"># notamment si ce n&#39;était pas du RDF ou</span>
+    <span class="c1"># si le format n&#39;a pas pu être deviné</span>
+    <span class="o">...</span>
+
+</pre></div>
+</div>
+<p>Il faudra ensuite <span class="xref myst">regénérer le dictionnaire de widgets</span> avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>.</p>
+<p>La liste des formats autorisés est obtenue ainsi :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">import_formats</span>
+
+<span class="n">importFormats</span> <span class="o">=</span> <span class="n">import_formats</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Pour avoir la liste des extensions correspondant à un format donné :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">import_extensions_from_format</span>
+
+<span class="n">extensions</span> <span class="o">=</span> <span class="n">import_extensions_from_format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>Pour avoir la liste de toutes les extensions reconnues :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">import_extensions_from_format</span>
+
+<span class="n">extensions</span> <span class="o">=</span> <span class="n">import_extensions_from_format</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="import-de-metadonnees-depuis-un-service-csw">
+<h2>Import de métadonnées depuis un service CSW<a class="headerlink" href="#import-de-metadonnees-depuis-un-service-csw" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées par requête sur le service CSW d’un catalogue INSPIRE, comme GéoIDE ou une plateforme régionale.</p>
+<p>Son activation par l’utilisateur ouvre une boîte de dialogue dans laquelle s’effectue le paramétrage de l’import.</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Paramètre</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Mode de saisie</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">url_csw</span></code></p></td>
+<td><p>URL de base du service CSW</p></td>
+<td><p>Ligne de saisie libre. Il serait intéressant de permettre à l’utilisateur de mémoriser les URL qu’il saisit dans un paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">urlCsw</span></code></span> sauvegardé dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, afin qu’il n’ait pas à les réécrire à chaque import. La fenêtre de paramétrage lui permettrait de choisir entre l’une des URL de sa liste ou une nouvelle URL ajoutée manuellement, qu’il pourra ensuite enregistrer s’il le souhaite.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">file_identifier</span></code></p></td>
+<td><p>Identifiant de la fiche de métadonnées</p></td>
+<td><p>Ligne de saisie libre.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">preserve</span></code></p></td>
+<td><p>Mode de fusion du graphe de métadonnées actuel avec les métadonnées importées</p></td>
+<td><p>Trois boutons radio correspondant aux trois modes d’import possibles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">save_configuration</span></code></p></td>
+<td><p>La configuration d’import (URL du CSW et identifiant de la fiche) doit-elle être mémorisée dans les métadonnées ?</p></td>
+<td><p>Case à cocher. Cochée par défaut. Libellé : <em>Enregistrer la configuration dans les métadonnées</em>. Cette option vise à faciliter d’éventuelles mises à jour ultérieures à partir de la même source distante.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Les modes d’import sont les suivants :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Valeur de <code class="docutils literal notranslate"><span class="pre">preserve</span></code></p></th>
+<th class="head"><p>Etiquette du bouton radio</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'always'</span></code></p></td>
+<td><p>Compléter avec les métadonnées distantes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'if</span> <span class="pre">blank'</span></code></p></td>
+<td><p>Mettre à jour avec les métadonnées distantes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'never'</span></code></p></td>
+<td><p>Remplacer par les métadonnées distantes</p></td>
+</tr>
+</tbody>
+</table>
+<p>Par défaut, l’option <code class="docutils literal notranslate"><span class="pre">Compléter</span> <span class="pre">avec</span> <span class="pre">les</span> <span class="pre">métadonnées</span> <span class="pre">distantes</span></code> est sélectionnée.</p>
+<p>À l’ouverture de la fiche de métadonnées, on tentera de de récupérer les valeurs des paramètres <code class="docutils literal notranslate"><span class="pre">url_csw</span></code> et <code class="docutils literal notranslate"><span class="pre">file_identifier</span></code> dans le graphe de métadonnées :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">url_csw</span><span class="p">,</span> <span class="n">file_identifier</span> <span class="o">=</span> <span class="n">old_metagraph</span><span class="o">.</span><span class="n">linked_record</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table, c’est-à-dire le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> courant au moment de l’ouverture de la fenêtre d’import.</em></p>
+<p>En pratique cette propriété <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph.linked_record</span></code> interroge le graphe à la recherche des valeurs éventuelles de <code class="docutils literal notranslate"><span class="pre">snum:linkedRecord</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code> et
+<code class="docutils literal notranslate"><span class="pre">snum:linkedRecord</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code>. Ce sont des métadonnées comme les autres, qui peuvent tout à fait être éditées via le formulaire de Plume.</p>
+<p>Une fois son paramétrage réalisé, l’utilise clique sur un bouton <code class="docutils literal notranslate"><span class="pre">Import</span></code>, ce qui lance une procédure en cinq temps :</p>
+<ol class="arabic simple">
+<li><p>Création de la requête, avec <code class="docutils literal notranslate"><span class="pre">plume.iso.csw.getrecordbyid_request</span></code>.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.iso.csw</span> <span class="kn">import</span> <span class="n">getrecordbyid_request</span>
+
+<span class="n">request</span> <span class="o">=</span> <span class="n">getrecordbyid_request</span><span class="p">(</span><span class="n">url_csw</span><span class="p">,</span> <span class="n">file_identifier</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Envoi de la requête au CSW, par exemple avec <code class="docutils literal notranslate"><span class="pre">qgis.core.QgsNetworkContentFetcher</span></code>.</p></li>
+<li><p>Génération du nouveau graphe de métadonnées.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.metagraph</span> <span class="kn">import</span> <span class="n">metagraph_from_iso</span>
+
+<span class="n">metagraph</span> <span class="o">=</span> <span class="n">metagraph_from_iso</span><span class="p">(</span><span class="n">raw_xml</span><span class="p">,</span> <span class="n">old_metagraph</span><span class="o">=</span><span class="n">old_metagraph</span><span class="p">,</span> <span class="n">preserve</span><span class="o">=</span><span class="n">preserve</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table, c’est-à-dire le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> courant au moment de l’ouverture de la fenêtre d’import.<code class="docutils literal notranslate"><span class="pre">raw_xml</span></code> est la réponse du CSW, sous forme de chaîne de caractères.</em></p>
+<p>Les métadonnées ISO 19115/19139 importées sont restructurées selon les catégories de métadonnées communes de Plume. Pour l’heure, ce n’est pas exhaustif. Seules les informations suivantes sont récupérées :</p>
+<ul class="simple">
+<li><p>libellé ;</p></li>
+<li><p>description ;</p></li>
+<li><p>référentiel(s) de coordonnées ;</p></li>
+<li><p>date de création ;</p></li>
+<li><p>date de dernière modification ;</p></li>
+<li><p>date de publication ;</p></li>
+<li><p>mots clés libres ;</p></li>
+<li><p>thème INSPIRE ;</p></li>
+<li><p>catégorie thématique ISO 19115 ;</p></li>
+<li><p>généalogie ;</p></li>
+<li><p>organisations responsables, avec leur rôle, leur nom, leur numéro de téléphone, leur adresse mél, leur site internet.</p></li>
+</ul>
+<p>Il est également possible que, même pour les catégories susmentionnées, une partie des métadonnées de certains catalogues ne soient pas reconnues. Tous les catalogues n’ont pas interprété les standard ISO de la même façon et la même information peut avoir un emplacement différent selon les cas. À ce stade, les tests réalisés ont porté sur des fiches de métadonnées issues de GéoIDE, d’un catalogue Prodige et d’un catalogue Géosource.</p>
+<ol class="arabic simple" start="4">
+<li><p>Mémorisation éventuelle de la configuration d’import</p></li>
+</ol>
+<p>Si l’utilisateur n’a pas décoché la case à cocher <code class="docutils literal notranslate"><span class="pre">save_configuration</span></code>, on utilise la propriété <code class="docutils literal notranslate"><span class="pre">linked_record</span></code> pour mémoriser <code class="docutils literal notranslate"><span class="pre">url_csw</span></code> et <code class="docutils literal notranslate"><span class="pre">file_identifier</span></code> dans le nouveau graphe de métadonnées.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">if</span> <span class="n">save_configuration</span><span class="p">:</span>
+    <span class="n">metagraph</span><span class="o">.</span><span class="n">linked_record</span> <span class="o">=</span> <span class="n">url_csw</span><span class="p">,</span> <span class="n">file_identifier</span>
+
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Comme toujours, il faudra ensuite <span class="xref myst">regénérer le dictionnaire de widgets</span> avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>.</p></li>
+</ol>
+</section>
+<section id="export-des-metadonnees-dans-un-fichier">
+<h2>Export des métadonnées dans un fichier<a class="headerlink" href="#export-des-metadonnees-dans-un-fichier" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="id11">
+<h3>Effets<a class="headerlink" href="#id11" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Cette fonctionnalité permet d’exporter une sérialisation RDF de <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> dans un fichier.</p>
+<p>Elle fait appel à la méthode <code class="docutils literal notranslate"><span class="pre">export</span></code> de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">metagraph</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="o">...</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">metagraph</span></code> est le graphe des métadonnées (cf. <span class="xref myst">Génération du dictionnaire des widgets</span>), <code class="docutils literal notranslate"><span class="pre">filepath</span></code> est le chemin complet du fichier de destination, <code class="docutils literal notranslate"><span class="pre">format</span></code> est le format RDF d’export. Les deux derniers paramètres sont à spécifier par l’utilisateur.</em></p>
+<p>Le contrôle d’erreur n’est pas absolument essentiel ici, car les graphes de métadonnées de Plume sont très simples et présumés compatibles avec les fonctions d’export de RDFLib. Néanmoins l’expérience a montré que certains formats réagissaient mal aux URI basés sur des URN, par exemple. On préférera donc être prudent. Un échec à l’export ne mérite pas un plantage du plugin.</p>
+<p>C’est bien <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> qui est exporté et non le contenu (potentiellement non sauvegardé) du formulaire.</p>
+</section>
+<section id="id12">
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id12" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce bouton utilise l’icône <span class="xref myst">export.svg</span> :
+<img alt="import.svg" src="plume/icons/general/export.svg" /></p>
+<p>Texte d’aide : <em>Exporter les métadonnées dans un fichier</em>.</p>
+<p>Une implémentation possible serait d’utiliser un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> avec un menu listant les formats autorisés. Ceux-ci varient selon le contenu de <code class="docutils literal notranslate"><span class="pre">metagraph</span></code>. Pour obtenir la liste, on utilisera la propriété <code class="docutils literal notranslate"><span class="pre">available_formats</span></code> du graphe de métadonnées :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">exportFormats</span> <span class="o">=</span> <span class="n">metagraph</span><span class="o">.</span><span class="n">available_formats</span>
+
+</pre></div>
+</div>
+<p>Pour connaître l’extension associée par défaut à un format :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">export_extension_from_format</span>
+
+<span class="n">extension</span> <span class="o">=</span> <span class="n">export_extension_from_format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reinitialisation">
+<h2>Réinitialisation<a class="headerlink" href="#reinitialisation" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="id13">
+<h3>Effets<a class="headerlink" href="#id13" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par un graphe vide.</p>
+<p>On utilisera la commande suivante :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.metagraph</span> <span class="kn">import</span> <span class="n">copy_metagraph</span>
+
+<span class="n">metagraph</span> <span class="o">=</span> <span class="n">copy_metagraph</span><span class="p">(</span><span class="n">old_metagraph</span><span class="o">=</span><span class="n">old_metagraph</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table, soit le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> actuel, dont la fonction conserve l’identifiant.</em></p>
+<p>Il faudra ensuite <span class="xref myst">regénérer le dictionnaire de widgets</span> avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Le formulaire de saisie/consultation peut ensuite être <span class="xref myst">recréé à partir du nouveau dictionnaire</span>.</p>
+</section>
+<section id="id14">
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id14" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce bouton ne doit être actif qu’en mode édition.</p>
+<p>Il utilise l’icône <span class="xref myst">empty.svg</span> :
+<img alt="empty.svg" src="plume/icons/general/empty.svg" /></p>
+<p>Texte d’aide : <em>Vider la fiche de métadonnées</em>.</p>
+</section>
+</section>
+<section id="copier-coller-d-une-fiche-complete">
+<h2>Copier / coller d’une fiche complète<a class="headerlink" href="#copier-coller-d-une-fiche-complete" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="id15">
+<h3>Effets<a class="headerlink" href="#id15" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Cette fonctionnalité permet à l’utilisateur de copier l’ensemble des métadonnées renseignées pour une table A vers une autre table B.</p>
+<p>Concrètement :</p>
+<ul class="simple">
+<li><p>l’action <em>Copier</em> (sur la table A) mémorise le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> de la table A ;</p></li>
+<li><p>l’action <em>Coller</em> (sur la table B) régénère le dictionnaire de widgets en utilisant le graphe de mémorisé comme argument <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>, puis <span class="xref myst">re-construit le formulaire</span> en conséquence.</p></li>
+</ul>
+<p>Plus précisément, l’argument <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> à fournir au constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> pour la table B est obtenu via :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.metagraph</span> <span class="kn">import</span> <span class="n">copy_metagraph</span>
+
+<span class="n">metagraph</span> <span class="o">=</span> <span class="n">copy_metagraph</span><span class="p">(</span><span class="n">src_metagraph</span><span class="p">,</span> <span class="n">old_metagraph</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table B, soit son <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> actuel, dont la fonction conserve l’identifiant. <code class="docutils literal notranslate"><span class="pre">src_metagraph</span></code> est le graphe mémorisé de la table A.</em></p>
+</section>
+<section id="caracteristiques-des-boutons">
+<h3>Caractéristiques des boutons<a class="headerlink" href="#caracteristiques-des-boutons" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le bouton <em>Copier</em> est actif quel que soit le mode.</p>
+<p>Icône : <img alt="copy_all.svg" src="plume/icons/general/copy_all.svg" /></p>
+<p>Texte d’aide : <em>Copier la fiche de métadonnées</em>.</p>
+<p>Le bouton <em>Coller</em> n’est actif qu’en mode édition et si un graphe a été préalablement mémorisé.</p>
+<p>Icône : <img alt="paste_all.svg" src="plume/icons/general/paste_all.svg" /></p>
+<p>Texte d’aide : <em>Coller la fiche de métadonnées mémorisée</em>.</p>
+</section>
+</section>
+<section id="selection-de-la-table-a-documenter">
+<h2>Sélection de la table à documenter<a class="headerlink" href="#selection-de-la-table-a-documenter" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Au contraire de toutes les actions précédemment décrites, la sélection de la table ou vue dont l’utilisateur souhaite éditer les métadonnées se fait hors de l’interface du plugin, dans le panneau explorateur, le panneau des couches ou encore le panneau d’AsgardMenu.</p>
+<section id="si-aucun-objet-n-est-selectionne">
+<h3>Si aucun objet n’est sélectionné<a class="headerlink" href="#si-aucun-objet-n-est-selectionne" title="Lien permanent vers ce titre">¶</a></h3>
+<p>… il n’y a évidemment pas de métadonnées à afficher.</p>
+<p>En principe, cette situation ne devrait se produire qu’à l’ouverture du plugin, lorsque l’utilisateur n’a pas préalablement cliqué sur une table ou vue dans l’un des panneaux pour la sélectionner.</p>
+<p>Dans ce cas, on lui montre une interface vide, avec uniquement la barre de menus.</p>
+<p>Les seuls boutons actifs sont alors :</p>
+<ul class="simple">
+<li><p>le bouton de choix du modèle ;</p></li>
+<li><p>le bouton de sélection de la langue principale ;</p></li>
+<li><p>le bouton de configuration de l’interface ;</p></li>
+<li><p>le bouton d’aide.</p></li>
+</ul>
+</section>
+<section id="quand-l-utilisateur-selectionne-un-nouvel-objet">
+<h3>Quand l’utilisateur sélectionne un nouvel objet<a class="headerlink" href="#quand-l-utilisateur-selectionne-un-nouvel-objet" title="Lien permanent vers ce titre">¶</a></h3>
+<p><strong>Définir une nouvelle table source ne doit être possible qu’en mode lecture.</strong> Il est important que l’utilisateur ne perde pas involontairement toutes ses modifications en cours à cause d’un clic malencontreux dans l’explorateur… Il n’est bien sûr pas question d’empêcher l’utilisateur de sélectionner des objets dans les panneaux de QGIS, mais le plugin ne devra pas le prendre en compte tant que le mode édition reste actif.</p>
+<p>Lorsqu’une nouvelle tables ou vue est sélectionnée, le plugin devra d’abord extraire les métadonnées contenues dans son descriptif PostgreSQL - cf. <span class="xref myst">metagraph : le graphe des métadonnées pré-existantes</span>. Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> ainsi obtenu (cf. <span class="xref myst">Génération du dictionnaire des widgets</span>), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. <span class="xref myst">Création d’un nouveau widget</span>).</p>
+<hr class="footnotes docutils" />
+<dl class="footnote brackets">
+<dt class="label" id="readhideblank"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Sauf si l’utilisateur a explicitement demandé le contraire en mettant à <code class="docutils literal notranslate"><span class="pre">False</span></code> le paramètre utilisateur <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">readHideBlank</span></code></span> - cf. <span class="xref myst">Paramètres utilisateur</span>.</p>
+</dd>
+<dt class="label" id="appel-roootkey-build-metagraph"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Cette méthode est appelée par la méthode <code class="docutils literal notranslate"><span class="pre">build_metagraph</span></code> de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> utilisée à l’étape suivante.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Plume</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="usage.html">Usage</a><ul>
+      <li>Previous: <a href="metadonnees_calculees.html" title="Chapitre précédent">Métadonnées calculées</a></li>
+      <li>Next: <a href="modeles_de_formulaire.html" title="Chapitre suivant">Modèles de formulaire</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, République française.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/actions_generales.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

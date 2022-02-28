@@ -1,1 +1,0 @@
-Résultats des tests d'export.

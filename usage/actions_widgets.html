@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Actions contrôlées par les widgets du formulaire &#8212; Documentation Plume 0.3.0-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Outils d’aide à la saisie des géométries" href="outils_saisie_geometries.html" />
+    <link rel="prev" title="Création d’un nouveau widget" href="creation_widgets.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="actions-controlees-par-les-widgets-du-formulaire">
+<h1>Actions contrôlées par les widgets du formulaire<a class="headerlink" href="#actions-controlees-par-les-widgets-du-formulaire" title="Lien permanent vers ce titre">¶</a></h1>
+<p>En plus d’être généré à la volée, le formulaire de saisie des métadonnées est dynamique. L’utilisateur peut déclencher des actions qui auront pour effet d’afficher ou masquer des widgets, d’en créer, d’en supprimer, de modifier des menus…</p>
+<p>Toutes ces actions impliquent de mettre à jour le dictionnaire de widgets, grâce à des méthodes de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>. Ces méthodes renvoient à leur tour les informations nécessaires pour réaliser les opérations qui s’imposent sur les widgets eux-mêmes, sous la forme d’un dictionnaire contenant toujours les mêmes clés. Les valeurs de ces clés sont des listes qui seront vides ou non selon l’action réalisée. Elles sont décrites <span class="xref myst">ci-après</span>.</p>
+<p><span class="xref myst">Structuration des dictionnaires contenant les informations de matérialisation</span> • <span class="xref myst">Boutons « plus » et boutons de traduction</span> • <span class="xref myst">Boutons « moins »</span> • <span class="xref myst">Boutons de sélection de la source</span> • <span class="xref myst">Boutons de sélection de la langue</span> • <span class="xref myst">Boutons de sélection de l’unité</span> • <span class="xref myst">Boutons de calcul</span></p>
+<p>Pour les interactions de l’utilisateur avec la partie « fixe » de l’interface (sauvegarde, import, export, modification des paramètres utilisateur, etc.), on se reportera à <span class="xref myst">Actions générales</span>.</p>
+<section id="structuration-des-dictionnaires-contenant-les-informations-de-materialisation">
+<h2>Structuration des dictionnaires contenant les informations de matérialisation<a class="headerlink" href="#structuration-des-dictionnaires-contenant-les-informations-de-materialisation" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Les dictionnaires renvoyés par les méthodes d’actions de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span> présentent une structure fixe, indépendante de la méthode exécutée. Ainsi, il est possible (et certainement préférable) de prévoir des mécanismes de matérialisation eux-mêmes indépendants de la nature de l’action initialement effectuée par l’utilisateur.</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clé</p></th>
+<th class="head"><p>Valeur</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'new</span> <span class="pre">keys'</span></code></p></td>
+<td><p>Liste de nouvelles clés du dictionnaire de widgets à matérialiser (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>). Elles sont évidemment fournies dans le bon ordre, d’abord les clés parents puis les clés filles. Pour toutes ces clés, il sera nécessaire de générer les widgets, actions et menus, comme à la création initiale du dictionnaire (cf. <span class="xref myst">Création d’un nouveau widget</span>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">show'</span></code></p></td>
+<td><p>Liste de widgets (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à rendre visibles. Il s’agit a priori de widgets antérieurement masqués, mais ce n’est pas une règle absolue.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">hide'</span></code></p></td>
+<td><p>Liste de widgets (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à masquer. Il s’agit a priori de widgets antérieurement visibles, mais ce n’est pas une règle absolue.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
+<td><p>Liste de widgets (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à détruire, incluant les grilles associées, le cas échéant (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'actions</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
+<td><p>Liste d’actions (<code class="docutils literal notranslate"><span class="pre">QtGui.QAction</span></code>) à détruire.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'menus</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
+<td><p>Liste de menus (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QMenu</span></code>) à détruire.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<td><p>Liste de clés du dictionnaire de widgets (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) pour lesquelles le menu du bouton de sélection de la langue doit être régénéré. Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur la génération des menus de langues.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'switch</span> <span class="pre">source</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<td><p>Liste de clés du dictionnaire de widgets (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) pour lesquelles le menu du bouton de sélection de la source doit être régénéré. Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur la génération des menus de sélection de la source.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'unit</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<td><p>Liste de clés du dictionnaire de widgets (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) pour lesquelles le menu du bouton de sélection de l’unité doit être régénéré. Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur la génération des menus de sélection de l’unité.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'concepts</span> <span class="pre">list</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<td><p>Liste de clés du dictionnaire (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) tel que le widget principal est un widget <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> dont la liste de termes doit être régénérée. Cf. <span class="xref myst">Création d’un nouveau widget</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">move'</span></code></p></td>
+<td><p>Liste de tuples contenant les informations relatives à des widgets dont - parce qu’on a supprimé un widget antérieurement positionné au-dessus d’eux dans la grille - il faut à présent modifier la position.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'value</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<td><p>Liste de clés (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code>) tels que la valeur renseignée dans le widget principal doit être mise à jour selon celle de la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> du dictionnaire interne.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Chaque tuple de la clé <code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">move'</span></code> est composé de six éléments :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[0]</span></code> est la grille (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>) contenant le widget ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[1]</span></code> est le widget (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à déplacer ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[2]</span></code> est le nouveau numéro de ligne du widget dans la grille (paramètre <code class="docutils literal notranslate"><span class="pre">row</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[3]</span></code> est l’indice (inchangé) de la colonne (paramètre <code class="docutils literal notranslate"><span class="pre">column</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[4]</span></code> est le nombre (inchangé) de lignes occupées (paramètre <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[5]</span></code> est le nombre (inchangé) de colonnes occupées (paramètre <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code>).</p></li>
+</ul>
+</section>
+<section id="boutons-plus-et-boutons-de-traduction">
+<h2>Boutons « plus » et boutons de traduction<a class="headerlink" href="#boutons-plus-et-boutons-de-traduction" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Un bouton « plus » est un widget <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui, lorsqu’il est activé par l’utilisateur, permet d’ajouter une valeur dans un groupe de valeurs.</p>
+<p><img alt="gv_bouton_plus" src="docs/source/usage/img/gv_bouton_plus.png" /></p>
+<p>Un bouton de traduction est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui permet d’ajouter une traduction dans un groupe de traductions.</p>
+<p><img alt="gt_bouton_de_traduction" src="docs/source/usage/img/gt_bouton_de_traduction.png" /></p>
+<p>Ces deux types de boutons sont considérés ensemble, car le traitement à prévoir est le même (les méthodes utilisées n’auront pas exactement le même effet, mais c’est transparent).</p>
+<section id="mise-a-jour-du-dictionnaire-des-widgets">
+<h3>Mise à jour du dictionnaire des widgets<a class="headerlink" href="#mise-a-jour-du-dictionnaire-des-widgets" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Lors de l’activation du bouton, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.add</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est la clé du bouton « plus » ou bouton de traduction considéré dans le dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code>.</em></p>
+</section>
+<section id="puis-du-formulaire">
+<h3>… puis du formulaire<a class="headerlink" href="#puis-du-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Les informations renvoyées par <code class="docutils literal notranslate"><span class="pre">add</span></code> permettent de réaliser les opérations subséquentes sur les widgets.</p>
+<p>Le dictionnaire résultant, ici <code class="docutils literal notranslate"><span class="pre">r</span></code>, pourra contenir des informations dans les clés suivantes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'new</span> <span class="pre">keys'</span></code>. Cette liste contient la ou les clés qui viennent d’être ajoutées au dictionnaire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">show'</span></code>. Cette liste, si elle n’est pas vide, contiendra des widgets <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> correspondant à des boutons « moins ». En effet, lorsqu’il ne reste qu’un objet dans un groupe, son bouton « moins » disparaît pour empêcher sa suppression, il doit ensuite être ré-affiché si un nouvel objet est ajouté.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">hide'</span></code>. Cette liste sera toujours vide pour un bouton « plus ». Pour un bouton de traduction, elle pourra contenir le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> du bouton « plus » lui-même si toutes les langues disponibles pour les traductions sont maintenant utilisées, et qu’il n’y a donc plus lieu d’ajouter des traductions supplémentaires.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">move'</span></code>. Cette liste contient systématiquement et exclusivement le bouton plus ou bouton de traduction lui-même.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Cette liste sera toujours vide pour le bouton « plus » d’un groupe de valeur. Dans un groupe de traduction, ajouter une traduction implique que la langue de celle-ci n’est plus disponible et doit donc être supprimée des menus des boutons de sélection de la langue qui accompagnent tous les widgets de saisie du groupe.</p></li>
+</ul>
+</section>
+</section>
+<section id="boutons-moins">
+<h2>Boutons « moins »<a class="headerlink" href="#boutons-moins" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Les boutons « moins » existent à la fois dans les groupes de valeurs et dans les groupes de traduction. Dans les deux cas, ce sont des <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> dont l’activation permet à l’utilisateur de faire disparaître des zones de saisie excédentaires.</p>
+<p><em>NB : une telle opération a pour seul intérêt le confort visuel de l’utilisateur et, lorsqu’il s’agit de retirer une branche complète et pas juste un widget de saisie, de lui éviter de devoir supprimer à la main un potentiellement grand nombre de valeurs. Quand il sera question de sauvegarder le contenu du formulaire, la présence de widgets vides n’aura aucune espèce d’importance.</em></p>
+<p><img alt="gv_bouton_moins" src="docs/source/usage/img/gv_bouton_moins.png" /> <img alt="gt_bouton_moins" src="docs/source/usage/img/gt_bouton_moins.png" /></p>
+<p>Soit <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé du bouton « moins » considéré dans le dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code>.</p>
+<section id="id1">
+<h3>Mise à jour du dictionnaire des widgets<a class="headerlink" href="#id1" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Lors de l’activation du bouton, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.drop</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est la clé du dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> dont le bouton « moins » considéré est l’un des widgets annexes.</em></p>
+</section>
+<section id="id2">
+<h3>… puis du formulaire<a class="headerlink" href="#id2" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Les informations renvoyées par <code class="docutils literal notranslate"><span class="pre">drop</span></code> permettent de réaliser les opérations subséquentes sur les widgets.</p>
+<p>Le dictionnaire résultant, ici <code class="docutils literal notranslate"><span class="pre">r</span></code>, pourra contenir des informations dans les clés suivantes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Cette liste contient les widgets que l’utilisateur a voulu faire disparaître. Ils ne sont dorénavant plus référencés dans le dictionnaire de widgets, ce qui fait qu’il ne sera plus jamais possible d’interagir avec eux. Les supprimer paraît la meilleure chose à faire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'actions</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Le cas échéant, cette liste contient les <code class="docutils literal notranslate"><span class="pre">QAction</span></code> associées aux widgets susmentionnés.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'menus</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Le cas échéant, cette liste contient les <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associées aux widgets susmentionnés.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">show'</span></code>. Cette liste sera toujours vide pour un bouton « moins » dans un groupe de valeur. Dans un groupe de traduction, elle pourra contenir le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> du bouton « plus » du groupe si retirer une traduction fait que toutes les langues ne sont désormais plus utilisées, et qu’il est donc de nouveau possible d’ajouter des traductions supplémentaires.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">hide'</span></code>. Cette liste, si elle n’est pas vide, contiendra des widgets <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> correspondant à des boutons « moins » qui doivent être masqués parce qu’il ne reste plus qu’un élément dans le groupe de valeurs ou de traduction (et qu’il n’est pas permis à l’utilisateur de supprimer le dernier élément d’un groupe).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Cette liste sera toujours vide pour un bouton « moins » dans un groupe de valeur. Dans un groupe de traduction, supprimer une traduction implique que la langue de celle-ci (sous réserve qu’elle ait été autorisée au départ) est de nouveau disponible et doit donc être rajoutée aux menus des boutons de sélection de la langue qui accompagnent tous les widgets de saisie du groupe.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">move'</span></code>. Cette liste contient tous les widgets placés dans la même grille que l’objet supprimé et positionnés en dessous de celui-ci, incluant le bouton « plus », qu’il s’agit de remonter dans la grille pour occuper l’espace laissé libre.</p></li>
+</ul>
+</section>
+</section>
+<section id="boutons-de-selection-de-la-source">
+<h2>Boutons de sélection de la source<a class="headerlink" href="#boutons-de-selection-de-la-source" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Le bouton de sélection de la source est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui accompagne un widget de saisie de type <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> ou un widget de groupe de propriétés.</p>
+<p><img alt="div_bouton_selection_source" src="docs/source/usage/img/div_bouton_selection_source.png" /></p>
+<p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur les modalités de création de ces widgets.</p>
+<section id="id3">
+<h3>Mise à jour du dictionnaire des widgets<a class="headerlink" href="#id3" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Quand l’utilisateur sélectionne une nouvelle source dans le menu, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.change_source</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">change_source</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span> <span class="n">new_source</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est la clé du dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> dont le bouton de sélection de la source considéré est l’un des widgets annexes. <code class="docutils literal notranslate"><span class="pre">new_source</span></code> est la nouvelle source choisie par l’utilisateur dans le menu associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code>.</em></p>
+</section>
+<section id="id4">
+<h3>… puis du formulaire<a class="headerlink" href="#id4" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Les informations renvoyées par <code class="docutils literal notranslate"><span class="pre">change_source</span></code> permettent de réaliser les opérations subséquentes sur les widgets.</p>
+<p>Le résultat, ici <code class="docutils literal notranslate"><span class="pre">r</span></code>, pourra contenir des informations dans les clés suivantes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'concepts</span> <span class="pre">list</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Cette liste, si elle n’est pas vide, contiendra soit la clé courante, soit celle dont on affichera les widgets à la place.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'value</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Cette liste, si elle n’est pas vide, ne contiendra jamais que la clé de l’enregistrement courant.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'switch</span> <span class="pre">source</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Cette liste, si elle n’est pas vide, contiendra soit la clé de l’enregistrement courant, soit celle dont on affichera les widgets à la place. Dans la grande majorité des cas, les items du menu ne changent pas, seulement la source identifiée comme sélectionnée (toujours fournie par la clé <code class="docutils literal notranslate"><span class="pre">'current</span> <span class="pre">source'</span></code>), mais on préférera régénérer intégralement tous les objets <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> et <code class="docutils literal notranslate"><span class="pre">QAction</span></code> par précaution.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">show'</span></code>. Lors d’une bascule en « mode manuel », il faudra afficher le groupe de propriétés dans lequel se fera la saisie manuelle, ainsi que tous les widgets qu’il contient. En cas de sortie du mode manuel, il s’agira d’afficher le widget de saisie <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> (si thésaurus) ou <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> (si saisie libre d’URI) que l’utilisateur devra désormais utiliser pour la catégorie de métadonnées concernée.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">hide'</span></code>. Lors d’une bascule en mode manuel ou sortie du mode manuel, les widgets utilisés pour l’ancien mode doivent être masqués.</p></li>
+</ul>
+</section>
+</section>
+<section id="boutons-de-selection-de-la-langue">
+<h2>Boutons de sélection de la langue<a class="headerlink" href="#boutons-de-selection-de-la-langue" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Le bouton de sélection de la langue est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui accompagne un widget de saisie. Il a deux fonctions :</p>
+<ul class="simple">
+<li><p>afficher la langue dans laquelle a été saisie la valeur (sous une forme abrégée - on écrira par exemple <code class="docutils literal notranslate"><span class="pre">'FR'</span></code> pour une métadonnée en français) ;</p></li>
+<li><p>lors de l’édition des métadonnées, permettre à l’utilisateur de choisir dans un menu la langue de la valeur qu’il vient de saisir ou va saisir.</p></li>
+</ul>
+<p><img alt="gt_bouton_selection_langue" src="docs/source/usage/img/gt_bouton_selection_langue.png" /></p>
+<p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur les modalités de création de ces widgets.</p>
+<section id="id5">
+<h3>Mise à jour du dictionnaire des widgets<a class="headerlink" href="#id5" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Quand l’utilisateur sélectionne une nouvelle langue dans le menu, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.change_language</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">change_language</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span> <span class="n">new_language</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est la clé du dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> dont le bouton de sélection de la langue considéré est l’un des widgets annexes. <code class="docutils literal notranslate"><span class="pre">new_language</span></code> est la nouvelle langue choisie par l’utilisateur dans le menu associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code>.</em></p>
+</section>
+<section id="id6">
+<h3>… puis du formulaire<a class="headerlink" href="#id6" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Les informations renvoyées par <code class="docutils literal notranslate"><span class="pre">change_language</span></code> permettent de réaliser les opérations subséquentes sur les widgets.</p>
+<p>Le résultat, ici <code class="docutils literal notranslate"><span class="pre">r</span></code>, pourra contenir des informations dans les clés suivantes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Hors groupe de traduction, cette liste contient uniquement la clé pour laquelle l’utilisateur a changé la langue. Dans un groupe de traduction, cette liste contiendra les clés de tous les widgets de saisie du groupe. Pour la clé courante, la langue à afficher sur le bouton de sélection de la langue a été modifiée. Pour les autres clés, il s’agit d’enlever la langue nouvellement choisie et de rajouter celle qui l’était précédemment dans la liste des langues disponibles pour les traductions présentée par le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">hide'</span></code>. Dans de rares cas, ce liste pourra contenir le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> du bouton « plus » du groupe de traduction (si la langue antérieurement sélectionnée n’était pas dans la <span class="xref myst">liste des langues autorisées pour les traductions</span> et que, après changement, toutes les langues autorisées sont désormais utilisées).</p></li>
+</ul>
+</section>
+</section>
+<section id="boutons-de-selection-de-l-unite">
+<h2>Boutons de sélection de l’unité<a class="headerlink" href="#boutons-de-selection-de-l-unite" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Le bouton de sélection de l’unité est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> qui accompagne un widget de saisie. Lors de l’édition des métadonnées, il permet à l’utilisateur de déclarer l’unité dans laquelle est exprimée la valeur qu’il vient de saisir ou va saisir.</p>
+<p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur les modalités de création de ces widgets.</p>
+<section id="id7">
+<h3>Mise à jour du dictionnaire des widgets<a class="headerlink" href="#id7" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Quand l’utilisateur sélectionne une nouvelle unité dans le menu, il faudra commencer par mettre à jour le dictionnaire de widgets avec la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.change_unit</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">change_unit</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span> <span class="n">new_unit</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est la clé du dictionnaire de widgets <code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> dont le bouton de sélection de l’unité considéré est l’un des widgets annexes. <code class="docutils literal notranslate"><span class="pre">new_unit</span></code> est la nouvelle unité choisie par l’utilisateur dans le menu associé au <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code>.</em></p>
+</section>
+<section id="id8">
+<h3>… puis du formulaire<a class="headerlink" href="#id8" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Les informations renvoyées par <code class="docutils literal notranslate"><span class="pre">change_unit</span></code> permettent de réaliser les opérations subséquentes sur les widgets.</p>
+<p>Le résultat, ici <code class="docutils literal notranslate"><span class="pre">r</span></code>, contiendra uniquement des clés vides à l’exception de <code class="docutils literal notranslate"><span class="pre">'unit</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code>. Celle-ci liste uniquement la clé courante, pour laquelle il faut changer l’unité affichée sur le bouton.</p>
+</section>
+</section>
+<section id="boutons-de-calcul">
+<h2>Boutons de calcul<a class="headerlink" href="#boutons-de-calcul" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour plus de détails sur les modalités de création de ces widgets et <span class="xref myst">Métadonnées calculées</span> pour les actions à déclencher lorsque l’utilisateur clique sur le bouton.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Plume</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="usage.html">Usage</a><ul>
+      <li>Previous: <a href="creation_widgets.html" title="Chapitre précédent">Création d’un nouveau widget</a></li>
+      <li>Next: <a href="outils_saisie_geometries.html" title="Chapitre suivant">Outils d’aide à la saisie des géométries</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, République française.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/actions_widgets.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

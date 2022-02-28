@@ -1,0 +1,941 @@
+
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Conformité au profil GeoDCAT-AP &#8212; Documentation Plume 0.3.0-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Référence" href="../reference/modules.html" />
+    <link rel="prev" title="Métadonnées communes" href="metadonnees_communes.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="conformite-au-profil-geodcat-ap">
+<h1>Conformité au profil GeoDCAT-AP<a class="headerlink" href="#conformite-au-profil-geodcat-ap" title="Lien permanent vers ce titre">¶</a></h1>
+<p><em>Référence : GeoDCAT-AP Version 2.0.0 - https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0</em>.</p>
+<p><span class="xref myst">Généralités</span> • <span class="xref myst">Types de valeurs littérales</span></p>
+<p>Classes : <span class="xref myst">Activité</span> • <span class="xref myst">Adresse (agent)</span> • <span class="xref myst">Adresse (entité)</span> • <span class="xref myst">Agent</span> • <span class="xref myst">Attribution</span> • <span class="xref myst">Catalogue</span> • <span class="xref myst">Concept</span> • <span class="xref myst">Agent</span> • <span class="xref myst">Déclaration de droits</span> • <span class="xref myst">Distribution</span> • <span class="xref myst">Document</span> • <span class="xref myst">Emplacement</span> • <span class="xref myst">Enregistrement du catalogue</span> • <span class="xref myst">Ensemble de concepts</span> • <span class="xref myst">Entité</span> • <span class="xref myst">Fiche de métadonnées liée</span> • <span class="xref myst">Fréquence</span> • <span class="xref myst">Généalogie</span> • <span class="xref myst">Identifiant</span> • <span class="xref myst"><strong>Jeu de données</strong></span> • <span class="xref myst">Licence</span> • <span class="xref myst">Mesure de qualité</span> • <span class="xref myst">Métrique</span> • <span class="xref myst">Période</span> • <span class="xref myst">Relation</span> • <span class="xref myst">Ressource</span> • <span class="xref myst">Service de données</span> • <span class="xref myst">Somme de contrôle</span> • <span class="xref myst">Standard</span> • <span class="xref myst">Système linguistique</span> • <span class="xref myst">Type de média</span> • <span class="xref myst">Type de média ou extension</span></p>
+<section id="generalites">
+<h2>Généralités<a class="headerlink" href="#generalites" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Les métadonnées RDF produites par Plume ont les spécificités suivantes :</p>
+<ul class="simple">
+<li><p>Si elles ne sont pas vides, elles contiennent un et un seul objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code></span>.</p></li>
+<li><p>L’identifiant du <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code> (sujet de ses propriétés et rappelé en objet de la propriété <code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code>) est un URN. Ex : <code class="docutils literal notranslate"><span class="pre">&lt;urn:uuid:e0479f0f-c6f7-4127-87bc-137d34113a86&gt;</span> <span class="pre">a</span> <span class="pre">dcat:Dataset</span></code>.
+Cet identifiant est généré par Plume lors de la première saisie de métadonnées sur l’objet PostgreSQL. Il est pérenne, sauf à ce que les métadonnées contenues dans le descriptif PostgreSQL soit détruites par une manipulation externes à Plume<a class="footnote-reference brackets" href="#uuid-valide" id="id1">1</a>.</p></li>
+<li><p>Aucun IRI ne peut être sujet d’un triplet hormis l’identifiant du jeu de données. Ainsi, tous les autres sujets sont des noeuds anonymes.
+Concrètement, pour les propriétés pouvant admettre comme objets des IRI et telles que GeoDCAT-AP définit des propriétés explicites pour la classe de l’objet, l’utilisateur de Plume aura la possibilité de choisir entre renseigner un IRI sans aucune propriété attachée (soit en saisie libre, soit choisi dans un thésaurus), ou renseigner manuellement les propriétés attachées sans saisir d’IRI. Le sujet des propriétés sera alors un noeud anonyme. Ceci concerne par exemple la propriété <code class="docutils literal notranslate"><span class="pre">dct:license</span></code> et ses objets <code class="docutils literal notranslate"><span class="pre">dct:LicenseDocument</span></code>.</p></li>
+<li><p>Avec Plume, les propriétés sont identifiées par leur IRI. Dès lors, il n’est pas possible de distinguer des propriétés différentes rattachées à un même IRI comme le fait GeoDCAT-AP avec par exemple les propriétés des services de données (<span class="xref myst"><code class="docutils literal notranslate"><span class="pre">dcat:DataService</span></code></span>) <em>service category</em>, <em>service type</em> et <em>type</em>, toutes trois correspondant à l’IRI <code class="docutils literal notranslate"><span class="pre">dct:type</span></code>, ou encore les propriétés <em>conforms to</em> et <em>reference system</em> des jeux de données (<code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>), dont l’IRI est dans les deux cas <code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code>.</p></li>
+<li><p>Plume ne permet pas de choisir entre plusieurs types de littéral pour une propriété donnée. Dès lors, toutes les géométries sont exprimées comme <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code> (alors que GeoDCAT-AP admet aussi le type <code class="docutils literal notranslate"><span class="pre">gsp:gmlLiteral</span></code>) et toutes les dates soit comme <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code> soit comme <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code>, alors que GeoDCAT-AP permet en principe de mélanger les deux pour une même propriété. Plus généralement, lorsque Plume reçoit une valeur qui n’est pas du type attendu, il tentera de la convertir et, en cas d’échec, l’effacera<a class="footnote-reference brackets" href="#validation" id="id2">2</a>.</p></li>
+<li><p>De même, la classe de l’objet d’une propriété est fixe et unique avec Plume. Lorsque l’agent est une organisation, GeoDCAT-AP recommande l’usage des classes <code class="docutils literal notranslate"><span class="pre">org:Organization</span></code>, <code class="docutils literal notranslate"><span class="pre">org:OrganizationalUnit</span></code> et <code class="docutils literal notranslate"><span class="pre">org:FormalOrganization</span></code> de l”<a class="reference external" href="https://www.w3.org/TR/vocab-org/">Ontologie des organisations VOCAB-ORG</a> au lieu de <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code>, mais Plume en reste à <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code></span>. De même, Plume utilise la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code></span> et non ses sous-classes <code class="docutils literal notranslate"><span class="pre">vcard:Individual</span></code>, <code class="docutils literal notranslate"><span class="pre">vcard:Organization</span></code>, <code class="docutils literal notranslate"><span class="pre">vcard:Location</span></code> et <code class="docutils literal notranslate"><span class="pre">vcard:Group</span></code> pour représenter les entités. Ces sous-classes seront toutefois reconnues à l’import, et Plume leur substituera <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code> ou <code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code> selon le cas.</p></li>
+<li><p>Plume tolère qu’une propriété supposée n’admettre qu’une seule valeur en ait <em>de facto</em> plusieurs. L’utilisateur les verra dans l’interface, pourra les modifier ou les supprimer, mais pas en ajouter d’autres (pas de bouton +). Elles sont sauvegardées normalement.</p></li>
+</ul>
+<p>Lorsque des métadonnées externes sont importées via les fonctionnalités de Plume, elles sont retraitées pour être conformes à ces règles ou deviennent conformes de fait compte tenu des mécanismes internes de Plume.</p>
+<p>Les propriétés prévues par GeoDCAT-AP mais non gérées par Plume, les propriétés de GeoDCAT-AP sur lesquelles des modifications ont été opérées, et les propriétés ajoutées par Plume sont listées dans la suite.</p>
+</section>
+<section id="types-de-valeurs-litterales">
+<h2>Types de valeurs littérales<a class="headerlink" href="#types-de-valeurs-litterales" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Parmi les types explicitement cités par GeoDCAT-AP (pour les classes et propriétés prises en charges par Plume), seul le type <code class="docutils literal notranslate"><span class="pre">gsp:gmlLiteral</span></code> n’est pas reconnu par Plume. En cas d’import de métadonnées externes, les éventuelles valeurs de ce type seront traitées comme <code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> et aucune des fonctionnalités permettant d’interagir avec les géométries ne sera disponible.</p>
+<p>Les types suivants sont pris en charge sans limitation : <code class="docutils literal notranslate"><span class="pre">xsd:string</span></code>, <code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code> (<code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> avec langue), <code class="docutils literal notranslate"><span class="pre">xsd:integer</span></code>, <code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code>, <code class="docutils literal notranslate"><span class="pre">xsd:boolean</span></code>.</p>
+<p>Les types suivants sont gérés par Plume, mais avec quelques limites :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Limites</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code></p></td>
+<td><p>Plume tronque les durées en ne conservant que la valeur pour la plus grande unité. Par exemple <code class="docutils literal notranslate"><span class="pre">'P1DT2H'</span></code> (un jour et deux heures) deviendra <code class="docutils literal notranslate"><span class="pre">'P1D'</span></code> (1 jour).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xsd:date</span></code></p></td>
+<td><p>Les fuseaux horaires ne sont pas pris en charge à ce stade. Si présents, Plume les retire.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code></p></td>
+<td><p>Les fuseaux horaires et les millisecondes ne sont pas pris en charge à ce stade. Si présents, Plume les retire.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xsd:time</span></code></p></td>
+<td><p>Les fuseaux horaires et les millisecondes ne sont pas pris en charge à ce stade. Si présents, Plume les retire.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code></p></td>
+<td><p>Dans l’hypothèse où elle aurait été demandée pour la catégorie de métadonnées considérée, la fonctionnalité de visualisation des géométries sera désactivée si la géométrie n’est pas de type <code class="docutils literal notranslate"><span class="pre">POINT</span></code>, <code class="docutils literal notranslate"><span class="pre">LINESTRING</span></code> ou <code class="docutils literal notranslate"><span class="pre">POLYGON</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>D’une manière général, toute valeur d’un type non listé ci-avant sera considérée comme de type <code class="docutils literal notranslate"><span class="pre">xsd:string</span></code>.</p>
+</section>
+<section id="activite">
+<h2>Activité<a class="headerlink" href="#activite" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">prov:Activity</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="adresse-agent">
+<h2>Adresse (agent)<a class="headerlink" href="#adresse-agent" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">locn:Address</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="adresse-entite">
+<h2>Adresse (entité)<a class="headerlink" href="#adresse-entite" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">vcard:Address</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="agent">
+<h2>Agent<a class="headerlink" href="#agent" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code>.</em></p>
+<p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>address</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">locn:address</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>affiliation</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">org:memberOf</span></code></p></td>
+<td><p>GeoDCAT-AP prévoit que cette propriété ait des objets de classe <code class="docutils literal notranslate"><span class="pre">org:Organization</span></code> - donc pas une valeur littérale comme le <code class="docutils literal notranslate"><span class="pre">vcard:organization-name</span></code> de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code></span> - et sans associer explicitement de propriétés à cette classe, même si on peut supposer qu’il s’agirait des mêmes que <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>email</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">foaf:mbox</span></code></p></td>
+<td><p>Changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>phone</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">foaf:phone</span></code></p></td>
+<td><p>Changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attribution">
+<h2>Attribution<a class="headerlink" href="#attribution" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">prov:Attribution</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="catalogue">
+<h2>Catalogue<a class="headerlink" href="#catalogue" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Catalog</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code>.</em></p>
+<p>Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier <span class="xref myst">vocabulary.ttl</span>). Pour chaque concept, celui-ci présente obligatoirement les propriétés <em>category scheme</em> (<code class="docutils literal notranslate"><span class="pre">skos:inScheme</span></code>) et <em>preferred label</em> (<code class="docutils literal notranslate"><span class="pre">skos:prefLabel</span></code>), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d’origine n’en contenait pas.</p>
+<p>Des propriétés supplémentaires peuvent être disponibles pour certains concepts, dont une seule utilisée à ce stade par Plume : <code class="docutils literal notranslate"><span class="pre">foaf:page</span></code>. Celle-ci fournit l’URL d’une page web pertinente pour le concept. En mode lecture, la métadonnée portera un hyperlien pointant sur cette page ou, à défaut, sur l’IRI du concept.</p>
+<p>Seul l’IRI du concept est enregistré dans les métadonnées.</p>
+</section>
+<section id="declaration-de-droits">
+<h2>Déclaration de droits<a class="headerlink" href="#declaration-de-droits" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:RightsStatement</span></code>.</em></p>
+<p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
+</section>
+<section id="distribution">
+<h2>Distribution<a class="headerlink" href="#distribution" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Distribution</span></code>.</em></p>
+<p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>media type</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:mediaType</span></code></p></td>
+<td><p>La différence avec le format (<code class="docutils literal notranslate"><span class="pre">dct:format</span></code>) est difficile à rendre intelligible. Pour les données mises à disposition via des services (incluant les flux Atom, etc.), on exprimera plutôt ces informations via les propriétés du service, lui-même introduit par <code class="docutils literal notranslate"><span class="pre">dcat:accessService</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>checksum</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">spdx:checksum</span></code></p></td>
+<td><p>Pourrait être ajouté ultérieurement si finalement utile.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>has policy</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">odrl:hasPolicy</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>spatial resolution</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dqv:hasQualityMeasurement</span></code></p></td>
+<td><p>La résolution est gérée uniquement avec <code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>spatial resolution as text</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:comment</span></code></p></td>
+<td><p>La résolution est gérée uniquement avec <code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code> (et la propriété <code class="docutils literal notranslate"><span class="pre">dct:provenance</span></code> du <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code> s’il est besoin d’ajouter des commentaires).</p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>access rights</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span></code></p></td>
+<td><p>Ajout d’une source de vocabulaire contrôlé et changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p>Nécessité de pouvoir exprimer les limitations d’accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l’administration…). Outre le <a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess">thésaurus INSPIRE</a> et celui du <a class="reference external" href="https://op.europa.eu/s/vR3k">registre EU</a>, Plume propose un thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:CrpaAccessLimitations</span></code> qui référence les limitations d’accès prévues par le code des relations entre le public et l’administration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>compression format</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:compressFormat</span></code></p></td>
+<td><p>Changement de source de vocabulaire contrôlé.</p></td>
+<td><p>Utilisation du même thésaurus du <a class="reference external" href="https://op.europa.eu/s/vNbR">registre européen</a> que pour la propriété <code class="docutils literal notranslate"><span class="pre">dct:format</span></code> (qui a le mérite d’exister en RDF et d’avoir des libellés plus intelligibles que le registre IANA).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>encoding</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cnt:characterEncoding</span></code></p></td>
+<td><p>Changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>license</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:license</span></code></p></td>
+<td><p>Ajout de deux sources de vocabulaire contrôlé.</p></td>
+<td><p>Pour la version IRI de la propriété, Plume propose le thésaurus du <a class="reference external" href="https://op.europa.eu/s/vM9L">registre EU</a> et un thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:CrpaAuthorizedLicense</span></code> contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>packaging format</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:packageFormat</span></code></p></td>
+<td><p>Changement de source de vocabulaire contrôlé.</p></td>
+<td><p>Idem <em>compression format</em>. Utilisation du même thésaurus du <a class="reference external" href="https://op.europa.eu/s/vNbR">registre européen</a> que pour la propriété <code class="docutils literal notranslate"><span class="pre">dct:format</span></code> (qui a le mérite d’exister en RDF et d’avoir des libellés plus intelligibles que le registre IANA).</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>reference system</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
+<td><p>Simplification d’une source de vocabulaire contrôlé.</p></td>
+<td><p>Le thésaurus <code class="docutils literal notranslate"><span class="pre">&lt;http://www.opengis.net/def/crs/EPSG/0&gt;</span></code> est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>release date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>status</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adms:status</span></code></p></td>
+<td><p>Changement de source de vocabulaire contrôlé.</p></td>
+<td><p>Utilisation du thésaurus dédié du <a class="reference external" href="https://op.europa.eu/s/vR2T">registre européen</a>. La valeur <em>discontinued</em> (traduite en <em>abandonné</em>) est incluse bien que non listée par GeoDCAT-AP, car elle apporte une nuance intéressante par rapport à <em>deprecated</em> / <em>obsolète</em> (une distribution peut ne plus être maintenue sans que les données ait perdu leur valeur) et <em>withdrawn</em> / <em>retiré</em> (une distribution peut ne plus être maintenue sans qu’il y ait de volonté de la rendre inaccessible).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>update / modification date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont ajoutées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>IRI</p></th>
+<th class="head"><p>Classe de l’objet</p></th>
+<th class="head"><p>Cardinalité</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..1</span></code></p></td>
+<td><p>Type de distribution. Bizaremment non présent dans DCAT-AP et GeoDCAT-AP alors qu’il existe un <a class="reference external" href="https://op.europa.eu/s/vNbJ">thésaurus dédié</a> dans le registre européen.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="document">
+<h2>Document<a class="headerlink" href="#document" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">foaf:Document</span></code>.</em></p>
+<p>Plume n’associe aucune propriété à cette classe. Il est attendu de l’utilisateur qu’il saisisse une URL, qui tiendra lieu d’IRI et sera la seule information relative au document sauvegardée dans les métadonnées.</p>
+</section>
+<section id="emplacement">
+<h2>Emplacement<a class="headerlink" href="#emplacement" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:Location</span></code>.</em></p>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>bounding box</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:bbox</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">gsp:wktLiteral</span> <span class="pre">or</span> <span class="pre">gsp:gmlLiteral</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">gsp:wktLiteral</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>centroid</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:centroid</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">gsp:wktLiteral</span> <span class="pre">or</span> <span class="pre">gsp:gmlLiteral</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">gsp:wktLiteral</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><em>gazetteer</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skos:inScheme</span></code></p></td>
+<td><p>Ajout d’une source de vocabulaire contrôlé.</p></td>
+<td><p>Thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:InseeGeoIndex</span></code>, basé sur le <a class="reference external" href="http://id.insee.fr">registre de l’INSEE</a> qui répertorie les divisions administratives.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>geographic name</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skos:prefLabel</span></code></p></td>
+<td><p>Changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">1..n</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p>Rendre le nom obligatoire est discutable quand l’emplacement est un rectangle d’emprise ou autre géométrie calculée à partir des données (il pourrait d’ailleurs s’agir d’une coquille dans GeoDCAT-AP, considérant que les propriétés obligatoires sont usuellement listées à part).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>geometry</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">locn:geometry</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">gsp:wktLiteral</span> <span class="pre">or</span> <span class="pre">gsp:gmlLiteral</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">gsp:wktLiteral</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="enregistrement-du-catalogue">
+<h2>Enregistrement du catalogue<a class="headerlink" href="#enregistrement-du-catalogue" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:CatalogRecord</span></code>.</em></p>
+<p>Dans le contexte de Plume, la classe <code class="docutils literal notranslate"><span class="pre">dcat:CatalogRecord</span></code> sert exclusivement à renseigner les métadonnées sur les métadonnées. Elle est introduite par la propriété <code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span></code> dans la description d’un <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>, et le sujet du triplet <code class="docutils literal notranslate"><span class="pre">[]</span> <span class="pre">a</span> <span class="pre">dcat:CatalogRecord</span></code> est toujours un noeud anonyme.</p>
+<p>Pour l’heure, la seule propriété de cette classe qui soit prise en charge par Plume est <em>update / modification date</em> - <code class="docutils literal notranslate"><span class="pre">dct:modified</span></code> -, que Plume renseigne automatiquement à chaque sauvegarde.</p>
+</section>
+<section id="ensemble-de-concepts">
+<h2>Ensemble de concepts<a class="headerlink" href="#ensemble-de-concepts" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">skos:ConceptScheme</span></code>.</em></p>
+<p>Comme pour la classe <code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code>, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n’est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier <span class="xref myst">vocabulary.ttl</span>, avec pour seule propriété <code class="docutils literal notranslate"><span class="pre">skos:prefLabel</span></code> (et non <code class="docutils literal notranslate"><span class="pre">dct:title</span></code> comme dans GeoDCAT-AP), qui fournit le libellé de l’ensemble, généralement en anglais et en français.</p>
+</section>
+<section id="entite">
+<h2>Entité<a class="headerlink" href="#entite" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code>.</em></p>
+<p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>address</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vcard:hasAddress</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>email</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vcard:hasEmail</span></code></p></td>
+<td><p>Changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>phone</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vcard:hasTelephone</span></code></p></td>
+<td><p>Changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fiche-de-metadonnees-liee">
+<h2>Fiche de métadonnées liée<a class="headerlink" href="#fiche-de-metadonnees-liee" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">snum:LinkedRecord</span></code>.</em></p>
+<p>Cette classe est ajoutée par Plume. Elle représente une fiche de métadonnées distante avec laquelle la fiche locale doit être régulièrement synchronisée. À ce stade ne sont prises en charge que les métadonnées ISO 19115 exposées par des services CSW. Les métadonnées n’ont pas pour objet de décrire la fiche mais seulement de mémoriser les informations nécessaires à Plume pour l’importer.</p>
+<p>Propriétés :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>IRI</p></th>
+<th class="head"><p>Classe de l’objet</p></th>
+<th class="head"><p>Cardinalité</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:endpointURL</span></code></p></td>
+<td><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">rdfs:Resource</span></code></span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..1</span></code></p></td>
+<td><p>URL de base du service CSW, sans aucun paramètre.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">type</span> <span class="pre">as</span> <span class="pre">xsd:string</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..1</span></code></p></td>
+<td><p>Identifiant de la fiche de métadonnées.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="frequence">
+<h2>Fréquence<a class="headerlink" href="#frequence" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:Frequency</span></code>.</em></p>
+<p>Cette classe est prise en charge selon les mêmes modalités que <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code></span>.</p>
+</section>
+<section id="genealogie">
+<h2>Généalogie<a class="headerlink" href="#genealogie" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:ProvenanceStatement</span></code>.</em></p>
+<p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
+</section>
+<section id="identifiant">
+<h2>Identifiant<a class="headerlink" href="#identifiant" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">adms:Identifier</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="jeu-de-donnees">
+<h2>Jeu de données<a class="headerlink" href="#jeu-de-donnees" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>.</em></p>
+<p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>has version</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:hasVersion</span></code></p></td>
+<td><p>Relations entre jeux de données non prises en charge par Plume v1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>is version of</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:isVersionOf</span></code></p></td>
+<td><p>Relations entre jeux de données non prises en charge par Plume v1.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>other identifier</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adms:identifier</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>qualified attribution</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:qualifiedAttribution</span></code></p></td>
+<td><p>Pour l’heure, Plume implémente uniquement la méthode de saisie des organisations responsables préconisée par DCAT, c’est-à-dire via les propriétés dédiées à chaque rôle (<code class="docutils literal notranslate"><span class="pre">dct:creator</span></code>, <code class="docutils literal notranslate"><span class="pre">dct:publisher</span></code>, etc.).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>qualified relation</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:qualifiedRelation</span></code></p></td>
+<td><p>Relations entre jeux de données non prises en charge par Plume v1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>sample</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adms:sample</span></code></p></td>
+<td><p>A priori inutile dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>source</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:source</span></code></p></td>
+<td><p>Relations entre jeux de données non prises en charge par Plume v1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>spatial resolution</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dqv:hasQualityMeasurement</span></code></p></td>
+<td><p>La résolution est gérée uniquement avec <code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>spatial resolution as text</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:comment</span></code></p></td>
+<td><p>La résolution est gérée uniquement avec <code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code> (et <code class="docutils literal notranslate"><span class="pre">dct:provenance</span></code> s’il est besoin d’ajouter des commentaires).</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>was generated by</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prov:wasGeneratedBy</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><em>was used by</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prov:wasUsedBy</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>access rights</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span></code></p></td>
+<td><p>Ajout d’une source de vocabulaire contrôlé et changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p>Nécessité de pouvoir exprimer les limitations d’accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l’administration…). Outre le <a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess">thésaurus INSPIRE</a> et celui du <a class="reference external" href="https://op.europa.eu/s/vR3k">registre EU</a>, Plume propose un thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:CrpaAccessLimitations</span></code> qui référence les limitations d’accès prévues par le code des relations entre le public et l’administration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>creation date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:created</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><em>identifier</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code></p></td>
+<td><p>Verrouillé.</p></td>
+<td><p>Avec Plume l’identifiant présenté dans <code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code> est toujours l’IRI du <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>. Plume s’en assure à chaque chargement de la fiche de métadonnées.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>reference system</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
+<td><p>Simplification d’une source de vocabulaire contrôlé.</p></td>
+<td><p>Le thésaurus <code class="docutils literal notranslate"><span class="pre">&lt;http://www.opengis.net/def/crs/EPSG/0&gt;</span></code> est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857) et EPSG 4326. Pour les autres référentiels, il faudra passer par de la saisie manuelle.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>release date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>type</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<td><p>Simplification d’une source de vocabulaire contrôlé, suppression d’une autre.</p></td>
+<td><p>Le registre INSPIRE des types de ressources n’est pas utilisé, car seule sa valeur <code class="docutils literal notranslate"><span class="pre">'Spatial</span> <span class="pre">data</span> <span class="pre">set'</span></code> aurait un sens pour une relation PostgreSQL. Le <a class="reference external" href="https://op.europa.eu/s/vM9N">registre EU</a> est expurgé de quelques valeurs difficiles à rendre intelligibles des utilisateurs de Plume et qui ne sont de toute façon pas susceptibles d’être utilisées pour des relations PostgreSQL.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>update / modification date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont ajoutées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>IRI</p></th>
+<th class="head"><p>Classe de l’objet</p></th>
+<th class="head"><p>Cardinalité</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span></code></p></td>
+<td><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">dcat:CatalogRecord</span></code></span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1..1</span></code></p></td>
+<td><p>Métadonnées sur les métadonnées. Cette propriété est gérée automatiquement par Plume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">snum:isExternal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:boolean</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..1</span></code></p></td>
+<td><p>Ce jeu de données est-il la reproduction de données produites par un tiers ? Cette propriété permet de distinguer immédiatement les données externes qui, dans le contexte de Plume, pourront se voir appliquer des modèles de formulaires spécifiques.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">snum:relevanceScore</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:integer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..1</span></code></p></td>
+<td><p>Niveau de pertinence de la donnée. Cette propriété anticipe sur de futures fonctionnalités de recherche qui mettront davantage en évidence les jeux de données avec un score élevé dans les listes de résultats.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="licence">
+<h2>Licence<a class="headerlink" href="#licence" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:LicenseDocument</span></code>.</em></p>
+<p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
+</section>
+<section id="mesure-de-qualite">
+<h2>Mesure de qualité<a class="headerlink" href="#mesure-de-qualite" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dqv:QualityMeasurement</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="metrique">
+<h2>Métrique<a class="headerlink" href="#metrique" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dqv:Metric</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="periode">
+<h2>Période<a class="headerlink" href="#periode" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:PeriodOfTime</span></code>.</em></p>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>end date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:endDate</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>start date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:startDate</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="relation">
+<h2>Relation<a class="headerlink" href="#relation" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Relationship</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="ressource">
+<h2>Ressource<a class="headerlink" href="#ressource" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">rdfs:Resource</span></code>.</em></p>
+<p>GeoDCAT-AP n’associe explicitement aucune propriété à cette classe. De la même façon, Plume propose à l’utilisateur de saisir des URL pour les propriétés qui ont des valeurs de ce type et traite lesdites URL comme des IRI.</p>
+</section>
+<section id="service-de-donnees">
+<h2>Service de données<a class="headerlink" href="#service-de-donnees" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:DataService</span></code>.</em></p>
+<p>Avec Plume, des objets de classe <code class="docutils literal notranslate"><span class="pre">dcat:DataService</span></code> peuvent être saisis en objet de la propriété <code class="docutils literal notranslate"><span class="pre">dcat:accessService</span></code> des distributions. La vocation primaire de Plume n’est toutefois pas la documentation des services, et encore moins leur catalogage. Ainsi il a été fait le choix de limiter les propriétés disponibles pour décrire ces objets, en éliminant celles qui n’aideront pas l’utilisateur à comprendre sous quelles modalités le service met à disposition les données qui l’intéressent.</p>
+<p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>serves dataset</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:servesDataset</span></code></p></td>
+<td><p>Le service est l’objet d’une propriété <code class="docutils literal notranslate"><span class="pre">dcat:accessService</span></code> d’un objet <code class="docutils literal notranslate"><span class="pre">dcat:Distribution</span></code>, lui-même objet de la propriété <code class="docutils literal notranslate"><span class="pre">dcat:distribution</span></code> d’un jeu de données. Avoir une propriété du service prenant en objet ce même jeu de données n’apporte rien. Quant à lister tous les jeux de données mis à disposition par le service, cela paraît inutilement fastidieux dans le contexte d’un patrimoine local.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>creation date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:created</span></code></p></td>
+<td><p>Information difficile à obtenir et sans intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>identifier</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code></p></td>
+<td><p>Plume n’ayant pas vocation à cataloguer les services, il ne leur attribue pas d’identifiant.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>qualified attribution</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prov:qualifiedAttribution</span></code></p></td>
+<td><p>Sans grand intérêt pour les services dans le contexte de Plume. De plus, comme pour les jeux de données, on privilégie l’usage des propriétés qui définissent directement des organisations pour chaque rôle (comme recommandé par GeoDCAT-AP).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>service category</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<td><p>Le registre INSPIRE associé à cette propriété - <a class="reference external" href="https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceCategory">Classification des services de données géographiques</a> - contient une longue liste de catégories de services dont l’objet n’est le plus souvent pas de mettre à diposition des données. Si cette information peut être utile pour décrire les services en général, elle semble sans grand intérêt dans le contexte de Plume, où les seuls services présentés sont ceux qui donnent accès à des distributions. <em>NB : Il reste bien une propriété <code class="docutils literal notranslate"><span class="pre">dct:type</span></code> pour les services, mais sa <a class="reference external" href="http://publications.europa.eu/resource/authority/data-service-type">source de vocabulaire contrôlé</a> est issue du registre UE.</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>service type</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<td><p>Le registre INSPIRE associé à cette propriété - <a class="reference external" href="https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType">Type de service de données géographiques</a> - propose une catégorisation très vague, sans intérêt dans le contexte de Plume. <em>NB : Il reste bien une propriété <code class="docutils literal notranslate"><span class="pre">dct:type</span></code> pour les services, mais sa source de vocabulaire contrôlé est issue du <a class="reference external" href="https://op.europa.eu/s/vM9M">registre UE</a>.</em></p></td>
+</tr>
+<tr class="row-even"><td><p><em>spatial resolution</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dqv:hasQualityMeasurement</span></code></p></td>
+<td><p>La résolution est gérée uniquement avec <code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>spatial resolution as text</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:comment</span></code></p></td>
+<td><p>La résolution est gérée uniquement avec <code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>theme / category</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dcat:theme</span></code></p></td>
+<td><p>Catégorisation sans intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>topic category</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:subject</span></code></p></td>
+<td><p>Catégorisation sans intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>update / modification date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
+<td><p>Information difficile à obtenir et sans intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>was used by</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prov:wasUsedBy</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><em>custodian</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span></code></p></td>
+<td><p>Propriété difficile à définir et de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>distributor</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span></code></p></td>
+<td><p>Propriété difficile à définir et de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>originator</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span></code></p></td>
+<td><p>Propriété difficile à définir et de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>principal investigator</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span></code></p></td>
+<td><p>Propriété difficile à définir et de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>processor</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span></code></p></td>
+<td><p>Propriété difficile à définir et de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>resource provider</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span></code></p></td>
+<td><p>Propriété difficile à définir et de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>user</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span></code></p></td>
+<td><p>Propriété de peu d’intérêt dans le contexte de Plume.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>access rights</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span></code></p></td>
+<td><p>Ajout d’une source de vocabulaire contrôlé et changement de cardinalité. Avant : <code class="docutils literal notranslate"><span class="pre">0..1</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">0..n</span></code>.</p></td>
+<td><p>Nécessité de pouvoir exprimer les limitations d’accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l’administration…). Outre le <a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess">thésaurus INSPIRE</a> et celui du <a class="reference external" href="https://op.europa.eu/s/vR3k">registre EU</a>, Plume propose un thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:CrpaAccessLimitations</span></code> qui référence les limitations d’accès prévues par le code des relations entre le public et l’administration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>license</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:license</span></code></p></td>
+<td><p>Ajout de deux sources de vocabulaire contrôlé.</p></td>
+<td><p>Pour la version IRI de la propriété, Plume propose le thésaurus du <a class="reference external" href="https://op.europa.eu/s/vM9L">registre EU</a> et un thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:CrpaAuthorizedLicense</span></code> contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>conforms to</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
+<td><p>Ajout d’une source de vocabulaire contrôlé.</p></td>
+<td><p>Pour la version IRI de la propriété, Plume propose un thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:DataServiceStandard</span></code> contenant les URI des principaux standards utilisés pour les services de données géographiques. Il inclut tous les concepts du <a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue">thésaurus des protocoles du registre INSPIRE</a> (auquel il se substitue), en ajoutant un concept supplémentaire pour le standard OGC API Feature et des propriétés <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">foaf:page</span></code></span> pointant sur les standards à proprement parler. Par exemple, en mode lecture, l’utilisateur sera renvoyé vers https://www.ogc.org/standards/wms au lieu de l’IRI http://www.opengis.net/def/serviceType/ogc/wms s’il clique sur le standard WMS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>reference system</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
+<td><p>Simplification d’une source de vocabulaire contrôlé.</p></td>
+<td><p>Le thésaurus <code class="docutils literal notranslate"><span class="pre">&lt;http://www.opengis.net/def/crs/EPSG/0&gt;</span></code> est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>release date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>type</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<td><p>Changement de source de vocabulaire contrôlé.</p></td>
+<td><p>Avec le registre INSPIRE, il s’agirait d’une propriété à valeur fixe (<code class="docutils literal notranslate"><span class="pre">&lt;http://inspire.ec.europa.eu/metadata-codelist/ResourceType/service&gt;</span></code>), redondante avec l’existence même d’un service de données, ce qui présente peu d’intérêt. Plume utilise à la place le <a class="reference external" href="https://op.europa.eu/s/vM9M">registre EU</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="somme-de-controle">
+<h2>Somme de contrôle<a class="headerlink" href="#somme-de-controle" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">spdx:Checksum</span></code>.</em></p>
+<p>Cette classe n’est pas prise en charge.</p>
+</section>
+<section id="standard">
+<h2>Standard<a class="headerlink" href="#standard" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:Standard</span></code>.</em></p>
+<p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>type</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<td><p>Il n’existe pas de vocabulaire contrôlé à ce stade et l’approche évoquée par GeoDCAT-AP (à savoir lister ces deux IRI : http://inspire.ec.europa.eu/glossary/CRS et http://inspire.ec.europa.eu/glossary/TemporalReferenceSystem) n’apporte pas grand chose - on préférera encourager l’usage de la propriété <code class="docutils literal notranslate"><span class="pre">skos:inScheme</span></code> ou, mieux, l’utilisation des thésaurus plutôt que la saisie manuelle pour les propriétés <code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont modifiées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propriété</p></th>
+<th class="head"><p>IRI</p></th>
+<th class="head"><p>Nature de la modification</p></th>
+<th class="head"><p>Commentaire</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>creation date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:created</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>reference register</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skos:inScheme</span></code></p></td>
+<td><p>Ajout d’une source de vocabulaire contrôlé.</p></td>
+<td><p>Thésaurus maison <code class="docutils literal notranslate"><span class="pre">snum:StandardsRegister</span></code>, qui ne référence à date que le registre EPSG de l’OGC.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>release date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>update / modification date</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
+<td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Les propriétés suivantes sont ajoutées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>IRI</p></th>
+<th class="head"><p>Classe de l’objet</p></th>
+<th class="head"><p>Cardinalité</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:page</span></code></p></td>
+<td><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">foaf:Document</span></code></span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..n</span></code></p></td>
+<td><p>Chemin d’accès au standard ou URL d’une page contenant des informations sur le standard. Considérant que la majorité des standards de données géographiques n’ont pas d’URI à ce jour, les référencer dans un thésaurus n’est pas envisageable. Les utilisateurs devront les saisir manuellement et qu’ils puissent malgré tout renseigner une URL d’accès paraît essentiel.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="systeme-linguistique">
+<h2>Système linguistique<a class="headerlink" href="#systeme-linguistique" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:LinguisticSystem</span></code>.</em></p>
+<p>Cette classe est prise en charge selon les mêmes modalités que <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code></span>.</p>
+</section>
+<section id="type-de-media">
+<h2>Type de média<a class="headerlink" href="#type-de-media" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:MediaType</span></code>.</em></p>
+<p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
+</section>
+<section id="type-de-media-ou-extension">
+<h2>Type de média ou extension<a class="headerlink" href="#type-de-media-ou-extension" title="Lien permanent vers ce titre">¶</a></h2>
+<p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:MediaTypeOrExtent</span></code>.</em></p>
+<p>GeoDCAT-AP n’associe aucune propriété à cette classe. Plume ajoute une propriété <code class="docutils literal notranslate"><span class="pre">rdfs:label</span></code> pour la saisie manuelle, comme le fait déjà GeoDCAT-AP pour la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">dct:MediaType</span></code></span>.</p>
+<p>Les propriétés suivantes sont ajoutées par Plume :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>IRI</p></th>
+<th class="head"><p>Classe de l’objet</p></th>
+<th class="head"><p>Cardinalité</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rdfs:label</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">rdf:langString</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0..n</span></code> (une valeur par langue)</p></td>
+<td><p>Libellé du format.</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="footnotes docutils" />
+<dl class="footnote brackets">
+<dt class="label" id="uuid-valide"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Plume vérifie aussi que l’identifiant est un UUID valide. S’il avait été corrompu (là encore nécessairement par une manipulation externe à Plume), il serait remplacé à la première sauvegarde dans l’interface de saisie de Plume.</p>
+</dd>
+<dt class="label" id="validation"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Ce mécanisme de validation est mise en oeuvre par la méthode <code class="docutils literal notranslate"><span class="pre">update_value</span></code> de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> lors de la <span class="xref myst">sauvegarde des métadonnées par l’utilisateur</span> et non au moment de l’import depuis une source externe. L’utilisateur a ainsi la possibilité de contrôler visuellement les valeurs.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Plume</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="usage.html">Usage</a><ul>
+      <li>Previous: <a href="metadonnees_communes.html" title="Chapitre précédent">Métadonnées communes</a></li>
+      <li>Next: <a href="../reference/modules.html" title="Chapitre suivant">Référence</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, République française.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/conformite_geodcat_ap.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

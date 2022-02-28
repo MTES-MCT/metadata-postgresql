@@ -1,0 +1,422 @@
+
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Usage &#8212; Documentation Plume 0.3.0-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Génération du dictionnaire des widgets" href="generation_dictionnaire_widgets.html" />
+    <link rel="prev" title="Welcome to Plume’s documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Lien permanent vers ce titre">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html#sources-de-donnees">Sources de données</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#metagraph-le-graphe-des-metadonnees-pre-existantes">metagraph : le graphe des métadonnées pré-existantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#template-le-modele-de-formulaire">template : le modèle de formulaire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#columns-les-descriptifs-des-champs">columns : les descriptifs des champs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#data-les-metadonnees-calculees">data : les métadonnées calculées</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html#parametres-utilisateur">Paramètres utilisateur</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#mode">mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#readhideblank">readHideBlank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#readhideunlisted">readHideUnlisted</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#edithideunlisted">editHideUnlisted</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#language">language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#translation">translation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#langlist">langList</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#readonlycurrentlanguage">readOnlyCurrentLanguage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#editonlycurrentlanguage">editOnlyCurrentLanguage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#labellengthlimit">labelLengthLimit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#valuelengthlimit">valueLengthLimit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generation_dictionnaire_widgets.html#texteditrowspan">textEditRowSpan</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html#resultat-un-dictionnaire-de-widgets">Résultat : un dictionnaire de widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-principal">Widget principal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#type">Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#stockage">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#placement-dans-la-grille">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#widget-masque">Widget masqué ?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qgroupbox">Paramètres spécifiques aux widgets QGroupBox</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="creation_widgets.html#onglets">Onglets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="creation_widgets.html#autres-groupes">Autres groupes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qtoolbutton">Paramètres spécifiques aux widgets QToolButton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-de-saisie">Paramètres spécifiques aux widgets de saisie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit">Paramètres spécifiques aux widgets QLineEdit et QTextEdit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qcombobox">Paramètres spécifiques aux widgets QComboBox</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="creation_widgets.html#liste-des-termes">Liste des termes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="creation_widgets.html#placeholder">Placeholder</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit">Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qlabel">Paramètres spécifiques aux widgets QLabel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-grille">Widget annexe : grille</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-etiquette">Widget annexe : étiquette</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id1">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id2">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#texte-d-aide">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id3">Widget masqué ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-la-source">Widget annexe : bouton de sélection de la source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id4">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#menu">Menu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id5">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#icone">Icône</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id6">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id7">Widget masqué ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-la-langue">Widget annexe : bouton de sélection de la langue</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id8">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id9">Menu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#rendu">Rendu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id10">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id11">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id12">Widget masqué ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-l-unite">Widget annexe : bouton de sélection de l’unité</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id13">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id14">Menu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id15">Rendu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id16">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id17">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id18">Widget masqué ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries">Widget annexe : bouton d’aide à la saisie des géométries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id19">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id20">Menu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#icones">Icônes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#cas-particulier-de-la-visualisation-seule">Cas particulier de la visualisation seule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id21">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id22">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id23">Widget masqué ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-moins">Widget annexe : bouton « moins »</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id24">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id25">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id26">Icône</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id27">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id28">Widget masqué ?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-calcul">Widget annexe : bouton de calcul</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id29">Stockage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id30">Placement dans la grille</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id31">Icône</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id32">Texte d’aide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creation_widgets.html#id33">Widget masqué ?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#structuration-des-dictionnaires-contenant-les-informations-de-materialisation">Structuration des dictionnaires contenant les informations de matérialisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#boutons-plus-et-boutons-de-traduction">Boutons « plus » et boutons de traduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#mise-a-jour-du-dictionnaire-des-widgets">Mise à jour du dictionnaire des widgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#puis-du-formulaire">… puis du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#boutons-moins">Boutons « moins »</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id1">Mise à jour du dictionnaire des widgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id2">… puis du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#boutons-de-selection-de-la-source">Boutons de sélection de la source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id3">Mise à jour du dictionnaire des widgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id4">… puis du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#boutons-de-selection-de-la-langue">Boutons de sélection de la langue</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id5">Mise à jour du dictionnaire des widgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id6">… puis du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#boutons-de-selection-de-l-unite">Boutons de sélection de l’unité</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id7">Mise à jour du dictionnaire des widgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_widgets.html#id8">… puis du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html#boutons-de-calcul">Boutons de calcul</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html#les-actions-possibles">Les actions possibles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="outils_saisie_geometries.html#actions-sans-condition-d-activation">Actions sans condition d’activation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="outils_saisie_geometries.html#actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base">Actions à activer uniquement si l’extension PostGIS est disponible sur la base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="outils_saisie_geometries.html#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis">Actions à activer uniquement pour les couches chargées dans QGIS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html#remarques-sur-la-visualisation">Remarques sur la visualisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html#les-calculs-de-geometries-cote-serveur">Les calculs de géométries côté serveur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html#les-calculs-et-trace-manuels-cote-qgis">Les calculs et tracé manuels côté QGIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html#alimentation-du-formulaire">Alimentation du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html#principe">Principe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html#processus-de-calcul">Processus de calcul</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="metadonnees_calculees.html#controle-des-extensions-disponibles">Contrôle des extensions disponibles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="metadonnees_calculees.html#generation-et-execution-de-la-requete">Génération et exécution de la requête</a></li>
+<li class="toctree-l3"><a class="reference internal" href="metadonnees_calculees.html#integration-du-resultat">Intégration du résultat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="metadonnees_calculees.html#modification-des-widgets-en-consequence">Modification des widgets en conséquence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html#implementation-du-calcul-automatique">Implémentation du calcul automatique</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html#implementation-du-calcul-a-declenchement-manuel">Implémentation du calcul à déclenchement manuel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="actions_generales.html">Actions générales</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#mode-lecture-mode-edition">Mode lecture, mode édition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#effet-sur-le-formulaire">Effet sur le formulaire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#autres-effets">Autres effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#caracteristiques-du-bouton">Caractéristiques du bouton</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#sauvegarde">Sauvegarde</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#effets">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id3">Caractéristiques du bouton</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#activation-du-mode-traduction">Activation du mode traduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id4">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id5">Caractéristiques du bouton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#initialisation">Initialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#choix-de-la-trame-de-formulaire">Choix de la trame de formulaire</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id6">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#caracteristiques-du-widget">Caractéristiques du widget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id7">Initialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#langue-principale-des-metadonnees">Langue principale des métadonnées</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id8">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id9">Caractéristiques du widget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id10">Initialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#import-de-metadonnees">Import de métadonnées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#import-de-metadonnees-depuis-un-fichier">Import de métadonnées depuis un fichier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#import-de-metadonnees-depuis-un-service-csw">Import de métadonnées depuis un service CSW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#export-des-metadonnees-dans-un-fichier">Export des métadonnées dans un fichier</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id11">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id12">Caractéristiques du bouton</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#reinitialisation">Réinitialisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id13">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id14">Caractéristiques du bouton</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#copier-coller-d-une-fiche-complete">Copier / coller d’une fiche complète</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#id15">Effets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#caracteristiques-des-boutons">Caractéristiques des boutons</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html#selection-de-la-table-a-documenter">Sélection de la table à documenter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#si-aucun-objet-n-est-selectionne">Si aucun objet n’est sélectionné</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions_generales.html#quand-l-utilisateur-selectionne-un-nouvel-objet">Quand l’utilisateur sélectionne un nouvel objet</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html#principe">Principe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html#gestion-dans-postgresql">Gestion dans PostgreSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#creation-d-un-modele-de-formulaire">Création d’un modèle de formulaire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#onglets-des-formulaires">Onglets des formulaires</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#categories-de-metadonnees">Catégories de métadonnées</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#association-de-categories-a-un-modele">Association de catégories à un modèle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#modeles-pre-configures">Modèles pré-configurés</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html#import-des-modeles-par-plume">Import des modèles par Plume</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#presence-de-l-extension-plumepg">Présence de l’extension <em>PlumePg</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#recuperation-de-la-liste-des-modeles">Récupération de la liste des modèles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#selection-automatique-du-modele">Sélection automatique du modèle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#recuperation-des-categories-associees-au-modele-retenu">Récupération des catégories associées au modèle retenu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#recuperation-des-onglets-associes-au-modele-retenu">Récupération des onglets associés au modèle retenu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeles_de_formulaire.html#generation-de-template">Génération de <em>template</em></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html#avec-les-modeles-stockes-en-local">Avec les modèles stockés en local</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#compatibilite">Compatibilité</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#localisation-des-objets-de-l-extension">Localisation des objets de l’extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#cohabitation-avec-asgard">Cohabitation avec <em>Asgard</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#mise-a-jour">Mise à jour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#desinstallation">Désinstallation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html#sauvegarde-et-restauration-de-la-base">Sauvegarde et restauration de la base</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#generalites">Généralités</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#types-de-valeurs-litterales">Types de valeurs littérales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#activite">Activité</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#adresse-agent">Adresse (agent)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#adresse-entite">Adresse (entité)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#agent">Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#attribution">Attribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#catalogue">Catalogue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#concept">Concept</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#declaration-de-droits">Déclaration de droits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#distribution">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#document">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#emplacement">Emplacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#enregistrement-du-catalogue">Enregistrement du catalogue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#ensemble-de-concepts">Ensemble de concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#entite">Entité</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#fiche-de-metadonnees-liee">Fiche de métadonnées liée</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#frequence">Fréquence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#genealogie">Généalogie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#identifiant">Identifiant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#jeu-de-donnees">Jeu de données</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#licence">Licence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#mesure-de-qualite">Mesure de qualité</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#metrique">Métrique</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#periode">Période</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#relation">Relation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#ressource">Ressource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#service-de-donnees">Service de données</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#somme-de-controle">Somme de contrôle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#standard">Standard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#systeme-linguistique">Système linguistique</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#type-de-media">Type de média</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html#type-de-media-ou-extension">Type de média ou extension</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Plume</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="Chapitre précédent">Welcome to Plume’s documentation!</a></li>
+      <li>Next: <a href="generation_dictionnaire_widgets.html" title="Chapitre suivant">Génération du dictionnaire des widgets</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, République française.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

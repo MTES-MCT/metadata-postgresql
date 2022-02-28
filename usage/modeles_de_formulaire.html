@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Modèles de formulaire &#8212; Documentation Plume 0.3.0-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Paramètres utilisateurs" href="parametres_utilisateur.html" />
+    <link rel="prev" title="Actions générales" href="actions_generales.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="modeles-de-formulaire">
+<h1>Modèles de formulaire<a class="headerlink" href="#modeles-de-formulaire" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Les modèles de formulaire sont définis par l’administrateur de données pour tous les utilisateurs de son service. Etant partagés, ils sont stockés sur le serveur PostgreSQL, dans un ensemble de tables créées par l’extension PostgreSQL <em>PlumePg</em>.</p>
+<p>Leur usage est totalement optionnel.</p>
+<p><span class="xref myst">Principe</span> • <span class="xref myst">Gestion dans PostgreSQL</span> • <span class="xref myst">Import des modèles par Plume</span> • <span class="xref myst">Avec les modèles stockés en local</span></p>
+<section id="principe">
+<h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span><a class="footnote-reference brackets" href="#metadonnees-masquees" id="id1">1</a>. Souvent, c’est trop. Selon l’organisation du service, selon la table considérée, selon le profil de l’utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.</p>
+<p>Parfois, c’est au contraire insuffisant. Toujours selon l’organisation du service, la table considérée et le profil de l’utilisateur, il peut être très utile voire indispensable de disposer d’informations qui ne sont pas prévues dans les catégories communes.</p>
+<p>Plume y remédie, via l’extension PostgreSQL <em>PlumePg</em>, en permettant à l’administrateur de définir des modèles de formulaire adaptés à son service, que le plugin QGIS saura exploiter.</p>
+<p>Concrètement, un modèle de formulaire déclare un ensemble de catégories de métadonnées à présenter à l’utilisateur avec leurs modalités d’affichage. Il restreint ainsi les catégories communes par un système de liste blanche, tout en autorisant l’ajout de catégories locales supplémentaires.</p>
+<p>L’admistrateur de données peut prévoir autant de modèles qu’il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées (si cela se justifie). Dans l’interface QGIS de Plume, l’utilisateur peut basculer à sa convenance d’un modèle à l’autre.</p>
+</section>
+<section id="gestion-dans-postgresql">
+<h2>Gestion dans PostgreSQL<a class="headerlink" href="#gestion-dans-postgresql" title="Lien permanent vers ce titre">¶</a></h2>
+<p>L’extension PostgreSQL <em>PlumePg</em> crée une structure de données adaptée au stockage des modèles. Pour bénéficier des modèles, elle doit être installée sur toutes les bases du serveur PostgreSQL dont on souhaite gérer les métadonnées avec Plume<a class="footnote-reference brackets" href="#base-par-base" id="id2">2</a>.</p>
+<p>Cf. <span class="xref myst">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></span> pour plus de détails sur l’installation et la maintenance de cette extension.</p>
+<p><em>PlumePg</em> crée dans le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> un ensemble de tables permettant de définir les modèles de formulaires :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">meta_template</span></code> liste les modèles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> liste les catégories de métadonnées disponibles, qu’il s’agisse des catégories du schéma commun ou de catégories locales, et paramètre leur affichage dans les formulaires.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meta_tab</span></code> liste des noms d’onglets de formulaires dans lesquels pourront être classées les catégories.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d’affichage spécifique à un modèle pour certaines catégories, qui remplaceront ceux de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>.</p></li>
+</ul>
+<section id="creation-d-un-modele-de-formulaire">
+<h3>Création d’un modèle de formulaire<a class="headerlink" href="#creation-d-un-modele-de-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code> comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>, qui lui tiendra lieu d’identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n’auront accès qu’à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.</p>
+<p>Les champs <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> et <code class="docutils literal notranslate"><span class="pre">md_conditions</span></code> servent à définir des conditions selon lesquelles le modèle sera appliqué automatiquement à la fiche de métadonnées considérée. Les remplir est bien évidemment optionnel.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> est un filtre SQL, qui peut se référer au nom du schéma avec <code class="docutils literal notranslate"><span class="pre">$1</span></code> et/ou de la table / vue avec <code class="docutils literal notranslate"><span class="pre">$2</span></code>. Il est évalué côté serveur au moment de l’import des modèles par le plugin, par la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.meta_execute_sql_filter(text,</span> <span class="pre">text,</span> <span class="pre">text)</span></code>.</p></li>
+</ul>
+<p>Par exemple, le filtre suivant appliquera le modèle aux tables des schémas des blocs « données référentielles » (préfixe <code class="docutils literal notranslate"><span class="pre">'r_'</span></code>) et « données externes » (préfixe <code class="docutils literal notranslate"><span class="pre">'e_'</span></code>) de la nomenclature nationale :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;$1 ~ ANY(ARRAY[&#39;&#39;^r_&#39;&#39;, &#39;&#39;^e_&#39;&#39;]&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>D’une manière générale, toute commande renvoyant un booléen peut être utilisée. Ainsi, le filtre suivant appliquera le modèle pour toutes les fiches de métadonnées dès lors que l””utilisateur est membre du rôle <code class="docutils literal notranslate"><span class="pre">g_admin</span></code> :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;pg_has_role(&#39;&#39;g_admin&#39;&#39;, &#39;&#39;USAGE&#39;&#39;)&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">md_conditions</span></code> est une liste JSON définissant des ensembles de conditions portant cette fois sur les métadonnées.</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;snum:isExternal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;dcat:keyword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IGN&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;dct:publisher / foaf:name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Institut national de l&#39;&#39;information géographique et forestière (IGN-F)&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Les ensembles sont combinés entre eux avec l’opérateur <code class="docutils literal notranslate"><span class="pre">OR</span></code>. Au sein d’un ensemble, les conditions sont combinées avec l’opérateur <code class="docutils literal notranslate"><span class="pre">AND</span></code>.</p>
+<p>Les clés des conditions sont les chemins des catégories de métadonnées (champ <code class="docutils literal notranslate"><span class="pre">path</span></code> de la table <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.</p>
+<p>Dans l’exemple ci-avant, une table validera les conditions du modèle si :</p>
+<ul class="simple">
+<li><p>il s’agit d’une donnée externe (valeur <code class="docutils literal notranslate"><span class="pre">True</span></code> pour la catégorie <code class="docutils literal notranslate"><span class="pre">snum:isExternal</span></code>) <strong>ET</strong> l’un de ses mots-clés (<code class="docutils literal notranslate"><span class="pre">dcat:keyword</span></code>) est <code class="docutils literal notranslate"><span class="pre">'IGN'</span></code> ;</p></li>
+<li><p><strong>OU</strong> le nom du diffuseur (<code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code>) est <code class="docutils literal notranslate"><span class="pre">'Institut</span> <span class="pre">national</span> <span class="pre">de</span> <span class="pre">l'information</span> <span class="pre">géographique</span> <span class="pre">et</span> <span class="pre">forestière</span> <span class="pre">(IGN-F)'</span></code>.</p></li>
+</ul>
+<p>La comparaison des valeurs ne tient pas compte de la casse.</p>
+<p>Il faudra soit que toutes les conditions de l’un des ensembles du JSON soient vérifiées, soit que le filtre SQL ait renvoyé True pour que le modèle soit considéré comme applicable. Si un jeu de données remplit les conditions de plusieurs modèles, c’est celui dont le niveau de priorité, (champ <code class="docutils literal notranslate"><span class="pre">priority</span></code>) est le plus élevé qui sera retenu.</p>
+<p>À noter que les conditions ne valent qu’à l’ouverture de la fiche. L’utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d’application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n’appliquer aucun modèle, auquel cas le schéma des métadonnées communes s’appliquera tel quel.</p>
+</section>
+<section id="onglets-des-formulaires">
+<h3>Onglets des formulaires<a class="headerlink" href="#onglets-des-formulaires" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Sans que ce soit obligatoire en aucune façon, les modèles de formulaires peuvent répartir les catégories de métadonnées par onglets.</p>
+<p>Avant d’y affecter des catégories, les onglets doivent être définis dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_tab</span></code>. Celle-ci contient deux champs :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tab</span></code> pour le nom de l’onglet. Il est limité à 48 caractères et doit obligatoirement être renseigné ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tab_num</span></code> sert à ordonner les onglets. Les onglets sont affichés du plus petit numéro au plus grand (<code class="docutils literal notranslate"><span class="pre">NULL</span></code> à la fin), puis par ordre alphabétique en cas d””égalité. Les numéros n””ont pas à se suivre et peuvent être répétés. <em>NB. Tous les onglets de <code class="docutils literal notranslate"><span class="pre">meta_tab</span></code> ne seront évidemment pas présents dans tous les modèles, mais ceux qui le sont seront donc toujours présentés dans le même ordre quel que soit le modèle.</em></p></li>
+</ul>
+</section>
+<section id="categories-de-metadonnees">
+<h3>Catégories de métadonnées<a class="headerlink" href="#categories-de-metadonnees" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier <span class="xref myst">shape.ttl</span>) et les catégories supplémentaires locales définies par l’ADL pour le seul usage de son service.</p>
+<p>Il s’agit en fait d’une table partitionnée avec deux tables filles :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">z_plume.meta_shared_categorie</span></code> pour les catégories communes (<code class="docutils literal notranslate"><span class="pre">origin</span></code> vaut <code class="docutils literal notranslate"><span class="pre">shared</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z_plume.meta_local_categorie</span></code> pour les catégories supplémentaires locales (<code class="docutils literal notranslate"><span class="pre">origin</span></code> vaut <code class="docutils literal notranslate"><span class="pre">local</span></code>).</p></li>
+</ul>
+<p>L’utilisateur peut évidemment écrire directement dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> sans se préoccuper de là où sont effectivement stockées les données.</p>
+<p>Concrètement, la table <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> a deux fonctions :</p>
+<ul class="simple">
+<li><p>elle permet de créer les catégories supplémentaires locales, en ajoutant une ligne à la table par nouvelle catégorie. Il est a minima nécessaire de renseigner un libellé, histoire de savoir de quoi il est question ;</p></li>
+<li><p>elle permet de modifier la manière dont les catégories communes sont présentées par le plugin QGIS (nouveau label, nouveau texte d’aide, etc.), en jouant sur les nombreux champs de paramétrage.</p></li>
+</ul>
+<p>Les champs sur lesquels l’ADL peut intervenir sont :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Nom du champ</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Remarques</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">label</span></code></p></td>
+<td><p>Libellé de la catégorie.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">description</span></code></p></td>
+<td><p>Description de la catégorie. Elle sera affichée sous la forme d’un texte d’aide dans le formulaire.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">datatype</span></code></p></td>
+<td><p>Type de valeur attendu pour la catégorie, parmi (type énuméré <code class="docutils literal notranslate"><span class="pre">z_plume.meta_data_type</span></code>) : <code class="docutils literal notranslate"><span class="pre">'xsd:string'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:integer'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:decimal'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:boolean'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:date'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:time'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:dateTime'</span></code>, <code class="docutils literal notranslate"><span class="pre">'xsd:duration'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rdf:langString'</span></code> (chaîne de caractères avec une langue associée<a class="footnote-reference brackets" href="#langstring" id="id3">3</a>) et <code class="docutils literal notranslate"><span class="pre">'gsp:wktLiteral'</span></code> (géométrie au format textuel WKT). Cette information détermine notamment la nature des widgets utilisés par Plume pour afficher et éditer les valeurs, ainsi que les validateurs appliqués.</p></td>
+<td><p>Pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte. Si, pour une catégorie locale, aucune valeur n’est renseignée pour ce champ (ni dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> ni dans <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>), le plugin considérera que la catégorie prend des valeurs de type <code class="docutils literal notranslate"><span class="pre">'xsd:string'</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">is_long_text</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> pour une catégorie appelant un texte de plusieurs lignes.</p></td>
+<td><p>Cette information ne sera prise en compte que si le type de valeur (<code class="docutils literal notranslate"><span class="pre">datatype</span></code>) est <code class="docutils literal notranslate"><span class="pre">'xsd:string'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rdf:langString'</span></code> ou <code class="docutils literal notranslate"><span class="pre">'gsp:wktLiteral'</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rowspan</span></code></p></td>
+<td><p>Nombre de lignes occupées par le widget de saisie, s’il y a lieu de modifier le comportement par défaut de Plume.</p></td>
+<td><p>La valeur ne sera considérée que si <code class="docutils literal notranslate"><span class="pre">is_long_text</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">special</span></code></p></td>
+<td><p>Le cas échéant, mise en forme spécifique à appliquer au champ. Valeurs autorisées (type énuméré <code class="docutils literal notranslate"><span class="pre">z_plume.meta_datatype</span></code>) : <code class="docutils literal notranslate"><span class="pre">'url'</span></code>, <code class="docutils literal notranslate"><span class="pre">'email'</span></code>, et <code class="docutils literal notranslate"><span class="pre">'phone'</span></code>.</p></td>
+<td><p>Pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">placeholder</span></code></p></td>
+<td><p>Valeur fictive pré-affichée en tant qu’exemple dans le widget de saisie, s’il y a lieu.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">input_mask</span></code></p></td>
+<td><p>Masque de saisie, s’il y a lieu. La syntaxe est décrite dans la <a class="reference external" href="https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QLineEdit.html#PySide2.QtWidgets.PySide2.QtWidgets.QLineEdit.inputMask">documentation de l’API Qt for python</a>.</p></td>
+<td><p>La valeur sera ignorée si le widget utilisé pour la catégorie ne prend pas en charge ce mécanisme.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">is_multiple</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> si la catégorie admet plusieurs valeurs.</p></td>
+<td><p>Pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">unilang</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> si la catégorie n’admet plusieurs valeurs que si elles sont dans des langues différentes (par exemple un jeu de données n’a en principe qu’un seul titre, mais il peut être traduit).</p></td>
+<td><p>Pour les catégories communes, les modifications apportées sur ce champ ne seront pas prises en compte. <code class="docutils literal notranslate"><span class="pre">is_multiple</span></code> est ignoré quand <code class="docutils literal notranslate"><span class="pre">unilang</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. Cette information n’est considérée que si <code class="docutils literal notranslate"><span class="pre">datatype</span></code> vaut <code class="docutils literal notranslate"><span class="pre">'rdf:langString'</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">is_mandatory</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> si une valeur doit obligatoirement être saisie pour cette catégorie.</p></td>
+<td><p>Modifier cette valeur permet de rendre obligatoire une catégorie commune optionnelle, mais pas l””inverse.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sources</span></code></p></td>
+<td><p>Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises.</p></td>
+<td><p>Cette information n’est considérée que pour les catégories communes. Il n’est pas possible d’ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geo_tools</span></code></p></td>
+<td><p>Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d’aide à la saisie à proposer, parmi <code class="docutils literal notranslate"><span class="pre">'show'</span></code> (visualisation de la géométrie saisie), <code class="docutils literal notranslate"><span class="pre">'point'</span></code> (tracé manuel d’une géométrie ponctuelle), <code class="docutils literal notranslate"><span class="pre">'linestring'</span></code> (tracé manuel d’une géométrie linéaire), <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>  (tracé manuel d’un rectangle), <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code> (tracé manuel d’un polygone), <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code> (calcul du rectangle d’emprise de la couche courante), <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code> (calcul du centre du rectangle d’emprise de la couche courante).</p></td>
+<td><p>Cette information ne sera considérée que si le type (<code class="docutils literal notranslate"><span class="pre">datatype</span></code>) est <code class="docutils literal notranslate"><span class="pre">'gsp:wktLiteral'</span></code>. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide, soit <code class="docutils literal notranslate"><span class="pre">ARRAY[]::z_plume.meta_geo_tool[]</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">compute</span></code></p></td>
+<td><p>Liste des fonctionnalités de calcul à proposer, parmis, <code class="docutils literal notranslate"><span class="pre">'auto'</span></code> (déclenchement automatique lorsque la fiche de métadonnées est générée), <code class="docutils literal notranslate"><span class="pre">'manuel'</span></code> (déclenchement à la demande, lorsque l’utilisateur clique sur le bouton qui apparaîtra alors à côté du champ de saisie dans le formulaire).</p></td>
+<td><p>Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide, soit <code class="docutils literal notranslate"><span class="pre">ARRAY[]::z_plume.meta_compute[]</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">order_key</span></code></p></td>
+<td><p>Ordre d’apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier, il n’est pas nécessaire que les numéros se suivent. Dans le cas des catégories communes, qui ont une structure arborescente, il s’agit de l’ordre parmi les catégories de même niveau dans la branche.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Les champs <code class="docutils literal notranslate"><span class="pre">path</span></code> (chemin SPARQL identifiant la catégorie), <code class="docutils literal notranslate"><span class="pre">origin</span></code> et <code class="docutils literal notranslate"><span class="pre">is_node</span></code> sont calculés automatiquement. Il est fortement recommandé de ne pas les modifier à la main.</p>
+<p>Les caractéristiques spécifiées dans la table <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> seront utilisées pour tous les modèles, sauf – cette possibilité sera détaillée par la suite – à avoir prévu des valeurs spécifiques au modèle via la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma des catégories communes, qui est repris dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> lors de l’initialisation de l’extension.</p>
+</section>
+<section id="association-de-categories-a-un-modele">
+<h3>Association de catégories à un modèle<a class="headerlink" href="#association-de-categories-a-un-modele" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La définition des catégories associées à chaque modèle (relation n-n) se fait par l’intermédiaire de la table de correspondance <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>.</p>
+<p>Le modèle est identifié par son nom (champ <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>), la catégorie par son chemin (champ <code class="docutils literal notranslate"><span class="pre">path</span></code> de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>, repris dans <code class="docutils literal notranslate"><span class="pre">loccat_path</span></code> pour une catégorie locale et dans <code class="docutils literal notranslate"><span class="pre">shrcat_path</span></code> pour une catégorie commune).</p>
+<p>Hormis ces champs de clés étrangères et la clé primaire séquentielle <code class="docutils literal notranslate"><span class="pre">tplcat_id</span></code>, tous les champs de la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> servent au paramétrage du modèle. Les valeurs qui y sont saisies remplaceront (pour le modèle considéré) celles qui avaient éventuellement été renseignées dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> et le paramétrage du schéma des catégories communes.</p>
+<p>Soit un modèle M, une catégorie de métadonnées C et une propriété P.</p>
+<ul class="simple">
+<li><p>Si une valeur est renseignée pour la propriété P, la catégorie C et le modèle M dans <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>, alors elle s’applique au modèle M pour la catégorie C et la propriété P.</p></li>
+<li><p>Sinon, si une valeur est renseignée pour la propriété P et la catégorie C dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>, alors elle s’applique au modèle M pour la catégorie C et la propriété P.</p></li>
+<li><p>Sinon, pour une catégorie commune, la valeur éventuellement prévue par le schéma des catégories communes s’appliquera au modèle M pour la catégorie C et la propriété P. Pour les catégories locales, il sera considéré par défaut que la catégorie doit être affichée sous la forme d’une zone de texte sur une seule ligne et qu’elle n’admet qu’une seule valeur.</p></li>
+</ul>
+<p>Aux champs de paramétrage qui apparaissaient déjà dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>, la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> ajoute deux champs optionnels :</p>
+<ul class="simple">
+<li><p>un champ booléen <code class="docutils literal notranslate"><span class="pre">read_only</span></code> qui pourra valoir <code class="docutils literal notranslate"><span class="pre">True</span></code> si la catégorie doit être en lecture seule pour le modèle considéré. Il peut notamment être mis à profit lorsque des fiches de métadonnées sont co-rédigées par un service métier référent et l’administrateur de données, pour permettre à chacun de voir les informations saisies par l’autre, sans qu’il risque de les modifier involontairement (sauf à ce qu’il change de modèle, bien sûr, ce n’est pas un dispositif de verrouillage, seulement de l’aide à la saisie) ;</p></li>
+<li><p>un champ <code class="docutils literal notranslate"><span class="pre">tab</span></code> qui permet de spécifier l’onglet (préalablement déclaré dans <code class="docutils literal notranslate"><span class="pre">meta_tab</span></code>) dans lequel devra être placée la catégorie. Cette information n’est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple la catégorie de deuxième niveau <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:issued'</span></code> ira nécessairement dans le même onglet que <code class="docutils literal notranslate"><span class="pre">'dcat:distribution'</span></code>). Pour celles-ci, si aucun onglet n’est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, si le modèle n’utilise explicitement aucun onglet, dans un onglet <em>« Général »</em>.</p></li>
+</ul>
+<p><em>NB. Pour les catégories de métadonnées communes imbriquées, il n’est pas nécessaire que le modèle fasse systématiquement apparaître tous les chemins intermédiaires (par exemple <code class="docutils literal notranslate"><span class="pre">'dcat:distribution'</span></code> et <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license'</span></code> pour <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label'</span></code>). Le plugin saura ajouter lui-même les chemins intermédiaires manquants, de même qu’il enlèvera les chemins intermédiaires sans catégorie finale. Ainsi, l’administrateur pourra se contenter d’associer <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label'</span></code> à son modèle, sauf à avoir envie de renommer les catégories <code class="docutils literal notranslate"><span class="pre">'dcat:distribution'</span></code> et/ou <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license'</span></code>, de leur ajouter un texte d’aide, etc.</em></p>
+</section>
+<section id="modeles-pre-configures">
+<h3>Modèles pré-configurés<a class="headerlink" href="#modeles-pre-configures" title="Lien permanent vers ce titre">¶</a></h3>
+<p>L’extension propose des modèles pré-configurés - trois à ce stade - qui peuvent être importés via la commande suivante :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">(</span><span class="o">%</span><span class="n">tpl_label</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">%tpl_label</span></code> est à remplacer par une chaîne de caractères correspondant au nom du modèle à importer. Il est aussi possible de ne donner aucun argument à la fonction, dans ce cas tous les modèles pré-configurés sont importés.</em></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>La fonction renvoie une table dont la première colonne contient les noms des modèles traités et la seconde indique si le modèle a été créé (<code class="docutils literal notranslate"><span class="pre">'created'</span></code>) ou, dans le cas d’un modèle déjà répertorié, mis à jour / réinitialisé (<code class="docutils literal notranslate"><span class="pre">'updated'</span></code>).</p>
+<p>Modèles pré-configurés disponibles :</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Nom du modèle (<code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>)</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'Basique'</span></code></p></td>
+<td><p>Modèle limité à quelques catégories de métadonnées essentielles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'Donnée</span> <span class="pre">externe'</span></code></p></td>
+<td><p>Modèle assez complet adapté à des données externes.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'Classique'</span></code></p></td>
+<td><p>Modèle comportant les principales catégories de métadonnées intéressantes pour des données produites par le service.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="import-des-modeles-par-plume">
+<h2>Import des modèles par Plume<a class="headerlink" href="#import-des-modeles-par-plume" title="Lien permanent vers ce titre">¶</a></h2>
+<p>La gestion des modèles par le plugin fait intervenir :</p>
+<ul class="simple">
+<li><p>le module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></span> pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;</p></li>
+<li><p>le module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.template</span></code></span> pour le traitement du résultat de ces requêtes.</p></li>
+</ul>
+<p>Aucune des fonctions de ces deux modules n’envoie à proprement parler de requête au serveur PostgreSQL.</p>
+<p>Concrètement, l’import du modèle de formulaire se fait en six temps :</p>
+<ol class="arabic simple">
+<li><p>vérification de la présence de l’extension <em>PlumePg</em>.</p></li>
+<li><p>récupération sur le serveur PostgreSQL de la liste des modèles disponibles et de leurs conditions d’application → <code class="docutils literal notranslate"><span class="pre">templates</span></code>.</p></li>
+<li><p>sélection du modèle à utiliser parmi la liste → <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>.</p></li>
+<li><p>récupération sur le serveur PostgreSQL des catégories associées au modèle sélectionné avec leurs paramètres d’affichage → <code class="docutils literal notranslate"><span class="pre">categories</span></code>.</p></li>
+<li><p>récupération sur le serveur PostgreSQL de la liste des onglets du modèle → <code class="docutils literal notranslate"><span class="pre">tabs</span></code>.</p></li>
+<li><p>mise au propre du modèle sous la forme d’un dictionnaire → <code class="docutils literal notranslate"><span class="pre">template</span></code>.</p></li>
+</ol>
+<p>À l’ouverture de la fiche de métadonnées, le choix du modèle (étape 3) est automatique. Les étapes 4 à 6 devront être relancées à chaque fois que l’utilisateur change manuellement le modèle courant.</p>
+<p>Soit :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> la chaîne de connexion à la base de données PostgreSQL ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> le nom de la table ou vue dont l’utilisateur cherche à consulter / éditer les métadonnées ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> le nom de son schéma.</p></li>
+</ul>
+<section id="presence-de-l-extension-plumepg">
+<h3>Présence de l’extension <em>PlumePg</em><a class="headerlink" href="#presence-de-l-extension-plumepg" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La première étape consiste à déterminer si l’extension <em>PlumePg</em> est installée sur la base d’où provient la table considérée.</p>
+<p>Pour le vérifier :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+    
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">(),</span> <span class="p">(</span><span class="s1">&#39;plume_pg&#39;</span><span class="p">,))</span>
+        <span class="n">plume_pg_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Si <code class="docutils literal notranslate"><span class="pre">plume_pg_exists</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, <em>PlumePg</em> est bien disponible. On pourra donc poursuivre avec les opérations suivantes.</p>
+<p>Dans le cas contraire, on se reportera à la partie <span class="xref myst">Avec les modèles stockés en local</span>.</p>
+</section>
+<section id="recuperation-de-la-liste-des-modeles">
+<h3>Récupération de la liste des modèles<a class="headerlink" href="#recuperation-de-la-liste-des-modeles" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Il s’agit simplement d’aller chercher sur le serveur le contenu de la table <code class="docutils literal notranslate"><span class="pre">meta_template</span></code>, à la petite nuance près que <code class="docutils literal notranslate"><span class="pre">query_list_templates()</span></code> exécute ce faisant les filtres SQL du champ <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> (côté serveur, grâce à la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.meta_execute_sql_filter(text,</span> <span class="pre">text,</span> <span class="pre">text)</span></code> de l’extension <em>PlumePg</em>) et c’est le booléen résultant qui est importé plutôt que le filtre lui-même.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+    
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_list_templates</span><span class="p">(),</span> <span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">))</span>
+        <span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Puisque l’utilisateur devra avoir la possibilité de choisir ultérieurement un nouveau modèle (ou aucun modèle), la liste doit être gardée en mémoire. Les conditions ne servant plus à rien, on pourra se contenter des noms :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">templateLabels</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">templates</span><span class="p">]</span>
+
+</pre></div>
+</div>
+</section>
+<section id="selection-automatique-du-modele">
+<h3>Sélection automatique du modèle<a class="headerlink" href="#selection-automatique-du-modele" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Cette étape détermine le modèle qui sera utilisé à l’ouverture initiale du formulaire. Elle mobilise la fonction <code class="docutils literal notranslate"><span class="pre">plume.pg.template.search_template</span></code>, qui parcourt la liste des modèles (avec le résultat du filtre SQL / champ <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> de la table <code class="docutils literal notranslate"><span class="pre">meta_template</span></code>) en déterminant si les conditions d’usage portant sur les métadonnées (champ <code class="docutils literal notranslate"><span class="pre">md_conditions</span></code>) sont vérifiées. Elle renvoie le nom du modèle de plus haut niveau de priorité (champ <code class="docutils literal notranslate"><span class="pre">priority</span></code>) dont le filtre SQL ou les conditions sur les métadonnées sont satisfaites.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.pg.template</span> <span class="kn">import</span> <span class="n">search_template</span>
+
+<span class="n">tpl_label</span> <span class="o">=</span> <span class="n">search_template</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">metagraph</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">metagraph</span></code> est le graphe contenant les métadonnées de la table ou vue considérée. Cf. <span class="xref myst">Génération du dictionnaire des widgets</span>.</em></p>
+<p>Il est tout à possible que la fonction <code class="docutils literal notranslate"><span class="pre">search_template</span></code> ne renvoie rien, d’autant que tous les services ne souhaiteront pas nécessairement utiliser ce mécanisme d’application automatique des modèles. Dans ce cas, on utilisera le « modèle préféré » (<code class="docutils literal notranslate"><span class="pre">preferedTemplate</span></code>) désigné dans les <span class="xref myst">paramètres de configuration de l’utilisateur</span> – sous réserve qu’il soit défini et fasse bien partie de <code class="docutils literal notranslate"><span class="pre">templateLabels</span></code> – ou, à défaut, aucun modèle (<code class="docutils literal notranslate"><span class="pre">template</span></code> vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<p>À noter que l’utilisateur peut décider que son modèle préféré prévaut sur toute sélection automatique, en mettant à <code class="docutils literal notranslate"><span class="pre">True</span></code> le paramètre utilisateur <code class="docutils literal notranslate"><span class="pre">enforcePreferedTemplate</span></code>. Dans ce cas, il n’est même pas utile de lancer <code class="docutils literal notranslate"><span class="pre">search_template</span></code>, on a directement :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">if</span> <span class="n">preferedTemplate</span> <span class="ow">and</span> <span class="n">enforcePreferedTemplate</span> \
+    <span class="ow">and</span> <span class="n">templateLabels</span> <span class="ow">and</span> <span class="n">preferedTemplate</span> <span class="ow">in</span> <span class="n">templateLabels</span><span class="p">:</span>
+    <span class="n">tpl_label</span> <span class="o">=</span> <span class="n">preferedTemplate</span>
+
+</pre></div>
+</div>
+</section>
+<section id="recuperation-des-categories-associees-au-modele-retenu">
+<h3>Récupération des catégories associées au modèle retenu<a class="headerlink" href="#recuperation-des-categories-associees-au-modele-retenu" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Une fois le nom du modèle à appliquer connu (s’il y en a un), on peut aller chercher dans la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> les catégories associées au modèle.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+    
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_get_categories</span><span class="p">(),</span> <span class="p">(</span><span class="n">tpl_label</span><span class="p">,))</span>
+        <span class="n">categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="recuperation-des-onglets-associes-au-modele-retenu">
+<h3>Récupération des onglets associés au modèle retenu<a class="headerlink" href="#recuperation-des-onglets-associes-au-modele-retenu" title="Lien permanent vers ce titre">¶</a></h3>
+<p>La liste des onglets est obtenue en exécutant la requête renvoyée par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_template_tabs</span></code>, avec le nom du modèle en paramètre.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+    
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_template_tabs</span><span class="p">(),</span> <span class="p">(</span><span class="n">tpl_label</span><span class="p">,))</span>
+        <span class="n">tabs</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Si <code class="docutils literal notranslate"><span class="pre">tabs</span></code> est une liste vide, toutes les catégories seront affectées à un unique onglet nommé <em>« Général »</em>.</p>
+</section>
+<section id="generation-de-template">
+<h3>Génération de <em>template</em><a class="headerlink" href="#generation-de-template" title="Lien permanent vers ce titre">¶</a></h3>
+<p>À ce stade, <code class="docutils literal notranslate"><span class="pre">categories</span></code> est une liste de tuples, qui doit être consolidée avant de pouvoir être utilisée pour générer le <span class="xref myst">dictionnaire de widgets</span>.</p>
+<p>Concrètement, il s’agit de créer un objet <code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code> à partir de <code class="docutils literal notranslate"><span class="pre">categories</span></code> et <code class="docutils literal notranslate"><span class="pre">tabs</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">TemplateDict</span><span class="p">(</span><span class="n">categories</span><span class="p">,</span> <span class="n">tabs</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>Le modèle de formulaire ainsi obtenu peut être passé dans l’argument <code class="docutils literal notranslate"><span class="pre">template</span></code> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WigdetsDict</span></code>. Cf. <span class="xref myst">Génération du dictionnaire des widgets</span>.</p>
+</section>
+</section>
+<section id="avec-les-modeles-stockes-en-local">
+<h2>Avec les modèles stockés en local<a class="headerlink" href="#avec-les-modeles-stockes-en-local" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l’extension PostgreSQL <em>PlumePg</em> n’est pas active sur la base cible (cf. <span class="xref myst">Présence de l’extension <em>PlumePg</em></span> pour le test). Le processus est similaire à celui décrit dans la partie <span class="xref myst">Import des modèles par Plume</span>, si ce n’est que certaines étapes ne sont plus nécessaires.</p>
+<p>Faute de pouvoir importer les modèles personnalisés par l’administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de <em>PlumePg</em>. Ceux-ci sont stockés dans le fichier <span class="xref myst">templates.json</span>, dont on chargera le contenu en créant un objet de classe <code class="docutils literal notranslate"><span class="pre">plume.pg.template.LocalTemplatesCollection</span></code>. Celui-ci n’étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans <em>PlumePg</em> et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.pg.template</span> <span class="kn">import</span> <span class="n">LocalTemplatesCollection</span>
+
+<span class="n">templates_collection</span> <span class="o">=</span> <span class="n">LocalTemplatesCollection</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Pour connaître l’éventuel modèle à appliquer automatiquement à une table donnée, on procédera comme décrit dans la partie <span class="xref myst">Sélection automatique du modèle</span>. La seule différence est que la variable <code class="docutils literal notranslate"><span class="pre">templates</span></code> ne résulte pas d’une requête générée par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_list_templates</span></code> mais par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_evaluate_local_templates</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+<span class="kn">from</span> <span class="nn">plume.pg.template</span> <span class="kn">import</span> <span class="n">search_template</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+    
+        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_evaluate_local_templates</span><span class="p">(</span><span class="n">templates_collection</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">))</span>
+        <span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">tpl_label</span> <span class="o">=</span> <span class="n">search_template</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">metagraph</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue dont on affiche les métadonnées, <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> le nom de son schéma, et <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> le graphe contenant ses métadonnées.</em></p>
+<p>Puisque les modèles sont stockés localement, il n’est pas nécessaire d’envoyer des requêtes pour connaître les catégories de métadonnées et onglets associés (autrement dit, les parties <span class="xref myst">Récupération des catégories associées au modèle retenu</span> et <span class="xref myst">Récupération des onglets associés au modèle retenu</span> n’ont pas d’équivalent ici). On obtiendra directement l’objet <code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code> à fournir en argument au constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> en interrogeant le répertoire des modèles locaux.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">templates_collection</span><span class="p">[</span><span class="n">tpl_label</span><span class="p">]</span> <span class="k">if</span> <span class="n">tpl_label</span> <span class="k">else</span> <span class="kc">None</span>
+
+</pre></div>
+</div>
+<hr class="footnotes docutils" />
+<dl class="footnote brackets">
+<dt class="label" id="metadonnees-masquees"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Du moins en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire.</p>
+</dd>
+<dt class="label" id="base-par-base"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Plus précisément, si <em>PlumePg</em> n’est pas installée sur une base donnée, aucun modèle ne sera proposé dans l’interface de Plume pour les métadonnées des objets de cette base.</p>
+</dd>
+<dt class="label" id="langstring"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>Si une catégorie de métadonnée est de type <code class="docutils literal notranslate"><span class="pre">'rdf:langString'</span></code>, l’interface de Plume permettra, lorsque les modes édition et traduction sont simultanément activés, d’associer une langue à la métadonnée. Par défaut, les valeurs saisies hors mode traduction seront présumées être dans la <span class="xref myst">langue principale des métadonnées</span>. Une catégorie de type <code class="docutils literal notranslate"><span class="pre">'xsd:string'</span></code> est une chaîne de caractères sans langue, ce qui est adapté pour toutes les catégories apparentées à des identifiants (nom d’application, nom d’objet PostgreSQL…), qui n’ont pas vocation à être traduites. Pour toutes les autres, <code class="docutils literal notranslate"><span class="pre">'rdf:langString'</span></code> est généralement préférables.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Plume</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="usage.html">Usage</a><ul>
+      <li>Previous: <a href="actions_generales.html" title="Chapitre précédent">Actions générales</a></li>
+      <li>Next: <a href="parametres_utilisateur.html" title="Chapitre suivant">Paramètres utilisateurs</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, République française.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/modeles_de_formulaire.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
