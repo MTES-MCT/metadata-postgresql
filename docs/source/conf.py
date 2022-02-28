@@ -31,6 +31,7 @@ release = '0.3.0-beta'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.githubpages',
     'myst_parser', # Markdown support
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon' # NumPy support
