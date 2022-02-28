@@ -1,48 +1,112 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Aide-mémoire &#8212; Documentation Plume 0.3.0-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/translations.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aide-mémoire &mdash; Documentation Plume 0.3.0-beta</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
-    <link rel="prev" title="Usage" href="mechanism.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="Usage" href="mechanism.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Plume
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="mechanism.html">Usage</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Aide-mémoire</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#execution-des-tests">Exécution des tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generer-un-zip-propre-du-plugin">Générer un ZIP propre du plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifier-les-categories-de-metadonnees-communes">Modifier les catégories de métadonnées communes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#schema-des-metadonnees-communes">Schéma des métadonnées communes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#declaration-de-l-espace-de-nommage">Déclaration de l’espace de nommage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mise-a-jour-de-la-liste-des-metadonnees-communes-de-la-documentation-technique">Mise à jour de la liste des métadonnées communes de la documentation technique</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mise-a-jour-des-categories-communes-dans-les-scripts-de-plumepg">Mise à jour des catégories communes dans les scripts de <em>PlumePg</em></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees">Ajouter une option de configuration des catégories de métadonnées</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Schéma des métadonnées communes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deserialisation-du-schema-des-metadonnees-communes">Désérialisation du schéma des métadonnées communes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extension-plumepg">Extension <em>PlumePg</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#import-des-modeles-de-formulaires">Import des modèles de formulaires</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deserialisation-des-modeles-de-formulaire">Désérialisation des modèles de formulaire</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#croisement-du-schema-et-du-modele">Croisement du schéma et du modèle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#arbre-des-cles">Arbre des clés</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dictionnaire-interne">Dictionnaire interne</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dictionnaire-de-widgets">Dictionnaire de widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generation-du-formulaire">Génération du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#modifier-les-modeles-pre-configures-de-plumepg">Modifier les modèles pré-configurés de <em>PlumePg</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Plume</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="mechanism.html">Usage</a> &raquo;</li>
+      <li>Aide-mémoire</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/mechanism/memo.md.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="aide-memoire">
-<h1>Aide-mémoire<a class="headerlink" href="#aide-memoire" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Aide-mémoire<a class="headerlink" href="#aide-memoire" title="Lien permanent vers ce titre"></a></h1>
 <p>Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.</p>
 <p><span class="xref myst">Exécution des tests</span> • <span class="xref myst">Générer un ZIP propre du plugin</span> • <span class="xref myst">Modifier les catégories de métadonnées communes</span> • <span class="xref myst">Ajouter une option de configuration des catégories de métadonnées</span> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span></p>
 <section id="execution-des-tests">
-<h2>Exécution des tests<a class="headerlink" href="#execution-des-tests" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Exécution des tests<a class="headerlink" href="#execution-des-tests" title="Lien permanent vers ce titre"></a></h2>
 <p>On lancera le script <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/admin/tests.py</span></code></span> qui compile les tests de tous les modules de Plume.</p>
 </section>
 <section id="generer-un-zip-propre-du-plugin">
-<h2>Générer un ZIP propre du plugin<a class="headerlink" href="#generer-un-zip-propre-du-plugin" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Générer un ZIP propre du plugin<a class="headerlink" href="#generer-un-zip-propre-du-plugin" title="Lien permanent vers ce titre"></a></h2>
 <p>Pour générer une archive utilisable par QGIS pour installer le plugin Plume, expurgée des fichiers de tests et autres éléments sans intérêt pour les utiliseurs, on exécutera :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span> <span class="nn">admin.zip_plume</span> <span class="kn">import</span> <span class="n">zip_plume</span>
@@ -54,14 +118,14 @@
 <p>Par défaut, le fichier ZIP est créé à la racine du dépôt, mais on pourra fournir en argument à <code class="docutils literal notranslate"><span class="pre">admin.zip_plume.zip_plume</span></code> le chemin absolu d’un autre répertoire cible. Dans tous les cas, l’archive sera nommée <code class="docutils literal notranslate"><span class="pre">plume.zip</span></code>.</p>
 </section>
 <section id="modifier-les-categories-de-metadonnees-communes">
-<h2>Modifier les catégories de métadonnées communes<a class="headerlink" href="#modifier-les-categories-de-metadonnees-communes" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Modifier les catégories de métadonnées communes<a class="headerlink" href="#modifier-les-categories-de-metadonnees-communes" title="Lien permanent vers ce titre"></a></h2>
 <section id="schema-des-metadonnees-communes">
-<h3>Schéma des métadonnées communes<a class="headerlink" href="#schema-des-metadonnees-communes" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Schéma des métadonnées communes<a class="headerlink" href="#schema-des-metadonnees-communes" title="Lien permanent vers ce titre"></a></h3>
 <p>Les catégories communes sont définies dans le fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/plume/rdf/data/shape.ttl</span></code></span>, dit <em>schéma des métadonnées communes</em>. La première étape consiste à éditer manuellement ce fichier  (RDF encodé en turtle).</p>
 <p><em>TODO: détailler le paramétrage des catégories (informations obligatoires selon le type RDF, etc.).</em></p>
 </section>
 <section id="declaration-de-l-espace-de-nommage">
-<h3>Déclaration de l’espace de nommage<a class="headerlink" href="#declaration-de-l-espace-de-nommage" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Déclaration de l’espace de nommage<a class="headerlink" href="#declaration-de-l-espace-de-nommage" title="Lien permanent vers ce titre"></a></h3>
 <p>Si la modification implique l’usage d’un espace de nommage qui n’avait encore jamais été utilisé, son préfixe devra naturellement être ajouté dans l’en-tête du fichier <code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code>, sans quoi la désérialisation du fichier échouera.</p>
 <div class="highlight-turtle notranslate"><div class="highlight"><pre><span></span><span class="k">@prefix</span><span class="w"> </span><span class="nn">gsp:</span><span class="w"> </span><span class="nv">&lt;http://www.opengis.net/ont/geosparql#&gt;</span><span class="w"> </span><span class="p">.</span>
 </pre></div>
@@ -87,7 +151,7 @@
 <p>La clé de <code class="docutils literal notranslate"><span class="pre">namespaces</span></code> devra être identique au préfixe utilisé dans <code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code>. La variable référençant l’objet <code class="docutils literal notranslate"><span class="pre">rdflib.namespace.Namespace</span></code> porte le même nom en majuscules<a class="footnote-reference brackets" href="#local" id="id1">1</a>.</p>
 </section>
 <section id="mise-a-jour-de-la-liste-des-metadonnees-communes-de-la-documentation-technique">
-<h3>Mise à jour de la liste des métadonnées communes de la documentation technique<a class="headerlink" href="#mise-a-jour-de-la-liste-des-metadonnees-communes-de-la-documentation-technique" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Mise à jour de la liste des métadonnées communes de la documentation technique<a class="headerlink" href="#mise-a-jour-de-la-liste-des-metadonnees-communes-de-la-documentation-technique" title="Lien permanent vers ce titre"></a></h3>
 <p>La liste des métadonnées communes présentée dans le fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/docs/source/usage/metadonnees_communes.md</span></code></span> est mise à jour par la commande suivante :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">admin.docs</span> <span class="kn">import</span> <span class="n">shared_metadata_as_page</span>
@@ -97,7 +161,7 @@
 </div>
 </section>
 <section id="mise-a-jour-des-categories-communes-dans-les-scripts-de-plumepg">
-<h3>Mise à jour des catégories communes dans les scripts de <em>PlumePg</em><a class="headerlink" href="#mise-a-jour-des-categories-communes-dans-les-scripts-de-plumepg" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Mise à jour des catégories communes dans les scripts de <em>PlumePg</em><a class="headerlink" href="#mise-a-jour-des-categories-communes-dans-les-scripts-de-plumepg" title="Lien permanent vers ce titre"></a></h3>
 <p>La commande suivante permet de générer la commande <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> qui ajoute toutes les métadonnées communes à la table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">admin.plume_pg</span> <span class="kn">import</span> <span class="n">query_from_shape</span>
@@ -110,10 +174,10 @@
 </section>
 </section>
 <section id="ajouter-une-option-de-configuration-des-categories-de-metadonnees">
-<h2>Ajouter une option de configuration des catégories de métadonnées<a class="headerlink" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Ajouter une option de configuration des catégories de métadonnées<a class="headerlink" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees" title="Lien permanent vers ce titre"></a></h2>
 <p>Les explications qui suivent prennent l’exemple de l’option <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code>, qui définit les fonctionnalités d’aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l’option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span>), désérialisation du schéma métadonnées communes (module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.properties</span></code></span>), modèles de formulaires (extension <span class="xref myst"><em>PlumePg</em></span>), import des modèles de formulaire (module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></span>), désérialisation des modèles de formulaire (module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.template</span></code></span>), arbre des clés (module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey</span></code></span>), dictionnaire interne (module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.internaldict</span></code></span>), dictionnaire de widgets (module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict</span></code></span>), construction du formulaire (description des modalités dans <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">creation_widgets.md</span></code></span>).</p>
 <section id="id2">
-<h3>Schéma des métadonnées communes<a class="headerlink" href="#id2" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Schéma des métadonnées communes<a class="headerlink" href="#id2" title="Lien permanent vers ce titre"></a></h3>
 <p>Sauf à ce que l’option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l’associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span>.</p>
 <p>Si elle n’est pas nativement prévue par le language <a class="reference external" href="https://www.w3.org/TR/shacl/">SHACL</a>, on utilisera l’espace de nommage dont le préfixe est <code class="docutils literal notranslate"><span class="pre">snum</span></code>. Par convention, le nom de l’option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu’il s’agit d’une propriété et non d’une classe.</p>
 <p>Pour l’aide à la saisie des géométries, c’est ainsi le prédicat <code class="docutils literal notranslate"><span class="pre">snum:geoTool</span></code> qui a été utilisé :</p>
@@ -141,7 +205,7 @@
 <p>L’option peut avoir plusieurs valeurs, il faudra juste penser à le déclarer dans la suite.</p>
 </section>
 <section id="deserialisation-du-schema-des-metadonnees-communes">
-<h3>Désérialisation du schéma des métadonnées communes<a class="headerlink" href="#deserialisation-du-schema-des-metadonnees-communes" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Désérialisation du schéma des métadonnées communes<a class="headerlink" href="#deserialisation-du-schema-des-metadonnees-communes" title="Lien permanent vers ce titre"></a></h3>
 <p>C’est la fonction <code class="docutils literal notranslate"><span class="pre">read_shape_property</span></code> du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.properties</span></code></span> qui a la charge de lire et d’interpréter le contenu du fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span>. Elle a besoin de connaître à l’avance les options à rechercher.</p>
 <p>On ajoutera donc à son dictionnaire <code class="docutils literal notranslate"><span class="pre">prop_map</span></code> la nouvelle option :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -156,7 +220,7 @@
 <p>La valeur est un tuple dont le premier élément est le nom qui sera systématiquement donné à l’option dans le code de Plume. Par convention, il est formé de lettres minuscules avec le tiret bas comme séparateur. Il doit ressembler suffisamment à l’IRI pour qu’il ne fasse aucun doute que l’objet est le même. Le deuxième élément du tuple est un booléen qui indique si l’option peut prendre plusieurs valeurs (<code class="docutils literal notranslate"><span class="pre">True</span></code>) ou non (<code class="docutils literal notranslate"><span class="pre">False</span></code>). S’il vaut <code class="docutils literal notranslate"><span class="pre">False</span></code> une seule valeur sera considérée même s’il se trouvait y en avoir plusieurs dans <code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code>.</p>
 </section>
 <section id="extension-plumepg">
-<h3>Extension <em>PlumePg</em><a class="headerlink" href="#extension-plumepg" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Extension <em>PlumePg</em><a class="headerlink" href="#extension-plumepg" title="Lien permanent vers ce titre"></a></h3>
 <p>Le plus souvent, une nouvelle option de configuration se manifestera dans <em>PlumePg</em> par un champ supplémentaire dans les tables <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> (ainsi que ses partitions <code class="docutils literal notranslate"><span class="pre">z_plume.meta_shared_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_local_categorie</span></code>) et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code>, ainsi que la vue <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories_full</span></code>. Autant que possible, le nom du champ sera identique au nom python de l’option de configuration correspondante (le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code> évoqué dans le paragraphe précédent), soit <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code> pour l’exemple considéré.</p>
 <p>Si le champ n’admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à <code class="docutils literal notranslate"><span class="pre">z_plume.meta_datatype</span></code>.</p>
 <p>Pour l’actualisation des informations relatives aux métadonnées communes incluses dans <em>PlumePg</em>, on se reportera à <span class="xref myst">Mise à jour des catégories communes dans les scripts de <em>PlumePg</em></span>. Il faudra néanmoins commencer par modifier les fonctions <code class="docutils literal notranslate"><span class="pre">_table_from_shape</span></code> et <code class="docutils literal notranslate"><span class="pre">query_from_shape</span></code> pour qu’elles prennent en compte le nouveau champ.</p>
@@ -177,7 +241,7 @@
 <p>Dans <code class="docutils literal notranslate"><span class="pre">query_from_shape</span></code> on ajoute le champ supplémentaire à ceux qui apparaissent dans la commande <code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, en prenant soin de respecter l’ordre du tuple <code class="docutils literal notranslate"><span class="pre">category</span></code> de <code class="docutils literal notranslate"><span class="pre">_table_from_shape</span></code>.</p>
 </section>
 <section id="import-des-modeles-de-formulaires">
-<h3>Import des modèles de formulaires<a class="headerlink" href="#import-des-modeles-de-formulaires" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Import des modèles de formulaires<a class="headerlink" href="#import-des-modeles-de-formulaires" title="Lien permanent vers ce titre"></a></h3>
 <p>Pour que le nouveau champ des tables et vues de <em>PlumePg</em> soit exploité, encore faut-il que son contenu soit importé par Plume.</p>
 <p>Ceci suppose de l’ajouter dans la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">query_get_categories</span></code> du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></span> :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span>
@@ -191,7 +255,7 @@
 <p>Psycopg ne reconnaissant pas les types personnalisés, il est préférable de caster toutes les valeurs dont le type n’est pas standard en <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">text[]</span></code> ou autre type standard adapté.</p>
 </section>
 <section id="deserialisation-des-modeles-de-formulaire">
-<h3>Désérialisation des modèles de formulaire<a class="headerlink" href="#deserialisation-des-modeles-de-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Désérialisation des modèles de formulaire<a class="headerlink" href="#deserialisation-des-modeles-de-formulaire" title="Lien permanent vers ce titre"></a></h3>
 <p>C’est maintenant la fonction d’initialisation de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code></span> qu’il s’agit d’ajuster.</p>
 <p>La boucle <code class="docutils literal notranslate"><span class="pre">for</span></code> nomme les colonnes du résultat de la requête <code class="docutils literal notranslate"><span class="pre">query_get_categories</span></code> susmentionnée. Il faut donc y ajouter le nouveau champ, en s’assurant de respecter l’ordre de <code class="docutils literal notranslate"><span class="pre">query_get_categories</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -214,7 +278,7 @@
 <p><em>NB. D’une manière générale, la validation et les conversions sont plutôt du ressort du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey</span></code></span>, le constructeur de <code class="docutils literal notranslate"><span class="pre">TemplateDict</span></code> tend donc à reprendre telles quelles les informations issues du modèle. Il peut cependant être nécessaire de retraiter les valeurs à ce niveau dans le cas particulier d’une option pour laquelle les valeurs issues du modèle ne remplacent pas simplement les valeurs du schéma des métadonnées communes, mais nécessitent d’être comparées (cf. paragraphe suivant), ce qui supposent que les formats soient comparables.</em></p>
 </section>
 <section id="croisement-du-schema-et-du-modele">
-<h3>Croisement du schéma et du modèle<a class="headerlink" href="#croisement-du-schema-et-du-modele" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Croisement du schéma et du modèle<a class="headerlink" href="#croisement-du-schema-et-du-modele" title="Lien permanent vers ce titre"></a></h3>
 <p>Par défaut, Plume considère que si une catégorie apparaît à la fois dans le modèle et dans le schéma des métadonnées communes :</p>
 <ul class="simple">
 <li><p>les options de configuration définies dans le modèle prévalent sur celle du schéma ;</p></li>
@@ -223,7 +287,7 @@
 <p>S’il était nécessaire d’avoir un comportement différent pour l’option considérée, c’est la fonction <code class="docutils literal notranslate"><span class="pre">merge_property_dict</span></code> du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.properties</span></code></span> qui devrait être modifiée en ce sens.</p>
 </section>
 <section id="arbre-des-cles">
-<h3>Arbre des clés<a class="headerlink" href="#arbre-des-cles" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Arbre des clés<a class="headerlink" href="#arbre-des-cles" title="Lien permanent vers ce titre"></a></h3>
 <p>L’arbre des clés est la colonne vertébrale de Plume. Il porte la structure des formulaires de saisie, garantie leur cohérence et permet leur évolution dynamique selon les commandes de l’utilisateur.</p>
 <p>Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code> et autres classes de clés héritant de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></span>) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour <span class="xref myst">la clé de <code class="docutils literal notranslate"><span class="pre">config</span></code></span> et/ou <span class="xref myst">le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code></span>, soit <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code> dans le cas des fonctionnalités d’aide à la saisie des géométries.</p>
 <p>Ce que font les clés de cette information peut être très variable. Pour <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code>, il s’agissait de définir un nouveau bouton annexe et ses caractéristiques, et cela a nécessité les opérations suivantes.</p>
@@ -258,20 +322,20 @@
 </ul>
 </section>
 <section id="dictionnaire-interne">
-<h3>Dictionnaire interne<a class="headerlink" href="#dictionnaire-interne" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Dictionnaire interne<a class="headerlink" href="#dictionnaire-interne" title="Lien permanent vers ce titre"></a></h3>
 <p><em>TODO</em></p>
 </section>
 <section id="dictionnaire-de-widgets">
-<h3>Dictionnaire de widgets<a class="headerlink" href="#dictionnaire-de-widgets" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Dictionnaire de widgets<a class="headerlink" href="#dictionnaire-de-widgets" title="Lien permanent vers ce titre"></a></h3>
 <p><em>TODO</em></p>
 </section>
 <section id="generation-du-formulaire">
-<h3>Génération du formulaire<a class="headerlink" href="#generation-du-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Génération du formulaire<a class="headerlink" href="#generation-du-formulaire" title="Lien permanent vers ce titre"></a></h3>
 <p><em>TODO</em></p>
 </section>
 </section>
 <section id="modifier-les-modeles-pre-configures-de-plumepg">
-<h2>Modifier les modèles pré-configurés de <em>PlumePg</em><a class="headerlink" href="#modifier-les-modeles-pre-configures-de-plumepg" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Modifier les modèles pré-configurés de <em>PlumePg</em><a class="headerlink" href="#modifier-les-modeles-pre-configures-de-plumepg" title="Lien permanent vers ce titre"></a></h2>
 <p>Les modèles pré-configurés de l’extension PostgreSQL <em>PlumePg</em> sont définis dans le code de l’extension (fichier <code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x.sql</span></code> du répertoire <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/postgresql</span></code></span>) et plus précisément dans le corps de la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.meta_import_sample_template(text)</span></code>. Comme pour tout changement dans le code de <em>PlumePg</em>, leur modification devra donner lieu à une nouvelle version de <em>PlumePg</em>, outillée par un fichier <code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x-y.y.y.sql</span></code> permettant de passer de la version <code class="docutils literal notranslate"><span class="pre">x.x.x</span></code> à la version <code class="docutils literal notranslate"><span class="pre">y.y.y</span></code>.</p>
 <p>Plume inclut par ailleurs des copies locales des modèles pré-configurés, qui permettent de bénéficier de quelques modèles basiques même si <em>PlumePg</em> n’est pas installée sur la base contenant la table ou vue à documenter. Ils sont stockés dans le fichier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">/plume/pg/data/templates.json</span></code></span>.</p>
 <p>Une fois <em>PlumePg</em> modifiée, on pourra mettre à jour ce fichier avec la commande suivante :</p>
@@ -292,78 +356,33 @@
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="mechanism.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, République française.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">Plume</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="mechanism.html">Usage</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Aide-mémoire</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="mechanism.html">Usage</a><ul>
-      <li>Previous: <a href="mechanism.html" title="Chapitre précédent">Usage</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Recherche rapide</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2022, République française.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/mechanism/memo.md.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

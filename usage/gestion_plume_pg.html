@@ -1,44 +1,102 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Installation et gestion de l’extension PostgreSQL PlumePg &#8212; Documentation Plume 0.3.0-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/translations.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation et gestion de l’extension PostgreSQL PlumePg &mdash; Documentation Plume 0.3.0-beta</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
     <link rel="next" title="Métadonnées communes" href="metadonnees_communes.html" />
-    <link rel="prev" title="Paramètres utilisateurs" href="parametres_utilisateur.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="Paramètres utilisateurs" href="parametres_utilisateur.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Plume
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compatibilite">Compatibilité</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#localisation-des-objets-de-l-extension">Localisation des objets de l’extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cohabitation-avec-asgard">Cohabitation avec <em>Asgard</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mise-a-jour">Mise à jour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#desinstallation">Désinstallation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sauvegarde-et-restauration-de-la-base">Sauvegarde et restauration de la base</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Plume</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="usage.html">Usage</a> &raquo;</li>
+      <li>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/gestion_plume_pg.md.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
-<h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre"></a></h1>
 <p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <span class="xref myst">modèles de formulaire</span>.</p>
 <section id="compatibilite">
-<h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre"></a></h2>
 <table class="colwidths-auto docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Version</p></th>
@@ -75,7 +133,7 @@
 </table>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Lien permanent vers ce titre"></a></h2>
 <p>Les fichiers d’installation de <em>PlumePg</em> se trouvent dans le dossier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">postgresql</span></code></span> du Git :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x.sql</span></code> contient le code de la version <code class="docutils literal notranslate"><span class="pre">x.x.x</span></code> de l’extension <em>PlumePg</em>. Celui-ci s’exécute lorsqu’elle est installée sur une base.</p></li>
@@ -94,11 +152,11 @@
 <p>L’installation est à réaliser par l’ADL. Il n’était pas pertinent que celle-ci puisse se faire via l’interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"><em>AsgardManager</em></a> propose cette fonctionnalité, via son menu <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase"><code class="docutils literal notranslate"><span class="pre">Gestion</span> <span class="pre">de</span> <span class="pre">la</span> <span class="pre">base</span></code></a>.</p>
 </section>
 <section id="localisation-des-objets-de-l-extension">
-<h2>Localisation des objets de l’extension<a class="headerlink" href="#localisation-des-objets-de-l-extension" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Localisation des objets de l’extension<a class="headerlink" href="#localisation-des-objets-de-l-extension" title="Lien permanent vers ce titre"></a></h2>
 <p>Tous les objets de l’extension sont créés dans le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>.</p>
 </section>
 <section id="cohabitation-avec-asgard">
-<h2>Cohabitation avec <em>Asgard</em><a class="headerlink" href="#cohabitation-avec-asgard" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Cohabitation avec <em>Asgard</em><a class="headerlink" href="#cohabitation-avec-asgard" title="Lien permanent vers ce titre"></a></h2>
 <p>Il n’y a pas de lien fonctionnel direct entre <em>PlumePg</em> et l’extension <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/"><em>Asgard</em></a>, outil créé dans le cadre du GT PostGIS pour faciliter la gestion des droits.</p>
 <p>Si l’extension <em>PlumePg</em> est installée sur une base disposant déjà d”<em>Asgard</em>, <code class="docutils literal notranslate"><span class="pre">g_admin</span></code> sera automatiquement désigné comme <em>producteur</em> du schéma et <code class="docutils literal notranslate"><span class="pre">g_consult</span></code> en sera fait <em>lecteur</em>. Il s’agit juste de faciliter le travail de l’administrateur, cette opération ne crée aucune adhérence durable. Il est ensuite tout à fait possible, sans que cela ne pose de problème particulier, y compris lors des futures montées de version de <em>PlumePg</em> :</p>
 <ul class="simple">
@@ -109,7 +167,7 @@
 <p><em>NB. Pour que l’affectation automatique de droits sur <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ait lieu, il faudra utiliser une version d’Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n’étaient pas automatiquement référencés.</em></p>
 </section>
 <section id="mise-a-jour">
-<h2>Mise à jour<a class="headerlink" href="#mise-a-jour" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Mise à jour<a class="headerlink" href="#mise-a-jour" title="Lien permanent vers ce titre"></a></h2>
 <p>Comme pour l’installation, les fichiers de mise à jour sont disponibles dans le dossier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">postgresql</span></code></span> du Git :</p>
 <ul class="simple">
 <li><p>un ou plusieurs fichiers <code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x--y.y.y.sql</span></code>, qui sont des scripts de passage de la version <code class="docutils literal notranslate"><span class="pre">x.x.x</span></code> à la version <code class="docutils literal notranslate"><span class="pre">y.y.y</span></code>. Plusieurs de ces scripts peuvent s’exécuter à la suite lors d’une mise à jour (<code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x--x1.x1.x1.sql</span></code>, <code class="docutils literal notranslate"><span class="pre">plume_pg--x1.x1.x1--x2.x2.x2.sql</span></code>, …, <code class="docutils literal notranslate"><span class="pre">plume_pg--xn.xn.xn--y.y.y.sql</span></code>).</p></li>
@@ -127,7 +185,7 @@
 </div>
 </section>
 <section id="desinstallation">
-<h2>Désinstallation<a class="headerlink" href="#desinstallation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Désinstallation<a class="headerlink" href="#desinstallation" title="Lien permanent vers ce titre"></a></h2>
 <p>Pour désinstaller <em>PlumePg</em> d’une base :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -136,7 +194,7 @@
 <p><em>NB. Si le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> existait avant l’installation de l’extension, il ne sera pas marqué comme dépendant de l’extension et ne sera donc pas supprimé en cas de désinstallation. Tout son contenu le sera, par contre.</em></p>
 </section>
 <section id="sauvegarde-et-restauration-de-la-base">
-<h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre"></a></h2>
 <p>Pour que les données de <em>PlumePg</em> soient préservées lors de la restauration, notamment les <span class="xref myst">modèles de formulaire</span>, il est essentiel de <strong>ne pas chercher à réinstaller manuellement l’extension sur la base de restauration</strong>. Tout est automatique. On veillera seulement à ce que :</p>
 <ul class="simple">
 <li><p>les fichiers d’installation de <em>PlumePg</em> soient disponibles dans le répertoire des extensions du serveur de restauration (cf. <span class="xref myst">Installation</span> pour l’emplacement de ce répertoire) ;</p></li>
@@ -166,89 +224,34 @@
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="parametres_utilisateur.html" class="btn btn-neutral float-left" title="Paramètres utilisateurs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="metadonnees_communes.html" class="btn btn-neutral float-right" title="Métadonnées communes" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, République française.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">Plume</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="usage.html">Usage</a><ul>
-      <li>Previous: <a href="parametres_utilisateur.html" title="Chapitre précédent">Paramètres utilisateurs</a></li>
-      <li>Next: <a href="metadonnees_communes.html" title="Chapitre suivant">Métadonnées communes</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Recherche rapide</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2022, République française.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/usage/gestion_plume_pg.md.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

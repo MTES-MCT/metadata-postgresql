@@ -1,41 +1,102 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Métadonnées calculées &#8212; Documentation Plume 0.3.0-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/translations.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Métadonnées calculées &mdash; Documentation Plume 0.3.0-beta</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
     <link rel="next" title="Actions générales" href="actions_generales.html" />
-    <link rel="prev" title="Outils d’aide à la saisie des géométries" href="outils_saisie_geometries.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="Outils d’aide à la saisie des géométries" href="outils_saisie_geometries.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Plume
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Métadonnées calculées</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#principe">Principe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#processus-de-calcul">Processus de calcul</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#controle-des-extensions-disponibles">Contrôle des extensions disponibles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generation-et-execution-de-la-requete">Génération et exécution de la requête</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration-du-resultat">Intégration du résultat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modification-des-widgets-en-consequence">Modification des widgets en conséquence</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation-du-calcul-automatique">Implémentation du calcul automatique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation-du-calcul-a-declenchement-manuel">Implémentation du calcul à déclenchement manuel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Plume</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="usage.html">Usage</a> &raquo;</li>
+      <li>Métadonnées calculées</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/metadonnees_calculees.md.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="metadonnees-calculees">
-<h1>Métadonnées calculées<a class="headerlink" href="#metadonnees-calculees" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Métadonnées calculées<a class="headerlink" href="#metadonnees-calculees" title="Lien permanent vers ce titre"></a></h1>
 <p><span class="xref myst">Principe</span> • <span class="xref myst">Processus de calcul</span> • <span class="xref myst">Implémentation du calcul automatique</span> • <span class="xref myst">Implémentation du calcul à déclenchement manuel</span></p>
 <p>Dans la suite, on considère :</p>
 <ul class="simple">
@@ -43,7 +104,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></span>.</p></li>
 </ul>
 <section id="principe">
-<h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre"></a></h2>
 <p>Plume permet à l’administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (option <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>), soit à la demande de l’utilisateur (option <code class="docutils literal notranslate"><span class="pre">'manual'</span></code>).</p>
 <p>Les catégories pour lesquels le calcul est proposé sont, à ce stade :</p>
 <table class="colwidths-auto docutils align-default">
@@ -60,7 +121,7 @@
 </table>
 </section>
 <section id="processus-de-calcul">
-<h2>Processus de calcul<a class="headerlink" href="#processus-de-calcul" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Processus de calcul<a class="headerlink" href="#processus-de-calcul" title="Lien permanent vers ce titre"></a></h2>
 <p>Le calcul consiste en quatre opérations successives :</p>
 <ul class="simple">
 <li><p>vérifier que la base PostgreSQL cible dispose bien des extensions nécessaires au calcul ;</p></li>
@@ -69,7 +130,7 @@
 <li><p>(selon les cas) répercuter les modifications sur les widgets.</p></li>
 </ul>
 <section id="controle-des-extensions-disponibles">
-<h3>Contrôle des extensions disponibles<a class="headerlink" href="#controle-des-extensions-disponibles" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Contrôle des extensions disponibles<a class="headerlink" href="#controle-des-extensions-disponibles" title="Lien permanent vers ce titre"></a></h3>
 <p>La liste des extensions PostgreSQL nécessaires à l’exécution du calcul est fournie par l’attribut <code class="docutils literal notranslate"><span class="pre">dependances</span></code> de l’objet <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.computer.ComputationMethod</span></code></span> contenu dans la clé <code class="docutils literal notranslate"><span class="pre">'compute</span> <span class="pre">method'</span></code> du dictionnaire interne. Il peut s’agir d’une liste vide si le calcul ne requiert aucune extension.</p>
 <p>Pour déterminer si les extensions sont bien installées sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_exists_extension</span></code></span>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -95,7 +156,7 @@
 <p>Si <code class="docutils literal notranslate"><span class="pre">dependances_ok</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, il est possible de passer à l’étape suivante. Sinon il faudra interrompre le processus, et vraisemblablement alerter l’utilisateur qu’une au moins des extensions requises est absente.</p>
 </section>
 <section id="generation-et-execution-de-la-requete">
-<h3>Génération et exécution de la requête<a class="headerlink" href="#generation-et-execution-de-la-requete" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Génération et exécution de la requête<a class="headerlink" href="#generation-et-execution-de-la-requete" title="Lien permanent vers ce titre"></a></h3>
 <p>La requête de calcul est construite par la méthode <code class="docutils literal notranslate"><span class="pre">computing_query</span></code> de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>. Celle-ci renvoie un tuple contenant tous les arguments à fournir à <code class="docutils literal notranslate"><span class="pre">psycopg2.cursor.execute</span></code> (contrairement à la plupart des fonctions du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></span> qui ne renvoient que la requête à proprement parler).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -114,7 +175,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue à documenter. <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> est le nom de son schéma.</em></p>
 </section>
 <section id="integration-du-resultat">
-<h3>Intégration du résultat<a class="headerlink" href="#integration-du-resultat" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Intégration du résultat<a class="headerlink" href="#integration-du-resultat" title="Lien permanent vers ce titre"></a></h3>
 <p>Le résultat de la requête, soit <code class="docutils literal notranslate"><span class="pre">result</span></code> dans l’exemple de code ci-avant, peut maintenant alimenter le dictionnaire de widgets et son arbre de clés. C’est l’objet de la méthode <code class="docutils literal notranslate"><span class="pre">computing_update</span></code> de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">computing_update</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
@@ -123,13 +184,13 @@
 </div>
 </section>
 <section id="modification-des-widgets-en-consequence">
-<h3>Modification des widgets en conséquence<a class="headerlink" href="#modification-des-widgets-en-consequence" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Modification des widgets en conséquence<a class="headerlink" href="#modification-des-widgets-en-consequence" title="Lien permanent vers ce titre"></a></h3>
 <p>Quand le calcul est réalisé alors que le formulaire est déjà intégralement constitué (cas du <span class="xref myst">calcul à déclenchement manuel</span>), les modifications effectuées par <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> sur le dictionnaire et son arbre de clés doivent être répercutées sur les widgets eux-mêmes.</p>
 <p>Pour ce faire, <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> renvoie, comme toutes les méthodes d’interaction avec le formulaire, un dictionnaire contenant toutes les informations de matérialisation. Cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span> pour plus de détails.</p>
 </section>
 </section>
 <section id="implementation-du-calcul-automatique">
-<h2>Implémentation du calcul automatique<a class="headerlink" href="#implementation-du-calcul-automatique" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Implémentation du calcul automatique<a class="headerlink" href="#implementation-du-calcul-automatique" title="Lien permanent vers ce titre"></a></h2>
 <p>Le calcul automatique est effectué pendant la génération des widgets (cf. <span class="xref myst">Création d’un nouveau widget</span>) lorsque la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> du dictionnaire interne est <code class="docutils literal notranslate"><span class="pre">True</span></code>. Ceci peut se produire pour un widget de saisie, mais aussi pour un groupe de valeurs.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;auto compute&#39;</span><span class="p">]:</span>
@@ -144,96 +205,41 @@
 </ul>
 </section>
 <section id="implementation-du-calcul-a-declenchement-manuel">
-<h2>Implémentation du calcul à déclenchement manuel<a class="headerlink" href="#implementation-du-calcul-a-declenchement-manuel" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Implémentation du calcul à déclenchement manuel<a class="headerlink" href="#implementation-du-calcul-a-declenchement-manuel" title="Lien permanent vers ce titre"></a></h2>
 <p>Lorsque l’utilisateur clique sur un bouton de calcul du formulaire, toutes les étapes du <span class="xref myst">processus de calcul</span> sont à réaliser.</p>
 <p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour les modalités de création de ces boutons.</p>
 </section>
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="outils_saisie_geometries.html" class="btn btn-neutral float-left" title="Outils d’aide à la saisie des géométries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="actions_generales.html" class="btn btn-neutral float-right" title="Actions générales" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, République française.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">Plume</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outils_saisie_geometries.html">Outils d’aide à la saisie des géométries</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Métadonnées calculées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="usage.html">Usage</a><ul>
-      <li>Previous: <a href="outils_saisie_geometries.html" title="Chapitre précédent">Outils d’aide à la saisie des géométries</a></li>
-      <li>Next: <a href="actions_generales.html" title="Chapitre suivant">Actions générales</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Recherche rapide</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2022, République française.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/usage/metadonnees_calculees.md.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

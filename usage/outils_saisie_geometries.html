@@ -1,45 +1,106 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Outils d’aide à la saisie des géométries &#8212; Documentation Plume 0.3.0-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/translations.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outils d’aide à la saisie des géométries &mdash; Documentation Plume 0.3.0-beta</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
     <link rel="next" title="Métadonnées calculées" href="metadonnees_calculees.html" />
-    <link rel="prev" title="Actions contrôlées par les widgets du formulaire" href="actions_widgets.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="Actions contrôlées par les widgets du formulaire" href="actions_widgets.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Plume
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Outils d’aide à la saisie des géométries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#les-actions-possibles">Les actions possibles</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#actions-sans-condition-d-activation">Actions sans condition d’activation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base">Actions à activer uniquement si l’extension PostGIS est disponible sur la base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis">Actions à activer uniquement pour les couches chargées dans QGIS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#remarques-sur-la-visualisation">Remarques sur la visualisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#les-calculs-de-geometries-cote-serveur">Les calculs de géométries côté serveur</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#les-calculs-et-trace-manuels-cote-qgis">Les calculs et tracé manuels côté QGIS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alimentation-du-formulaire">Alimentation du formulaire</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Plume</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="usage.html">Usage</a> &raquo;</li>
+      <li>Outils d’aide à la saisie des géométries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/outils_saisie_geometries.md.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="outils-d-aide-a-la-saisie-des-geometries">
-<h1>Outils d’aide à la saisie des géométries<a class="headerlink" href="#outils-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Outils d’aide à la saisie des géométries<a class="headerlink" href="#outils-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre"></a></h1>
 <p>Pour faciliter la saisie des métadonnées prenant pour valeur des géométries, le widget de saisie - <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> selon les cas - est accompagné d’un bouton annexe proposant des outils de calcul à partir des données et/ou de saisie manuelle dans le canevas principal de QGIS.</p>
 <p>Les modalités de création de ces boutons d’aide à la saisie des géométries sont décrites dans <span class="xref myst">Création d’un nouveau widget</span>. La présente page précise l’effet des différentes fonctionnalités proposées, ainsi que quand et comment les mettre en oeuvre.</p>
 <section id="les-actions-possibles">
-<h2>Les actions possibles<a class="headerlink" href="#les-actions-possibles" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Les actions possibles<a class="headerlink" href="#les-actions-possibles" title="Lien permanent vers ce titre"></a></h2>
 <p>La nature des actions disponibles dépend de la propriété considérée.</p>
 <p>Une action doit :</p>
 <ul class="simple">
@@ -48,7 +109,7 @@
 </ul>
 <p><em>NB : Un même terme peut représenter plusieurs actions, qui seront réalisées par des méthodes différentes selon la situation.</em></p>
 <section id="actions-sans-condition-d-activation">
-<h3>Actions sans condition d’activation<a class="headerlink" href="#actions-sans-condition-d-activation" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Actions sans condition d’activation<a class="headerlink" href="#actions-sans-condition-d-activation" title="Lien permanent vers ce titre"></a></h3>
 <p>Dès lors qu’elles sont listées par <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code>, les actions suivantes n’auront jamais besoin d’être désactivées.</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
@@ -94,7 +155,7 @@
 </table>
 </section>
 <section id="actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base">
-<h3>Actions à activer uniquement si l’extension PostGIS est disponible sur la base<a class="headerlink" href="#actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Actions à activer uniquement si l’extension PostGIS est disponible sur la base<a class="headerlink" href="#actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base" title="Lien permanent vers ce titre"></a></h3>
 <p>… et si la couche sélectionnée est géométrique.</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
@@ -137,7 +198,7 @@
 <p><em>Si <code class="docutils literal notranslate"><span class="pre">postgis_exists</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, l’extension PostGIS est bien installée sur la base considérée.</em></p>
 </section>
 <section id="actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis">
-<h3>Actions à activer uniquement pour les couches chargées dans QGIS<a class="headerlink" href="#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Actions à activer uniquement pour les couches chargées dans QGIS<a class="headerlink" href="#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis" title="Lien permanent vers ce titre"></a></h3>
 <p>… et si la couche sélectionnée est géométrique.</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
@@ -164,7 +225,7 @@
 </section>
 </section>
 <section id="remarques-sur-la-visualisation">
-<h2>Remarques sur la visualisation<a class="headerlink" href="#remarques-sur-la-visualisation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Remarques sur la visualisation<a class="headerlink" href="#remarques-sur-la-visualisation" title="Lien permanent vers ce titre"></a></h2>
 <p>QGIS sait construire des géométries à partir de représentations WKT, mais il ne sait pas lire les WKT incluant un référentiel qu’on trouvera en valeur des widgets. Celui-ci doit être spécifié à part.</p>
 <p>Pour extraire la géométrie seule (toujours en WKT) d’une part, et le référentiel seul d’autre part, on exécutera <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code></span>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -182,7 +243,7 @@
 <p>Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n’assure a priori qu’elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d’erreurs.</p>
 </section>
 <section id="les-calculs-de-geometries-cote-serveur">
-<h2>Les calculs de géométries côté serveur<a class="headerlink" href="#les-calculs-de-geometries-cote-serveur" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Les calculs de géométries côté serveur<a class="headerlink" href="#les-calculs-de-geometries-cote-serveur" title="Lien permanent vers ce titre"></a></h2>
 <p>Pour l’action <em>Calcul du rectangle d’emprise (PostGIS)</em>, on transmettra successivement les requêtes renvoyées par les fonctions <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_extent</span></code></span> et <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_srid</span></code></span>. La première renvoie la géométrie du rectangle d’emprise de la couche au format WKT. La seconde fournit le référentiel de coordonnées appliqué pour ladite géométrie.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -222,7 +283,7 @@
 <p>On notera que <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> pourrait être nul si <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code> l’était ou si le référentiel n’a pas été reconnu.</p>
 </section>
 <section id="les-calculs-et-trace-manuels-cote-qgis">
-<h2>Les calculs et tracé manuels côté QGIS<a class="headerlink" href="#les-calculs-et-trace-manuels-cote-qgis" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Les calculs et tracé manuels côté QGIS<a class="headerlink" href="#les-calculs-et-trace-manuels-cote-qgis" title="Lien permanent vers ce titre"></a></h2>
 <p>Après avoir obtenu une géométrie via les méthodes de QGIS, il faudra là encore la convertir dans le format attendu pour le type RDF <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>.</p>
 <p>Ceci suppose de commencer par l’encoder en WKT, avec les méthodes <code class="docutils literal notranslate"><span class="pre">QgsRectangle.asWktPolygon</span></code>, <code class="docutils literal notranslate"><span class="pre">QgsPointXY.asWkt</span></code>, etc. de QGIS.</p>
 <p>Comme pour les géométries issues de PostGIS, on applique ensuite <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid</span></code>.</p>
@@ -236,95 +297,40 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code> est le résultat de l’encodage de la géométrie en WKT et <code class="docutils literal notranslate"><span class="pre">srid</span></code> le référentiel de coordonnées courant de la couche (pour les fonctionnalités de calcul automatisé) ou du canevas (pour les fonctionnalités de tracé manuel).</em></p>
 </section>
 <section id="alimentation-du-formulaire">
-<h2>Alimentation du formulaire<a class="headerlink" href="#alimentation-du-formulaire" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Alimentation du formulaire<a class="headerlink" href="#alimentation-du-formulaire" title="Lien permanent vers ce titre"></a></h2>
 <p>Contrairement à tous les autres boutons du formulaire, le bouton d’aide à la saisie des géométries n’affecte pas le dictionnaire. La géométrie obtenue sera simplement saisie dans le <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code>, elle sera ensuite gérée comme n’importe quelle autre valeur.</p>
 </section>
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="actions_widgets.html" class="btn btn-neutral float-left" title="Actions contrôlées par les widgets du formulaire" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="metadonnees_calculees.html" class="btn btn-neutral float-right" title="Métadonnées calculées" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, République française.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">Plume</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="generation_dictionnaire_widgets.html">Génération du dictionnaire des widgets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="creation_widgets.html">Création d’un nouveau widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_widgets.html">Actions contrôlées par les widgets du formulaire</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Outils d’aide à la saisie des géométries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_calculees.html">Métadonnées calculées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions_generales.html">Actions générales</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modeles_de_formulaire.html">Modèles de formulaire</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parametres_utilisateur.html">Paramètres utilisateurs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gestion_plume_pg.html">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="metadonnees_communes.html">Métadonnées communes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conformite_geodcat_ap.html">Conformité au profil GeoDCAT-AP</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Référence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mechanism/mechanism.html">Usage</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="usage.html">Usage</a><ul>
-      <li>Previous: <a href="actions_widgets.html" title="Chapitre précédent">Actions contrôlées par les widgets du formulaire</a></li>
-      <li>Next: <a href="metadonnees_calculees.html" title="Chapitre suivant">Métadonnées calculées</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Recherche rapide</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2022, République française.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/usage/outils_saisie_geometries.md.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>
