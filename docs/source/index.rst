@@ -12,6 +12,7 @@ Welcome to Plume's documentation!
 
    usage/usage
    reference/modules
+   mechanism/mechanism
 
 
 

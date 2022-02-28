@@ -8,6 +8,7 @@ Usage
    creation_widgets
    actions_widgets
    outils_saisie_geometries
+   metadonnees_calculees
    actions_generales
    modeles_de_formulaire
    parametres_utilisateur
