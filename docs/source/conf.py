@@ -35,7 +35,7 @@ extensions = [
     'myst_parser', # Markdown support
     'sphinx_rtd_theme', # ReadTheDocs theme
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon' # NumPy support
+    'numpydoc' # NumPy support
 ]
 
 # Add any paths that contain templates here, relative to this directory.
