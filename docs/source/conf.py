@@ -72,7 +72,9 @@ html_theme_options = {
     'github_url': 'https://github.com/MTES-MCT/metadata-postgresql'
 }
 
+html_logo = html_favicon = '../../plume/icons/logo/plume.svg'
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static', '../../plume/icons', 'usage/img']
+html_static_path = ['_static']
