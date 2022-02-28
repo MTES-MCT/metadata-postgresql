@@ -276,8 +276,8 @@
 <p><a class="reference internal" href="#principe"><span class="std std-doc">Principe</span></a> • <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">Processus de calcul</span></a> • <a class="reference internal" href="#implementation-du-calcul-automatique"><span class="std std-doc">Implémentation du calcul automatique</span></a> • <a class="reference internal" href="#implementation-du-calcul-a-declenchement-manuel"><span class="std std-doc">Implémentation du calcul à déclenchement manuel</span></a></p>
 <p>Dans la suite, on considère :</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <span class="xref myst">Génération du dictionnaire des widgets</span>), objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">Génération du dictionnaire des widgets</span></a>), objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>.</p></li>
 </ul>
 <section id="principe">
 <h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">¶</a></h2>
@@ -307,8 +307,8 @@
 </ul>
 <section id="controle-des-extensions-disponibles">
 <h3>Contrôle des extensions disponibles<a class="headerlink" href="#controle-des-extensions-disponibles" title="Lien permanent vers ce titre">¶</a></h3>
-<p>La liste des extensions PostgreSQL nécessaires à l’exécution du calcul est fournie par l’attribut <code class="docutils literal notranslate"><span class="pre">dependances</span></code> de l’objet <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.computer.ComputationMethod</span></code></span> contenu dans la clé <code class="docutils literal notranslate"><span class="pre">'compute</span> <span class="pre">method'</span></code> du dictionnaire interne. Il peut s’agir d’une liste vide si le calcul ne requiert aucune extension.</p>
-<p>Pour déterminer si les extensions sont bien installées sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_exists_extension</span></code></span>.</p>
+<p>La liste des extensions PostgreSQL nécessaires à l’exécution du calcul est fournie par l’attribut <code class="docutils literal notranslate"><span class="pre">dependances</span></code> de l’objet <code class="docutils literal notranslate"><span class="pre">plume.pg.computer.ComputationMethod</span></code> contenu dans la clé <code class="docutils literal notranslate"><span class="pre">'compute</span> <span class="pre">method'</span></code> du dictionnaire interne. Il peut s’agir d’une liste vide si le calcul ne requiert aucune extension.</p>
+<p>Pour déterminer si les extensions sont bien installées sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_exists_extension</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -333,7 +333,7 @@
 </section>
 <section id="generation-et-execution-de-la-requete">
 <h3>Génération et exécution de la requête<a class="headerlink" href="#generation-et-execution-de-la-requete" title="Lien permanent vers ce titre">¶</a></h3>
-<p>La requête de calcul est construite par la méthode <code class="docutils literal notranslate"><span class="pre">computing_query</span></code> de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>. Celle-ci renvoie un tuple contenant tous les arguments à fournir à <code class="docutils literal notranslate"><span class="pre">psycopg2.cursor.execute</span></code> (contrairement à la plupart des fonctions du module <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></span> qui ne renvoient que la requête à proprement parler).</p>
+<p>La requête de calcul est construite par la méthode <code class="docutils literal notranslate"><span class="pre">computing_query</span></code> de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Celle-ci renvoie un tuple contenant tous les arguments à fournir à <code class="docutils literal notranslate"><span class="pre">psycopg2.cursor.execute</span></code> (contrairement à la plupart des fonctions du module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code> qui ne renvoient que la requête à proprement parler).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 
@@ -352,7 +352,7 @@
 </section>
 <section id="integration-du-resultat">
 <h3>Intégration du résultat<a class="headerlink" href="#integration-du-resultat" title="Lien permanent vers ce titre">¶</a></h3>
-<p>Le résultat de la requête, soit <code class="docutils literal notranslate"><span class="pre">result</span></code> dans l’exemple de code ci-avant, peut maintenant alimenter le dictionnaire de widgets et son arbre de clés. C’est l’objet de la méthode <code class="docutils literal notranslate"><span class="pre">computing_update</span></code> de la classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>.</p>
+<p>Le résultat de la requête, soit <code class="docutils literal notranslate"><span class="pre">result</span></code> dans l’exemple de code ci-avant, peut maintenant alimenter le dictionnaire de widgets et son arbre de clés. C’est l’objet de la méthode <code class="docutils literal notranslate"><span class="pre">computing_update</span></code> de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">computing_update</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
@@ -362,12 +362,12 @@
 <section id="modification-des-widgets-en-consequence">
 <h3>Modification des widgets en conséquence<a class="headerlink" href="#modification-des-widgets-en-consequence" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Quand le calcul est réalisé alors que le formulaire est déjà intégralement constitué (cas du <a class="reference internal" href="#implementation-du-calcul-a-declenchement-manuel"><span class="std std-doc">calcul à déclenchement manuel</span></a>), les modifications effectuées par <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> sur le dictionnaire et son arbre de clés doivent être répercutées sur les widgets eux-mêmes.</p>
-<p>Pour ce faire, <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> renvoie, comme toutes les méthodes d’interaction avec le formulaire, un dictionnaire contenant toutes les informations de matérialisation. Cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span> pour plus de détails.</p>
+<p>Pour ce faire, <code class="docutils literal notranslate"><span class="pre">WidgetsDict.computing_update</span></code> renvoie, comme toutes les méthodes d’interaction avec le formulaire, un dictionnaire contenant toutes les informations de matérialisation. Cf. <a class="reference internal" href="actions_widgets.html#structuration-des-dictionnaires-contenant-les-informations-de-materialisation"><span class="std std-doc">Actions contrôlées par les widgets du formulaire</span></a> pour plus de détails.</p>
 </section>
 </section>
 <section id="implementation-du-calcul-automatique">
 <h2>Implémentation du calcul automatique<a class="headerlink" href="#implementation-du-calcul-automatique" title="Lien permanent vers ce titre">¶</a></h2>
-<p>Le calcul automatique est effectué pendant la génération des widgets (cf. <span class="xref myst">Création d’un nouveau widget</span>) lorsque la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> du dictionnaire interne est <code class="docutils literal notranslate"><span class="pre">True</span></code>. Ceci peut se produire pour un widget de saisie, mais aussi pour un groupe de valeurs.</p>
+<p>Le calcul automatique est effectué pendant la génération des widgets (cf. <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">Création d’un nouveau widget</span></a>) lorsque la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> du dictionnaire interne est <code class="docutils literal notranslate"><span class="pre">True</span></code>. Ceci peut se produire pour un widget de saisie, mais aussi pour un groupe de valeurs.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;auto compute&#39;</span><span class="p">]:</span>
     <span class="o">...</span>
@@ -383,7 +383,7 @@
 <section id="implementation-du-calcul-a-declenchement-manuel">
 <h2>Implémentation du calcul à déclenchement manuel<a class="headerlink" href="#implementation-du-calcul-a-declenchement-manuel" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Lorsque l’utilisateur clique sur un bouton de calcul du formulaire, toutes les étapes du <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">processus de calcul</span></a> sont à réaliser.</p>
-<p>Cf. <span class="xref myst">Création d’un nouveau widget</span> pour les modalités de création de ces boutons.</p>
+<p>Cf. <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-calcul"><span class="std std-doc">Création d’un nouveau widget</span></a> pour les modalités de création de ces boutons.</p>
 </section>
 </section>
 

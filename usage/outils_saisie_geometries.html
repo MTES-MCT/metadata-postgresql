@@ -274,7 +274,7 @@
   <section id="outils-d-aide-a-la-saisie-des-geometries">
 <h1>Outils d’aide à la saisie des géométries<a class="headerlink" href="#outils-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre">¶</a></h1>
 <p>Pour faciliter la saisie des métadonnées prenant pour valeur des géométries, le widget de saisie - <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> selon les cas - est accompagné d’un bouton annexe proposant des outils de calcul à partir des données et/ou de saisie manuelle dans le canevas principal de QGIS.</p>
-<p>Les modalités de création de ces boutons d’aide à la saisie des géométries sont décrites dans <span class="xref myst">Création d’un nouveau widget</span>. La présente page précise l’effet des différentes fonctionnalités proposées, ainsi que quand et comment les mettre en oeuvre.</p>
+<p>Les modalités de création de ces boutons d’aide à la saisie des géométries sont décrites dans <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries"><span class="std std-doc">Création d’un nouveau widget</span></a>. La présente page précise l’effet des différentes fonctionnalités proposées, ainsi que quand et comment les mettre en oeuvre.</p>
 <section id="les-actions-possibles">
 <h2>Les actions possibles<a class="headerlink" href="#les-actions-possibles" title="Lien permanent vers ce titre">¶</a></h2>
 <p>La nature des actions disponibles dépend de la propriété considérée.</p>
@@ -299,31 +299,31 @@
 <tbody>
 <tr class="row-even"><td><p><em>Visualisation</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'show'</span></code></p></td>
-<td><p><img alt="show.svg" src="plume/icons/buttons/geo/show.svg" /> <span class="xref myst">show.svg</span></p></td>
+<td><p><img alt="show.svg" src="../_images/show.svg" /> <a class="reference download internal" download="" href="../_downloads/0ea2e955e23574f2f0d033dae5e2bfba/show.svg"><span class="xref download myst">show.svg</span></a></p></td>
 <td><p><em>Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.</em></p></td>
 <td><p>Montre la géométrie, sans que celle-ci ne soit nécessairement éditable. D’autant que de besoin, l’utilisateur pourra activer l’une des autres actions du menu pour créer une nouvelle géométrie si l’actuelle ne lui convient pas. Cf. aussi <a class="reference internal" href="#remarques-sur-la-visualisation"><span class="std std-doc">Remarques sur la visualisation</span></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>Tracé manuel : point</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'point'</span></code></p></td>
-<td><p><img alt="point.svg" src="plume/icons/buttons/geo/point.svg" /> <span class="xref myst">point.svg</span></p></td>
+<td><p><img alt="point.svg" src="../_images/point.svg" /> <a class="reference download internal" download="" href="../_downloads/3352b5531acf46ca2f5e7c11cd709a9f/point.svg"><span class="xref download myst">point.svg</span></a></p></td>
 <td><p><em>Saisie libre d’un point dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
 <tr class="row-even"><td><p><em>Tracé manuel : rectangle</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code></p></td>
-<td><p><img alt="rectangle.svg" src="plume/icons/buttons/geo/rectangle.svg" /> <span class="xref myst">rectangle.svg</span></p></td>
+<td><p><img alt="rectangle.svg" src="../_images/rectangle.svg" /> <a class="reference download internal" download="" href="../_downloads/199b646e295db6e54b178fa3280b8694/rectangle.svg"><span class="xref download myst">rectangle.svg</span></a></p></td>
 <td><p><em>Saisie libre d’un rectangle dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>Tracé manuel : ligne</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'linestring'</span></code></p></td>
-<td><p><img alt="linestring.svg" src="plume/icons/buttons/geo/linestring.svg" /> <span class="xref myst">linestring.svg</span></p></td>
+<td><p><img alt="linestring.svg" src="../_images/linestring.svg" /> <a class="reference download internal" download="" href="../_downloads/e0b8fa383bd172ae513dbb86618310bb/linestring.svg"><span class="xref download myst">linestring.svg</span></a></p></td>
 <td><p><em>Saisie libre d’une ligne dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
 <tr class="row-even"><td><p><em>Tracé manuel : polygone</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'polygon'</span></code></p></td>
-<td><p><img alt="polygon.svg" src="plume/icons/buttons/geo/polygon.svg" /> <span class="xref myst">polygon.svg</span></p></td>
+<td><p><img alt="polygon.svg" src="../_images/polygon.svg" /> <a class="reference download internal" download="" href="../_downloads/3989f265550062bd45b99407e4fc5820/polygon.svg"><span class="xref download myst">polygon.svg</span></a></p></td>
 <td><p><em>Saisie libre d’un polygone dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de tracer un polygone dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
@@ -344,17 +344,17 @@
 <tbody>
 <tr class="row-even"><td><p><em>Calcul du rectangle d’emprise (PostGIS)</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'bbox'</span></code></p></td>
-<td><p><img alt="bbox_pg.svg" src="plume/icons/buttons/geo/bbox_pg.svg" /> <span class="xref myst">bbox_pg.svg</span></p></td>
+<td><p><img alt="bbox_pg.svg" src="../_images/bbox_pg.svg" /> <a class="reference download internal" download="" href="../_downloads/b73a0ab9ca0d5090eeaebb143d7c8597/bbox_pg.svg"><span class="xref download myst">bbox_pg.svg</span></a></p></td>
 <td><p><em>Calcule le rectangle d’emprise à partir des données. Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.</em></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>Calcul du centroïde (PostGIS)</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'centroid'</span></code></p></td>
-<td><p><img alt="centroid_pg.svg" src="plume/icons/buttons/geo/centroid_pg.svg" /> <span class="xref myst">centroid_pg.svg</span></p></td>
+<td><p><img alt="centroid_pg.svg" src="../_images/centroid_pg.svg" /> <a class="reference download internal" download="" href="../_downloads/0f83d8f817e1ac507c98a2774ec42f23/centroid_pg.svg"><span class="xref download myst">centroid_pg.svg</span></a></p></td>
 <td><p><em>Calcule le centre du rectangle d’emprise à partir des données.  Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.</em></p></td>
 </tr>
 </tbody>
 </table>
-<p>Pour déterminer si PostGIS est installée sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_exists_extension</span></code></span>.</p>
+<p>Pour déterminer si PostGIS est installée sur la base source de la table ou vue considérée, on pourra utiliser la requête renvoyée par la fonction <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_exists_extension</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -387,12 +387,12 @@
 <tbody>
 <tr class="row-even"><td><p><em>Calcul du rectangle d’emprise (QGIS)</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'bbox'</span></code></p></td>
-<td><p><img alt="bbox_qgis.svg" src="plume/icons/buttons/geo/bbox_qgis.svg" /> <span class="xref myst">bbox_qgis.svg</span></p></td>
+<td><p><img alt="bbox_qgis.svg" src="../_images/bbox_qgis.svg" /> <a class="reference download internal" download="" href="../_downloads/8d48a1d5ff6d3a2ddafeb2ef89f437e1/bbox_qgis.svg"><span class="xref download myst">bbox_qgis.svg</span></a></p></td>
 <td><p><em>Calcule le rectangle d’emprise à partir des données, via les fonctionnalités de QGIS.</em></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>Calcul du centroïde (QGIS)</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'centroid'</span></code></p></td>
-<td><p><img alt="centroid_qgis.svg" src="plume/icons/buttons/geo/centroid_qgis.svg" /> <span class="xref myst">centroid_qgis.svg</span></p></td>
+<td><p><img alt="centroid_qgis.svg" src="../_images/centroid_qgis.svg" /> <a class="reference download internal" download="" href="../_downloads/8c8657fc4f1bef03698f0795b7418921/centroid_qgis.svg"><span class="xref download myst">centroid_qgis.svg</span></a></p></td>
 <td><p><em>Calcule le centre du rectangle d’emprise à partir des données, via les fonctionnalités de QGIS.</em></p></td>
 </tr>
 </tbody>
@@ -403,7 +403,7 @@
 <section id="remarques-sur-la-visualisation">
 <h2>Remarques sur la visualisation<a class="headerlink" href="#remarques-sur-la-visualisation" title="Lien permanent vers ce titre">¶</a></h2>
 <p>QGIS sait construire des géométries à partir de représentations WKT, mais il ne sait pas lire les WKT incluant un référentiel qu’on trouvera en valeur des widgets. Celui-ci doit être spécifié à part.</p>
-<p>Pour extraire la géométrie seule (toujours en WKT) d’une part, et le référentiel seul d’autre part, on exécutera <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code></span>:</p>
+<p>Pour extraire la géométrie seule (toujours en WKT) d’une part, et le référentiel seul d’autre part, on exécutera <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">split_rdf_wkt</span>
 
@@ -420,7 +420,7 @@
 </section>
 <section id="les-calculs-de-geometries-cote-serveur">
 <h2>Les calculs de géométries côté serveur<a class="headerlink" href="#les-calculs-de-geometries-cote-serveur" title="Lien permanent vers ce titre">¶</a></h2>
-<p>Pour l’action <em>Calcul du rectangle d’emprise (PostGIS)</em>, on transmettra successivement les requêtes renvoyées par les fonctions <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_extent</span></code></span> et <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_srid</span></code></span>. La première renvoie la géométrie du rectangle d’emprise de la couche au format WKT. La seconde fournit le référentiel de coordonnées appliqué pour ladite géométrie.</p>
+<p>Pour l’action <em>Calcul du rectangle d’emprise (PostGIS)</em>, on transmettra successivement les requêtes renvoyées par les fonctions <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_extent</span></code> et <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_srid</span></code>. La première renvoie la géométrie du rectangle d’emprise de la couche au format WKT. La seconde fournit le référentiel de coordonnées appliqué pour ladite géométrie.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -446,7 +446,7 @@
 </pre></div>
 </div>
 <p><em><code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue à documenter. <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> est le nom de son schéma. <code class="docutils literal notranslate"><span class="pre">geom_name</span></code> est le nom du champ de géométrie de la couche sélectionnée dans le panneau des couches ou l’explorateur. C’est pour ce champ de géométrie que sera calculé l’emprise.</em></p>
-<p>Pour l’action <em>Calcul du centroïde (QGIS)</em>, le principe est le même, mais avec la fonction <code class="docutils literal notranslate"><span class="pre">query_get_geom_centroid</span></code> de <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></span> au lieu de <code class="docutils literal notranslate"><span class="pre">query_get_geom_extent</span></code>.</p>
+<p>Pour l’action <em>Calcul du centroïde (QGIS)</em>, le principe est le même, mais avec la fonction <code class="docutils literal notranslate"><span class="pre">query_get_geom_centroid</span></code> de <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code> au lieu de <code class="docutils literal notranslate"><span class="pre">query_get_geom_extent</span></code>.</p>
 <p>Dans les deux cas, la fonction <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid</span></code> permet ensuite d’inclure le référentiel dans le WKT :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">wkt_with_srid</span>

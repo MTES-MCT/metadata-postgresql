@@ -21,7 +21,7 @@ Les métadonnées RDF produites par Plume ont les spécificités suivantes :
 
 [^uuid-valide]: Plume vérifie aussi que l'identifiant est un UUID valide. S'il avait été corrompu (là encore nécessairement par une manipulation externe à Plume), il serait remplacé à la première sauvegarde dans l'interface de saisie de Plume.
 
-[^validation]: Ce mécanisme de validation est mise en oeuvre par la méthode `update_value` de la classe `plume.rdf.widgetsdict.WidgetsDict` lors de la [sauvegarde des métadonnées par l'utilisateur](/docs/source/usage/actions_generales.md#sauvegarde) et non au moment de l'import depuis une source externe. L'utilisateur a ainsi la possibilité de contrôler visuellement les valeurs.
+[^validation]: Ce mécanisme de validation est mise en oeuvre par la méthode `update_value` de la classe `plume.rdf.widgetsdict.WidgetsDict` lors de la [sauvegarde des métadonnées par l'utilisateur](./actions_generales.md#sauvegarde) et non au moment de l'import depuis une source externe. L'utilisateur a ainsi la possibilité de contrôler visuellement les valeurs.
 
 Lorsque des métadonnées externes sont importées via les fonctionnalités de Plume, elles sont retraitées pour être conformes à ces règles ou deviennent conformes de fait compte tenu des mécanismes internes de Plume.
 
@@ -97,7 +97,7 @@ Cette classe n'est pas prise en charge.
 
 _Classe `skos:Concept`._
 
-Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier [vocabulary.ttl](/plume/rdf/data/vocabulary.ttl)). Pour chaque concept, celui-ci présente obligatoirement les propriétés *category scheme* (`skos:inScheme`) et *preferred label* (`skos:prefLabel`), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d'origine n'en contenait pas.
+Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl)). Pour chaque concept, celui-ci présente obligatoirement les propriétés *category scheme* (`skos:inScheme`) et *preferred label* (`skos:prefLabel`), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d'origine n'en contenait pas.
 
 Des propriétés supplémentaires peuvent être disponibles pour certains concepts, dont une seule utilisée à ce stade par Plume : `foaf:page`. Celle-ci fournit l'URL d'une page web pertinente pour le concept. En mode lecture, la métadonnée portera un hyperlien pointant sur cette page ou, à défaut, sur l'IRI du concept.
 
@@ -175,7 +175,7 @@ Pour l'heure, la seule propriété de cette classe qui soit prise en charge par 
 
 _Classe `skos:ConceptScheme`._
 
-Comme pour la classe `skos:Concept`, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n'est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier [vocabulary.ttl](/plume/rdf/data/vocabulary.ttl), avec pour seule propriété `skos:prefLabel` (et non `dct:title` comme dans GeoDCAT-AP), qui fournit le libellé de l'ensemble, généralement en anglais et en français.
+Comme pour la classe `skos:Concept`, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n'est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl), avec pour seule propriété `skos:prefLabel` (et non `dct:title` comme dans GeoDCAT-AP), qui fournit le libellé de l'ensemble, généralement en anglais et en français.
 
 ## Entité
 

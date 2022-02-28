@@ -566,13 +566,13 @@
                 
   <section id="creation-d-un-nouveau-widget">
 <h1>Création d’un nouveau widget<a class="headerlink" href="#creation-d-un-nouveau-widget" title="Lien permanent vers ce titre">¶</a></h1>
-<p>La présente page explique comment créer les widgets - <code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code> - et autres objets QT (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>, <code class="docutils literal notranslate"><span class="pre">QtWidgets.QMenu</span></code>, <code class="docutils literal notranslate"><span class="pre">QtGui.QAction</span></code>) qui formeront le formulaire de consultation / édition des métadonnées à partir du <span class="xref myst">dictionnaire des widgets</span>. On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.</p>
+<p>La présente page explique comment créer les widgets - <code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code> - et autres objets QT (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>, <code class="docutils literal notranslate"><span class="pre">QtWidgets.QMenu</span></code>, <code class="docutils literal notranslate"><span class="pre">QtGui.QAction</span></code>) qui formeront le formulaire de consultation / édition des métadonnées à partir du <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">dictionnaire des widgets</span></a>. On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.</p>
 <p>Soit :</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <span class="xref myst">Génération du dictionnaire des widgets</span>), objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code></span>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de l’enregistrement en cours de traitement, objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">Génération du dictionnaire des widgets</span></a>), objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de l’enregistrement en cours de traitement, objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>.</p></li>
 </ul>
-<p>La valeur associée à <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> dans le dictionnaire de widgets, c’est-à-dire <code class="docutils literal notranslate"><span class="pre">widgetsdict[widgetkey]</span></code>, est un objet de classe <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume.rdf.internaldict.InternalDict</span></code></span> dit « dictionnaire interne ».</p>
+<p>La valeur associée à <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> dans le dictionnaire de widgets, c’est-à-dire <code class="docutils literal notranslate"><span class="pre">widgetsdict[widgetkey]</span></code>, est un objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.internaldict.InternalDict</span></code> dit « dictionnaire interne ».</p>
 <p>Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.</p>
 <p><strong>Widget principal</strong> : <a class="reference internal" href="#type"><span class="std std-doc">Type</span></a> • <a class="reference internal" href="#stockage"><span class="std std-doc">Stockage</span></a> • <a class="reference internal" href="#placement-dans-la-grille"><span class="std std-doc">Placement dans la grille</span></a> • <a class="reference internal" href="#widget-masque"><span class="std std-doc">Widget masqué ?</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qgroupbox"><span class="std std-doc">Paramètres spécifiques aux widgets QGroupBox</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qtoolbutton"><span class="std std-doc">Paramètres spécifiques aux widgets QToolButton</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-de-saisie"><span class="std std-doc">Paramètres spécifiques aux widgets de saisie</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qlineedit-et-qtextedit"><span class="std std-doc">Paramètres spécifiques aux widgets QLineEdit et QTextEdit</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qcombobox"><span class="std std-doc">Paramètres spécifiques aux widgets QComboBox</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qdateedit-qdatetimeedit-et-qtimeedit"><span class="std std-doc">Paramètres spécifiques aux widgets QDateEdit, QDateTimeEdit et QTimeEdit</span></a> • <a class="reference internal" href="#parametres-specifiques-aux-widgets-qlabel"><span class="std std-doc">Paramètres spécifiques aux widgets QLabel</span></a></p>
 <p><strong>Widgets annexes</strong> : <a class="reference internal" href="#widget-annexe-grille"><span class="std std-doc">Widget annexe : grille</span></a> • <a class="reference internal" href="#widget-annexe-etiquette"><span class="std std-doc">Widget annexe : étiquette</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-source"><span class="std std-doc">Widget annexe : bouton de sélection de la source</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-la-langue"><span class="std std-doc">Widget annexe : bouton de sélection de la langue</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-selection-de-l-unite"><span class="std std-doc">Widget annexe : bouton de sélection de l’unité</span></a> • <a class="reference internal" href="#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries"><span class="std std-doc">Widget annexe : bouton d’aide à la saisie des géométries</span></a> • <a class="reference internal" href="#widget-annexe-bouton-moins"><span class="std std-doc">Widget annexe : bouton « moins »</span></a> • <a class="reference internal" href="#widget-annexe-bouton-de-calcul"><span class="std std-doc">Widget annexe : bouton de calcul</span></a></p>
@@ -751,7 +751,7 @@
 <h3>Paramètres spécifiques aux widgets QToolButton<a class="headerlink" href="#parametres-specifiques-aux-widgets-qtoolbutton" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Les seuls cas où le widget principal est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> sont ceux des « boutons plus » et « boutons de traduction », qui permettent à l’utilisateur d’ajouter réciproquement des valeurs ou traductions supplémentaires. La clé <code class="docutils literal notranslate"><span class="pre">'object'</span></code> vaut alors <code class="docutils literal notranslate"><span class="pre">'plus</span> <span class="pre">button'</span></code> ou <code class="docutils literal notranslate"><span class="pre">'translation</span> <span class="pre">button'</span></code>.</p>
 <ul class="simple">
-<li><p>L’image <img alt="plus_button.svg" src="plume/icons/buttons/plus_button.svg" /> à utiliser est toujours <span class="xref myst">plus_button.svg</span>, mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :</p></li>
+<li><p>L’image <img alt="plus_button.svg" src="../_images/plus_button.svg" /> à utiliser est toujours <a class="reference download internal" download="" href="../_downloads/7be0877b31687ef6f1a83e4fde955030/plus_button.svg"><span class="xref download myst">plus_button.svg</span></a>, mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="o">.</span><span class="n">group_kind</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">)</span>
@@ -807,7 +807,7 @@
 
 </pre></div>
 </div>
-<p><strong>Important !</strong> Lorsque la métadonnée est supposée être calculée automatique, c’est-à-dire quand la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> du dictionnaire interne vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, le calcul doit être réalisé avant d’intégrer le contenu de la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> dans le widget de saisie, afin de bien afficher la valeur à jour. Pour plus de détails, on se référera à <span class="xref myst">Métadonnées calculées</span>.</p>
+<p><strong>Important !</strong> Lorsque la métadonnée est supposée être calculée automatique, c’est-à-dire quand la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> du dictionnaire interne vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, le calcul doit être réalisé avant d’intégrer le contenu de la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> dans le widget de saisie, afin de bien afficher la valeur à jour. Pour plus de détails, on se référera à <a class="reference internal" href="metadonnees_calculees.html#implementation-du-calcul-automatique"><span class="std std-doc">Métadonnées calculées</span></a>.</p>
 <ul class="simple">
 <li><p>Si la clé <code class="docutils literal notranslate"><span class="pre">'read</span> <span class="pre">only'</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, le widget doit être visible mais désactivé, pour empêcher les modifications manuelles par l’utilisateur.</p></li>
 </ul>
@@ -1058,7 +1058,7 @@
 
 </pre></div>
 </div>
-<p><em>Pour la définition des actions, cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>.</em></p>
+<p><em>Pour la définition des actions, cf. <a class="reference internal" href="actions_widgets.html#boutons-de-selection-de-la-source"><span class="std std-doc">Actions contrôlées par les widgets du formulaire</span></a>.</em></p>
 <p>Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> - par exemple via une icône (tandis que les autres thésaurus n’en auraient pas). Le nom de ce thésaurus courant est donné par la clé <code class="docutils literal notranslate"><span class="pre">'current</span> <span class="pre">source'</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;current source&#39;</span><span class="p">]</span>
@@ -1081,7 +1081,7 @@
 </section>
 <section id="icone">
 <h3>Icône<a class="headerlink" href="#icone" title="Lien permanent vers ce titre">¶</a></h3>
-<p>L’icône <img alt="source_button.svg" src="plume/icons/buttons/source_button.svg" /> à utiliser pour le bouton de sélection de la source est fournie par le fichier <span class="xref myst">source_button.svg</span>. Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.</p>
+<p>L’icône <img alt="source_button.svg" src="../_images/source_button.svg" /> à utiliser pour le bouton de sélection de la source est fournie par le fichier <a class="reference download internal" download="" href="../_downloads/16d32fbbc2f8c256b4fedab16e99055f/source_button.svg"><span class="xref download myst">source_button.svg</span></a>. Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.</p>
 </section>
 <section id="id6">
 <h3>Texte d’aide<a class="headerlink" href="#id6" title="Lien permanent vers ce titre">¶</a></h3>
@@ -1145,7 +1145,7 @@
 
 </pre></div>
 </div>
-<p><em>Pour la définition des actions, cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>.</em></p>
+<p><em>Pour la définition des actions, cf. <a class="reference internal" href="actions_widgets.html#boutons-de-selection-de-la-langue"><span class="std std-doc">Actions contrôlées par les widgets du formulaire</span></a>.</em></p>
 </section>
 <section id="rendu">
 <h3>Rendu<a class="headerlink" href="#rendu" title="Lien permanent vers ce titre">¶</a></h3>
@@ -1232,7 +1232,7 @@
 
 </pre></div>
 </div>
-<p><em>Pour la définition des actions, cf. <span class="xref myst">Actions contrôlées par les widgets du formulaire</span>.</em></p>
+<p><em>Pour la définition des actions, cf. <a class="reference internal" href="actions_widgets.html#boutons-de-selection-de-l-unite"><span class="std std-doc">Actions contrôlées par les widgets du formulaire</span></a>.</em></p>
 </section>
 <section id="id15">
 <h3>Rendu<a class="headerlink" href="#id15" title="Lien permanent vers ce titre">¶</a></h3>
@@ -1314,18 +1314,18 @@
 </pre></div>
 </div>
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">geo_action</span></code> représente chaque <code class="docutils literal notranslate"><span class="pre">QAction</span></code> venant d’être créée.</em></p>
-<p>Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code>. Elles sont détaillées par <span class="xref myst">Outils d’aide à la saisie des géométries</span>.</p>
+<p>Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code>. Elles sont détaillées par <a class="reference internal" href="outils_saisie_geometries.html"><span class="doc std std-doc">Outils d’aide à la saisie des géométries</span></a>.</p>
 </section>
 <section id="icones">
 <h3>Icônes<a class="headerlink" href="#icones" title="Lien permanent vers ce titre">¶</a></h3>
-<p>L’icône <img alt="geo_button.svg" src="plume/icons/buttons/geo_button.svg" /> à faire apparaître sur le bouton d’aide à la saisie des géométries est fournie par le fichier <span class="xref myst">geo_button.svg</span>. Sa couleur est fixe.</p>
-<p>Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire <span class="xref myst">/plume/icons/buttons/geo</span>, cf. <span class="xref myst">Outils d’aide à la saisie des géométries</span> pour les noms des fichiers.</p>
+<p>L’icône <img alt="geo_button.svg" src="../_images/geo_button.svg" /> à faire apparaître sur le bouton d’aide à la saisie des géométries est fournie par le fichier <a class="reference download internal" download="" href="../_downloads/4b309ff521b7079600489939aa31cf7a/geo_button.svg"><span class="xref download myst">geo_button.svg</span></a>. Sa couleur est fixe.</p>
+<p>Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire <span class="xref myst">/plume/icons/buttons/geo</span>, cf. <a class="reference internal" href="outils_saisie_geometries.html"><span class="doc std std-doc">Outils d’aide à la saisie des géométries</span></a> pour les noms des fichiers.</p>
 </section>
 <section id="cas-particulier-de-la-visualisation-seule">
 <h3>Cas particulier de la visualisation seule<a class="headerlink" href="#cas-particulier-de-la-visualisation-seule" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Lorsque la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code> vaut exactement <code class="docutils literal notranslate"><span class="pre">['show']</span></code>, c’est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :</p>
 <ul class="simple">
-<li><p>utiliser l’image d’oeil <img alt="show.svg" src="plume/icons/buttons/geo/show.svg" /> comme icône pour le bouton ;</p></li>
+<li><p>utiliser l’image d’oeil <img alt="show.svg" src="../_images/show.svg" /> comme icône pour le bouton ;</p></li>
 <li><p>ne pas créer de menu et simplement lancer la visualisation quand l’utilisateur clique sur le bouton.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -1404,7 +1404,7 @@
 </section>
 <section id="id26">
 <h3>Icône<a class="headerlink" href="#id26" title="Lien permanent vers ce titre">¶</a></h3>
-<p>L’image <img alt="minus_button.svg" src="plume/icons/buttons/minus_button.svg" /> à utiliser pour un bouton moins est toujours <span class="xref myst">minus_button.svg</span>, mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :</p>
+<p>L’image <img alt="minus_button.svg" src="../_images/minus_button.svg" /> à utiliser pour un bouton moins est toujours <a class="reference download internal" download="" href="../_downloads/5ab158bf83fd342a5b3aeef5101de590/minus_button.svg"><span class="xref download myst">minus_button.svg</span></a>, mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="o">.</span><span class="n">group_kind</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">)</span>
 
@@ -1497,7 +1497,7 @@
 </section>
 <section id="id31">
 <h3>Icône<a class="headerlink" href="#id31" title="Lien permanent vers ce titre">¶</a></h3>
-<p>L’image <img alt="compute_button.svg" src="plume/icons/buttons/compute_button.svg" /> à utiliser pour un bouton de calcul est toujours <span class="xref myst">compute_button.svg</span>.</p>
+<p>L’image <img alt="compute_button.svg" src="../_images/compute_button.svg" /> à utiliser pour un bouton de calcul est toujours <a class="reference download internal" download="" href="../_downloads/2bc5b728ccf1a7c50aec514314af6250/compute_button.svg"><span class="xref download myst">compute_button.svg</span></a>.</p>
 </section>
 <section id="id32">
 <h3>Texte d’aide<a class="headerlink" href="#id32" title="Lien permanent vers ce titre">¶</a></h3>

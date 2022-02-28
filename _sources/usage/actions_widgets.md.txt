@@ -2,28 +2,28 @@
 
 En plus d'être généré à la volée, le formulaire de saisie des métadonnées est dynamique. L'utilisateur peut déclencher des actions qui auront pour effet d'afficher ou masquer des widgets, d'en créer, d'en supprimer, de modifier des menus...
 
-Toutes ces actions impliquent de mettre à jour le dictionnaire de widgets, grâce à des méthodes de la classe [`plume.rdf.widgetsdict.WidgetsDict`](/plume/rdf/widgetsdict.py). Ces méthodes renvoient à leur tour les informations nécessaires pour réaliser les opérations qui s'imposent sur les widgets eux-mêmes, sous la forme d'un dictionnaire contenant toujours les mêmes clés. Les valeurs de ces clés sont des listes qui seront vides ou non selon l'action réalisée. Elles sont décrites [ci-après](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation).
+Toutes ces actions impliquent de mettre à jour le dictionnaire de widgets, grâce à des méthodes de la classe `plume.rdf.widgetsdict.WidgetsDict`. Ces méthodes renvoient à leur tour les informations nécessaires pour réaliser les opérations qui s'imposent sur les widgets eux-mêmes, sous la forme d'un dictionnaire contenant toujours les mêmes clés. Les valeurs de ces clés sont des listes qui seront vides ou non selon l'action réalisée. Elles sont décrites [ci-après](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation).
 
 [Structuration des dictionnaires contenant les informations de matérialisation](#structuration-des-dictionnaires-contenant-les-informations-de-matérialisation) • [Boutons "plus" et boutons de traduction](#boutons-plus-et-boutons-de-traduction) • [Boutons "moins"](#boutons-moins) • [Boutons de sélection de la source](#boutons-de-sélection-de-la-source) • [Boutons de sélection de la langue](#boutons-de-sélection-de-la-langue) • [Boutons de sélection de l'unité](#boutons-de-sélection-de-lunité) • [Boutons de calcul](#boutons-de-calcul)
 
-Pour les interactions de l'utilisateur avec la partie "fixe" de l'interface (sauvegarde, import, export, modification des paramètres utilisateur, etc.), on se reportera à [Actions générales](/docs/source/usage/actions_generales.md).
+Pour les interactions de l'utilisateur avec la partie "fixe" de l'interface (sauvegarde, import, export, modification des paramètres utilisateur, etc.), on se reportera à [Actions générales](./actions_generales.md).
 
 ## Structuration des dictionnaires contenant les informations de matérialisation
 
-Les dictionnaires renvoyés par les méthodes d'actions de la classe [`plume.rdf.widgetsdict.WidgetsDict`](/plume/rdf/widgetsdict.py) présentent une structure fixe, indépendante de la méthode exécutée. Ainsi, il est possible (et certainement préférable) de prévoir des mécanismes de matérialisation eux-mêmes indépendants de la nature de l'action initialement effectuée par l'utilisateur.
+Les dictionnaires renvoyés par les méthodes d'actions de la classe `plume.rdf.widgetsdict.WidgetsDict` présentent une structure fixe, indépendante de la méthode exécutée. Ainsi, il est possible (et certainement préférable) de prévoir des mécanismes de matérialisation eux-mêmes indépendants de la nature de l'action initialement effectuée par l'utilisateur.
 
 | Clé | Valeur |
 | --- | --- |
-| `'new keys'` | Liste de nouvelles clés du dictionnaire de widgets à matérialiser (`plume.rdf.widgetkey.WidgetKey`). Elles sont évidemment fournies dans le bon ordre, d'abord les clés parents puis les clés filles. Pour toutes ces clés, il sera nécessaire de générer les widgets, actions et menus, comme à la création initiale du dictionnaire (cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md)). |
+| `'new keys'` | Liste de nouvelles clés du dictionnaire de widgets à matérialiser (`plume.rdf.widgetkey.WidgetKey`). Elles sont évidemment fournies dans le bon ordre, d'abord les clés parents puis les clés filles. Pour toutes ces clés, il sera nécessaire de générer les widgets, actions et menus, comme à la création initiale du dictionnaire (cf. [Création d'un nouveau widget](./creation_widgets.md)). |
 | `'widgets to show'` | Liste de widgets (`QtWidgets.QWidget`) à rendre visibles. Il s'agit a priori de widgets antérieurement masqués, mais ce n'est pas une règle absolue. |
 | `'widgets to hide'` | Liste de widgets (`QtWidgets.QWidget`) à masquer. Il s'agit a priori de widgets antérieurement visibles, mais ce n'est pas une règle absolue. |
 | `'widgets to delete'` | Liste de widgets (`QtWidgets.QWidget`) à détruire, incluant les grilles associées, le cas échéant (`QtWidgets.QGridLayout`). |
 | `'actions to delete'` | Liste d'actions (`QtGui.QAction`) à détruire. |
 | `'menus to delete'` | Liste de menus (`QtWidgets.QMenu`) à détruire. |
-| `'language menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la langue doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur la génération des menus de langues. |
-| `'switch source menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la source doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source) pour plus de détails sur la génération des menus de sélection de la source. |
-| `'unit menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de l'unité doit être régénéré. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur la génération des menus de sélection de l'unité. |
-| `'concepts list to update'` | Liste de clés du dictionnaire (`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal est un widget `QComboBox` dont la liste de termes doit être régénérée. Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#paramètres-spécifiques-aux-widgets-qcombobox). |
+| `'language menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la langue doit être régénéré. Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur la génération des menus de langues. |
+| `'switch source menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la source doit être régénéré. Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source) pour plus de détails sur la génération des menus de sélection de la source. |
+| `'unit menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de l'unité doit être régénéré. Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur la génération des menus de sélection de l'unité. |
+| `'concepts list to update'` | Liste de clés du dictionnaire (`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal est un widget `QComboBox` dont la liste de termes doit être régénérée. Cf. [Création d'un nouveau widget](./creation_widgets.md#paramètres-spécifiques-aux-widgets-qcombobox). |
 | `'widgets to move'` | Liste de tuples contenant les informations relatives à des widgets dont - parce qu'on a supprimé un widget antérieurement positionné au-dessus d'eux dans la grille - il faut à présent modifier la position. |
 | `'value to update'` | Liste de clés (`plume.rdf.widgetkey.ValueKey`) tels que la valeur renseignée dans le widget principal doit être mise à jour selon celle de la clé `'value'` du dictionnaire interne. |
 
@@ -40,11 +40,11 @@ Chaque tuple de la clé `'widgets to move'` est composé de six éléments :
 
 Un bouton "plus" est un widget `QToolButton` qui, lorsqu'il est activé par l'utilisateur, permet d'ajouter une valeur dans un groupe de valeurs.
 
-![gv_bouton_plus](/docs/source/usage/img/gv_bouton_plus.png)
+![gv_bouton_plus](./img/gv_bouton_plus.png)
 
 Un bouton de traduction est un `QToolButton` qui permet d'ajouter une traduction dans un groupe de traductions.
 
-![gt_bouton_de_traduction](/docs/source/usage/img/gt_bouton_de_traduction.png)
+![gt_bouton_de_traduction](./img/gt_bouton_de_traduction.png)
 
 Ces deux types de boutons sont considérés ensemble, car le traitement à prévoir est le même (les méthodes utilisées n'auront pas exactement le même effet, mais c'est transparent).
 
@@ -78,7 +78,7 @@ Les boutons "moins" existent à la fois dans les groupes de valeurs et dans les 
 
 *NB : une telle opération a pour seul intérêt le confort visuel de l'utilisateur et, lorsqu'il s'agit de retirer une branche complète et pas juste un widget de saisie, de lui éviter de devoir supprimer à la main un potentiellement grand nombre de valeurs. Quand il sera question de sauvegarder le contenu du formulaire, la présence de widgets vides n'aura aucune espèce d'importance.*
 
-![gv_bouton_moins](/docs/source/usage/img/gv_bouton_moins.png) ![gt_bouton_moins](/docs/source/usage/img/gt_bouton_moins.png)
+![gv_bouton_moins](./img/gv_bouton_moins.png) ![gt_bouton_moins](./img/gt_bouton_moins.png)
 
 Soit `widgetkey` la clé du bouton "moins" considéré dans le dictionnaire de widgets `widgetsdict`.
 
@@ -113,9 +113,9 @@ Le dictionnaire résultant, ici `r`, pourra contenir des informations dans les c
 
 Le bouton de sélection de la source est un `QToolButton` qui accompagne un widget de saisie de type `QComboBox` ou un widget de groupe de propriétés.
 
-![div_bouton_selection_source](/docs/source/usage/img/div_bouton_selection_source.png)
+![div_bouton_selection_source](./img/div_bouton_selection_source.png)
 
-Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source) pour plus de détails sur les modalités de création de ces widgets.
+Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-source) pour plus de détails sur les modalités de création de ces widgets.
 
 ### Mise à jour du dictionnaire des widgets
 
@@ -146,9 +146,9 @@ Le bouton de sélection de la langue est un `QToolButton` qui accompagne un widg
 - afficher la langue dans laquelle a été saisie la valeur (sous une forme abrégée - on écrira par exemple `'FR'` pour une métadonnée en français) ;
 - lors de l'édition des métadonnées, permettre à l'utilisateur de choisir dans un menu la langue de la valeur qu'il vient de saisir ou va saisir.
 
-![gt_bouton_selection_langue](/docs/source/usage/img/gt_bouton_selection_langue.png)
+![gt_bouton_selection_langue](./img/gt_bouton_selection_langue.png)
 
-Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur les modalités de création de ces widgets.
+Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur les modalités de création de ces widgets.
 
 ### Mise à jour du dictionnaire des widgets
 
@@ -170,14 +170,14 @@ Les informations renvoyées par `change_language` permettent de réaliser les op
 Le résultat, ici `r`, pourra contenir des informations dans les clés suivantes :
 
 - `'language menu to update'`. Hors groupe de traduction, cette liste contient uniquement la clé pour laquelle l'utilisateur a changé la langue. Dans un groupe de traduction, cette liste contiendra les clés de tous les widgets de saisie du groupe. Pour la clé courante, la langue à afficher sur le bouton de sélection de la langue a été modifiée. Pour les autres clés, il s'agit d'enlever la langue nouvellement choisie et de rajouter celle qui l'était précédemment dans la liste des langues disponibles pour les traductions présentée par le `QMenu`.
--  `'widgets to hide'`. Dans de rares cas, ce liste pourra contenir le `QToolButton` du bouton "plus" du groupe de traduction (si la langue antérieurement sélectionnée n'était pas dans la [liste des langues autorisées pour les traductions](/docs/source/usage/generation_dictionnaire_widgets.md#langlist) et que, après changement, toutes les langues autorisées sont désormais utilisées).
+-  `'widgets to hide'`. Dans de rares cas, ce liste pourra contenir le `QToolButton` du bouton "plus" du groupe de traduction (si la langue antérieurement sélectionnée n'était pas dans la [liste des langues autorisées pour les traductions](./generation_dictionnaire_widgets.md#langlist) et que, après changement, toutes les langues autorisées sont désormais utilisées).
     
 
 ## Boutons de sélection de l'unité
 
 Le bouton de sélection de l'unité est un `QToolButton` qui accompagne un widget de saisie. Lors de l'édition des métadonnées, il permet à l'utilisateur de déclarer l'unité dans laquelle est exprimée la valeur qu'il vient de saisir ou va saisir.
 
-Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur les modalités de création de ces widgets.
+Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-lunité) pour plus de détails sur les modalités de création de ces widgets.
 
 ### Mise à jour du dictionnaire des widgets
 
@@ -200,6 +200,6 @@ Le résultat, ici `r`, contiendra uniquement des clés vides à l'exception de `
 
 ## Boutons de calcul
 
-Cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md#widget-annexe--bouton-de-calcul) pour plus de détails sur les modalités de création de ces widgets et [Métadonnées calculées](/docs/source/usage/metadonnees_calculees.md#implémentation-du-calcul-à-déclenchement-manuel) pour les actions à déclencher lorsque l'utilisateur clique sur le bouton.
+Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-calcul) pour plus de détails sur les modalités de création de ces widgets et [Métadonnées calculées](./metadonnees_calculees.md#implémentation-du-calcul-à-déclenchement-manuel) pour les actions à déclencher lorsque l'utilisateur clique sur le bouton.
 
 

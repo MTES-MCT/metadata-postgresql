@@ -1,6 +1,6 @@
 # Installation et gestion de l'extension PostgreSQL *PlumePg*
 
-L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre la possibilité d'utiliser des [modèles de formulaire](/docs/source/usage/modeles_de_formulaire.md).
+L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre la possibilité d'utiliser des [modèles de formulaire](./modeles_de_formulaire.md).
 
 ## Compatibilité
 
@@ -92,13 +92,13 @@ DROP EXTENSION plume_pg ;
 
 ```
 
-La désinstallation entraîne la perte définitive de tous les [modèles de formulaire](/docs/source/usage/modeles_de_formulaire.md).
+La désinstallation entraîne la perte définitive de tous les [modèles de formulaire](./modeles_de_formulaire.md).
 
 *NB. Si le schéma `z_plume` existait avant l'installation de l'extension, il ne sera pas marqué comme dépendant de l'extension et ne sera donc pas supprimé en cas de désinstallation. Tout son contenu le sera, par contre.*
 
 ## Sauvegarde et restauration de la base
 
-Pour que les données de *PlumePg* soient préservées lors de la restauration, notamment les [modèles de formulaire](/docs/source/usage/modeles_de_formulaire.md), il est essentiel de **ne pas chercher à réinstaller manuellement l'extension sur la base de restauration**. Tout est automatique. On veillera seulement à ce que :
+Pour que les données de *PlumePg* soient préservées lors de la restauration, notamment les [modèles de formulaire](./modeles_de_formulaire.md), il est essentiel de **ne pas chercher à réinstaller manuellement l'extension sur la base de restauration**. Tout est automatique. On veillera seulement à ce que :
 - les fichiers d'installation de *PlumePg* soient disponibles dans le répertoire des extensions du serveur de restauration (cf. [Installation](#installation) pour l'emplacement de ce répertoire) ;
 - la version par défaut de *PlumePg* sur le serveur de restauration soit identique à celle qui est effectivement installée sur la base à sauvegarder.
 

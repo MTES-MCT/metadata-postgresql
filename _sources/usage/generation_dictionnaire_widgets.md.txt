@@ -6,16 +6,16 @@ Lorsqu'un utilisateur demande l'affichage de la fiche de métadonnées d'une tab
 1. rassemble dans un "dictionnaire de widgets", c'est-à-dire un objet de classe `WidgetsDict`, des informations issues de toutes sortes de sources, incluant évidemment les métadonnées de la table stockées dans son descriptif PostgreSQL ;
 2. parcourt ce dictionnaire de widgets pour construire le formulaire qui sera présenté à l'utilisateur. 
 
-La première de ces étapes est traitée ici. Pour la seconde, cf. [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md).
+La première de ces étapes est traitée ici. Pour la seconde, cf. [Création d'un nouveau widget](./creation_widgets.md).
 
-La classe `WidgetsDict` est définie par le module [plume.rdf.widgetsdict](/plume/rdf/widgetsdict.py). Sa fonction d'initialisation prend deux types d'arguments : des sources de données et des paramètres utilisateur. Aucun n'est obligatoire.
+La classe `WidgetsDict` est définie par le module `plume.rdf.widgetsdict`. Sa fonction d'initialisation prend deux types d'arguments : des sources de données et des paramètres utilisateur. Aucun n'est obligatoire.
 
 Sources de données :
 
 | Nom | Type | Valeur par défaut | Détails |
 | --- | --- | --- | --- |
-| `metagraph` | [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py) | `None` | [→ graphe des métadonnées](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
-| `template` | [`plume.pg.template.TemplateDict`](/plume/pg/template.py) | `None` | [→ modèle de formulaire](#template--le-modèle-de-formulaire) |
+| `metagraph` | `plume.rdf.metagraph.Metagraph` | `None` | [→ graphe des métadonnées](#metagraph--le-graphe-des-métadonnées-pré-existantes) |
+| `template` | `plume.pg.template.TemplateDict` | `None` | [→ modèle de formulaire](#template--le-modèle-de-formulaire) |
 | `data` | `dict` | `None` | [→ métadonnées calculées](#data--les-métadonnées-calculées) |
 | `columns` | `list(tuple(str, str))` | `None` | [→ descriptifs des champs](#columns--les-descriptifs-des-champs) |
 
@@ -66,7 +66,7 @@ widgetsdict = WidgetsDict(**kwa)
 
 Les métadonnées pré-existantes sont déduites du descriptif PostgreSQL de la table ou de la vue, ci-après `pg_description_raw`. Elles sont supposées se trouver entre deux balises `<METADATA>` et `</METADATA>`, et avoir été encodées au format JSON-LD.
 
-Le module [plume.pg.queries](/plume/pg/queries.py) propose une requête pré-configurée `query_get_table_comment()`, qui permet d'obtenir le descriptif de l'objet :
+Le module `plume.pg.queries` propose une requête pré-configurée `query_get_table_comment()`, qui permet d'obtenir le descriptif de l'objet :
 
 ```python
 
@@ -88,7 +88,7 @@ conn.close()
 
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL. `table_name` et `schema_name` sont respectivement le nom de la relation (table, vue, etc.) dont on souhaite importer les métadonnées et le nom du schéma auquel elle est rattachée.*
 
-Une fois le descriptif récupéré, on l'utilisera pour générer un objet de classe  [`plume.pg.description.PgDescription`](/plume/pg/description.py), ce qui a pour effet d'en extraire les métadonnées - s'il y en avait - et les dé-sérialiser en graphe de métadonnées.
+Une fois le descriptif récupéré, on l'utilisera pour générer un objet de classe  `plume.pg.description.PgDescription`, ce qui a pour effet d'en extraire les métadonnées - s'il y en avait - et les dé-sérialiser en graphe de métadonnées.
 
 ```python
 
@@ -98,9 +98,9 @@ pg_description = PgDescription(raw_pg_description)
 
 ```
 
-Ce même objet `PgDescription` servira ultérieurement pour la création d'un nouveau descriptif PostgreSQL contenant les métadonnées mises à jour. Il mémorise en effet également le texte saisi hors des balises `<METADATA>`, qu'il s'agit de préserver. Cf. [Sauvegarde](/docs/source/usage/actions_generales.md#sauvegarde) pour plus de détails.
+Ce même objet `PgDescription` servira ultérieurement pour la création d'un nouveau descriptif PostgreSQL contenant les métadonnées mises à jour. Il mémorise en effet également le texte saisi hors des balises `<METADATA>`, qu'il s'agit de préserver. Cf. [Sauvegarde](./actions_generales.md#sauvegarde) pour plus de détails.
 
-Le graphe de métadonnées, objet de classe [`plume.rdf.metagraph.Metagraph`](/plume/rdf/metagraph.py), est ensuite obtenu par un simple appel à la propriété `metagraph` de `pg_description`.
+Le graphe de métadonnées, objet de classe `plume.rdf.metagraph.Metagraph`, est ensuite obtenu par un simple appel à la propriété `metagraph` de `pg_description`.
 
 
 ```python
@@ -115,14 +115,14 @@ Si le contenu des balises n'est pas un JSON-LD valide, la propriété renverra �
 
 ### template : le modèle de formulaire
 
-`template` est un objet de classe [`plume.pg.template.TemplateDict`](/plume/pg/template.py) contenant les informations relatives au modèle de formulaire à utiliser.
+`template` est un objet de classe `plume.pg.template.TemplateDict` contenant les informations relatives au modèle de formulaire à utiliser.
 
 Les modèles de formulaires sont définis à l'échelle du service et stockés dans la base PostgreSQL. Ils permettent :
-- d'ajouter des catégories locales au schéma de métadonnées communes défini par [shape.ttl](/plume/rdf/data/shape.ttl) ;
+- d'ajouter des catégories locales au schéma de métadonnées communes défini par [shape.ttl](../../../plume/rdf/data/shape.ttl) ;
 - de restreindre les catégories communes à afficher ;
 - de substituer des paramètres locaux à ceux spécifiés par le schéma commun (par exemple remplacer le nom à afficher pour la catégorie de métadonnée, répartir les métadonnées dans plusieurs onglets...).
 
-Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](/docs/source/usage/modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](/docs/source/usage/modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `template`.
+Pour plus de détails sur les modèles de formulaire, on se reportera à la partie [Modèles de formulaire](./modeles_de_formulaire.md), et plus particulièrement à sa sous-partie [Import par le plugin](./modeles_de_formulaire.md#import-par-le-plugin), qui explique comment générer `template`.
 
 
 ### columns : les descriptifs des champs
@@ -166,7 +166,7 @@ Sauf indication contraire, tous les paramètres utilisateur évoqués ci-après 
 
 `mode` est un paramètre utilisateur au sens où il est déterminé par l'utilisateur, mais **il ne doit pas être sauvegardé dans le fichier de configuration**.
 
-Comme détaillé dans [Actions générales](/docs/source/usage/actions_generales.md#mode-lecture-mode-edition), il devra toujours valoir `'read'` (mode lecture) lors de l'ouverture initiale de la fiche. Si ses privilèges sont suffisants, l'utilisateur peut ensuite activer le mode édition, et `mode` vaudra alors `'edit'`.
+Comme détaillé dans [Actions générales](./actions_generales.md#mode-lecture-mode-edition), il devra toujours valoir `'read'` (mode lecture) lors de l'ouverture initiale de la fiche. Si ses privilèges sont suffisants, l'utilisateur peut ensuite activer le mode édition, et `mode` vaudra alors `'edit'`.
 
 Il est préférable de toujours spécifier explicitement ce paramètre dans la liste des arguments du constructeur de `WidgetsDict` (où sa valeur par défaut est `'edit'`).
 
@@ -192,7 +192,7 @@ Le comportement par défaut du constructeur de `WidgetsDict` est d'afficher les 
 
 ### language
 
-`language` est une chaîne de caractères indiquant la langue principale de saisie des métadonnées. Ce paramètre peut être modifié via un widget dans l'interface fixe du plugin - cf. [Actions générales](/docs/source/usage/actions_generales.md#langue-principale-des-métadonnées).
+`language` est une chaîne de caractères indiquant la langue principale de saisie des métadonnées. Ce paramètre peut être modifié via un widget dans l'interface fixe du plugin - cf. [Actions générales](./actions_generales.md#langue-principale-des-métadonnées).
 
 Si `language` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, il sera considéré que les métadonnées sont saisies dans la première langue de la liste des langues autorisées, [`langList`](#langlist). Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d'assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l'interface.
 
@@ -201,19 +201,19 @@ La documentation invitera l'utilisateur à privilégier les codes de langues sur
 La langue principale de saisie des métadonnées a trois usages :
 - les métadonnées identifiées comme traduisibles (par exemple le libellé du jeu de données et son descriptif sont traduisibles, mais pas sa date de création ni son identifiant) sont représentées en RDF avec une information sur leur langue[^rdflangstring]. Cette langue sera toujours la langue principale de saisie des métadonnées, sauf lorsque le mode traduction (cf. [`translation`](#translation)) est actif.
 - en mode lecture, lorsque des valeurs dans plusieurs langues sont disponibles pour une catégorie de métadonnées, le comportement par défaut de Plume est d'afficher uniquement les valeurs dans la langue principale (à défaut il tente les langues de [`langList`](#langList) dans l'ordre et, à défaut, choisit une langue disponible au hasard). Il est possible d'inhiber ce comportement avec le paramètre [`readOnlyCurrentLanguage`](#readOnlyCurrentLanguage), ou de forcer le même comportement en mode édition avec [`editOnlyCurrentLanguage`](#editOnlyCurrentLanguage) ;
-- lorsqu'une métadonnées prend ses valeurs dans un thésaurus, lesdites valeurs sont représentées en RDF sous la forme d'URI. Ces URI sont référencés dans le fichier [vocabulary.ttl](/plume/rdf/data/vocabulary.ttl), qui fournit pour chacun d'entre eux des libellés lisibles par un être humain. Il existe toujours un libellé en français et souvent en anglais. La langue principale de saisie détermine la langue des libellés affichés dans l'interface. À défaut de libellé dans la langue principale, les langues de [`langList`](#langList) sont testées dans l'ordre et, à défaut, une traduction est choisie au hasard.
+- lorsqu'une métadonnées prend ses valeurs dans un thésaurus, lesdites valeurs sont représentées en RDF sous la forme d'URI. Ces URI sont référencés dans le fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl), qui fournit pour chacun d'entre eux des libellés lisibles par un être humain. Il existe toujours un libellé en français et souvent en anglais. La langue principale de saisie détermine la langue des libellés affichés dans l'interface. À défaut de libellé dans la langue principale, les langues de [`langList`](#langList) sont testées dans l'ordre et, à défaut, une traduction est choisie au hasard.
 
-[^rdflangstring]: Ces catégories "traduisibles" sont celles dont le type est `rdf:langstring`. Ce type est spécificié par le schéma des métadonnées communes, [`shape.ttl`](/plume/rdf/data/shape.ttl), ou par le [modèle de formulaire](#template--le-modèle-de-formulaire) dans le cas d'une catégorie locale.
+[^rdflangstring]: Ces catégories "traduisibles" sont celles dont le type est `rdf:langstring`. Ce type est spécificié par le schéma des métadonnées communes, [`shape.ttl`](../../../plume/rdf/data/shape.ttl), ou par le [modèle de formulaire](#template--le-modèle-de-formulaire) dans le cas d'une catégorie locale.
 
 ### translation
 
-`translation` est un booléen indiquant si le mode traduction est actif. Comme [`language`](#language), ce paramètre peut être modifié via un widget dans l'interface fixe du plugin - cf. [Actions générales](/docs/source/usage/actions_generales.md#activation-du-mode-traduction). Il est ignoré quand le dictionnaire n'est pas généré en mode édition ([`mode`](#mode) valant `'edit'`).
+`translation` est un booléen indiquant si le mode traduction est actif. Comme [`language`](#language), ce paramètre peut être modifié via un widget dans l'interface fixe du plugin - cf. [Actions générales](./actions_generales.md#activation-du-mode-traduction). Il est ignoré quand le dictionnaire n'est pas généré en mode édition ([`mode`](#mode) valant `'edit'`).
 
 Si `translation` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, il sera considéré que le mode traduction n'est pas actif. Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d'assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l'interface.
 
 ### langList
 
-`langList` est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par [`language`](#language). Il alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l'interface, permet de choisir la langue principale [Actions générales](/docs/source/usage/actions_generales.md#langue-principale-des-métadonnées).
+`langList` est une liste ou un tuple de chaînes de caractères qui donne les langues autorisées pour les traductions, en complément de la langue principale de saisie spécifiée par [`language`](#language). Il alimente aussi la liste de valeurs du widget qui, dans la partie fixe de l'interface, permet de choisir la langue principale [Actions générales](./actions_generales.md#langue-principale-des-métadonnées).
 
 Si `langList` n'apparaît pas dans les arguments du constructeur de `WidgetsDict`, celui-ci utilisera le tuple `('fr', 'en')` (français et anglais). Nonobstant, il est recommandé de toujours spécifier explicitement ce paramètre, afin d'assurer que la valeur utilisée par la fonction soit identique à celle qui apparaît dans la partie fixe de l'interface.
 
@@ -252,9 +252,9 @@ Si `textEditRowSpan` n'apparaît pas dans les arguments du constructeur de `Widg
 
 ## Résultat : un dictionnaire de widgets
 
-La classe `WidgetsDict` hérite de `dict` et définit des méthodes supplémentaires qui gèrent notamment l'actualisation du dictionnaire en fonction des actions de l'utilisateur (cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md)).
+La classe `WidgetsDict` hérite de `dict` et définit des méthodes supplémentaires qui gèrent notamment l'actualisation du dictionnaire en fonction des actions de l'utilisateur (cf. [Actions contrôlées par les widgets du formulaire](./actions_widgets.md)).
 
-En premier lieu, le dictionnaire de widgets sert de base à la génération du formulaire de saisie / consultation des métadonnées. Pour ce faire, on bouclera sur les clés du dictionnaire et créera au fur et à mesure les widgets qu'elles définissent, comme expliqué dans [Création d'un nouveau widget](/docs/source/usage/creation_widgets.md).
+En premier lieu, le dictionnaire de widgets sert de base à la génération du formulaire de saisie / consultation des métadonnées. Pour ce faire, on bouclera sur les clés du dictionnaire et créera au fur et à mesure les widgets qu'elles définissent, comme expliqué dans [Création d'un nouveau widget](./creation_widgets.md).
 
 ```python
 
@@ -269,7 +269,7 @@ Chaque enregistrement du dictionnaire représente l'un objets des objets suivant
 
 Les clés du dictionnaire de widgets sont des objets `plume.rdf.widgetkey.WidgetKey`. Elles forment une structure arborescente qui, y compris lorsque des widgets sont ajoutés, supprimés, masqués suite aux actions de l'utilisateur, assure que la cohérence du positionnement des widgets. Elle permet aussi de recréer aisément un graphe de métadonnées à partir du dictionnaire de widgets, en vu de l'enregistrement en JSON-LD des métadonnées actualisées.
 
-Les valeurs du dictionnaire du widgets sont des objets [`plume.rdf.internaldict.InternalDict`](/plume/rdf/internaldict.py), dit "dictionnaires internes". Cette classe présente des dictionnaires de structure homogène qui contiennent toutes les informations nécessaires à la création du ou des widgets associés à l'objet et seront également utilisés pour référencer chacun des widgets créés. Outre leur fonction de référencement, les dictionnaires internes servent essentiellement à traduire les informations portées par les `WidgetKey` sous une forme plus aisément exploitable par les bibliothèques de QT.
+Les valeurs du dictionnaire du widgets sont des objets `plume.rdf.internaldict.InternalDict`, dit "dictionnaires internes". Cette classe présente des dictionnaires de structure homogène qui contiennent toutes les informations nécessaires à la création du ou des widgets associés à l'objet et seront également utilisés pour référencer chacun des widgets créés. Outre leur fonction de référencement, les dictionnaires internes servent essentiellement à traduire les informations portées par les `WidgetKey` sous une forme plus aisément exploitable par les bibliothèques de QT.
 
 
 

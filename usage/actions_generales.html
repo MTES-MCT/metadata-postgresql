@@ -475,7 +475,7 @@
 </tbody>
 </table>
 <p>Le bouton devra être inactif quand l’utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n’est pas membre du rôle propriétaire de l’objet.</p>
-<p>Pour s’en assurer, on utilisera la requête définie par la fonction <a class="reference download internal" download="" href="../_downloads/7aaf3c7e1cacbab7b4b7e24788d3a6e6/queries.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_is_relation_owner</span></code></span></a>.</p>
+<p>Pour s’en assurer, on utilisera la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_is_relation_owner</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -535,7 +535,7 @@
 <ol class="arabic simple" start="4">
 <li><p>Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.</p></li>
 </ol>
-<p>On utilisera la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_table_comment</span></code> du module <a class="reference download internal" download="" href="../_downloads/7aaf3c7e1cacbab7b4b7e24788d3a6e6/queries.py"><span class="xref download myst">plume.pg.queries</span></a>. À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec <code class="docutils literal notranslate"><span class="pre">query_get_relation_kind</span></code>.</p>
+<p>On utilisera la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_table_comment</span></code> du module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code>. À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec <code class="docutils literal notranslate"><span class="pre">query_get_relation_kind</span></code>.</p>
 <p>La requête doit être appliquée à <code class="docutils literal notranslate"><span class="pre">str(pg_description)</span></code>, qui renvoie une représentation sous forme de chaîne de caractères de <code class="docutils literal notranslate"><span class="pre">pg_description</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -566,7 +566,7 @@
 <ol class="arabic simple" start="5">
 <li><p>Mettre à jour les descriptifs des champs.</p></li>
 </ol>
-<p>La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_columns_comments</span></code> du module <a class="reference download internal" download="" href="../_downloads/7aaf3c7e1cacbab7b4b7e24788d3a6e6/queries.py"><span class="xref download myst">plume.pg.queries</span></a>.</p>
+<p>La requête de mise à jour est directement déduite du dictionnaire de widgets par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_columns_comments</span></code> du module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -668,7 +668,7 @@
 </section>
 <section id="id7">
 <h3>Initialisation<a class="headerlink" href="#id7" title="Lien permanent vers ce titre">¶</a></h3>
-<p>La démarche à suivre à l’ouverture d’une fiche de métadonnées est décrite dans <span class="xref myst"></span>. On commencera par récupérer les paramètres <code class="docutils literal notranslate"><span class="pre">preferedTemplate</span></code> et <code class="docutils literal notranslate"><span class="pre">enforcePreferedTemplate</span></code> dans les fichiers de configuration, si tant est qu’ils soient présents.</p>
+<p>La démarche à suivre à l’ouverture d’une fiche de métadonnées est décrite dans <span class="xref myst">Modèles de formulaire</span>. On commencera par récupérer les paramètres <code class="docutils literal notranslate"><span class="pre">preferedTemplate</span></code> et <code class="docutils literal notranslate"><span class="pre">enforcePreferedTemplate</span></code> dans les fichiers de configuration, si tant est qu’ils soient présents.</p>
 </section>
 </section>
 <section id="langue-principale-des-metadonnees">
@@ -985,7 +985,7 @@
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="readhideblank"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>Sauf si l’utilisateur a explicitement demandé le contraire en mettant à <code class="docutils literal notranslate"><span class="pre">False</span></code> le paramètre utilisateur <a class="reference internal" href="generation_dictionnaire_widgets.html#readhideblank"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">readHideBlank</span></code></span></a> - cf. <a class="reference internal" href="parametres_utilisateur.html"><span class="doc std std-doc">Paramètres utilisateurs</span></a>.</p>
+<dd><p>Sauf si l’utilisateur a explicitement demandé le contraire en mettant à <code class="docutils literal notranslate"><span class="pre">False</span></code> le paramètre utilisateur <a class="reference internal" href="generation_dictionnaire_widgets.html#readhideblank"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">readHideBlank</span></code></span></a> - cf. <a class="reference internal" href="parametres_utilisateur.html"><span class="doc std std-doc">Paramètres utilisateur</span></a>.</p>
 </dd>
 <dt class="label" id="appel-roootkey-build-metagraph"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
 <dd><p>Cette méthode est appelée par la méthode <code class="docutils literal notranslate"><span class="pre">build_metagraph</span></code> de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> utilisée à l’étape suivante.</p>

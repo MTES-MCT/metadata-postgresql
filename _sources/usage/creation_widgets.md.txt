@@ -1,12 +1,12 @@
 # Création d'un nouveau widget
 
-La présente page explique comment créer les widgets - `QtWidgets.QWidget` - et autres objets QT (`QtWidgets.QGridLayout`, `QtWidgets.QMenu`, `QtGui.QAction`) qui formeront le formulaire de consultation / édition des métadonnées à partir du [dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md). On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.
+La présente page explique comment créer les widgets - `QtWidgets.QWidget` - et autres objets QT (`QtWidgets.QGridLayout`, `QtWidgets.QMenu`, `QtGui.QAction`) qui formeront le formulaire de consultation / édition des métadonnées à partir du [dictionnaire des widgets](./generation_dictionnaire_widgets.md). On suppose que le programme est en train de boucler sur les clés dudit dictionnaire.
 
 Soit :
-- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](/docs/source/usage/generation_dictionnaire_widgets.md)), objet de classe [`plume.rdf.widgetsdict.WidgetsDict`](/plume/rdf/widgetsdict.py).
-- `widgetkey` la clé de l'enregistrement en cours de traitement, objet de classe [`plume.rdf.widgetkey.WidgetKey`](/plume/rdf/widgetkey.py).
+- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](./generation_dictionnaire_widgets.md)), objet de classe `plume.rdf.widgetsdict.WidgetsDict`.
+- `widgetkey` la clé de l'enregistrement en cours de traitement, objet de classe `plume.rdf.widgetkey.WidgetKey`.
 
-La valeur associée à `widgetkey` dans le dictionnaire de widgets, c'est-à-dire `widgetsdict[widgetkey]`, est un objet de classe [`plume.rdf.internaldict.InternalDict`](/plume/rdf/internaldict.py) dit "dictionnaire interne".
+La valeur associée à `widgetkey` dans le dictionnaire de widgets, c'est-à-dire `widgetsdict[widgetkey]`, est un objet de classe `plume.rdf.internaldict.InternalDict` dit "dictionnaire interne".
 
 Chaque enregistrement du dictionnaire des widgets contrôle un widget principal et, le cas échéant, un ou plusieurs widgets annexes. Non seulement son dictionnaire interne donne les informations nécessaires à leur création, mais certaines de ses clés servent à référencer les objets Qt créés.
 
@@ -200,7 +200,7 @@ On pourra utiliser les valeurs par défaut suivantes :
 
 Les seuls cas où le widget principal est un `QToolButton` sont ceux des "boutons plus" et "boutons de traduction", qui permettent à l'utilisateur d'ajouter réciproquement des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'` ou `'translation button'`.
 
-- L'image ![plus_button.svg](/plume/icons/buttons/plus_button.svg) à utiliser est toujours [plus_button.svg](/plume/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+- L'image ![plus_button.svg](../../../plume/icons/buttons/plus_button.svg) à utiliser est toujours [plus_button.svg](../../../plume/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
@@ -244,7 +244,7 @@ widgetsdict[widgetkey]['value']
 
 ```
 
-**Important !** Lorsque la métadonnée est supposée être calculée automatique, c'est-à-dire quand la clé `'auto compute'` du dictionnaire interne vaut `True`, le calcul doit être réalisé avant d'intégrer le contenu de la clé `'value'` dans le widget de saisie, afin de bien afficher la valeur à jour. Pour plus de détails, on se référera à [Métadonnées calculées](/docs/source/usage/metadonnees_calculees.md#implémentation-du-calcul-automatique).
+**Important !** Lorsque la métadonnée est supposée être calculée automatique, c'est-à-dire quand la clé `'auto compute'` du dictionnaire interne vaut `True`, le calcul doit être réalisé avant d'intégrer le contenu de la clé `'value'` dans le widget de saisie, afin de bien afficher la valeur à jour. Pour plus de détails, on se référera à [Métadonnées calculées](./metadonnees_calculees.md#implémentation-du-calcul-automatique).
 
 - Si la clé `'read only'` vaut `True`, le widget doit être visible mais désactivé, pour empêcher les modifications manuelles par l'utilisateur.
 
@@ -525,7 +525,7 @@ widgetsdict[widgetkey]['sources']
 
 ```
 
-*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-la-source).*
+*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](./actions_widgets.md#boutons-de-sélection-de-la-source).*
 
 Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Le nom de ce thésaurus courant est donné par la clé `'current source'`.
 
@@ -553,7 +553,7 @@ grid.addWidget(source_widget, row, column, rowSpan, columnSpan)
 
 ### Icône
 
-L'icône ![source_button.svg](/plume/icons/buttons/source_button.svg) à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](/plume/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
+L'icône ![source_button.svg](../../../plume/icons/buttons/source_button.svg) à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](../../../plume/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
 
 
 ### Texte d'aide
@@ -633,7 +633,7 @@ widgetsdict[widgetkey]['authorized languages']
 
 ```
 
-*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-la-langue).*
+*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](./actions_widgets.md#boutons-de-sélection-de-la-langue).*
 
 ### Rendu
 
@@ -741,7 +741,7 @@ widgetsdict[widgetkey]['units']
 
 ```
 
-*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](/docs/source/usage/actions_widgets.md#boutons-de-sélection-de-lunité).*
+*Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](./actions_widgets.md#boutons-de-sélection-de-lunité).*
 
 ### Rendu
 
@@ -842,19 +842,19 @@ widgetsdict[widgetkey]['geo actions'].append(geo_action)
 
 *Où `geo_action` représente chaque `QAction` venant d'être créée.*
 
-Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometries.md).
+Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md).
 
 ### Icônes
 
-L'icône ![geo_button.svg](/plume/icons/buttons/geo_button.svg) à faire apparaître sur le bouton d'aide à la saisie des géométries est fournie par le fichier [geo_button.svg](/plume/icons/buttons/geo_button.svg). Sa couleur est fixe.
+L'icône ![geo_button.svg](../../../plume/icons/buttons/geo_button.svg) à faire apparaître sur le bouton d'aide à la saisie des géométries est fournie par le fichier [geo_button.svg](../../../plume/icons/buttons/geo_button.svg). Sa couleur est fixe.
 
-Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](/plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](/docs/source/usage/outils_saisie_geometries.md) pour les noms des fichiers.
+Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](../../../plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md) pour les noms des fichiers.
 
 
 ### Cas particulier de la visualisation seule
 
 Lorsque la clé `'geo tools'` vaut exactement `['show']`, c'est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :
-- utiliser l'image d'oeil ![show.svg](/plume/icons/buttons/geo/show.svg) comme icône pour le bouton ;
+- utiliser l'image d'oeil ![show.svg](../../../plume/icons/buttons/geo/show.svg) comme icône pour le bouton ;
 - ne pas créer de menu et simplement lancer la visualisation quand l'utilisateur clique sur le bouton.
 
 ```python
@@ -948,7 +948,7 @@ grid.addWidget(minus_widget, row, column, rowSpan, columnSpan)
 
 ### Icône
 
-L'image ![minus_button.svg](/plume/icons/buttons/minus_button.svg) à utiliser pour un bouton moins est toujours [minus_button.svg](/plume/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+L'image ![minus_button.svg](../../../plume/icons/buttons/minus_button.svg) à utiliser pour un bouton moins est toujours [minus_button.svg](../../../plume/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
@@ -1041,7 +1041,7 @@ grid.addWidget(compute_widget, row, column, rowSpan, columnSpan)
 
 ### Icône
 
-L'image ![compute_button.svg](/plume/icons/buttons/compute_button.svg) à utiliser pour un bouton de calcul est toujours [compute_button.svg](/plume/icons/buttons/compute_button.svg).
+L'image ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) à utiliser pour un bouton de calcul est toujours [compute_button.svg](../../../plume/icons/buttons/compute_button.svg).
 
 ### Texte d'aide
 

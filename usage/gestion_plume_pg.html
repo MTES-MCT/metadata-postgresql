@@ -269,7 +269,7 @@
                 
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
 <h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">¶</a></h1>
-<p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <span class="xref myst">modèles de formulaire</span>.</p>
+<p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>.</p>
 <section id="compatibilite">
 <h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">¶</a></h2>
 <table class="colwidths-auto table">
@@ -365,12 +365,12 @@
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
-<p>La désinstallation entraîne la perte définitive de tous les <span class="xref myst">modèles de formulaire</span>.</p>
+<p>La désinstallation entraîne la perte définitive de tous les <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>.</p>
 <p><em>NB. Si le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> existait avant l’installation de l’extension, il ne sera pas marqué comme dépendant de l’extension et ne sera donc pas supprimé en cas de désinstallation. Tout son contenu le sera, par contre.</em></p>
 </section>
 <section id="sauvegarde-et-restauration-de-la-base">
 <h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre">¶</a></h2>
-<p>Pour que les données de <em>PlumePg</em> soient préservées lors de la restauration, notamment les <span class="xref myst">modèles de formulaire</span>, il est essentiel de <strong>ne pas chercher à réinstaller manuellement l’extension sur la base de restauration</strong>. Tout est automatique. On veillera seulement à ce que :</p>
+<p>Pour que les données de <em>PlumePg</em> soient préservées lors de la restauration, notamment les <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>, il est essentiel de <strong>ne pas chercher à réinstaller manuellement l’extension sur la base de restauration</strong>. Tout est automatique. On veillera seulement à ce que :</p>
 <ul class="simple">
 <li><p>les fichiers d’installation de <em>PlumePg</em> soient disponibles dans le répertoire des extensions du serveur de restauration (cf. <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> pour l’emplacement de ce répertoire) ;</p></li>
 <li><p>la version par défaut de <em>PlumePg</em> sur le serveur de restauration soit identique à celle qui est effectivement installée sur la base à sauvegarder.</p></li>
