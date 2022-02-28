@@ -1,8 +1,8 @@
 Package plume.rdf
 =================
 
-Submodules
-----------
+Modules
+-------
 
 .. toctree::
    :maxdepth: 4
@@ -18,9 +18,6 @@ Submodules
    plume.rdf.utils
    plume.rdf.widgetkey
    plume.rdf.widgetsdict
-
-Module contents
----------------
 
 .. automodule:: plume.rdf
    :members:
