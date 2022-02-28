@@ -51,11 +51,13 @@ Il est également possible de télécharger une archive ZIP du code du plugin su
 
 ## Documentation
 
+Documentation technique : https://mtes-mct.github.io/metadata-postgresql.
+
 *À venir. La documentation utilisateur sera bientôt disponible à l'adresse : http://snum.scenari-community.org/Metadata/Plume/Documentation.*
 
 ## Crédits
 
-© République Française, 2021-2022.
+© République Française, 2022.
 
 ### Production
 
