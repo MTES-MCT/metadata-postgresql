@@ -6,6 +6,5 @@ docs/build
 TO_DO.txt
 *.zip
 test_export_*
-docs/Makefile
 docs/make.bat
 tests/export/*.ttl
