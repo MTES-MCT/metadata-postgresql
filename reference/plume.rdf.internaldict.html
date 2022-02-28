@@ -313,8 +313,199 @@
               
               <div>
                 
-  <section id="module-plume-rdf-internaldict">
-<h1>Module plume.rdf.internaldict<a class="headerlink" href="#module-plume-rdf-internaldict" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.internaldict">
+<span id="module-plume-rdf-internaldict"></span><h1>Module plume.rdf.internaldict<a class="headerlink" href="#module-plume.rdf.internaldict" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Dictionnaires internes des dictionnaires de widgets.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.internaldict.InternalDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.internaldict.</span></span><span class="sig-name descname"><span class="pre">InternalDict</span></span><a class="headerlink" href="#plume.rdf.internaldict.InternalDict" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Dictionnaires interne.</p>
+<p>Un dictionnaire interne est un dictionnaire comportant les clés listées ci-après. Les
+valeurs des dictionnaires de widgets (<code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>) sont
+des dictionnaires internes. Un dictionnaire interne traduit les attributs des clés
+du dictionnaire de widgets sous une forme plus aisément exploitable pour construire un
+formulaire avec les bibliothèques QT. Il a également pour fonction de référencer les widgets
+et autres objets QT qui constituent le formulaire, afin de pouvoir les modifier d’autant que
+de besoin à mesure des actions de l’utilisateur.</p>
+<p>À l’initialisation, toutes les clés du dictionnaire interne ont pour valeur <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+Elles doivent être calculées avant la création des widgets avec la méthode
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.internalize()</span></code>, et recalculées par le
+même moyen à chaque fois que la clé du dictionnaire de widgets qui porte le dictionnaire
+interne est modifiée.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">object</span></code> : classification par nature des éléments du dictionnaire. L’objet est une
+chaîne de caractères pouvant prendre les valeurs :
+* <code class="docutils literal notranslate"><span class="pre">'group</span> <span class="pre">of</span> <span class="pre">values'</span></code> pour un groupe de valeurs,
+* <code class="docutils literal notranslate"><span class="pre">'group</span> <span class="pre">of</span> <span class="pre">properties'</span></code> pour un groupe de propriétés,
+* <code class="docutils literal notranslate"><span class="pre">'translation</span> <span class="pre">group'</span></code> pour un groupe de traduction,
+* <code class="docutils literal notranslate"><span class="pre">'edit'</span></code> pour un widget de saisie,
+* <code class="docutils literal notranslate"><span class="pre">'plus</span> <span class="pre">button'</span></code> pour un bouton plus,
+* <code class="docutils literal notranslate"><span class="pre">'translation</span> <span class="pre">button'</span></code> pour un bouton de traduction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">main</span> <span class="pre">widget</span> <span class="pre">type</span></code> est le type du widget principal de la clé (<code class="docutils literal notranslate"><span class="pre">'QGroupBox'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'QLineEdit'</span></code>…). Si <code class="docutils literal notranslate"><span class="pre">None</span></code> (clé dite « fantôme), aucun widget ne doit être créé.
+Ce cas correspond aux catégories de métadonnées dont le modèle couramment utilisé ne
+prévoit pas l’affichage, mais dont il n’est pas question de perdre les valeurs.</p></li>
+</ul>
+<p>Les clés <code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">widget</span></code> ci-après ont vocation à accueillir les futurs widgets.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">main</span> <span class="pre">widget</span></code> : widget principal.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grid</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code>, à créer dès lors que le widget
+principal est de type <code class="docutils literal notranslate"><span class="pre">'QGroupBox'</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> portant une étiquette qui fournit le
+libellé de la catégorie de métadonnée. À créer lorsque la valeur de <code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">label</span></code> est
+<code class="docutils literal notranslate"><span class="pre">True</span></code>. Le libellé à afficher est la valeur de <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minus</span> <span class="pre">widget</span></code> :  widget annexe de type <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> permettant à l’utilisateur
+de supprimer le widget. À créer lorsque la valeur de <code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">minus</span> <span class="pre">button</span></code> est <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> permettant à l’utilisateur
+de spécifier la langue du texte qu’il saisit. À créer lorsque la valeur de
+<code class="docutils literal notranslate"><span class="pre">authorized</span> <span class="pre">languages</span></code> n’est pas <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> permettant à l’utilisateur
+de spécifier le thésaurus qu’il veut utiliser, lorsque plusieurs sont disponibles, ou
+de passer en mode manuel (saisie manuelle des propriétés de l’objet, au lieu de la simple
+sélection de son IRI dans un thésaurus). À créer lorsque la valeur de <code class="docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">sources</span></code>
+est <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> permettant à l’utilisateur
+de choisir l’unité de la valeur qu’il est en train de saisir. À créer lorsque la
+valeur de la clé <code class="docutils literal notranslate"><span class="pre">units</span></code> n’est pas <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> proposant des fonctionnalités
+d’aide à la saisie des géométries. À créer lorsque la valeur de la clé <code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">tools</span></code>
+n’est pas <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">widget</span></code> : widget annexe de type <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> permettant à l’utilisateur
+de mettre à jour la métadonnée par un calcul plutôt que par saisie manuelle. À créer
+lorsque <code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">compute</span> <span class="pre">button</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+<p>En complément, des clés sont prévues pour les <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> et <code class="docutils literal notranslate"><span class="pre">QAction</span></code> associés à certains
+widgets boutons.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">menu</span></code> : pour le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au widget référencé par 
+<code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">widget</span></code>. Ce menu présente une liste de sources (cf. <code class="docutils literal notranslate"><span class="pre">sources</span></code>),
+dont une est sélectionnée (cf. <code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">source</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">actions</span></code> : liste des <code class="docutils literal notranslate"><span class="pre">QAction</span></code> du <code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">menu</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">menu</span></code> : pour le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au widget référencé par
+<code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">widget</span></code>. Ce menu présente une liste de langues (cf. <code class="docutils literal notranslate"><span class="pre">authorized</span> <span class="pre">languages</span></code>),
+dont une est sélectionnée (cf. <code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">value</span></code>), il permet à l’utilisateur de
+spécifier la langue du texte qu’il est en train de saisir.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">actions</span></code> : liste des <code class="docutils literal notranslate"><span class="pre">QAction</span></code> du <code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">menu</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">menu</span></code> : pour le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au widget référencé par <code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">widget</span></code>.
+Ce menu présente une liste d’unités disponibles (cf. <code class="docutils literal notranslate"><span class="pre">units</span></code>), dont une est
+sélectionnée (cf. <code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">unit</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">actions</span></code> : liste des <code class="docutils literal notranslate"><span class="pre">QAction</span></code> du <code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">menu</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">menu</span></code> : pour le <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associé au widget référencé par <code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">widget</span></code>.
+Ce menu présente une liste fixe d’actions possibles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">actions</span></code> : liste des <code class="docutils literal notranslate"><span class="pre">QAction</span></code> du <code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">menu</span></code>.</p></li>
+</ul>
+<p>Les clés suivantes contiennent les informations nécessaires au paramétrage des widgets.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hidden</span></code> : booléen. Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, le widget principal et tous les widgets annexes doivent
+être masqués.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label</span></code> : s’il y a lieu de mettre une étiquette, soit intégrée au widget (par exemple
+dans le cas d’un <code class="docutils literal notranslate"><span class="pre">QGroupBox</span></code>), soit indépendante (cf. <code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">label</span></code>), le libellé
+que portera ladite étiquette.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">label</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si un widget <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> doit être créé pour porter le libellé
+de la catégorie de métadonnée. Il devra alors être référencé dans <code class="docutils literal notranslate"><span class="pre">label</span> <span class="pre">widget</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">help</span> <span class="pre">text</span></code> : le cas échéant, texte explicatif à afficher en infobulle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> : pour un widget de saisie, l’éventuelle valeur à afficher.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">placeholder</span> <span class="pre">text</span></code> : le cas échéant, valeur du paramètre <code class="docutils literal notranslate"><span class="pre">placeholder</span></code> (texte de
+substitution, qui apparaît tant qu’aucune valeur n’est renseignée) pour le widget principal.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input</span> <span class="pre">mask</span></code> : le cas échéant, valeur du paramètre <code class="docutils literal notranslate"><span class="pre">inputMask</span></code> (masque de saisie)
+pour le widget principal.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is</span> <span class="pre">mandatory</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si la métadonnée doit obligatoirement être renseignée.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read</span> <span class="pre">only</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si la métadonnée ne doit pas être modifiable par l’utilisateur,
+ce qui conduira à désactiver le widget de saisie.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">minus</span> <span class="pre">button</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si un widget annexe bouton moins doit être créé. Il sera
+alors référencé dans <code class="docutils literal notranslate"><span class="pre">minus</span> <span class="pre">widget</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">minus</span> <span class="pre">button</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si le widget annexe bouton moins doit être masqué. À noter
+que même si la valeur de cette clé n’est pas <code class="docutils literal notranslate"><span class="pre">True</span></code>, le bouton moins devra être masqué
+si <code class="docutils literal notranslate"><span class="pre">hidden</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">regex</span> <span class="pre">validator</span> <span class="pre">pattern</span></code> : le cas échéant, éventuelle expression régulière que la
+valeur est censée vérifier. Pour usage par un <code class="docutils literal notranslate"><span class="pre">QRegularExpressionValidator</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">regex</span> <span class="pre">validator</span> <span class="pre">flags</span></code> : flags associés à <code class="docutils literal notranslate"><span class="pre">regex</span> <span class="pre">validator</span> <span class="pre">pattern</span></code>, le cas échéant.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">validator</span></code> : si un validateur basé sur le type (<code class="docutils literal notranslate"><span class="pre">QIntValidator</span></code> ou
+<code class="docutils literal notranslate"><span class="pre">QDoubleValidator</span></code>) doit être utilisé, le nom du validateur.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">sources</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si la métadonnée fait appel à plusieurs thésaurus
+ou autorise à la fois la saisie manuelle et l’usage de thésaurus. Un widget de sélection
+de la source doit alors être créé et référencé dans <code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">widget</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sources</span></code> : s’il y a lieu de créer un widget annexe pour spécifier la source
+(cf. <code class="docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">sources</span></code>), la liste des sources à afficher dans le menu associé
+(<code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">menu</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">source</span></code> : s’il y a lieu de créer un widget annexe pour spécifier la source
+(cf. <code class="docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">sources</span></code>), la source qui devra être présentée comme actuellement
+sélectionnée par le menu associé (<code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">menu</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thesaurus</span> <span class="pre">values</span></code> : le cas échéant, la liste des valeurs à afficher dans le
+widget principal de type <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code>.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">authorized</span> <span class="pre">languages</span></code><span class="classifier">liste des langues à présenter dans le menu associé au</span></dt><dd><p>widget de sélection de la langue (<code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">menu</span></code>), le cas échéant. La non nullité
+de cette clé emporte la création d’un widget de sélection de la langue (<code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">widget</span></code>).</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">value</span></code> : s’il y a lieu de créer un widget annexe pour spécifier la langue
+(cf. <code class="docutils literal notranslate"><span class="pre">authorized</span> <span class="pre">languages</span></code>), la langue qui devra être présentée comme actuellement
+sélectionnée par le menu associé (<code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">menu</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">units</span></code> : liste des unités disponibles, à présenter dans le menu associé au widget
+de sélection de l’unité (<code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">menu</span></code>), le cas échéant. La non nullité de cette clé
+emporte la création d’un widget de sélection de l’unité (<code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">widget</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">unit</span></code> : s’il y a lieu de créer un widget pour spécifier l’unité (cf. <code class="docutils literal notranslate"><span class="pre">units</span></code>),
+l’unité qui devra être présentée comme actuellement sélectionné par le menu associé
+(<code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">menu</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">tools</span></code> : liste des fonctionnalités d’aide à la saisie des géométries à
+proposer. La non nullité de cette clé emporte la création d’un bouton d’aide
+à la saisie des géométries (<code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">widget</span></code>) par lequel l’utilisateur accédera
+à ces fonctionnalités.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">compute</span> <span class="pre">button</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si un bouton de calcul de la métadonnée doit être
+créé. Il sera alors référencé dans <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">widget</span></code>.  La méthode de calcul est
+fournie par la clé <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto</span> <span class="pre">compute</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si la métadonnée doit être calculée automatiquement à
+la création du dictionnaire. La méthode de calcul est fournie par la clé
+<code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code> : un objet <code class="xref py py-class docutils literal notranslate"><span class="pre">plume.pg.computer.ComputeMethod</span></code> qui porte
+les informations nécessaires pour exécuter le calcul de la métadonnée.</p></li>
+</ul>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromkeys</span></code>(iterable[, value])</p></td>
+<td><p>Create a new dictionary with keys from iterable and values set to value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code>(key[, default])</p></td>
+<td><p>Return the value for key if key is in the dictionary, else default.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>(key[, default])</p></td>
+<td><p>If the key is not found, return the default if given; otherwise, raise a KeyError.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">popitem</span></code>(/)</p></td>
+<td><p>Remove and return a (key, value) pair as a 2-tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">setdefault</span></code>(key[, default])</p></td>
+<td><p>Insert key with a value of default if key is not in the dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([E, ]**F)</p></td>
+<td><p>If E is present and has a .keys() method, then does:  for k in E: D[k] = E[k] If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v In either case, this is followed by: for k in F:  D[k] = F[k]</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </section>
 
 

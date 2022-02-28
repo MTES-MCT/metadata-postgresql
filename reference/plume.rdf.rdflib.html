@@ -291,9 +291,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -313,8 +323,26 @@
               
               <div>
                 
-  <section id="module-plume-rdf-rdflib">
-<h1>Module plume.rdf.rdflib<a class="headerlink" href="#module-plume-rdf-rdflib" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.rdflib">
+<span id="module-plume-rdf-rdflib"></span><h1>Module plume.rdf.rdflib<a class="headerlink" href="#module-plume.rdf.rdflib" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Import des classes et fonctions de la bibliothèque tierce RDFLib.</p>
+<p>À l’usage des modules de Plume, qui devront ainsi appeler
+le présent module au lieu d’un appel direct à RDFLib.</p>
+<p>On s’assurera ainsi d’écrire:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">plume.rdf.rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span>
+</pre></div>
+</div>
+<p>Et jamais:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.term</span> <span class="kn">import</span> <span class="n">URIRef</span>
+</pre></div>
+</div>
+<p>Plume requiert RDFLib 6.0.</p>
+<p>Le présent module s’assure d’appeler l’installeur interne de
+Plume si la bibliothèque n’est pas disponible.</p>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Lien permanent vers ce titre">¶</a></h2>
+<p><a class="reference external" href="https://rdflib.readthedocs.io/en/stable/index.html">https://rdflib.readthedocs.io/en/stable/index.html</a></p>
+</section>
 </section>
 
 

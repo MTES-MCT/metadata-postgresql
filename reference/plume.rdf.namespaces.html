@@ -313,8 +313,89 @@
               
               <div>
                 
-  <section id="module-plume-rdf-namespaces">
-<h1>Module plume.rdf.namespaces<a class="headerlink" href="#module-plume-rdf-namespaces" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.namespaces">
+<span id="module-plume-rdf-namespaces"></span><h1>Module plume.rdf.namespaces<a class="headerlink" href="#module-plume.rdf.namespaces" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Gestion des espaces de nommage.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.namespaces.PlumeNamespaceManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">PlumeNamespaceManager</span></span><a class="headerlink" href="#plume.rdf.namespaces.PlumeNamespaceManager" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.namespace.NamespaceManager</span></code></p>
+<p>Gestionnaire d’espaces de nommage.</p>
+<p>Le gestionnaire est initialisé avec les préfixes nécessaires
+à l’exécution de Plume. Il peut ensuite être complété si
+besoin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>store</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bind</span></code>(prefix, namespace[, override, replace])</p></td>
+<td><p>bind a given namespace to the prefix</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalizeUri</span></code>(rdfTerm)</p></td>
+<td><p>Takes an RDF Term and 'normalizes' it into a QName (using the registered prefix) or (unlike compute_qname) the Notation 3 form for URIs: &lt;...URI...&gt;</p></td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<colgroup>
+<col style="width: 71%" />
+<col style="width: 29%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>absolutize</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>compute_qname</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>compute_qname_strict</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>namespaces</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>qname</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>qname_strict</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>reset</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.rdf.namespaces.class_map">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">class_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Group'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Individual'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Location'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Organization'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#FormalOrganization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#Organization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#OrganizationalUnit'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Organization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent')}</span></em><a class="headerlink" href="#plume.rdf.namespaces.class_map" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Mapping de classes.</p>
+<p>Principalement des sous-classes susceptibles d’apparaître dans
+des graphes importés de sources externes, qui sont mappées
+vers la classe parente utilisée par Plume. Ce dictionnaire sert
+notamment à la fonction <a class="reference internal" href="plume.rdf.metagraph.html#plume.rdf.metagraph.clean_metagraph" title="plume.rdf.metagraph.clean_metagraph"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.metagraph.clean_metagraph()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.rdf.namespaces.predicate_map">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">predicate_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://schema.org/endDate'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/dcat#endDate'),</span> <span class="pre">rdflib.term.URIRef('http://schema.org/startDate'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/dcat#startDate'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#organisation-name'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#organization-name')}</span></em><a class="headerlink" href="#plume.rdf.namespaces.predicate_map" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Mapping de prédicats qui ont notoirement tendance à être mal écrits.</p>
+<p>Coquilles, formes obsolètes… Ce dictionnaire sert notamment au nettoyage
+des graphes importés de sources externes par la fonction 
+<a class="reference internal" href="plume.rdf.metagraph.html#plume.rdf.metagraph.clean_metagraph" title="plume.rdf.metagraph.clean_metagraph"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.metagraph.clean_metagraph()</span></code></a>.</p>
+</dd></dl>
+
 </section>
 
 

@@ -313,8 +313,62 @@
               
               <div>
                 
-  <section id="module-admin-zip-plume">
-<h1>Module admin.zip_plume<a class="headerlink" href="#module-admin-zip-plume" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-admin.zip_plume">
+<span id="module-admin-zip-plume"></span><h1>Module admin.zip_plume<a class="headerlink" href="#module-admin.zip_plume" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Crée une archive du plugin QGIS Plume.</p>
+<p>En supposant que le dossier parent correspond à la
+racine du Git, on exécutera simplement:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zip_plume</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Cette commande crée un fichier <code class="docutils literal notranslate"><span class="pre">plume.zip</span></code> à la
+racine du Git contenant le code du plugin Plume, allegé
+de tout ce dont les utilisateurs n’ont pas besoin, en
+particulier les scripts de tests et les données associées.</p>
+<p>Pour créer l’archive dans un autre répertoire:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zip_plume</span><span class="p">(</span><span class="s1">&#39;C:\Users\Me\Documents\Destination&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.zip_plume.include">
+<span class="sig-prename descclassname"><span class="pre">admin.zip_plume.</span></span><span class="sig-name descname"><span class="pre">include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anypath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.zip_plume.include" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>L’élément doit-il être inclus dans le ZIP ?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>anypath</strong><span class="classifier">str or pathlib.Path</span></dt><dd><p>Une chaîne de caractères correspondant à un chemin.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> si le fichier ou répertoire doit être inclus
+dans la sauvegarde, <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.zip_plume.zip_plume">
+<span class="sig-prename descclassname"><span class="pre">admin.zip_plume.</span></span><span class="sig-name descname"><span class="pre">zip_plume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.zip_plume.zip_plume" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Crée un ZIP contenant le code source du plugin QGIS Plume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dest</strong><span class="classifier">str or pathlib.Path, optional</span></dt><dd><p>Le chemin du répertoire où le ZIP doit être
+créé. Si non spécifié, il est créé dans le dossier parent,
+qui correspond en principe à la racine du Git metadata-postgresql.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Si un fichier <code class="docutils literal notranslate"><span class="pre">plume.zip</span></code> existait déjà dans le répertoire
+de destination, il sera silencieusement remplacé.</p>
+</dd></dl>
+
 </section>
 
 

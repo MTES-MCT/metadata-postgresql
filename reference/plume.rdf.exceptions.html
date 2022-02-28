@@ -313,8 +313,135 @@
               
               <div>
                 
-  <section id="module-plume-rdf-exceptions">
-<h1>Module plume.rdf.exceptions<a class="headerlink" href="#module-plume-rdf-exceptions" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.exceptions">
+<span id="module-plume-rdf-exceptions"></span><h1>Module plume.rdf.exceptions<a class="headerlink" href="#module-plume.rdf.exceptions" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Quelques classes d’erreurs à l’usage des modules de Plume.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="plume.rdf.exceptions.ForbiddenOperation">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.exceptions.</span></span><span class="sig-name descname"><span class="pre">ForbiddenOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.exceptions.ForbiddenOperation" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Signale l’usage non approprié d’une fonction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>message</strong><span class="classifier">str, optional</span></dt><dd><p>Description de l’anomalie.</p>
+</dd>
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey, optional</span></dt><dd><p>La clé concernée du dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>La clé concernée.</p>
+</dd>
+<dt><strong>message</strong><span class="classifier">str</span></dt><dd><p>Description de l’anomalie.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="plume.rdf.exceptions.IntegrityBreach">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.exceptions.</span></span><span class="sig-name descname"><span class="pre">IntegrityBreach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.exceptions.IntegrityBreach" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Signale une rupture d’intégrité du dictionnaire de widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>message</strong><span class="classifier">str, optional</span></dt><dd><p>Description de l’anomalie.</p>
+</dd>
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey, optional</span></dt><dd><p>La clé concernée du dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>La clé concernée.</p>
+</dd>
+<dt><strong>message</strong><span class="classifier">str</span></dt><dd><p>Description de l’anomalie.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="plume.rdf.exceptions.MissingParameter">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.exceptions.MissingParameter" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Signale un paramètre manquant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>parameter</strong><span class="classifier">str</span></dt><dd><p>Nom du paramètre.</p>
+</dd>
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey, optional</span></dt><dd><p>La clé concernée du dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>parameter</strong><span class="classifier">str</span></dt><dd><p>Nom du paramètre.</p>
+</dd>
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>La clé concernée.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="plume.rdf.exceptions.UnknownParameterValue">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnknownParameterValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.exceptions.UnknownParameterValue" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Signale une valeur non autorisée pour un paramètre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>parameter</strong><span class="classifier">str</span></dt><dd><p>Nom du paramètre.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>Valeur problématique.</p>
+</dd>
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey, optional</span></dt><dd><p>La clé concernée du dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>parameter</strong><span class="classifier">str</span></dt><dd><p>Nom du paramètre.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>Valeur problématique.</p>
+</dd>
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>La clé concernée.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="plume.rdf.exceptions.UnknownSource">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnknownSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.exceptions.UnknownSource" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Signale une source de vocabulaire contrôlé inconnue.</p>
+<p>C’est-à-dire qui n’apparaît pas dans <code class="docutils literal notranslate"><span class="pre">data/vocabulary.ttl</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>iri</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>L’IRI de la source.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>iri</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>L’IRI de la source.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

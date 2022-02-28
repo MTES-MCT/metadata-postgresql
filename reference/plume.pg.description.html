@@ -313,8 +313,113 @@
               
               <div>
                 
-  <section id="module-plume-pg-description">
-<h1>Module plume.pg.description<a class="headerlink" href="#module-plume-pg-description" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.pg.description">
+<span id="module-plume-pg-description"></span><h1>Module plume.pg.description<a class="headerlink" href="#module-plume.pg.description" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Descriptifs PostgreSQL.</p>
+<p>Ce module prend en charge la désérialisation des métadonnées
+contenues dans les descriptifs PostgreSQL en graphe de métadonées
+(<a class="reference internal" href="plume.rdf.metagraph.html#plume.rdf.metagraph.Metagraph" title="plume.rdf.metagraph.Metagraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph()</span></code></a>). En retour, il
+permet la mise à jour du texte du descriptif d’après un nouveau
+graphe.</p>
+<p>Si <code class="docutils literal notranslate"><span class="pre">raw</span></code> est le descriptif brut importé depuis PostgreSQL
+(peut être <code class="docutils literal notranslate"><span class="pre">None</span></code> le cas échéant):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">raw</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pgdescription</span> <span class="o">=</span> <span class="n">PgDescription</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Les métadonnées éventuellement présentes, supposées être encodées en
+JSON-LD et placée entre des balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et <code class="docutils literal notranslate"><span class="pre">&lt;/METADATA&gt;</span></code>,
+sont automatiquement désérialisées dans le graphe exposé par la propriété
+<a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">pgdescription</span><span class="o">.</span><span class="n">metagraph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span>
+<span class="go">&lt;Graph identifier=... (&lt;class &#39;plume.rdf.metagraph.Metagraph&#39;&gt;)&gt;</span>
+</pre></div>
+</div>
+<p>Pour mettre à jour le descriptif, il suffit de redéfinir la
+propriété <a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a> avec le nouveau graphe:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pgdescription</span><span class="o">.</span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">metagraph</span>
+</pre></div>
+</div>
+<p>Le nouveau texte descriptif est simplement:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">pgdescription</span><span class="p">)</span>
+<span class="go">&#39;...&#39;</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.pg.description.PgDescription">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Descriptif PostgreSQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>raw</strong><span class="classifier">str, optional</span></dt><dd><p>Une chaîne de caractères correspondant à un descriptif
+PostgreSQL. Peut être <code class="docutils literal notranslate"><span class="pre">None</span></code>, qui sera alors
+automatiquement transformé en chaîne de caractères
+vide (idem si l’argument n’est pas fourni).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Si la dé-sérialisation du JSON-LD contenu dans le commentaire
+PostgreSQL échoue, il sera considéré que le descriptif ne
+contenait pas de métadonnées. À la première sauvegarde, le
+contenu des balises  <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> sera écrasé. Le cas échéant, les
+commentaires qui se trouvaient avant et après seront par contre
+préservés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>raw</strong><span class="classifier">str</span></dt><dd><p>Le descriptif PostgreSQL original, tel que fourni à
+l’initialisation. À défaut de descriptif, il s’agit
+d’une chaîne de caractères vide.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.pg.description.PgDescription.ante">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ante</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.ante" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>str: Le texte qui précède la sérialisation JSON-LD des métadonnées.</p>
+<p>À défaut de sérialisation JSON-LD, <cite>ante</cite> contient l’intégralité
+du descriptif.</p>
+<p>Cette propriété est une chaîne de caractères vide si l’objet PostgreSQL
+n’avait pas de descriptif, ou si le descriptif commence par le JSON-LD.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.pg.description.PgDescription.jsonld">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jsonld</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.jsonld" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>str: Partie du descriptif correspondant à la sérialisation JSON-LD des métadonnées.</p>
+<p>Cette propriété est une chaîne de caractères vide si le descriptif
+ne contenait pas de JSON-LD, ou en cas de suppression a posteriori
+des métadonnées.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.pg.description.PgDescription.metagraph">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metagraph</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>plume.rdf.metagraph.Metagraph: Graphe de métadonnées déduit du descriptif.</p>
+<p>À l’initialisation, cette propriété est automatiquement déduite
+du descriptif. Par la suite, ses modifications emportent mise
+à jour de la propriété <a class="reference internal" href="#plume.pg.description.PgDescription.jsonld" title="plume.pg.description.PgDescription.jsonld"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.jsonld</span></code></a>, et par
+suite du descriptif.</p>
+<p>Cette propriété renvoie un graphe vide si le descriptif ne contenait pas
+de JSON-LD.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.pg.description.PgDescription.post">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">post</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.post" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>str: Le texte qui suit la sérialisation JSON-LD des métadonnées.</p>
+<p>Cette propriété est une chaîne de caractères vide si l’objet PostgreSQL
+n’avait pas de descriptif, ou si le descriptif finit par le JSON-LD.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

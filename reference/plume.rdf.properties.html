@@ -313,8 +313,177 @@
               
               <div>
                 
-  <section id="module-plume-rdf-properties">
-<h1>Module plume.rdf.properties<a class="headerlink" href="#module-plume-rdf-properties" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.properties">
+<span id="module-plume-rdf-properties"></span><h1>Module plume.rdf.properties<a class="headerlink" href="#module-plume.rdf.properties" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Description des catégories de métadonnées.</p>
+<p>Ce module gère la convergence des informations descriptives des
+catégories de métadonnées communes (décrites par un schéma SHACL) et
+locales (décrites par un modèle stocké dans des tables PostgreSQL).</p>
+<p>La classe <a class="reference internal" href="#plume.rdf.properties.PlumeProperty" title="plume.rdf.properties.PlumeProperty"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlumeProperty</span></code></a> et la plupart des fonctions
+du module n’ont pas vraiment vocation à être utilisées
+directement. La plus utile - et celle qui sert au module
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict</span></code> - est <a class="reference internal" href="#plume.rdf.properties.class_properties" title="plume.rdf.properties.class_properties"><code class="xref py py-func docutils literal notranslate"><span class="pre">class_properties()</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.properties.PlumeProperty">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.properties.</span></span><span class="sig-name descname"><span class="pre">PlumeProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n3_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.properties.PlumeProperty" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Catégorie de métadonnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>origin</strong><span class="classifier">{“shared”, “local”, “unknown”}</span></dt><dd><p>L’origine de la catégorie :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'shared'</span></code> pour une catégorie commune issue du schéma SHACL.
+L’argument <cite>property_node</cite> est alors obligatoire. <cite>template</cite>
+et <cite>base_path</cite> doivent être fournis s’il y a lieu.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'local'</span></code> pour une catégorie locale définie par le modèle.
+Les arguments <cite>template</cite> et <cite>n3_path</cite> sont alors obligatoires.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'unknown'</span></code> pour une catégorie issue du graphe de métadonnées,
+qui n’est répertoriée ni par le schéma SHACL ni par le modèle.
+L’argument <cite>predicate</cite> est alors obligatoire.</p></li>
+</ul>
+</dd>
+<dt><strong>nsm</strong><span class="classifier">PlumeNamespaceManager</span></dt><dd><p>Le gestionnaire d’espaces de nommage du dictionnaire de widgets.</p>
+</dd>
+<dt><strong>property_node</strong><span class="classifier">BNode, optional</span></dt><dd><p>Noeud anonyme du schéma SHACL représentant la catégorie,
+s’il s’agit d’une catégorie commune.</p>
+</dd>
+<dt><strong>base_path</strong><span class="classifier">rdflib.paths.SequencePath, optional</span></dt><dd><p>Le chemin de la clé parente. À fournir pour les catégories
+communes.</p>
+</dd>
+<dt><strong>template</strong><span class="classifier">dict, optional</span></dt><dd><p>Modèle local de formulaire, le cas échéant.</p>
+</dd>
+<dt><strong>n3_path</strong><span class="classifier">str, optional</span></dt><dd><p>La représentation N3 du chemin de la catégorie, s’il s’agit
+d’une catégorie locale. <cite>n3_path</cite> doit impérativement être
+répertorié dans le modèle s’il est fourni.</p>
+</dd>
+<dt><strong>predicate</strong><span class="classifier">URIRef, optional</span></dt><dd><p>L’IRI de la catégorie. À fournir pour les propriétés qui ne
+sont répertoriées ni dans le schéma SHACL ni dans le modèle
+local.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>Quand tous les arguments requis pour la valeur d”<cite>origin</cite>
+n’ont pas été fournis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">rdflib.paths.SequencePath</span></dt><dd><p>Chemin de la catégorie.</p>
+</dd>
+<dt><strong>n3_path</strong><span class="classifier">str</span></dt><dd><p>La représentation N3 du chemin de la catégorie.</p>
+</dd>
+<dt><strong>predicate</strong><span class="classifier">URIRef</span></dt><dd><p>L’IRI de la catégorie.</p>
+</dd>
+<dt><strong>prop_dict</strong><span class="classifier">dict</span></dt><dd><p>Paramétrage de la catégorie (à passer à la fonction
+d’initialisation des futures clés).</p>
+</dd>
+<dt><strong>unlisted</strong><span class="classifier">bool</span></dt><dd><p>S’agit-il d’une catégorie non répertoriée par le modèle ?
+Vaut toujours <code class="docutils literal notranslate"><span class="pre">False</span></code> s’il n’y a pas de modèle.</p>
+</dd>
+<dt><strong>origin</strong><span class="classifier">{“shared”, “local”, “unknown”}</span></dt><dd><p>L’origine de la catégorie.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.properties.class_properties">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.properties.</span></span><span class="sig-name descname"><span class="pre">class_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rdfclass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.properties.class_properties" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste des propriétés communes d’une classe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rdfclass</strong><span class="classifier">URIRef</span></dt><dd><p>IRI d’une classe présumée décrite dans le schéma SHACL.</p>
+</dd>
+<dt><strong>nsm</strong><span class="classifier">PlumeNamespaceManager</span></dt><dd><p>Le gestionnaire d’espaces de nommage du dictionnaire de widgets.</p>
+</dd>
+<dt><strong>base_path</strong><span class="classifier">rdflib.paths.SequencePath</span></dt><dd><p>Chemin de la clé parente. Peut être <code class="docutils literal notranslate"><span class="pre">None</span></code> pour les catégories
+de premier niveau.</p>
+</dd>
+<dt><strong>template</strong><span class="classifier">dict, optional</span></dt><dd><p>Modèle local de formulaire, le cas échéant.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(list(PlumeProperty), list(URIRef))</dt><dd><p>Un tuple avec :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[0]</span></code> La liste des propriétés.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[1]</span></code> La liste des IRI des propriétés (prédicats des
+triplets du graphe de métadonnées).</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.properties.merge_property_dict">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.properties.</span></span><span class="sig-name descname"><span class="pre">merge_property_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.properties.merge_property_dict" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Fusionne deux dictionnaires décrivant une même catégorie de métadonnées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionnaire portant les informations relatives à la
+propriété issues du schéma SHACL descriptif des métadonnées
+communes.</p>
+</dd>
+<dt><strong>template_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionnaire portant le paramétrage local.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction ne renvoie rien, elle complète <cite>shape_dict</cite>.</p>
+<p>Les clés <code class="docutils literal notranslate"><span class="pre">predicate</span></code>, <code class="docutils literal notranslate"><span class="pre">kind</span></code>, <code class="docutils literal notranslate"><span class="pre">datatype</span></code>, <code class="docutils literal notranslate"><span class="pre">is_multiple</span></code>
+et <code class="docutils literal notranslate"><span class="pre">unilang</span></code> ne peuvent pas être redéfinies par le modèle,
+leurs valeurs éventuelles seront ignorées.</p>
+<p>La clé <code class="docutils literal notranslate"><span class="pre">order_idx</span></code> produite par <a class="reference internal" href="#plume.rdf.properties.read_shape_property" title="plume.rdf.properties.read_shape_property"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_shape_property()</span></code></a>
+à partir de l’indice fourni par le schéma SHACL est un tuple
+dont la première valeur est <code class="docutils literal notranslate"><span class="pre">9999</span></code>, et la seconde l’indice.
+<a class="reference internal" href="plume.pg.template.html#plume.pg.template.TemplateDict" title="plume.pg.template.TemplateDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code></a> fait exactement
+l’inverse : ses clés <code class="docutils literal notranslate"><span class="pre">order_idx</span></code> ont l’indice du modèle en
+première (et unique) valeur. <cite>merge_property_dict</cite> recréé des
+clés <code class="docutils literal notranslate"><span class="pre">order_idx</span></code> dont la première valeur est l’indice du
+modèle, et la seconde celle du schéma des catégories communes.</p>
+<p>La clé <code class="docutils literal notranslate"><span class="pre">sources</span></code> peut être restreinte par le modèle : si ce
+dernier fournit une liste d’URL, alors seules les sources qui
+se trouvent dans cette liste seront conservées, sous réserve
+qu’il y en ait au moins une (sinon la clé d’origine est préservée).</p>
+<p>Le modèle peut rendre obligatoire une catégorie qui n’est
+pas définie comme telle par le schéma des catégories communes,
+mais pas l’inverse. La valeur de la clé <code class="docutils literal notranslate"><span class="pre">is_mandatory</span></code> n’est
+donc écrasée que dans le cas où elle vaut <code class="docutils literal notranslate"><span class="pre">False</span></code> dans le
+schéma et <code class="docutils literal notranslate"><span class="pre">True</span></code> dans le modèle.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.properties.read_shape_property">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.properties.</span></span><span class="sig-name descname"><span class="pre">read_shape_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape_node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.properties.read_shape_property" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Extrait du schéma SHACL les caractéristiques d’une propriété d’une forme.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape_node</strong><span class="classifier">BNode, optional</span></dt><dd><p>Noeud anonyme du schéma SHACL représentant la catégorie.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Un dictionnaire avec une clé par caractéristique potentiellement
+fournie.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

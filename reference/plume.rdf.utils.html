@@ -313,8 +313,1238 @@
               
               <div>
                 
-  <section id="module-plume-rdf-utils">
-<h1>Module plume.rdf.utils<a class="headerlink" href="#module-plume-rdf-utils" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.utils">
+<span id="module-plume-rdf-utils"></span><h1>Module plume.rdf.utils<a class="headerlink" href="#module-plume.rdf.utils" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Utilitaires.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.utils.DatasetId">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">DatasetId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">uuids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.DatasetId" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.term.URIRef</span></code></p>
+<p>Identifiant de jeu de données.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>*uuids</strong><span class="classifier">str or UUID or rdflib.term.URIRef</span></dt><dd><p>UUID ou chaînes de caractères ou IRI présumés correspondre
+à un UUID. Le premier élément qui s’avère être réellement
+un UUID est conservé. Si aucun n’est valide ou si l’argument
+n’est pas fourni, un nouvel UUID est utilisé pour créer
+l’identifiant.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DatasetId</span><span class="p">(</span><span class="s1">&#39;4dc72616-7235-461f-95cf-94dfc3cfa629&#39;</span><span class="p">,</span> 
+<span class="gp">... </span>    <span class="s1">&#39;urn:uuid:2b4bb94a-c10b-4d99-a0e7-4ee28888e4f4&#39;</span><span class="p">)</span>
+<span class="go">DatasetId(&#39;urn:uuid:4dc72616-7235-461f-95cf-94dfc3cfa629&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DatasetId</span><span class="p">(</span><span class="s1">&#39;pas un UUID&#39;</span><span class="p">,</span> 
+<span class="gp">... </span>    <span class="s1">&#39;urn:uuid:2b4bb94a-c10b-4d99-a0e7-4ee28888e4f4&#39;</span><span class="p">)</span>
+<span class="go">DatasetId(&#39;urn:uuid:2b4bb94a-c10b-4d99-a0e7-4ee28888e4f4&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DatasetId</span><span class="p">()</span>
+<span class="go">DatasetId(&#39;urn:uuid:...&#39;)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>uuid</strong><span class="classifier">uuid.UUID</span></dt><dd><p>Représentation de l’identifiant sous forme d’UUID.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">capitalize</span></code>(/)</p></td>
+<td><p>Return a capitalized version of the string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">casefold</span></code>(/)</p></td>
+<td><p>Return a version of the string suitable for caseless comparisons.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code>(width[, fillchar])</p></td>
+<td><p>Return a centered string of length width.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(sub[, start[, end]])</p></td>
+<td><p>Return the number of non-overlapping occurrences of substring sub in string S[start:end].</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">de_skolemize</span></code>()</p></td>
+<td><p>Create a Blank Node from a skolem URI, in accordance with <a class="reference external" href="http://www.w3.org/TR/rdf11-concepts/#section-skolemization">http://www.w3.org/TR/rdf11-concepts/#section-skolemization</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">encode</span></code>(/[, encoding, errors])</p></td>
+<td><p>Encode the string using the codec registered for encoding.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">endswith</span></code>(suffix[, start[, end]])</p></td>
+<td><p>Return True if S ends with the specified suffix, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eq</span></code>(other)</p></td>
+<td><p>A &quot;semantic&quot;/interpreted equality function, by default, same as __eq__</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expandtabs</span></code>(/[, tabsize])</p></td>
+<td><p>Return a copy where all tab characters are expanded using spaces.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code>(sub[, start[, end]])</p></td>
+<td><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format</span></code>(*args, **kwargs)</p></td>
+<td><p>Return a formatted version of S, using substitutions from args and kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_map</span></code>(mapping)</p></td>
+<td><p>Return a formatted version of S, using substitutions from mapping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(sub[, start[, end]])</p></td>
+<td><p>Return the lowest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isalnum</span></code>(/)</p></td>
+<td><p>Return True if the string is an alpha-numeric string, False otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isalpha</span></code>(/)</p></td>
+<td><p>Return True if the string is an alphabetic string, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isascii</span></code>(/)</p></td>
+<td><p>Return True if all characters in the string are ASCII, False otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isdecimal</span></code>(/)</p></td>
+<td><p>Return True if the string is a decimal string, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isdigit</span></code>(/)</p></td>
+<td><p>Return True if the string is a digit string, False otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isidentifier</span></code>(/)</p></td>
+<td><p>Return True if the string is a valid Python identifier, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">islower</span></code>(/)</p></td>
+<td><p>Return True if the string is a lowercase string, False otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnumeric</span></code>(/)</p></td>
+<td><p>Return True if the string is a numeric string, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isprintable</span></code>(/)</p></td>
+<td><p>Return True if the string is printable, False otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isspace</span></code>(/)</p></td>
+<td><p>Return True if the string is a whitespace string, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">istitle</span></code>(/)</p></td>
+<td><p>Return True if the string is a title-cased string, False otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isupper</span></code>(/)</p></td>
+<td><p>Return True if the string is an uppercase string, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">join</span></code>(iterable, /)</p></td>
+<td><p>Concatenate any number of strings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ljust</span></code>(width[, fillchar])</p></td>
+<td><p>Return a left-justified string of length width.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">lower</span></code>(/)</p></td>
+<td><p>Return a copy of the string converted to lowercase.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstrip</span></code>([chars])</p></td>
+<td><p>Return a copy of the string with leading whitespace removed.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">maketrans</span></code>(x[, y, z])</p></td>
+<td><p>Return a translation table usable for str.translate().</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n3</span></code>([namespace_manager])</p></td>
+<td><p>This will do a limited check for valid URIs, essentially just making sure that the string includes no illegal characters (<code class="docutils literal notranslate"><span class="pre">&lt;,</span> <span class="pre">&gt;,</span> <span class="pre">&quot;,</span> <span class="pre">{,</span> <span class="pre">},</span> <span class="pre">|,</span> <span class="pre">\,</span> <span class="pre">`,</span> <span class="pre">^</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neq</span></code>(other)</p></td>
+<td><p>A &quot;semantic&quot;/interpreted not equal function, by default, same as __ne__</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition</span></code>(sep, /)</p></td>
+<td><p>Partition the string into three parts using the given separator.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeprefix</span></code>(prefix, /)</p></td>
+<td><p>Return a str with the given prefix string removed if present.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">removesuffix</span></code>(suffix, /)</p></td>
+<td><p>Return a str with the given suffix string removed if present.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code>(old, new[, count])</p></td>
+<td><p>Return a copy with all occurrences of substring old replaced by new.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rfind</span></code>(sub[, start[, end]])</p></td>
+<td><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rindex</span></code>(sub[, start[, end]])</p></td>
+<td><p>Return the highest index in S where substring sub is found, such that sub is contained within S[start:end].</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rjust</span></code>(width[, fillchar])</p></td>
+<td><p>Return a right-justified string of length width.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rpartition</span></code>(sep, /)</p></td>
+<td><p>Partition the string into three parts using the given separator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsplit</span></code>(/[, sep, maxsplit])</p></td>
+<td><p>Return a list of the words in the string, using sep as the delimiter string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rstrip</span></code>([chars])</p></td>
+<td><p>Return a copy of the string with trailing whitespace removed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">split</span></code>(/[, sep, maxsplit])</p></td>
+<td><p>Return a list of the words in the string, using sep as the delimiter string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splitlines</span></code>(/[, keepends])</p></td>
+<td><p>Return a list of the lines in the string, breaking at line boundaries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">startswith</span></code>(prefix[, start[, end]])</p></td>
+<td><p>Return True if S starts with the specified prefix, False otherwise.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip</span></code>([chars])</p></td>
+<td><p>Return a copy of the string with leading and trailing whitespace removed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapcase</span></code>(/)</p></td>
+<td><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">title</span></code>(/)</p></td>
+<td><p>Return a version of the string where each word is titlecased.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(table, /)</p></td>
+<td><p>Replace each character in the string using the given translation table.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">upper</span></code>(/)</p></td>
+<td><p>Return a copy of the string converted to uppercase.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zfill</span></code>(width, /)</p></td>
+<td><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<colgroup>
+<col style="width: 55%" />
+<col style="width: 45%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>defrag</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>toPython</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.abspath">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">abspath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.abspath" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Déduit un chemin absolu d’un chemin relatif au package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>relpath (str):</strong></dt><dd><p>Chemin relatif au package. Il n’est ni nécessaire ni
+judicieux d’utiliser la syntaxe Windows à base
+d’antislashs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pathlib.Path</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;rdf/data/vocabulary.ttl&#39;</span><span class="p">)</span>
+<span class="go">WindowsPath(&#39;C:/Users/Alhyss/Documents/GitHub/metadata-postgresql/plume/rdf/data/vocabulary.ttl&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.rdf.utils.crs_ns">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">crs_ns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'EPSG':</span> <span class="pre">'http://www.opengis.net/def/crs/EPSG/0/',</span> <span class="pre">'IGNF':</span> <span class="pre">'https://registre.ign.fr/ign/IGNF/IGNF.xml#',</span> <span class="pre">'OGC':</span> <span class="pre">'http://www.opengis.net/def/crs/OGC/1.3/'}</span></em><a class="headerlink" href="#plume.rdf.utils.crs_ns" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Espaces de nommage des référentiels de coordonnées.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.data_from_file">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">data_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.data_from_file" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le contenu d’un fichier.</p>
+<p>Le fichier sera présumé être encodé en UTF-8 et mieux
+vaudrait qu’il le soit.</p>
+<p>On pourra utiliser conjointement <a class="reference internal" href="#plume.rdf.utils.abspath" title="plume.rdf.utils.abspath"><code class="xref py py-func docutils literal notranslate"><span class="pre">abspath()</span></code></a> pour
+l’import de données du modèle:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_from_file</span><span class="p">(</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;pg/tests/samples/pg_description_1.txt&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>Chemin complet du fichier source.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#plume.rdf.utils.graph_from_file" title="plume.rdf.utils.graph_from_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graph_from_file</span></code></a></dt><dd><p>Import de données RDF.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.date_from_str">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">date_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.date_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation RDF d’une date exprimée comme chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>La date, sous la forme <cite>“jj/mm/aaaa”</cite>, sans quoi
+la fonction renverra <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.Literal</dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction tolère des informations excédentaires après la date
+(par exemple une heure). Elle tronque alors la valeur pour ne
+conserver que la date.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">date_from_str</span><span class="p">(</span><span class="s1">&#39;13/02/2022&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.Literal(&#39;2022-02-13&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#date&#39;))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.datetime_from_str">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">datetime_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.datetime_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation RDF d’une date exprimée comme chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>La date, sous la forme <cite>“jj/mm/aaaa hh:mm:ss”</cite>, sans
+quoi la fonction renverra <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.Literal</dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction tolère qu’on ne lui fournisse qu’une date (informations
+relatives à l’heure manquantes). Il est alors considéré que
+l’heure était <code class="docutils literal notranslate"><span class="pre">'00:00:00'</span></code>.</p>
+<p>La fonction tolère des informations excédentaires après
+la valeur des secondes (ou après la date sans heure),
+mais elles seront silencieusement effacées.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">datetime_from_str</span><span class="p">(</span><span class="s1">&#39;13/02/2022 15:30:14&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.Literal(&#39;2022-02-13T15:30:14&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#dateTime&#39;))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.decimal_from_str">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">decimal_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.decimal_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation RDF d’un nombre décimal exprimé comme chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>Le nombre décimal. La virgule et le point
+sont tous deux acceptés comme séparateurs
+entre la partie entière et la partie
+décimale.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.Literal</dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une valeur mal formée.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decimal_from_str</span><span class="p">(</span><span class="s1">&#39;-1,25&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.Literal(&#39;-1.25&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#decimal&#39;))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.duration_from_int">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">duration_from_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.duration_from_int" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation RDF d’une durée exprimée sous la forme d’une valeur entière et d’une unité.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">int or str</span></dt><dd><p>La valeur de la durée. Elle peut être de type <code class="docutils literal notranslate"><span class="pre">int</span></code>
+ou <code class="docutils literal notranslate"><span class="pre">str</span></code>, tant qu’il s’agit bien d’un nombre. Les
+durées négative sont prises en charge.</p>
+</dd>
+<dt><strong>unit</strong><span class="classifier">{“ans”, “mois”, “jours”, “heures”, “min.”, “sec.”}</span></dt><dd><p>L’unité de la durée. La fonction renverra <code class="docutils literal notranslate"><span class="pre">None</span></code>
+si la valeur renseignée n’est pas dans la liste
+des unités prises en charge.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.Literal</dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">duration_from_int</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;ans&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.Literal(&#39;P2Y&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#duration&#39;))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.email_from_owlthing">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">email_from_owlthing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thing_iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.email_from_owlthing" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la transcription sous forme de chaîne de caractères d’un IRI représentant une adresse mél.</p>
+<p>Cette fonction très basique se contente de retirer le préfixe
+« mailto: » s’il était présent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>thing_iri</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>IRI supposé correspondre à une adresse mél (classe
+RDF  <code class="docutils literal notranslate"><span class="pre">owl:Thing</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">email_from_owlthing</span><span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;mailto:jon.snow@the-wall.we&#39;</span><span class="p">))</span>
+<span class="go">&#39;jon.snow@the-wall.we&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.export_extension_from_format">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_extension_from_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_extension_from_format" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’extension utilisée pour les exports dans le format considéré.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>format</strong><span class="classifier">str</span></dt><dd><p>Un format d’export présumé inclus dans la liste des formats
+reconnus par les fonctions de RDFLib (rdflib_format).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>L’extension à utiliser pour le format considéré, avec le point.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.export_format_from_extension">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_format_from_extension" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le format d’export correspondant à l’extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>extension</strong><span class="classifier">str</span></dt><dd><p>Une extension (avec point).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Un nom de format. La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si l’extension
+n’est pas reconnue.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.export_formats">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste de tous les formats disponibles pour l’export.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list of str</dt><dd><p>La liste des formats reconnus par RDFLib à l’export.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.forbidden_char">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">forbidden_char</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anystr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.forbidden_char" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>anystr</strong><span class="classifier">str</span></dt><dd><p>La chaîne de caractères à tester.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Si la chaîne contient au moins un caractère interdit, l’un
+de ces caractères.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.geomtype_from_wkt">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">geomtype_from_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wkt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.geomtype_from_wkt" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Déduit le type de géométrie d’une représentation WKT.</p>
+<p>Si le type de géométrie n’est pas l’un des types
+gérés par Plume, la fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wkt</strong><span class="classifier">str or rdflib.term.Literal</span></dt><dd><p>Une représentation WKT de géométrie (avec ou sans
+référentiel explicitement déclaré).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Le type de géométrie, parmi <cite>“polygon”</cite>, <cite>“point”</cite>
+et <cite>“linestring”</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.get_datasetid">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">get_datasetid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anygraph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.get_datasetid" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’identifiant du jeu de données éventuellement contenu dans le graphe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>anygraph</strong><span class="classifier">rdflib.graph.Graph</span></dt><dd><p>Un graphe quelconque, présumé contenir la description d’un
+jeu de données (<code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>URIRef</dt><dd><p>L’identifiant du jeu de données. None si le graphe ne contenait
+pas de jeu de données.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.graph_from_file">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">graph_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.graph_from_file" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Désérialise le contenu d’un fichier sous forme de graphe.</p>
+<p>Le fichier sera présumé être encodé en UTF-8 et mieux
+vaudrait qu’il le soit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>Chemin complet du fichier source, supposé contenir des
+métadonnées dans un format RDF, sans quoi l’import échouera.</p>
+</dd>
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Le format des métadonnées. Si non renseigné, il est autant que
+possible déduit de l’extension du fichier, qui devra donc être
+cohérente avec son contenu. Pour connaître la liste des valeurs
+acceptées, on exécutera <a class="reference internal" href="#plume.rdf.utils.import_formats" title="plume.rdf.utils.import_formats"><code class="xref py py-func docutils literal notranslate"><span class="pre">import_formats()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.graph.Graph</dt><dd><p>Un graphe.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<dl class="simple">
+<dt><a class="reference internal" href="plume.rdf.metagraph.html#plume.rdf.metagraph.metagraph_from_file" title="plume.rdf.metagraph.metagraph_from_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_file</span></code></a></dt><dd><p>Désérialise le contenu d’un fichier sous forme de graphe de métadonnées.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.import_extensions_from_format">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_extensions_from_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_extensions_from_format" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste des extensions associées à un format d’import.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Un format d’import présumé inclus dans la liste des formats
+reconnus par les fonctions de RDFLib (rdflib_formats avec
+import=True).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list of str</dt><dd><p>La liste de toutes les extensions associées au format considéré,
+avec le point.
+Si <cite>format</cite> n’est pas renseigné, la fonction renvoie la liste
+de toutes les extensions reconnues pour l’import.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">import_extensions_from_format</span><span class="p">(</span><span class="s1">&#39;xml&#39;</span><span class="p">)</span>
+<span class="go">[&#39;.rdf&#39;, &#39;.xml&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.import_format_from_extension">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_format_from_extension" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le format d’import correspondant à l’extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>extension</strong><span class="classifier">str</span></dt><dd><p>Une extension (avec point).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Un nom de format. La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si l’extension
+n’est pas reconnue.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.import_formats">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste de tous les formats disponibles pour l’import.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list of str</dt><dd><p>La liste des formats reconnus par RDFLib à l’import.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.int_from_duration">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">int_from_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.int_from_duration" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Extrait un nombre entier et son unité d’un littéral représentant une durée.</p>
+<p>Cette fonction renvoie <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> si la valeur fournie
+en argument n’était pas un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code>
+ou si, parce qu’il n’était pas correctement formé, il n’a pas
+été possible d’en extaire une valeur.</p>
+<p>Les durées complexes faisant appel à plusieurs unités sont
+tronquées. La fonction conserve l’entier associé à l’unité
+la plus grande.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>duration</strong><span class="classifier">rdflib.term.Literal</span></dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(int, {“ans”, “mois”, “jours”, “heures”, “min.”, “sec.”})</dt><dd><p>Un tuple dont le premier élément est l’entier correspondant
+à la valeur de la durée et le second l’unité de cette
+durée.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">int_from_duration</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;P2Y&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">duration</span><span class="p">))</span>
+<span class="go">(2, &#39;ans&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.main_datatype">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">main_datatype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.main_datatype" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le type de littéral pré-dominant d’une liste de valeurs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>values</strong><span class="classifier">list(rdflib.term.Literal or rdflib.term.URIRef or rdflib.term.BNode)</span></dt><dd><p>Une liste de valeurs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.URIRef</dt><dd><p>Un type de valeur littérale, sous la forme d’un
+IRI RDF.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si la liste ne contenait aucune
+valeur littérale (y compris pour une liste vide).
+Sinon, le type sera :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code> si la liste contient au moins une
+valeur littérale dont la langue est déclarée.</p></li>
+<li><p>Si toutes les valeurs sont littérales et de même type,
+ledit type.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code> si toutes les valeurs sont littérales
+et de type <code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code> ou <code class="docutils literal notranslate"><span class="pre">xsd:integer</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code> si toutes les valeurs sont littérales
+et de type <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code> ou <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> dans tous les autres cas.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.owlthing_from_email">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">owlthing_from_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.owlthing_from_email" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Construit un IRI valide à partir d’une chaîne de caractères représentant une adresse mél.</p>
+<p>La fonction ne fait aucun contrôle de validité sur l’adresse si ce
+n’est vérifier qu’elle ne contient aucun caractère interdit pour
+un IRI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>email_str</strong><span class="classifier">str</span></dt><dd><p>Une chaîne de caractère supposée correspondre à une adresse mél.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.URIRef</dt><dd><p>Un IRI respectant grosso modo le schéma officiel des URI pour
+les adresses mél : <code class="docutils literal notranslate"><span class="pre">mailto:&lt;email&gt;</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">owlthing_from_email</span><span class="p">(</span><span class="s1">&#39;jon.snow@the-wall.we&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.URIRef(&#39;mailto:jon.snow@the-wall.we&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.owlthing_from_tel">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">owlthing_from_tel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tel_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_fr_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.owlthing_from_tel" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Construit un IRI valide à partir d’une chaîne de caractères représentant un numéro de téléphone.</p>
+<p>Si le numéro semble être un numéro de téléphone français valide,
+il est standardisé sous la forme <code class="docutils literal notranslate"><span class="pre">&lt;tel:+33-x-xx-xx-xx-xx&gt;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tel_str</strong><span class="classifier">str</span></dt><dd><p>Une chaîne de caractère supposée correspondre à un numéro de téléphone.</p>
+</dd>
+<dt><strong>add_fr_prefix</strong><span class="classifier">bool, default True</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> si la fonction doit tenter de transformer les numéros de téléphone
+français locaux ou présumés comme tels (un zéro suivi de neuf chiffres)
+en numéros globaux (<code class="docutils literal notranslate"><span class="pre">'+33'</span></code> suivi des neuf chiffres). <code class="docutils literal notranslate"><span class="pre">True</span></code> par défaut.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.URIRef</dt><dd><p>Un IRI respectant grosso modo le schéma officiel des URI pour les
+numéros de téléphone : <code class="docutils literal notranslate"><span class="pre">tel:&lt;phonenumber&gt;</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">owlthing_from_tel</span><span class="p">(</span><span class="s1">&#39;0123456789&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.URIRef(&#39;tel:+33-1-23-45-67-89&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.path_from_n3">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">path_from_n3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_n3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.path_from_n3" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie un chemin d’IRI reconstruit à partir de sa représentation N3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path_n3</strong><span class="classifier">str</span></dt><dd><p>Représentation N3 d’un chemin d’IRI. Les préfixes
+utilisés doivent impérativement être ceux du
+gestionnaire d’espaces de nommage, et a fortiori de
+Plume (<code class="xref py py-data docutils literal notranslate"><span class="pre">plume.rdf.namespaces.namespaces</span></code>).</p>
+</dd>
+<dt><strong>nsm</strong><span class="classifier">plume.rdf.namespaces.PlumeNamespaceManager</span></dt><dd><p>Un gestionnaire d’espaces de nommage.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>URIRef or rdflib.paths.Path</dt><dd><p>Le chemin d’IRI. <code class="docutils literal notranslate"><span class="pre">None</span></code> si la reconstruction a
+échoué, soit parce que <cite>path_n3</cite> n’était pas
+vraiment la représentation N3 d’un chemin d’IRI,
+soit parce que tous les préfixes utilisés n’ont pas
+été reconnus.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.path_n3">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">path_n3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.path_n3" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation N3 d’un chemin d’IRI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">rdflib.term.URIRef or rdflib.paths.Path</span></dt><dd><p>Un chemin d’IRI.</p>
+</dd>
+<dt><strong>nsm</strong><span class="classifier">plume.rdf.namespaces.PlumeNamespaceManager</span></dt><dd><p>Un gestionnaire d’espaces de nommage.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>RDFLib propose bien une méthode <code class="xref py py-meth docutils literal notranslate"><span class="pre">rdflib.paths.Path.n3()</span></code>
+pour transformer les chemins d’IRI… mais elle ne prend pas
+d’espace de nommage en argument à ce stade (v 6.0.1). Son
+autre défaut est d’écrire les chemins sans espaces avant et
+après les slashs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.pick_translation">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">pick_translation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">litlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.pick_translation" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’élément de la liste dont la langue est la mieux adaptée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>litlist</strong><span class="classifier">list(rdflib.term.Literal)</span></dt><dd><p>Une liste de valeurs litérales, présumées de type
+<code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> ou <code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code>.</p>
+</dd>
+<dt><strong>langlist</strong><span class="classifier">list(str) or tuple(str) or str</span></dt><dd><p>Une langue ou une liste de langues triées par priorité
+décroissante.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.Literal</dt><dd><p>Un des éléments de <cite>litlist</cite>, qui peut être :</p>
+<ul class="simple">
+<li><p>le premier dont la langue est la première valeur
+de <cite>langlist</cite> ;</p></li>
+<li><p>le premier dont la langue est la deuxième valeur
+de <cite>langlist</cite> ;</p></li>
+<li><p>et ainsi de suite jusqu’à épuisement de <cite>langlist</cite> ;</p></li>
+<li><p>à défaut, le premier élément de <cite>litlist</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction peut ne pas renvoyer un objet de classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code> si <cite>litlist</cite> ne contenait
+que des valeurs non litérales.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.rdf.utils.rdflib_formats">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">rdflib_formats</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'json-ld':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.jsonld',</span> <span class="pre">'.json'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'n3':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.n3'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'nt':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.nt'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'pretty-xml':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.rdf',</span> <span class="pre">'.xml'],</span> <span class="pre">'import':</span> <span class="pre">False},</span> <span class="pre">'trig':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.trig'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'turtle':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.ttl'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'xml':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">False,</span> <span class="pre">'extensions':</span> <span class="pre">['.rdf',</span> <span class="pre">'.xml'],</span> <span class="pre">'import':</span> <span class="pre">True}}</span></em><a class="headerlink" href="#plume.rdf.utils.rdflib_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Formats reconnus par les fonctions de RDFLib.</p>
+<p>Si la clé <code class="docutils literal notranslate"><span class="pre">import</span></code> vaut <code class="docutils literal notranslate"><span class="pre">False</span></code>, le format n’est pas reconnu
+à l’import. Si <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">default</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, il s’agit du
+format d’export privilégié pour les extensions listées
+par la clé <code class="docutils literal notranslate"><span class="pre">extension</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.sort_by_language">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">sort_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">litlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.sort_by_language" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Trie une liste selon les langues de ses valeurs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>litlist</strong><span class="classifier">list(rdflib.term.Literal)</span></dt><dd><p>Une liste de valeurs litérales, présumées de type
+<code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> ou <code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code>.</p>
+</dd>
+<dt><strong>langlist</strong><span class="classifier">list(str) or tuple(str)</span></dt><dd><p>Une liste de langues, triées par priorité décroissante.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.split_rdf_wkt">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">split_rdf_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rdf_wkt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.split_rdf_wkt" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Extrait le référentiel et la géométrie d’un littéral WKT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rdf_wkt</strong><span class="classifier">str or rdflib.term.Literal</span></dt><dd><p>Une représentation WKT de la géométrie avec le référentiel
+explicitement déclaré, comme attendu en RDF pour le
+type <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>. Par défaut, le référentiel
+sera supposé être <code class="docutils literal notranslate"><span class="pre">'OGC:WGS84'</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(str, str)</dt><dd><p>Un tuple dont le premier élément est la géométrie,
+toujours encodée en WKT mais sans référentiel, et le
+second élément est le référentiel, sous la forme
+<code class="docutils literal notranslate"><span class="pre">'Autorité:Code'</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si l’autorité n’a pas été
+reconnue, mais ne fait qu’un contrôle de forme superficiel
+sur l’identifiant du référentiel (qui pourrait donc ne pas
+être une valeur référencée). La validité de la géométrie
+n’est pas vérifiée.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">split_rdf_wkt</span><span class="p">(</span><span class="s1">&#39;&lt;http://www.opengis.net/def/crs/EPSG/0/2154&gt; &#39;</span>     <span class="o">...</span>     <span class="s1">&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;</span><span class="p">)</span>
+<span class="go">(&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;, &#39;EPSG:2154&#39;)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">split_rdf_wkt</span><span class="p">(</span><span class="s1">&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;</span><span class="p">)</span>
+<span class="go">(&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;, &#39;OGC:WGS84&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.str_from_date">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_date" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Représentation d’une date sous forme de chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>datelit</strong><span class="classifier">rdflib.term.Literal</span></dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code>. Les valeurs
+de type <code class="docutils literal notranslate"><span class="pre">xsd::dateTime</span></code> sont tolérées (et
+seront tronquées).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une valeur mal formée
+ou qui n’est pas un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">str_from_date</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;2022-02-12&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">date</span><span class="p">))</span>
+<span class="go">&#39;12/02/2022&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.str_from_datetime">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datetimelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_datetime" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Représentation d’une date avec heure sous forme de chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>datetimelit</strong><span class="classifier">rdflib.term.Literal</span></dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code>. Les valeurs
+de type <code class="docutils literal notranslate"><span class="pre">xsd::date</span></code> sont tolérées.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une valeur mal formée
+ou qui n’est pas un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code> ou
+<code class="docutils literal notranslate"><span class="pre">xsd:date</span></code>.</p>
+<p>À ce stade, les heures sont tronquées à la seconde et
+les fuseaux horaires effacés.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">str_from_datetime</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;2022-02-12T00:00:00&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">dateTime</span><span class="p">))</span>
+<span class="go">&#39;12/02/2022 00:00:00&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.str_from_decimal">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_decimal" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Représentation d’un nombre décimal sous forme de chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>decimal</strong><span class="classifier">rdflib.term.Literal</span></dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code>. Les valeurs
+de type <code class="docutils literal notranslate"><span class="pre">xsd:integer</span></code> sont tolérées.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une valeur mal formée
+ou qui n’est pas un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code>.</p>
+<p>Elle prend en compte les paramètres de localisation
+système pour choisir le séparateur (virgule ou
+point) à utiliser.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">str_from_decimal</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;1.25&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">decimal</span><span class="p">))</span>
+<span class="go">&#39;1,25&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.str_from_duration">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_duration" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Représentation d’une durée sous forme de chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>duration</strong><span class="classifier">rdflib.term.Literal</span></dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction produit des valeurs pour un affichage en
+lecture seule. Il n’existe pas de fonction retour pour
+reconstruire un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code> à partir
+d’une représentation de cette forme.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">str_from_duration</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;P2Y&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">duration</span><span class="p">))</span>
+<span class="go">&#39;2 ans&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.str_from_time">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_time" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Représentation d’une heure sous forme de chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>timelit</strong><span class="classifier">rdflib.term.Literal</span></dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:time</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une valeur mal formée
+ou qui n’est pas un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:time</span></code>.</p>
+<p>À ce stade, les heures sont tronquées à la seconde et
+les fuseaux horaires effacés.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">str_from_time</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;15:30:14&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+<span class="go">&#39;15:30:14&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.tel_from_owlthing">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">tel_from_owlthing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thing_iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.tel_from_owlthing" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la transcription sous forme de chaîne de caractères d’un IRI représentant un numéro de téléphone.</p>
+<p>Contrairement à <a class="reference internal" href="#plume.rdf.utils.owlthing_from_tel" title="plume.rdf.utils.owlthing_from_tel"><code class="xref py py-func docutils literal notranslate"><span class="pre">owlthing_from_tel()</span></code></a>, cette fonction très basique
+ne standardise pas la forme du numéro de téléphone. Elle se contente
+de retirer le préfixe <code class="docutils literal notranslate"><span class="pre">'tel:'</span></code> s’il était présent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>thing_iri</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>IRI supposé correspondre à un numéro de téléphone (classe
+RDF <code class="docutils literal notranslate"><span class="pre">owl:Thing</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tel_from_owlthing</span><span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;tel:+33-1-23-45-67-89&#39;</span><span class="p">))</span>
+<span class="go">&#39;+33-1-23-45-67-89&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.text_with_link">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">text_with_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anystr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anyiri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.text_with_link" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Génère un fragment HTML définissant un lien.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>anystr</strong><span class="classifier">str</span></dt><dd><p>La chaîne de caractères porteuse du lien.</p>
+</dd>
+<dt><strong>anyiri</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>Un IRI quelconque correspondant à la cible du lien.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Une chaîne de caractère correspondant à un élément A,
+qui sera interprétée par les widgets comme du texte riche.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">text_with_link</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;Documentation de PostgreSQL 10&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">URIRef</span><span class="p">(</span><span class="s2">&quot;https://www.postgresql.org/docs/10/index.html&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="go">&#39;&lt;A href=&quot;https://www.postgresql.org/docs/10/index.html&quot;&gt;Documentation de PostgreSQL 10&lt;/A&gt;&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.time_from_str">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">time_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.time_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation RDF d’une heure exprimée comme chaîne de caractères.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>L’heure, sous la forme <cite>“hh:mm:ss”</cite>, sans quoi
+la fonction renverra <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.Literal</dt><dd><p>Un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:time</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction tolère des informations excédentaires après
+la valeur des secondes, mais elles ne seront pas prises
+en compte.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">time_from_str</span><span class="p">(</span><span class="s1">&#39;15:30:14&#39;</span><span class="p">)</span>
+<span class="go">rdflib.term.Literal(&#39;15:30:14&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#time&#39;))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.utils.wkt_with_srid">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">wkt_with_srid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wkt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.wkt_with_srid" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Ajoute un référentiel de coordonnées à la représentation WKT d’une géométrie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wkt</strong><span class="classifier">str</span></dt><dd><p>Représentation WKT (Well Known Text) d’une géométrie.
+La validité de ladite représentation n’est pas
+vérifiée par la fonction.</p>
+</dd>
+<dt><strong>srid</strong><span class="classifier">str</span></dt><dd><p>L’identifiant du référentiel de coordonnées utilisé
+pour la représentation WKT, sous la forme <code class="docutils literal notranslate"><span class="pre">'Autorité:Code'</span></code>.
+À ce stade, ne sont reconnus que les codes EPSG
+(ex : <code class="docutils literal notranslate"><span class="pre">'EPSG:2154'</span></code>), les identifiants OGC (ex :
+<code class="docutils literal notranslate"><span class="pre">'OGC:WGS84'</span></code>) et les identifiants du registre IGN (ex :
+<code class="docutils literal notranslate"><span class="pre">'IGNF:WGS84G'</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>La représentation WKT de la géométrie avec le référentiel
+explicitement déclaré, comme attendu en RDF.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si l’autorité n’a pas
+été reconnue.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wkt_with_srid</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;EPSG:2154&#39;</span>
+<span class="gp">... </span>     <span class="p">)</span>
+<span class="go">&#39;&lt;http://www.opengis.net/def/crs/EPSG/0/2154&gt; POINT(651796.32814998598769307 6862298.58582336455583572)&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

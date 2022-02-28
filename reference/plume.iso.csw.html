@@ -313,8 +313,70 @@
               
               <div>
                 
-  <section id="module-plume-iso-csw">
-<h1>Module plume.iso.csw<a class="headerlink" href="#module-plume-iso-csw" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.iso.csw">
+<span id="module-plume-iso-csw"></span><h1>Module plume.iso.csw<a class="headerlink" href="#module-plume.iso.csw" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Utilitaires pour le dialogue avec les services CSW des catalogues.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.iso.csw.getcapabilities_request">
+<span class="sig-prename descclassname"><span class="pre">plume.iso.csw.</span></span><span class="sig-name descname"><span class="pre">getcapabilities_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_csw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.csw.getcapabilities_request" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Crée une requête GetCapabilities pour envoi en HTTP GET.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>url_csw</strong><span class="classifier">str</span></dt><dd><p>L’URL de base du service CSW du catalogue, sans aucun paramètre.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">getcapabilities_request</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset&#39;</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">xml</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.iso.csw.getrecordbyid_request">
+<span class="sig-prename descclassname"><span class="pre">plume.iso.csw.</span></span><span class="sig-name descname"><span class="pre">getrecordbyid_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_csw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_identifier</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.csw.getrecordbyid_request" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Crée une requête GetRecordById pour envoi en HTTP GET.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>url_csw</strong><span class="classifier">str</span></dt><dd><p>L’URL de base du service CSW du catalogue, sans aucun paramètre.</p>
+</dd>
+<dt><strong>file_identifier</strong><span class="classifier">str</span></dt><dd><p>L’identifiant de la fiche de métadonnées sur le catalogue.
+Correspond à la valeur de la balise <code class="docutils literal notranslate"><span class="pre">gmd:fileIdentifier</span></code>
+des fiches ISO 19139.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">getrecordbyid_request</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset&#39;</span><span class="p">,</span> 
+<span class="gp">... </span>    <span class="s1">&#39;fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297&#39;</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">xml</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

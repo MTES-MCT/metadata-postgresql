@@ -313,8 +313,328 @@
               
               <div>
                 
-  <section id="module-plume-rdf-actionsbook">
-<h1>Module plume.rdf.actionsbook<a class="headerlink" href="#module-plume-rdf-actionsbook" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.actionsbook">
+<span id="module-plume-rdf-actionsbook"></span><h1>Module plume.rdf.actionsbook<a class="headerlink" href="#module-plume.rdf.actionsbook" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Carnets d’actions.</p>
+<p>Les carnets d’actions - objets de classe <cite>ActionsBook</cite> -
+servent à répertorier les actions réalisée sur les dictionnaires
+de widgets qui devront se retraduire en actions sur les widgets
+eux-mêmes.</p>
+<p>Chaque attribut du carnet d’actions correspond à un type d’action,
+il prend pour valeur une liste de clés - <cite>WidgetKey</cite> - pour
+laquelle l’action est à accomplir.</p>
+<p>Pour faciliter leur exploitation, les <cite>ActionsBook</cite> sont
+traduits en dictionnaires par la méthode <cite>actionsbook_to_dict</cite>
+de la classe <cite>WidgetsDict</cite>.</p>
+<p>Les carnets d’actions sont supposés être lus et réinitialisés
+après chaque commande, sans quoi ils finiront immanquablement par
+contenir des informations contradictoires ou fausses.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.ActionsBook">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.actionsbook.</span></span><span class="sig-name descname"><span class="pre">ActionsBook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_ghosts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.ActionsBook" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe pour les carnets d’actions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>allow_ghosts</strong><span class="classifier">bool, default False</span></dt><dd><p>La liste de l’attribut <cite>drop</cite> peut-elle contenir des clés
+fantômes ? D’une manière générale, ce paramètre ne devrait pas
+être utilisé, car <cite>drop</cite> risquerait de contenir des clés qui
+ne sont pas référencées dans le dictionnaire de widgets. Il
+sert lorsque des clés non fantômes (et donc potentiellement
+référencées) deviennent des fantômes (et doivent donc être
+déréférencées), soit essentiellement pour la méthode
+<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.RootKey.clean" title="plume.rdf.widgetkey.RootKey.clean"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.RootKey.clean()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>modified</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste de toutes les clés modifiées (excluant les créations
+et les suppressions).</p>
+</dd>
+<dt><strong>show</strong><span class="classifier">VisibleKeyList</span></dt><dd><p>Liste des clés dont les widgets doivent être rendus visibles.</p>
+</dd>
+<dt><strong>show_minus_button</strong><span class="classifier">TrueMinusButtonKeyList</span></dt><dd><p>Liste des clés dont le bouton moins doit être rendu visible,
+s’il existe.</p>
+</dd>
+<dt><strong>hide</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont les widgets doivent être masqués.</p>
+</dd>
+<dt><strong>hide_minus_button</strong><span class="classifier">TrueMinusButtonKeyList</span></dt><dd><p>Liste des clés dont le bouton moins doit être masqué, s’il existe.</p>
+</dd>
+<dt><strong>create</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont les widgets doivent être créés.</p>
+</dd>
+<dt><strong>move</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont les widgets doivent être déplacés dans la grille.</p>
+</dd>
+<dt><strong>languages</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont le menu des langues doit être mis à jour.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont le menu des unités doit être mis à jour.</p>
+</dd>
+<dt><strong>sources</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont le menu des sources doit être mis à jour.</p>
+</dd>
+<dt><strong>thesaurus</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste des clés dont la liste de valeurs doit être recalculée.</p>
+</dd>
+<dt><strong>drop</strong><span class="classifier">NoGhostKeyList or KeyList</span></dt><dd><p>Liste des clés dont les widgets doivent être supprimés. <cite>drop</cite>
+est une liste sans fantômes (<a class="reference internal" href="#plume.rdf.actionsbook.NoGhostKeyList" title="plume.rdf.actionsbook.NoGhostKeyList"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoGhostKeyList</span></code></a>),
+sauf si le carnet d’actions a été initialisé avec le paramètre
+<cite>allow_ghosts</cite> valant <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>update</strong><span class="classifier">NoGhostKeyList</span></dt><dd><p>Liste de clés dont les valeurs doivent être mises à jour.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.KeyList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.actionsbook.</span></span><span class="sig-name descname"><span class="pre">KeyList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.KeyList" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<p>Liste de clés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>actionsbook</strong><span class="classifier">ActionsBook</span></dt><dd><p>Le carnet d’actions auquel appartient la liste.</p>
+</dd>
+<dt><strong>erase</strong><span class="classifier">list of str, optional</span></dt><dd><p>La liste des attributs où la clé doit être supprimée
+dès lors qu’elle apparaît dans la présente liste.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Les clés en cours d’initialisation ne sont jamais
+ajoutées aux listes de clés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>actionsbook</strong><span class="classifier">ActionsBook</span></dt><dd><p>Le carnet d’actions auquel appartient la liste. Cet
+attribut sert à croiser les listes pour veiller
+à leur cohérence.</p>
+</dd>
+<dt><strong>erase</strong><span class="classifier">list of str</span></dt><dd><p>La liste des attributs où la clé doit être supprimée
+dès lors qu’elle apparaît dans la présente liste.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.actionsbook.KeyList.append" title="plume.rdf.actionsbook.KeyList.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(value)</p></td>
+<td><p>Append object to the end of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>(/)</p></td>
+<td><p>Remove all items from list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(/)</p></td>
+<td><p>Return a shallow copy of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
+<td><p>Return number of occurrences of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code>(iterable, /)</p></td>
+<td><p>Extend list by appending elements from the iterable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
+<td><p>Return first index of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code>(index, object, /)</p></td>
+<td><p>Insert object before index.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>([index])</p></td>
+<td><p>Remove and return item at index (default last).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>(value, /)</p></td>
+<td><p>Remove first occurrence of value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code>(/)</p></td>
+<td><p>Reverse <em>IN PLACE</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code>(*[, key, reverse])</p></td>
+<td><p>Sort the list in ascending order and return None.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.KeyList.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.KeyList.append" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Append object to the end of the list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.NoGhostKeyList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.actionsbook.</span></span><span class="sig-name descname"><span class="pre">NoGhostKeyList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.NoGhostKeyList" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <a class="reference internal" href="#plume.rdf.actionsbook.KeyList" title="plume.rdf.actionsbook.KeyList"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.actionsbook.KeyList</span></code></a></p>
+<p>Liste de clés garantie sans fantôme.</p>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.actionsbook.NoGhostKeyList.append" title="plume.rdf.actionsbook.NoGhostKeyList.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(value)</p></td>
+<td><p>Append object to the end of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>(/)</p></td>
+<td><p>Remove all items from list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(/)</p></td>
+<td><p>Return a shallow copy of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
+<td><p>Return number of occurrences of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code>(iterable, /)</p></td>
+<td><p>Extend list by appending elements from the iterable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
+<td><p>Return first index of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code>(index, object, /)</p></td>
+<td><p>Insert object before index.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>([index])</p></td>
+<td><p>Remove and return item at index (default last).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>(value, /)</p></td>
+<td><p>Remove first occurrence of value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code>(/)</p></td>
+<td><p>Reverse <em>IN PLACE</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code>(*[, key, reverse])</p></td>
+<td><p>Sort the list in ascending order and return None.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.NoGhostKeyList.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.NoGhostKeyList.append" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Append object to the end of the list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.TrueMinusButtonKeyList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.actionsbook.</span></span><span class="sig-name descname"><span class="pre">TrueMinusButtonKeyList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.TrueMinusButtonKeyList" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <a class="reference internal" href="#plume.rdf.actionsbook.VisibleKeyList" title="plume.rdf.actionsbook.VisibleKeyList"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.actionsbook.VisibleKeyList</span></code></a></p>
+<p>Liste de clés garanties visibles et avec un bouton moins.</p>
+<p>Ceci ne présage pas de la visibilité du bouton moins
+lui-même.</p>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.actionsbook.TrueMinusButtonKeyList.append" title="plume.rdf.actionsbook.TrueMinusButtonKeyList.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(value)</p></td>
+<td><p>Append object to the end of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>(/)</p></td>
+<td><p>Remove all items from list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(/)</p></td>
+<td><p>Return a shallow copy of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
+<td><p>Return number of occurrences of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code>(iterable, /)</p></td>
+<td><p>Extend list by appending elements from the iterable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
+<td><p>Return first index of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code>(index, object, /)</p></td>
+<td><p>Insert object before index.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>([index])</p></td>
+<td><p>Remove and return item at index (default last).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>(value, /)</p></td>
+<td><p>Remove first occurrence of value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code>(/)</p></td>
+<td><p>Reverse <em>IN PLACE</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code>(*[, key, reverse])</p></td>
+<td><p>Sort the list in ascending order and return None.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.TrueMinusButtonKeyList.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.TrueMinusButtonKeyList.append" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Append object to the end of the list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.VisibleKeyList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.actionsbook.</span></span><span class="sig-name descname"><span class="pre">VisibleKeyList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.VisibleKeyList" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <a class="reference internal" href="#plume.rdf.actionsbook.NoGhostKeyList" title="plume.rdf.actionsbook.NoGhostKeyList"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.actionsbook.NoGhostKeyList</span></code></a></p>
+<p>Liste de clés garanties visibles.</p>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.actionsbook.VisibleKeyList.append" title="plume.rdf.actionsbook.VisibleKeyList.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(value)</p></td>
+<td><p>Append object to the end of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>(/)</p></td>
+<td><p>Remove all items from list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(/)</p></td>
+<td><p>Return a shallow copy of the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
+<td><p>Return number of occurrences of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code>(iterable, /)</p></td>
+<td><p>Extend list by appending elements from the iterable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
+<td><p>Return first index of value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code>(index, object, /)</p></td>
+<td><p>Insert object before index.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>([index])</p></td>
+<td><p>Remove and return item at index (default last).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>(value, /)</p></td>
+<td><p>Remove first occurrence of value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code>(/)</p></td>
+<td><p>Reverse <em>IN PLACE</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code>(*[, key, reverse])</p></td>
+<td><p>Sort the list in ascending order and return None.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.actionsbook.VisibleKeyList.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.actionsbook.VisibleKeyList.append" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Append object to the end of the list.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

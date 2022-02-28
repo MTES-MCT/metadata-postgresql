@@ -313,8 +313,542 @@
               
               <div>
                 
-  <section id="module-plume-rdf-metagraph">
-<h1>Module plume.rdf.metagraph<a class="headerlink" href="#module-plume-rdf-metagraph" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.metagraph">
+<span id="module-plume-rdf-metagraph"></span><h1>Module plume.rdf.metagraph<a class="headerlink" href="#module-plume.rdf.metagraph" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Graphes de métadonnées.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">Metagraph</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.graph.Graph</span></code></p>
+<p>Graphes de métadonnées.</p>
+<p>Un graphe de métadonnées est présumé décrire un et un seul jeu de
+données (dcat:Dataset).</p>
+<p class="rubric">Notes</p>
+<p>Tous les graphes de métadonnées sont initialisés avec
+l’espace de nommage standard de Plume
+(<a class="reference internal" href="plume.rdf.namespaces.html#plume.rdf.namespaces.PlumeNamespaceManager" title="plume.rdf.namespaces.PlumeNamespaceManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.namespaces.PlumeNamespaceManager</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.available_formats" title="plume.rdf.metagraph.Metagraph.available_formats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_formats</span></code></a></dt><dd><p>list(str): Liste des formats d’export recommandés pour le graphe.</p>
+</dd>
+<dt><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.datasetid" title="plume.rdf.metagraph.Metagraph.datasetid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datasetid</span></code></a></dt><dd><p>rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe.</p>
+</dd>
+<dt><strong>identifier</strong></dt><dd></dd>
+<dt><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.linked_record" title="plume.rdf.metagraph.Metagraph.linked_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linked_record</span></code></a></dt><dd><p>tuple(str): Fiche de métadonnées distante référencée par le graphe, le cas échéant.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace_manager</span></code></dt><dd><p>this graph’s namespace-manager</p>
+</dd>
+<dt><strong>store</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">absolutize</span></code>(uri[, defrag])</p></td>
+<td><p>Turn uri into an absolute URI if it's not one already</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code>(triple)</p></td>
+<td><p>Add a triple with self as context</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">addN</span></code>(quads)</p></td>
+<td><p>Add a sequence of triple with context</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bind</span></code>(prefix, namespace[, override, replace])</p></td>
+<td><p>Bind prefix to namespace</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code>([commit_pending_transaction])</p></td>
+<td><p>Close the graph store</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">collection</span></code>(identifier)</p></td>
+<td><p>Create a new <code class="docutils literal notranslate"><span class="pre">Collection</span></code> instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">comment</span></code>(subject[, default])</p></td>
+<td><p>Query for the RDFS.comment of the subject</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">commit</span></code>()</p></td>
+<td><p>Commits active transactions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">connected</span></code>()</p></td>
+<td><p>Check if the Graph is connected</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.copy_branch" title="plume.rdf.metagraph.Metagraph.copy_branch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_branch</span></code></a>(alt_metagraph, bnode)</p></td>
+<td><p>Copie dans le graphe une branche d'un autre graphe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.delete_branch" title="plume.rdf.metagraph.Metagraph.delete_branch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_branch</span></code></a>(bnode)</p></td>
+<td><p>Supprime du graphe de métadonnées une branche non liée au dcat:Dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">destroy</span></code>(configuration)</p></td>
+<td><p>Destroy the store identified by <cite>configuration</cite> if supported</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.export" title="plume.rdf.metagraph.Metagraph.export"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export</span></code></a>(filepath[, format])</p></td>
+<td><p>Sérialise le graphe de métadonnées dans un fichier.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isomorphic</span></code>(other)</p></td>
+<td><p>does a very basic check if these graphs are the same If no BNodes are involved, this is accurate.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>(list)</p></td>
+<td><p>Generator over all items in the resource specified by list</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code>(subject[, default])</p></td>
+<td><p>Query for the RDFS.label of the subject</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.merge" title="plume.rdf.metagraph.Metagraph.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(alt_metagraph[, replace])</p></td>
+<td><p>Met à jour le graphe de métadonnées avec le contenu d'un autre graphe de métadonnées.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n3</span></code>()</p></td>
+<td><p>Return an n3 identifier for the Graph</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespaces</span></code>()</p></td>
+<td><p>Generator over all the prefix, namespace tuples</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">objects</span></code>([subject, predicate])</p></td>
+<td><p>A generator of objects with the given subject and predicate</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code>(configuration[, create])</p></td>
+<td><p>Open the graph store</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code>([source, publicID, format, location, ...])</p></td>
+<td><p>Parse an RDF source adding the resulting triples to the Graph.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predicate_objects</span></code>([subject])</p></td>
+<td><p>A generator of (predicate, object) tuples for the given subject</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predicates</span></code>([subject, object])</p></td>
+<td><p>A generator of predicates with the given subject and object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">preferredLabel</span></code>(subject[, lang, default, ...])</p></td>
+<td><p>Find the preferred label for subject.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.print" title="plume.rdf.metagraph.Metagraph.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a>()</p></td>
+<td><p>Imprime le graphe de métadonnées dans la console (sérialisation turtle).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">query</span></code>(query_object[, processor, result, ...])</p></td>
+<td><p>Query this graph.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>(triple)</p></td>
+<td><p>Remove a triple from the graph</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">resource</span></code>(identifier)</p></td>
+<td><p>Create a new <code class="docutils literal notranslate"><span class="pre">Resource</span></code> instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rollback</span></code>()</p></td>
+<td><p>Rollback active transactions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">seq</span></code>(subject)</p></td>
+<td><p>Check if subject is an rdf:Seq</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">serialize</span></code>([destination, format, base, encoding])</p></td>
+<td><p>Serialize the Graph to destination</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code>(triple)</p></td>
+<td><p>Convenience method to update the value of object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">subject_objects</span></code>([predicate])</p></td>
+<td><p>A generator of (subject, object) tuples for the given predicate</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">subject_predicates</span></code>([object])</p></td>
+<td><p>A generator of (subject, predicate) tuples for the given object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">subjects</span></code>([predicate, object])</p></td>
+<td><p>A generator of subjects with the given predicate and object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transitiveClosure</span></code>(func, arg[, seen])</p></td>
+<td><p>Generates transitive closure of a user-defined function against the graph</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transitive_objects</span></code>(subject, predicate[, ...])</p></td>
+<td><p>Transitively generate objects for the <code class="docutils literal notranslate"><span class="pre">predicate</span></code> relationship</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transitive_subjects</span></code>(predicate, object[, ...])</p></td>
+<td><p>Transitively generate subjects for the <code class="docutils literal notranslate"><span class="pre">predicate</span></code> relationship</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">triples</span></code>(triple)</p></td>
+<td><p>Generator over the triple store</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>(update_object[, processor, initNs, ...])</p></td>
+<td><p>Update this graph with the given update query.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.update_metadata_date" title="plume.rdf.metagraph.Metagraph.update_metadata_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_metadata_date</span></code></a>()</p></td>
+<td><p>Met à jour la date de dernière modification des métadonnées.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">value</span></code>([subject, predicate, object, default, any])</p></td>
+<td><p>Get a value for a pair of two criteria</p></td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 34%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>all_nodes</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>compute_qname</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>de_skolemize</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>load</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>qname</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>skolemize</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>toPython</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>triples_choices</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.available_formats">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">available_formats</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>list(str): Liste des formats d’export recommandés pour le graphe.</p>
+<p class="rubric">Notes</p>
+<p>À date, cette propriété exclut les formats <code class="docutils literal notranslate"><span class="pre">'xml'</span></code> et
+<code class="docutils literal notranslate"><span class="pre">'pretty-xml'</span></code> en présence de catégories locales de
+métadonnées, car leurs espaces de nommage ne sont pas
+gérés correctement. Il s’agit d’une limitation de RDFLib
+et non du format, qui pourrait être corrigée à l’avenir.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.copy_branch">
+<span class="sig-name descname"><span class="pre">copy_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt_metagraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bnode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.copy_branch" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Copie dans le graphe une branche d’un autre graphe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>alt_metagraph</strong><span class="classifier">Metagraph</span></dt><dd><p>Le graphe de métadonnées contenant la branche
+à copier.</p>
+</dd>
+<dt><strong>bnode</strong><span class="classifier">rdflib.terms.BNode</span></dt><dd><p>Le noeud anonyme sujet de la branche à copier
+de <cite>alt_metagraph</cite>. Il est présumé exister en
+tant qu’objet dans le graphe source, sans
+quoi la méthode n’aura aucun effet.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette méthode préserve les noeuds anonymes copiés
+(mêmes identifiants dans le graphe résultant que
+dans <cite>alt_metagraph</cite>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.datasetid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">datasetid</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.datasetid" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe.</p>
+<p>Peut être <code class="docutils literal notranslate"><span class="pre">None</span></code> si le graphe de métadonnées ne contient
+pas d’élément <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>.</p>
+<p>Il est possible de définir l’identifiant du jeu de données via
+cette propriété, sous réserve que le graphe soit vide (dans le cas
+contraire, la commande n’aura aucun effet).</p>
+<p>Identifiant aléatoire:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">Metagraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span>
+<span class="go">DatasetId(&#39;urn:uuid:...&#39;)</span>
+</pre></div>
+</div>
+<p>Identifiant pré-déterminé:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">Metagraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span> <span class="o">=</span> <span class="s1">&#39;523d5fa9-77a8-41da-a5ce-36b64fe935ed&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span>
+<span class="go">DatasetId(&#39;urn:uuid:523d5fa9-77a8-41da-a5ce-36b64fe935ed&#39;)</span>
+</pre></div>
+</div>
+<p>L’identifiant doit être UUID valide, sans quoi un nouvel UUID sera
+utilisé à la place. Il peut être fourni sous la forme d’une chaîne
+de caractères, d’un objet <code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.URIRef</span></code>
+ou encore <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.DatasetId" title="plume.rdf.utils.DatasetId"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.utils.DatasetId</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.delete_branch">
+<span class="sig-name descname"><span class="pre">delete_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bnode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.delete_branch" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Supprime du graphe de métadonnées une branche non liée au dcat:Dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>bnode</strong><span class="classifier">rdflib.terms.BNode</span></dt><dd><p>Le noeud anonyme sujet de la branche libre à
+supprimer.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette méthode est récursive. Partant des triplets
+dont <cite>bnode</cite> était sujet, elle les supprime et
+supprime à leur tour les triplets dont leurs objets
+étaient sujets (sauf à ce que ce sujet demeure
+l’objet d’un autre triplet), et ainsi de suite.</p>
+<p>Elle n’aura d’effet que si tous les triplets
+dont <cite>bnode</cite> était objet ont préalablement
+été supprimés du graphe.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.export" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Sérialise le graphe de métadonnées dans un fichier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>Chemin complet du fichier cible.</p>
+</dd>
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Format d’export. Pour connaître la liste des valeurs
+acceptées, on exécutera <code class="xref py py-func docutils literal notranslate"><span class="pre">export_formats()</span></code>.
+À noter certains formats peuvent donner un résultat peu
+probant selon le graphe. La propriété
+<a class="reference internal" href="#plume.rdf.metagraph.Metagraph.available_formats" title="plume.rdf.metagraph.Metagraph.available_formats"><code class="xref py py-attr docutils literal notranslate"><span class="pre">available_formats</span></code></a> fournit une liste de formats
+présumés adaptés pour le graphe, il préférable de choisir
+l’un d’eux.
+Si aucun format n’est fourni et qu’il ne peut pas être
+déduit de l’extension du fichier cible, l’export sera fait
+en turtle.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Le fichier sera toujours encodé en UTF-8 sauf pour le format
+NTriples (encodage ASCII).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.linked_record">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linked_record</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.linked_record" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>tuple(str): Fiche de métadonnées distante référencée par le graphe, le cas échéant.</p>
+<p>Le tuple est constitué de deux éléments : l’URL de base du service
+CSW et l’identifiant de la fiche.</p>
+<p>À défaut de configuration sauvegardée, cette propriété vaut <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code>.</p>
+<p>Pour sauvegarder une configuration:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">Metagraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">linked_record</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable&#39;</span><span class="p">,</span> 
+<span class="gp">... </span>    <span class="s1">&#39;fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297&#39;</span>
+<span class="gp">... </span>    <span class="p">)</span> 
+</pre></div>
+</div>
+<p>Le graphe doit a minima contenir un identifiant de jeu de données,
+sans quoi la tentative de sauvegarde sera silencieusement ignorée.</p>
+<p>Pour effacer la configuration:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">linked_record</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt_metagraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.merge" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Met à jour le graphe de métadonnées avec le contenu d’un autre graphe de métadonnées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>alt_metagraph</strong><span class="classifier">Metagraph</span></dt><dd><p>Un autre graphe de métadonnées.</p>
+</dd>
+<dt><strong>replace</strong><span class="classifier">bool, default False</span></dt><dd><p>Mode de fusion des deux graphes :</p>
+<ul class="simple">
+<li><p>Si <cite>replace</cite> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, les informations du
+graphe source sont preservées pour les catégories
+de métadonnées non présentes dans le graphe complémentaire.
+Sinon, elles sont remplacées par celles du graphe
+complémentaire.</p></li>
+<li><p>Si <cite>replace</cite> vaut <code class="docutils literal notranslate"><span class="pre">False</span></code>, les valeurs du 
+graphe complémentaire ne sont importées que pour les
+catégories de métadonnées qui n’étaient pas
+renseignées dans le graphe source.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>À ce stade, le mécanisme de fusion est sommaire. En particulier,
+il n’est pas récursif et, dans le cas de catégories qui
+admettent plusieurs valeurs, remplace ou préserve toutes
+les valeurs plutôt que de les comparer une à une.</p>
+<p>Par principe, la propriété dct:identifier n’est jamais
+remplacée, même si <cite>replace</cite> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, puisqu’elle
+est censée rester cohérente avec l’URI du dcat:Dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.print">
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.print" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Imprime le graphe de métadonnées dans la console (sérialisation turtle).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.update_metadata_date">
+<span class="sig-name descname"><span class="pre">update_metadata_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.update_metadata_date" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Met à jour la date de dernière modification des métadonnées.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.clean_metagraph">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">clean_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.clean_metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Crée un graphe propre à partir d’un graphe issu d’une source externe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>raw_graph</strong><span class="classifier">rdflib.graph.Graph</span></dt><dd><p>Un graphe de métadonnées présumé issu d’un import via
+<code class="xref py py-func docutils literal notranslate"><span class="pre">graph_from_file()</span></code> ou équivalent.</p>
+</dd>
+<dt><strong>old_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe contenant les métadonnées actuelles de l’objet
+PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Metagraph</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Le graphe est retraité de manière à ce qu’un maximum de
+métadonnées soient reconnues lors de la génération du dictionnaire
+de widgets. En particulier, la fonction s’assure que tous les noeuds
+sont des noeuds anonymes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.copy_metagraph">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">copy_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.copy_metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Génère un nouveau graphe de métadonnées avec le contenu du graphe cible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>src_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe dont on souhaite copier le contenu. Si non
+spécifié, la fonction considère un graphe vide.</p>
+</dd>
+<dt><strong>old_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe contenant les métadonnées actuelles de l’objet
+PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Metagraph</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction ne réalise aucun contrôle sur les informations
+qu’elle copie. Si <cite>src_metagraph</cite> n’est pas issu d’une source fiable,
+il est préférable d’utiliser <a class="reference internal" href="#plume.rdf.metagraph.clean_metagraph" title="plume.rdf.metagraph.clean_metagraph"><code class="xref py py-func docutils literal notranslate"><span class="pre">clean_metagraph()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.metagraph_from_file">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_file" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Crée un graphe de métadonnées à partir d’un fichier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>Chemin complet du fichier source, supposé contenir des
+métadonnées dans un format RDF, sans quoi l’import échouera.
+Le fichier sera présumé être encodé en UTF-8 et mieux
+vaudrait qu’il le soit.</p>
+</dd>
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Le format des métadonnées. Si non renseigné, il est autant que
+possible déduit de l’extension du fichier, qui devra donc être
+cohérente avec son contenu. Pour connaître la liste des valeurs
+acceptées, on exécutera <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.import_formats" title="plume.rdf.utils.import_formats"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.import_formats()</span></code></a>.</p>
+</dd>
+<dt><strong>old_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe contenant les métadonnées actuelles de l’objet
+PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Metagraph</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction se borne à exécuter successivement
+<a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.graph_from_file" title="plume.rdf.utils.graph_from_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.graph_from_file()</span></code></a> et
+<a class="reference internal" href="#plume.rdf.metagraph.clean_metagraph" title="plume.rdf.metagraph.clean_metagraph"><code class="xref py py-func docutils literal notranslate"><span class="pre">clean_metagraph()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.metagraph_from_iso">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_xml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'always'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_iso" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Crée un graphe de métadonnées à partir d’un XML renvoyé par un service CSW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>raw_xml</strong><span class="classifier">str</span></dt><dd><p>Le résultat brut retourné par le service CSW, présumé être
+un XML conforme au standard ISO 19139.</p>
+</dd>
+<dt><strong>old_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe contenant les métadonnées actuelles de l’objet
+PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
+</dd>
+<dt><strong>preserve</strong><span class="classifier">{“never”, “if exists”, “always”}, optional</span></dt><dd><p>Mode de fusion de l’ancien et du nouveau graphe :</p>
+<ul class="simple">
+<li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'never'</span></code>, le graphe est
+est intégralement recréé à partir des informations
+disponibles sur le catalogue distant. Hormis l’identifiant,
+tout le contenu de l’ancien graphe est perdu.</p></li>
+<li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'if</span> <span class="pre">blank'</span></code>, les informations de
+l’ancien graphe ne sont preservées que pour les
+catégories de métadonnées qui ne sont pas renseignées
+sur le catalogue distant.         .</p></li>
+<li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'always'</span></code>, les valeurs du 
+catalogue distant ne sont importées que pour les
+catégories de métadonnées qui n’étaient pas
+renseignées dans l’ancien graphe.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Metagraph</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">plume.iso.csw</span> <span class="kn">import</span> <span class="n">getrecordbyid_request</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">getrecordbyid_request</span><span class="p">(</span>
+<span class="go">    ...     &#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable&#39;, </span>
+<span class="go">    ...     &#39;fr-120066022-jdd-3c998f8c-0e33-4ae5-8535-150a745bccce&#39;</span>
+<span class="go">    ...     )</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+<span class="go">    ...     xml = src.read()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">metagraph_from_iso</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.shape">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=Nb41f5b9c68984d1f82fa3f5a0d917263</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Schéma SHACL définissant la structure des métadonnées communes.</p>
+</dd></dl>
+
 </section>
 
 
