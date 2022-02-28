@@ -8,6 +8,20 @@ Cette page récapitule les actions à réaliser pour modifier différents aspect
 
 On lancera le script [`/admin/tests.py`](/admin/tests.py) qui compile les tests de tous les modules de Plume.
 
+## Générer un ZIP propre du plugin
+
+Pour générer une archive utilisable par QGIS pour installer le plugin Plume, expurgée des fichiers de tests et autres éléments sans intérêt pour les utiliseurs, on exécutera :
+
+```python
+
+from admin.zip_plume import zip_plume
+
+zip_plume()
+
+```
+
+Par défaut, le fichier ZIP est créé à la racine du dépôt, mais on pourra fournir en argument à `admin.zip_plume.zip_plume` le chemin absolu d'un autre répertoire cible. Dans tous les cas, l'archive sera nommée `plume.zip`.
+
 ## Modifier les catégories de métadonnées communes
 
 ### Schéma des métadonnées communes
