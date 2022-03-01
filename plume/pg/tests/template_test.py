@@ -18,9 +18,14 @@ from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_list_templates, query_get_categories, \
      query_template_tabs, query_evaluate_local_templates
 
-connection_string = ConnectionString()
-
 class TemplateTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Création de la connexion PG.
+        
+        """
+        cls.connection_string = ConnectionString()
 
     def test_search_template(self):
         """Sélection automatisée du modèle à utiliser.
@@ -114,7 +119,7 @@ class TemplateTestCase(unittest.TestCase):
         """
         pg_description_1 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_1.txt')))
         pg_description_2 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_2.txt')))
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -157,7 +162,7 @@ class TemplateTestCase(unittest.TestCase):
         modèles pré-configurés).
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -198,7 +203,7 @@ class TemplateTestCase(unittest.TestCase):
         effacer les modifications réalisées.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -260,7 +265,7 @@ class TemplateTestCase(unittest.TestCase):
         self.assertTrue('Basique' in templates_collection.labels)
         pg_description_1 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_1.txt')))
         pg_description_2 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_2.txt')))
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute(
