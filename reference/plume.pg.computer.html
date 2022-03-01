@@ -331,8 +331,212 @@
               
               <div>
                 
-  <section id="module-plume-pg-computer">
-<h1>Module plume.pg.computer<a class="headerlink" href="#module-plume-pg-computer" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.pg.computer">
+<span id="module-plume-pg-computer"></span><h1>Module plume.pg.computer<a class="headerlink" href="#module-plume.pg.computer" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Référencement des méthodes de calcul de métadonnées côté serveur.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.pg.computer.ComputationMethod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationMethod" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Méthode de calcul de métadonnées côté serveur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>query_builder</strong><span class="classifier">function</span></dt><dd><p>Une fonction de création de requête, en principe
+rattachée au module <a class="reference internal" href="plume.pg.queries.html#module-plume.pg.queries" title="plume.pg.queries"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></a>.
+Cette fonction doit prendre pour argument le
+nom du schéma et le nom de la table et renvoyer un
+tuple dont le premier élément est la requête et, s’il
+y a lieu, le second est un tuple contenant ses paramètres.</p>
+</dd>
+<dt><strong>dependances: list(str), optional</strong></dt><dd><p>Liste d’extensions PostgreSQL devant être installées sur
+la base cible pour que la méthode soit valable.</p>
+</dd>
+<dt><strong>parser: function, default default_parser</strong></dt><dd><p>Une fonction qui servira à retraiter le résultat
+retourné par le serveur avant de le passer aux
+clés du dictionnaire de widgets. Elle doit prendre
+pour argument les éléments des tuples résultant de la
+requête et renvoyer un objet <a class="reference internal" href="#plume.pg.computer.ComputationResult" title="plume.pg.computer.ComputationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationResult</span></code></a>.</p>
+</dd>
+<dt><strong>sources</strong><span class="classifier">list(rdflib.term.URIRef), optional</span></dt><dd><p>Pour les métadonnées prenant leurs valeurs dans plusieurs
+sources de vocabulaire contrôlé, les sources
+concernées par le calcul. Concrètement, les clés-valeurs
+dont la source courante fait partie de cette liste seront
+remplacées par les valeurs calculées tandis que les autres
+seront préservées. Si ce paramètre est <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une
+liste vide, toutes les clés (clés-valeurs et groupes de
+propriétés) seront remplacées, quelle que soit leur source.
+Cette information n’est considérée que dans un groupe de
+valeurs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>query_builder</strong><span class="classifier">function</span></dt><dd><p>Fonction de création de la requête. Elle prend pour argument
+le nom du schéma et le nom de la table et renvoie un
+tuple dont le premier élément est la requête et, s’il
+y a lieu, le second est un tuple contenant ses paramètres.</p>
+</dd>
+<dt><strong>dependances: list(str)</strong></dt><dd><p>Liste d’extensions PostgreSQL devant être installées sur
+la base cible pour que la méthode soit valable.</p>
+</dd>
+<dt><strong>parser: function</strong></dt><dd><p>Fonction qui servira à retraiter le résultat retourné
+par le serveur avant de le passer aux clés du dictionnaire
+de widgets. Elle prend pour argument les éléments des tuples
+résultant de la requête et renvoie un objet
+<a class="reference internal" href="#plume.pg.computer.ComputationResult" title="plume.pg.computer.ComputationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationResult</span></code></a>.</p>
+</dd>
+<dt><strong>sources</strong><span class="classifier">list(rdflib.term.URIRef)</span></dt><dd><p>Pour les métadonnées prenant leurs valeurs dans plusieurs
+sources de vocabulaire contrôlé, les sources concernées
+par le calcul.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.pg.computer.ComputationResult">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationResult" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Résultat d’un calcul de métadonnées, sous une forme adaptée pour l’alimentation du dictionnaire de widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">rdflib.term.URIRef or rdflib.term.Literal, optional</span></dt><dd><p>La nouvelle valeur sous forme d’IRI ou de littéral RDF.
+Ces valeurs ont vocation à être directement intégrées
+à l’arbre de clés du dictionnaire de widgets.</p>
+</dd>
+<dt><strong>str_value</strong><span class="classifier">str, optional</span></dt><dd><p>La nouvelle valeur sous forme de chaîne de caractères.
+Ces valeurs seront désérialisées via 
+<a class="reference internal" href="plume.rdf.widgetsdict.html#plume.rdf.widgetsdict.WidgetsDict.prepare_value" title="plume.rdf.widgetsdict.WidgetsDict.prepare_value"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.prepare_value()</span></code></a>
+avant intégration dans l’arbre de clés du dictionnaire de
+widgets. Si <cite>value</cite> est renseigné, <cite>str_value</cite> n’est pas
+pris en compte.</p>
+</dd>
+<dt><strong>unit</strong><span class="classifier">str, optional</span></dt><dd><p>L’unité de la valeur, s’il y a lieu. Cette information ne
+sera considérée que si la valeur est fournie via 
+<cite>str_value</cite>.</p>
+</dd>
+<dt><strong>language</strong><span class="classifier">str, optional</span></dt><dd><p>La langue de la valeur, s’il y a lieu. Cette information ne
+sera considérée que si la valeur est fournie via 
+<cite>str_value</cite>.</p>
+</dd>
+<dt><strong>source</strong><span class="classifier">rdflib.term.URIRef, optional</span></dt><dd><p>La source de la valeur, le cas échéant. Elle sera
+déduite de <cite>value</cite> si non renseignée et que <cite>value</cite> est présent,
+et il est généralement préférable de ne pas fournir manuellement
+cette information dans ce cas, sauf à être certain que la valeur
+est bien l’un des concepts de la source considérée.
+Si seul <cite>str_value</cite> est disponible, il est souhaitable de
+fournir la source, sans quoi c’est la source courante du
+widget qui sera utilisée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">rdflib.term.URIRef or rdflib.term.Literal, optional</span></dt><dd><p>La nouvelle valeur sous forme d’IRI ou de littéral RDF.</p>
+</dd>
+<dt><strong>str_value</strong><span class="classifier">str, optional</span></dt><dd><p>La nouvelle valeur sous forme de chaîne de caractères.</p>
+</dd>
+<dt><strong>unit</strong><span class="classifier">str</span></dt><dd><p>L’unité éventuelle de <cite>str_value</cite>.</p>
+</dd>
+<dt><strong>language</strong><span class="classifier">str, optional</span></dt><dd><p>La langue éventuelle de <cite>str_value</cite>.</p>
+</dd>
+<dt><strong>source</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>La source éventuelle de <cite>value</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.computer.computation_method">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">computation_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.computation_method" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’éventuelle méthode de calcul définie pour la catégorie de métadonnées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">rdflib.paths.SequencePath</span></dt><dd><p>Chemin de la catégorie.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ComputationMethod or None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.computer.crs_parser">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">crs_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crs_auth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.crs_parser" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’URI complet d’un référentiel de coordonnées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>crs_auth</strong><span class="classifier">str</span></dt><dd><p>Identifiant de l’autorité qui répertorie le
+référentiel.</p>
+</dd>
+<dt><strong>crs_code</strong><span class="classifier">str</span></dt><dd><p>Code du référentiel dans le registre de l’autorité.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ComputationResult</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.computer.default_parser">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">default_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.default_parser" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Fonction qui fera office de dé-sérialiseur par défaut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>*result</strong><span class="classifier">tuple</span></dt><dd><p>Un enregistrement du résultat d’une requête sur le
+serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ComputationResult</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction basique suppose :</p>
+<ul class="simple">
+<li><p>que la métadonnée considérée n’a ni langue, ni source,
+ni unité. Elle ne touche donc pas à ces attributs.</p></li>
+<li><p>que le résultat ne comportait qu’un seul champ, ou du
+moins que la valeur à utiliser pour la mise à jour se
+trouvait dans le premier champ.</p></li>
+<li><p>que les valeurs sont sérialisées de la même manière
+que pour leur présentation dans le formulaire de
+Plume. Ceci sous-entend qu’il sera possible d’obtenir
+leurs équivalents RDF en appliquant la méthode
+<a class="reference internal" href="plume.rdf.widgetsdict.html#plume.rdf.widgetsdict.WidgetsDict.prepare_value" title="plume.rdf.widgetsdict.WidgetsDict.prepare_value"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.prepare_value()</span></code></a>.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.pg.computer.methods">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.methods" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.</p>
+<p>Les clés du dictionnaire sont les chemins (<code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.paths.SequencePath</span></code>)
+des catégories de métadonnées. Les valeurs sont des objets <a class="reference internal" href="#plume.pg.computer.ComputationMethod" title="plume.pg.computer.ComputationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationMethod</span></code></a>
+décrivant la méthode de calcul disponible pour la catégorie. N’apparaissent dans
+ce dictionnaire que les catégories qui ont effectivement une méthode de calcul
+associée.</p>
+</dd></dl>
+
 </section>
 
 

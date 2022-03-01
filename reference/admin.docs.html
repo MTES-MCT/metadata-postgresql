@@ -309,9 +309,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#notes">
+   Notes
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -331,8 +341,26 @@
               
               <div>
                 
-  <section id="module-admin-docs">
-<h1>Module admin.docs<a class="headerlink" href="#module-admin-docs" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-admin.docs">
+<span id="module-admin-docs"></span><h1>Module admin.docs<a class="headerlink" href="#module-admin.docs" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Génération automatisée de pages de la documentation.</p>
+<p>Pour mettre à jour le fichier <cite>metadonnees_communes.md</cite>
+de la documentation, on exécutera:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shared_metadata_as_page</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Ce module réutilise largement les fonctions du module
+<a class="reference internal" href="admin.plume_pg.html#module-admin.plume_pg" title="admin.plume_pg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">admin.plume_pg</span></code></a> qui retranscrivent le schéma
+des métadonnées communes sous forme de table.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.docs.shared_metadata_as_page">
+<span class="sig-prename descclassname"><span class="pre">admin.docs.</span></span><span class="sig-name descname"><span class="pre">shared_metadata_as_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.docs.shared_metadata_as_page" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Met à jour le tableau des métadonnées communes de la documentation.</p>
+</dd></dl>
+
+</section>
 </section>
 
 

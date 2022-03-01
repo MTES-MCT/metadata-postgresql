@@ -331,8 +331,904 @@
               
               <div>
                 
-  <section id="module-plume-rdf-widgetsdict">
-<h1>Module plume.rdf.widgetsdict<a class="headerlink" href="#module-plume-rdf-widgetsdict" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.rdf.widgetsdict">
+<span id="module-plume-rdf-widgetsdict"></span><h1>Module plume.rdf.widgetsdict<a class="headerlink" href="#module-plume.rdf.widgetsdict" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Dictionnaires de widgets.</p>
+<p>Ce module permet de générer des dictionnaires de widgets
+(<a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict" title="plume.rdf.widgetsdict.WidgetsDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WidgetsDict</span></code></a>) rassemblant et structurant
+toutes les informations nécessaires à la création d’un
+formulaire de consultation ou saisie des métadonnées.</p>
+<p>Création d’un dictionnaire vierge:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">widgetsdict</span> <span class="o">=</span> <span class="n">WidgetDict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Cf. classe <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict" title="plume.rdf.widgetsdict.WidgetsDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WidgetsDict</span></code></a> pour les informations
+pouvant être fournies en argument : graphe contenant les
+métadonnées de l’objet PostgreSQL, modèle de formulaire,
+descriptifs des champs…</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.widgetsdict.</span></span><span class="sig-name descname"><span class="pre">WidgetsDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readHideBlank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editHideUnlisted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readHideUnlisted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editOnlyCurrentLanguage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readOnlyCurrentLanguage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLengthLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueLengthLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textEditRowSpan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Classe pour les dictionnaires de widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>metagraph</strong><span class="classifier">plume.rdf.metagraph.Metagraph, optional</span></dt><dd><p>Le graphe RDF contenant les métadonnées de l’objet PostgreSQL
+considéré.</p>
+</dd>
+<dt><strong>template</strong><span class="classifier">plume.pg.template.TemplateDict, optional</span></dt><dd><p>Un dictionnaire contenant la configuration d’un modèle local
+de formulaire de consultation/saisie des métadonnées.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">dict, optional</span></dt><dd><p>Un dictionnaire dont les clés sont des chemins N3 de catégories
+de métadonnées, et les valeurs des listes contenant la ou les
+valeurs à associer à ces catégories, à la place de celles de
+<cite>metagraph</cite>. <cite>data</cite> sert à notamment à mettre à jour certaines
+métadonnées à partir de sources externes, par exemple des
+informations calculées par des requêtes sur le serveur.
+Si <cite>data</cite> contient la clé <code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code>, sa valeur deviendra
+l’identifiant du jeu de données, sous réserve qu’il s’agisse d’un
+UUID valide.</p>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list(tuple(str, str)), optional</span></dt><dd><p>Une liste de tuples - un par champ de la table ou vue PostgreSQL
+(si l’objet considéré n’est pas un schéma) -, contenant les noms
+des champs et leurs descriptifs.</p>
+</dd>
+<dt><strong>mode</strong><span class="classifier">{“edit”, “read”}, default “edit”</span></dt><dd><p>Indique si le dictionnaire est généré pour le mode édition
+(<code class="docutils literal notranslate"><span class="pre">'edit'</span></code>), le mode lecture (<code class="docutils literal notranslate"><span class="pre">'read'</span></code>). Le mode détermine les
+actions pouvant être exécutées sur le dictionnaire par la suite.</p>
+</dd>
+<dt><strong>translation</strong><span class="classifier">bool, default False</span></dt><dd><p>Paramètre utilisateur qui indique si les widgets de traduction
+doivent être affichés. Sa valeur contribue à déterminer les actions
+pouvant être exécutées sur le dictionnaire. <cite>translation</cite> sera
+silencieusement corrigé à <code class="docutils literal notranslate"><span class="pre">False</span></code> si <cite>mode</cite> n’est pas <cite>“edit”</cite>,
+car l’ajout de traductions n’est évidemment possible qu’en mode
+édition.</p>
+</dd>
+<dt><strong>langList</strong><span class="classifier">list(str) or tuple(str), default (“fr”, “en”)</span></dt><dd><p>Liste des langues autorisées pour les traductions. Les langues
+doivent être triées par priorité (langues à privilégier en
+premier).</p>
+</dd>
+<dt><strong>language</strong><span class="classifier">str, optional</span></dt><dd><p>Langue principale de rédaction des métadonnées.
+Si <cite>language</cite> n’est pas fourni ou n’appartient pas à <cite>langList</cite>,
+la première langue de <cite>langList</cite> tiendra lieu de langue principale.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>readHideBlank</strong><span class="classifier">bool, default True</span></dt><dd><p>Les champs vide du formulaire doivent-ils être masqués en mode
+lecture ?</p>
+</dd>
+<dt><strong>editHideUnlisted</strong><span class="classifier">bool, default False</span></dt><dd><p>Lorsqu’un modèle (<cite>template</cite>) est fourni, les champs non référencés
+par celui-ci doivent-ils être masqués en mode édition même s’ils
+contiennent une valeur ? Lorsque ce paramètre vaut <code class="docutils literal notranslate"><span class="pre">False</span></code>, les
+champs non référencés apparaissent dans l’onglet <em>Autres</em> du
+formulaire.</p>
+</dd>
+<dt><strong>readHideUnlisted</strong><span class="classifier">bool, default True</span></dt><dd><p>Lorsqu’un modèle (<cite>template</cite>) est fourni, les champs non référencés
+par celui-ci doivent-ils être masqués en mode lecture même s’ils
+contiennent une valeur ? Lorsque ce paramètre vaut <code class="docutils literal notranslate"><span class="pre">False</span></code>, les
+champs non référencés apparaissent dans l’onglet <em>Autres</em> du
+formulaire.</p>
+</dd>
+<dt><strong>editOnlyCurrentLanguage</strong><span class="classifier">bool, default False</span></dt><dd><p>Hors mode traduction et pour les propriétés appelant des traductions
+(type <code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code>), les valeurs qui ne sont pas dans la
+langue principale (<cite>language</cite>) doivent-elles être masquées en mode
+édition ? S’il n’existe aucune traduction pour la langue demandée,
+une valeur dans une autre langue est affichée, avec priorisation
+des langues selon l’ordre de <cite>langList</cite>.</p>
+</dd>
+<dt><strong>readOnlyCurrentLanguage</strong><span class="classifier">bool, default True</span></dt><dd><p>Pour les propriétés appelant des traductions (type <code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code>),
+les valeurs qui ne sont pas dans la langue principale (<cite>language</cite>)
+doivent-elles être masquées en mode lecture ? S’il n’existe aucune
+traduction pour la langue demandée, une valeur dans une autre langue
+est affichée, avec priorisation des langues selon l’ordre de <cite>langList</cite>.</p>
+</dd>
+<dt><strong>labelLengthLimit</strong><span class="classifier">int, default 25</span></dt><dd><p>Si la longueur d’une étiquette (nombre de caractères) est
+supérieure à <cite>labelLengthLimit</cite>, elle est affichée au-dessus
+du widget de saisie.</p>
+</dd>
+<dt><strong>valueLengthLimit</strong><span class="classifier">int, default 65</span></dt><dd><p>Si la longueur d’une valeur textuelle (nombre de caractères)
+est supérieure à <cite>valueLengthLimit</cite>, elle est affichée sur
+plusieurs lignes.</p>
+</dd>
+<dt><strong>textEditRowSpan</strong><span class="classifier">int, default 6</span></dt><dd><p>Hauteur par défaut des widgets de saisie de texte multi-lignes,
+en nombre de lignes. C’est la valeur utilisée quand le modèle local
+ou le schéma des métadonnées communes ne définit pas de paramétrage
+spécifique.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>datasetid</strong><span class="classifier">plume.rdf.utils.DatasetId</span></dt><dd><p>L’identifiant du jeu de données dont le dictionnaire présente les
+métadonnées.</p>
+</dd>
+<dt><strong>root</strong><span class="classifier">RootKey</span></dt><dd><p>La clé racine du dictionnaire, dont toutes les autres sont des
+descendantes.</p>
+</dd>
+<dt><strong>nsm</strong><span class="classifier">PlumeNamespaceManager</span></dt><dd><p>Le gestionnaire d’espaces de nommage permettant de résoudre
+tous les préfixes du dictionnaire.</p>
+</dd>
+<dt><strong>mode</strong><span class="classifier">{“edit”, “read”}</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">'edit'</span></code> pour un dictionnaire produit pour l’édition, <code class="docutils literal notranslate"><span class="pre">'read'</span></code>
+pour un dictionnaire produit uniquement pour la consultation.
+Certaines méthodes ne peuvent être utilisées que sur un
+dictionnaire dont l’attribut <cite>mode</cite> vaut <code class="docutils literal notranslate"><span class="pre">'edit'</span></code>.</p>
+</dd>
+<dt><strong>translation</strong><span class="classifier">bool</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> pour un dictionnaire comportant des fonctionnalités de
+traduction, <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon. Certaines méthodes ne peuvent être
+utilisées que sur un dictionnaire dont l’attribut <cite>translation</cite>
+vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>langlist</strong><span class="classifier">tuple(str)</span></dt><dd><p>Tuple des langues autorisées pour les traductions, ordonné
+de manière à ce que la langue principale éventuellement
+fournie à l’initialisation soit la première valeur (et
+préservant pour le reste l’ordre d’origine du paramètre
+<cite>langList</cite>).</p>
+</dd>
+<dt><strong>hideBlank</strong><span class="classifier">bool</span></dt><dd><p>Les métadonnées sans valeur sont-elles masquées ?</p>
+</dd>
+<dt><strong>hideUnlisted</strong><span class="classifier">bool</span></dt><dd><p>Les métadonnées avec valeur mais hors modèle sont-elles masquées ?</p>
+</dd>
+<dt><strong>onlyCurrentLanguage</strong><span class="classifier">bool</span></dt><dd><p>Les métadonnées qui ne sont pas dans la langue principale
+(<cite>language</cite>) sont-elles masquées ?</p>
+</dd>
+<dt><strong>textEditRowSpan</strong><span class="classifier">int</span></dt><dd><p>Hauteur par défaut des widgets de saisie de texte multi-lignes,
+en nombre de lignes.</p>
+</dd>
+<dt><strong>valueLengthLimit</strong><span class="classifier">int</span></dt><dd><p>Si la longueur d’une valeur textuelle (nombre de caractères)
+est supérieure à <cite>valueLengthLimit</cite>, elle est affichée sur
+plusieurs lignes.</p>
+</dd>
+<dt><strong>labelLengthLimit</strong><span class="classifier">int</span></dt><dd><p>Si la longueur d’une étiquette (nombre de caractères) est
+supérieure à <cite>labelLengthLimit</cite>, elle est affichée au-dessus
+du widget de saisie.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.add" title="plume.rdf.widgetsdict.WidgetsDict.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(buttonkey)</p></td>
+<td><p>Ajoute une clé sans valeur dans le dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.build_metagraph" title="plume.rdf.widgetsdict.WidgetsDict.build_metagraph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_metagraph</span></code></a>([preserve_metadata_date])</p></td>
+<td><p>Construit un graphe de métadonnées à partir du contenu du dictionnaire.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.change_language" title="plume.rdf.widgetsdict.WidgetsDict.change_language"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_language</span></code></a>(valuekey, new_language)</p></td>
+<td><p>Change la langue déclarée pour une clé du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.change_source" title="plume.rdf.widgetsdict.WidgetsDict.change_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_source</span></code></a>(objectkey, new_source)</p></td>
+<td><p>Change la source déclarée pour une clé du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.change_unit" title="plume.rdf.widgetsdict.WidgetsDict.change_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_unit</span></code></a>(valuekey, new_unit)</p></td>
+<td><p>Change l'unité déclarée pour une clé du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.check_grids" title="plume.rdf.widgetsdict.WidgetsDict.check_grids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_grids</span></code></a>()</p></td>
+<td><p>Contrôle rapide de la cohérence du placement des widgets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.computing_query" title="plume.rdf.widgetsdict.WidgetsDict.computing_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computing_query</span></code></a>(widgetkey, schema_name, ...)</p></td>
+<td><p>Renvoie la requête de calcul de la métadonnée côté serveur.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.computing_update" title="plume.rdf.widgetsdict.WidgetsDict.computing_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computing_update</span></code></a>(widgetkey, result)</p></td>
+<td><p>Met à jour le dictionnaire de widgets avec des valeurs calculées.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dictisize_actionsbook</span></code></a>([actionsbook])</p></td>
+<td><p>Traduit un carnet d'actions en dictionnaire.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.drop" title="plume.rdf.widgetsdict.WidgetsDict.drop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop</span></code></a>(objectkey)</p></td>
+<td><p>Supprime une clé du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromkeys</span></code>(iterable[, value])</p></td>
+<td><p>Create a new dictionary with keys from iterable and values set to value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code>(key[, default])</p></td>
+<td><p>Return the value for key if key is in the dictionary, else default.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.group_kind" title="plume.rdf.widgetsdict.WidgetsDict.group_kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_kind</span></code></a>(widgetkey)</p></td>
+<td><p>Renvoie la nature du groupe auquel appartient la clé.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.internalize" title="plume.rdf.widgetsdict.WidgetsDict.internalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">internalize</span></code></a>(widgetkey)</p></td>
+<td><p>Retranscrit les attributs d'une clé dans le dictionnaire interne associé.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="plume.rdf.widgetsdict.WidgetsDict.list_widgets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_widgets</span></code></a>(widgetkey[, with_kind])</p></td>
+<td><p>Renvoie la liste des widgets référencés pour la clé considérée.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.parent_grid" title="plume.rdf.widgetsdict.WidgetsDict.parent_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent_grid</span></code></a>(widgetkey)</p></td>
+<td><p>Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>(key[, default])</p></td>
+<td><p>If the key is not found, return the default if given; otherwise, raise a KeyError.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">popitem</span></code>(/)</p></td>
+<td><p>Remove and return a (key, value) pair as a 2-tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.prepare_value" title="plume.rdf.widgetsdict.WidgetsDict.prepare_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_value</span></code></a>(widgetkey, value)</p></td>
+<td><p>Prépare une valeur en vue de son enregistrement dans une clé-valeur du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.print" title="plume.rdf.widgetsdict.WidgetsDict.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a>()</p></td>
+<td><p>Visualisateur très sommaire du contenu du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">setdefault</span></code>(key[, default])</p></td>
+<td><p>Insert key with a value of default if key is not in the dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.str_value" title="plume.rdf.widgetsdict.WidgetsDict.str_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str_value</span></code></a>(widgetkey)</p></td>
+<td><p>Renvoie la valeur d'une clé-valeur du dictionnaire de widgets sous forme d'une chaîne de caractères.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.type_validator" title="plume.rdf.widgetsdict.WidgetsDict.type_validator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type_validator</span></code></a>(widgetkey)</p></td>
+<td><p>S'il y a lieu, renvoie le validateur adapté pour une clé.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([E, ]**F)</p></td>
+<td><p>If E is present and has a .keys() method, then does:  for k in E: D[k] = E[k] If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v In either case, this is followed by: for k in F:  D[k] = F[k]</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.update_value" title="plume.rdf.widgetsdict.WidgetsDict.update_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_value</span></code></a>(widgetkey, value[, override])</p></td>
+<td><p>Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.widget_placement" title="plume.rdf.widgetsdict.WidgetsDict.widget_placement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">widget_placement</span></code></a>(widgetkey, kind)</p></td>
+<td><p>Renvoie les paramètres de placement du widget dans la grille.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.widget_type" title="plume.rdf.widgetsdict.WidgetsDict.widget_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">widget_type</span></code></a>(widgetkey)</p></td>
+<td><p>Renvoie le type de widget adapté pour une clé.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buttonkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.add" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Ajoute une clé sans valeur dans le dictionnaire de widgets.</p>
+<p>Cette méthode est à exécuter après l’activation d’un bouton plus
+ou bouton de traduction par l’utilisateur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>buttonkey</strong><span class="classifier">plume.rdf.widgetkey.PlusButtonKey</span></dt><dd><p>La clé du bouton plus ou bouton de traduction actionné par
+l’utilisateur.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Cf. <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WidgetsDict.dictisize_actionsbook()</span></code></a> pour la
+description de ce dictionnaire, qui contient toutes
+les informations qui permettront de matérialiser l’action
+réalisée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ForbiddenOperation</dt><dd><p>Quand la clé est masquée ou qu’il ne s’agit pas d’un
+bouton plus.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.build_metagraph">
+<span class="sig-name descname"><span class="pre">build_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preserve_metadata_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.build_metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Construit un graphe de métadonnées à partir du contenu du dictionnaire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>preserve_metadata_date</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code> la date de dernière modification du
+graphe ne sera pas incrémentée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>plume.rdf.metagraph.Metagraph</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Sauf lorsque <cite>preserve_metadata_date</cite> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, la date
+de mise à jour des métadonnées est silencieusement actualisée
+lors de la génération du nouveau graphe. Cette modification n’est
+pas répercuté sur le dictionnaire (et son arbre de clés), ni donc
+sur les widgets. Elle ne sera visible de l’utilisateur que si
+un nouveau dictionnaire est généré à partir du nouveau graphe, par
+exemple lorsqu’il quittera le mode édition.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.change_language">
+<span class="sig-name descname"><span class="pre">change_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valuekey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_language</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_language" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Change la langue déclarée pour une clé du dictionnaire de widgets.</p>
+<p>Cette méthode est à exécuter lorsque l’utilisateur clique sur
+une langue dans le menu d’un bouton de sélection de la langue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>valuekey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey</span></dt><dd><p>La clé-valeur dont un item du menu des langues vient d’être
+actionné par l’utilisateur.</p>
+</dd>
+<dt><strong>new_language</strong><span class="classifier">str</span></dt><dd><p>La nouvelle langue sélectionnée par l’utilisateur.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Cf. <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WidgetsDict.dictisize_actionsbook()</span></code></a> pour la
+description de ce dictionnaire, qui contient toutes
+les informations qui permettront de matérialiser l’action
+réalisée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ForbiddenOperation</dt><dd><p>Quand la clé est masquée, quand la clé n’a pas de widget
+annexe de sélection de la langue, ou quand la langue
+n’est pas dans la liste des langues autorisées.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.change_source">
+<span class="sig-name descname"><span class="pre">change_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_source" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Change la source déclarée pour une clé du dictionnaire de widgets.</p>
+<p>Cette méthode est à exécuter lorsque l’utilisateur clique sur
+une source dans le menu d’un bouton de sélection de la source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>objectkey</strong><span class="classifier">plume.rdf.widgetkey.ObjectKey</span></dt><dd><p>La clé-valeur ou le groupe de propriété dont un item du menu des
+sources vient d’être actionné par l’utilisateur.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Cf. <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WidgetsDict.dictisize_actionsbook()</span></code></a> pour la
+description de ce dictionnaire, qui contient toutes
+les informations qui permettront de matérialiser l’action
+réalisée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ForbiddenOperation</dt><dd><p>Quand la clé est masquée, quand la clé n’a pas de widget
+annexe de sélection de la source, quand la source cible
+n’est pas dans la liste des sources autorisées pour la clé.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.change_unit">
+<span class="sig-name descname"><span class="pre">change_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valuekey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_unit" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Change l’unité déclarée pour une clé du dictionnaire de widgets.</p>
+<p>Cette méthode est à exécuter lorsque l’utilisateur clique sur
+une unité dans le menu d’un bouton de sélection d’unité.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>valuekey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey</span></dt><dd><p>La clé-valeur dont un item du menu des unités vient d’être
+actionné par l’utilisateur.</p>
+</dd>
+<dt><strong>new_unit</strong><span class="classifier">str</span></dt><dd><p>La nouvelle unité sélectionnée par l’utilisateur.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Cf. <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WidgetsDict.dictisize_actionsbook()</span></code></a> pour la
+description de ce dictionnaire, qui contient toutes
+les informations qui permettront de matérialiser l’action
+réalisée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ForbiddenOperation</dt><dd><p>Quand la clé est masquée, quand la clé n’a pas de widget
+annexe de sélection d’unité, ou quand l’unité
+n’est pas dans la liste des unités autorisées.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.check_grids">
+<span class="sig-name descname"><span class="pre">check_grids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.check_grids" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Contrôle rapide de la cohérence du placement des widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>plume.exceptions.IntegrityBreach</dt><dd><p>Si une erreur est détectée.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Par principe, les widgets masqués parce que leur clé <cite>“hidden”</cite>
+vaut <code class="docutils literal notranslate"><span class="pre">True</span></code> ne sont pas contrôlés. Les boutons moins masqués
+avec <cite>“hidden”</cite> valant <code class="docutils literal notranslate"><span class="pre">False</span></code> mais <cite>“hide minus button”</cite> 
+sont l’exception qui confirme la règle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.computing_query">
+<span class="sig-name descname"><span class="pre">computing_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.computing_query" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la requête de calcul de la métadonnée côté serveur.</p>
+<dl>
+<dt>Cette méthode est à utiliser ainsi:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">computing_query</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé de dictionnaire de widgets.</p>
+</dd>
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma de la table ou vue dont le
+dictionnaire de widgets porte les métadonnées.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la table ou vue dont le dictionnaire
+de widgets porte les métadonnées.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>Un tuple dont le premier élément est toujours la
+requête (objet <code class="xref py py-class docutils literal notranslate"><span class="pre">psycopg2.sql.Composed</span></code>
+ou <code class="xref py py-class docutils literal notranslate"><span class="pre">psycopg2.sql.SQL</span></code>) à envoyer au serveur
+et le second, s’il y a lieu, un tuple contenant les
+paramètres de cette requête.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction renverra toujours <code class="docutils literal notranslate"><span class="pre">None</span></code> si la clé
+<code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code> du dictionnaire interne associé à la clé
+considérée vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.computing_update">
+<span class="sig-name descname"><span class="pre">computing_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.computing_update" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Met à jour le dictionnaire de widgets avec des valeurs calculées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey or plume.rdf.widgetkey.GroupOfValuesKey</span></dt><dd><p>Une clé de dictionnaire de widgets.</p>
+</dd>
+<dt><strong>result</strong><span class="classifier">list of tuples</span></dt><dd><p>Le résultat de la requête sur le serveur.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Cf. <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WidgetsDict.dictisize_actionsbook()</span></code></a> pour la
+description de ce dictionnaire, qui contient toutes
+les informations qui permettront de matérialiser les actions
+réalisées.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Si la requête n’a pas renvoyé de résultat, cette méthode n’aura
+aucun effet. Elle n’efface notamment pas les valeurs qui auraient
+pu être renseignées.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook">
+<span class="sig-name descname"><span class="pre">dictisize_actionsbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Traduit un carnet d’actions en dictionnaire.</p>
+<p>Cette méthode assure également la mise à jour du dictionnaire
+de widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>actionsbook</strong><span class="classifier">plume.rdf.actionsbook.ActionsBook, optionnal</span></dt><dd><p>Le carnet d’actions à traduire. Si aucune carnet n’est
+fournie, la méthode renvoie un dictionnaire dont toutes
+les clés ont pour valeur des listes vides.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Un dictionnaire avec les clés suivantes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">new</span> <span class="pre">keys</span></code> : liste de nouvelles clés du dictionnaire de widgets
+à matérialiser (<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>). Elles
+sont évidemment fournies dans le bon ordre, d’abord les clés parents
+puis les clés filles. Pour toutes ces clés, il sera nécessaire de
+générer les widgets, actions et menus, comme à la création initiale
+du dictionnaire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgets</span> <span class="pre">to</span> <span class="pre">show</span></code> : liste de widgets (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>)
+à rendre visibles. Il s’agit a priori de widgets antérieurement masqués,
+mais ce n’est pas une règle absolue.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgets</span> <span class="pre">to</span> <span class="pre">hide</span></code> : liste de widgets (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>)
+à masquer. Il s’agit a priori de widgets antérieurement visibles, mais
+ce n’est pas une règle absolue.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgets</span> <span class="pre">to</span> <span class="pre">delete</span></code> : liste de widgets (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>)
+à détruire, incluant les grilles (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actions</span> <span class="pre">to</span> <span class="pre">delete</span></code> : liste d’actions (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtGui.QAction</span></code>) à
+détruire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">menus</span> <span class="pre">to</span> <span class="pre">delete</span></code> : liste de menus (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QMenu</span></code>) à
+détruire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update</span></code> : liste de clés du dictionnaire de widgets
+(<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) pour lesquelles le menu
+du bouton de sélection de la langue doit être régénéré.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">source</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update</span></code> : liste de clés du dictionnaire de
+widgets (<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) pour lesquelles le
+menu du bouton de sélection de la source doit être régénéré.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update</span></code> : liste de clés du dictionnaire de widgets
+(<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) pour lesquelles le
+menu du bouton de sélection de l’unité doit être régénéré.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">concepts</span> <span class="pre">list</span> <span class="pre">to</span> <span class="pre">update</span></code> : liste de clés du dictionnaire
+(<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) tel que le widget principal
+est un widget <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> dont la liste de termes doit être
+régénérée.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgets</span> <span class="pre">to</span> <span class="pre">empty</span></code> : liste de widgets (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>)
+dont le texte doit être effacé.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgets</span> <span class="pre">to</span> <span class="pre">move</span></code> : liste de tuples contenant les informations relatives
+à des widgets dont - parce qu’on a supprimé un widget antérieurement
+positionné au-dessus d’eux dans la grille - il faut à présent modifier
+la position.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">to</span> <span class="pre">update</span></code> : liste de clés du dictionnaire de widgets
+(<a class="reference internal" href="plume.rdf.widgetkey.html#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) telles que la valeur
+du widget principal doit être mise à jour selon la valeur disponible
+dans la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> du dictionnaire interne.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">[0]</span></code> est la grille (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[1]</span></code> est le widget (<code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à déplacer ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[2]</span></code> est le nouveau numéro de ligne du widget dans la grille (paramètre
+<code class="docutils literal notranslate"><span class="pre">row</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[3]</span></code> est l’indice (inchangé) de la colonne (paramètre <code class="docutils literal notranslate"><span class="pre">column</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[4]</span></code> est le nombre (inchangé) de lignes occupées (paramètre <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code>) ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[5]</span></code> est le nombre (inchangé) de colonnes occupées (paramètre <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.drop">
+<span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.drop" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Supprime une clé du dictionnaire de widgets.</p>
+<p>Cette méthode est à exécuter après l’activation d’un bouton moins
+par l’utilisateur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>objectkey</strong><span class="classifier">plume.rdf.widgetkey.ObjectKey</span></dt><dd><p>Une clé-valeur ou un groupe de propriété dont l’utilisateur
+vient d’activer le bouton moins.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Cf. <a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WidgetsDict.dictisize_actionsbook()</span></code></a> pour la
+description de ce dictionnaire, qui contient toutes
+les informations qui permettront de matérialiser l’action
+réalisée.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ForbiddenOperation</dt><dd><p>Quand la clé est masquée, quand la clé n’a pas de bouton
+moins.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.edit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edit</span></span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.edit" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>bool: Le dictionnaire est-il généré pour l’édition ?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.group_kind">
+<span class="sig-name descname"><span class="pre">group_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.group_kind" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la nature du groupe auquel appartient la clé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey</span></dt><dd><p>Une clé-valeur de dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'group</span> <span class="pre">of</span> <span class="pre">values'</span></code> si la clé est un groupe
+de valeurs ou, s’il s’agit d’une clé-valeur ou
+d’un bouton, si son parent est un groupe de valeurs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'group</span> <span class="pre">of</span> <span class="pre">properties'</span></code> si la clé est un groupe
+de propriétés ou, s’il s’agit d’une clé-valeur ou d’un
+bouton, si son parent est un groupe de propriétés.
+Les clés-racines et les onglets sont considérés ici
+comme des groupes de propriétés.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'translation</span> <span class="pre">group'</span></code> si l’enregistrement est un groupe de
+traduction ou, s’il s’agit d’une clé-valeur ou d’un bouton,
+si son parent est un groupe de traduction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>Si le type obtenu n’est pas l’un des trois susmentionnés.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.internalize">
+<span class="sig-name descname"><span class="pre">internalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.internalize" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Retranscrit les attributs d’une clé dans le dictionnaire interne associé.</p>
+<p>Si la clé n’était pas référencée dans le dictionnaire de widgets,
+cette méthode se charge de la référencer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé du dictionnaire de widgets. Si la clé n’est pas encore
+référencée dans le dictionnaire, elle le sera.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt>IntegrityBreach</dt><dd><p>En cas de tentative d’utilisation de cette méthode sur une clé
+fantôme.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.list_widgets">
+<span class="sig-name descname"><span class="pre">list_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste des widgets référencés pour la clé considérée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé du dictionnaire de widgets.</p>
+</dd>
+<dt><strong>with_kind</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, la méthode ne renvoie pas une liste de widgets, mais une
+liste de tuples dont le premier élément est le widget et le
+second une chaîne de caractères spécifiant sa nature (nom de la
+clé du dictionnaire interne où il est référencé).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.main_language">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_language</span></span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.main_language" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>str: Language principale de saisie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>IntegrityBreach</dt><dd><p>Lorsque l’attribut <code class="xref py py-attr docutils literal notranslate"><span class="pre">WidgetsDict.langlist</span></code> ne
+contient aucune valeur.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.parent_grid">
+<span class="sig-name descname"><span class="pre">parent_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.parent_grid" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé du dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>QGridLayout</dt><dd><p>Si la clé existe, que l’enregistrement a un parent et que la grille de
+celui-ci a été créée, ladite grille. Sinon None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.prepare_value">
+<span class="sig-name descname"><span class="pre">prepare_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.prepare_value" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Prépare une valeur en vue de son enregistrement dans une clé-valeur du dictionnaire de widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey</span></dt><dd><p>Une clé-valeur de dictionnaire de widgets.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>La valeur, exprimée sous la forme d’une chaîne de caractères.
+La fonction tolère d’autres types, mais sans garantie que
+les valeurs soient acceptées.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>rdflib.term.URIRef or rdflib.term.Literal</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette méthode intègre une validation minimale basée sur le type.
+Les valeurs incorrectes sont silencieusement effacées.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.print">
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.print" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Visualisateur très sommaire du contenu du dictionnaire de widgets.</p>
+<p>Les clés sont imprimées dans la console, avec - si
+défini - leur libellé, leur valeur et leurs boutons annexes.
+Une clé ou un bouton masqué apparaît précédé d’un
+astérisque.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.str_value">
+<span class="sig-name descname"><span class="pre">str_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.str_value" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la valeur d’une clé-valeur du dictionnaire de widgets sous forme d’une chaîne de caractères.</p>
+<p>Si la clé est en lecture seule, la fonction renvoie, s’il y a lieu,
+un fragment HTML avec un hyperlien.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey</span></dt><dd><p>Une clé-valeur de dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.type_validator">
+<span class="sig-name descname"><span class="pre">type_validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.type_validator" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>S’il y a lieu, renvoie le validateur adapté pour une clé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé de dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.update_value">
+<span class="sig-name descname"><span class="pre">update_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.update_value" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.ValueKey</span></dt><dd><p>Une clé-valeur de dictionnaire de widgets.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">str</span></dt><dd><p>La valeur, exprimée sous la forme d’une chaîne de caractères.
+La fonction tolère d’autres types, mais sans garantie que
+les valeurs soient acceptées.</p>
+</dd>
+<dt><strong>override</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, permet de modifier la valeur d’une clé
+en lecture seule.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.widget_placement">
+<span class="sig-name descname"><span class="pre">widget_placement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.widget_placement" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie les paramètres de placement du widget dans la grille.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé du dictionnaire de widgets.</p>
+</dd>
+<dt><strong>kind</strong><span class="classifier">{“main widget”, “minus widget”, “switch source widget”, “language widget”, “unit widget”, “geo widget”, “compute widget”, “label widget”}</span></dt><dd><p>Nature du widget considéré, soit plus prosaïquement le nom
+de la clé du dictionnaire interne qui le référence.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>Le placement dans le <code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> est défini par un tuple à
+quatre éléments :
+* <code class="docutils literal notranslate"><span class="pre">[0]</span></code> est l’indice de la ligne (paramètre <code class="docutils literal notranslate"><span class="pre">row</span></code>) ;
+* <code class="docutils literal notranslate"><span class="pre">[1]</span></code> est l’indice de la colonne (paramètre <code class="docutils literal notranslate"><span class="pre">column</span></code>) ;
+* <code class="docutils literal notranslate"><span class="pre">[2]</span></code> est le nombre de lignes occupées (paramètre <code class="docutils literal notranslate"><span class="pre">rowSpan</span></code>) ;
+* <code class="docutils literal notranslate"><span class="pre">[3]</span></code> est le nombre de colonnes occupées (paramètre <code class="docutils literal notranslate"><span class="pre">columnSpan</span></code>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une clé fantôme ou si la nature de widget
+donnée en argument n’est pas une valeur reconnue. Pour les clés-racines
+et les onglets, elle renvoie un tuple de zéros.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.widget_type">
+<span class="sig-name descname"><span class="pre">widget_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.widget_type" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le type de widget adapté pour une clé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>widgetkey</strong><span class="classifier">plume.rdf.widgetkey.WidgetKey</span></dt><dd><p>Une clé de dictionnaire de widgets.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

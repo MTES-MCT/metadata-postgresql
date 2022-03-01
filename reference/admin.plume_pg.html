@@ -331,8 +331,73 @@
               
               <div>
                 
-  <section id="module-admin-plume-pg">
-<h1>Module admin.plume_pg<a class="headerlink" href="#module-admin-plume-pg" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-admin.plume_pg">
+<span id="module-admin-plume-pg"></span><h1>Module admin.plume_pg<a class="headerlink" href="#module-admin.plume_pg" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Administration des données de l’extension PostgreSQL PlumePg.</p>
+<p>Pour regénérer la requête d’import des métadonnées communes:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query_from_shape</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Pour importer en local les modèles préconfigurés de PlumePg:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">store_sample_templates</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Cette commande met à jour le fichier <code class="docutils literal notranslate"><span class="pre">/plume/pg/data/templates.json</span></code>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.plume_pg.query_from_shape">
+<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">query_from_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.query_from_shape" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Génère la requête permettant de reconstituer la table des catégories communes de PgPlume.</p>
+<p>À l’usage de l’extension PostgreSQL PgPlume. L’utilisation de cette
+fonction requiert une connexion PostgreSQL (paramètres saisis
+dynamiquement).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>str</dt><dd><p>Requête <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> sur la table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code>
+de l’extension (qui mettra à jour la partition
+<code class="docutils literal notranslate"><span class="pre">z_plume.meta_shared_categorie</span></code>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.plume_pg.store_sample_templates">
+<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">store_sample_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.store_sample_templates" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Importe depuis PostgreSQL et écrit dans le fichier dédié les modèles pré-configurés de PlumePg.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.plume_pg.table_from_shape">
+<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">table_from_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_cast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.table_from_shape" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie une représentation du schéma SHACL sous forme de table.</p>
+<p>Le résultat correspond au contenu de la table
+<code class="docutils literal notranslate"><span class="pre">z_plume.meta_shared_categorie</span></code> de l’extension PostgreSQL
+PlumePg, en vue de la mise à jour de celle-ci.</p>
+<p>Les valeurs nécessitant une conversion explicite de
+type sont représentées par des tuples dont le premier élément
+est <code class="docutils literal notranslate"><span class="pre">'cast'</span></code>, le second la valeur, le troisième le type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>no_cast</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, les valeurs qui auraient nécessité une
+conversion explicite de type seront représentées
+comme les autres et non par des tuples contenant
+l’information sur le type. Un tel résulat ne pourra
+être utilisé pour construire une requête SQL, mais peut
+avoir d’autres usages.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list of tuples</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

@@ -309,9 +309,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -331,8 +341,566 @@
               
               <div>
                 
-  <section id="module-plume-pg-queries">
-<h1>Module plume.pg.queries<a class="headerlink" href="#module-plume-pg-queries" title="Lien permanent vers ce titre">¶</a></h1>
+  <section id="module-plume.pg.queries">
+<span id="module-plume-pg-queries"></span><h1>Module plume.pg.queries<a class="headerlink" href="#module-plume.pg.queries" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Requêtes prêtes à être envoyées au serveur PostgreSQL.</p>
+<p>Ce module suppose l’usage de la bibliothèque Psycopg pour la
+communication avec le serveur PostgreSQL.</p>
+<p>Selon le cas, les paramètres des requêtes doivent être passés :</p>
+<ul class="simple">
+<li><p>soit en argument de la fonction qui crée la requête, dans
+le cas des identifiants d’objets PostgreSQL ;</p></li>
+<li><p>soit, pour les valeurs litérales, dans le tuple qui constitue le
+second argument de <code class="xref py py-meth docutils literal notranslate"><span class="pre">psycopg2.cursor.execute()</span></code>.</p></li>
+</ul>
+<p>La syntaxe est systématiquement détaillée dans l’en-tête
+des fonctions.</p>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Lien permanent vers ce titre">¶</a></h2>
+<p><a class="reference external" href="https://www.psycopg.org">https://www.psycopg.org</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_evaluate_local_templates">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_evaluate_local_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates_collection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_evaluate_local_templates" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête qui évalue côté serveur les conditions d’application des modèles locaux.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_evaluate_local_templates</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>templates_collection</strong><span class="classifier">plume.pg.template.LocalTemplatesCollection</span></dt><dd><p>Le répertoire des modèles stockés localement,
+qui aura été instancié parce que PlumePg
+n’est pas activée sur la base de la table
+dont on affiche les métadonnées.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La forme du résultat des requêtes créées avec cette fonction est
+identique à celle de <a class="reference internal" href="#plume.pg.queries.query_list_templates" title="plume.pg.queries.query_list_templates"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_list_templates()</span></code></a>, ce qui 
+permet ensuite d’appliquer dans les deux cas la fonction
+<a class="reference internal" href="plume.pg.template.html#plume.pg.template.search_template" title="plume.pg.template.search_template"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.pg.template.search_template()</span></code></a> pour obtenir le
+nom du modèle à appliquer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_exists_extension">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_exists_extension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_exists_extension" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête qui vérifie qu’une extension est installée sur la base PostgreSQL cible.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom de l&#39;</span><span class="n">extension</span><span class="s1">&#39;,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extension_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Cette requête renverra :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> si l’extension est installée ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code> si elle est disponible dans le répertoire des
+extension du serveur mais non installée ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> si elle n’est pas disponible sur le serveur.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>psycopg2.sql.SQL</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_categories">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_categories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_categories" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête d’import des catégories à afficher dans un modèle donné.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_categories</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du modèle&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>psycopg2.sql.SQL</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La requête interroge la vue <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories_full</span></code>
+créée par l’extension PlumePg.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_columns">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_columns" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de récupération des descriptifs des champs d’une table ou vue.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_columns</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">columns</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_centroid">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_centroid" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de calcul côté serveur du centre du rectangle d’emprise d’une couche.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_centroid</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">centroid_geom</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>À noter que le résultat est une géométrie dont le
+système de coordonnées n’est pas explicité. Il faudra
+le récupérer via <a class="reference internal" href="#plume.pg.queries.query_get_geom_srid" title="plume.pg.queries.query_get_geom_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_geom_srid()</span></code></a>, puis
+appliquer la fonction <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.wkt_with_srid" title="plume.rdf.utils.wkt_with_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid()</span></code></a>
+pour obtenir la représention du centroïde attendue en RDF:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">wkt_with_srid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_srid</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">srid</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">centroid</span> <span class="o">=</span> <span class="n">wkt_with_srid</span><span class="p">(</span><span class="n">centroid_geom</span><span class="p">,</span> <span class="n">srid</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>geom_name</strong><span class="classifier">str</span></dt><dd><p>Nom du champ de géométrie.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Cette requête échouera si PostGIS n’est pas installé sur la
+base. Il est donc fortement recommandé de vérifier d’abord
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_extent">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_extent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_extent" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de calcul côté serveur du rectangle d’emprise d’une couche.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_extent</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox_geom</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>À noter que le résultat est une géométrie dont le
+système de coordonnées n’est pas explicité. Il faudra
+le récupérer via <a class="reference internal" href="#plume.pg.queries.query_get_geom_srid" title="plume.pg.queries.query_get_geom_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_geom_srid()</span></code></a>, puis
+appliquer la fonction <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.wkt_with_srid" title="plume.rdf.utils.wkt_with_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid()</span></code></a>
+pour obtenir la représention du rectangle d’emprise
+attendue en RDF:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">wkt_with_srid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_srid</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">srid</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span> <span class="o">=</span> <span class="n">wkt_with_srid</span><span class="p">(</span><span class="n">bbox_geom</span><span class="p">,</span> <span class="n">srid</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>geom_name</strong><span class="classifier">str</span></dt><dd><p>Nom du champ de géométrie.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Cette requête échouera si PostGIS n’est pas installé sur la
+base. Il est donc fortement recommandé de vérifier d’abord
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_srid">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_srid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_srid" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de récupération du référentiel de coordonnées d’une couche.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_srid</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">srid</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Le référentiel ainsi obtenu est de la forme <code class="docutils literal notranslate"><span class="pre">'Autorité:Code'</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Cette requête échouera si PostGIS n’est pas installé sur la
+base. Il est donc fortement recommandé de vérifier d’abord
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_relation_kind">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_relation_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_relation_kind" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête qui récupère le type d’une relation PostgreSQL.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_relation_kind</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">relkind</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_srid_list">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_srid_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_srid_list" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d’une relation.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_srid_list</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">srid_list</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>La liste ainsi obtenue contient des tuples dont le premier
+élément est l’identifiant de l’autorité qui référence le
+référentiel et le second élément est le code du référentiel
+dans le registre de cette autorité.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(psycopg2.sql.SQL, tuple(str, str))</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL
+et son tuple de paramètres.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Cette requête échouera si PostGIS n’est pas installé sur la
+base. Il est donc fortement recommandé de vérifier d’abord
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p class="rubric">Notes</p>
+<p>Cette fonction est référencée par le module
+<a class="reference internal" href="plume.pg.computer.html#module-plume.pg.computer" title="plume.pg.computer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.pg.computer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_table_comment">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_table_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_table_comment" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de récupération du descriptif d’une table ou vue.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_table_comment</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">old_description</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_is_relation_owner">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_is_relation_owner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_is_relation_owner" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête qui vérifie que le rôle courant est membre du propriétaire d’une relation (table, etc.).</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_is_relation_owner</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="go">        &gt;&gt;&gt; is_owner = res[0] if res else False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>psycopg2.sql.SQL</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_list_templates">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_list_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_list_templates" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête d’import de la liste des modèles disponibles.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_list_templates</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>psycopg2.sql.SQL</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La requête interroge la table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code>
+créée par l’extension PlumePg. Au lieu d’importer 
+tel quel le contenu de son champ <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code>,
+elle l’exécute et renvoie un booléen indiquant si la
+condition qu’il spécifie est remplie.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_template_tabs">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_template_tabs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_template_tabs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête d’import des onglets utilisés par un modèle.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_template_tabs</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du modèle&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tabs</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>psycopg2.sql.SQL</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>La requête interroge les tables <code class="docutils literal notranslate"><span class="pre">z_plume.meta_tab</span></code> et
+<code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code> créées par l’extension
+PlumePg.</p>
+<p>L’ordre de la liste résultant de l’exécution de la requête
+est l’ordre dans lequel le modèle prévoit que les onglets
+soient présentés à l’utilisateur.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_update_column_comment">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_update_column_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_update_column_comment" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de mise à jour du descriptif d’un champ.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_update_column_comment</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Nouveau descriptif du champ&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>column_name</strong><span class="classifier">str</span></dt><dd><p>Nom du champ.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_update_columns_comments">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_update_columns_comments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgetsdict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_update_columns_comments" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de mise à jour des descriptifs des champs d’une table.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_update_columns_comments</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="n">widgetsdict</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>widgetsdict</strong><span class="classifier">plume.rdf.widgetsdict.WidgetsDict</span></dt><dd><p>Le dictionnaire de widgets qui contient les descriptifs
+actualisés des champs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>À noter que cette requête pourrait échouer si des champs ont été
+supprimés ou renommés entre temps.</p>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si elle ne trouve aucun descriptif
+de champ dans le dictionnaire de widgets.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_update_table_comment">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_update_table_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relation_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_update_table_comment" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Requête de mise à jour du descriptif d’une table ou vue.</p>
+<p>À utiliser comme suit:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_update_table_comment</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;type de relation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Nouveau descriptif&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>relation_kind</strong><span class="classifier">{“r”, “v”, “m”, “f”, “p”}, optional</span></dt><dd><p>Le type de relation. <code class="docutils literal notranslate"><span class="pre">'r'</span></code> par défaut, ce qui
+correspond à une table simple.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>UnknownParameterValue</dt><dd><p>Si le type de relation n’est pas l’une des
+valeurs autorisées.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
