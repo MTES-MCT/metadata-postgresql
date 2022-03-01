@@ -324,8 +324,8 @@ def forbidden_char(anystr):
         Si la chaîne contient au moins un caractère interdit, l'un
         de ces caractères.
     
-    Example
-    -------
+    Examples
+    --------
     >>> forbidden_char('avec des espaces')
     ' '
     
@@ -1187,8 +1187,8 @@ def export_extension_from_format(format):
     str
         L'extension à utiliser pour le format considéré, avec le point.
     
-    Example
-    -------
+    Examples
+    --------
     >>> rdf_utils.export_extension('pretty-xml')
     '.rdf'
     
