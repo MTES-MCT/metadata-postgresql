@@ -24,15 +24,20 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
 from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.widgetsdict import WidgetsDict
 
-connection_string = ConnectionString()
-
 class PlumePgTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Création de la connexion PG.
+        
+        """
+        cls.connection_string = ConnectionString()
     
     def test_plume_pg_tests(self):
         """Exécution de la recette de l'extension PostgreSQL PlumePg.
 
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -57,7 +62,7 @@ class QueriesTestCase(unittest.TestCase):
         ne peut qu'être le cas.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -75,7 +80,7 @@ class QueriesTestCase(unittest.TestCase):
         utilisée pour la recette.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -94,7 +99,7 @@ class QueriesTestCase(unittest.TestCase):
         puis détruit les relations.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -159,7 +164,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de récupération du descriptif d'une relation.
 
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('CREATE TABLE z_plume.table_test (num int)')
@@ -187,7 +192,7 @@ class QueriesTestCase(unittest.TestCase):
         pris en charge.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -261,7 +266,7 @@ class QueriesTestCase(unittest.TestCase):
         des modèles au cours de l'exécution.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -280,7 +285,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête qui exécute côté serveur les conditions d'application des modèles locaux.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         templates_collection = LocalTemplatesCollection()
         with conn:
             with conn.cursor() as cur:
@@ -302,7 +307,7 @@ class QueriesTestCase(unittest.TestCase):
         modèles pré-configurés).
 
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -329,7 +334,7 @@ class QueriesTestCase(unittest.TestCase):
         artificiellement.
 
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -367,7 +372,7 @@ class QueriesTestCase(unittest.TestCase):
         avec les catégories locales et communes.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -403,7 +408,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de récupération de la liste des colonnes d'une relation avec leurs descriptifs.
 
         """
-        conn = psycopg2.connect(connection_string)  
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)  
         with conn:
             with conn.cursor() as cur:
             
@@ -425,7 +430,7 @@ class QueriesTestCase(unittest.TestCase):
         la requête est une liste vide.
         
         """
-        conn = psycopg2.connect(connection_string)  
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)  
         with conn:
             with conn.cursor() as cur:
                 cur.execute('CREATE TABLE z_plume.table_test ()')
@@ -446,7 +451,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de mise à jour du descriptif d'un (seul) champ.
 
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('CREATE TABLE z_plume.table_test (num int)')
@@ -471,7 +476,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de mise à jour des descriptifs des champs.
 
         """ 
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 # création d'une table de test
@@ -518,7 +523,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de récupération du rectangle d'emprise.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 # création d'une table de test
@@ -551,7 +556,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de récupération du centre du rectangle d'emprise.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 # création d'une table de test
@@ -584,7 +589,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de récupération du référentiel d'un champ de géométries donné.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 # création d'une table de test
@@ -624,7 +629,7 @@ class QueriesTestCase(unittest.TestCase):
         """Requête de récupération de la liste des référentiels de coordonnées utilisés par une relation.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 # création d'une table de test
