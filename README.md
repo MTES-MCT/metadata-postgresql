@@ -15,7 +15,7 @@ Plume se base sur le profil [GeoDCAT-AP 2.0](https://semiceu.github.io/GeoDCAT-A
 Le plugin QGIS Plume est prévu pour fonctionner avec :
 - un système d'exploitation Windows (développé sous Windows 10, non testé avec d'autres versions) ;
 - QGIS 3.10 ou supérieur ;
-- PostgreSQL 9.5 ou supérieur.
+- PostgreSQL 10 ou supérieur.
 
 La bibliothèque RDFLib, qui n'est pas nativement présente dans les distributions de QGIS, est packagée dans le plugin et installée en parallèle.
 
