@@ -22,14 +22,15 @@ from plume.pg.queries import query_get_categories, query_template_tabs, query_ex
 from plume.pg.template import TemplateDict, LocalTemplatesCollection
 from plume.pg.computer import methods, ComputationMethod, default_parser
 
-connection_string = ConnectionString()
-
-
 class WidgetsDictTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Création de la connexion et gestion de variables.
+        
+        """
         cls.grid = 6 # largeur de la grille
+        cls.connection_string = ConnectionString()
     
     def test_widgetsdict_empty_edit(self):
         """Génération d'un dictionnaire de widgets sans graphe ni modèle.
@@ -377,7 +378,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -517,7 +518,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -724,7 +725,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -839,7 +840,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -1123,7 +1124,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -1299,7 +1300,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -1356,7 +1357,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -1567,7 +1568,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -1646,7 +1647,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -1832,7 +1833,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         """
         connection_string = ConnectionString()
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
@@ -2140,7 +2141,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         """
         connection_string = ConnectionString()
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -2192,7 +2193,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         """Processus complet de calcul des métadonnées pour dct:conformsTo.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
@@ -2217,7 +2218,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- dépendances ---
         dependances = widgetsdict[c]['compute method'].dependances
         if dependances:
-            conn = psycopg2.connect(connection_string)
+            conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
             dependances_ok = True
             with conn:
                 with conn.cursor() as cur:
@@ -2231,7 +2232,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(dependances, ['postgis'])
         
         # --- requête ---
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 # création d'une table de test
