@@ -270,6 +270,7 @@
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
 <h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">¶</a></h1>
 <p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>.</p>
+<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a></p>
 <section id="compatibilite">
 <h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">¶</a></h2>
 <table class="colwidths-auto table">
@@ -277,32 +278,39 @@
 <tr class="row-odd"><th class="head"><p>Version</p></th>
 <th class="head"><p>Compatibilité</p></th>
 <th class="head"><p>Remarques</p></th>
+<th class="head"><p>Modalités de test</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>PostgreSQL 9.5</p></td>
-<td><p>à évaluer</p></td>
-<td><p>nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></p></td>
+<tr class="row-even"><td><p>PostgreSQL &lt;= 9.6</p></td>
+<td><p>non</p></td>
+<td><p><em>PlumePg</em> requiert la prise en charge des tables partitionnées, introduites par PostgreSQL 10.</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p>PostgreSQL 10</p></td>
 <td><p>oui</p></td>
-<td><p>nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></p></td>
+<td><p>Nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>.</p></td>
+<td><p>2022.03.01. PostgreSQL 10.12 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2<a class="footnote-reference brackets" href="#withasgard" id="id1">1</a>.</p></td>
 </tr>
 <tr class="row-even"><td><p>PostgreSQL 11</p></td>
-<td><p>à évaluer</p></td>
-<td><p>nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></p></td>
+<td><p>oui</p></td>
+<td><p>Nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>.</p></td>
+<td><p>2022.03.01. PostgreSQL 11.9 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
 </tr>
 <tr class="row-odd"><td><p>PostgreSQL 12</p></td>
-<td><p>à évaluer</p></td>
-<td><p>nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></p></td>
+<td><p>oui</p></td>
+<td><p>Nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>.</p></td>
+<td><p>2022.03.01. PostgreSQL 12.4 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
 </tr>
 <tr class="row-even"><td><p>PostgreSQL 13</p></td>
-<td><p>à évaluer</p></td>
+<td><p>oui</p></td>
 <td><p></p></td>
+<td><p>2022.03.01. PostgreSQL 13.0 + PlumePg 0.0.1 + pgcrypto 1.3<a class="footnote-reference brackets" href="#withcrypto" id="id2">2</a> + Asgard 1.3.2.</p></td>
 </tr>
 <tr class="row-odd"><td><p>PostgreSQL 14</p></td>
-<td><p>à évaluer</p></td>
+<td><p>oui</p></td>
 <td><p></p></td>
+<td><p>2022.03.01. PostgreSQL 14.2 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
 </tr>
 </tbody>
 </table>
@@ -315,7 +323,7 @@
 <li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume_pg.control</span></code></span> contient quelques métadonnées et des informations de paramétrage.</p></li>
 </ul>
 <p>Ces deux fichiers doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l’environnement d’installation, mais il est vraisemblable qu’il soit de la forme <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\PostgreSQL\xx\share\extension</span></code> sous Windows et <code class="docutils literal notranslate"><span class="pre">/usr/share/postgresql/xx/extension</span></code> sous Linux, <code class="docutils literal notranslate"><span class="pre">xx</span></code> étant la version de PostgreSQL.</p>
-<p>L’activation de <em>PlumePg</em> sur une base passe par une simple commande <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span></code>. Pour PostgreSQL 12 et les versions antérieures, il est toutefois nécessaire d’installer préalablement l’extension <a class="reference external" href="https://www.postgresql.org/docs/12/pgcrypto.html"><code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></a>, sur laquelle <em>PlumePg</em> s’appuie pour la génération des UUID<a class="footnote-reference brackets" href="#pgcrypto" id="id1">1</a>. Il s’agit d’une extension standard de PostgreSQL, qui est en principe disponible dans toutes les distributions des versions de PostgreSQL compatibles avec <em>PlumePg</em>.</p>
+<p>L’activation de <em>PlumePg</em> sur une base passe par une simple commande <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span></code>. Pour PostgreSQL 12 et les versions antérieures, il est toutefois nécessaire d’installer préalablement l’extension <a class="reference external" href="https://www.postgresql.org/docs/12/pgcrypto.html"><code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></a>, sur laquelle <em>PlumePg</em> s’appuie pour la génération des UUID<a class="footnote-reference brackets" href="#pgcrypto" id="id3">3</a>. Il s’agit d’une extension standard de PostgreSQL, qui est en principe disponible dans toutes les distributions des versions de PostgreSQL compatibles avec <em>PlumePg</em>.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">pgcrypto</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 <span class="k">CREATE</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -391,7 +399,13 @@
 </ol>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
-<dt class="label" id="pgcrypto"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="withasgard"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>L’extension PostgreSQL <em>Asgard</em> n’est en aucune façon requise pour utiliser Plume et <em>PlumePg</em>. Les tests faisant intervenir <em>Asgard</em> s’assure simplement que, dans le cas où les deux extensions sont présentes, <em>Asgard</em> gère correctement les droits sur les objets de <em>PlumePg</em>. Cf. <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a></p>
+</dd>
+<dt class="label" id="withcrypto"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Les tests sont réalisés avec le fichier de contrôle standard de <em>PlumePg</em>, unique pour toutes les versions de PostgreSQL et qui requiert <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>. Il est donc vérifié que celui-ci peut être installé pour toutes les versions, y compris PostgreSQL 13 et 14, pour lesquelles <em>PlumePg</em> n’utilise ensuite aucune de ses fonctionnalités.</p>
+</dd>
+<dt class="label" id="pgcrypto"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
 <dd><p><em>PlumePg</em> la fonction <code class="docutils literal notranslate"><span class="pre">gen_random_uuid()</span></code> pour générer des UUID. Pour les versions 10, 11, et 12 de PostgreSQL, elle est fournie par l’extension <em>pgcrypto</em>. Pour les versions 13 et supérieures, cette fonction est incluse dans le coeur de PostgreSQL (cf. <a class="reference external" href="https://www.postgresql.org/docs/13/functions-uuid.html">documentation de PostgreSQL</a>), installer <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> n’est donc en principe plus nécessaire et il pourrait être pertinent de modifier le fichier <code class="docutils literal notranslate"><span class="pre">plume_pg.control</span></code> pour retirer <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> de la liste des extensions requises.</p>
 </dd>
 </dl>
