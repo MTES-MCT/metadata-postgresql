@@ -44,7 +44,7 @@ CREATE EXTENSION plume_pg CASCADE ;
 
 ```
 
-[^pgcrypto]: *PlumePg* la fonction `gen_random_uuid()` pour générer des UUID. Pour les versions 10, 11, et 12 de PostgreSQL, elle est fournie par l'extension *pgcrypto*. Pour les versions 13 et supérieures, cette fonction est incluse dans le coeur de PostgreSQL (cf. [documentation de PostgreSQL](https://www.postgresql.org/docs/13/functions-uuid.html)), installer `pgcrypto` n'est donc en principe plus nécessaire et il pourrait être pertinent de modifier le fichier `plume_pg.control` pour retirer `pgcrypto` de la liste des extensions requises.
+[^pgcrypto]: *PlumePg* se sert de la fonction `gen_random_uuid()` pour générer des UUID. Pour les versions 10, 11, et 12 de PostgreSQL, elle est fournie par l'extension *pgcrypto*. Pour les versions 13 et supérieures, cette fonction est incluse dans le coeur de PostgreSQL (cf. [documentation de PostgreSQL](https://www.postgresql.org/docs/13/functions-uuid.html)), installer `pgcrypto` n'est donc en principe plus nécessaire et il pourrait être pertinent de modifier le fichier `plume_pg.control` pour retirer `pgcrypto` de la liste des extensions requises.
 
 L'installation est à réaliser par l'ADL. Il n'était pas pertinent que celle-ci puisse se faire via l'interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, [*AsgardManager*](https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager) propose cette fonctionnalité, via son menu [`Gestion de la base`](https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase).
 
