@@ -16,9 +16,14 @@ from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs
 from plume.pg.template import TemplateDict
 
-connection_string = ConnectionString()
-
 class PlumePropertyTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Création de la connexion PG.
+        
+        """
+        cls.connection_string = ConnectionString()
 
     def test_class_properties_with_template(self):
         """Génération des catégories communes de la classe dcat:Dataset, avec personnalisation par un modèle.
@@ -28,7 +33,7 @@ class PlumePropertyTestCase(unittest.TestCase):
         effacer les modifications réalisées.
         
         """
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(PlumePropertyTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
