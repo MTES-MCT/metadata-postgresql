@@ -59,9 +59,9 @@ Documentation technique : https://mtes-mct.github.io/metadata-postgresql.
 
 © République Française, 2022.
 
-### Production
+### Éditeur
 
-Service du numérique du secrétariat général des Ministère de la transition écologique, Ministère de la cohésion des territoires et des relations avec les collectivités territoriales et Ministère de la Mer.
+Service du numérique du ministère de la transition écologique, du ministère de la cohésion des territoires et des relations avec les collectivités territoriales et du ministère de la mer.
 
 ### Équipe
 
