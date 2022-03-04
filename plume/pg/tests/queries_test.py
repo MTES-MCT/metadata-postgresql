@@ -1,10 +1,10 @@
 """Recette du module queries.
 
 Les tests nécessitent une connexion PostgreSQL (paramètres à
-saisir lors de l'exécution du test) pointant sur une base où :
-- l'extension plume_pg est installée ;
-- le schéma z_plume_recette existe et contient les fonctions
-de la recette côté serveur, qui sera exécutée par l'un des tests.
+saisir lors de l'exécution du test) pointant sur un serveur où
+la dernière version de l'extension PlumePg est disponible. Elle
+sera créée ou recréée sur la base de test, de même que les fonctions
+servant à la recette côté serveur.
 
 Il est préférable d'utiliser un super-utilisateur (commandes de
 création et suppression de table dans le schéma z_plume,
@@ -23,15 +23,27 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
     query_get_geom_centroid, query_evaluate_local_templates
 from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.widgetsdict import WidgetsDict
+from plume.rdf.utils import data_from_file, abspath
 
 class PlumePgTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Création de la connexion PG.
+        """Préparation de la connexion PG + recréation de l'extension et des tests sur le serveur.
         
         """
         cls.connection_string = ConnectionString()
+        create_tests = data_from_file(abspath('').parents[0] /
+            'postgresql/tests/plume_pg_test.sql')
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(create_tests)
+                cur.execute("""
+                    DROP EXTENSION IF EXISTS plume_pg ;
+                    CREATE EXTENSION plume_pg ;
+                    """)  
+        conn.close()
     
     def test_plume_pg_tests(self):
         """Exécution de la recette de l'extension PostgreSQL PlumePg.
@@ -41,8 +53,6 @@ class PlumePgTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    DROP EXTENSION plume_pg ;
-                    CREATE EXTENSION plume_pg ;
                     SELECT * FROM z_plume_recette.execute_recette() ;
                     """)
                 errors = cur.fetchall()     
