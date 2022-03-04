@@ -154,6 +154,9 @@ CREATE TYPE z_plume.meta_geo_tool AS ENUM (
 	
 COMMENT ON TYPE z_plume.meta_geo_tool IS 'Types de fonctionnalités d''aide à la saisie des géométries supportées par Plume.' ;
 
+CREATE CAST (text[] AS z_plume.meta_geo_tool[])
+    WITH INOUT
+    AS IMPLICIT ;
 
 -- Type: z_plume.meta_compute
 
@@ -163,6 +166,9 @@ CREATE TYPE z_plume.meta_compute AS ENUM (
 	
 COMMENT ON TYPE z_plume.meta_compute IS 'Types de fonctionnalités de calcul des métadonnées supportées par Plume.' ;
 
+CREATE CAST (text[] AS z_plume.meta_compute[])
+    WITH INOUT
+    AS IMPLICIT ;
 
 --Table: z_plume.meta_categorie
 
