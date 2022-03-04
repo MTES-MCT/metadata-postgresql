@@ -580,3 +580,45 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t008() IS 'Métadonnées (recette). TEST : Insertion des modèles pré-configurés avec meta_import_sample_template.' ;
 
+
+-- Function: z_plume_recette.t009()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t009()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+   e_mssg text ;
+   e_detl text ;
+BEGIN
+
+    UPDATE z_plume.meta_categorie
+        SET geo_tools = ARRAY['show', 'point']
+        WHERE path = 'dct:title' ;
+    
+    ASSERT FOUND, 'échec assertion #1' ;
+
+    UPDATE z_plume.meta_categorie
+        SET compute = ARRAY['auto']
+        WHERE path = 'dct:title' ;
+    
+    ASSERT FOUND, 'échec assertion #2' ;
+
+    DROP EXTENSION plume_pg ;
+	CREATE EXTENSION plume_pg ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t009() IS 'Métadonnées (recette). TEST : Cast automatique du type text[] en meta_geo_tool[] et meta_compute[].' ;
+
