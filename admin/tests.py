@@ -12,7 +12,7 @@ from plume.rdf.tests import actionsbook_test, metagraph_test, \
 if __name__ == '__main__':
     loader = TestLoader()
     suite = TestSuite()
-    for m in (description_test, queries_test, template_test,
+    for m in (queries_test, description_test, template_test,
         actionsbook_test, metagraph_test, properties_test,
         utils_test, widgetkey_test, widgetsdict_test):
         tests = loader.loadTestsFromModule(m)
