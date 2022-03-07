@@ -25,7 +25,7 @@ SH = Namespace('http://www.w3.org/ns/shacl#')
 SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
 VCARD = Namespace('http://www.w3.org/2006/vcard/ns#')
 XSD = Namespace('http://www.w3.org/2001/XMLSchema#')
-SNUM = Namespace('http://snum.scenari-community.org/Metadata/Vocabulaire/#')
+PLUME = Namespace('http://registre.data.developpement-durable.gouv.fr/plume/')
 LOCAL = Namespace('urn:uuid:')
 
 namespaces = {
@@ -50,7 +50,7 @@ namespaces = {
     'skos': SKOS,
     'vcard': VCARD,
     'xsd': XSD,
-    'snum': SNUM,
+    'plume': PLUME,
     'uuid': LOCAL
     }
 

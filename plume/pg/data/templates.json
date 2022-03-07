@@ -162,7 +162,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-02-26 à 15:07:04."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-03-07 à 12:59:35."
         ]
     },
     "Classique": {
@@ -430,7 +430,7 @@
                 [
                     "http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess",
                     "http://publications.europa.eu/resource/authority/access-right",
-                    "http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations"
                 ],
                 null,
                 null,
@@ -811,7 +811,7 @@
                 "false",
                 false,
                 [
-                    "http://snum.scenari-community.org/Metadata/Vocabulaire/#InseeGeoIndex"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex"
                 ],
                 null,
                 null,
@@ -998,7 +998,7 @@
                 null
             ],
             [
-                "snum:isExternal",
+                "plume:isExternal",
                 "shared",
                 "Donnée externe",
                 "Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe.",
@@ -1026,7 +1026,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-02-26 à 15:07:04."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-03-07 à 12:59:35."
         ]
     },
     "Donnée externe": {
@@ -1267,7 +1267,7 @@
                 "false",
                 false,
                 [
-                    "http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAuthorizedLicense",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense",
                     "http://publications.europa.eu/resource/authority/licence"
                 ],
                 null,
@@ -1385,7 +1385,7 @@
                 [
                     "http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess",
                     "http://publications.europa.eu/resource/authority/access-right",
-                    "http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations"
                 ],
                 null,
                 null,
@@ -1632,7 +1632,7 @@
                 "false",
                 false,
                 [
-                    "http://snum.scenari-community.org/Metadata/Vocabulaire/#InseeGeoIndex"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex"
                 ],
                 null,
                 null,
@@ -1819,7 +1819,7 @@
                 null
             ],
             [
-                "snum:isExternal",
+                "plume:isExternal",
                 "shared",
                 "Donnée externe",
                 "Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe.",
@@ -1847,11 +1847,11 @@
             "$1 ~ ANY(ARRAY['^r_', '^e_'])",
             [
                 {
-                    "snum:isExternal": true
+                    "plume:isExternal": true
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-02-26 à 15:07:04."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-03-07 à 12:59:35."
         ]
     }
 }

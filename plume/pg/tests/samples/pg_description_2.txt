@@ -81,7 +81,7 @@ Zones d'aménagement concerté de Paris.
         "@value": "Délimitation des Zones d’Aménagement Concerté (ZAC) de Paris"
       }
     ],
-    "http://snum.scenari-community.org/Metadata/Vocabulaire/#isExternal": [
+    "http://registre.data.developpement-durable.gouv.fr/plume/isExternal": [
       {
         "@value": false
       }

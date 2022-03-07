@@ -6,7 +6,7 @@ from locale import strxfrm, setlocale, LC_COLLATE
 
 from plume.rdf.rdflib import Graph, URIRef
 from plume.rdf.exceptions import UnknownSource
-from plume.rdf.namespaces import FOAF, SKOS, SNUM
+from plume.rdf.namespaces import FOAF, SKOS, PLUME
 from plume.rdf.utils import abspath, pick_translation, graph_from_file
 
 vocabulary = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
@@ -92,7 +92,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.get_values((SNUM.CrpaAuthorizedLicense, ('fr', 'en')))
+        >>> Thesaurus.get_values((URIRef(http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense), ('fr', 'en')))
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
         """
@@ -133,7 +133,7 @@ class Thesaurus:
         
         Examples
         --------
-        >>> Thesaurus.get_label((SNUM.CrpaAccessLimitations, ('fr', 'en')))
+        >>> Thesaurus.get_label((URIRef(http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations), ('fr', 'en')))
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
         """
@@ -179,11 +179,11 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_iri(
-        ...     (SNUM.CrpaAccessLimitations, ('fr', 'en')), 
+        ...     (URIRef(http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations), ('fr', 'en')), 
         ...     'Communicable au seul intéressé - atteinte à la' \
         ...         ' protection de la vie privée (CRPA, L311-6 1°)'
         ...     )
-        rdflib.term.URIRef('http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations-311-6-1-vp')
+        rdflib.term.URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp')
         
         """
         if thesaurus in cls.collection:
@@ -228,8 +228,8 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_str(
-        ...     (SNUM.CrpaAccessLimitations, ('fr', 'en')), 
-        ...     SNUM['CrpaAccessLimitations-311-6-1-vp']
+        ...     (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations'), ('fr', 'en')), 
+        ...     URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp')
         ...     )
         'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
         
@@ -275,8 +275,8 @@ class Thesaurus:
         Examples
         --------
         >>> Thesaurus.concept_link(
-        ...     (SNUM.CrpaAccessLimitations, ('fr', 'en')), 
-        ...     SNUM['CrpaAccessLimitations-311-6-1-vp']
+        ...     (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations'), ('fr', 'en')), 
+        ...     URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp')
         ...     )
         rdflib.term.URIRef('https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056')
         

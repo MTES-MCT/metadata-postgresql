@@ -12,7 +12,7 @@ directement. La plus utile - et celle qui sert au module
 """
 
 from plume.rdf.rdflib import URIRef
-from plume.rdf.namespaces import SH, SNUM
+from plume.rdf.namespaces import SH, PLUME
 from plume.rdf.metagraph import shape
 from plume.rdf.utils import path_n3, path_from_n3
 
@@ -245,20 +245,20 @@ def read_shape_property(shape_node):
         SH.nodeKind: ('kind', False),
         SH.order: ('shape_order', False),
         SH['class']: ('rdfclass', False),
-        SNUM.placeholder: ('placeholder', False),
-        SNUM.inputMask: ('input_mask', False),
-        SNUM.rowSpan: ('rowspan', False),
+        PLUME.placeholder: ('placeholder', False),
+        PLUME.inputMask: ('input_mask', False),
+        PLUME.rowSpan: ('rowspan', False),
         SH.minCount: ('min', False),
         SH.maxCount: ('max', False),
         SH.datatype: ('datatype', False),
         SH.uniqueLang: ('unilang', False),
         SH.pattern: ('regex_validator', False),
         SH.flags: ('regex_validator_flags', False),
-        SNUM.transform: ('transform', False),
-        SNUM.ontology: ('sources', True),
-        SNUM.longText: ('is_long_text', False),
-        SNUM.geoTool: ('geo_tools', True),
-        SNUM.compute: ('compute', True)
+        PLUME.transform: ('transform', False),
+        PLUME.ontology: ('sources', True),
+        PLUME.longText: ('is_long_text', False),
+        PLUME.geoTool: ('geo_tools', True),
+        PLUME.compute: ('compute', True)
         }
         # le booléen indique si la propriété
         # peut prendre des valeurs multiples

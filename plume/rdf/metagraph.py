@@ -8,7 +8,7 @@ from time import strftime, localtime
 
 from plume.rdf.rdflib import Graph, URIRef, BNode, Literal
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
-    LOCAL, SNUM, DCT, FOAF, XSD, predicate_map, class_map
+    LOCAL, PLUME, DCT, FOAF, XSD, predicate_map, class_map
 from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
     export_extension_from_format, export_format_from_extension, export_formats, \
     forbidden_char
@@ -110,8 +110,8 @@ class Metagraph(Graph):
         
         """
         datasetid = self.datasetid
-        url_csw = self.value(datasetid, SNUM.linkedRecord / DCAT.endpointURL)
-        file_identifier = self.value(datasetid, SNUM.linkedRecord / DCT.identifier)
+        url_csw = self.value(datasetid, PLUME.linkedRecord / DCAT.endpointURL)
+        file_identifier = self.value(datasetid, PLUME.linkedRecord / DCT.identifier)
         return (str(url_csw) if url_csw else None,
             str(file_identifier) if file_identifier else None)
 
@@ -129,17 +129,17 @@ class Metagraph(Graph):
         datasetid = self.datasetid
         if not datasetid:
             return
-        node = self.value(datasetid, SNUM.linkedRecord)
+        node = self.value(datasetid, PLUME.linkedRecord)
         if node:
             self.remove((node, DCAT.endpointURL, None))
             self.remove((node, DCT.identifier, None))
             if value is None:
-                self.remove((datasetid, SNUM.linkedRecord, node))
+                self.remove((datasetid, PLUME.linkedRecord, node))
                 return
         else:
             node = BNode()
         if value is not None:
-            self.add((datasetid, SNUM.linkedRecord, node))
+            self.add((datasetid, PLUME.linkedRecord, node))
             if url_csw:
                 self.add((node, DCAT.endpointURL, URIRef(url_csw)))
             if file_identifier:

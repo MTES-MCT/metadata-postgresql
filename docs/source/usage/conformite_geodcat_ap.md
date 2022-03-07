@@ -1,8 +1,8 @@
 # Conformité au profil GeoDCAT-AP
 
-_Référence : GeoDCAT-AP Version 2.0.0 - https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0_.
+_Référence : [GeoDCAT-AP Version 2.0.0](https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0)._
 
-[Généralités](#généralités) • [Types de valeurs littérales](#types-de-valeurs-littérales)
+[Généralités](#généralités) • [Espace de nommage de Plume](#espace-de-nommage-de-plume) • [Types de valeurs littérales](#types-de-valeurs-littérales)
 
 Classes : [Activité](#activité) • [Adresse (agent)](#adresse-agent) • [Adresse (entité)](#adresse-entité) • [Agent](#agent) • [Attribution](#attribution) • [Catalogue](#catalogue) • [Concept](#concept) • [Agent](#agent) • [Déclaration de droits](#déclaration-de-droits) • [Distribution](#distribution) • [Document](#document) • [Emplacement](#emplacement) • [Enregistrement du catalogue](#enregistrement-du-catalogue) • [Ensemble de concepts](#ensemble-de-concepts) • [Entité](#entité) • [Fiche de métadonnées liée](#fiche-de-métadonnées-liée) • [Fréquence](#fréquence) • [Généalogie](#généalogie) • [Identifiant](#identifiant) • [**Jeu de données**](#jeu-de-données) • [Licence](#licence) • [Mesure de qualité](#mesure-de-qualité) • [Métrique](#métrique) • [Période](#période) • [Relation](#relation) • [Ressource](#ressource) • [Service de données](#service-de-données) • [Somme de contrôle](#somme-de-contrôle) • [Standard](#standard) • [Système linguistique](#système-linguistique) • [Type de média](#type-de-média) • [Type de média ou extension](#type-de-média-ou-extension)
 
@@ -27,6 +27,16 @@ Lorsque des métadonnées externes sont importées via les fonctionnalités de P
 
 Les propriétés prévues par GeoDCAT-AP mais non gérées par Plume, les propriétés de GeoDCAT-AP sur lesquelles des modifications ont été opérées, et les propriétés ajoutées par Plume sont listées dans la suite.
 
+## Espace de nommage de Plume
+
+Les propriétés et classes ajoutées par Plume utilisent l'espace de nommage `http://registre.data.developpement-durable.gouv.fr/plume/`, représenté par le préfixe `plume`.
+
+```turtle
+
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+
+```
+
 ## Types de valeurs littérales
 
 Parmi les types explicitement cités par GeoDCAT-AP (pour les classes et propriétés prises en charges par Plume), seul le type `gsp:gmlLiteral` n'est pas reconnu par Plume. En cas d'import de métadonnées externes, les éventuelles valeurs de ce type seront traitées comme `xsd:string` et aucune des fonctionnalités permettant d'interagir avec les géométries ne sera disponible.
@@ -45,25 +55,27 @@ Les types suivants sont gérés par Plume, mais avec quelques limites :
 
 D'une manière général, toute valeur d'un type non listé ci-avant sera considérée comme de type `xsd:string`.
 
-## Activité
+## Classes
+
+### Activité
 
 _Classe `prov:Activity`._
 
 Cette classe n'est pas prise en charge.
 
-## Adresse (agent)
+### Adresse (agent)
 
 _Classe `locn:Address`._
 
 Cette classe n'est pas prise en charge.
 
-## Adresse (entité)
+### Adresse (entité)
 
 _Classe `vcard:Address`._
 
 Cette classe n'est pas prise en charge.
 
-## Agent
+### Agent
 
 _Classe `foaf:Agent`._
 
@@ -81,19 +93,19 @@ Les propriétés suivantes sont modifiées par Plume :
 | *email* | `foaf:mbox` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | |
 | *phone* | `foaf:phone` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | |
 
-## Attribution
+### Attribution
 
 _Classe `prov:Attribution`._
 
 Cette classe n'est pas prise en charge.
 
-## Catalogue
+### Catalogue
 
 _Classe `dcat:Catalog`._
 
 Cette classe n'est pas prise en charge.
 
-## Concept
+### Concept
 
 _Classe `skos:Concept`._
 
@@ -103,13 +115,13 @@ Des propriétés supplémentaires peuvent être disponibles pour certains concep
 
 Seul l'IRI du concept est enregistré dans les métadonnées.
 
-## Déclaration de droits
+### Déclaration de droits
 
 _Classe `dct:RightsStatement`._
 
 Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
 
-## Distribution
+### Distribution
 
 _Classe `dcat:Distribution`._
 
@@ -127,10 +139,10 @@ Les propriétés suivantes sont modifiées par Plume :
 
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
-| *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison `snum:CrpaAccessLimitations` qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
+| *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison [`CrpaAccessLimitations`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
 | *compression format* | `dcat:compressFormat` | Changement de source de vocabulaire contrôlé. | Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). | 
 | *encoding* | `cnt:characterEncoding` | Changement de cardinalité. Avant : `0..n`. Après : `0..1`. | |
-| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison `snum:CrpaAuthorizedLicense` contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
+| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison [`CrpaAuthorizedLicense`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense) contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
 | *packaging format* | `dcat:packageFormat` | Changement de source de vocabulaire contrôlé. | Idem *compression format*. Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
 | *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
@@ -143,13 +155,13 @@ Les propriétés suivantes sont ajoutées par Plume :
 | --- | --- | --- | --- |
 | `dct:type` | `skos:Concept` | `0..1` | Type de distribution. Bizaremment non présent dans DCAT-AP et GeoDCAT-AP alors qu'il existe un [thésaurus dédié](https://op.europa.eu/s/vNbJ) dans le registre européen. |
 
-## Document
+### Document
 
 _Classe `foaf:Document`._
 
 Plume n'associe aucune propriété à cette classe. Il est attendu de l'utilisateur qu'il saisisse une URL, qui tiendra lieu d'IRI et sera la seule information relative au document sauvegardée dans les métadonnées.
 
-## Emplacement
+### Emplacement
 
 _Classe `dct:Location`._
 
@@ -159,11 +171,11 @@ Les propriétés suivantes sont modifiées par Plume :
 | --- | --- | --- | --- |
 | *bounding box* | `dcat:bbox` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
 | *centroid* | `dcat:centroid` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
-| *gazetteer* | `skos:inScheme` | Ajout d'une source de vocabulaire contrôlé. | Thésaurus maison `snum:InseeGeoIndex`, basé sur le [registre de l'INSEE](http://id.insee.fr) qui répertorie les divisions administratives. |
+| *gazetteer* | `skos:inScheme` | Ajout d'une source de vocabulaire contrôlé. | Thésaurus maison [`InseeGeoIndex`](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex), basé sur le [registre de l'INSEE](http://id.insee.fr) qui répertorie les divisions administratives. |
 | *geographic name* | `skos:prefLabel` | Changement de cardinalité. Avant : `1..n`. Après : `0..n`. | Rendre le nom obligatoire est discutable quand l'emplacement est un rectangle d'emprise ou autre géométrie calculée à partir des données (il pourrait d'ailleurs s'agir d'une coquille dans GeoDCAT-AP, considérant que les propriétés obligatoires sont usuellement listées à part). |
 | *geometry* | `locn:geometry` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as gsp:wktLiteral or gsp:gmlLiteral`. Après : `rdfs:Literal typed as gsp:wktLiteral`. |  |
 
-## Enregistrement du catalogue
+### Enregistrement du catalogue
 
 _Classe `dcat:CatalogRecord`._
 
@@ -171,13 +183,13 @@ Dans le contexte de Plume, la classe `dcat:CatalogRecord` sert exclusivement à 
 
 Pour l'heure, la seule propriété de cette classe qui soit prise en charge par Plume est *update / modification date* - `dct:modified` -, que Plume renseigne automatiquement à chaque sauvegarde.
 
-## Ensemble de concepts
+### Ensemble de concepts
 
 _Classe `skos:ConceptScheme`._
 
 Comme pour la classe `skos:Concept`, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n'est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl), avec pour seule propriété `skos:prefLabel` (et non `dct:title` comme dans GeoDCAT-AP), qui fournit le libellé de l'ensemble, généralement en anglais et en français.
 
-## Entité
+### Entité
 
 _Classe `vcard:Kind`._
 
@@ -194,9 +206,9 @@ Les propriétés suivantes sont modifiées par Plume :
 | *email* | `vcard:hasEmail` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | |
 | *phone* | `vcard:hasTelephone` | Changement de cardinalité. Avant : `0..1`. Après : `0..n`. | |
 
-## Fiche de métadonnées liée
+### Fiche de métadonnées liée
 
-_Classe `snum:LinkedRecord`._
+_Classe `plume:LinkedRecord`._
 
 Cette classe est ajoutée par Plume. Elle représente une fiche de métadonnées distante avec laquelle la fiche locale doit être régulièrement synchronisée. À ce stade ne sont prises en charge que les métadonnées ISO 19115 exposées par des services CSW. Les métadonnées n'ont pas pour objet de décrire la fiche mais seulement de mémoriser les informations nécessaires à Plume pour l'importer.
 
@@ -207,25 +219,25 @@ Propriétés :
 | `dcat:endpointURL` | [`rdfs:Resource`](#ressource) | `0..1` | URL de base du service CSW, sans aucun paramètre. |
 | `dct:identifier` | `rdfs:Literal type as xsd:string` | `0..1` | Identifiant de la fiche de métadonnées. |
 
-## Fréquence
+### Fréquence
 
 _Classe `dct:Frequency`._
 
 Cette classe est prise en charge selon les mêmes modalités que [`skos:Concept`](#concept).
 
-## Généalogie
+### Généalogie
 
 _Classe `dct:ProvenanceStatement`._
 
 Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
 
-## Identifiant
+### Identifiant
 
 _Classe `adms:Identifier`._
 
 Cette classe n'est pas prise en charge.
 
-## Jeu de données
+### Jeu de données
 
 _Classe `dcat:Dataset`._
 
@@ -249,7 +261,7 @@ Les propriétés suivantes sont modifiées par Plume :
 
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
-| *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison `snum:CrpaAccessLimitations` qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
+| *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison [`CrpaAccessLimitations`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
 | *creation date* | `dct:created` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *identifier* | `dct:identifier` | Verrouillé. | Avec Plume l'identifiant présenté dans `dct:identifier` est toujours l'IRI du `dcat:Dataset`. Plume s'en assure à chaque chargement de la fiche de métadonnées. |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857) et EPSG 4326. Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
@@ -262,28 +274,28 @@ Les propriétés suivantes sont ajoutées par Plume :
 | IRI | Classe de l'objet | Cardinalité | Description |
 | --- | --- | --- | --- |
 | `foaf:isPrimaryTopicOf` | [`dcat:CatalogRecord`](#enregistrement-du-catalogue) | `1..1` | Métadonnées sur les métadonnées. Cette propriété est gérée automatiquement par Plume. |
-| `snum:isExternal` | `rdfs:Literal typed as xsd:boolean` | `0..1` | Ce jeu de données est-il la reproduction de données produites par un tiers ? Cette propriété permet de distinguer immédiatement les données externes qui, dans le contexte de Plume, pourront se voir appliquer des modèles de formulaires spécifiques. |
-| `snum:relevanceScore` | `rdfs:Literal typed as xsd:integer` | `0..1` | Niveau de pertinence de la donnée. Cette propriété anticipe sur de futures fonctionnalités de recherche qui mettront davantage en évidence les jeux de données avec un score élevé dans les listes de résultats. |
+| `plume:isExternal` | `rdfs:Literal typed as xsd:boolean` | `0..1` | Ce jeu de données est-il la reproduction de données produites par un tiers ? Cette propriété permet de distinguer immédiatement les données externes qui, dans le contexte de Plume, pourront se voir appliquer des modèles de formulaires spécifiques. |
+| `plume:relevanceScore` | `rdfs:Literal typed as xsd:integer` | `0..1` | Niveau de pertinence de la donnée. Cette propriété anticipe sur de futures fonctionnalités de recherche qui mettront davantage en évidence les jeux de données avec un score élevé dans les listes de résultats. |
 
-## Licence
+### Licence
 
 _Classe `dct:LicenseDocument`._
 
 Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
 
-## Mesure de qualité
+### Mesure de qualité
 
 _Classe `dqv:QualityMeasurement`._
 
 Cette classe n'est pas prise en charge.
 
-## Métrique
+### Métrique
 
 _Classe `dqv:Metric`._
 
 Cette classe n'est pas prise en charge.
 
-## Période
+### Période
 
 _Classe `dct:PeriodOfTime`._
 
@@ -294,19 +306,19 @@ Les propriétés suivantes sont modifiées par Plume :
 | *end date* | `dcat:endDate` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *start date* | `dcat:startDate` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 
-## Relation
+### Relation
 
 _Classe `dcat:Relationship`._
 
 Cette classe n'est pas prise en charge.
 
-## Ressource
+### Ressource
 
 _Classe `rdfs:Resource`._
 
 GeoDCAT-AP n'associe explicitement aucune propriété à cette classe. De la même façon, Plume propose à l'utilisateur de saisir des URL pour les propriétés qui ont des valeurs de ce type et traite lesdites URL comme des IRI.
 
-## Service de données
+### Service de données
 
 _Classe `dcat:DataService`._
 
@@ -340,20 +352,20 @@ Les propriétés suivantes sont modifiées par Plume :
 
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
-| *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison `snum:CrpaAccessLimitations` qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
-| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison `snum:CrpaAuthorizedLicense` contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
-| *conforms to* | `dct:conformsTo` | Ajout d'une source de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose un thésaurus maison `snum:DataServiceStandard` contenant les URI des principaux standards utilisés pour les services de données géographiques. Il inclut tous les concepts du [thésaurus des protocoles du registre INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue) (auquel il se substitue), en ajoutant un concept supplémentaire pour le standard OGC API Feature et des propriétés [`foaf:page`](#concept) pointant sur les standards à proprement parler. Par exemple, en mode lecture, l'utilisateur sera renvoyé vers https://www.ogc.org/standards/wms au lieu de l'IRI http://www.opengis.net/def/serviceType/ogc/wms s'il clique sur le standard WMS. |
+| *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison [`CrpaAccessLimitations`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
+| *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison [`CrpaAuthorizedLicense`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense) contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
+| *conforms to* | `dct:conformsTo` | Ajout d'une source de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose un thésaurus maison [`DataServiceStandard`](http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard) contenant les URI des principaux standards utilisés pour les services de données géographiques. Il inclut tous les concepts du [thésaurus des protocoles du registre INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/ProtocolValue) (auquel il se substitue), en ajoutant un concept supplémentaire pour le standard OGC API Feature et des propriétés [`foaf:page`](#concept) pointant sur les standards à proprement parler. Par exemple, en mode lecture, l'utilisateur sera renvoyé vers https://www.ogc.org/standards/wms au lieu de l'IRI http://www.opengis.net/def/serviceType/ogc/wms s'il clique sur le standard WMS. |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
 | *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *type* | `dct:type` | Changement de source de vocabulaire contrôlé. | Avec le registre INSPIRE, il s'agirait d'une propriété à valeur fixe (`<http://inspire.ec.europa.eu/metadata-codelist/ResourceType/service>`), redondante avec l'existence même d'un service de données, ce qui présente peu d'intérêt. Plume utilise à la place le [registre EU](https://op.europa.eu/s/vM9M). |
 
-## Somme de contrôle
+### Somme de contrôle
 
 _Classe `spdx:Checksum`._
 
 Cette classe n'est pas prise en charge.
 
-## Standard
+### Standard
 
 _Classe `dct:Standard`._
 
@@ -368,7 +380,7 @@ Les propriétés suivantes sont modifiées par Plume :
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
 | *creation date* | `dct:created` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
-| *reference register* | `skos:inScheme` | Ajout d'une source de vocabulaire contrôlé. | Thésaurus maison `snum:StandardsRegister`, qui ne référence à date que le registre EPSG de l'OGC. |
+| *reference register* | `skos:inScheme` | Ajout d'une source de vocabulaire contrôlé. | Thésaurus maison [`StandardsRegister`](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister), qui ne référence à date que le registre EPSG de l'OGC. |
 | *release date* | `dct:issued` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 | *update / modification date* | `dct:modified` | Restriction des types littéraux acceptés. Avant : `rdfs:Literal typed as xsd:date or xsd:dateTime`. Après : `rdfs:Literal typed as xsd:date`. |  |
 
@@ -378,19 +390,19 @@ Les propriétés suivantes sont ajoutées par Plume :
 | --- | --- | --- | --- |
 | `foaf:page` | [`foaf:Document`](#document) | `0..n` | Chemin d'accès au standard ou URL d'une page contenant des informations sur le standard. Considérant que la majorité des standards de données géographiques n'ont pas d'URI à ce jour, les référencer dans un thésaurus n'est pas envisageable. Les utilisateurs devront les saisir manuellement et qu'ils puissent malgré tout renseigner une URL d'accès paraît essentiel. |
 
-## Système linguistique
+### Système linguistique
 
 _Classe `dct:LinguisticSystem`._
 
 Cette classe est prise en charge selon les mêmes modalités que [`skos:Concept`](#concept).
 
-## Type de média
+### Type de média
 
 _Classe `dct:MediaType`._
 
 Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.
 
-## Type de média ou extension
+### Type de média ou extension
 
 _Classe `dct:MediaTypeOrExtent`._
 

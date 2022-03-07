@@ -33,7 +33,7 @@ from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     UnknownParameterValue, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, SNUM, GSP, RDFS
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, GSP, RDFS
 from plume.rdf.properties import PlumeProperty, class_properties
 from plume.pg.computer import computation_method
 
@@ -261,7 +261,7 @@ class WidgetsDict(dict):
             for label, value in columns:
                 valkey = ValueKey(parent=tabkey, label=label, value=Literal(value),
                     is_long_text=True, description='Description du champ',
-                    rowspan=self.textEditRowSpan, predicate=SNUM.column,
+                    rowspan=self.textEditRowSpan, predicate=PLUME.column,
                     do_not_save=True, independant_label=True,
                     is_read_only=not self.edit)
         

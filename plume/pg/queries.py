@@ -23,7 +23,7 @@ from psycopg2 import sql
 from psycopg2.extras import Json
 
 from plume.rdf.exceptions import UnknownParameterValue
-from plume.rdf.namespaces import SNUM
+from plume.rdf.namespaces import PLUME
 
 
 def query_is_relation_owner():
@@ -455,7 +455,7 @@ def query_update_columns_comments(schema_name, table_name, widgetsdict):
     """
     updated_columns = []
     for k, v in widgetsdict.items():
-        if k.path == SNUM.column:
+        if k.path == PLUME.column:
             updated_columns.append((k.label, str(k.value or '')))   
     if updated_columns:
         return sql.SQL(' ; ').join([

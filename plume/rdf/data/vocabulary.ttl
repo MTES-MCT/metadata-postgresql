@@ -1,6 +1,5 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
 
 
 <http://publications.europa.eu/resource/authority/dataset-status/COMPLETED> a skos:Concept ;
@@ -806,45 +805,45 @@
 
 
 <https://tools.ietf.org/html/rfc4287> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "ATOM Syndication Format"@en .
 
 <http://www.opengis.net/def/serviceType/ogc/csw> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC Catalogue Service for the Web (CSW)"@en ;
     foaf:page <http://www.ogc.org/standards/cat> .
 
 <http://www.opengis.net/def/serviceType/ogc/sos> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC Sensor Observation Service (SOS)"@en ;
     foaf:page <http://www.ogc.org/standards/sos> .
 
 <http://www.opengis.net/def/serviceType/ogc/wcs> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC Web Coverage Service (WCS)"@en ;
     foaf:page <http://www.ogc.org/standards/wcs> .
 
 <http://www.opengis.net/def/serviceType/ogc/wfs> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC Web Feature Service (WFS)"@en ;
     foaf:page <http://www.ogc.org/standards/wfs> .
 
 <http://www.opengis.net/def/serviceType/ogc/wms> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC Web Map Service (WMS)"@en ;
     foaf:page <https://www.ogc.org/standards/wms> .
 
 <http://www.opengis.net/def/serviceType/ogc/wmts> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC Web Map Tile Service (WMTS)"@en ;
     foaf:page <https://www.ogc.org/standards/wmts> .
 
 <http://www.opengis.net/def/interface/ogcapi-features> a skos:Concept ;
-    skos:inScheme snum:DataServiceStandard ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "OGC API - Features"@en ;
     foaf:page <https://www.ogc.org/standards/ogcapi-features> .
 
-snum:DataServiceStandard a skos:ConceptScheme ;
+<http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> a skos:ConceptScheme ;
     skos:prefLabel "Data Service Standards"@en,
         "Standards de services de données"@fr.
 
@@ -2157,11 +2156,11 @@ snum:DataServiceStandard a skos:ConceptScheme ;
 
 
 <http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
-    skos:inScheme snum:StandardsRegister ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister> ;
     skos:prefLabel "OGC EPSG Coordinate Reference Systems Register"@en,
         "Registre EPSG de l'OGC (systèmes de coordonnées)"@fr .
 
-snum:StandardsRegister a skos:ConceptScheme ;
+<http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister> a skos:ConceptScheme ;
     skos:prefLabel "Registre de standards"@fr,
         "Standards register"@en.
 
@@ -2216,106 +2215,105 @@ snum:StandardsRegister a skos:ConceptScheme ;
 
 
 <https://spdx.org/licenses/etalab-2.0> a skos:Concept ;
-    skos:inScheme snum:CrpaAuthorizedLicense ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense> ;
     skos:prefLabel "Licence Ouverte version 2.0"@fr .
     
 <https://spdx.org/licenses/ODbL-1.0> a skos:Concept ;
-    skos:inScheme snum:CrpaAuthorizedLicense ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense> ;
     skos:prefLabel "ODC Open Database License (ODbL) version 1.0"@fr .
 
-snum:CrpaAuthorizedLicense a skos:ConceptScheme ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense> a skos:ConceptScheme ;
     skos:prefLabel "Authorized licenses for public informations detained by french administrations"@en,
         "Licences admises pour les informations publiques des administrations françaises"@fr ;
     foaf:page <https://www.data.gouv.fr/fr/pages/legal/licences> .
 
 
-
-snum:CrpaAccessLimitations-311-2-a1 a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-2-dna> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable à la discrétion de l'administration - document non achevé (CRPA, L311-2 §1)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700> .
     
-snum:CrpaAccessLimitations-311-2-a2 a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-2-dp> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable à la discrétion de l'administration - document préparatoire à une décision administrative en court d'élaboration (CRPA, L311-2 §2)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031367700> .
     
-snum:CrpaAccessLimitations-311-4 a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-4> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable sous réserve - document soumis à des droits de propriété littéraire et artistique (CRPA, L311-4)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033219038> .
     
-snum:CrpaAccessLimitations-311-5-1 a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-1> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - document d'une autorité judiciaire ou de contrôle administratif (CRPA, L311-5 1°)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
 
-snum:CrpaAccessLimitations-311-5-2-a a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-a> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte au secret des délibérations du Gouvernement et des autorités responsables relevant du pouvoir exécutif (CRPA, L311-5 2°a)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-b a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-b> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte au secret de la défense nationale (CRPA, L311-5 2°b)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-c a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-c> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte à la conduite de la politique extérieure de la France (CRPA, L311-5 2°c)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-d a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-d> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte à la sûreté de l'Etat, à la sécurité publique, à la sécurité des personnes ou à la sécurité des systèmes d'information des administrations (CRPA, L311-5 2°d)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-e a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-e> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte à la monnaie et au crédit public (CRPA, L311-5 2°e)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-f a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-f> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte au déroulement des procédures engagées devant les juridictions ou d'opérations préliminaires à de telles procédures (CRPA, L311-5 2°f)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-g a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-g> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte à la recherche et à la prévention, par les services compétents, d'infractions de toute nature (CRPA, L311-5 2°g)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-5-2-h a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-5-2-h> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Non communicable - atteinte, sous réserve de l'article L. 124-4 du code de l'environnement, aux autres secrets protégés par la loi (CRPA, L311-5 2°h)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033265181> .
     
-snum:CrpaAccessLimitations-311-6-1-vp a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
     
-snum:CrpaAccessLimitations-311-6-1-sm a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-sm> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable au seul intéressé - atteinte à la protection du secret médical (CRPA, L311-6 1°)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
     
-snum:CrpaAccessLimitations-311-6-1-sa a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-sa> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable au seul intéressé - atteinte à la protection du secret des affaires (CRPA, L311-6 1°)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
     
-snum:CrpaAccessLimitations-311-6-2 a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-2> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable au seul intéressé - appréciation ou jugement de valeur sur une personne physique désignée ou facilement identifiable (CRPA, L311-6 2°)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
     
-snum:CrpaAccessLimitations-311-6-3 a skos:Concept ;
-    skos:inScheme snum:CrpaAccessLimitations ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-3> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
     skos:prefLabel "Communicable au seul intéressé - document faisant apparaître le comportement d'une personne, dès lors que la divulgation de ce comportement pourrait lui porter préjudice (CRPA, L311-6 3°)"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056> .
 
-snum:CrpaAccessLimitations a skos:ConceptScheme ;
+<http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> a skos:ConceptScheme ;
     skos:prefLabel "Limitations of public access according to French Code des relations entre le public et l'administration"@en,
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"@fr ;
     foaf:page <https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000031366350/LEGISCTA000031367696> .
@@ -2549,42 +2547,42 @@ snum:CrpaAccessLimitations a skos:ConceptScheme ;
 
 
 <http://id.insee.fr/geo/pays/france> a skos:Concept ;
-    skos:inScheme snum:InseeGeoIndex ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
     skos:prefLabel "France"@en,
         "France"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/France> .
   
 <http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
-    skos:inScheme snum:InseeGeoIndex ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
     skos:prefLabel "Mainland France"@en,
         "France métropolitaine"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine> .
         
 <http://id.insee.fr/geo/commune> a skos:Concept ;
-    skos:inScheme snum:InseeGeoIndex ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
     skos:prefLabel "French commune"@en,
         "Commune ou arrondissement urbain (code INSEE)"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Commune_(France)> .
 
 <http://id.insee.fr/geo/departement> a skos:Concept ;
-    skos:inScheme snum:InseeGeoIndex ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
     skos:prefLabel "French departement"@en,
         "Département"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Département_français> .
         
 <http://id.insee.fr/geo/region> a skos:Concept ;
-    skos:inScheme snum:InseeGeoIndex ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
     skos:prefLabel "French region"@en,
         "Région"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Région_française> .
         
 <http://id.insee.fr/geo/arrondissement> a skos:Concept ;
-    skos:inScheme snum:InseeGeoIndex ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
     skos:prefLabel "French arrondissement"@en,
         "Arrondissement"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Arrondissement_français> .
 
-snum:InseeGeoIndex a skos:ConceptScheme ;
+<http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> a skos:ConceptScheme ;
     skos:prefLabel "INSEE Gazetteer"@en,
         "Index géographique de l'INSEE"@fr ;
     foaf:page <http://id.insee.fr> .

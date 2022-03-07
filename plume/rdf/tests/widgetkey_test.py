@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from plume.rdf.rdflib import URIRef, Literal
 from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD, \
-    GSP, SNUM
+    GSP, PLUME
 from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
     PlusButtonKey, RootKey, TabKey
@@ -38,14 +38,14 @@ class WidgetKeyTestCase(unittest.TestCase):
         g = GroupOfValuesKey(parent=t, predicate=DCT.conformsTo,
             rdfclass=DCT.Standard, sources=[
             URIRef('http://www.opengis.net/def/crs/EPSG/0'),
-            SNUM.DataServiceStandard])
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')])
         b = PlusButtonKey(parent=g)
         p1 = GroupOfPropertiesKey(parent=g)
         v1 = ValueKey(parent=g, m_twin=p1, is_hidden_m=True,
             value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
         p2 = GroupOfPropertiesKey(parent=g)
         v2 = ValueKey(parent=g, m_twin=p2, is_hidden_m=False,
-            value_source=URIRef(SNUM.DataServiceStandard))
+            value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'))
         p3 = GroupOfPropertiesKey(parent=g)
         v3 = ValueKey(parent=g, m_twin=p3, is_hidden_m=False,
             value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))

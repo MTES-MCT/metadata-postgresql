@@ -50,7 +50,7 @@ IGN Admin Express. Départements 2021-01.
         "@value": "ADMIN EXPRESS - Départements de métropole"
       }
     ],
-    "http://snum.scenari-community.org/Metadata/Vocabulaire/#isExternal": [
+    "http://registre.data.developpement-durable.gouv.fr/plume/isExternal": [
       {
         "@value": true
       }

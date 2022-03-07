@@ -11,7 +11,7 @@ import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, \
-    SNUM, LOCAL, RDF
+    PLUME, LOCAL, RDF
 from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -1622,7 +1622,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix dct: <http://purl.org/dc/terms/> .
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-            @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+            @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -1643,7 +1643,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
                 foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
                     dct:modified "2022-02-13T15:30:15"^^xsd:dateTime ] ;
-                snum:isExternal true ;
+                plume:isExternal true ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -1740,7 +1740,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict[c]['value'], '999,99')
 
         # --- boolean ---
-        c = widgetsdict.root.search_from_path(SNUM.isExternal)
+        c = widgetsdict.root.search_from_path(PLUME.isExternal)
         widgetsdict.update_value(c, None)
         self.assertIsNone(c.value)
         self.assertIsNone(widgetsdict[c]['value'])
@@ -1792,7 +1792,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix owl: <http://www.w3.org/2002/07/owl#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-            @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+            @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
             @prefix uuid: <urn:uuid:> .
             @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -1818,7 +1818,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     vcard:hasEmail <mailto:service@developpement-durable.gouv.fr> ] ;
                 foaf:isPrimaryTopicOf [ a dcat:CatalogRecord ;
                     dct:modified "2021-01-21T00:00:00"^^xsd:dateTime ] ;
-                snum:isExternal true ;
+                plume:isExternal true ;
                 uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr ;
                 uuid:ae75b755-97e7-4d56-be15-00c143b37af0 "12:00:01"^^xsd:time ;
                 uuid:7a656b67-45a6-4b85-948b-334caca7671f "999"^^xsd:integer ;
@@ -2303,7 +2303,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix owl: <http://www.w3.org/2002/07/owl#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-            @prefix snum: <http://snum.scenari-community.org/Metadata/Vocabulaire/#> .
+            @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
             @prefix uuid: <urn:uuid:> .
             @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .

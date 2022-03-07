@@ -45,7 +45,7 @@ class TemplateTestCase(unittest.TestCase):
             False,
             [
                 {
-                    "snum:isExternal": True,
+                    "plume:isExternal": True,
                     "dcat:keyword": "IGN"
                 }
             ], 20)
@@ -54,7 +54,7 @@ class TemplateTestCase(unittest.TestCase):
             False,
             [
                 {
-                    "snum:isExternal": True,
+                    "plume:isExternal": True,
                     "dcat:keyword": "IGN-F"
                 },
                 {
