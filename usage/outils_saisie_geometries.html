@@ -231,23 +231,23 @@
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#remarques-sur-la-visualisation">
-   Remarques sur la visualisation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#les-calculs-de-geometries-cote-serveur">
    Les calculs de géométries côté serveur
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#les-calculs-et-trace-manuels-cote-qgis">
-   Les calculs et tracé manuels côté QGIS
+  <a class="reference internal nav-link" href="#les-calculs-et-traces-manuels-cote-qgis">
+   Les calculs et tracés manuels côté QGIS
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#alimentation-du-formulaire">
    Alimentation du formulaire
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lecture-des-geometries-pour-la-visualisation">
+   Lecture des géométries pour la visualisation
   </a>
  </li>
 </ul>
@@ -274,16 +274,18 @@
   <section id="outils-d-aide-a-la-saisie-des-geometries">
 <h1>Outils d’aide à la saisie des géométries<a class="headerlink" href="#outils-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre">¶</a></h1>
 <p>Pour faciliter la saisie des métadonnées prenant pour valeur des géométries, le widget de saisie - <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> selon les cas - est accompagné d’un bouton annexe proposant des outils de calcul à partir des données et/ou de saisie manuelle dans le canevas principal de QGIS.</p>
-<p>Les modalités de création de ces boutons d’aide à la saisie des géométries sont décrites dans <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries"><span class="std std-doc">Création d’un nouveau widget</span></a>. La présente page précise l’effet des différentes fonctionnalités proposées, ainsi que quand et comment les mettre en oeuvre.</p>
+<p>Les modalités de création de ces boutons d’aide à la saisie des géométries sont décrites dans <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries"><span class="std std-doc">Création d’un nouveau widget</span></a>. La présente page précise l’effet des différentes fonctionnalités de saisie proposées, ainsi que quand et comment les mettre en oeuvre.</p>
+<p><a class="reference internal" href="#les-actions-possibles"><span class="std std-doc">Les actions possibles</span></a> • <a class="reference internal" href="#les-calculs-de-geometries-cote-serveur"><span class="std std-doc">Les calculs de géométries côté serveur</span></a> • <a class="reference internal" href="#les-calculs-et-traces-manuels-cote-qgis"><span class="std std-doc">Les calculs et tracés manuels côté QGIS</span></a> • <a class="reference internal" href="#alimentation-du-formulaire"><span class="std std-doc">Alimentation du formulaire</span></a> • <a class="reference internal" href="#lecture-des-geometries-pour-la-visualisation"><span class="std std-doc">Lecture des géométries pour la visualisation</span></a></p>
 <section id="les-actions-possibles">
 <h2>Les actions possibles<a class="headerlink" href="#les-actions-possibles" title="Lien permanent vers ce titre">¶</a></h2>
 <p>La nature des actions disponibles dépend de la propriété considérée.</p>
 <p>Une action doit :</p>
 <ul class="simple">
-<li><p>apparaître dans le menu du <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> si le terme qui la représente est l’une des valeurs listées par la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code> du dictionnaire interne du bouton ;</p></li>
+<li><p>apparaître dans le menu du <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> si le terme qui la représente est l’une des valeurs listées par la clé <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code> du dictionnaire interne du bouton.</p></li>
 <li><p>être active si ses conditions d’activation sont remplies (cf. ci-après).</p></li>
 </ul>
 <p><em>NB : Un même terme peut représenter plusieurs actions, qui seront réalisées par des méthodes différentes selon la situation.</em></p>
+<p>Le terme <code class="docutils literal notranslate"><span class="pre">'show'</span></code> est un cas particulier, la fonctionnalité de visualisation correspondante étant gérée directement par le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> et non par une action dans son menu associé. Sa mise en oeuvre est principalement traitée dans <a class="reference internal" href="creation_widgets.html#avec-fonctionnalite-de-visualisation"><span class="std std-doc">Création d’un nouveau widget</span></a>.</p>
 <section id="actions-sans-condition-d-activation">
 <h3>Actions sans condition d’activation<a class="headerlink" href="#actions-sans-condition-d-activation" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Dès lors qu’elles sont listées par <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code>, les actions suivantes n’auront jamais besoin d’être désactivées.</p>
@@ -297,31 +299,25 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><em>Visualisation</em></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">'show'</span></code></p></td>
-<td><p><img alt="show.svg" src="../_images/show.svg" /> <a class="reference download internal" download="" href="../_downloads/0ea2e955e23574f2f0d033dae5e2bfba/show.svg"><span class="xref download myst">show.svg</span></a></p></td>
-<td><p><em>Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.</em></p></td>
-<td><p>Montre la géométrie, sans que celle-ci ne soit nécessairement éditable. D’autant que de besoin, l’utilisateur pourra activer l’une des autres actions du menu pour créer une nouvelle géométrie si l’actuelle ne lui convient pas. Cf. aussi <a class="reference internal" href="#remarques-sur-la-visualisation"><span class="std std-doc">Remarques sur la visualisation</span></a>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>Tracé manuel : point</em></p></td>
+<tr class="row-even"><td><p><em>Tracé manuel : point</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'point'</span></code></p></td>
 <td><p><img alt="point.svg" src="../_images/point.svg" /> <a class="reference download internal" download="" href="../_downloads/3352b5531acf46ca2f5e7c11cd709a9f/point.svg"><span class="xref download myst">point.svg</span></a></p></td>
 <td><p><em>Saisie libre d’un point dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
-<tr class="row-even"><td><p><em>Tracé manuel : rectangle</em></p></td>
+<tr class="row-odd"><td><p><em>Tracé manuel : rectangle</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code></p></td>
 <td><p><img alt="rectangle.svg" src="../_images/rectangle.svg" /> <a class="reference download internal" download="" href="../_downloads/199b646e295db6e54b178fa3280b8694/rectangle.svg"><span class="xref download myst">rectangle.svg</span></a></p></td>
 <td><p><em>Saisie libre d’un rectangle dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>Tracé manuel : ligne</em></p></td>
+<tr class="row-even"><td><p><em>Tracé manuel : ligne</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'linestring'</span></code></p></td>
 <td><p><img alt="linestring.svg" src="../_images/linestring.svg" /> <a class="reference download internal" download="" href="../_downloads/e0b8fa383bd172ae513dbb86618310bb/linestring.svg"><span class="xref download myst">linestring.svg</span></a></p></td>
 <td><p><em>Saisie libre d’une ligne dans le canevas.</em></p></td>
 <td><p>Permet à l’utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées.</p></td>
 </tr>
-<tr class="row-even"><td><p><em>Tracé manuel : polygone</em></p></td>
+<tr class="row-odd"><td><p><em>Tracé manuel : polygone</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'polygon'</span></code></p></td>
 <td><p><img alt="polygon.svg" src="../_images/polygon.svg" /> <a class="reference download internal" download="" href="../_downloads/3989f265550062bd45b99407e4fc5820/polygon.svg"><span class="xref download myst">polygon.svg</span></a></p></td>
 <td><p><em>Saisie libre d’un polygone dans le canevas.</em></p></td>
@@ -376,6 +372,7 @@
 <section id="actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis">
 <h3>Actions à activer uniquement pour les couches chargées dans QGIS<a class="headerlink" href="#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis" title="Lien permanent vers ce titre">¶</a></h3>
 <p>… et si la couche sélectionnée est géométrique.</p>
+<p><em>NB : À date, Plume charge silencieusement les couches sélectionnées dans l’explorateur dont il lit les métadonées, les actions qui suivent pourront donc être activées pour toutes les couches géométriques.</em></p>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Libellé de l’action</p></th>
@@ -399,24 +396,6 @@
 </table>
 <p><em>Il n’est pas gênant de proposer à la fois le calcul dans QGIS et sous PostgreSQL. On peut supposer PostGIS plus rapide sur les très grosses tables, et QGIS a notamment l’intérêt de permettre de reprojeter une couche à la volée, si l’utilisateur ne veut pas que son rectangle d’emprise soit calculé dans le référentiel déclaré à PostGIS pour le champ de géométrie.</em></p>
 </section>
-</section>
-<section id="remarques-sur-la-visualisation">
-<h2>Remarques sur la visualisation<a class="headerlink" href="#remarques-sur-la-visualisation" title="Lien permanent vers ce titre">¶</a></h2>
-<p>QGIS sait construire des géométries à partir de représentations WKT, mais il ne sait pas lire les WKT incluant un référentiel qu’on trouvera en valeur des widgets. Celui-ci doit être spécifié à part.</p>
-<p>Pour extraire la géométrie seule (toujours en WKT) d’une part, et le référentiel seul d’autre part, on exécutera <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code> :</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">split_rdf_wkt</span>
-
-<span class="n">res</span> <span class="o">=</span> <span class="n">split_rdf_wkt</span><span class="p">(</span><span class="n">rdf_wkt</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">r</span><span class="p">:</span>
-    <span class="n">geom_wkt</span><span class="p">,</span> <span class="n">srid</span> <span class="o">=</span> <span class="n">res</span>
-    <span class="o">...</span>
-
-</pre></div>
-</div>
-<p><em>Où <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> est la valeur saisie dans le widget principal de la clé.</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">wkt_with_srid</span></code> peut renvoyer <code class="docutils literal notranslate"><span class="pre">None</span></code> si <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> n’était pas exploitable, ce qui peut arriver en cas de modification manuelle. À défaut de référentiel explicitement déclaré dans <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code>, il sera considéré que la géométrie était implicitement en <code class="docutils literal notranslate"><span class="pre">'OGC:WGS84'</span></code>.</p>
-<p>Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n’assure a priori qu’elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d’erreurs.</p>
 </section>
 <section id="les-calculs-de-geometries-cote-serveur">
 <h2>Les calculs de géométries côté serveur<a class="headerlink" href="#les-calculs-de-geometries-cote-serveur" title="Lien permanent vers ce titre">¶</a></h2>
@@ -458,8 +437,8 @@
 <p>Les valeurs résultantes seront de cette forme : <code class="docutils literal notranslate"><span class="pre">'&lt;http://www.opengis.net/def/crs/EPSG/0/2154&gt;</span> <span class="pre">POINT(651796.3281</span> <span class="pre">6862298.5858)'</span></code>.</p>
 <p>On notera que <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> pourrait être nul si <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code> l’était ou si le référentiel n’a pas été reconnu.</p>
 </section>
-<section id="les-calculs-et-trace-manuels-cote-qgis">
-<h2>Les calculs et tracé manuels côté QGIS<a class="headerlink" href="#les-calculs-et-trace-manuels-cote-qgis" title="Lien permanent vers ce titre">¶</a></h2>
+<section id="les-calculs-et-traces-manuels-cote-qgis">
+<h2>Les calculs et tracés manuels côté QGIS<a class="headerlink" href="#les-calculs-et-traces-manuels-cote-qgis" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Après avoir obtenu une géométrie via les méthodes de QGIS, il faudra là encore la convertir dans le format attendu pour le type RDF <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>.</p>
 <p>Ceci suppose de commencer par l’encoder en WKT, avec les méthodes <code class="docutils literal notranslate"><span class="pre">QgsRectangle.asWktPolygon</span></code>, <code class="docutils literal notranslate"><span class="pre">QgsPointXY.asWkt</span></code>, etc. de QGIS.</p>
 <p>Comme pour les géométries issues de PostGIS, on applique ensuite <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid</span></code>.</p>
@@ -475,6 +454,39 @@
 <section id="alimentation-du-formulaire">
 <h2>Alimentation du formulaire<a class="headerlink" href="#alimentation-du-formulaire" title="Lien permanent vers ce titre">¶</a></h2>
 <p>Contrairement à tous les autres boutons du formulaire, le bouton d’aide à la saisie des géométries n’affecte pas le dictionnaire. La géométrie obtenue sera simplement saisie dans le <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code>, elle sera ensuite gérée comme n’importe quelle autre valeur.</p>
+</section>
+<section id="lecture-des-geometries-pour-la-visualisation">
+<h2>Lecture des géométries pour la visualisation<a class="headerlink" href="#lecture-des-geometries-pour-la-visualisation" title="Lien permanent vers ce titre">¶</a></h2>
+<p>QGIS sait construire des géométries à partir de représentations WKT, mais il ne sait pas lire les WKT incluant un référentiel qu’on trouvera en valeur des widgets. Celui-ci doit être spécifié à part.</p>
+<p>Pour extraire la géométrie seule (toujours en WKT) d’une part, et le référentiel seul d’autre part, on exécutera <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">split_rdf_wkt</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">split_rdf_wkt</span><span class="p">(</span><span class="n">rdf_wkt</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">r</span><span class="p">:</span>
+    <span class="n">geom_wkt</span><span class="p">,</span> <span class="n">srid</span> <span class="o">=</span> <span class="n">res</span>
+    <span class="o">...</span>
+
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> est la valeur saisie dans le widget principal de la clé.</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">wkt_with_srid</span></code> peut renvoyer <code class="docutils literal notranslate"><span class="pre">None</span></code> si <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> n’était pas exploitable, ce qui peut arriver en cas de modification manuelle. À défaut de référentiel explicitement déclaré dans <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code>, il sera considéré que la géométrie était implicitement en <code class="docutils literal notranslate"><span class="pre">'OGC:WGS84'</span></code>.</p>
+<p>Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n’assure a priori qu’elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d’erreurs.</p>
+<p>Le module <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils</span></code> propose également une fonction <code class="docutils literal notranslate"><span class="pre">geomtype_from_wkt</span></code> qui prend en argument une représentation WKT et renvoie le type de géométrie correspondant.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">geomtype_from_wkt</span>
+
+<span class="n">geomtype</span> <span class="o">=</span> <span class="n">geomtype_from_wkt</span><span class="p">(</span><span class="n">wkt</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">wkt</span></code> est soit la valeur saisie dans le widget principal de la clé (ci-avant <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code>), soit la représentation WKT sans référentiel résultant de l’application de <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code> (ci-avant <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code>).</em></p>
+<p>Cette fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si le type de géométrie n’est pas pris en charge par Plume. Sinon, elle renvoie :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'polygon'</span></code> pour un polygone simple (pas de multi-polygones),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'point'</span></code> pour un point simple (pas de multi-points),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'linestring'</span></code> pour une ligne simple (pas de multi-lignes).</p></li>
+</ul>
 </section>
 </section>
 

@@ -844,27 +844,39 @@ widgetsdict[widgetkey]['geo actions'].append(geo_action)
 
 Les actions à faire apparaître dans le menu dépendent des valeurs listées par la clé `'geo tools'`. Elles sont détaillées par [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md).
 
-### Icônes
+Lorsque la liste de la clé `'geo tools'` vaut exactement `['show']`, **on ne créera pas de `QMenu`**, car l'action de visualisation est directement portée par le bouton, comme expliqué dans le paragraphe suivant.
 
-L'icône ![geo_button.svg](../../../plume/icons/buttons/geo_button.svg) à faire apparaître sur le bouton d'aide à la saisie des géométries est fournie par le fichier [geo_button.svg](../../../plume/icons/buttons/geo_button.svg). Sa couleur est fixe.
+### Effet du bouton et icônes
 
-Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](../../../plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md) pour les noms des fichiers.
+#### Avec fonctionnalité de visualisation
 
-
-### Cas particulier de la visualisation seule
-
-Lorsque la clé `'geo tools'` vaut exactement `['show']`, c'est-à-dire que la seule fonctionnalité disponible est la visualisation dans le canevas de la géométrie enregistrée dans les métadonnées, il pourrait être envisagé de simplifier le mécanisme :
-- utiliser l'image d'oeil ![show.svg](../../../plume/icons/buttons/geo/show.svg) comme icône pour le bouton ;
-- ne pas créer de menu et simplement lancer la visualisation quand l'utilisateur clique sur le bouton.
+Lorsque `'show'` est inclus dans la liste de la clé `'geo tools'`, un clic gauche sur le bouton d'aide à la saisie des géométries doit permettre de visualiser dans le canevas de QGIS la géométrie enregistrée dans les métadonnées.
 
 ```python
 
-if widgetsdict[widgetkey]['geo tools'] == ['show']:
+if 'show' in widgetsdict[widgetkey]['geo tools']:
     ...
 
 ```
 
-### Texte d'aide
+Un second clic gauche sur le bouton efface la forme du canevas.
+
+L'icône affichée sur le bouton dépend de l'état de visibilité de la géométrie.
+
+| Etat | Icône | Texte d'aide | Effet d'un clic gauche sur le bouton |
+| --- | --- | --- | --- |
+| Géométrie non visible dans le canevas | ![show.svg](../../../plume/icons/buttons/geo/show.svg) - fichier [/geo/show.svg](../../../plume/icons/buttons/geo/show.svg) | *Afficher la géométrie dans le canevas* | Affiche dans le canevas la géométrie renseignée dans le widget de saisie |
+| Géométrie visible dans le canevas | ![hide.svg](../../../plume/icons/buttons/geo/show.svg) - fichier [/geo/hide.svg](../../../plume/icons/buttons/geo/hide.svg) | *Effacer la géométrie du canevas* | Efface la géométrie du canevas |
+
+Cliquer sur le bouton ne devrait avoir aucun effet s'il n'y a pas de valeur dans le widget de saisie, ou s'il ne s'agit pas d'une représentation WKT valide. Les modalités d'interprétation des WKT stockés dans le widgets sont décrites dans la page [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md#Lecture-des-géométries-pour-la-visualisation).
+
+Si le référentiel utilisé pour la géométrie est différent du référentiel courant du canevas, il sera nécessaire de re-projeter la géométrie dans le référentiel du canevas avant de l'afficher.
+
+Il pourrait par ailleurs être intéressant d'ajuster automatiquement l'emprise et l'échelle du canevas en fonction de la géométrie.
+
+#### Sans fonctionnalité de visualisation
+
+Lorsque `'show'` n'est pas inclus dans la liste de la clé `'geo tools'`, cliquer sur le bouton n'a aucun effet, seul son menu associé permet d'interagir avec les géométries. Dans ce cas, l'icône à faire apparaître sur le bouton d'aide à la saisie des géométries sera plutôt ![geo_button.svg](../../../plume/icons/buttons/geo_button.svg) (fichier [geo_button.svg](../../../plume/icons/buttons/geo_button.svg)).
 
 On pourra afficher en infobulle sur le bouton le texte suivant :
 
@@ -873,6 +885,10 @@ On pourra afficher en infobulle sur le bouton le texte suivant :
 'Aide à la saisie des géométries'
 
 ```
+
+#### Icônes des actions
+
+Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](../../../plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md) pour les noms des fichiers.
 
 ### Placement dans la grille
 
