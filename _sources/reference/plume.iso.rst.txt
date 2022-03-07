@@ -1,11 +1,8 @@
 Package plume.iso
 =================
 
-Modules
--------
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    plume.iso.csw
    plume.iso.map

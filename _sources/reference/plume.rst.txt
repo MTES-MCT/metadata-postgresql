@@ -1,9 +1,6 @@
 Plugin QGIS Plume
 =================
 
-Packages
---------
-
 .. toctree::
    :maxdepth: 4
 
