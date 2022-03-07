@@ -1,11 +1,8 @@
 Package admin
 =============
 
-Modules
--------
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    admin.plume_pg
    admin.zip_plume
