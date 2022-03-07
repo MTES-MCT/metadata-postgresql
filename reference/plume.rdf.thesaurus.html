@@ -469,9 +469,10 @@ mais n’existe même pas dans <a class="reference internal" href="#plume.rdf.th
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">concept_iri</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">registre</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">developpement</span><span class="o">-</span><span class="n">durable</span><span class="o">.</span><span class="n">gouv</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">plume</span><span class="o">/</span><span class="n">CrpaAccessLimitations</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)),</span> 
-<span class="gp">... </span>    <span class="s1">&#39;Communicable au seul intéressé - atteinte à la&#39;</span>         <span class="o">...</span>         <span class="s1">&#39; protection de la vie privée (CRPA, L311-6 1°)&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thesaurus</span> <span class="o">=</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">concept_iri</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">thesaurus</span><span class="p">,</span> 
+<span class="gp">... </span>    <span class="s1">&#39;Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)&#39;</span>
 <span class="gp">... </span>    <span class="p">)</span>
 <span class="go">rdflib.term.URIRef(&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp&#39;)</span>
 </pre></div>
@@ -514,8 +515,9 @@ mais n’existe même pas dans <a class="reference internal" href="#plume.rdf.th
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">concept_link</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)),</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thesaurus</span> <span class="o">=</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">concept_link</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">thesaurus</span><span class="p">,</span> 
 <span class="gp">... </span>    <span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp&#39;</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="p">)</span>
 <span class="go">rdflib.term.URIRef(&#39;https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056&#39;)</span>
@@ -582,8 +584,9 @@ mais n’existe même pas dans <a class="reference internal" href="#plume.rdf.th
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">concept_str</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)),</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thesaurus</span> <span class="o">=</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">concept_str</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">thesaurus</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp&#39;</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="p">)</span>
 <span class="go">&#39;Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)&#39;</span>
@@ -624,7 +627,8 @@ mais n’existe même pas dans <a class="reference internal" href="#plume.rdf.th
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">get_label</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">registre</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">developpement</span><span class="o">-</span><span class="n">durable</span><span class="o">.</span><span class="n">gouv</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">plume</span><span class="o">/</span><span class="n">CrpaAccessLimitations</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thesaurus</span> <span class="o">=</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">thesaurus</span><span class="p">)</span>
 <span class="go">&quot;Restrictions d&#39;accès en application du Code des relations entre le public et l&#39;administration&quot;</span>
 </pre></div>
 </div>
@@ -664,7 +668,8 @@ mais n’existe même pas dans <a class="reference internal" href="#plume.rdf.th
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">get_values</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">registre</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">developpement</span><span class="o">-</span><span class="n">durable</span><span class="o">.</span><span class="n">gouv</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">plume</span><span class="o">/</span><span class="n">CrpaAuthorizedLicense</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thesaurus</span> <span class="o">=</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s1">&#39;http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fr&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Thesaurus</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">thesaurus</span><span class="p">)</span>
 <span class="go">[&#39;&#39;, &#39;Licence Ouverte version 2.0&#39;, &#39;ODC Open Database License (ODbL) version 1.0&#39;]</span>
 </pre></div>
 </div>
@@ -674,7 +679,7 @@ mais n’existe même pas dans <a class="reference internal" href="#plume.rdf.th
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.thesaurus.vocabulary">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.thesaurus.</span></span><span class="sig-name descname"><span class="pre">vocabulary</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N9132bdfac3294e6d9b498f431415c50d</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.thesaurus.vocabulary" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.thesaurus.</span></span><span class="sig-name descname"><span class="pre">vocabulary</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=Ndef507f85c644daaa621c5ae84b9faac</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.thesaurus.vocabulary" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Graphe contenant le vocabulaire de tous les thésaurus.</p>
 </dd></dl>
 
