@@ -66,7 +66,7 @@ D'une manière générale, toute commande renvoyant un booléen peut être utili
 
 [
     {
-        "snum:isExternal": true,
+        "plume:isExternal": true,
         "dcat:keyword": "IGN"
     },
     {
@@ -81,7 +81,7 @@ Les ensembles sont combinés entre eux avec l'opérateur `OR`. Au sein d'un ense
 Les clés des conditions sont les chemins des catégories de métadonnées (champ `path` de la table `meta_categorie` évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.
 
 Dans l'exemple ci-avant, une table validera les conditions du modèle si :
-- il s'agit d'une donnée externe (valeur `True` pour la catégorie `snum:isExternal`) **ET** l'un de ses mots-clés (`dcat:keyword`) est `'IGN'` ;
+- il s'agit d'une donnée externe (valeur `True` pour la catégorie `plume:isExternal`) **ET** l'un de ses mots-clés (`dcat:keyword`) est `'IGN'` ;
 - **OU** le nom du diffuseur (`dct:publisher / foaf:name`) est `'Institut national de l'information géographique et forestière (IGN-F)'`.
 
 La comparaison des valeurs ne tient pas compte de la casse.

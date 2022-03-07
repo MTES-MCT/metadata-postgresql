@@ -815,8 +815,8 @@
 </pre></div>
 </div>
 <p><em><code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table, c’est-à-dire le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> courant au moment de l’ouverture de la fenêtre d’import.</em></p>
-<p>En pratique cette propriété <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph.linked_record</span></code> interroge le graphe à la recherche des valeurs éventuelles de <code class="docutils literal notranslate"><span class="pre">snum:linkedRecord</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code> et
-<code class="docutils literal notranslate"><span class="pre">snum:linkedRecord</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code>. Ce sont des métadonnées comme les autres, qui peuvent tout à fait être éditées via le formulaire de Plume.</p>
+<p>En pratique cette propriété <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph.linked_record</span></code> interroge le graphe à la recherche des valeurs éventuelles de <code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code> et
+<code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code>. Ce sont des métadonnées comme les autres, qui peuvent tout à fait être éditées via le formulaire de Plume.</p>
 <p>Une fois son paramétrage réalisé, l’utilise clique sur un bouton <code class="docutils literal notranslate"><span class="pre">Import</span></code>, ce qui lance une procédure en cinq temps :</p>
 <ol class="arabic simple">
 <li><p>Création de la requête, avec <code class="docutils literal notranslate"><span class="pre">plume.iso.csw.getrecordbyid_request</span></code>.</p></li>

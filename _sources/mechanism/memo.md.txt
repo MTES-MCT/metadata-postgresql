@@ -112,13 +112,13 @@ Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui dé
 
 Sauf à ce que l'option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l'associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier [`shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl).
 
-Si elle n'est pas nativement prévue par le language [SHACL](https://www.w3.org/TR/shacl/), on utilisera l'espace de nommage dont le préfixe est `snum`. Par convention, le nom de l'option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu'il s'agit d'une propriété et non d'une classe.
+Si elle n'est pas nativement prévue par le language [SHACL](https://www.w3.org/TR/shacl/), on utilisera l'espace de nommage `http://registre.data.developpement-durable.gouv.fr/plume/`, dont le préfixe est `plume`. Par convention, le nom de l'option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu'il s'agit d'une propriété et non d'une classe.
 
-Pour l'aide à la saisie des géométries, c'est ainsi le prédicat `snum:geoTool` qui a été utilisé :
+Pour l'aide à la saisie des géométries, c'est ainsi le prédicat `plume:geoTool` qui a été utilisé :
 
 ```turtle
 
-snum:LocationShape
+plume:LocationShape
     a sh:NodeShape ;
     sh:targetClass dct:Location ;
     sh:closed true ;
@@ -131,9 +131,9 @@ snum:LocationShape
         sh:datatype gsp:wktLiteral ;
         sh:maxCount 1 ;
         sh:order 4 ;
-        snum:longText true ;
-        snum:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.3281 6862298.5858)" ;
-        snum:geoTool "show",
+        plume:longText true ;
+        plume:placeholder "<http://www.opengis.net/def/crs/EPSG/0/2154> POINT(651796.3281 6862298.5858)" ;
+        plume:geoTool "show",
             "centroid",
             "point" ;
 	]  ;

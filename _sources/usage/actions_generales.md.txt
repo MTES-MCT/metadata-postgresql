@@ -391,8 +391,8 @@ url_csw, file_identifier = old_metagraph.linked_record
 
 *`old_metagraph` est l'ancien graphe de métadonnées de la table, c'est-à-dire le `metagraph` courant au moment de l'ouverture de la fenêtre d'import.*
 
-En pratique cette propriété `plume.rdf.metagraph.Metagraph.linked_record` interroge le graphe à la recherche des valeurs éventuelles de `snum:linkedRecord / dcat:endpointURL` et
-`snum:linkedRecord / dct:identifier`. Ce sont des métadonnées comme les autres, qui peuvent tout à fait être éditées via le formulaire de Plume.
+En pratique cette propriété `plume.rdf.metagraph.Metagraph.linked_record` interroge le graphe à la recherche des valeurs éventuelles de `plume:linkedRecord / dcat:endpointURL` et
+`plume:linkedRecord / dct:identifier`. Ce sont des métadonnées comme les autres, qui peuvent tout à fait être éditées via le formulaire de Plume.
 
 Une fois son paramétrage réalisé, l'utilise clique sur un bouton `Import`, ce qui lance une procédure en cinq temps :
 

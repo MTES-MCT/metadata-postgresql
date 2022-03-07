@@ -358,7 +358,7 @@
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
 <span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;snum:isExternal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;plume:isExternal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <span class="w">        </span><span class="nt">&quot;dcat:keyword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IGN&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p">},</span><span class="w"></span>
 <span class="w">    </span><span class="p">{</span><span class="w"></span>
@@ -371,7 +371,7 @@
 <p>Les clés des conditions sont les chemins des catégories de métadonnées (champ <code class="docutils literal notranslate"><span class="pre">path</span></code> de la table <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.</p>
 <p>Dans l’exemple ci-avant, une table validera les conditions du modèle si :</p>
 <ul class="simple">
-<li><p>il s’agit d’une donnée externe (valeur <code class="docutils literal notranslate"><span class="pre">True</span></code> pour la catégorie <code class="docutils literal notranslate"><span class="pre">snum:isExternal</span></code>) <strong>ET</strong> l’un de ses mots-clés (<code class="docutils literal notranslate"><span class="pre">dcat:keyword</span></code>) est <code class="docutils literal notranslate"><span class="pre">'IGN'</span></code> ;</p></li>
+<li><p>il s’agit d’une donnée externe (valeur <code class="docutils literal notranslate"><span class="pre">True</span></code> pour la catégorie <code class="docutils literal notranslate"><span class="pre">plume:isExternal</span></code>) <strong>ET</strong> l’un de ses mots-clés (<code class="docutils literal notranslate"><span class="pre">dcat:keyword</span></code>) est <code class="docutils literal notranslate"><span class="pre">'IGN'</span></code> ;</p></li>
 <li><p><strong>OU</strong> le nom du diffuseur (<code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code>) est <code class="docutils literal notranslate"><span class="pre">'Institut</span> <span class="pre">national</span> <span class="pre">de</span> <span class="pre">l'information</span> <span class="pre">géographique</span> <span class="pre">et</span> <span class="pre">forestière</span> <span class="pre">(IGN-F)'</span></code>.</p></li>
 </ul>
 <p>La comparaison des valeurs ne tient pas compte de la casse.</p>

@@ -374,9 +374,9 @@
 <section id="id3">
 <h3>Schéma des métadonnées communes<a class="headerlink" href="#id3" title="Lien permanent vers ce titre">¶</a></h3>
 <p>Sauf à ce que l’option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l’associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></a>.</p>
-<p>Si elle n’est pas nativement prévue par le language <a class="reference external" href="https://www.w3.org/TR/shacl/">SHACL</a>, on utilisera l’espace de nommage dont le préfixe est <code class="docutils literal notranslate"><span class="pre">snum</span></code>. Par convention, le nom de l’option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu’il s’agit d’une propriété et non d’une classe.</p>
-<p>Pour l’aide à la saisie des géométries, c’est ainsi le prédicat <code class="docutils literal notranslate"><span class="pre">snum:geoTool</span></code> qui a été utilisé :</p>
-<div class="highlight-turtle notranslate"><div class="highlight"><pre><span></span><span class="nn">snum</span><span class="p">:</span><span class="nt">LocationShape</span>
+<p>Si elle n’est pas nativement prévue par le language <a class="reference external" href="https://www.w3.org/TR/shacl/">SHACL</a>, on utilisera l’espace de nommage <code class="docutils literal notranslate"><span class="pre">http://registre.data.developpement-durable.gouv.fr/plume/</span></code>, dont le préfixe est <code class="docutils literal notranslate"><span class="pre">plume</span></code>. Par convention, le nom de l’option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu’il s’agit d’une propriété et non d’une classe.</p>
+<p>Pour l’aide à la saisie des géométries, c’est ainsi le prédicat <code class="docutils literal notranslate"><span class="pre">plume:geoTool</span></code> qui a été utilisé :</p>
+<div class="highlight-turtle notranslate"><div class="highlight"><pre><span></span><span class="nn">plume</span><span class="p">:</span><span class="nt">LocationShape</span>
     <span class="kt">a</span> <span class="nn">sh</span><span class="p">:</span><span class="nt">NodeShape</span> <span class="p">;</span>
     <span class="nn">sh</span><span class="p">:</span><span class="nt">targetClass</span> <span class="nn">dct</span><span class="p">:</span><span class="nt">Location</span> <span class="p">;</span>
     <span class="nn">sh</span><span class="p">:</span><span class="nt">closed</span> <span class="l">true</span> <span class="p">;</span>
@@ -389,9 +389,9 @@
         <span class="nn">sh</span><span class="p">:</span><span class="nt">datatype</span> <span class="nn">gsp</span><span class="p">:</span><span class="nt">wktLiteral</span> <span class="p">;</span>
         <span class="nn">sh</span><span class="p">:</span><span class="nt">maxCount</span> <span class="mi">1</span> <span class="p">;</span>
         <span class="nn">sh</span><span class="p">:</span><span class="nt">order</span> <span class="mi">4</span> <span class="p">;</span>
-        <span class="nn">snum</span><span class="p">:</span><span class="nt">longText</span> <span class="l">true</span> <span class="p">;</span>
-        <span class="nn">snum</span><span class="p">:</span><span class="nt">placeholder</span> <span class="s">&quot;&lt;http://www.opengis.net/def/crs/EPSG/0/2154&gt; POINT(651796.3281 6862298.5858)&quot;</span> <span class="p">;</span>
-        <span class="nn">snum</span><span class="p">:</span><span class="nt">geoTool</span> <span class="s">&quot;show&quot;</span><span class="p">,</span>
+        <span class="nn">plume</span><span class="p">:</span><span class="nt">longText</span> <span class="l">true</span> <span class="p">;</span>
+        <span class="nn">plume</span><span class="p">:</span><span class="nt">placeholder</span> <span class="s">&quot;&lt;http://www.opengis.net/def/crs/EPSG/0/2154&gt; POINT(651796.3281 6862298.5858)&quot;</span> <span class="p">;</span>
+        <span class="nn">plume</span><span class="p">:</span><span class="nt">geoTool</span> <span class="s">&quot;show&quot;</span><span class="p">,</span>
             <span class="s">&quot;centroid&quot;</span><span class="p">,</span>
             <span class="s">&quot;point&quot;</span> <span class="p">;</span>
 	<span class="p">]</span>  <span class="p">;</span>

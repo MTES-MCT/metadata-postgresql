@@ -5,12 +5,12 @@
 | `dct:title` | Libellé | Nom explicite du jeu de données. |  |
 | `owl:versionInfo` | Version | Numéro de version ou millésime du jeu de données. |  |
 | `dct:description` | Description | Description du jeu de données. |  |
-| `snum:isExternal` | Donnée externe | Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe. |  |
+| `plume:isExternal` | Donnée externe | Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe. |  |
 | `dcat:theme` | Thèmes | Classification thématique du jeu de données selon la nomenclature généraliste du portail opendata européen et/ou, s'il y a lieu, la nomemclature INSPIRE. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](https://inspire.ec.europa.eu/theme) |
 | `dct:subject` | Catégories thématiques | Classification thématique du jeu données selon la nomenclature du standard ISO 19115. | [Catégories thématiques ISO 19115 (INSPIRE)](https://inspire.ec.europa.eu/metadata-codelist/TopicCategory) |
 | `dcat:keyword` | Mots-clés libres | Mots ou très brèves expressions représentatives du jeu de données, à l'usage des moteurs de recherche. |  |
 | `dct:spatial` | Couverture géographique | Territoire·s décrit·s par le jeu de données. |  |
-| `dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://snum.scenari-community.org/Metadata/Vocabulaire/#InseeGeoIndex) |
+| `dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex) |
 | `dct:spatial / dct:identifier` | Code géographique | Code du département, code INSEE de la commune, etc. |  |
 | `dct:spatial / skos:prefLabel` | Libellé | Dénomination explicite du lieu. |  |
 | `dct:spatial / dcat:bbox` | Rectangle d'emprise | Rectangle d'emprise (BBox), au format textuel WKT. |  |
@@ -27,7 +27,7 @@
 | `dct:provenance / rdfs:label` | Texte | Informations sur l'origine des données : sources, méthodes de recueil ou de traitement... |  |
 | `adms:versionNotes` | Note de version | Différences entre la version courante des données et les versions antérieures. |  |
 | `dct:conformsTo` | Conforme à | Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0) |
-| `dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://snum.scenari-community.org/Metadata/Vocabulaire/#StandardsRegister) |
+| `dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister) |
 | `dct:conformsTo / dct:identifier` | Identifiant | Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. |  |
 | `dct:conformsTo / dct:title` | Libellé | Libellé explicite du standard. |  |
 | `dct:conformsTo / owl:versionInfo` | Version | Numéro ou code de la version du standard à laquelle se conforment les données. |  |
@@ -38,7 +38,7 @@
 | `dct:conformsTo / foaf:page` | Page internet | Chemin d'accès au standard ou URL d'une page contenant des informations sur le standard. |  |
 | `dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Plus petite distance significative dans le contexte du jeu de données, exprimée en mètres. |  |
 | `dcat:temporalResolution` | Résolution temporelle | Plus petit pas de temps significatif dans le contexte du jeu de données. |  |
-| `dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès aux données. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations) |
+| `dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès aux données. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) |
 | `dct:accessRights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
 | `dcat:contactPoint` | Point de contact | Entité à contacter pour obtenir des informations sur les données. |  |
 | `dcat:contactPoint / vcard:fn` | Nom | Nom du point de contact. |  |
@@ -125,8 +125,8 @@
 | `dcat:distribution / dcat:accessService` | Service | Service donnant accès aux données. |  |
 | `dcat:distribution / dcat:accessService / dct:title` | Libellé | Nom explicite du service de données. |  |
 | `dcat:distribution / dcat:accessService / dcat:endpointURL` | URL de base | URL de base du service de données, sans aucun paramètre. |  |
-| `dcat:distribution / dcat:accessService / dct:conformsTo` | Conforme à | Standard ou référentiel de coordonnées auquel se conforme le service. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0), [Standards de services de données](http://snum.scenari-community.org/Metadata/Vocabulaire/#DataServiceStandard) |
-| `dcat:distribution / dcat:accessService / dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://snum.scenari-community.org/Metadata/Vocabulaire/#StandardsRegister) |
+| `dcat:distribution / dcat:accessService / dct:conformsTo` | Conforme à | Standard ou référentiel de coordonnées auquel se conforme le service. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0), [Standards de services de données](http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard) |
+| `dcat:distribution / dcat:accessService / dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister) |
 | `dcat:distribution / dcat:accessService / dct:conformsTo / dct:identifier` | Identifiant | Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. |  |
 | `dcat:distribution / dcat:accessService / dct:conformsTo / dct:title` | Libellé | Libellé explicite du standard. |  |
 | `dcat:distribution / dcat:accessService / dct:conformsTo / owl:versionInfo` | Version | Numéro ou code de la version du standard à laquelle se conforment les données. |  |
@@ -139,9 +139,9 @@
 | `dcat:distribution / dcat:accessService / dct:description` | Description | Description libre du service. |  |
 | `dcat:distribution / dcat:accessService / dcat:keyword` | Mots-clés libres | Mots ou très brèves expressions représentatives du service. |  |
 | `dcat:distribution / dcat:accessService / dct:type` | Type de service de données | Type de service de données. | [Types de services de données (UE)](http://publications.europa.eu/resource/authority/data-service-type) |
-| `dcat:distribution / dcat:accessService / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès au service. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations) |
+| `dcat:distribution / dcat:accessService / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès au service. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) |
 | `dcat:distribution / dcat:accessService / dct:accessRights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
-| `dcat:distribution / dcat:accessService / dct:license` | Licence | Licence de mise à diposition des données via le service, ou conditions d'utilisation du service. | [Licences admises pour les informations publiques des administrations françaises](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
+| `dcat:distribution / dcat:accessService / dct:license` | Licence | Licence de mise à diposition des données via le service, ou conditions d'utilisation du service. | [Licences admises pour les informations publiques des administrations françaises](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
 | `dcat:distribution / dcat:accessService / dct:license / dct:type` | Type | Caractéristiques de la licence. | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
 | `dcat:distribution / dcat:accessService / dct:license / rdfs:label` | Termes | Termes de la licence. |  |
 | `dcat:distribution / dcat:accessService / dcat:contactPoint` | Point de contact | Entité à contacter pour obtenir des informations sur le service. |  |
@@ -171,7 +171,7 @@
 | `dcat:distribution / dcat:accessService / dct:issued` | Date d'ouverture | Date d'ouverture du service. |  |
 | `dcat:distribution / dcat:accessService / dct:language` | Langues | Langue·s prises en charge par le service. | [Langues (UE)](http://publications.europa.eu/resource/authority/language) |
 | `dcat:distribution / dcat:accessService / dct:spatial` | Couverture géographique | Territoire couvert par le service. |  |
-| `dcat:distribution / dcat:accessService / dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://snum.scenari-community.org/Metadata/Vocabulaire/#InseeGeoIndex) |
+| `dcat:distribution / dcat:accessService / dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex) |
 | `dcat:distribution / dcat:accessService / dct:spatial / dct:identifier` | Code géographique | Code du département, code INSEE de la commune, etc. |  |
 | `dcat:distribution / dcat:accessService / dct:spatial / skos:prefLabel` | Libellé | Dénomination explicite du lieu. |  |
 | `dcat:distribution / dcat:accessService / dct:spatial / dcat:bbox` | Rectangle d'emprise | Rectangle d'emprise (BBox), au format textuel WKT. |  |
@@ -185,7 +185,7 @@
 | `dcat:distribution / adms:representationTechnique` | Mode de représentation géographique | Type de représentation technique de l'information géographique présentée par la distribution, le cas échéant. | [Type de représentation géographique (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType) |
 | `dcat:distribution / foaf:page` | Documentation | Documentation ou page internet contenant des informations relative à la distribution. |  |
 | `dcat:distribution / dct:conformsTo` | Conforme à | Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données de la distribution. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0) |
-| `dcat:distribution / dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://snum.scenari-community.org/Metadata/Vocabulaire/#StandardsRegister) |
+| `dcat:distribution / dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister) |
 | `dcat:distribution / dct:conformsTo / dct:identifier` | Identifiant | Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. |  |
 | `dcat:distribution / dct:conformsTo / dct:title` | Libellé | Libellé explicite du standard. |  |
 | `dcat:distribution / dct:conformsTo / owl:versionInfo` | Version | Numéro ou code de la version du standard à laquelle se conforment les données. |  |
@@ -201,22 +201,22 @@
 | `dcat:distribution / dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Résolution des données de la distribution, exprimée en mètres. |  |
 | `dcat:distribution / dct:rights` | Propriété intellectuelle | Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données. |  |
 | `dcat:distribution / dct:rights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
-| `dcat:distribution / dct:license` | Licence | Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution. | [Licences admises pour les informations publiques des administrations françaises](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
+| `dcat:distribution / dct:license` | Licence | Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution. | [Licences admises pour les informations publiques des administrations françaises](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
 | `dcat:distribution / dct:license / dct:type` | Type | Caractéristiques de la licence. | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
 | `dcat:distribution / dct:license / rdfs:label` | Termes | Termes de la licence. |  |
-| `dcat:distribution / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès à la distribution. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://snum.scenari-community.org/Metadata/Vocabulaire/#CrpaAccessLimitations) |
+| `dcat:distribution / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès à la distribution. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) |
 | `dcat:distribution / dct:accessRights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
 | `dcat:landingPage` | Page internet | URL de la fiche de métadonnées sur internet. |  |
 | `foaf:page` | Documentation | URL d'accès à une documentation rédigée décrivant la donnée. |  |
 | `dct:isReferencedBy` | Cité par | URL d'une publication qui utilise ou évoque les données. |  |
 | `dct:relation` | Ressource liée | URL d'accès à une ressource en rapport avec les données. |  |
 | `dct:language` | Langue des données | Langue·s des données. | [Langues (UE)](http://publications.europa.eu/resource/authority/language) |
-| `snum:relevanceScore` | Score | Niveau de pertinence de la donnée. Plus le score est élevé plus la donnée sera mise en avant dans les résultats de recherche. |  |
+| `plume:relevanceScore` | Score | Niveau de pertinence de la donnée. Plus le score est élevé plus la donnée sera mise en avant dans les résultats de recherche. |  |
 | `dct:type` | Type de jeu de données | Type de jeu de données. | [Types de jeux de données (UE)](http://publications.europa.eu/resource/authority/dataset-type) |
 | `dct:identifier` | Identifiant interne | Identifiant du jeu de données, attribué automatiquement par Plume. |  |
-| `snum:linkedRecord` | Fiche distante | Configuration d'import des métadonnées depuis une fiche de catalogue INSPIRE. |  |
-| `snum:linkedRecord / dcat:endpointURL` | Service CSW | URL de base du service CSW, sans aucun paramètre. |  |
-| `snum:linkedRecord / dct:identifier` | Identifiant de la fiche | Identifiant de la fiche de métadonnées (et non de la ressource). |  |
+| `plume:linkedRecord` | Fiche distante | Configuration d'import des métadonnées depuis une fiche de catalogue INSPIRE. |  |
+| `plume:linkedRecord / dcat:endpointURL` | Service CSW | URL de base du service CSW, sans aucun paramètre. |  |
+| `plume:linkedRecord / dct:identifier` | Identifiant de la fiche | Identifiant de la fiche de métadonnées (et non de la ressource). |  |
 | `foaf:isPrimaryTopicOf` | Informations sur les métadonnées | Métadonnées des métadonnées. |  |
 | `foaf:isPrimaryTopicOf / dct:modified` | Date de modification des métadonnées | Date et heure de la dernière modification des métadonnées. Cette propriété est renseignée automatiquement par Plume lors de la sauvegarde de la fiche de métadonnées. |  |
 
