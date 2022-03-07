@@ -866,9 +866,9 @@ L'icône affichée sur le bouton dépend de l'état de visibilité de la géomé
 | Etat | Icône | Texte d'aide | Effet d'un clic gauche sur le bouton |
 | --- | --- | --- | --- |
 | Géométrie non visible dans le canevas | ![show.svg](../../../plume/icons/buttons/geo/show.svg) - fichier [/geo/show.svg](../../../plume/icons/buttons/geo/show.svg) | *Afficher la géométrie dans le canevas* | Affiche dans le canevas la géométrie renseignée dans le widget de saisie |
-| Géométrie visible dans le canevas | ![hide.svg](../../../plume/icons/buttons/geo/show.svg) - fichier [/geo/hide.svg](../../../plume/icons/buttons/geo/hide.svg) | *Effacer la géométrie du canevas* | Efface la géométrie du canevas |
+| Géométrie visible dans le canevas | ![hide.svg](../../../plume/icons/buttons/geo/hide.svg) - fichier [/geo/hide.svg](../../../plume/icons/buttons/geo/hide.svg) | *Effacer la géométrie du canevas* | Efface la géométrie du canevas |
 
-Cliquer sur le bouton ne devrait avoir aucun effet s'il n'y a pas de valeur dans le widget de saisie, ou s'il ne s'agit pas d'une représentation WKT valide. Les modalités d'interprétation des WKT stockés dans le widgets sont décrites dans la page [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md#Lecture-des-géométries-pour-la-visualisation).
+Cliquer sur le bouton ne devrait avoir aucun effet s'il n'y a pas de valeur dans le widget de saisie, ou s'il ne s'agit pas d'une représentation WKT valide. Les modalités d'interprétation des WKT stockés dans le widgets sont décrites dans la page [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md#lecture-des-géométries-pour-la-visualisation).
 
 Si le référentiel utilisé pour la géométrie est différent du référentiel courant du canevas, il sera nécessaire de re-projeter la géométrie dans le référentiel du canevas avant de l'afficher.
 
