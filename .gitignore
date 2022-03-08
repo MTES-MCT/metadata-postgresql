@@ -2,6 +2,7 @@ __save__/
 __pycache__/
 __archives__/
 __log__/
+admin/local
 docs/build
 TO_DO.txt
 *.zip
