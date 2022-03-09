@@ -22,8 +22,9 @@ https://github.com/benoitdavidfr/registre
 
 from urllib.parse import urlencode, urljoin
 from urllib.request import urlopen, HTTPBasicAuthHandler, \
-    build_opener, install_opener, Request
-from json import load
+    build_opener, install_opener, Request, HTTPPasswordMgrWithDefaultRealm
+from urllib.error import HTTPError
+from json import load, loads
 
 from plume.rdf.utils import abspath, pick_translation
 from plume.rdf.rdflib import Graph, URIRef
@@ -32,6 +33,179 @@ from plume.rdf.properties import shape
 from plume.rdf.namespaces import PLUME, SKOS, DCT, SH, \
     RDF, RDFS, PlumeNamespaceManager
 
+
+class RegisterApi:
+    """Requêteur sur le registre de Plume.
+    
+    Attributes
+    ----------
+    api : str
+        URL de base de l'API du registre.
+    request : urllib.Request
+        Dernière requête envoyée à l'API.
+    raw : bytes
+        Résultat brut de la dernière requête envoyée à
+        l'API.
+    response : dict
+        Dans le cas d'une requête de consultation,
+        désérialisation python du résultat de la requête.
+    errcode : int
+        Si la dernière requête a produit une erreur, code
+        de l'erreur, sinon ``None``.
+    reason : str
+        Si la dernière requête a produit une erreur,
+        la description textuelle de l'erreur, sinon ``None``.
+        
+    
+    """
+    def __init__(self):
+        self.collection = DefinitionsCollection()
+        credpath = abspath('').parents[0] / 'admin/local/credentials.json'
+        with open(credpath, encoding='utf-8') as src:
+            credentials = load(src)
+        self.api = credentials['api']
+        password_mgr = HTTPPasswordMgrWithDefaultRealm()
+        password_mgr.add_password(
+            realm=None,
+            uri=self.api,
+            user=credentials['user'],
+            passwd=credentials['password']
+            )
+        auth_handler = HTTPBasicAuthHandler(password_mgr)
+        opener = build_opener(auth_handler)
+        install_opener(opener)
+        self.request = None
+        self.raw = None
+        self.errcode = None
+        self.reason = None
+        self.response = None
+    
+    def post(self, objid):
+        """Génère et envoie une requête POST (consultation du registre).
+        
+        Cette méthode met à jour les attributs suivants:
+        
+        * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
+          le code de l'erreur renvoyée par le serveur le cas échéant,
+          ``None`` sinon.
+        * :py:attr:`raw` avec le résultat brut de la requête, ``None``
+          en cas d'erreur.
+        * :py:attr:`response` avec la désérialisation du résultat
+          de la requête, qui devrait être un dictionnaire dont les
+          clés sont ``id``, ``parent``, ``type``, ``title``,
+          ``script``, ``jsonval`` et ``htmlval``, ou ``None``
+          en cas d'erreur.
+        
+        Parameters
+        ----------
+        objid : str
+            Identifiant de l'objet pour lequel on souhaite
+            consulter le registre, sans son espace de nommage. À noter
+            que l'identifiant d'un concept inclut celui de son
+            ensemble (par exemple ``CrpaAccessLimitations/L311-2-dp``).
+        
+        Raises
+        ------
+        ValueError
+            Lorsque le résultat de la requête n'est pas un JSON valide.
+        
+        """
+        self.raw = None
+        self.response = None
+        self.errcode = None
+        self.reason = None
+        url = urljoin(self.api, objid)
+        self.request = Request(url, method='POST')
+        try:
+            with urlopen(self.request) as src:
+                self.raw = src.read()
+        except HTTPError as err:
+            self.errcode = err.code
+            self.reason = err.reason
+            return
+        try:
+            self.response = loads(self.raw)
+        except:
+            raise ValueError('Echec de la désérialisation du JSON.')
+    
+    def put(self, objid, data=None):
+        """Génère et envoie une requête PUT (mise à jour du registre).
+        
+        Cette méthode met à jour les attributs suivants:
+        
+        * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
+          le code de l'erreur renvoyée par le serveur le cas échéant,
+          ``None`` sinon.
+        * :py:attr:`raw` avec la réponse brute du serveur.
+        * :py:attr:`response` (vaut toujours ``None``).
+        
+        Parameters
+        ----------
+        objid : str
+            Identifiant de l'objet à ajouter ou mettre à jour
+            dans le registre, sans son espace de nommage. À noter
+            que l'identifiant d'un concept inclut celui de son
+            ensemble (par exemple ``CrpaAccessLimitations/L311-2-dp``).
+        data : bytes, optionnal
+            Les paramètres de la requête. Si non fourni, la méthode
+            récupère les informations nécessaires dans la collection
+            d'objets locaux, dans laquelle `objid` doit alors
+            être impérativement être référencé.
+        
+        """
+        self.raw = None
+        self.response = None
+        self.errcode = None
+        self.reason = None
+        url = urljoin(self.api, objid)
+        if not data:
+            data = self.collection[objid].parameters()
+        self.request = Request(url, data=data, method='PUT')
+        try:
+            with urlopen(self.request) as src:
+                self.raw = src.read()
+        except HTTPError as err:
+            self.errcode = err.code
+            self.reason = err.reason
+
+    def delete(self, objid):
+        """Génère et envoie une requête DELETE (suppression d'un objet du registre).
+        
+        Cette méthode met à jour les attributs suivants:
+        
+        * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
+          le code de l'erreur renvoyée par le serveur le cas échéant,
+          ``None`` sinon.
+        * :py:attr:`raw` (vaut toujours ``None``).
+        * :py:attr:`response` (vaut toujours ``None``).
+        
+        Parameters
+        ----------
+        objid : str
+            Identifiant de l'objet à supprimer du registre, sans son
+            espace de nommage. À noter que l'identifiant d'un concept
+            inclut celui de son ensemble (par exemple
+            ``CrpaAccessLimitations/L311-2-dp``).
+        
+        """
+        self.raw = None
+        self.response = None
+        self.errcode = None
+        self.reason = None
+        url = urljoin(self.api, objid)
+        self.request = Request(url, method='DELETE')
+        try:
+            with urlopen(self.request) as src:
+                self.raw = src.read()
+        except HTTPError as err:
+            self.errcode = err.code
+            self.reason = err.reason
+    
+    def update(self):
+        """Met à jour le registre distant selon les informations locales.
+        
+        """
+
 class ObjectDefinition:
     """Définition d'un objet RDF créé par Plume.
     
@@ -39,7 +213,7 @@ class ObjectDefinition:
     ----------
     objid : str
         Fragment d'URI constituant l'identifiant de l'objet dans
-        le registre.
+        le registre (sans le slash initial).
     parent : str
         Identifiant de l'objet parent, le cas échéant.
     objtype : {'R', 'E'}
@@ -54,15 +228,17 @@ class ObjectDefinition:
     
     """
     def __init__(self, objid, objtype, title, graph):
-        self.objid = objid
-        if '/' in objid:
-            self.parent = '/plume/{}'.format(objid.rsplit('/', 1)[0])
+        self.objid = objid.strip('/')
+        if '/' in self.objid:
+            self.parent = '/{}'.format(self.objid.rsplit('/', 1)[0])
         else:
-            self.parent = '/plume'
+            self.parent = ''
         self.objtype = objtype
         self.title = title
         self.graph = graph
-        self.jsonval = graph.serialize(format='json-ld')
+        self.jsonval = None
+        if graph:
+            self.jsonval = graph.serialize(format='json-ld')
 
     def parameters(self):
         """Renvoie la description de l'objet sous forme de paramètres utilisables par une requête HTTP POST.
@@ -75,13 +251,15 @@ class ObjectDefinition:
         data = urlencode({
             'parent': self.parent or '',
             'type': self.objtype or 'E',
-            'title': self.title,
-            'jsonval': self.jsonval
+            'title': self.title or '',
+            'script': '',
+            'jsonval': self.jsonval or '',
+            'htmlval': ''
             })
         return data.encode('ascii')
     
 class ConceptDefinition(ObjectDefinition):
-    """Graphe décrivant un concept de Plume.
+    """Définition d'un concept de Plume.
     
     Parameters
     ----------
@@ -101,26 +279,32 @@ class ConceptDefinition(ObjectDefinition):
     def __init__(self, iri):
         graph = Graph(namespace_manager=PlumeNamespaceManager())
         if str(iri).startswith(str(PLUME)):
-            objid = str(iri).replace(str(PLUME), '')
+            objid = str(iri).replace(str(PLUME), 'plume/')
             s = iri
         else:
             scheme = vocabulary.value(iri, SKOS.inScheme)
             if not str(scheme).startswith(str(PLUME)):
                 raise ValueError("Le concept '{}' n'appartient pas à un " \
                     'thésaurus créé par Plume.'.format(iri))
-            suffix = iri.rsplit('/', 1)[1]
-            objid = '{}/{}'.format(str(scheme).replace(str(PLUME), ''), suffix)
+            suffix = vocabulary.value(iri, DCT.identifier) or iri.rsplit('/', 1)[1]
+            objid = 'plume/{}/{}'.format(str(scheme).replace(str(PLUME), ''), suffix)
             s = PLUME[objid]
             graph.add((s, SKOS.exactMatch, iri))
         labels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
         title = str(pick_translation(labels, ('fr', 'en')))
         for p, o in vocabulary.predicate_objects(iri):
-            graph.add((s, p, o))
+            if not p == DCT.identifier:
+                # les DCT.identifier ne sont vraiment là que pour
+                # fournir des identifiants plus acceptables quand
+                # le dernier élément de l'URI du concept ne l'est
+                # pas (ex : http://www.opengis.net/def/crs/EPSG/0),
+                # il ne paraît pas pertinent de les exposer
+                graph.add((s, p, o))
         super().__init__(objid=objid, objtype='E',
             title=title, graph=graph)
 
 class ConceptSchemeDefinition(ObjectDefinition):
-    """Classe décrivant un ensemble de concepts de Plume.
+    """Définition d'un ensemble de concepts de Plume.
     
     Parameters
     ----------
@@ -140,7 +324,7 @@ class ConceptSchemeDefinition(ObjectDefinition):
     def __init__(self, iri):
         graph = Graph(namespace_manager=PlumeNamespaceManager())
         if str(iri).startswith(str(PLUME)):
-            objid = str(iri).replace(str(PLUME), '')
+            objid = str(iri).replace(str(PLUME), 'plume/')
             s = iri
         else:
             raise ValueError("'{}' n'est pas un " \
@@ -156,7 +340,7 @@ class ConceptSchemeDefinition(ObjectDefinition):
             title=title, graph=graph)
 
 class PropertyDefinition(ObjectDefinition):
-    """Graphe décrivant une propriété de Plume.
+    """Définition d'une propriété de Plume.
     
     Parameters
     ----------
@@ -186,10 +370,10 @@ class PropertyDefinition(ObjectDefinition):
     def __init__(self, iri):
         graph = Graph(namespace_manager=PlumeNamespaceManager())
         if str(iri).startswith(str(PLUME)):
-            objid = str(iri).replace(str(PLUME), '')
+            objid = str(iri).replace(str(PLUME), 'plume/')
         else:
             raise ValueError("'{}' n'est pas une " \
-                'propriété créé par Plume.'.format(iri))
+                'propriété créée par Plume.'.format(iri))
         graph.add((iri, RDF.type, RDF.Property))
         for n in shape.subjects(SH.path, iri):
             labels = [o for o in shape.objects(n, SH.name)]
@@ -207,7 +391,7 @@ class PropertyDefinition(ObjectDefinition):
             title=title, graph=graph)
 
 class ClassDefinition(ObjectDefinition):
-    """Graphe décrivant une classe de Plume.
+    """Définition d'une classe de Plume.
     
     Parameters
     ----------
@@ -215,43 +399,80 @@ class ClassDefinition(ObjectDefinition):
         L'IRI de la classe, présumée référencée
         dans :py:data:`plume.rdf.properties.shape`.
     
+    Raises
+    ------
+    ValueError
+        Si la classe n'utilise pas l'espace de nommage de
+        Plume. Il est alors considéré qu'il ne s'agit pas
+        d'une classe créée par Plume.
+    
+    Notes
+    -----
+    À ce stade, le libellé et la description de la
+    classe sont ceux de la propriété qui l'introduit,
+    étant entendu que, dans le schéma des métadonnées
+    communes de Plume, toute classe autre que ``dcat:Dataset``
+    est nécessairement introduite par au moins une propriété
+    et, en pratique, jamais plus d'une pour l'heure.
+    
     """
     
     def __init__(self, iri):
+        graph = Graph(namespace_manager=PlumeNamespaceManager())
+        if str(iri).startswith(str(PLUME)):
+            objid = str(iri).replace(str(PLUME), 'plume/')
+        else:
+            raise ValueError("'{}' n'est pas une " \
+                'classe créée par Plume.'.format(iri))
+        for n in shape.subjects(SH['class'], iri):
+            labels = [o for o in shape.objects(n, SH.name)]
+            title = str(pick_translation(labels, ('fr', 'en')))
+            for o in labels:
+                graph.add((iri, RDFS.label, o))
+            for o in shape.objects(n, SH.description):
+                graph.add((iri, RDFS.comment, o))
+            break
         super().__init__(objid=objid, objtype='E',
             title=title, graph=graph)
 
-class RegisterApi:
-    """Requêteur sur le registre de Plume.
+class DefinitionsCollection(dict):
+    """Répertoire de définitions des objets du registre de Plume.
+    
+    Les objets de cette classe sont initialisés par
+    lecture du schéma des métadonnées communes,
+    :py:data:`plume.rdf.properties.shape`,
+    et de la compilation des thésaurus de Plume,
+    :py:data:`plume.rdf.thesaurus.vocabulary`. Sont
+    conservés les propriétés, classes, concepts et
+    ensemble de concepts utilisant l'espace de nommage
+    de Plume, ainsi que tous les concepts de ensembles
+    de concepts utilisant l'espace de nommage de Plume.
+    
+    Les clés du dictionnaire sont les identifiants des objets
+    dans le registre (sans le slash initial), les valeurs
+    sont les objets :py:class:`ObjectDefinition` qui les
+    décrivent.
     
     """
-    def __init__(self):
-        credpath = abspath('').parents[0] / 'admin/local/credentials.json'
-        with open(credpath, encoding='utf-8') as src:
-            credentials = json.load(src)
-        self.api = credentials['api']
-        auth_handler = HTTPBasicAuthHandler()
-        auth_handler.add_password(
-            realm=None,
-            uri=self.api,
-            user=credentials['user'],
-            passwd=credentials['password']
-            )
-        opener = build_opener(auth_handler)
-        install_opener(opener)
     
-    def put(self, objid, data):
-        """Génère et envoie une requête PUT.
-        
-        Parameters
-        ----------
-        objid : str
-            L'identifiant de l'objet à ajouter ou mettre à jour
-            dans le registre, sans son espace de nommage. À noter
-            que l'identifiant d'un concept inclut celui de son
-            ensemble (par exemple ``CrpaAccessLimitations/L311-2-dp``).
-        data : bytes
-            Les paramètres de la requête.
-        
-        """
-
+    def __init__(self):
+        self['plume'] = ObjectDefinition(objid='plume', objtype='R',
+            title="Registre de l'application Plume (gestion des métadonnées d'un patrimoine PostgreSQL)",
+            graph=None)
+        for s, p, iri in shape.triples((None, SH.path, None)):
+            if str(iri).startswith(str(PLUME)):
+                od = PropertyDefinition(iri)
+                self[od.objid] = od
+        for s, p, iri in shape.triples((None, SH.targetClass, None)):
+            if str(iri).startswith(str(PLUME)): 
+                od = ClassDefinition(iri)
+                self[od.objid] = od
+        for iri, p, s in vocabulary.triples((None, RDF.type, SKOS.ConceptScheme)):
+            if str(iri).startswith(str(PLUME)): 
+                od = ConceptSchemeDefinition(iri)
+                self[od.objid] = od
+        for iri, p, s in vocabulary.triples((None, SKOS.inScheme, None)):
+            if str(iri).startswith(str(PLUME)) or str(s).startswith(str(PLUME)): 
+                od = ConceptDefinition(iri)
+                self[od.objid] = od
+    
