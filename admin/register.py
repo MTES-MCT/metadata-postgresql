@@ -10,9 +10,40 @@ Pour qu'il soit utilisable, il est nécessaire de disposer d'un fichier
 ``/admin/local/credentials.json`` contenant un dictionnaire à trois
 clés :
 
--* ``api`` pour l'URL de base de l'API du registre.
--* ``user`` pour l'identifiant.
--* ``password`` pour le mot de passe.
+* ``api`` pour l'URL de base de l'API du registre.
+* ``user`` pour l'identifiant.
+* ``password`` pour le mot de passe.
+
+Routine Listings
+----------------
+
+Initialisation du requêteur:
+
+    >>> api = RegisterApi()
+
+Interrogation simple d'un élément du registre:
+
+    >>> api.get('id')
+
+où ``id`` est l'identifiant de l'objet dans le registre, avec ou sans slash
+initial. Par exemple ``'plume/isExternal'`` pour la propriété ``plume:isExternal``.
+
+Consultation du contenu du registre pour un élément:
+
+    >>> api.post('id')
+
+Mise à jour d'un élément dans le registre:
+
+    >>> api.put('id')
+
+Suppression d'un élément du registre:
+
+    >>> api.delete('id')
+
+Mise à jour massive du registre (avec ajout des éléments manquants, mais pas
+suppression des éléments obsolètes):
+
+    >>> api.udapte()
 
 References
 ----------
@@ -46,9 +77,9 @@ class RegisterApi:
     raw : bytes
         Résultat brut de la dernière requête envoyée à
         l'API.
-    response : dict
+    response : dict or list
         Dans le cas d'une requête de consultation,
-        désérialisation python du résultat de la requête.
+        désérialisation python du JSON résultant de la requête.
     errcode : int
         Si la dernière requête a produit une erreur, code
         de l'erreur, sinon ``None``.
@@ -80,8 +111,57 @@ class RegisterApi:
         self.reason = None
         self.response = None
     
+    def get(self, objid):
+        """Génère et envoie une requête GET (interrogation du registre).
+        
+        * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
+          le code de l'erreur renvoyée par le serveur le cas échéant,
+          ``None`` sinon.
+        * :py:attr:`raw` avec le résultat brut de la requête, ``None``
+          en cas d'erreur.
+        * :py:attr:`response` avec la désérialisation du résultat
+          de la requête.
+        
+        Parameters
+        ----------
+        objid : str
+            Identifiant (dans le registre) de l'objet pour lequel on
+            souhaite consulter le registre. Le slash initial peut être
+            omis.
+        
+        Raises
+        ------
+        ValueError
+            Lorsque le résultat de la requête n'est pas un JSON valide.
+        
+        Examples
+        --------
+        >>> api = RegisterApi()
+        >>> api.get('plume/isExternal')
+        >>> description = api.response
+        
+        """
+        self.raw = None
+        self.response = None
+        self.errcode = None
+        self.reason = None
+        url = urljoin(self.api, objid)
+        self.request = Request(url)
+        try:
+            with urlopen(self.request) as src:
+                self.raw = src.read()
+        except HTTPError as err:
+            self.errcode = err.code
+            self.reason = err.reason
+            return
+        try:
+            self.response = loads(self.raw)
+        except:
+            raise ValueError('Echec de la désérialisation du JSON.')
+        
+    
     def post(self, objid):
-        """Génère et envoie une requête POST (consultation du registre).
+        """Génère et envoie une requête POST (consultation des données du registre).
         
         Cette méthode met à jour les attributs suivants:
         
@@ -99,15 +179,20 @@ class RegisterApi:
         Parameters
         ----------
         objid : str
-            Identifiant de l'objet pour lequel on souhaite
-            consulter le registre, sans son espace de nommage. À noter
-            que l'identifiant d'un concept inclut celui de son
-            ensemble (par exemple ``CrpaAccessLimitations/L311-2-dp``).
+            Identifiant (dans le registre) de l'objet pour lequel on
+            souhaite consulter le registre. Le slash initial peut être
+            omis.
         
         Raises
         ------
         ValueError
             Lorsque le résultat de la requête n'est pas un JSON valide.
+        
+        Examples
+        --------
+        >>> api = RegisterApi()
+        >>> api.post('plume/isExternal')
+        >>> description = api.response
         
         """
         self.raw = None
@@ -142,15 +227,18 @@ class RegisterApi:
         Parameters
         ----------
         objid : str
-            Identifiant de l'objet à ajouter ou mettre à jour
-            dans le registre, sans son espace de nommage. À noter
-            que l'identifiant d'un concept inclut celui de son
-            ensemble (par exemple ``CrpaAccessLimitations/L311-2-dp``).
+            Identifiant (dans le registre) de l'objet à ajouter ou
+            mettre à jour. Le slash initial peut être omis.
         data : bytes, optionnal
             Les paramètres de la requête. Si non fourni, la méthode
             récupère les informations nécessaires dans la collection
             d'objets locaux, dans laquelle `objid` doit alors
             être impérativement être référencé.
+        
+        Examples
+        --------
+        >>> api = RegisterApi()
+        >>> api.put('plume/isExternal')
         
         """
         self.raw = None
@@ -159,7 +247,7 @@ class RegisterApi:
         self.reason = None
         url = urljoin(self.api, objid)
         if not data:
-            data = self.collection[objid].parameters()
+            data = self.collection[objid.strip('/')].parameters()
         self.request = Request(url, data=data, method='PUT')
         try:
             with urlopen(self.request) as src:
@@ -182,10 +270,13 @@ class RegisterApi:
         Parameters
         ----------
         objid : str
-            Identifiant de l'objet à supprimer du registre, sans son
-            espace de nommage. À noter que l'identifiant d'un concept
-            inclut celui de son ensemble (par exemple
-            ``CrpaAccessLimitations/L311-2-dp``).
+            Identifiant (dans le registre) de l'objet à supprimer. Le slash
+            initial peut être omis.
+        
+        Examples
+        --------
+        >>> api = RegisterApi()
+        >>> api.delete('plume/isExternal')
         
         """
         self.raw = None
@@ -201,10 +292,37 @@ class RegisterApi:
             self.errcode = err.code
             self.reason = err.reason
     
-    def update(self):
+    def update(self, abort_on_failure=True):
         """Met à jour le registre distant selon les informations locales.
         
+        Cette méthode boucle sur la collection d'objets de Plume 
+        :py:attr:``RegistreApi.collection`` pour mettre à
+        jour les éléments correspondants du registre, sans chercher
+        à savoir s'ils avaient réellement été modifiés entre temps.
+        
+        Pour l'heure, elle n'est pas capable d'identifier les éléments
+        du registres qui n'apparaissent plus dans la collection en
+        vue de leur suppression.
+        
+        Pour chaque objet, un message dans la console indique si la
+        mise à jour a réussi ou échoué.
+        
+        Parameters
+        ----------
+        abort_on_failure : bool, default True
+            Si ``True``, les mises à jour s'arrêtent à la première
+            erreur rencontrée, sinon elles se poursuivent
+            pour les objets suivants de la collection.
+        
         """
+        for objid, objdef in self.collection.items():
+            self.put(objid)
+            if self.errcode:
+                print('{} > Erreur {} : {}.'.format(objid, self.errcode, self.reason))
+                if abort_on_failure:
+                    break
+            else:
+                print('{} > Mise à jour réussie.'.format(objid))
 
 class ObjectDefinition:
     """Définition d'un objet RDF créé par Plume.
