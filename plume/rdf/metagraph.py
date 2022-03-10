@@ -54,14 +54,14 @@ class Metagraph(Graph):
         cette propriété, sous réserve que le graphe soit vide (dans le cas
         contraire, la commande n'aura aucun effet).
         
-        Identifiant aléatoire:
+        Identifiant aléatoire :
         
             >>> metagraph = Metagraph()
             >>> metagraph.datasetid = None
             >>> metagraph.datasetid
             DatasetId('urn:uuid:...')
         
-        Identifiant pré-déterminé:
+        Identifiant pré-déterminé :
         
             >>> metagraph = Metagraph()
             >>> metagraph.datasetid = '523d5fa9-77a8-41da-a5ce-36b64fe935ed'
@@ -92,7 +92,7 @@ class Metagraph(Graph):
         
         À défaut de configuration sauvegardée, cette propriété vaut ``(None, None)``.
         
-        Pour sauvegarder une configuration:
+        Pour sauvegarder une configuration :
         
             >>> metagraph = Metagraph()
             >>> metagraph.datasetid = None
@@ -104,7 +104,7 @@ class Metagraph(Graph):
         Le graphe doit a minima contenir un identifiant de jeu de données,
         sans quoi la tentative de sauvegarde sera silencieusement ignorée.
         
-        Pour effacer la configuration:
+        Pour effacer la configuration :
         
             >>> metagraph.linked_record = None
         
