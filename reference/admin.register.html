@@ -368,25 +368,25 @@ clés :</p>
 </ul>
 <section id="routine-listings">
 <h2>Routine Listings<a class="headerlink" href="#routine-listings" title="Lien permanent vers ce titre">¶</a></h2>
-<p>Initialisation du requêteur:</p>
+<p>Initialisation du requêteur :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span> <span class="o">=</span> <span class="n">RegisterApi</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Interrogation simple d’un élément du registre:</p>
+<p>Interrogation simple d’un élément du registre :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>où <code class="docutils literal notranslate"><span class="pre">id</span></code> est l’identifiant de l’objet dans le registre, avec ou sans slash
+<p>où <code class="docutils literal notranslate"><span class="pre">'id'</span></code> est l’identifiant de l’objet dans le registre, avec ou sans slash
 initial. Par exemple <code class="docutils literal notranslate"><span class="pre">'plume/isExternal'</span></code> pour la propriété <code class="docutils literal notranslate"><span class="pre">plume:isExternal</span></code>.</p>
-<p>Consultation du contenu du registre pour un élément:</p>
+<p>Consultation du contenu du registre pour un élément :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Mise à jour d’un élément dans le registre:</p>
+<p>Mise à jour d’un élément dans le registre :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Suppression d’un élément du registre:</p>
+<p>Suppression d’un élément du registre :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
