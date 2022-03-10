@@ -41,7 +41,7 @@ Suppression d'un élément du registre :
     >>> api.delete('id')
 
 Mise à jour massive du registre (avec ajout des éléments manquants, mais pas
-suppression des éléments obsolètes):
+suppression des éléments obsolètes) :
 
     >>> api.udapte()
 
