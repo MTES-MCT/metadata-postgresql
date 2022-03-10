@@ -3,11 +3,11 @@
 À l'usage des modules de Plume, qui devront ainsi appeler
 le présent module au lieu d'un appel direct à RDFLib.
 
-On s'assurera ainsi d'écrire:
+On s'assurera ainsi d'écrire :
 
     >>> from plume.rdf.rdflib import URIRef
 
-Et jamais:
+Et jamais :
 
     >>> from rdflib.term import URIRef
 
