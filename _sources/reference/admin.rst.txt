@@ -8,6 +8,7 @@ Package admin
    admin.zip_plume
    admin.docs
    admin.tests
+   admin.register
 
 .. automodule:: admin
    :members:
