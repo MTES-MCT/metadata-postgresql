@@ -5,7 +5,7 @@ Ce module permet de générer des dictionnaires de widgets
 toutes les informations nécessaires à la création d'un
 formulaire de consultation ou saisie des métadonnées.
 
-Création d'un dictionnaire vierge:
+Création d'un dictionnaire vierge :
 
     >>> widgetsdict = WidgetDict()
     
