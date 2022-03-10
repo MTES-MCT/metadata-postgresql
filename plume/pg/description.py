@@ -7,7 +7,7 @@ permet la mise à jour du texte du descriptif d'après un nouveau
 graphe.
 
 Si ``raw`` est le descriptif brut importé depuis PostgreSQL
-(peut être ``None`` le cas échéant):
+(peut être ``None`` le cas échéant) :
 
     >>> raw = '...'
     >>> pgdescription = PgDescription(raw)
@@ -15,18 +15,18 @@ Si ``raw`` est le descriptif brut importé depuis PostgreSQL
 Les métadonnées éventuellement présentes, supposées être encodées en
 JSON-LD et placée entre des balises ``<METADATA>`` et ``</METADATA>``,
 sont automatiquement désérialisées dans le graphe exposé par la propriété
-:py:attr:`PgDescription.metagraph`:
+:py:attr:`PgDescription.metagraph` :
 
     >>> metagraph = pgdescription.metagraph
     >>> metagraph
     <Graph identifier=... (<class 'plume.rdf.metagraph.Metagraph'>)>
 
 Pour mettre à jour le descriptif, il suffit de redéfinir la
-propriété :py:attr:`PgDescription.metagraph` avec le nouveau graphe:
+propriété :py:attr:`PgDescription.metagraph` avec le nouveau graphe :
 
     >>> pgdescription.metagraph = metagraph
 
-Le nouveau texte descriptif est simplement:
+Le nouveau texte descriptif est simplement :
 
     >>> str(pgdescription)
     '...'
