@@ -75,18 +75,16 @@ class RegisterApi:
     request : urllib.Request
         Dernière requête envoyée à l'API.
     raw : bytes
-        Résultat brut de la dernière requête envoyée à
-        l'API.
+        Résultat brut de la dernière requête envoyée à l'API.
     response : dict or list
-        Dans le cas d'une requête de consultation,
-        désérialisation python du JSON résultant de la requête.
+        Désérialisation python du JSON résultant de la dernière
+        requête renvoyée à l'API.
     errcode : int
         Si la dernière requête a produit une erreur, code
         de l'erreur, sinon ``None``.
     reason : str
         Si la dernière requête a produit une erreur,
         la description textuelle de l'erreur, sinon ``None``.
-        
     
     """
     def __init__(self):
@@ -115,12 +113,12 @@ class RegisterApi:
         """Génère et envoie une requête GET (interrogation du registre).
         
         * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
-          le code de l'erreur renvoyée par le serveur le cas échéant,
-          ``None`` sinon.
-        * :py:attr:`raw` avec le résultat brut de la requête, ``None``
-          en cas d'erreur.
+          le code et la description de l'erreur renvoyée par le serveur
+          le cas échéant, ``None`` sinon.
+        * :py:attr:`raw` avec le résultat brut de la requête.
         * :py:attr:`response` avec la désérialisation du résultat
-          de la requête.
+          de la requête. En cas d'erreur, il s'agit d'un dictionnaire
+          avec une unique clé ``error``.
         
         Parameters
         ----------
@@ -153,6 +151,11 @@ class RegisterApi:
         except HTTPError as err:
             self.errcode = err.code
             self.reason = err.reason
+            self.raw = err.read()
+            try:
+                self.response = loads(self.raw)
+            except:
+                pass
             return
         try:
             self.response = loads(self.raw)
@@ -166,15 +169,14 @@ class RegisterApi:
         Cette méthode met à jour les attributs suivants:
         
         * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
-          le code de l'erreur renvoyée par le serveur le cas échéant,
-          ``None`` sinon.
-        * :py:attr:`raw` avec le résultat brut de la requête, ``None``
-          en cas d'erreur.
+          le code et la description de l'erreur renvoyée par le serveur
+          le cas échéant, ``None`` sinon.
+        * :py:attr:`raw` avec le résultat brut de la requête.
         * :py:attr:`response` avec la désérialisation du résultat
           de la requête, qui devrait être un dictionnaire dont les
           clés sont ``id``, ``parent``, ``type``, ``title``,
-          ``script``, ``jsonval`` et ``htmlval``, ou ``None``
-          en cas d'erreur.
+          ``script``, ``jsonval`` et ``htmlval`` lorsqu'il n'y a pas
+          eu d'erreur, ou une unique clé ``error`` en cas d'erreur.
         
         Parameters
         ----------
@@ -207,6 +209,11 @@ class RegisterApi:
         except HTTPError as err:
             self.errcode = err.code
             self.reason = err.reason
+            self.raw = err.read()
+            try:
+                self.response = loads(self.raw)
+            except:
+                pass
             return
         try:
             self.response = loads(self.raw)
@@ -219,10 +226,12 @@ class RegisterApi:
         Cette méthode met à jour les attributs suivants:
         
         * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
-          le code de l'erreur renvoyée par le serveur le cas échéant,
-          ``None`` sinon.
+          le code et la description de l'erreur renvoyée par le serveur
+          le cas échéant, ``None`` sinon.
         * :py:attr:`raw` avec la réponse brute du serveur.
-        * :py:attr:`response` (vaut toujours ``None``).
+        * :py:attr:`response`, qui vaut toujours ``None`` sauf dans
+          le cas où le serveur a renvoyé une erreur sous forme de JSON.
+          Il s'agit alors d'un dictionnaire avec une unique clé ``error``.
         
         Parameters
         ----------
@@ -255,6 +264,11 @@ class RegisterApi:
         except HTTPError as err:
             self.errcode = err.code
             self.reason = err.reason
+            self.raw = err.read()
+            try:
+                self.response = loads(self.raw)
+            except:
+                pass
 
     def delete(self, objid):
         """Génère et envoie une requête DELETE (suppression d'un objet du registre).
@@ -262,10 +276,12 @@ class RegisterApi:
         Cette méthode met à jour les attributs suivants:
         
         * :py:attr:`errcode` et :py:attr:`reason` avec respectivement
-          le code de l'erreur renvoyée par le serveur le cas échéant,
-          ``None`` sinon.
-        * :py:attr:`raw` (vaut toujours ``None``).
-        * :py:attr:`response` (vaut toujours ``None``).
+          le code et la description de l'erreur renvoyée par le serveur
+          le cas échéant, ``None`` sinon.
+        * :py:attr:`raw` avec la réponse brute du serveur.
+        * :py:attr:`response`, qui vaut toujours ``None`` sauf dans
+          le cas où le serveur a renvoyé une erreur sous forme de JSON.
+          Il s'agit alors d'un dictionnaire avec une unique clé ``error``.
         
         Parameters
         ----------
@@ -291,6 +307,11 @@ class RegisterApi:
         except HTTPError as err:
             self.errcode = err.code
             self.reason = err.reason
+            self.raw = err.read()
+            try:
+                self.response = loads(self.raw)
+            except:
+                pass
     
     def update(self, abort_on_failure=True):
         """Met à jour le registre distant selon les informations locales.
@@ -318,7 +339,10 @@ class RegisterApi:
         for objid, objdef in self.collection.items():
             self.put(objid)
             if self.errcode:
-                print('{} > Erreur {} : {}.'.format(objid, self.errcode, self.reason))
+                print('{} > Erreur {} : {}.'.format(objid, self.errcode,
+                    self.reason))
+                if self.response:
+                    print(self.response.get('error', ''))
                 if abort_on_failure:
                     break
             else:
