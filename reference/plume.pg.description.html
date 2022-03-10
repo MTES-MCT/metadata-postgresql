@@ -345,7 +345,7 @@ contenues dans les descriptifs PostgreSQL en graphe de métadonées
 permet la mise à jour du texte du descriptif d’après un nouveau
 graphe.</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">raw</span></code> est le descriptif brut importé depuis PostgreSQL
-(peut être <code class="docutils literal notranslate"><span class="pre">None</span></code> le cas échéant):</p>
+(peut être <code class="docutils literal notranslate"><span class="pre">None</span></code> le cas échéant) :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">raw</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pgdescription</span> <span class="o">=</span> <span class="n">PgDescription</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
 </pre></div>
@@ -353,18 +353,18 @@ graphe.</p>
 <p>Les métadonnées éventuellement présentes, supposées être encodées en
 JSON-LD et placée entre des balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et <code class="docutils literal notranslate"><span class="pre">&lt;/METADATA&gt;</span></code>,
 sont automatiquement désérialisées dans le graphe exposé par la propriété
-<a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a>:</p>
+<a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a> :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">pgdescription</span><span class="o">.</span><span class="n">metagraph</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span>
 <span class="go">&lt;Graph identifier=... (&lt;class &#39;plume.rdf.metagraph.Metagraph&#39;&gt;)&gt;</span>
 </pre></div>
 </div>
 <p>Pour mettre à jour le descriptif, il suffit de redéfinir la
-propriété <a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a> avec le nouveau graphe:</p>
+propriété <a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a> avec le nouveau graphe :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pgdescription</span><span class="o">.</span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">metagraph</span>
 </pre></div>
 </div>
-<p>Le nouveau texte descriptif est simplement:</p>
+<p>Le nouveau texte descriptif est simplement :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">pgdescription</span><span class="p">)</span>
 <span class="go">&#39;...&#39;</span>
 </pre></div>

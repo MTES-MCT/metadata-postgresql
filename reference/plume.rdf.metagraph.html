@@ -584,14 +584,14 @@ pas d’élément <code class="docutils literal notranslate"><span class="pre">d
 <p>Il est possible de définir l’identifiant du jeu de données via
 cette propriété, sous réserve que le graphe soit vide (dans le cas
 contraire, la commande n’aura aucun effet).</p>
-<p>Identifiant aléatoire:</p>
+<p>Identifiant aléatoire :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">Metagraph</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span>
 <span class="go">DatasetId(&#39;urn:uuid:...&#39;)</span>
 </pre></div>
 </div>
-<p>Identifiant pré-déterminé:</p>
+<p>Identifiant pré-déterminé :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">Metagraph</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span> <span class="o">=</span> <span class="s1">&#39;523d5fa9-77a8-41da-a5ce-36b64fe935ed&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span>
@@ -663,7 +663,7 @@ NTriples (encodage ASCII).</p>
 <p>Le tuple est constitué de deux éléments : l’URL de base du service
 CSW et l’identifiant de la fiche.</p>
 <p>À défaut de configuration sauvegardée, cette propriété vaut <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code>.</p>
-<p>Pour sauvegarder une configuration:</p>
+<p>Pour sauvegarder une configuration :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span> <span class="o">=</span> <span class="n">Metagraph</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">datasetid</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">linked_record</span> <span class="o">=</span> <span class="p">(</span>
@@ -674,7 +674,7 @@ CSW et l’identifiant de la fiche.</p>
 </div>
 <p>Le graphe doit a minima contenir un identifiant de jeu de données,
 sans quoi la tentative de sauvegarde sera silencieusement ignorée.</p>
-<p>Pour effacer la configuration:</p>
+<p>Pour effacer la configuration :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metagraph</span><span class="o">.</span><span class="n">linked_record</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
@@ -871,7 +871,7 @@ renseignées dans l’ancien graphe.</p></li>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.shape">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N942d006913654d2d98ef6b76aa201c78</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=Nf264a4fafb2143d4af77ec90292aaf1c</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Schéma SHACL définissant la structure des métadonnées communes.</p>
 </dd></dl>
 

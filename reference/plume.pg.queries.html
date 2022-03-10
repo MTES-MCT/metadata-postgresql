@@ -367,7 +367,7 @@ des fonctions.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_evaluate_local_templates">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_evaluate_local_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates_collection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_evaluate_local_templates" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête qui évalue côté serveur les conditions d’application des modèles locaux.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_evaluate_local_templates</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
@@ -402,7 +402,7 @@ nom du modèle à appliquer.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_exists_extension">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_exists_extension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_exists_extension" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête qui vérifie qu’une extension est installée sur la base PostgreSQL cible.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom de l&#39;</span><span class="n">extension</span><span class="s1">&#39;,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">extension_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -429,7 +429,7 @@ extension du serveur mais non installée ;</p></li>
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_categories">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_categories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_categories" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête d’import des catégories à afficher dans un modèle donné.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_categories</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du modèle&#39;</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
@@ -452,7 +452,7 @@ créée par l’extension PlumePg.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_columns">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_columns" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de récupération des descriptifs des champs d’une table ou vue.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_columns</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -481,7 +481,7 @@ créée par l’extension PlumePg.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_centroid">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_centroid" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de calcul côté serveur du centre du rectangle d’emprise d’une couche.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_centroid</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -492,7 +492,7 @@ créée par l’extension PlumePg.</p>
 système de coordonnées n’est pas explicité. Il faudra
 le récupérer via <a class="reference internal" href="#plume.pg.queries.query_get_geom_srid" title="plume.pg.queries.query_get_geom_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_geom_srid()</span></code></a>, puis
 appliquer la fonction <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.wkt_with_srid" title="plume.rdf.utils.wkt_with_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid()</span></code></a>
-pour obtenir la représention du centroïde attendue en RDF:</p>
+pour obtenir la représention du centroïde attendue en RDF :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">wkt_with_srid</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_srid</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span>
@@ -523,7 +523,7 @@ pour obtenir la représention du centroïde attendue en RDF:</p>
 <p class="admonition-title">Avertissement</p>
 <p>Cette requête échouera si PostGIS n’est pas installé sur la
 base. Il est donc fortement recommandé de vérifier d’abord
-la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a> :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -536,7 +536,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_extent">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_extent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_extent" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de calcul côté serveur du rectangle d’emprise d’une couche.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_extent</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -548,7 +548,7 @@ système de coordonnées n’est pas explicité. Il faudra
 le récupérer via <a class="reference internal" href="#plume.pg.queries.query_get_geom_srid" title="plume.pg.queries.query_get_geom_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_geom_srid()</span></code></a>, puis
 appliquer la fonction <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.wkt_with_srid" title="plume.rdf.utils.wkt_with_srid"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid()</span></code></a>
 pour obtenir la représention du rectangle d’emprise
-attendue en RDF:</p>
+attendue en RDF :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">wkt_with_srid</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_srid</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span>
@@ -579,7 +579,7 @@ attendue en RDF:</p>
 <p class="admonition-title">Avertissement</p>
 <p>Cette requête échouera si PostGIS n’est pas installé sur la
 base. Il est donc fortement recommandé de vérifier d’abord
-la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a> :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -592,7 +592,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_srid">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_srid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_srid" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de récupération du référentiel de coordonnées d’une couche.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_geom_srid</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom du champ de géométrie&#39;</span><span class="p">))</span>
@@ -612,7 +612,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <p class="admonition-title">Avertissement</p>
 <p>Cette requête échouera si PostGIS n’est pas installé sur la
 base. Il est donc fortement recommandé de vérifier d’abord
-la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a> :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -625,7 +625,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_relation_kind">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_relation_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_relation_kind" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête qui récupère le type d’une relation PostgreSQL.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_relation_kind</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -654,7 +654,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_srid_list">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_srid_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_srid_list" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d’une relation.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_srid_list</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">srid_list</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
@@ -685,7 +685,7 @@ et son tuple de paramètres.</p>
 <p class="admonition-title">Avertissement</p>
 <p>Cette requête échouera si PostGIS n’est pas installé sur la
 base. Il est donc fortement recommandé de vérifier d’abord
-la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a>:</p>
+la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queries.query_exists_extension" title="plume.pg.queries.query_exists_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_exists_extension()</span></code></a> :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_exists_extension</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -701,7 +701,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_table_comment">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_table_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_table_comment" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de récupération du descriptif d’une table ou vue.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_table_comment</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -730,7 +730,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_is_relation_owner">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_is_relation_owner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_is_relation_owner" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête qui vérifie que le rôle courant est membre du propriétaire d’une relation (table, etc.).</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_is_relation_owner</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
@@ -751,7 +751,7 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <dt class="sig sig-object py" id="plume.pg.queries.query_list_templates">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_list_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_list_templates" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête d’import de la liste des modèles disponibles.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_list_templates</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
@@ -777,7 +777,7 @@ condition qu’il spécifie est remplie.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_template_tabs">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_template_tabs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_template_tabs" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête d’import des onglets utilisés par un modèle.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_template_tabs</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du modèle&#39;</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tabs</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
@@ -804,7 +804,7 @@ soient présentés à l’utilisateur.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_update_column_comment">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_update_column_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_update_column_comment" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de mise à jour du descriptif d’un champ.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_update_column_comment</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Nouveau descriptif du champ&#39;</span><span class="p">,)</span>
@@ -834,7 +834,7 @@ soient présentés à l’utilisateur.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_update_columns_comments">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_update_columns_comments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgetsdict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_update_columns_comments" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de mise à jour des descriptifs des champs d’une table.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_update_columns_comments</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="n">widgetsdict</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">query</span><span class="p">:</span>
@@ -871,7 +871,7 @@ de champ dans le dictionnaire de widgets.</p>
 <dt class="sig sig-object py" id="plume.pg.queries.query_update_table_comment">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_update_table_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relation_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_update_table_comment" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête de mise à jour du descriptif d’une table ou vue.</p>
-<p>À utiliser comme suit:</p>
+<p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_update_table_comment</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="s1">&#39;type de relation&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Nouveau descriptif&#39;</span><span class="p">,)</span>
