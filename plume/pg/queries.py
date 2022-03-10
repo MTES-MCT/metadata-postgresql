@@ -29,7 +29,7 @@ from plume.rdf.namespaces import PLUME
 def query_is_relation_owner():
     """Requête qui vérifie que le rôle courant est membre du propriétaire d'une relation (table, etc.).
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_is_relation_owner()
         >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
@@ -52,7 +52,7 @@ def query_is_relation_owner():
 def query_exists_extension():
     """Requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_exists_extension()
         >>> cur.execute(query, ('nom de l'extension',))
@@ -81,7 +81,7 @@ def query_exists_extension():
 def query_get_relation_kind(schema_name, table_name):
     """Requête qui récupère le type d'une relation PostgreSQL.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_relation_kind('nom du schéma',
         ...     'nom de la relation')
@@ -111,7 +111,7 @@ def query_get_relation_kind(schema_name, table_name):
 def query_update_table_comment(schema_name, table_name, relation_kind='r'):
     """Requête de mise à jour du descriptif d'une table ou vue.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_update_table_comment('nom du schéma',
         ...     'nom de la relation', 'type de relation')
@@ -155,7 +155,7 @@ def query_update_table_comment(schema_name, table_name, relation_kind='r'):
 def query_get_table_comment(schema_name, table_name):
     """Requête de récupération du descriptif d'une table ou vue.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_table_comment('nom du schéma',
         ...     'nom de la relation')
@@ -184,7 +184,7 @@ def query_get_table_comment(schema_name, table_name):
 def query_list_templates():
     """Requête d'import de la liste des modèles disponibles.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_list_templates()
         >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
@@ -217,7 +217,7 @@ def query_list_templates():
 def query_evaluate_local_templates(templates_collection):
     """Requête qui évalue côté serveur les conditions d'application des modèles locaux.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_evaluate_local_templates()
         >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
@@ -265,7 +265,7 @@ def query_evaluate_local_templates(templates_collection):
 def query_get_categories():
     """Requête d'import des catégories à afficher dans un modèle donné.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_categories()
         >>> cur.execute(query, ('nom du modèle',))
@@ -311,7 +311,7 @@ def query_get_categories():
 def query_template_tabs():
     """Requête d'import des onglets utilisés par un modèle.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_template_tabs()
         >>> cur.execute(query, ('nom du modèle',))
@@ -356,7 +356,7 @@ def query_template_tabs():
 def query_get_columns(schema_name, table_name):
     """Requête de récupération des descriptifs des champs d'une table ou vue.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_columns('nom du schéma',
         ...     'nom de la relation')
@@ -392,7 +392,7 @@ def query_get_columns(schema_name, table_name):
 def query_update_column_comment(schema_name, table_name, column_name):
     """Requête de mise à jour du descriptif d'un champ.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_update_column_comment('nom du schéma',
         ...     'nom de la relation', 'nom du champ')
@@ -422,7 +422,7 @@ def query_update_column_comment(schema_name, table_name, column_name):
 def query_update_columns_comments(schema_name, table_name, widgetsdict):
     """Requête de mise à jour des descriptifs des champs d'une table.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_update_columns_comments('nom du schéma',
         ...     'nom de la relation', widgetsdict)
@@ -471,7 +471,7 @@ def query_update_columns_comments(schema_name, table_name, widgetsdict):
 def query_get_geom_srid():
     """Requête de récupération du référentiel de coordonnées d'une couche.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_geom_srid()
         >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
@@ -489,7 +489,7 @@ def query_get_geom_srid():
     --------
     Cette requête échouera si PostGIS n'est pas installé sur la
     base. Il est donc fortement recommandé de vérifier d'abord
-    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    la présence de PostGIS avec :py:func:`query_exists_extension` :
     
         >>> query = query_exists_extension()
         >>> cur.execute(query, ('postgis',))
@@ -512,7 +512,7 @@ def query_get_geom_srid():
 def query_get_srid_list(schema_name, table_name):
     """Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d'une relation.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_srid_list('nom du schéma', 'nom de la relation')
         >>> cur.execute(*query)
@@ -540,7 +540,7 @@ def query_get_srid_list(schema_name, table_name):
     --------
     Cette requête échouera si PostGIS n'est pas installé sur la
     base. Il est donc fortement recommandé de vérifier d'abord
-    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    la présence de PostGIS avec :py:func:`query_exists_extension` :
     
         >>> query = query_exists_extension()
         >>> cur.execute(query, ('postgis',))
@@ -568,7 +568,7 @@ def query_get_srid_list(schema_name, table_name):
 def query_get_geom_extent(schema_name, table_name, geom_name):
     """Requête de calcul côté serveur du rectangle d'emprise d'une couche.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_geom_extent('nom du schéma',
         ...     'nom de la relation', 'nom du champ de géométrie')
@@ -580,7 +580,7 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     le récupérer via :py:func:`query_get_geom_srid`, puis
     appliquer la fonction :py:func:`plume.rdf.utils.wkt_with_srid`
     pour obtenir la représention du rectangle d'emprise
-    attendue en RDF:
+    attendue en RDF :
     
         >>> from plume.rdf.utils import wkt_with_srid
         >>> query = query_get_geom_srid()
@@ -607,7 +607,7 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     --------
     Cette requête échouera si PostGIS n'est pas installé sur la
     base. Il est donc fortement recommandé de vérifier d'abord
-    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    la présence de PostGIS avec :py:func:`query_exists_extension` :
     
         >>> query = query_exists_extension()
         >>> cur.execute(query, ('postgis',))
@@ -626,7 +626,7 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
 def query_get_geom_centroid(schema_name, table_name, geom_name):
     """Requête de calcul côté serveur du centre du rectangle d'emprise d'une couche.
     
-    À utiliser comme suit:
+    À utiliser comme suit :
     
         >>> query = query_get_geom_centroid('nom du schéma',
         ...     'nom de la relation', 'nom du champ de géométrie')
@@ -637,7 +637,7 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     système de coordonnées n'est pas explicité. Il faudra
     le récupérer via :py:func:`query_get_geom_srid`, puis
     appliquer la fonction :py:func:`plume.rdf.utils.wkt_with_srid`
-    pour obtenir la représention du centroïde attendue en RDF:
+    pour obtenir la représention du centroïde attendue en RDF :
     
         >>> from plume.rdf.utils import wkt_with_srid
         >>> query = query_get_geom_srid()
@@ -664,7 +664,7 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     --------
     Cette requête échouera si PostGIS n'est pas installé sur la
     base. Il est donc fortement recommandé de vérifier d'abord
-    la présence de PostGIS avec :py:func:`query_exists_extension`:
+    la présence de PostGIS avec :py:func:`query_exists_extension` :
     
         >>> query = query_exists_extension()
         >>> cur.execute(query, ('postgis',))
