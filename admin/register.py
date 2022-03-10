@@ -51,11 +51,11 @@ https://github.com/benoitdavidfr/registre
 
 """
 
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urljoin
 from urllib.request import urlopen, HTTPBasicAuthHandler, \
     build_opener, install_opener, Request, HTTPPasswordMgrWithDefaultRealm
 from urllib.error import HTTPError
-from json import load, loads
+from json import load, loads, dumps
 
 from plume.rdf.utils import abspath, pick_translation
 from plume.rdf.rdflib import Graph, URIRef
@@ -365,8 +365,9 @@ class ObjectDefinition:
         Le libellé principal de l'objet.
     graph : rdflib.graph.Graph
         Graphe contenant la description de l'objet.
-    jsonval : str
-        Sérialisation JSON-LD de `graph`.
+    jsonval : list
+        Désérialisation python de la sérialisation JSON-LD de
+        `graph`.
     
     """
     def __init__(self, objid, objtype, title, graph):
@@ -380,7 +381,8 @@ class ObjectDefinition:
         self.graph = graph
         self.jsonval = None
         if graph:
-            self.jsonval = graph.serialize(format='json-ld')
+            jsonld = graph.serialize(format='json-ld')
+            self.jsonval = loads(jsonld)
 
     def parameters(self):
         """Renvoie la description de l'objet sous forme de paramètres utilisables par une requête HTTP POST.
@@ -388,9 +390,10 @@ class ObjectDefinition:
         Returns
         -------
         bytes
+            Représentation binaire d'un objet JSON.
         
         """
-        data = urlencode({
+        data = dumps({
             'parent': self.parent or '',
             'type': self.objtype or 'E',
             'title': self.title or '',
@@ -429,8 +432,8 @@ class ConceptDefinition(ObjectDefinition):
                 raise ValueError("Le concept '{}' n'appartient pas à un " \
                     'thésaurus créé par Plume.'.format(iri))
             suffix = vocabulary.value(iri, DCT.identifier) or iri.rsplit('/', 1)[1]
-            objid = 'plume/{}/{}'.format(str(scheme).replace(str(PLUME), ''), suffix)
-            s = PLUME[objid]
+            objid = '{}/{}'.format(str(scheme).replace(str(PLUME), 'plume/'), suffix)
+            s = URIRef('{}/{}'.format(scheme, suffix))
             graph.add((s, SKOS.exactMatch, iri))
         labels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
         title = str(pick_translation(labels, ('fr', 'en')))
