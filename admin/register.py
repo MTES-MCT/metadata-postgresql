@@ -17,26 +17,26 @@ clés :
 Routine Listings
 ----------------
 
-Initialisation du requêteur:
+Initialisation du requêteur :
 
     >>> api = RegisterApi()
 
-Interrogation simple d'un élément du registre:
+Interrogation simple d'un élément du registre :
 
     >>> api.get('id')
 
-où ``id`` est l'identifiant de l'objet dans le registre, avec ou sans slash
+où ``'id'`` est l'identifiant de l'objet dans le registre, avec ou sans slash
 initial. Par exemple ``'plume/isExternal'`` pour la propriété ``plume:isExternal``.
 
-Consultation du contenu du registre pour un élément:
+Consultation du contenu du registre pour un élément :
 
     >>> api.post('id')
 
-Mise à jour d'un élément dans le registre:
+Mise à jour d'un élément dans le registre :
 
     >>> api.put('id')
 
-Suppression d'un élément du registre:
+Suppression d'un élément du registre :
 
     >>> api.delete('id')
 
