@@ -934,7 +934,7 @@ def wkt_with_srid(wkt, srid):
         pour la représentation WKT, sous la forme ``'Autorité:Code'``.
         À ce stade, ne sont reconnus que les codes EPSG
         (ex : ``'EPSG:2154'``), les identifiants OGC (ex :
-        ``'OGC:WGS84'``) et les identifiants du registre IGN (ex :
+        ``'OGC:CRS84'``) et les identifiants du registre IGN (ex :
         ``'IGNF:WGS84G'``).
     
     Returns
@@ -972,7 +972,7 @@ def split_rdf_wkt(rdf_wkt):
         Une représentation WKT de la géométrie avec le référentiel
         explicitement déclaré, comme attendu en RDF pour le
         type ``gsp:wktLiteral``. Par défaut, le référentiel
-        sera supposé être ``'OGC:WGS84'``.
+        sera supposé être ``'OGC:CRS84'``.
     
     Returns
     -------
@@ -989,7 +989,7 @@ def split_rdf_wkt(rdf_wkt):
     ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'EPSG:2154')
     
     >>> split_rdf_wkt('POINT(651796.32814998598769307 6862298.58582336455583572)')
-    ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:WGS84')
+    ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:CRS84')
     
     Notes
     -----
@@ -1007,7 +1007,7 @@ def split_rdf_wkt(rdf_wkt):
     if not r or not r[2] or not r[2].strip():
         return
     if not r[1]:
-        return (r[2], 'OGC:WGS84')
+        return (r[2], 'OGC:CRS84')
     for auth, url in crs_ns.items():
         if r[1].startswith(url):
             code = r[1].lstrip(url)
