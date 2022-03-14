@@ -1268,7 +1268,7 @@ par la clé <code class="docutils literal notranslate"><span class="pre">extensi
 <dt><strong>rdf_wkt</strong><span class="classifier">str or rdflib.term.Literal</span></dt><dd><p>Une représentation WKT de la géométrie avec le référentiel
 explicitement déclaré, comme attendu en RDF pour le
 type <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>. Par défaut, le référentiel
-sera supposé être <code class="docutils literal notranslate"><span class="pre">'OGC:WGS84'</span></code>.</p>
+sera supposé être <code class="docutils literal notranslate"><span class="pre">'OGC:CRS84'</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -1294,7 +1294,7 @@ n’est pas vérifiée.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">split_rdf_wkt</span><span class="p">(</span><span class="s1">&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;</span><span class="p">)</span>
-<span class="go">(&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;, &#39;OGC:WGS84&#39;)</span>
+<span class="go">(&#39;POINT(651796.32814998598769307 6862298.58582336455583572)&#39;, &#39;OGC:CRS84&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1552,7 +1552,7 @@ vérifiée par la fonction.</p>
 pour la représentation WKT, sous la forme <code class="docutils literal notranslate"><span class="pre">'Autorité:Code'</span></code>.
 À ce stade, ne sont reconnus que les codes EPSG
 (ex : <code class="docutils literal notranslate"><span class="pre">'EPSG:2154'</span></code>), les identifiants OGC (ex :
-<code class="docutils literal notranslate"><span class="pre">'OGC:WGS84'</span></code>) et les identifiants du registre IGN (ex :
+<code class="docutils literal notranslate"><span class="pre">'OGC:CRS84'</span></code>) et les identifiants du registre IGN (ex :
 <code class="docutils literal notranslate"><span class="pre">'IGNF:WGS84G'</span></code>).</p>
 </dd>
 </dl>
