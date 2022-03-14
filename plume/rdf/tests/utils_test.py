@@ -279,7 +279,7 @@ class UtilsTestCase(unittest.TestCase):
             )
         self.assertEqual(
             split_rdf_wkt('POINT(651796.32814998598769307 6862298.58582336455583572)'),
-            ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:WGS84')
+            ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:CRS84')
             )
         self.assertIsNone(
             split_rdf_wkt('<chose> POINT(651796.32814998598769307 ' \
