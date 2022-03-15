@@ -927,7 +927,8 @@ plume:LocationShape
         plume:geoTool "show",
             "point",
             "linestring",
-            "polygon" ;
+            "polygon",
+            "circle" ;
 	] .
 
 plume:StandardShape
