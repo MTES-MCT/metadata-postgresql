@@ -161,7 +161,7 @@ if r:
 
 *Où `rdf_wkt` est la valeur saisie dans le widget principal de la clé.*
 
-`wkt_with_srid` peut renvoyer `None` si `rdf_wkt` n'était pas exploitable, ce qui peut arriver en cas de modification manuelle. À défaut de référentiel explicitement déclaré dans `rdf_wkt`, il sera considéré que la géométrie était implicitement en `'OGC:WGS84'`.
+`wkt_with_srid` peut renvoyer `None` si `rdf_wkt` n'était pas exploitable, ce qui peut arriver en cas de modification manuelle. À défaut de référentiel explicitement déclaré dans `rdf_wkt`, il sera considéré que la géométrie était implicitement en `'OGC:CRS84'`.
 
 Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n'assure a priori qu'elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d'erreurs.
 
