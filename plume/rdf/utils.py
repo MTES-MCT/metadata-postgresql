@@ -1031,15 +1031,15 @@ def geomtype_from_wkt(wkt):
     Returns
     -------
     str
-        Le type de géométrie, parmi `'polygon'`, `'point'`
-        et `'linestring'`.
+        Le type de géométrie, parmi `'polygon'`, `'point'`,
+        `'linestring'` et `'circularstring'`.
     
     """
     if not wkt:
         return
-    l = ('polygon', 'point', 'linestring')
+    l = ('polygon', 'point', 'linestring', 'circularstring')
     for t in l:
-        if re.match(r'^(.*[\s\n])?{}'.format(t.upper()), wkt):
+        if re.match(r'^(.*[\s\n])?{}'.format(t), wkt.lower()):
             return t
 
 def get_datasetid(anygraph):
