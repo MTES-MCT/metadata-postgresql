@@ -1850,7 +1850,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                             ('uuid:c2dc9756-8088-4f99-b6d7-d3897513406b', 'test datatype wktLiteral', 'gsp:wktLiteral'),
                             ('uuid:de2aa975-5663-4a72-b390-dd9aab1c2810', 'test datatype iri', NULL) ;
                     UPDATE z_plume.meta_categorie
-                        SET geo_tools = ARRAY['show', 'rectangle', 'polygon', 'centroid']::z_plume.meta_geo_tool[]
+                        SET geo_tools = ARRAY['show', 'rectangle', 'polygon', 'centroid', 'circle']::z_plume.meta_geo_tool[]
                         WHERE label = 'test datatype wktLiteral' ;
                     UPDATE z_plume.meta_categorie
                         SET special = 'url'
@@ -1874,7 +1874,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             r'^[^<>"\s{}|\\^`]*$')
         k = widgetsdict.root.search_from_path(LOCAL['c2dc9756-8088-4f99-b6d7-d3897513406b'])
         self.assertListEqual(widgetsdict[k]['geo tools'],
-            ['show', 'rectangle', 'polygon', 'centroid'])
+            ['show', 'rectangle', 'polygon', 'centroid', 'circle'])
         k = widgetsdict.root.search_from_path(LOCAL['14363668-e379-4dcb-8612-48f9c76fc778'])
         self.assertListEqual(widgetsdict[k]['units'],
             ['ans', 'mois', 'jours', 'heures', 'min.', 'sec.'])
