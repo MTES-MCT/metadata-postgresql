@@ -51,7 +51,7 @@ Les types suivants sont gérés par Plume, mais avec quelques limites :
 | `xsd:date` | Les fuseaux horaires ne sont pas pris en charge à ce stade. Si présents, Plume les retire. |
 | `xsd:dateTime` | Les fuseaux horaires et les millisecondes ne sont pas pris en charge à ce stade. Si présents, Plume les retire. |
 | `xsd:time` | Les fuseaux horaires et les millisecondes ne sont pas pris en charge à ce stade. Si présents, Plume les retire. |
-| `gsp:wktLiteral` | Dans l'hypothèse où elle aurait été demandée pour la catégorie de métadonnées considérée, la fonctionnalité de visualisation des géométries sera désactivée si la géométrie n'est pas de type `POINT`, `LINESTRING` ou `POLYGON`. |
+| `gsp:wktLiteral` | Dans l'hypothèse où elle aurait été demandée pour la catégorie de métadonnées considérée, la fonctionnalité de visualisation des géométries sera désactivée si la géométrie n'est pas de type `POINT`, `LINESTRING`, `POLYGON` ou `CIRCULARSTRING`. |
 
 D'une manière général, toute valeur d'un type non listé ci-avant sera considérée comme de type `xsd:string`.
 
