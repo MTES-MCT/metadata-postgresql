@@ -23,6 +23,11 @@ class UtilsTestCase(unittest.TestCase):
             'polygon'
             )
         self.assertEqual(
+            geomtype_from_wkt('<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
+                'CircularString (0.5 1.20, 1.20 0.5, 0.5 -0.20, -0.20 0.5, 0.5 1.20)'),
+            'circularstring'
+            )
+        self.assertEqual(
             geomtype_from_wkt('< ... > POINT(-71.064544 42.28787)'),
             'point'
             )
@@ -263,7 +268,7 @@ class UtilsTestCase(unittest.TestCase):
         self.assertIsNone(str_from_datetime(Literal('chose', datatype=XSD.dateTime)))
         self.assertIsNone(str_from_datetime(Literal('2022-15-12', datatype=XSD.dateTime)))
 
-    def test_split_rfd_wkt(self):
+    def test_split_rdf_wkt(self):
         """Extraction du référentiel et de la géométrie d'un WKT RDF.
         
         """
