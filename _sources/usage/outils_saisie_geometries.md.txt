@@ -24,10 +24,11 @@ Dès lors qu'elles sont listées par `'geo tools'`, les actions suivantes n'auro
 
 | Libellé de l'action | Terme inclus dans `'geo tools'` | Icône | Texte d'aide | Description de l'effet |
 | --- | --- | --- | --- | --- |
-| *Tracé manuel : point* | `'point'` |  ![point.svg](../../../plume/icons/buttons/geo/point.svg) [point.svg](../../../plume/icons/buttons/geo/point.svg) | *Saisie libre d'un point dans le canevas.* | Permet à l'utilisateur de cliquer sur un point dans le canvas et mémorise la géométrie dans les métadonnées. |
-| *Tracé manuel : rectangle* | `'rectangle'` |  ![rectangle.svg](../../../plume/icons/buttons/geo/rectangle.svg) [rectangle.svg](../../../plume/icons/buttons/geo/rectangle.svg) | *Saisie libre d'un rectangle dans le canevas.* | Permet à l'utilisateur de tracer un rectangle dans le canvas et mémorise la géométrie dans les métadonnées. |
-| *Tracé manuel : ligne* | `'linestring'` |  ![linestring.svg](../../../plume/icons/buttons/geo/linestring.svg) [linestring.svg](../../../plume/icons/buttons/geo/linestring.svg) | *Saisie libre d'une ligne dans le canevas.*  | Permet à l'utilisateur de tracer une ligne dans le canvas et mémorise la géométrie dans les métadonnées. |
-| *Tracé manuel : polygone* | `'polygon'` |  ![polygon.svg](../../../plume/icons/buttons/geo/polygon.svg) [polygon.svg](../../../plume/icons/buttons/geo/polygon.svg) | *Saisie libre d'un polygone dans le canevas.* | Permet à l'utilisateur de tracer un polygone dans le canvas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : point* | `'point'` |  ![point.svg](../../../plume/icons/buttons/geo/point.svg) [point.svg](../../../plume/icons/buttons/geo/point.svg) | *Saisie libre d'un point dans le canevas.* | Permet à l'utilisateur de cliquer sur un point dans le canevas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : rectangle* | `'rectangle'` |  ![rectangle.svg](../../../plume/icons/buttons/geo/rectangle.svg) [rectangle.svg](../../../plume/icons/buttons/geo/rectangle.svg) | *Saisie libre d'un rectangle dans le canevas.* | Permet à l'utilisateur de tracer un rectangle dans le canevas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : ligne* | `'linestring'` |  ![linestring.svg](../../../plume/icons/buttons/geo/linestring.svg) [linestring.svg](../../../plume/icons/buttons/geo/linestring.svg) | *Saisie libre d'une ligne dans le canevas.*  | Permet à l'utilisateur de tracer une ligne dans le canevas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : polygone* | `'polygon'` |  ![polygon.svg](../../../plume/icons/buttons/geo/polygon.svg) [polygon.svg](../../../plume/icons/buttons/geo/polygon.svg) | *Saisie libre d'un polygone dans le canevas.* | Permet à l'utilisateur de tracer un polygone dans le canevas et mémorise la géométrie dans les métadonnées. |
+| *Tracé manuel : cercle* | `'circle'` |  ![circle.svg](../../../plume/icons/buttons/geo/circle.svg) [circle.svg](../../../plume/icons/buttons/geo/circle.svg) | *Saisie libre d'un cercle dans le canevas.* | Permet à l'utilisateur de tracer un cercle dans le canevas et mémorise la géométrie dans les métadonnées. |
 
 ### Actions à activer uniquement si l'extension PostGIS est disponible sur la base
 
@@ -179,6 +180,7 @@ geomtype = geomtype_from_wkt(wkt)
 Cette fonction renvoie `None` si le type de géométrie n'est pas pris en charge par Plume. Sinon, elle renvoie :
 - `'polygon'` pour un polygone simple (pas de multi-polygones),
 - `'point'` pour un point simple (pas de multi-points),
-- `'linestring'` pour une ligne simple (pas de multi-lignes).
+- `'linestring'` pour une ligne simple (pas de multi-lignes),
+- `'circularstring'` pour une ligne circulaire.
 
 

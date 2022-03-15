@@ -1107,7 +1107,8 @@ clés du groupe.</p>
 <dt><strong>geo_tools</strong><span class="classifier">list(str or rdflib.term.Literal)</span></dt><dd><p>Liste de fonctionnalités d’aide à la saisie des géométries
 disponibles pour les clés du groupe. Seules les valeurs suivantes
 seront prises en compte : <code class="docutils literal notranslate"><span class="pre">'show'</span></code>, <code class="docutils literal notranslate"><span class="pre">'point'</span></code>, <code class="docutils literal notranslate"><span class="pre">'linestring'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>, <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>, <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">circle</span></code>, <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 </dd>
 <dt><strong>compute</strong><span class="classifier">list(str or rdflib.term.Literal)</span></dt><dd><p>Liste de modes de calcul disponibles pour le groupe. Seules les
 valeurs <cite>“manual”</cite> et <cite>“auto”</cite> sont reconnues à ce stade.</p>
@@ -1315,8 +1316,9 @@ propriétés, mais cela ne présente aucun intérêt.</p>
 Pour le type <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>, il s’agira toujours d’une liste,
 quitte à ce qu’elle soit vide.</p>
 <p>Seules les valeurs suivantes sont acceptées (les autres seront
-silencieusement éliminées) :
-<code class="docutils literal notranslate"><span class="pre">{'show',</span> <span class="pre">'point',</span> <span class="pre">'linestring',</span> <span class="pre">'rectangle',</span> <span class="pre">'polygon',</span> <span class="pre">'bbox',</span> <span class="pre">'centroid'}</span></code></p>
+silencieusement éliminées) : <code class="docutils literal notranslate"><span class="pre">'show'</span></code>, <code class="docutils literal notranslate"><span class="pre">'point'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'linestring'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>, <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">'circle'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 <p>Lorsque la clé est en lecture seule, soit quand la propriété
 <a class="reference internal" href="#plume.rdf.widgetkey.GroupOfValuesKey.is_read_only" title="plume.rdf.widgetkey.GroupOfValuesKey.is_read_only"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GroupOfValuesKey.is_read_only</span></code></a> vaut  <code class="docutils literal notranslate"><span class="pre">True</span></code>, la liste
 contiendra au plus <cite>“show”</cite>. C’est le getter de la propriété qui 
@@ -3574,7 +3576,7 @@ de l’adapter à la longueur effective des valeurs.</p>
 <dt><strong>geo_tools</strong><span class="classifier">list(str or rdflib.term.Literal)</span></dt><dd><p>Liste de fonctionnalités d’aide à la saisie des géométries
 disponibles pour la clé. Seules les valeurs suivantes seront prises
 en compte : <code class="docutils literal notranslate"><span class="pre">'show'</span></code>, <code class="docutils literal notranslate"><span class="pre">'point'</span></code>, <code class="docutils literal notranslate"><span class="pre">'linestring'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">circle</span></code>, <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 </dd>
 <dt><strong>compute</strong><span class="classifier">list(str or rdflib.term.Literal)</span></dt><dd><p>Liste de modes de calcul disponibles pour la clé. Seules les valeurs
 <cite>“manual”</cite> et <cite>“auto”</cite> sont reconnues à ce stade.</p>
@@ -3967,8 +3969,9 @@ n’aura silencieusement aucun effet.</p>
 n’est pas <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>. Pour le type <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>, il s’agira
 toujours d’une liste, quitte à ce qu’elle soit vide.</p>
 <p>Seules les valeurs suivantes sont acceptées (les autres seront
-silencieusement éliminées) :
-<code class="docutils literal notranslate"><span class="pre">{'show',</span> <span class="pre">'point',</span> <span class="pre">'linestring',</span> <span class="pre">'rectangle',</span> <span class="pre">'polygon',</span> <span class="pre">'bbox',</span> <span class="pre">'centroid'}</span></code></p>
+silencieusement éliminées) : <code class="docutils literal notranslate"><span class="pre">'show'</span></code>, <code class="docutils literal notranslate"><span class="pre">'point'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'linestring'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>, <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">'circle'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 <p>Lorsque la clé est en lecture seule, soit quand la propriété
 <a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_read_only" title="plume.rdf.widgetkey.ValueKey.is_read_only"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code></a> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, la liste
 contiendra au plus <cite>“show”</cite>. C’est le getter de la propriété qui 
