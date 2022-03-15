@@ -2607,7 +2607,8 @@ class GroupOfValuesKey(GroupKey):
         Liste de fonctionnalités d'aide à la saisie des géométries
         disponibles pour les clés du groupe. Seules les valeurs suivantes
         seront prises en compte : ``'show'``, ``'point'``, ``'linestring'``,
-        ``'rectangle'``, ``'polygon'``, ``'bbox'``, ``'centroid'``. 
+        ``'rectangle'``, ``'polygon'``, ``circle``, ``'bbox'``,
+        ``'centroid'``. 
     compute : list(str or rdflib.term.Literal)
         Liste de modes de calcul disponibles pour le groupe. Seules les
         valeurs `'manual'` et `'auto'` sont reconnues à ce stade.
@@ -3082,8 +3083,9 @@ class GroupOfValuesKey(GroupKey):
         quitte à ce qu'elle soit vide.
         
         Seules les valeurs suivantes sont acceptées (les autres seront
-        silencieusement éliminées) :
-        ``{'show', 'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+        silencieusement éliminées) : ``'show'``, ``'point'``,
+        ``'linestring'``, ``'rectangle'``, ``'polygon'``, ``'circle'``,
+        ``'bbox'``, ``'centroid'``.
         
         Lorsque la clé est en lecture seule, soit quand la propriété
         :py:attr:`GroupOfValuesKey.is_read_only` vaut  ``True``, la liste
@@ -3108,7 +3110,7 @@ class GroupOfValuesKey(GroupKey):
             value = []
         else:
             l = ['show', 'point', 'linestring', 'rectangle',
-                'polygon', 'bbox', 'centroid']
+                'polygon', 'circle', 'bbox', 'centroid']
             value = [str(o) for o in value if str(o) in l]
         self._geo_tools = value
 
@@ -3683,7 +3685,7 @@ class ValueKey(ObjectKey):
         Liste de fonctionnalités d'aide à la saisie des géométries
         disponibles pour la clé. Seules les valeurs suivantes seront prises
         en compte : ``'show'``, ``'point'``, ``'linestring'``, ``'rectangle'``,
-        ``'polygon'``, ``'bbox'``, ``'centroid'``.
+        ``'polygon'``, ``circle``, ``'bbox'``, ``'centroid'``.
     compute : list(str or rdflib.term.Literal)
         Liste de modes de calcul disponibles pour la clé. Seules les valeurs
         `'manual'` et `'auto'` sont reconnues à ce stade.
@@ -4219,8 +4221,9 @@ class ValueKey(ObjectKey):
         toujours d'une liste, quitte à ce qu'elle soit vide.
         
         Seules les valeurs suivantes sont acceptées (les autres seront
-        silencieusement éliminées) :
-        ``{'show', 'point', 'linestring', 'rectangle', 'polygon', 'bbox', 'centroid'}``
+        silencieusement éliminées) : ``'show'``, ``'point'``,
+        ``'linestring'``, ``'rectangle'``, ``'polygon'``, ``'circle'``,
+        ``'bbox'``, ``'centroid'``.
         
         Lorsque la clé est en lecture seule, soit quand la propriété
         :py:attr:`ValueKey.is_read_only` vaut ``True``, la liste
@@ -4248,7 +4251,7 @@ class ValueKey(ObjectKey):
                 value = []
             else:
                 l = ['show', 'point', 'linestring', 'rectangle',
-                    'polygon', 'bbox', 'centroid']
+                    'polygon', 'circle', 'bbox', 'centroid']
                 value = [str(o) for o in value if str(o) in l]
             self._geo_tools = value
         else:
