@@ -153,7 +153,7 @@ Pour extraire la géométrie seule (toujours en WKT) d'une part, et le référen
 from plume.rdf.utils import split_rdf_wkt
 
 res = split_rdf_wkt(rdf_wkt)
-if r:
+if res:
     geom_wkt, srid = res
     ...
 
