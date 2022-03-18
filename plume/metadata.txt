@@ -13,13 +13,20 @@ about=Plume, pour PLUgin MÉtadonnées, est un plugin de consultation
     tout en permettant une large personnalisation des catégories de
     métadonnées présentées à l'utilisateur lorsqu'il est couplé avec
     l'extension PostgreSQL PlumePg.
-version=0.2.9
+version=0.2.10
 qgisMinimumVersion=3.10
 # Optional items:
 changelog=
     ==========================================================================
     = PLUme MEtadonnees
     = Saisie et consultation des métadonnées du patrimoine PostgreSQL
+    ==========================================================================
+    ** 0.2.10 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.22
+       **Gestion des géométries 
+         **Calcul automatique via Qgis
+         **Calcul automatique via PostgreSQL
+         **Saisie manuel (Rectangle, Point, Polygone, Multiligne)
     ==========================================================================
     ** 0.2.9 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.22

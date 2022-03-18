@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle) 
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -11,6 +11,10 @@ from qgis.gui import QgsDateTimeEdit
 import os
 from . import bibli_plume
 from .bibli_plume import *
+from .bibli_plume_tools_map import *
+import psycopg2
+from plume.pg import queries
+from plume.rdf.utils import wkt_with_srid
 
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
@@ -28,6 +32,35 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     _iconMinusTempGoProperties = _pathIcons + "/color_button_Minus_GoProperties.svg"
     _iconMinusTempGoValues     = _pathIcons + "/color_button_Minus_GoValues.svg"
     _iconMinusTempTgroup       = _pathIcons + "/color_button_Minus_Tgroup.svg"
+    _iconSourcesGeoButton      = _pathIcons + "/geo_button.svg"
+    #-
+    _pathIconsgeo = os.path.dirname(__file__) + "/icons/buttons/geo"
+    _iconSourcesGeo_bbox_pg       = _pathIconsgeo + "/bbox_pg.svg"
+    _iconSourcesGeo_bbox_qgis     = _pathIconsgeo + "/bbox_qgis.svg"
+    _iconSourcesGeo_centroid_pg   = _pathIconsgeo + "/centroid_pg.svg"
+    _iconSourcesGeo_centroid_qgis = _pathIconsgeo + "/centroid_qgis.svg"
+    _iconSourcesGeo_linestring    = _pathIconsgeo + "/linestring.svg"
+    _iconSourcesGeo_point         = _pathIconsgeo + "/point.svg"
+    _iconSourcesGeo_polygon       = _pathIconsgeo + "/polygon.svg"
+    _iconSourcesGeo_rectangle     = _pathIconsgeo + "/rectangle.svg"
+    _iconSourcesGeo_circle        = _pathIconsgeo + "/circle.svg"
+    _iconSourcesGeo_show          = _pathIconsgeo + "/show.svg"
+    _iconSourcesGeo_hide          = _pathIconsgeo + "/hide.svg"
+    _dicGeoTools = {  \
+                   'hide'         : {'libelle' : 'Visualisation (caché)',                    'icon' : _iconSourcesGeo_show,          'toolTip' :	'Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.'}, \
+                   'show'         : {'libelle' : 'Visualisation (affiché)',                  'icon' : _iconSourcesGeo_hide,          'toolTip' :	'Visualisation dans le canevas de la géométrie renseignée dans les métadonnées.'}, \
+                   'point'        : {'libelle' : 'Tracé manuel : point',                     'icon' : _iconSourcesGeo_point,         'toolTip' :	'Saisie libre d\'un point dans le canevas.'},                                      \
+                   'rectangle'    : {'libelle' : 'Tracé manuel : rectangle',                 'icon' : _iconSourcesGeo_rectangle,     'toolTip' :	'Saisie libre d\'un rectangle dans le canevas.'},                                  \
+                   'circle'       : {'libelle' : 'Tracé manuel : cercle',                    'icon' : _iconSourcesGeo_circle,        'toolTip' :	'Saisie libre d\'un cercle dans le canevas.'},                                  \
+                   'linestring'   : {'libelle' : 'Tracé manuel : ligne',                     'icon' : _iconSourcesGeo_linestring,    'toolTip' :	'Saisie libre d\'une ligne dans le canevas.\n ** Un clique gauche pour chaque création de point\n ** Un double-clique pour créer le dernier point, et valider votre géométrie de type multiligne'},                                     \
+                   'polygon'      : {'libelle' : 'Tracé manuel : polygone',                  'icon' : _iconSourcesGeo_polygon,       'toolTip' :	'Saisie libre d\'un polygone dans le canevas.\n ** Un clique gauche pour chaque création de point\n ** Un double-clique pour créer le dernier point, qui fermera votre polygone avec le premier point, \net validera votre géométrie de type polygone'},                                     \
+                   'bboxpg'       : {'libelle' : 'Calcul du rectangle d\'emprise (PostGIS)', 'icon' : _iconSourcesGeo_bbox_pg,       'toolTip' :	'Calcule le rectangle d\'emprise à partir des données. Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.'},            \
+                   'centroidpg'   : {'libelle' : 'Calcul du centroïde (PostGIS)',            'icon' : _iconSourcesGeo_centroid_pg,   'toolTip' :	'Calcule le centre du rectangle d\'emprise à partir des données. Le calcul est réalisé côté serveur, via les fonctionnalités de PostGIS.'},  \
+                   'bboxqgis'     : {'libelle' : 'Calcul du rectangle d\'emprise (Qgis)',    'icon' : _iconSourcesGeo_bbox_qgis,     'toolTip' :	'Calcule le rectangle d\'emprise à partir des données, via les fonctionnalités de Qgis.'},                                                   \
+                   'centroidqgis' : {'libelle' : 'Calcul du centroïde (Qgis)',               'icon' : _iconSourcesGeo_centroid_qgis, 'toolTip' :	'Calcule le centre du rectangle d\'emprise à partir des données, via les fonctionnalités de Qgis.'}                                          \
+                   }
+    self._dicGeoTools = _dicGeoTools
+    #-
     _mListeIconsButtonPlusMinus = [ _iconPlusTempGoProperties, _iconPlusTempGoValues,  _iconPlusTempTgroup, \
                                    _iconMinusTempGoProperties, _iconMinusTempGoValues, _iconMinusTempTgroup ]
 
@@ -352,7 +385,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QLABEL
     _mObjetQLabelEtiquette = generationLabel(self, _keyObjet, _valueObjet, _mParentEnCours)
     # == QLABEL
-    
+
     #---------------------------
     # == QTOOLBUTTON   Button MOINS
     if _valueObjet['has minus button'] :
@@ -505,6 +538,165 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                                                     'unit actions' : _mListActions}) 
     # == QTOOLBUTTON  UNITS
     #---------------------------
+
+
+    #---------------------------
+    # == QTOOLBUTTON  GEO TOOLS
+    if _valueObjet['geo tools'] :
+       _editStyle = self.editStyle             #style saisie
+       #--
+       _mObjetQToolButton = QtWidgets.QToolButton()
+       _mObjetQToolButton.setObjectName(str(_keyObjet))
+       self.dic_geoToolsShow[_keyObjet] = False  # Param for display BBOX ou no
+       #---------------------------
+       # Visualisation mode read
+       if _valueObjet['geo tools'] == ['show'] :
+          majVisuButton(self, self, _mObjetQToolButton, self.dic_geoToolsShow, _keyObjet, _valueObjet) 
+          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
+          _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButtonGeoToolsShow(self, _mObjetQToolButton, _keyObjet, _valueObjet))
+       #---------------------------
+       # Visualisation mode edit
+       else :
+          #MenuQToolButton                        
+          _mObjetQMenu = QMenu()
+          majVisuButton(self, self, _mObjetQToolButton, self.dic_geoToolsShow, _keyObjet, _valueObjet) 
+          _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:250px; border-style:" + _editStyle  + "; border-width: 0px;}")
+          _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButtonGeoToolsShow(self, _mObjetQToolButton, _keyObjet, _valueObjet))
+          _mObjetQMenu.setToolTipsVisible(True)
+          #------------
+          _mListActions = []
+          #Attention substitution on enlève show
+          _valueObjet_geo_tools = [ elem for elem in _valueObjet['geo tools'] if elem != 'show' ] 
+          for elemQMenuItem in _valueObjet_geo_tools :
+              elemQMenuItemForBboxCentroid = elemQMenuItem
+              #--
+              if elemQMenuItem in ['bbox','centroid'] :
+                 #Tjs QGIS
+                 if self.layer.wkbType() != QgsWkbTypes.NoGeometry :  
+                    elemQMenuItem = elemQMenuItemForBboxCentroid + "qgis"
+                    _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+                    _mObjetQMenuItem.setText(_dicGeoTools[elemQMenuItem]['libelle'])
+                    _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+                    _mObjetQMenuItem.setIcon(QIcon(_dicGeoTools[elemQMenuItem]['icon']))
+                    _mObjetQMenu.addAction(_mObjetQMenuItem)
+                    _mObjetQMenuItem.setToolTip(_dicGeoTools[elemQMenuItem]['toolTip'])
+                    #- Actions
+                    _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonGeoTools(self, _mObjetQToolButton, _keyObjet, _valueObjet))
+                    _mListActions.append(_mObjetQMenuItem)
+                    #Seulement si Postgis Installée
+                    if self.postgis_exists :
+                       elemQMenuItem = elemQMenuItemForBboxCentroid + "pg"  
+                       _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+                       _mObjetQMenuItem.setText(_dicGeoTools[elemQMenuItem]['libelle'])
+                       _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+                       _mObjetQMenuItem.setIcon(QIcon(_dicGeoTools[elemQMenuItem]['icon']))
+                       _mObjetQMenu.addAction(_mObjetQMenuItem)
+                       _mObjetQMenuItem.setToolTip(_dicGeoTools[elemQMenuItem]['toolTip'])
+                       #- Actions
+                       _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonGeoTools(self, _mObjetQToolButton, _keyObjet, _valueObjet))
+                       _mListActions.append(_mObjetQMenuItem)
+              #--
+              else :
+                 _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+                 _mObjetQMenuItem.setText(_dicGeoTools[elemQMenuItem]['libelle'])
+                 _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+                 _mObjetQMenuItem.setIcon(QIcon(_dicGeoTools[elemQMenuItem]['icon']))
+                 _mObjetQMenu.addAction(_mObjetQMenuItem)
+                 _mObjetQMenuItem.setToolTip(_dicGeoTools[elemQMenuItem]['toolTip'])
+                 #- Actions
+                 _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonGeoTools(self, _mObjetQToolButton,_keyObjet, _valueObjet))
+                 _mListActions.append(_mObjetQMenuItem)
+
+          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
+          _mObjetQToolButton.setMenu(_mObjetQMenu)
+          #Dict des objets instanciés
+          self.mDicObjetsInstancies[_keyObjet].update({'geo widget'  : _mObjetQToolButton, 
+                                                       'geo menu'    : _mObjetQMenu,
+                                                       'geo actions' : _mListActions}) 
+       #---------------------------
+       #Masqué /Visible Générale                                           
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
+       #--                                 
+       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'geo widget')
+       _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
+       
+    # == QTOOLBUTTON  GEO TOOLS
+    #---------------------------
+    return  
+
+#==================================================
+# Traitement action sur QToolButton Geo Visualisation
+def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, __valueObjet):
+    #Supprime si l'objet existe et desactive le process QgsMapTool
+    try : 
+       for k, v in self.dic_objetMap.items() :
+          try : 
+             qgis.utils.iface.mapCanvas().unsetMapTool(self.dic_objetMap[k])
+          except :
+             pass        
+    except :
+       pass        
+    #Supprime si l'objet existe et desactive le process QgsMapTool
+ 
+    _selectItem = __mObjetQToolButton.sender()
+
+    self.dic_geoToolsShow[__keyObjet] = False if self.dic_geoToolsShow[__keyObjet] else True  # Param for display BBOX ou no
+    majVisuButton(self, self, __mObjetQToolButton, self.dic_geoToolsShow, __keyObjet, __valueObjet) 
+
+    mCoordSaisie  = self.mDicObjetsInstancies[__keyObjet]['main widget'].text() if self.mDicObjetsInstancies[__keyObjet]['main widget type'] == "QLabel" else self.mDicObjetsInstancies[__keyObjet]['main widget'].toPlainText()
+    mCanvas       = qgis.utils.iface.mapCanvas()
+    mAuthid       = mCanvas.mapSettings().destinationCrs().authid()
+    
+    if self.dic_geoToolsShow[__keyObjet] : 
+       self.dic_objetMap[__keyObjet] = GeometryMapToolShow(self, __keyObjet, mCanvas, mAuthid, mCoordSaisie, self.dic_geoToolsShow[__keyObjet])
+    else :
+       #if not create rubberBand res = None
+       eraseRubberBand(self, self.dic_objetMap, __keyObjet)
+    return  
+
+#==================================================
+# Traitement action sur QToolButton Geo Actions
+def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __valueObjet):
+    _selectItem = self.mDicObjetsInstancies[__keyObjet]['geo menu'].sender()
+    self.dic_geoToolsShow[__keyObjet] = False  # Param for display BBOX ou no
+    #-
+    for k, v in self._dicGeoTools.items() :
+        if _selectItem.text() == self._dicGeoTools[k]['libelle'] :
+           mAction = k
+           break 
+    #-
+    mCanvas      = qgis.utils.iface.mapCanvas()
+    srid         = mCanvas.mapSettings().destinationCrs().authid()
+    mObjet       = self.mDicObjetsInstancies[__keyObjet]['main widget']
+    #-
+    eraseRubberBand(self, self.dic_objetMap, __keyObjet)
+    
+    if mAction in ["rectangle", "point", "polygon", "linestring", "circle"] : 
+       self.dic_objetMap[__keyObjet] = GeometryMapTool(self, mAction, __mObjetQToolButton, __keyObjet, mCanvas, srid, self.dic_geoToolsShow[__keyObjet])
+       qgis.utils.iface.mapCanvas().setMapTool(self.dic_objetMap[__keyObjet])
+    elif mAction in ["bboxpg",] :
+       mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
+       srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+       #-
+       mKeySql = queries.query_get_geom_extent(self.schema, self.table, self.geom)
+       geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    elif mAction in ["centroidpg",] : 
+       mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
+       srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+       #-
+       mKeySql = queries.query_get_geom_centroid(self.schema, self.table, self.geom)
+       geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    elif mAction in ["bboxqgis",] :
+       srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
+       geom_wkt = self.layer.extent().asWktPolygon()
+    elif mAction in ["centroidqgis",] : 
+       srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
+       geom_wkt = self.layer.extent().center().asWkt()
+    #------
+    if mAction in ["bboxpg", "centroidpg", "bboxqgis", "centroidqgis"] :
+       rdf_wkt = wkt_with_srid(geom_wkt, srid)
+       mObjet.setPlainText(rdf_wkt)
+
     return  
 
 #==================================================
@@ -875,9 +1067,46 @@ def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
        __mObjetQLabelEtiquette.setMaximumSize(QtCore.QSize(self.tabWidget.width(), 18))
        #Tooltip                        
        if valueExiste('help text', __valueObjet) : __mObjetQLabelEtiquette.setToolTip(__valueObjet['help text'])
-
     # == QLABEL
+    
+    """
+    # == Couverture géographiques QLabel "Rectangle d'emprise" or "Centroide"
+    if __valueObjet['label'] == "Rectangle d'emprise" : 
+       _pathIcons = os.path.dirname(__file__) + "/icons/general"
+       _iconSourcesAuto          = _pathIcons + "/geoauto.svg"
+       _iconSourcesManu          = _pathIcons + "/geomanu.svg"
+       createToolBarGeographic(self, __keyObjet, self.mDicObjetsInstancies[__keyObjet]['label widget'], _iconSourcesAuto, _iconSourcesManu) 
+    # == Couverture géographiques QLabel "Rectangle d'emprise" or "Centroide"
+    """
+
+
     return __mObjetQLabelEtiquette
+
+#==========================
+def createToolBarGeographic(self, key_keyObjet,  _keyObjet, _iconSourcesAuto, _iconSourcesManu ):
+    #Menu Dialog                                                                               
+    self.mMenuBarGeographic = QMenuBar(_keyObjet)
+    self.mMenuBarGeographic.setGeometry(QtCore.QRect(_keyObjet.width() - 240, 0, 80, 18))
+    _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun        
+    #--
+    mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Automatique") 
+    plumeAutoGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
+    if self.toolBarDialog == "picture" : plumeAutoGeographic.setStyleSheet("QPushButton { border: 0px solid black;}")
+    plumeAutoGeographic.setIcon(QIcon(_iconSourcesAuto))
+    plumeAutoGeographic.setObjectName("Automatique")
+    plumeAutoGeographic.setToolTip(mText)
+    plumeAutoGeographic.setGeometry(QtCore.QRect( 0, -2,18,18))
+    plumeAutoGeographic.clicked.connect(lambda : self.clickButtonsActionsGeographic(self.mDicObjetsInstancies[key_keyObjet]['main widget']))
+    #--
+    mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Manuel") 
+    plumeManuGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
+    if self.toolBarDialog == "picture" : plumeManuGeographic.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
+    plumeManuGeographic.setIcon(QIcon(_iconSourcesManu))
+    plumeManuGeographic.setObjectName("Manuel")
+    plumeManuGeographic.setToolTip(mText)
+    plumeManuGeographic.setGeometry(QtCore.QRect( 30, -2,18,18))
+    plumeManuGeographic.clicked.connect(lambda : self.clickButtonsActionsGeographic(self.mDicObjetsInstancies[key_keyObjet]['main widget']))
+    return
 
 #==================================================
 # Retourne si la valeur n'est pas nulle ou égale à "" : Clé et dictionnaire des widgets

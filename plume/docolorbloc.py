@@ -9,8 +9,8 @@ from qgis.core import *
 from .colorbloc_ui import Ui_Dialog_ColorBloc
 
 class Dialog(QDialog, Ui_Dialog_ColorBloc):
-      def __init__(self):
+      def __init__(self, mDialog):
           QDialog.__init__(self)
-          self.setupUiColorBloc(self)
+          self.setupUiColorBloc(self, mDialog)
 
 		

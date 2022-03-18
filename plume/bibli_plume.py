@@ -261,7 +261,7 @@ def saveMetaIhm(self, _schema, _table) :
 def executeSql(pointeur, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
     pointeurBase = pointeur.cursor() 
-
+ 
     try :
       if isinstance(_mKeySql, tuple) :
          pointeurBase.execute(_mKeySql[0], _mKeySql[1])
@@ -454,6 +454,10 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["QGroupBoxTranslationGroup"]   = "#FF8D7E"
        mDicAutreColor["QTabWidget"]                  = "#958B62"
        mDicAutreColor["QLabelBackGround"]            = "#BFEAE2"
+       mDicAutreColor["geomColor"]                   = "#958B62"
+       mDicAutreColor["geomEpaisseur"]               = "2"
+       mDicAutreColor["geomPoint"]                   = "ICON_X"
+       mDicAutreColor["geomZoom"]                    = "false"
 
        for key, value in mDicAutreColor.items():
            if not mSettings.contains(key) :
@@ -550,7 +554,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.2.9"
+def returnVersion() : return "version 0.2.10"
 
 #==================================================
 #Execute Pdf 

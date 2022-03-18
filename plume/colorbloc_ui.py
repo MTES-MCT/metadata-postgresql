@@ -11,13 +11,15 @@ from qgis.gui import QgsDateTimeEdit
 from qgis.core import  QgsSettings
 
 class Ui_Dialog_ColorBloc(object):
-    def setupUiColorBloc(self, DialogColorBloc):
+        
+    def setupUiColorBloc(self, DialogColorBloc, mDialog):
+        self.mDialog = mDialog
         self.DialogColorBloc = DialogColorBloc
         self.zMessTitle    =  QtWidgets.QApplication.translate("colorbloc_ui", "User settings / Customization of the IHM.", None)
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
 
         self.DialogColorBloc.setObjectName("DialogConfirme")
-        self.DialogColorBloc.setFixedSize(900,570)
+        self.DialogColorBloc.setFixedSize(900,585)
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
@@ -69,8 +71,8 @@ class Ui_Dialog_ColorBloc(object):
 
         #========
         self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
-        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround"}
-        self.dicListLettreLabel = { 0:"Onglet", 1:"Groupe général",  2:"Groupe de propriétés",  3:"Groupe de valeurs",  4:"Groupe de traduction", 5:"Libellé"}
+        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor"}
+        self.dicListLettreLabel = { 0:"Onglet", 1:"Groupe général",  2:"Groupe de propriétés",  3:"Groupe de valeurs",  4:"Groupe de traduction", 5:"Libellé", 6:"Couleur des outils de géométrie"}
         #========
         self.groupBoxAll = QtWidgets.QGroupBox(self.tab_widget_Perso)
         self.groupBoxAll.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
@@ -80,7 +82,6 @@ class Ui_Dialog_ColorBloc(object):
                                 border-color: #958B62;      \
                                 font: bold 11px;         \
                                 }")
-
         #---First Plan-------
         button_0, img_0, reset_0 = QtWidgets.QPushButton(self.groupBoxAll), QtWidgets.QLabel(self.groupBoxAll), QtWidgets.QPushButton(self.groupBoxAll)
         self.genereButtonAction(button_0, img_0, reset_0, "button_0", "img_0", "reset_0", 0)
@@ -180,6 +181,64 @@ class Ui_Dialog_ColorBloc(object):
         self.comboToolBarDialog.currentTextChanged.connect(lambda : self.functionToolBarDialog(mDicToolBarDialog))
         mValueTemp = [ k for k, v in mDicToolBarDialog.items() if v == self.comboToolBarDialog.currentText()][0]
         self.zComboToolBarDialog = mValueTemp  # si ouverture sans chgt et sauve
+
+        #======== for Geometry
+        #-
+        self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
+        self.geomPoint       = self.mDic_LH["geomPoint"]       
+        self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
+        #-
+        self.labelgeomEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
+        self.labelgeomEpaisseur.setGeometry(QtCore.QRect(10, 300, 180, 30))
+        self.labelgeomEpaisseur.setAlignment(Qt.AlignRight)        
+        self.labelgeomEpaisseur.setText("Epaisseur des outils de géométrie :")        
+        #-
+        self.spingeomEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
+        self.spingeomEpaisseur.setGeometry(QtCore.QRect(205,296 ,50, 20))
+        self.spingeomEpaisseur.setMaximum(5)
+        self.spingeomEpaisseur.setMinimum(0)
+        self.spingeomEpaisseur.setValue(1)
+        self.spingeomEpaisseur.setSingleStep(1)
+        self.spingeomEpaisseur.setDecimals(0)
+        self.spingeomEpaisseur.setSuffix(" px")
+        self.spingeomEpaisseur.setObjectName("spingeomEpaisseur")
+        self.spingeomEpaisseur.setValue(int(self.geomEpaisseur))         
+        self.spingeomEpaisseur.valueChanged.connect(self.functiongeomEpaisseur)
+        self.geomEpaisseur = self.spingeomEpaisseur.value()  # si ouverture sans chgt et sauve
+        #--
+        mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
+        mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
+        self.mDialog.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
+
+        mDicType = [ elem.lower().capitalize() for elem in mDicType ]
+        self.labelTypegeomPoint = QtWidgets.QLabel(self.groupBoxAll)
+        self.labelTypegeomPoint.setGeometry(QtCore.QRect(-20, 320, 210, 30))
+        self.labelTypegeomPoint.setAlignment(Qt.AlignRight)        
+        self.labelTypegeomPoint.setText("Symbole de la géométrie POINT :")        
+        #--
+        self.comboTypegeomPoint = QtWidgets.QComboBox(self.groupBoxAll)
+        self.comboTypegeomPoint.setGeometry(QtCore.QRect(205, 315, 190, 20))
+        self.comboTypegeomPoint.setObjectName("comboTypegeomPoint")
+        self.comboTypegeomPoint.addItems( mDicType )
+        self.comboTypegeomPoint.currentTextChanged.connect(self.functioncomboTypegeomPoint)
+        self.comboTypegeomPoint.setCurrentText(self.geomPoint.lower().capitalize())         
+        self.geomPoint = self.comboTypegeomPoint.currentText().upper()  # si ouverture sans chgt et sauve
+        #--
+        self.labelgeomZoom = QtWidgets.QLabel(self.groupBoxAll)
+        self.labelgeomZoom.setGeometry(QtCore.QRect(-20, 340, 210, 30))
+        self.labelgeomZoom.setAlignment(Qt.AlignRight)        
+        self.labelgeomZoom.setText("Zoom sur la visualisation géométrique :")        
+        #--
+        self.QCheckgeomZoom = QtWidgets.QCheckBox(self.groupBoxAll)
+        self.QCheckgeomZoom.setGeometry(QtCore.QRect(205, 335, 190, 20))
+        self.QCheckgeomZoom.setObjectName("QCheckgeomZoom")
+        self.QCheckgeomZoom.setChecked(self.geomZoom)  
+        self.QCheckgeomZoom.toggled.connect(self.functiongeomZoom)       
+        self.geomZoom = True if self.QCheckgeomZoom.isChecked() else False  # si ouverture sans chgt et sauve
+        #--
+        button_6, img_6, reset_6 = QtWidgets.QPushButton(self.groupBoxAll), QtWidgets.QLabel(self.groupBoxAll), QtWidgets.QPushButton(self.groupBoxAll)
+        self.genereButtonAction(button_6, img_6, reset_6, "button_6", "img_6", "reset_6", 6)
+        #======== for Geometry
 
         #======== wysiwyg
         self.createWYSIWYG()
@@ -549,8 +608,7 @@ class Ui_Dialog_ColorBloc(object):
         # --
         return 
 
-    #==========================         
-    #==========================             
+    #==========================       
     def functionEpai(self):
         self.zEpaiQGroupBox = self.spinBoxEpai.value()
         # --
@@ -558,6 +616,21 @@ class Ui_Dialog_ColorBloc(object):
         # --
         return 
 
+    #==========================       
+    # for geometry         
+    def functiongeomEpaisseur(self):
+        self.geomEpaisseur = self.spingeomEpaisseur.value()
+        return 
+
+    def functioncomboTypegeomPoint(self):
+        self.geomPoint = self.comboTypegeomPoint.currentText().upper()
+        return 
+
+    def functiongeomZoom(self):
+        self.geomZoom = True if self.QCheckgeomZoom.isChecked() else False
+        return 
+    # for geometry         
+ 
     #==========================         
     #==========================         
     def createWYSIWYG(self):
@@ -1088,39 +1161,65 @@ class Ui_Dialog_ColorBloc(object):
     #==========================         
     #==========================         
     def genereButtonAction(self, mButton, mImage, mReset, mButtonName, mImageName, mResetName, compt):
-        for i in range(7) :
-            if i <= 7:
-               ii = 1
-               mX1, mY1 = (ii * 10) +  0,  (i * 30) + 10 
-               mX2, mY2 = (ii * 10) + 185, (i * 30) + 10
-               mX3, mY3 = (ii * 10) + 230, (i * 30) + 10
-               if i == compt : break
- 
-        #
-        mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
-        mButton.setObjectName(mButtonName)
-        #mButton.setText(self.dicListBlocs[self.dicListLettreLabel[i]]) if self.dicListLettre[i] in self.dicListBlocs else mButton.setText(self.dicListLettreLabel[i])
-        mButton.setText(self.dicListLettreLabel[i])
-        #
-        mImage.setGeometry(QtCore.QRect(mX2, mY2, 40, 20))
-        mImage.setObjectName(mImageName)
-        if self.dicListLettre[i] in self.mDic_LH :
-           varColor = str( self.mDic_LH[self.dicListLettre[i]] ) 
-           zStyleBackground = "QLabel { background-color : "  + varColor + "; }"
-           mImage.setStyleSheet(zStyleBackground)
-        #
-        mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
-        mReset.setObjectName(mResetName)
-        mReset.setText("Réinitialiser")
-        #
-        mButton.clicked.connect(lambda : self.functionColor(mImage, i))
-        mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))
+        if compt < 6 :  
+           for i in range(7) :
+               if i <= 7: 
+                  ii = 1
+                  mX1, mY1 = (ii * 10) +  0,  (i * 30) + 10 
+                  mX2, mY2 = (ii * 10) + 185, (i * 30) + 10
+                  mX3, mY3 = (ii * 10) + 230, (i * 30) + 10
+                  if i == compt : break  
+           #
+           mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
+           mButton.setObjectName(mButtonName)
+           #mButton.setText(self.dicListBlocs[self.dicListLettreLabel[i]]) if self.dicListLettre[i] in self.dicListBlocs else mButton.setText(self.dicListLettreLabel[i])
+           mButton.setText(self.dicListLettreLabel[i])
+           #
+           mImage.setGeometry(QtCore.QRect(mX2, mY2, 40, 20))
+           mImage.setObjectName(mImageName)
+           if self.dicListLettre[i] in self.mDic_LH :
+              varColor = str( self.mDic_LH[self.dicListLettre[i]] ) 
+              zStyleBackground = "QLabel { background-color : "  + varColor + "; }"
+              mImage.setStyleSheet(zStyleBackground)
+           #
+           mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
+           mReset.setObjectName(mResetName)
+           mReset.setText("Réinitialiser")
+           #
+           mButton.clicked.connect(lambda : self.functionColor(mImage, i))
+           mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))
         
-        #Pour masquer les boutons du GrouBox premeir cadre
-        if compt == 1 :
-           mImage.setVisible(False)
-           mButton.setVisible(False)
-           mReset.setVisible(False)
+           #Pour masquer les boutons du GrouBox premier cadre
+           if compt == 1 :
+              mImage.setVisible(False)
+              mButton.setVisible(False)
+              mReset.setVisible(False)
+
+        #for geometry       
+        elif compt == 6 :  
+           ii = 1
+           i = compt
+           mX1, mY1 = (ii * 10) +  0,  360 
+           mX2, mY2 = (ii * 10) + 185, 360
+           mX3, mY3 = (ii * 10) + 230, 360
+           mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
+           mButton.setObjectName(mButtonName)
+           mButton.setText(self.dicListLettreLabel[i])
+           #
+           mImage.setGeometry(QtCore.QRect(mX2, mY2, 40, 20))
+           mImage.setObjectName(mImageName)
+           if self.dicListLettre[i] in self.mDic_LH :
+              varColor = str( self.mDic_LH[self.dicListLettre[i]] ) 
+              zStyleBackground = "QLabel { background-color : "  + varColor + "; }"
+              mImage.setStyleSheet(zStyleBackground)
+           #
+           mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
+           mReset.setObjectName(mResetName)
+           mReset.setText("Réinitialiser")
+           #
+           mButton.clicked.connect(lambda : self.functionColor(mImage, i))
+           mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))
+
         return 
 
     #==========================         
@@ -1134,7 +1233,7 @@ class Ui_Dialog_ColorBloc(object):
         if QMessageBox.question(None, mTitre, mLib + "<br><br>" + mLib1,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes :
            mChild_premier = [mObj for mObj in self.groupBoxAll.children()] 
 
-           mLettre, mColorFirst, mDicSaveColor = "", None, {}  
+           mLettre, mColorFirst, mDicSaveColor = "", None, {}
            for mObj in mChild_premier :
                for i in range(7) :
                    if mObj.objectName() == "img_" + str(i) :
@@ -1143,6 +1242,14 @@ class Ui_Dialog_ColorBloc(object):
                       mColorFirst  = mColor.name()
                       mDicSaveColor[mLettre] = mColorFirst
                       break
+
+           #======== for Geometry
+           #Ajouter si autre param
+           mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
+           mDicSaveColor["geomPoint"]     = self.geomPoint
+           mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
+           print(mDicSaveColor)
+           #======== for Geometry
            #-
            mSettings.beginGroup("PLUME")
            mSettings.beginGroup("BlocsColor")
@@ -1224,7 +1331,8 @@ class Ui_Dialog_ColorBloc(object):
                 "QGroupBoxGroupOfValues",
                 "QGroupBoxTranslationGroup",
                 "QTabWidget",
-                "QLabelBackGround"
+                "QLabelBackGround",
+                "geomColor"
                 ]
         listBlocsValue = [
                 "#958B62",
@@ -1232,7 +1340,8 @@ class Ui_Dialog_ColorBloc(object):
                 "#5770BE",         
                 "#FF8D7E",
                 "#958B62",
-                "#BFEAE2"   
+                "#BFEAE2",   
+                "#958B62"
                 ] 
         mDicDashBoard = dict(zip(listBlocsKey, listBlocsValue))
  

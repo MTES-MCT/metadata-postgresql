@@ -76,6 +76,16 @@ class Ui_Dialog_plume(object):
         self.urlCswDefaut     = self.mDic_LH["urlCswDefaut"]       #l'Url par defaut
         self.urlCswIdDefaut   = self.mDic_LH["urlCswIdDefaut"]     #l'Id de l'Url par defaut
         self.urlCsw           = self.mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées
+        # for geometry
+        self.geomColor       = self.mDic_LH["geomColor"]       
+        self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
+        self.geomPoint       = self.mDic_LH["geomPoint"]       
+        self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
+        #-
+        mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
+        mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
+        self.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
+        # for geometry
         # liste des Paramétres UTILISATEURS
         bibli_plume.listUserParam(self)
         # liste des Paramétres UTILISATEURS
@@ -324,6 +334,7 @@ class Ui_Dialog_plume(object):
     # == Gestion des actions du bouton Changement des langues
     #==========================
 
+
     #==================================================
     #AJOUT 30 JANVIER 2022
     def menuContextuelQGroupBox(self, _keyObjet, _mObjetGroupBox, point):
@@ -372,6 +383,19 @@ class Ui_Dialog_plume(object):
         #--
         self.mDicObjetsInstancies = _dict
         self.mFirstColor = True
+        self.dic_geoToolsShow = {} # For visualisation sur BBOX, Centroid and geometry
+        #Supprime si l'objet existe l'affichage du rubberBand et desactive le process QgsMapTool
+        try : 
+           for k, v in self.dic_objetMap.items() :
+              try : 
+                 qgis.utils.iface.mapCanvas().unsetMapTool(self.dic_objetMap[k])
+                 self.dic_objetMap[k].rubberBand.hide()
+              except :
+                 pass        
+        except :
+           pass        
+        #Supprime si l'objet existe l'affichage du rubberBand
+        self.dic_objetMap     = {} # For visualisation sur BBOX, Centroid and geometry
         #--
         for key, value in _dict.items() :
             if _dict[key]['main widget type'] != None :
@@ -437,6 +461,7 @@ class Ui_Dialog_plume(object):
                  self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
                  self.data       = bibli_plume.returnObjetData(self)
                  self.mode = "read"
+                 self.loadLayer = self.ifLayerLoad(self.layer)
                  #-
                  self.displayToolBar(*self.listIconToolBar)
                  #-
@@ -456,6 +481,7 @@ class Ui_Dialog_plume(object):
                     #self.template, self.templateTabs = None, None   
                     self.template = None
                  #-
+                 self.layerQgisBrowserOther = "QGIS"
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
@@ -486,6 +512,7 @@ class Ui_Dialog_plume(object):
                  self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
                  self.data       = bibli_plume.returnObjetData(self)
                  self.mode = "read"
+                 self.loadLayer = self.ifLayerLoad(self.layer)
                  #-
                  self.displayToolBar(*self.listIconToolBar)
                  #-
@@ -502,13 +529,14 @@ class Ui_Dialog_plume(object):
                  else :
                     self.template = None
                  #-
+                 self.layerQgisBrowserOther = "BROWSER"
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
     #---------------------------
     def getAllFromUri(self):
         uri = QgsDataSourceUri(self.layer.source())
-        self.schema, self.table = uri.schema(), uri.table()
+        self.schema, self.table, self.geom = uri.schema(), uri.table(), uri.geometryColumn()
         #-
         self.uri, self.mConfigConnection, self.username, self.password = uri, uri.connectionInfo(), uri.username() or "", uri.password() or ""
         self.connectBaseOKorKO = self.connectBase()
@@ -519,6 +547,9 @@ class Ui_Dialog_plume(object):
            zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
            zMess  = QtWidgets.QApplication.translate("plume_ui", "Authentication problem", None)
            bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+        #===Existence de l'extension Postgis   
+        self.postgis_exists = self.if_postgis_exists()
+        #===Existence de l'extension Postgis   
         return
 
     #----------------------
@@ -530,6 +561,15 @@ class Ui_Dialog_plume(object):
                mStoragePostgres = False
                break
         return mStoragePostgres     
+
+    #----------------------
+    def ifLayerLoad(self, mLayer) :
+        mIfLayerLoad = False
+        for elemLayer in QgsProject.instance().mapLayers().values():
+            if mLayer.id() == elemLayer.id() : 
+               mIfLayerLoad = True
+               break
+        return mIfLayerLoad     
 
     #----------------------
     def connectBase(self) :
@@ -622,7 +662,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     def clickColorDialog(self):
-        d = docolorbloc.Dialog()
+        d = docolorbloc.Dialog(self)
         d.exec_()
         return
         
@@ -664,6 +704,12 @@ class Ui_Dialog_plume(object):
            self.labelImage.setVisible(True if action == "show" else False)
            self.zoneWarningClickSource.setVisible(True if action == "show" else False)
         return
+
+    #==========================
+    def if_postgis_exists(self) :
+        mKeySql = (queries.query_exists_extension(), ('postgis',))
+        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+        return r
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
