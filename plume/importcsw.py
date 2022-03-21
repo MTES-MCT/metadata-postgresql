@@ -270,7 +270,7 @@ class Ui_Dialog_ImportCSW(object):
           
           #Sauvegarde l'URL et l'ID si case cochée
           if self.caseSave.isChecked() :
-             metagraph.linked_record = url_csw, file_identifier 
+             metagraph.linked_record = self.mZoneUrl.text(), self.mZoneUrlId.text()
 
           self.Dialog.metagraph = metagraph
 
