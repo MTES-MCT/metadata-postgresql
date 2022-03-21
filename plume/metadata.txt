@@ -26,7 +26,8 @@ changelog=
        **Gestion des géométries 
          **Calcul automatique via Qgis
          **Calcul automatique via PostgreSQL
-         **Saisie manuel (Rectangle, Point, Polygone, Multiligne)
+         **Saisie manuel (Rectangle, Point, Polygone, Multiligne, Cercle)
+       **Correction Bug sur les exports des fiches
     ==========================================================================
     ** 0.2.9 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.22

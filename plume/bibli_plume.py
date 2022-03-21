@@ -12,7 +12,7 @@ from qgis.utils import iface
 
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph
-from plume.rdf.utils import export_extension_from_format, import_formats, import_extensions_from_format
+from plume.rdf.utils import export_extension_from_format, import_formats, import_extensions_from_format, export_format_from_extension
 from plume.pg.description import PgDescription
 from plume.pg.template import TemplateDict, search_template
 from plume.pg import queries
@@ -54,26 +54,25 @@ def listUserParam(self):
 def returnObjetMetagraph(self, old_description) : return old_description.metagraph
 
 #==================================================
-def exportObjetMetagraph(self, schema, table, extension, mListExtensionExport) :
+def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     #boite de dialogue Fichiers
     extStr = ""
-    for elem in mListExtensionExport :
+    mListExtensionFormat = sorted(mListExtensionFormat, key=lambda x: -1 if x==format else mListExtensionFormat.index(x))
+    for elem in mListExtensionFormat :
         modelExt = export_extension_from_format(elem)
         extStrExt = "*" + str(modelExt) + " "
-        if elem !=  modelExt[1:] :
-           extStrExt += "*." + str(elem) + " "
         extStr += ";;" + str(elem) + " (" + str(extStrExt) + ")"
     TypeList = extStr[2:]
     table = table.replace(".","_").replace(" ","_")
-    InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "METADATA_" + str(schema) + "_" + str(table) + "." + extension
+    InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
     mDialogueSave = QFileDialog
-    fileName = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
-    fileName, extension = os.path.splitext(fileName)[0], os.path.splitext(fileName)[1][1:]
+    fileName  = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
+    format    = export_format_from_extension(os.path.splitext(fileName)[1])
     if fileName == "" : return
     #**********************
     # Export fiche de métadonnée
     try:
-       self.metagraph.export(fileName, extension)
+       self.metagraph.export(fileName, format)
     except:
        zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à exporter votre fiche de métadonnées.", None)

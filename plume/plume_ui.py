@@ -267,7 +267,7 @@ class Ui_Dialog_plume(object):
     # == Gestion des actions du bouton EXPORT de la barre de menu
     def clickButtonsExportActions(self):
         mItemExport = self.mMenuBarDialog.sender().objectName()
-        exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.mListExtensionExport)
+        exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.mListExtensionFormat)
         return
     # == Gestion des actions du bouton EXPORT de la barre de menu
     #==========================
@@ -837,12 +837,12 @@ class Ui_Dialog_plume(object):
     #==========================
     # == Gestion des Icons Flags dans le menu des templates
     def majQmenuExportIconFlag(self) :
-        mListExtensionExport = self.metagraph.available_formats
-        self.mListExtensionExport = mListExtensionExport
+        mListExtensionFormat = self.metagraph.available_formats
+        self.mListExtensionFormat = mListExtensionFormat
         self._mObjetQMenuExport.clear()
-        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtensionExport))) * 10) + 70) + "px;}")
+        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtensionFormat))) * 10) + 70) + "px;}")
         #------------
-        for elemQMenuItem in mListExtensionExport :
+        for elemQMenuItem in mListExtensionFormat :
             _mObjetQMenuItem = QAction(elemQMenuItem, self._mObjetQMenuExport)
             _mObjetQMenuItem.setText(elemQMenuItem)
             _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
