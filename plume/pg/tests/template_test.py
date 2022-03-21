@@ -259,6 +259,9 @@ class TemplateTestCase(unittest.TestCase):
     def test_local_templates(self):
         """Processus de sélection du modèle avec modèles stockés en local.
         
+        L'extension PlumePg est désinstallée pendant la durée
+        du test.
+        
         """
         templates_collection = LocalTemplatesCollection()
         self.assertEqual(len(templates_collection.labels), 3)
@@ -268,21 +271,20 @@ class TemplateTestCase(unittest.TestCase):
         conn = psycopg2.connect(TemplateTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
+                cur.execute('DROP EXTENSION plume_pg')
                 cur.execute(
-                    query_evaluate_local_templates(templates_collection),
-                    ('s_schema', 'table')
+                    *query_evaluate_local_templates(templates_collection, 's_schema', 'table')
                     )
                 templates_a = cur.fetchall()
                 cur.execute(
-                    query_evaluate_local_templates(templates_collection),
-                    ('r_admin_express', 'departement_2154')
+                    *query_evaluate_local_templates(templates_collection, 'r_admin_express', 'departement_2154')
                     )
                 templates_b = cur.fetchall()
                 cur.execute(
-                    query_evaluate_local_templates(templates_collection),
-                    ('c_amgt_urb_zon_amgt', 'l_zac_075')
+                    *query_evaluate_local_templates(templates_collection, 'c_amgt_urb_zon_amgt', 'l_zac_075')
                     )
                 templates_c = cur.fetchall()
+                cur.execute('CREATE EXTENSION plume_pg')
         conn.close()
         self.assertIsNone(
             search_template(templates_a)
