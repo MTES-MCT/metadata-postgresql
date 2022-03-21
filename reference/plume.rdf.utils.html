@@ -781,7 +781,7 @@ RDF  <code class="docutils literal notranslate"><span class="pre">owl:Thing</spa
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>format</strong><span class="classifier">str</span></dt><dd><p>Un format d’export présumé inclus dans la liste des formats
-reconnus par les fonctions de RDFLib (rdflib_format).</p>
+reconnus par les fonctions de RDFLib (<a class="reference internal" href="#plume.rdf.utils.rdflib_formats" title="plume.rdf.utils.rdflib_formats"><code class="xref py py-data docutils literal notranslate"><span class="pre">rdflib_formats</span></code></a>).</p>
 </dd>
 </dl>
 </dd>
@@ -801,12 +801,20 @@ reconnus par les fonctions de RDFLib (rdflib_format).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.export_format_from_extension">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_format_from_extension" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_format_from_extension" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Renvoie le format d’export correspondant à l’extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>extension</strong><span class="classifier">str</span></dt><dd><p>Une extension (avec point).</p>
+</dd>
+<dt><strong>default_format</strong><span class="classifier">str, optional</span></dt><dd><p>Un format d’export présumé inclus dans la liste des formats
+reconnus par les fonctions de RDFLib (<a class="reference internal" href="#plume.rdf.utils.rdflib_formats" title="plume.rdf.utils.rdflib_formats"><code class="xref py py-data docutils literal notranslate"><span class="pre">rdflib_formats</span></code></a>).
+Si renseigné, le format par défaut est utilisé lorsqu’il n’est
+pas possible de déduire un format de l’extension ou lorsque
+plusieurs formats sont possibles pour l’extension (le format
+par défaut est alors privilégié s’il fait partie des formats
+en question).</p>
 </dd>
 </dl>
 </dd>
@@ -949,8 +957,8 @@ acceptées, on exécutera <a class="reference internal" href="#plume.rdf.utils.i
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Un format d’import présumé inclus dans la liste des formats
-reconnus par les fonctions de RDFLib (rdflib_formats avec
-import=True).</p>
+reconnus par les fonctions de RDFLib (<a class="reference internal" href="#plume.rdf.utils.rdflib_formats" title="plume.rdf.utils.rdflib_formats"><code class="xref py py-data docutils literal notranslate"><span class="pre">rdflib_formats</span></code></a>
+avec <code class="docutils literal notranslate"><span class="pre">import</span></code> valant <code class="docutils literal notranslate"><span class="pre">True</span></code>).</p>
 </dd>
 </dl>
 </dd>

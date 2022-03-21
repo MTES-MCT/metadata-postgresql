@@ -365,11 +365,11 @@ des fonctions.</p>
 <p><a class="reference external" href="https://www.psycopg.org">https://www.psycopg.org</a></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_evaluate_local_templates">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_evaluate_local_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates_collection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_evaluate_local_templates" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_evaluate_local_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates_collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_evaluate_local_templates" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Requête qui évalue côté serveur les conditions d’application des modèles locaux.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_evaluate_local_templates</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -381,11 +381,16 @@ qui aura été instancié parce que PlumePg
 n’est pas activée sur la base de la table
 dont on affiche les métadonnées.</p>
 </dd>
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>psycopg2.sql.Composed</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+<dt>tuple(psycopg2.sql.Composed, dict)</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL et
+son dictionnaire de paramètres.</p>
 </dd>
 </dl>
 </dd>

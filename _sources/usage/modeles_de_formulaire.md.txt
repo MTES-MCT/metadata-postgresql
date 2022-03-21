@@ -385,8 +385,8 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        query = queries.query_evaluate_local_templates(templates_collection)
-        cur.execute(query, (schema_name, table_name))
+        query = queries.query_evaluate_local_templates(templates_collection, schema_name, table_name)
+        cur.execute(*query)
         templates = cur.fetchall()
 
 conn.close()
