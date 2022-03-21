@@ -294,16 +294,20 @@ class QueriesTestCase(unittest.TestCase):
     def test_query_evaluate_local_templates(self):
         """Requête qui exécute côté serveur les conditions d'application des modèles locaux.
         
+        L'extension PlumePg est désinstallée pendant la durée
+        du test.
+        
         """
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         templates_collection = LocalTemplatesCollection()
         with conn:
             with conn.cursor() as cur:
+                cur.execute('DROP EXTENSION plume_pg')
                 cur.execute(
-                    query_evaluate_local_templates(templates_collection),
-                    ('r_schema', 'table')
+                    *query_evaluate_local_templates(templates_collection, 'r_schema', 'table')
                     )
                 templates = cur.fetchall()
+                cur.execute('CREATE EXTENSION plume_pg')
         conn.close()
         self.assertEqual(len(templates), 3)
 
