@@ -214,13 +214,13 @@ def query_list_templates():
             ORDER BY tpl_label
         """)
 
-def query_evaluate_local_templates(templates_collection):
+def query_evaluate_local_templates(templates_collection, schema_name, table_name):
     """Requête qui évalue côté serveur les conditions d'application des modèles locaux.
     
     À utiliser comme suit :
     
         >>> query = query_evaluate_local_templates()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> cur.execute(*query)
         >>> templates = cur.fetchall()
     
     Parameters
@@ -230,11 +230,16 @@ def query_evaluate_local_templates(templates_collection):
         qui aura été instancié parce que PlumePg
         n'est pas activée sur la base de la table
         dont on affiche les métadonnées.
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
     
     Returns
     -------
-    psycopg2.sql.Composed
-        Une requête prête à être envoyée au serveur PostgreSQL.
+    tuple(psycopg2.sql.Composed, dict)
+        Une requête prête à être envoyée au serveur PostgreSQL et
+        son dictionnaire de paramètres.
     
     Notes
     -----
@@ -245,22 +250,26 @@ def query_evaluate_local_templates(templates_collection):
     nom du modèle à appliquer.
     
     """
-    return sql.SQL('''
-        WITH meta_template (tpl_label, sql_filter, md_conditions, priority, comment) AS (VALUES {})
+    return (sql.SQL('''
+        WITH meta_template (tpl_label, check_sql_filter, md_conditions, priority, comment) AS (VALUES {})
         SELECT
             tpl_label,
-            z_plume.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
+            check_sql_filter,
             md_conditions::jsonb,
             priority
             FROM meta_template
             ORDER BY tpl_label
         ''').format(
             sql.SQL(', ').join(
-                sql.SQL('({})').format(sql.SQL(', ').join(
-                    sql.Literal(Json(v) if isinstance(v, list) else v) for v in l)
-                    ) for l in templates_collection.conditions
+                sql.SQL('({})').format(sql.SQL(', ').join((
+                    sql.Literal(tpl_label),
+                    sql.SQL(sql_filter.replace('$1', '%(schema_name)s').replace('$2', '%(table_name)s')) if sql_filter else sql.Literal(None),
+                    sql.Literal(Json(md_conditions)),
+                    sql.Literal(priority),
+                    sql.Literal(comment)
+                    ))) for tpl_label, sql_filter, md_conditions, priority, comment in templates_collection.conditions
                 )
-            )  
+            ), {'schema_name': schema_name, 'table_name' : table_name})  
 
 def query_get_categories():
     """Requête d'import des catégories à afficher dans un modèle donné.
