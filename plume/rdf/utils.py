@@ -1145,8 +1145,8 @@ def import_extensions_from_format(format=None):
     ----------
     format : str, optional
         Un format d'import présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (rdflib_formats avec
-        import=True).
+        reconnus par les fonctions de RDFLib (:py:data:`rdflib_formats`
+        avec ``import`` valant ``True``).
     
     Returns
     -------
@@ -1180,7 +1180,7 @@ def export_extension_from_format(format):
     ----------
     format : str
         Un format d'export présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (rdflib_format).
+        reconnus par les fonctions de RDFLib (:py:data:`rdflib_formats`).
     
     Returns
     -------
@@ -1216,13 +1216,21 @@ def import_format_from_extension(extension):
         if d['import'] and extension in d['extensions']:
             return k
 
-def export_format_from_extension(extension):
+def export_format_from_extension(extension, default_format=None):
     """Renvoie le format d'export correspondant à l'extension.
     
     Parameters
     ----------
     extension : str
         Une extension (avec point).
+    default_format : str, optional
+        Un format d'export présumé inclus dans la liste des formats
+        reconnus par les fonctions de RDFLib (:py:data:`rdflib_formats`).
+        Si renseigné, le format par défaut est utilisé lorsqu'il n'est
+        pas possible de déduire un format de l'extension ou lorsque
+        plusieurs formats sont possibles pour l'extension (le format
+        par défaut est alors privilégié s'il fait partie des formats
+        en question).
     
     Returns
     -------
@@ -1231,9 +1239,16 @@ def export_format_from_extension(extension):
         n'est pas reconnue.
     
     """
+    if not default_format in export_formats():
+        default_format = None
+    rdf_format = default_format
     for k, d in rdflib_formats.items():
-        if d['export default'] and extension in d['extensions']:
-            return k
+        if extension in d['extensions']:
+            if k == default_format:
+                return default_format
+            elif d['export default']:
+                rdf_format = k
+    return rdf_format
 
 rdflib_formats = {
     'turtle': {
