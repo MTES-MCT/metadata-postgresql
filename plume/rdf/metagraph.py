@@ -215,7 +215,7 @@ class Metagraph(Graph):
         """ 
         return self.available_export_formats()
 
-    def available_export_formats(self, no_duplicate=False):
+    def available_export_formats(self, no_duplicate=False, format=None):
         """Renvoie la liste des formats d'export recommandés pour le graphe.
         
         Parameters
@@ -224,6 +224,14 @@ class Metagraph(Graph):
             Si ``True``, lorsque plusieurs formats disponibles
             utilise la même extension (cas notamment de ``'xml'`` et
             ``'pretty-xml'``), la méthode n'en renvoie qu'un.
+        format : str, optional
+            Un format d'export à prioriser. `format` ne sera
+            jamais éliminé par la suppression de pseudo-doublons
+            effectuée lorsque `no_duplicate` vaut ``True``. Il
+            s'agira toujours de la première valeur de la liste
+            renvoyée, sauf s'il ne s'agissait pas d'un format
+            d'export disponible (auquel cas il ne sera pas du tout
+            dans la liste renvoyée).
         
         Returns
         -------
@@ -231,14 +239,16 @@ class Metagraph(Graph):
         
         Notes
         -----
-        À date, cette méthode exclut les formats ``'xml'`` et
-        ``'pretty-xml'`` en présence de catégories locales de
-        métadonnées, car leurs espaces de nommage ne sont pas
-        gérés correctement. Il s'agit d'une limitation de RDFLib
-        et non du format, qui pourrait être corrigée à l'avenir.
+        À date, cette méthode appelle la fonction
+        :py:func:`plume.rdf.utils.export_formats`, puis exclut
+        du résultat les formats ``'xml'`` et ``'pretty-xml'`` 
+        en présence de catégories locales de métadonnées, car leurs 
+        espaces de nommage ne sont pas gérés correctement. Il s'agit
+        d'une limitation de RDFLib et non du format, qui pourrait être 
+        corrigée à l'avenir.
         
         """
-        l = export_formats(no_duplicate=no_duplicate)
+        l = export_formats(no_duplicate=no_duplicate, format=format)
         # Une méthode plus gourmande pourrait consister à purement et simplement
         # tester toutes les sérialisations possibles et retourner celles qui
         # ne produisent pas d'erreur. À ce stade, il semble cependant que
