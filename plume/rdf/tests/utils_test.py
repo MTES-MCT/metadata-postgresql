@@ -21,6 +21,14 @@ class UtilsTestCase(unittest.TestCase):
         """
         self.assertTrue('xml' in export_formats())
         self.assertFalse('xml' in export_formats(no_duplicate=True))
+        self.assertEqual(export_formats(format='n3')[0], 'n3')
+        self.assertEqual(export_formats(format='json-ld')[0], 'json-ld')
+        self.assertTrue('xml' in export_formats(no_duplicate=True,
+            format='xml'))
+        self.assertEqual(export_formats(no_duplicate=True,
+            format='xml')[0], 'xml')
+        self.assertFalse('xml' in export_formats(no_duplicate=True,
+            format='turtle'))
 
     def test_export_format_from_extension(self):
         """Choix du bon format d'export, selon l'extension et un format pré-sélectionné.
