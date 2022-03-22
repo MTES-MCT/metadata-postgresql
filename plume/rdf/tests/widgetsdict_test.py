@@ -2351,6 +2351,22 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))   
 
+    def test_columns(self):
+        """Intégration des descriptifs des champs.
+        
+        """
+        columns = [('Champ 1', 'Descriptif'), ('Champ 2', None)]
+        widgetsdict = WidgetsDict(columns=columns)
+        w = widgetsdict.root.search_from_path(PLUME.column)
+        g = w.parent
+        self.assertEqual(len(columns), len(g.children))
+        for k in columns.copy():
+            if any(k[0] == widgetsdict[c]['label'] 
+                and k[1] == widgetsdict[c]['value']
+                for c in g.children):
+                columns.remove(k)
+        self.assertFalse(columns)
+
 if __name__ == '__main__':
     unittest.main()
 
