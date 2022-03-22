@@ -67,7 +67,8 @@ def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
     mDialogueSave = QFileDialog
     fileName  = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
-    format    = export_format_from_extension(os.path.splitext(fileName)[1])
+    #format    = export_format_from_extension(os.path.splitext(fileName)[1])
+    format    = export_format_from_extension(os.path.splitext(fileName)[1], format)
     if fileName == "" : return
     #**********************
     # Export fiche de métadonnée
@@ -117,10 +118,13 @@ def importObjetMetagraph(self) :
     return metagraph 
 
 #==================================================
-def returnObjetTpl_label(self) :
+def returnObjetTpl_label(self, option = None) : #None = Pas local et "LOCAL" = local
     #**********************
     #Récupération de la liste des modèles
-    mKeySql = (queries.query_list_templates(), (self.schema, self.table))
+    if option == "LOCAL" :
+       mKeySql = queries.query_evaluate_local_templates(self.templates_collection, self.schema, self.table)
+    else :   
+       mKeySql = (queries.query_list_templates(), (self.schema, self.table))
     self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
 
@@ -150,6 +154,7 @@ def generationTemplateAndTabs(self, tpl_label):
     # Génération de template
     self.template = TemplateDict(categories, tabs)
     return self.template
+
 #==================================================
 def returnObjetColumns(self, _schema, _table) :
     #**********************
@@ -228,7 +233,7 @@ def saveMetaIhm(self, _schema, _table) :
            elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
               value = _valueObjet['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss")
            elif _valueObjet['main widget type'] in ("QCheckBox",) :
-              value = True if _valueObjet['main widget'].isChecked() else False
+              value = (True if _valueObjet['main widget'].checkState() == Qt.Checked else False) if  _valueObjet['main widget'].checkState() != Qt.PartiallyChecked else None
 
            if _valueObjet['object'] == "edit" and not (_valueObjet['hidden']): 
               self.mDicObjetsInstancies.update_value(_keyObjet, value)

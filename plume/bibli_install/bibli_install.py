@@ -15,7 +15,7 @@ def manageLibrary(mBibli) :
            import pip
            subprocess.check_call(['python3', '-m', 'pip', 'uninstall', '--upgrade', 'pip'])
 
-       mPathPerso = os.path.dirname(__file__) + '\\rdflib-6.0.2.tar.gz'
+       mPathPerso = os.path.dirname(__file__) + '\\rdflib-6.1.1.tar.gz'
        mPathPerso = mPathPerso.replace("\\","/")
        subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
     elif mBibli == "OWSLIB" :

@@ -36,7 +36,7 @@ import sys
 import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
-
+from plume.pg.template import LocalTemplatesCollection
 
 class Ui_Dialog_plume(object):
     def __init__(self):
@@ -129,9 +129,9 @@ class Ui_Dialog_plume(object):
         Dialog.setWindowIcon(icon)
 
         #Affiche info si MAJ version
-        self.barInfo = QgsMessageBar(self)
+        self.barInfo = QgsMessageBar(self.iface.mainWindow())
         self.barInfo.setSizePolicy( QSizePolicy.Minimum, QSizePolicy.Fixed )
-        self.barInfo.setGeometry(280, 0, Dialog.width()-280, 25)
+        self.barInfo.setGeometry(10,25, self.iface.mainWindow().width()-30, 30)
         #==========================              
         #Zone Onglets
         self.tabWidget = QTabWidget(Dialog)
@@ -286,9 +286,14 @@ class Ui_Dialog_plume(object):
            if mItemTemplates == "Aucun" :
               #self.template, self.templateTabs = None, None
               self.template = None
-           else :   
-              # Choix du modèle
-              bibli_plume.generationTemplateAndTabs(self, mItemTemplates)
+           else : 
+              #-
+              if self.instalMetadata :
+                 # Choix du modèle
+                 bibli_plume.generationTemplateAndTabs(self, mItemTemplates)
+              else : 
+                 self.template = self.templates_collection.get(mItemTemplates) if mItemTemplates else None
+              #-
            # Génération à la volée
            self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
 
@@ -467,19 +472,17 @@ class Ui_Dialog_plume(object):
                  #-
                  if self.instalMetadata :
                     #-
-                    tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
+                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, None)
                     if tpl_labelDefaut :
-                       #self.template, self.templateTabs = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
-                       self.template = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                       self.template     = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
                     else :
-                       #self.template, self.templateTabs = None, None   
-                       self.template = None
-                    #-
-                    self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
-                    self.majQmenuModeleIconFlag(tpl_labelDefaut)
+                       self.template     = None
                  else :
-                    #self.template, self.templateTabs = None, None   
-                    self.template = None
+                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, "LOCAL")
+                    self.template        = self.templates_collection[tpl_labelDefaut] if tpl_labelDefaut else None
+                 #-
+                 self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                 self.majQmenuModeleIconFlag(tpl_labelDefaut)
                  #-
                  self.layerQgisBrowserOther = "QGIS"
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
@@ -518,16 +521,17 @@ class Ui_Dialog_plume(object):
                  #-
                  if self.instalMetadata :
                     #-
-                    tpl_labelDefaut                     = bibli_plume.returnObjetTpl_label(self)
+                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, None)
                     if tpl_labelDefaut :
-                       self.template = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                       self.template     = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
                     else :
-                       self.template = None
-                    #-
-                    self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
-                    self.majQmenuModeleIconFlag(tpl_labelDefaut)
+                       self.template     = None
                  else :
-                    self.template = None
+                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, "LOCAL")
+                    self.template        = self.templates_collection[tpl_labelDefaut] if tpl_labelDefaut else None
+                 #-
+                 self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                 self.majQmenuModeleIconFlag(tpl_labelDefaut)
                  #-
                  self.layerQgisBrowserOther = "BROWSER"
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
@@ -745,6 +749,10 @@ class Ui_Dialog_plume(object):
               mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Choisir un modèle de formulaire.") 
               self.plumeTemplate.setEnabled(True)
            else :
+              #instanciation des modèles LOCAUX disponibles si l'extension PLUME n'est pas installée 
+              self.templates_collection = LocalTemplatesCollection()
+              #instanciation des modèles LOCAUX disponibles si l'extension PLUME n'est pas installée 
+
               self.plumeTemplate.setEnabled(False)
               mTextToolTip = QtWidgets.QApplication.translate("plume_main", "L'extension PostgreSQL plume_pg n'est pas installée.") 
            self.plumeTemplate.setToolTip(mTextToolTip)
