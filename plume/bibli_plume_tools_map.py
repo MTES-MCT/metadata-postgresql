@@ -344,7 +344,9 @@ class GeometryMapToolShow(QgsMapTool ):
             #Zoom si case cochée dans personnalisation de l'interface
             if self.Dialog.geomZoom : 
                if geomtype_from_wkt(mCoordSaisie) == "point" : 
-                  self.canvas.setExtent(QgsGeometry.fromWkt(self.rubberBand.center().asWkt()).boundingBox())
+                  point1 = QgsPointXY(mPolygone.x, mPolygone.y)
+                  point1 = transformSourceCibleLayer(self.srid, self.mAuthid, point1)
+                  self.canvas.setExtent(QgsGeometry.fromWkt(point1.asWkt()).boundingBox())
                else :   
                   self.canvas.setExtent(QgsGeometry.fromWkt(self.rubberBand.asGeometry().boundingBox().asWktPolygon()).boundingBox())
       return 

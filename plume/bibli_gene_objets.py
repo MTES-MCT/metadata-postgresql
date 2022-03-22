@@ -673,6 +673,8 @@ def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __va
     srid         = mCanvas.mapSettings().destinationCrs().authid()
     mObjet       = self.mDicObjetsInstancies[__keyObjet]['main widget']
     #-
+
+    majVisuButton(self, self, __mObjetQToolButton, self.dic_geoToolsShow, __keyObjet, __valueObjet) 
     eraseRubberBand(self, self.dic_objetMap, __keyObjet)
     
     if mAction in ["rectangle", "point", "polygon", "linestring", "circle"] : 
