@@ -259,7 +259,8 @@ class WidgetsDict(dict):
         if columns:
             tabkey = TabKey(parent=self.root, label='Champs', order_idx=(9998,))
             for label, value in columns:
-                valkey = ValueKey(parent=tabkey, label=label, value=Literal(value),
+                valkey = ValueKey(parent=tabkey, label=label,
+                    value=Literal(value) if value else None,
                     is_long_text=True, description='Description du champ',
                     rowspan=self.textEditRowSpan, predicate=PLUME.column,
                     do_not_save=True, independant_label=True,
