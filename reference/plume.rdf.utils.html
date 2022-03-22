@@ -830,14 +830,22 @@ n’est pas reconnue.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.export_formats">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_formats" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Renvoie la liste de tous les formats disponibles pour l’export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>no_duplicate</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, lorsque plusieurs formats disponibles
 utilise la même extension (cas notamment de <code class="docutils literal notranslate"><span class="pre">'xml'</span></code> et
-<code class="docutils literal notranslate"><span class="pre">'pretty-xml'</span></code>), la méthode n’en renvoie qu’un.</p>
+<code class="docutils literal notranslate"><span class="pre">'pretty-xml'</span></code>), la fonction n’en renvoie qu’un.</p>
+</dd>
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Un format d’export à prioriser. <cite>format</cite> ne sera
+jamais éliminé par la suppression de pseudo-doublons
+effectuée lorsque <cite>no_duplicate</cite> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. Il
+s’agira toujours de la première valeur de la liste
+renvoyée, sauf s’il ne s’agissait pas d’un format
+d’export disponible (auquel cas il ne sera pas du tout
+dans la liste renvoyée).</p>
 </dd>
 </dl>
 </dd>

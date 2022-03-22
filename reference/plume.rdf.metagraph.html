@@ -382,7 +382,7 @@ l’espace de nommage standard de Plume
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">addN</span></code>(quads)</p></td>
 <td><p>Add a sequence of triple with context</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.available_export_formats" title="plume.rdf.metagraph.Metagraph.available_export_formats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_export_formats</span></code></a>([no_duplicate])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.available_export_formats" title="plume.rdf.metagraph.Metagraph.available_export_formats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_export_formats</span></code></a>([no_duplicate, format])</p></td>
 <td><p>Renvoie la liste des formats d'export recommandés pour le graphe.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bind</span></code>(prefix, namespace[, override, replace])</p></td>
@@ -544,7 +544,7 @@ l’espace de nommage standard de Plume
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.available_export_formats">
-<span class="sig-name descname"><span class="pre">available_export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_export_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">available_export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_export_formats" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Renvoie la liste des formats d’export recommandés pour le graphe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -552,6 +552,14 @@ l’espace de nommage standard de Plume
 <dt><strong>no_duplicate</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, lorsque plusieurs formats disponibles
 utilise la même extension (cas notamment de <code class="docutils literal notranslate"><span class="pre">'xml'</span></code> et
 <code class="docutils literal notranslate"><span class="pre">'pretty-xml'</span></code>), la méthode n’en renvoie qu’un.</p>
+</dd>
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>Un format d’export à prioriser. <cite>format</cite> ne sera
+jamais éliminé par la suppression de pseudo-doublons
+effectuée lorsque <cite>no_duplicate</cite> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. Il
+s’agira toujours de la première valeur de la liste
+renvoyée, sauf s’il ne s’agissait pas d’un format
+d’export disponible (auquel cas il ne sera pas du tout
+dans la liste renvoyée).</p>
 </dd>
 </dl>
 </dd>
@@ -562,11 +570,13 @@ utilise la même extension (cas notamment de <code class="docutils literal notra
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>À date, cette méthode exclut les formats <code class="docutils literal notranslate"><span class="pre">'xml'</span></code> et
-<code class="docutils literal notranslate"><span class="pre">'pretty-xml'</span></code> en présence de catégories locales de
-métadonnées, car leurs espaces de nommage ne sont pas
-gérés correctement. Il s’agit d’une limitation de RDFLib
-et non du format, qui pourrait être corrigée à l’avenir.</p>
+<p>À date, cette méthode appelle la fonction
+<a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.export_formats" title="plume.rdf.utils.export_formats"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.export_formats()</span></code></a>, puis exclut
+du résultat les formats <code class="docutils literal notranslate"><span class="pre">'xml'</span></code> et <code class="docutils literal notranslate"><span class="pre">'pretty-xml'</span></code> 
+en présence de catégories locales de métadonnées, car leurs 
+espaces de nommage ne sont pas gérés correctement. Il s’agit
+d’une limitation de RDFLib et non du format, qui pourrait être 
+corrigée à l’avenir.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -902,7 +912,7 @@ renseignées dans l’ancien graphe.</p></li>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.shape">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=Nd9b9aa4c76de4bfa8f225192d990d964</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N2c9d95e410d342a28d30e0bbe927ed81</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Schéma SHACL définissant la structure des métadonnées communes.</p>
 </dd></dl>
 
