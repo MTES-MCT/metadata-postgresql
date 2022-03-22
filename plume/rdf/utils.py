@@ -1127,8 +1127,15 @@ def import_formats():
     """
     return [ k for k, v in rdflib_formats.items() if v['import'] ]
 
-def export_formats():
+def export_formats(no_duplicate=False):
     """Renvoie la liste de tous les formats disponibles pour l'export.
+    
+    Parameters
+    ----------
+    no_duplicate : bool, default False
+        Si ``True``, lorsque plusieurs formats disponibles
+        utilise la même extension (cas notamment de ``'xml'`` et
+        ``'pretty-xml'``), la méthode n'en renvoie qu'un.
     
     Returns
     -------
@@ -1136,7 +1143,8 @@ def export_formats():
         La liste des formats reconnus par RDFLib à l'export.
     
     """
-    return [ k for k in rdflib_formats.keys() ]
+    return [ k for k, v in rdflib_formats.items() 
+        if not no_duplicate or v['export default'] ]
 
 def import_extensions_from_format(format=None):
     """Renvoie la liste des extensions associées à un format d'import.
