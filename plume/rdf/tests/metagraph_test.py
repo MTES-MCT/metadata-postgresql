@@ -396,6 +396,12 @@ class MetagraphTestCase(unittest.TestCase):
         l = m.available_export_formats(no_duplicate=True)
         self.assertTrue('pretty-xml' in l)
         self.assertFalse('xml' in l)
+        l = m.available_export_formats(no_duplicate=True, format='xml')
+        self.assertFalse('pretty-xml' in l)
+        self.assertTrue('xml' in l)
+        l = m.available_export_formats(no_duplicate=True, format='trig')
+        self.assertTrue('pretty-xml' in l)
+        self.assertFalse('xml' in l)
 
     def test_export(self):
         """Préservation des données lors de la sérialisation dans un fichier.
