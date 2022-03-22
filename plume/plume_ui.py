@@ -81,6 +81,8 @@ class Ui_Dialog_plume(object):
         self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
         self.geomPoint       = self.mDic_LH["geomPoint"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
+        self.geomPrecision   = int(self.mDic_LH["geomPrecision"])       
+
         #-
         mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
         mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]

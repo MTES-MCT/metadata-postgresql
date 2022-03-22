@@ -57,7 +57,6 @@ def returnObjetMetagraph(self, old_description) : return old_description.metagra
 def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     #boite de dialogue Fichiers
     extStr = ""
-    #mListExtensionFormat = sorted(mListExtensionFormat, key=lambda x: -1 if x==format else mListExtensionFormat.index(x))
     for elem in mListExtensionFormat :
         modelExt = export_extension_from_format(elem)
         extStrExt = "*" + str(modelExt) + " "
@@ -461,6 +460,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
        mDicAutreColor["geomZoom"]                    = "false"
+       mDicAutreColor["geomPrecision"]               = "8"
 
        for key, value in mDicAutreColor.items():
            if not mSettings.contains(key) :

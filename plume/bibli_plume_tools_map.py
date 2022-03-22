@@ -197,7 +197,7 @@ class GeometryMapTool(QgsMapTool ):
       equi = len(pointsCircle)/4
       p1, p2, p3, p4, p5 = pointsCircle[int(equi*0)], pointsCircle[int(equi*1)], pointsCircle[int(equi*2)], pointsCircle[int(equi*3)], pointsCircle[int(equi*4) - 1]
       geomCircleString.setPoints([QgsPoint(p1), QgsPoint(p2), QgsPoint(p3), QgsPoint(p4), QgsPoint(p5)]) 
-      return geomCircleString.asWkt(4)
+      return geomCircleString.asWkt(self.Dialog.geomPrecision)
       
   #==================================================
   #** -----
@@ -219,13 +219,13 @@ class GeometryMapTool(QgsMapTool ):
   def polygon(self):
       pointsPolygon = [ QgsPointXY(self.rubberBand.getPoint(0, i)) for i in range(self.rubberBand.numberOfVertices()) ]
       #==
-      return QgsGeometry.fromPolygonXY([ pointsPolygon ]).asWkt(4)
+      return QgsGeometry.fromPolygonXY([ pointsPolygon ]).asWkt(self.Dialog.geomPrecision)
 
   #-----
   def linestring(self):
       pointsPolygon = [ QgsPointXY(self.rubberBand.getPoint(0, i)) for i in range(self.rubberBand.numberOfVertices()) ]
       #==
-      return QgsGeometry.fromPolylineXY(pointsPolygon).asWkt(4)
+      return QgsGeometry.fromPolylineXY(pointsPolygon).asWkt(self.Dialog.geomPrecision)
 
   #==================================================
   #** -----
@@ -257,7 +257,7 @@ class GeometryMapTool(QgsMapTool ):
         return None
       #==
       pointsRectangle = [ QgsPointXY(self.rubberBand.getPoint(0, i)) for i in range(self.rubberBand.numberOfVertices()) ]
-      return QgsGeometry.fromPolygonXY([ pointsRectangle ]).asWkt(4)
+      return QgsGeometry.fromPolygonXY([ pointsRectangle ]).asWkt(self.Dialog.geomPrecision)
 
   #==================================================
   #** -----
@@ -268,7 +268,7 @@ class GeometryMapTool(QgsMapTool ):
       self.rubberBand.setCenter(point1)
       return
   #-----
-  def point(self): return QgsGeometry.fromPointXY(QgsPointXY(self.startPoint.x(), self.startPoint.y())).asWkt(4)
+  def point(self): return QgsGeometry.fromPointXY(QgsPointXY(self.startPoint.x(), self.startPoint.y())).asWkt(self.Dialog.geomPrecision)
   #** -----
   #** -----
   #==================================================

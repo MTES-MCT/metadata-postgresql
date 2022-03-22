@@ -686,18 +686,26 @@ def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __va
        #-
        mKeySql = queries.query_get_geom_extent(self.schema, self.table, self.geom)
        geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+       try : 
+          geom_wkt = QgsGeometry.fromWkt(geom_wkt).asWkt(self.Dialog.geomPrecision)
+       except :
+          pass
     elif mAction in ["centroidpg",] : 
        mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
        srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
        #-
        mKeySql = queries.query_get_geom_centroid(self.schema, self.table, self.geom)
        geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+       try : 
+          geom_wkt = QgsGeometry.fromWkt(geom_wkt).asWkt(self.Dialog.geomPrecision)
+       except :
+          pass
     elif mAction in ["bboxqgis",] :
        srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
-       geom_wkt = QgsGeometry.fromRect(self.layer.extent()).asWkt(4)
+       geom_wkt = QgsGeometry.fromRect(self.layer.extent()).asWkt(self.Dialog.geomPrecision)
     elif mAction in ["centroidqgis",] : 
        srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
-       geom_wkt = QgsGeometry.fromPointXY(self.layer.extent().center()).asWkt(4)
+       geom_wkt = QgsGeometry.fromPointXY(self.layer.extent().center()).asWkt(self.Dialog.geomPrecision)
     #------
     if mAction in ["bboxpg", "centroidpg", "bboxqgis", "centroidqgis"] :
        rdf_wkt = wkt_with_srid(geom_wkt, srid)
