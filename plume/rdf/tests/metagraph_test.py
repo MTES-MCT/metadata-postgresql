@@ -390,6 +390,12 @@ class MetagraphTestCase(unittest.TestCase):
             'dcat_eurostat_bilan_nutritif_brut_terre_agricole.jsonld'))
         l = m.available_formats
         self.assertTrue('turtle' in l)
+        l = m.available_export_formats()
+        self.assertTrue('pretty-xml' in l)
+        self.assertTrue('xml' in l)
+        l = m.available_export_formats(no_duplicate=True)
+        self.assertTrue('pretty-xml' in l)
+        self.assertFalse('xml' in l)
 
     def test_export(self):
         """Préservation des données lors de la sérialisation dans un fichier.
