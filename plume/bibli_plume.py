@@ -57,7 +57,7 @@ def returnObjetMetagraph(self, old_description) : return old_description.metagra
 def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     #boite de dialogue Fichiers
     extStr = ""
-    mListExtensionFormat = sorted(mListExtensionFormat, key=lambda x: -1 if x==format else mListExtensionFormat.index(x))
+    #mListExtensionFormat = sorted(mListExtensionFormat, key=lambda x: -1 if x==format else mListExtensionFormat.index(x))
     for elem in mListExtensionFormat :
         modelExt = export_extension_from_format(elem)
         extStrExt = "*" + str(modelExt) + " "
@@ -67,7 +67,6 @@ def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
     mDialogueSave = QFileDialog
     fileName  = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
-    #format    = export_format_from_extension(os.path.splitext(fileName)[1])
     format    = export_format_from_extension(os.path.splitext(fileName)[1], format)
     if fileName == "" : return
     #**********************

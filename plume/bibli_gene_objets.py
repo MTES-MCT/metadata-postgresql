@@ -694,10 +694,10 @@ def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __va
        geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     elif mAction in ["bboxqgis",] :
        srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
-       geom_wkt = self.layer.extent().asWktPolygon()
+       geom_wkt = QgsGeometry.fromRect(self.layer.extent()).asWkt(4)
     elif mAction in ["centroidqgis",] : 
        srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
-       geom_wkt = self.layer.extent().center().asWkt()
+       geom_wkt = QgsGeometry.fromPointXY(self.layer.extent().center()).asWkt(4)
     #------
     if mAction in ["bboxpg", "centroidpg", "bboxqgis", "centroidqgis"] :
        rdf_wkt = wkt_with_srid(geom_wkt, srid)

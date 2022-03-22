@@ -267,7 +267,9 @@ class Ui_Dialog_plume(object):
     # == Gestion des actions du bouton EXPORT de la barre de menu
     def clickButtonsExportActions(self):
         mItemExport = self.mMenuBarDialog.sender().objectName()
-        exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.mListExtensionFormat)
+        #exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.mListExtensionFormat)
+        exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.metagraph.available_export_formats(no_duplicate=True, format=mItemExport))        
+        
         return
     # == Gestion des actions du bouton EXPORT de la barre de menu
     #==========================
