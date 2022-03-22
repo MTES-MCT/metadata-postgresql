@@ -8,12 +8,19 @@ from plume.rdf.utils import sort_by_language, pick_translation, \
     wkt_with_srid, split_rdf_wkt, str_from_datetime, str_from_date, \
     str_from_time, datetime_from_str, date_from_str, time_from_str, \
     str_from_decimal, decimal_from_str, main_datatype, geomtype_from_wkt, \
-    export_format_from_extension
+    export_format_from_extension, export_formats
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
 nsm = PlumeNamespaceManager()
 
 class UtilsTestCase(unittest.TestCase):
+
+    def test_export_formats(self):
+        """Liste des formats d'export.
+        
+        """
+        self.assertTrue('xml' in export_formats())
+        self.assertFalse('xml' in export_formats(no_duplicate=True))
 
     def test_export_format_from_extension(self):
         """Choix du bon format d'export, selon l'extension et un format pré-sélectionné.
