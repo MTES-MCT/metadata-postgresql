@@ -207,16 +207,38 @@ class Metagraph(Graph):
     def available_formats(self):
         """list(str): Liste des formats d'export recommandés pour le graphe.
         
+        See Also
+        --------
+        :py:meth:`Metagraph.available_export_formats`
+            Méthode dont est dérivée cette propriété.
+        
+        """ 
+        return self.available_export_formats()
+
+    def available_export_formats(self, no_duplicate=False):
+        """Renvoie la liste des formats d'export recommandés pour le graphe.
+        
+        Parameters
+        ----------
+        no_duplicate : bool, default False
+            Si ``True``, lorsque plusieurs formats disponibles
+            utilise la même extension (cas notamment de ``'xml'`` et
+            ``'pretty-xml'``), la méthode n'en renvoie qu'un.
+        
+        Returns
+        -------
+        list(str)
+        
         Notes
         -----
-        À date, cette propriété exclut les formats ``'xml'`` et
+        À date, cette méthode exclut les formats ``'xml'`` et
         ``'pretty-xml'`` en présence de catégories locales de
         métadonnées, car leurs espaces de nommage ne sont pas
         gérés correctement. Il s'agit d'une limitation de RDFLib
         et non du format, qui pourrait être corrigée à l'avenir.
         
         """
-        l = export_formats()
+        l = export_formats(no_duplicate=no_duplicate)
         # Une méthode plus gourmande pourrait consister à purement et simplement
         # tester toutes les sérialisations possibles et retourner celles qui
         # ne produisent pas d'erreur. À ce stade, il semble cependant que
