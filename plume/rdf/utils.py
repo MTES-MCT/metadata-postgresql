@@ -1127,7 +1127,7 @@ def import_formats():
     """
     return [ k for k, v in rdflib_formats.items() if v['import'] ]
 
-def export_formats(no_duplicate=False):
+def export_formats(no_duplicate=False, format=None):
     """Renvoie la liste de tous les formats disponibles pour l'export.
     
     Parameters
@@ -1135,7 +1135,15 @@ def export_formats(no_duplicate=False):
     no_duplicate : bool, default False
         Si ``True``, lorsque plusieurs formats disponibles
         utilise la même extension (cas notamment de ``'xml'`` et
-        ``'pretty-xml'``), la méthode n'en renvoie qu'un.
+        ``'pretty-xml'``), la fonction n'en renvoie qu'un.
+    format : str, optional
+        Un format d'export à prioriser. `format` ne sera
+        jamais éliminé par la suppression de pseudo-doublons
+        effectuée lorsque `no_duplicate` vaut ``True``. Il
+        s'agira toujours de la première valeur de la liste
+        renvoyée, sauf s'il ne s'agissait pas d'un format
+        d'export disponible (auquel cas il ne sera pas du tout
+        dans la liste renvoyée).
     
     Returns
     -------
@@ -1143,8 +1151,18 @@ def export_formats(no_duplicate=False):
         La liste des formats reconnus par RDFLib à l'export.
     
     """
-    return [ k for k, v in rdflib_formats.items() 
-        if not no_duplicate or v['export default'] ]
+    l = []
+    if format and format in rdflib_formats:
+        format_ext = export_extension_from_format(format)
+    else:
+        format_ext = None
+    for k, v in rdflib_formats.items():
+        if k == format:
+            l.insert(0, k)
+        elif not no_duplicate or (v['export default']
+            and not export_extension_from_format(k) == format_ext):
+            l.append(k)
+    return l
 
 def import_extensions_from_format(format=None):
     """Renvoie la liste des extensions associées à un format d'import.
