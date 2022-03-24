@@ -206,11 +206,11 @@ class Ui_Dialog_ColorBloc(object):
         self.spingeomEpaisseur.valueChanged.connect(self.functiongeomEpaisseur)
         self.geomEpaisseur = self.spingeomEpaisseur.value()  # si ouverture sans chgt et sauve
         #--
-        mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
+        mDicTypeCle      = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
         mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
-        self.mDialog.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
+        self.mDialog.mDicTypeObj = dict(zip(mDicTypeCle, mDicTypeObj)) # For bibli_plume_tools_map
 
-        mDicType = [ elem.lower().capitalize() for elem in mDicType ]
+        mDicTypeCle = [ elem.lower().capitalize() for elem in mDicTypeCle ]
         self.labelTypegeomPoint = QtWidgets.QLabel(self.groupBoxAll)
         self.labelTypegeomPoint.setGeometry(QtCore.QRect(-20, 320, 210, 30))
         self.labelTypegeomPoint.setAlignment(Qt.AlignRight)        
@@ -219,7 +219,7 @@ class Ui_Dialog_ColorBloc(object):
         self.comboTypegeomPoint = QtWidgets.QComboBox(self.groupBoxAll)
         self.comboTypegeomPoint.setGeometry(QtCore.QRect(205, 315, 190, 20))
         self.comboTypegeomPoint.setObjectName("comboTypegeomPoint")
-        self.comboTypegeomPoint.addItems( mDicType )
+        self.comboTypegeomPoint.addItems( mDicTypeCle )
         self.comboTypegeomPoint.currentTextChanged.connect(self.functioncomboTypegeomPoint)
         self.comboTypegeomPoint.setCurrentText(self.geomPoint.lower().capitalize())         
         self.geomPoint = self.comboTypegeomPoint.currentText().upper()  # si ouverture sans chgt et sauve
@@ -583,8 +583,8 @@ class Ui_Dialog_ColorBloc(object):
 
     #==========================         
     #==========================             
-    def functionLine(self, mDicType):
-        self.zLineQGroupBox = [ k for k, v in mDicType.items() if v == self.comboTypeLine.currentText()][0]
+    def functionLine(self, mDicTypeCle):
+        self.zLineQGroupBox = [ k for k, v in mDicTypeCle.items() if v == self.comboTypeLine.currentText()][0]
         # --
         self.applyWYSIWYG() #Lecture et apply des variables
         # --
