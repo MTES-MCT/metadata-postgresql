@@ -250,6 +250,16 @@
    Lecture des géométries pour la visualisation
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gestion-du-referentiel">
+   Gestion du référentiel
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#precision-des-coordonnees">
+   Précision des coordonnées
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -494,6 +504,42 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">'linestring'</span></code> pour une ligne simple (pas de multi-lignes),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'circularstring'</span></code> pour une ligne circulaire.</p></li>
 </ul>
+</section>
+<section id="gestion-du-referentiel">
+<h2>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Lors de la saisie d’une géométrie, le référentiel fourni en argument à <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid</span></code> doit être celui qui a effectivement été utilisé pour les coordonnées du WKT. Aucune transformation n’est nécessaire.</p>
+<p>Lors de la visualisation, il faudra par contre projeter les coordonnées dans le référentiel courant du canevas.</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Action</p></th>
+<th class="head"><p>Référentiel de départ</p></th>
+<th class="head"><p>Référentiel d’arrivée</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>calcul côté PostgreSQL</p></td>
+<td><p>celui qui est renvoyé par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_srid</span></code></p></td>
+<td><p>idem</p></td>
+</tr>
+<tr class="row-odd"><td><p>calcul côté QGIS</p></td>
+<td><p>celui de la couche</p></td>
+<td><p>idem</p></td>
+</tr>
+<tr class="row-even"><td><p>saisie manuelle</p></td>
+<td><p>celui du canevas</p></td>
+<td><p>idem</p></td>
+</tr>
+<tr class="row-odd"><td><p>visualisation</p></td>
+<td><p>celui qui est renvoyé par <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code></p></td>
+<td><p>celui du canevas</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="precision-des-coordonnees">
+<h2>Précision des coordonnées<a class="headerlink" href="#precision-des-coordonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Par défaut, <code class="docutils literal notranslate"><span class="pre">qgis.core.QgsAbstractGeometry.asWkt</span></code> encode les WKT avec une précision de 17 décimales, et la fonction <code class="docutils literal notranslate"><span class="pre">ST_AsText</span></code> de PostGIS conserve jusqu’à 15 décimales (pourrait être variable selon les versions).</p>
+<p>Plume permet à l’utilisateur de définir la précision adaptée à ses usages via un paramètre utilisateur. Par défaut, elle est fixée à 8 décimales, ce qui correspond à une précision de l’ordre du millimètre pour les latitudes et pour les longitudes à l’équateur en WGS 84.</p>
 </section>
 </section>
 
