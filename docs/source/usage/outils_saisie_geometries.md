@@ -183,4 +183,22 @@ Cette fonction renvoie `None` si le type de géométrie n'est pas pris en charge
 - `'linestring'` pour une ligne simple (pas de multi-lignes),
 - `'circularstring'` pour une ligne circulaire.
 
+## Gestion du référentiel
+
+Lors de la saisie d'une géométrie, le référentiel fourni en argument à `plume.rdf.utils.wkt_with_srid` doit être celui qui a effectivement été utilisé pour les coordonnées du WKT. Aucune transformation n'est nécessaire.
+
+Lors de la visualisation, il faudra par contre projeter les coordonnées dans le référentiel courant du canevas.
+
+| Action | Référentiel de départ | Référentiel d'arrivée |
+| --- | --- | --- |
+| calcul côté PostgreSQL | celui qui est renvoyé par `plume.pg.queries.query_get_geom_srid` | idem |
+| calcul côté QGIS | celui de la couche | idem |
+| saisie manuelle | celui du canevas | idem |
+| visualisation | celui qui est renvoyé par `plume.rdf.utils.split_rdf_wkt` | celui du canevas |
+
+## Précision des coordonnées
+
+Par défaut, `qgis.core.QgsAbstractGeometry.asWkt` encode les WKT avec une précision de 17 décimales, et la fonction `ST_AsText` de PostGIS conserve jusqu'à 15 décimales (pourrait être variable selon les versions).
+
+Plume permet à l'utilisateur de définir la précision adaptée à ses usages via un paramètre utilisateur. Par défaut, elle est fixée à 8 décimales, ce qui correspond à une précision de l'ordre du millimètre pour les latitudes et pour les longitudes à l'équateur en WGS 84.
 
