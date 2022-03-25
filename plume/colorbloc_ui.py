@@ -107,12 +107,12 @@ class Ui_Dialog_ColorBloc(object):
         self.toolBarDialog    = self.mDic_LH["toolBarDialog"]  #toolBarDialog
         #-
         self.labelQGroupBox = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelQGroupBox.setGeometry(QtCore.QRect(10, 195, 180, 30))
+        self.labelQGroupBox.setGeometry(QtCore.QRect(10, 165, 180, 30))
         self.labelQGroupBox.setAlignment(Qt.AlignRight)        
         self.labelQGroupBox.setText("Police :")        
         #-
         self.fontQGroupBox = QtWidgets.QFontComboBox(self.groupBoxAll)
-        self.fontQGroupBox.setGeometry(QtCore.QRect(205, 190, 190, 20))
+        self.fontQGroupBox.setGeometry(QtCore.QRect(205, 160, 190, 20))
         self.fontQGroupBox.setObjectName("fontComboBox")         
         self.fontQGroupBox.setCurrentFont(QFont(self.policeQGroupBox))         
         self.fontQGroupBox.currentFontChanged.connect(self.functionFont)
@@ -120,12 +120,12 @@ class Ui_Dialog_ColorBloc(object):
         #--
         mDicType = {"dashed":"Tirets", "dotted":"Pointillés", "double":"Plein double", "solid":"plein"}
         self.labelTypeLine = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelTypeLine.setGeometry(QtCore.QRect(10, 215, 180, 30))
+        self.labelTypeLine.setGeometry(QtCore.QRect(10, 185, 180, 30))
         self.labelTypeLine.setAlignment(Qt.AlignRight)        
         self.labelTypeLine.setText("Type de trait des cadres :")        
         #--
         self.comboTypeLine = QtWidgets.QComboBox(self.groupBoxAll)
-        self.comboTypeLine.setGeometry(QtCore.QRect(205, 210, 190, 20))
+        self.comboTypeLine.setGeometry(QtCore.QRect(205, 180, 190, 20))
         self.comboTypeLine.setObjectName("groupBoxBar")
         self.comboTypeLine.addItems([ elem for elem in mDicType.values() ])
         self.comboTypeLine.setCurrentText(mDicType[self.lineQGroupBox])         
@@ -133,12 +133,12 @@ class Ui_Dialog_ColorBloc(object):
         self.zLineQGroupBox = self.lineQGroupBox  # si ouverture sans chgt et sauve
         #-
         self.labelBoxEpai = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelBoxEpai.setGeometry(QtCore.QRect(10, 235, 180, 30))
+        self.labelBoxEpai.setGeometry(QtCore.QRect(10, 205, 180, 30))
         self.labelBoxEpai.setAlignment(Qt.AlignRight)        
         self.labelBoxEpai.setText("Epaisseur de trait des cadres :")        
         #-
         self.spinBoxEpai = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
-        self.spinBoxEpai.setGeometry(QtCore.QRect(205,230 ,50, 20))
+        self.spinBoxEpai.setGeometry(QtCore.QRect(205,200 ,50, 20))
         self.spinBoxEpai.setMaximum(5)
         self.spinBoxEpai.setMinimum(0)
         self.spinBoxEpai.setValue(1)
@@ -153,13 +153,13 @@ class Ui_Dialog_ColorBloc(object):
         self.zEditStyle = self.editStyle  # si ouverture sans chgt et sauve
         #-
         self.labelWinVsDock = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelWinVsDock.setGeometry(QtCore.QRect(10, 255, 180, 30))
+        self.labelWinVsDock.setGeometry(QtCore.QRect(10, 225, 180, 30))
         self.labelWinVsDock.setAlignment(Qt.AlignRight)        
         self.labelWinVsDock.setText("Interface :")        
         #-
         mDicWinVsDock = {"window":"Fenêtre", "dockFalse":"Panneau ancré", "dockTrue":"Panneau flottant"}
         self.comboWinVsDock = QtWidgets.QComboBox(self.groupBoxAll)
-        self.comboWinVsDock.setGeometry(QtCore.QRect(205, 250, 190, 20))
+        self.comboWinVsDock.setGeometry(QtCore.QRect(205, 220, 190, 20))
         self.comboWinVsDock.setObjectName("comboWinVsDock")
         self.comboWinVsDock.addItems([ elem for elem in mDicWinVsDock.values() ])
         self.comboWinVsDock.setCurrentText(mDicWinVsDock[self.ihm])         
@@ -168,13 +168,13 @@ class Ui_Dialog_ColorBloc(object):
         self.zComboWinVsDock = mValueTemp  # si ouverture sans chgt et sauve
         #-
         self.labelToolBarDialog = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelToolBarDialog.setGeometry(QtCore.QRect(10, 275, 180, 30))
+        self.labelToolBarDialog.setGeometry(QtCore.QRect(10, 245, 180, 30))
         self.labelToolBarDialog.setAlignment(Qt.AlignRight)        
         self.labelToolBarDialog.setText("Barre d'outil :")        
         #-
         mDicToolBarDialog = {"button":"Mode 'Bouton'", "picture":"Mode 'Image'"}
         self.comboToolBarDialog = QtWidgets.QComboBox(self.groupBoxAll)
-        self.comboToolBarDialog.setGeometry(QtCore.QRect(205, 270, 190, 20))
+        self.comboToolBarDialog.setGeometry(QtCore.QRect(205, 240, 190, 20))
         self.comboToolBarDialog.setObjectName("comboToolBarDialog")
         self.comboToolBarDialog.addItems([ elem for elem in mDicToolBarDialog.values() ])
         self.comboToolBarDialog.setCurrentText(mDicToolBarDialog[self.toolBarDialog])         
@@ -184,9 +184,33 @@ class Ui_Dialog_ColorBloc(object):
 
         #======== for Geometry
         #-
+        self.geomPrecision   = self.mDic_LH["geomPrecision"]       
         self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
         self.geomPoint       = self.mDic_LH["geomPoint"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
+        #-
+        self.groupBoxLineGeom = QtWidgets.QGroupBox(self.groupBoxAll)
+        self.groupBoxLineGeom.setObjectName("groupBoxLineGeom")
+        self.groupBoxLineGeom.setStyleSheet("QGroupBox#groupBoxLineGeom { border-style: dotted; border-width: 2px ; border-color: #958b62;}")
+        self.groupBoxLineGeom.setGeometry(QtCore.QRect(10, 270, (self.tabWidget.width()/2) - 50, 2))
+        #========
+        self.labelgeomPrecision = QtWidgets.QLabel(self.groupBoxAll)
+        self.labelgeomPrecision.setGeometry(QtCore.QRect(10, 280, 180, 30))
+        self.labelgeomPrecision.setAlignment(Qt.AlignRight)        
+        self.labelgeomPrecision.setText("Précision des coords. WKT :")        
+        #-
+        self.spingeomPrecision = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
+        self.spingeomPrecision.setGeometry(QtCore.QRect(205,276 ,50, 20))
+        self.spingeomPrecision.setMaximum(17)
+        self.spingeomPrecision.setMinimum(0)
+        self.spingeomPrecision.setSingleStep(1)
+        self.spingeomPrecision.setDecimals(0)
+        self.spingeomPrecision.setSuffix(" déci")
+        self.spingeomPrecision.setObjectName("spingeomPrecision")
+        self.spingeomPrecision.setValue(int(self.geomPrecision))         
+        self.spingeomPrecision.valueChanged.connect(self.functiongeomPrecision)
+        self.geomPrecision = self.spingeomPrecision.value()  # si ouverture sans chgt et sauve
+
         #-
         self.labelgeomEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
         self.labelgeomEpaisseur.setGeometry(QtCore.QRect(10, 300, 180, 30))
@@ -618,6 +642,10 @@ class Ui_Dialog_ColorBloc(object):
 
     #==========================       
     # for geometry         
+    def functiongeomPrecision(self):
+        self.geomPrecision = self.spingeomPrecision.value()
+        return 
+
     def functiongeomEpaisseur(self):
         self.geomEpaisseur = self.spingeomEpaisseur.value()
         return 
@@ -1168,11 +1196,12 @@ class Ui_Dialog_ColorBloc(object):
                   mX1, mY1 = (ii * 10) +  0,  (i * 30) + 10 
                   mX2, mY2 = (ii * 10) + 185, (i * 30) + 10
                   mX3, mY3 = (ii * 10) + 230, (i * 30) + 10
-                  if i == compt : break  
+                  if i > 0 : mY1, mY2, mY3 = mY1 - 30, mY2 - 30, mY3 - 30         
+                  if i == compt : break 
+           print([mX1, mY1])       
            #
            mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
            mButton.setObjectName(mButtonName)
-           #mButton.setText(self.dicListBlocs[self.dicListLettreLabel[i]]) if self.dicListLettre[i] in self.dicListBlocs else mButton.setText(self.dicListLettreLabel[i])
            mButton.setText(self.dicListLettreLabel[i])
            #
            mImage.setGeometry(QtCore.QRect(mX2, mY2, 40, 20))
@@ -1245,6 +1274,7 @@ class Ui_Dialog_ColorBloc(object):
 
            #======== for Geometry
            #Ajouter si autre param
+           mDicSaveColor["geomPrecision"] = self.geomPrecision
            mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
            mDicSaveColor["geomPoint"]     = self.geomPoint
            mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
