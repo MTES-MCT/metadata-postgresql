@@ -313,6 +313,11 @@ class UtilsTestCase(unittest.TestCase):
             ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'EPSG:2154')
             )
         self.assertEqual(
+            split_rdf_wkt('<http://www.opengis.net/def/crs/OGC/1.3/CRS84> ' \
+                'Point (2.30051305 51.06584051)'),
+            ('Point (2.30051305 51.06584051)', 'OGC:CRS84')
+            )
+        self.assertEqual(
             split_rdf_wkt('POINT(651796.32814998598769307 6862298.58582336455583572)'),
             ('POINT(651796.32814998598769307 6862298.58582336455583572)', 'OGC:CRS84')
             )
