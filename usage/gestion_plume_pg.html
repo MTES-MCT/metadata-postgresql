@@ -8,26 +8,23 @@
 
     <title>Installation et gestion de l’extension PostgreSQL PlumePg &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -202,7 +199,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -268,11 +265,11 @@
               <div>
                 
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
-<h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">#</a></h1>
 <p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>.</p>
 <p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a></p>
 <section id="compatibilite">
-<h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">#</a></h2>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Version</p></th>
@@ -316,7 +313,7 @@
 </table>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Lien permanent vers ce titre">#</a></h2>
 <p>Les fichiers d’installation de <em>PlumePg</em> se trouvent dans le dossier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">postgresql</span></code></span> du Git :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x.sql</span></code> contient le code de la version <code class="docutils literal notranslate"><span class="pre">x.x.x</span></code> de l’extension <em>PlumePg</em>. Celui-ci s’exécute lorsqu’elle est installée sur une base.</p></li>
@@ -335,11 +332,11 @@
 <p>L’installation est à réaliser par l’ADL. Il n’était pas pertinent que celle-ci puisse se faire via l’interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"><em>AsgardManager</em></a> propose cette fonctionnalité, via son menu <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase"><code class="docutils literal notranslate"><span class="pre">Gestion</span> <span class="pre">de</span> <span class="pre">la</span> <span class="pre">base</span></code></a>.</p>
 </section>
 <section id="localisation-des-objets-de-l-extension">
-<h2>Localisation des objets de l’extension<a class="headerlink" href="#localisation-des-objets-de-l-extension" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Localisation des objets de l’extension<a class="headerlink" href="#localisation-des-objets-de-l-extension" title="Lien permanent vers ce titre">#</a></h2>
 <p>Tous les objets de l’extension sont créés dans le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>.</p>
 </section>
 <section id="cohabitation-avec-asgard">
-<h2>Cohabitation avec <em>Asgard</em><a class="headerlink" href="#cohabitation-avec-asgard" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Cohabitation avec <em>Asgard</em><a class="headerlink" href="#cohabitation-avec-asgard" title="Lien permanent vers ce titre">#</a></h2>
 <p>Il n’y a pas de lien fonctionnel direct entre <em>PlumePg</em> et l’extension <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/"><em>Asgard</em></a>, outil créé dans le cadre du GT PostGIS pour faciliter la gestion des droits.</p>
 <p>Si l’extension <em>PlumePg</em> est installée sur une base disposant déjà d”<em>Asgard</em>, <code class="docutils literal notranslate"><span class="pre">g_admin</span></code> sera automatiquement désigné comme <em>producteur</em> du schéma et <code class="docutils literal notranslate"><span class="pre">g_consult</span></code> en sera fait <em>lecteur</em>. Il s’agit juste de faciliter le travail de l’administrateur, cette opération ne crée aucune adhérence durable. Il est ensuite tout à fait possible, sans que cela ne pose de problème particulier, y compris lors des futures montées de version de <em>PlumePg</em> :</p>
 <ul class="simple">
@@ -350,7 +347,7 @@
 <p><em>NB. Pour que l’affectation automatique de droits sur <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ait lieu, il faudra utiliser une version d’Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n’étaient pas automatiquement référencés.</em></p>
 </section>
 <section id="mise-a-jour">
-<h2>Mise à jour<a class="headerlink" href="#mise-a-jour" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Mise à jour<a class="headerlink" href="#mise-a-jour" title="Lien permanent vers ce titre">#</a></h2>
 <p>Comme pour l’installation, les fichiers de mise à jour sont disponibles dans le dossier <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">postgresql</span></code></span> du Git :</p>
 <ul class="simple">
 <li><p>un ou plusieurs fichiers <code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x--y.y.y.sql</span></code>, qui sont des scripts de passage de la version <code class="docutils literal notranslate"><span class="pre">x.x.x</span></code> à la version <code class="docutils literal notranslate"><span class="pre">y.y.y</span></code>. Plusieurs de ces scripts peuvent s’exécuter à la suite lors d’une mise à jour (<code class="docutils literal notranslate"><span class="pre">plume_pg--x.x.x--x1.x1.x1.sql</span></code>, <code class="docutils literal notranslate"><span class="pre">plume_pg--x1.x1.x1--x2.x2.x2.sql</span></code>, …, <code class="docutils literal notranslate"><span class="pre">plume_pg--xn.xn.xn--y.y.y.sql</span></code>).</p></li>
@@ -368,7 +365,7 @@
 </div>
 </section>
 <section id="desinstallation">
-<h2>Désinstallation<a class="headerlink" href="#desinstallation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Désinstallation<a class="headerlink" href="#desinstallation" title="Lien permanent vers ce titre">#</a></h2>
 <p>Pour désinstaller <em>PlumePg</em> d’une base :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -377,7 +374,7 @@
 <p><em>NB. Si le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> existait avant l’installation de l’extension, il ne sera pas marqué comme dépendant de l’extension et ne sera donc pas supprimé en cas de désinstallation. Tout son contenu le sera, par contre.</em></p>
 </section>
 <section id="sauvegarde-et-restauration-de-la-base">
-<h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre">#</a></h2>
 <p>Pour que les données de <em>PlumePg</em> soient préservées lors de la restauration, notamment les <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>, il est essentiel de <strong>ne pas chercher à réinstaller manuellement l’extension sur la base de restauration</strong>. Tout est automatique. On veillera seulement à ce que :</p>
 <ul class="simple">
 <li><p>les fichiers d’installation de <em>PlumePg</em> soient disponibles dans le répertoire des extensions du serveur de restauration (cf. <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> pour l’emplacement de ce répertoire) ;</p></li>
@@ -440,8 +437,9 @@
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

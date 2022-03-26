@@ -8,26 +8,23 @@
 
     <title>Module plume.pg.description &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,7 +334,7 @@
               <div>
                 
   <section id="module-plume.pg.description">
-<span id="module-plume-pg-description"></span><h1>Module plume.pg.description<a class="headerlink" href="#module-plume.pg.description" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-pg-description"></span><h1>Module plume.pg.description<a class="headerlink" href="#module-plume.pg.description" title="Lien permanent vers ce titre">#</a></h1>
 <p>Descriptifs PostgreSQL.</p>
 <p>Ce module prend en charge la désérialisation des métadonnées
 contenues dans les descriptifs PostgreSQL en graphe de métadonées
@@ -371,7 +368,7 @@ propriété <a class="reference internal" href="#plume.pg.description.PgDescript
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Descriptif PostgreSQL.</p>
 <dl class="field-list simple">
@@ -404,7 +401,7 @@ d’une chaîne de caractères vide.</p>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription.ante">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ante</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.ante" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ante</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.ante" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>str: Le texte qui précède la sérialisation JSON-LD des métadonnées.</p>
 <p>À défaut de sérialisation JSON-LD, <cite>ante</cite> contient l’intégralité
 du descriptif.</p>
@@ -414,7 +411,7 @@ n’avait pas de descriptif, ou si le descriptif commence par le JSON-LD.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription.jsonld">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jsonld</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.jsonld" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jsonld</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.jsonld" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>str: Partie du descriptif correspondant à la sérialisation JSON-LD des métadonnées.</p>
 <p>Cette propriété est une chaîne de caractères vide si le descriptif
 ne contenait pas de JSON-LD, ou en cas de suppression a posteriori
@@ -423,7 +420,7 @@ des métadonnées.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription.metagraph">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metagraph</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metagraph</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.metagraph" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>plume.rdf.metagraph.Metagraph: Graphe de métadonnées déduit du descriptif.</p>
 <p>À l’initialisation, cette propriété est automatiquement déduite
 du descriptif. Par la suite, ses modifications emportent mise
@@ -435,7 +432,7 @@ de JSON-LD.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription.post">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">post</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.post" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">post</span></span><a class="headerlink" href="#plume.pg.description.PgDescription.post" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>str: Le texte qui suit la sérialisation JSON-LD des métadonnées.</p>
 <p>Cette propriété est une chaîne de caractères vide si l’objet PostgreSQL
 n’avait pas de descriptif, ou si le descriptif finit par le JSON-LD.</p>
@@ -473,8 +470,9 @@ n’avait pas de descriptif, ou si le descriptif finit par le JSON-LD.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

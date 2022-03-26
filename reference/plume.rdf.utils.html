@@ -8,26 +8,23 @@
 
     <title>Module plume.rdf.utils &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,11 +334,11 @@
               <div>
                 
   <section id="module-plume.rdf.utils">
-<span id="module-plume-rdf-utils"></span><h1>Module plume.rdf.utils<a class="headerlink" href="#module-plume.rdf.utils" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-rdf-utils"></span><h1>Module plume.rdf.utils<a class="headerlink" href="#module-plume.rdf.utils" title="Lien permanent vers ce titre">#</a></h1>
 <p>Utilitaires.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.rdf.utils.DatasetId">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">DatasetId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">uuids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.DatasetId" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">DatasetId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">uuids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.DatasetId" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.term.URIRef</span></code></p>
 <p>Identifiant de jeu de données.</p>
 <dl class="field-list simple">
@@ -559,7 +556,7 @@ l’identifiant.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.abspath">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">abspath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.abspath" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">abspath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.abspath" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Déduit un chemin absolu d’un chemin relatif au package.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -585,13 +582,13 @@ d’antislashs.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.utils.crs_ns">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">crs_ns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'EPSG':</span> <span class="pre">'http://www.opengis.net/def/crs/EPSG/0/',</span> <span class="pre">'IGNF':</span> <span class="pre">'https://registre.ign.fr/ign/IGNF/IGNF.xml#',</span> <span class="pre">'OGC':</span> <span class="pre">'http://www.opengis.net/def/crs/OGC/1.3/'}</span></em><a class="headerlink" href="#plume.rdf.utils.crs_ns" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">crs_ns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'EPSG':</span> <span class="pre">'http://www.opengis.net/def/crs/EPSG/0/',</span> <span class="pre">'IGNF':</span> <span class="pre">'https://registre.ign.fr/ign/IGNF/IGNF.xml#',</span> <span class="pre">'OGC':</span> <span class="pre">'http://www.opengis.net/def/crs/OGC/1.3/'}</span></em><a class="headerlink" href="#plume.rdf.utils.crs_ns" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Espaces de nommage des référentiels de coordonnées.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.data_from_file">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">data_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.data_from_file" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">data_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.data_from_file" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie le contenu d’un fichier.</p>
 <p>Le fichier sera présumé être encodé en UTF-8 et mieux
 vaudrait qu’il le soit.</p>
@@ -624,7 +621,7 @@ l’import de données du modèle:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.date_from_str">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">date_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.date_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">date_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.date_from_str" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la représentation RDF d’une date exprimée comme chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -654,7 +651,7 @@ conserver que la date.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.datetime_from_str">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">datetime_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.datetime_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">datetime_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.datetime_from_str" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la représentation RDF d’une date exprimée comme chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -687,7 +684,7 @@ mais elles seront silencieusement effacées.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.decimal_from_str">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">decimal_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.decimal_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">decimal_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.decimal_from_str" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la représentation RDF d’un nombre décimal exprimé comme chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -717,7 +714,7 @@ décimale.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.duration_from_int">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">duration_from_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.duration_from_int" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">duration_from_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.duration_from_int" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la représentation RDF d’une durée exprimée sous la forme d’une valeur entière et d’une unité.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -748,7 +745,7 @@ des unités prises en charge.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.email_from_owlthing">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">email_from_owlthing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thing_iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.email_from_owlthing" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">email_from_owlthing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thing_iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.email_from_owlthing" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la transcription sous forme de chaîne de caractères d’un IRI représentant une adresse mél.</p>
 <p>Cette fonction très basique se contente de retirer le préfixe
 « mailto: » s’il était présent.</p>
@@ -775,7 +772,7 @@ RDF  <code class="docutils literal notranslate"><span class="pre">owl:Thing</spa
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.export_extension_from_format">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_extension_from_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_extension_from_format" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_extension_from_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_extension_from_format" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie l’extension utilisée pour les exports dans le format considéré.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -801,7 +798,7 @@ reconnus par les fonctions de RDFLib (<a class="reference internal" href="#plume
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.export_format_from_extension">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_format_from_extension" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_format_from_extension" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie le format d’export correspondant à l’extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -830,7 +827,7 @@ n’est pas reconnue.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.export_formats">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.export_formats" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la liste de tous les formats disponibles pour l’export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -860,7 +857,7 @@ dans la liste renvoyée).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.forbidden_char">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">forbidden_char</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anystr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.forbidden_char" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">forbidden_char</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anystr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.forbidden_char" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Le cas échéant, renvoie le premier caractère de la chaîne qui ne soit pas autorisé dans un IRI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -886,7 +883,7 @@ de ces caractères.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.geomtype_from_wkt">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">geomtype_from_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wkt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.geomtype_from_wkt" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">geomtype_from_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wkt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.geomtype_from_wkt" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Déduit le type de géométrie d’une représentation WKT.</p>
 <p>Si le type de géométrie n’est pas l’un des types
 gérés par Plume, la fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
@@ -910,7 +907,7 @@ référentiel explicitement déclaré).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.get_datasetid">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">get_datasetid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anygraph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.get_datasetid" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">get_datasetid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anygraph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.get_datasetid" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie l’identifiant du jeu de données éventuellement contenu dans le graphe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -932,7 +929,7 @@ pas de jeu de données.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.graph_from_file">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">graph_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.graph_from_file" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">graph_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.graph_from_file" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Désérialise le contenu d’un fichier sous forme de graphe.</p>
 <p>Le fichier sera présumé être encodé en UTF-8 et mieux
 vaudrait qu’il le soit.</p>
@@ -967,7 +964,7 @@ acceptées, on exécutera <a class="reference internal" href="#plume.rdf.utils.i
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.import_extensions_from_format">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_extensions_from_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_extensions_from_format" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_extensions_from_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_extensions_from_format" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la liste des extensions associées à un format d’import.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -997,7 +994,7 @@ de toutes les extensions reconnues pour l’import.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.import_format_from_extension">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_format_from_extension" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_format_from_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_format_from_extension" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie le format d’import correspondant à l’extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1018,7 +1015,7 @@ n’est pas reconnue.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.import_formats">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">import_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.import_formats" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la liste de tous les formats disponibles pour l’import.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1032,7 +1029,7 @@ n’est pas reconnue.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.int_from_duration">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">int_from_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.int_from_duration" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">int_from_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.int_from_duration" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Extrait un nombre entier et son unité d’un littéral représentant une durée.</p>
 <p>Cette fonction renvoie <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> si la valeur fournie
 en argument n’était pas un littéral de type <code class="docutils literal notranslate"><span class="pre">xsd:duration</span></code>
@@ -1066,7 +1063,7 @@ durée.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.main_datatype">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">main_datatype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.main_datatype" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">main_datatype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.main_datatype" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie le type de littéral pré-dominant d’une liste de valeurs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1104,7 +1101,7 @@ et de type <code class="docutils literal notranslate"><span class="pre">xsd:date
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.owlthing_from_email">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">owlthing_from_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.owlthing_from_email" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">owlthing_from_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.owlthing_from_email" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Construit un IRI valide à partir d’une chaîne de caractères représentant une adresse mél.</p>
 <p>La fonction ne fait aucun contrôle de validité sur l’adresse si ce
 n’est vérifier qu’elle ne contient aucun caractère interdit pour
@@ -1133,7 +1130,7 @@ les adresses mél : <code class="docutils literal notranslate"><span class="pre"
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.owlthing_from_tel">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">owlthing_from_tel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tel_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_fr_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.owlthing_from_tel" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">owlthing_from_tel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tel_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_fr_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.owlthing_from_tel" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Construit un IRI valide à partir d’une chaîne de caractères représentant un numéro de téléphone.</p>
 <p>Si le numéro semble être un numéro de téléphone français valide,
 il est standardisé sous la forme <code class="docutils literal notranslate"><span class="pre">&lt;tel:+33-x-xx-xx-xx-xx&gt;</span></code>.</p>
@@ -1165,7 +1162,7 @@ numéros de téléphone : <code class="docutils literal notranslate"><span class
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.path_from_n3">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">path_from_n3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_n3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.path_from_n3" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">path_from_n3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_n3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.path_from_n3" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie un chemin d’IRI reconstruit à partir de sa représentation N3.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1194,7 +1191,7 @@ soit parce que tous les préfixes utilisés n’ont pas
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.path_n3">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">path_n3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.path_n3" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">path_n3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.path_n3" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la représentation N3 d’un chemin d’IRI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1221,7 +1218,7 @@ après les slashs.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.pick_translation">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">pick_translation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">litlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.pick_translation" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">pick_translation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">litlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.pick_translation" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie l’élément de la liste dont la langue est la mieux adaptée.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1257,7 +1254,7 @@ que des valeurs non litérales.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.utils.rdflib_formats">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">rdflib_formats</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'json-ld':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.jsonld',</span> <span class="pre">'.json'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'n3':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.n3'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'nt':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.nt'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'pretty-xml':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.rdf',</span> <span class="pre">'.xml'],</span> <span class="pre">'import':</span> <span class="pre">False},</span> <span class="pre">'trig':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.trig'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'turtle':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.ttl'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'xml':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">False,</span> <span class="pre">'extensions':</span> <span class="pre">['.rdf',</span> <span class="pre">'.xml'],</span> <span class="pre">'import':</span> <span class="pre">True}}</span></em><a class="headerlink" href="#plume.rdf.utils.rdflib_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">rdflib_formats</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'json-ld':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.jsonld',</span> <span class="pre">'.json'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'n3':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.n3'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'nt':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.nt'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'pretty-xml':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.rdf',</span> <span class="pre">'.xml'],</span> <span class="pre">'import':</span> <span class="pre">False},</span> <span class="pre">'trig':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.trig'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'turtle':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">True,</span> <span class="pre">'extensions':</span> <span class="pre">['.ttl'],</span> <span class="pre">'import':</span> <span class="pre">True},</span> <span class="pre">'xml':</span> <span class="pre">{'export</span> <span class="pre">default':</span> <span class="pre">False,</span> <span class="pre">'extensions':</span> <span class="pre">['.rdf',</span> <span class="pre">'.xml'],</span> <span class="pre">'import':</span> <span class="pre">True}}</span></em><a class="headerlink" href="#plume.rdf.utils.rdflib_formats" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Formats reconnus par les fonctions de RDFLib.</p>
 <p>Si la clé <code class="docutils literal notranslate"><span class="pre">import</span></code> vaut <code class="docutils literal notranslate"><span class="pre">False</span></code>, le format n’est pas reconnu
 à l’import. Si <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">default</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, il s’agit du
@@ -1267,7 +1264,7 @@ par la clé <code class="docutils literal notranslate"><span class="pre">extensi
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.sort_by_language">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">sort_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">litlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.sort_by_language" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">sort_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">litlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.sort_by_language" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Trie une liste selon les langues de ses valeurs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1284,7 +1281,7 @@ par la clé <code class="docutils literal notranslate"><span class="pre">extensi
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.split_rdf_wkt">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">split_rdf_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rdf_wkt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.split_rdf_wkt" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">split_rdf_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rdf_wkt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.split_rdf_wkt" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Extrait le référentiel et la géométrie d’un littéral WKT.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1325,7 +1322,7 @@ n’est pas vérifiée.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.str_from_date">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_date" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_date" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Représentation d’une date sous forme de chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1354,7 +1351,7 @@ ou qui n’est pas un littéral de type <code class="docutils literal notranslat
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.str_from_datetime">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datetimelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_datetime" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datetimelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_datetime" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Représentation d’une date avec heure sous forme de chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1385,7 +1382,7 @@ les fuseaux horaires effacés.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.str_from_decimal">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_decimal" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_decimal" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Représentation d’un nombre décimal sous forme de chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1416,7 +1413,7 @@ point) à utiliser.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.str_from_duration">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_duration" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_duration" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Représentation d’une durée sous forme de chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1445,7 +1442,7 @@ d’une représentation de cette forme.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.str_from_time">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_time" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">str_from_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timelit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.str_from_time" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Représentation d’une heure sous forme de chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1474,7 +1471,7 @@ les fuseaux horaires effacés.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.tel_from_owlthing">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">tel_from_owlthing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thing_iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.tel_from_owlthing" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">tel_from_owlthing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thing_iri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.tel_from_owlthing" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la transcription sous forme de chaîne de caractères d’un IRI représentant un numéro de téléphone.</p>
 <p>Contrairement à <a class="reference internal" href="#plume.rdf.utils.owlthing_from_tel" title="plume.rdf.utils.owlthing_from_tel"><code class="xref py py-func docutils literal notranslate"><span class="pre">owlthing_from_tel()</span></code></a>, cette fonction très basique
 ne standardise pas la forme du numéro de téléphone. Elle se contente
@@ -1502,7 +1499,7 @@ RDF <code class="docutils literal notranslate"><span class="pre">owl:Thing</span
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.text_with_link">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">text_with_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anystr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anyiri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.text_with_link" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">text_with_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anystr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anyiri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.text_with_link" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Génère un fragment HTML définissant un lien.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1533,7 +1530,7 @@ qui sera interprétée par les widgets comme du texte riche.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.time_from_str">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">time_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.time_from_str" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">time_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.time_from_str" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la représentation RDF d’une heure exprimée comme chaîne de caractères.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1563,7 +1560,7 @@ en compte.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.utils.wkt_with_srid">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">wkt_with_srid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wkt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.wkt_with_srid" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.utils.</span></span><span class="sig-name descname"><span class="pre">wkt_with_srid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wkt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.utils.wkt_with_srid" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Ajoute un référentiel de coordonnées à la représentation WKT d’une géométrie.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1632,8 +1629,9 @@ explicitement déclaré, comme attendu en RDF.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

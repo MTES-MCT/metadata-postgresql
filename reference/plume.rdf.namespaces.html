@@ -8,26 +8,23 @@
 
     <title>Module plume.rdf.namespaces &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,11 +334,11 @@
               <div>
                 
   <section id="module-plume.rdf.namespaces">
-<span id="module-plume-rdf-namespaces"></span><h1>Module plume.rdf.namespaces<a class="headerlink" href="#module-plume.rdf.namespaces" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-rdf-namespaces"></span><h1>Module plume.rdf.namespaces<a class="headerlink" href="#module-plume.rdf.namespaces" title="Lien permanent vers ce titre">#</a></h1>
 <p>Gestion des espaces de nommage.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.rdf.namespaces.PlumeNamespaceManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">PlumeNamespaceManager</span></span><a class="headerlink" href="#plume.rdf.namespaces.PlumeNamespaceManager" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">PlumeNamespaceManager</span></span><a class="headerlink" href="#plume.rdf.namespaces.PlumeNamespaceManager" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.namespace.NamespaceManager</span></code></p>
 <p>Gestionnaire d’espaces de nommage.</p>
 <p>Le gestionnaire est initialisé avec les préfixes nécessaires
@@ -402,7 +399,7 @@ besoin.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.namespaces.class_map">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">class_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Group'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Individual'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Location'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Organization'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#FormalOrganization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#Organization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#OrganizationalUnit'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Organization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent')}</span></em><a class="headerlink" href="#plume.rdf.namespaces.class_map" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">class_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Group'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Individual'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Location'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Organization'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#Kind'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#FormalOrganization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#Organization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/org#OrganizationalUnit'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent'),</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Organization'):</span> <span class="pre">rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Agent')}</span></em><a class="headerlink" href="#plume.rdf.namespaces.class_map" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Mapping de classes.</p>
 <p>Principalement des sous-classes susceptibles d’apparaître dans
 des graphes importés de sources externes, qui sont mappées
@@ -412,7 +409,7 @@ notamment à la fonction <a class="reference internal" href="plume.rdf.metagraph
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.namespaces.predicate_map">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">predicate_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://schema.org/endDate'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/dcat#endDate'),</span> <span class="pre">rdflib.term.URIRef('http://schema.org/startDate'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/dcat#startDate'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#organisation-name'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#organization-name')}</span></em><a class="headerlink" href="#plume.rdf.namespaces.predicate_map" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.namespaces.</span></span><span class="sig-name descname"><span class="pre">predicate_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://schema.org/endDate'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/dcat#endDate'),</span> <span class="pre">rdflib.term.URIRef('http://schema.org/startDate'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/ns/dcat#startDate'),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#organisation-name'):</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2006/vcard/ns#organization-name')}</span></em><a class="headerlink" href="#plume.rdf.namespaces.predicate_map" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Mapping de prédicats qui ont notoirement tendance à être mal écrits.</p>
 <p>Coquilles, formes obsolètes… Ce dictionnaire sert notamment au nettoyage
 des graphes importés de sources externes par la fonction 
@@ -449,8 +446,9 @@ des graphes importés de sources externes par la fonction
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

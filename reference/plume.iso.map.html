@@ -8,26 +8,23 @@
 
     <title>Module plume.iso.map &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,11 +334,11 @@
               <div>
                 
   <section id="module-plume.iso.map">
-<span id="module-plume-iso-map"></span><h1>Module plume.iso.map<a class="headerlink" href="#module-plume.iso.map" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-iso-map"></span><h1>Module plume.iso.map<a class="headerlink" href="#module-plume.iso.map" title="Lien permanent vers ce titre">#</a></h1>
 <p>Mapping depuis ISO 19139 vers GeoDCAT-AP.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">IsoToDcat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_xml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.IsoToDcat" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">IsoToDcat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_xml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.IsoToDcat" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Transcripteur ISO 19139 / GeoDCAT-AP.</p>
 <dl class="field-list simple">
@@ -397,7 +394,7 @@ présumées être en français.</p>
 </table>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.iso639_language_codes">
-<span class="sig-name descname"><span class="pre">iso639_language_codes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plume.iso.map.IsoToDcat.iso639_language_codes" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">iso639_language_codes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plume.iso.map.IsoToDcat.iso639_language_codes" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>dict: Mapping des codes de langue de trois caractères en codes à deux caractères.</p>
 <p>Répertoire des codes de langues utilisés par les métadonnées
 ISO 19139. Les clés sont les codes sur trois caractères des
@@ -409,13 +406,13 @@ objet, grâce à la méthode <a class="reference internal" href="#plume.iso.map.
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.load_language_codes">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_language_codes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.IsoToDcat.load_language_codes" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_language_codes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.IsoToDcat.load_language_codes" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Charge le dictionnaire des codes de langues.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_dates">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_dates</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_dates" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_dates</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_dates" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant les dates du jeu de données.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -424,7 +421,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_description">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_description</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_description" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_description</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_description" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant le descriptif du jeu de données.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -433,7 +430,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_epsg">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_epsg</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_epsg" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_epsg</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_epsg" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant le ou les référentiels de coordonnées du jeu de données.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -442,7 +439,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_keywords">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_keywords</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_keywords" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_keywords</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_keywords" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant les mots-clés.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -451,7 +448,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_organizations">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_organizations</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_organizations" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_organizations</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_organizations" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant les informations relatives aux organisations responsables.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -460,7 +457,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_provenance">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_provenance</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_provenance" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_provenance</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_provenance" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant la généalogie des données.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -469,7 +466,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_subjects">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_subjects</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_subjects" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_subjects</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_subjects" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant la ou les catégories ISO 19115.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -478,7 +475,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_title">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_title</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_title" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_title</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_title" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant le libellé du jeu de données.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
@@ -487,7 +484,7 @@ une liste vide est renvoyée.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.metadata_language">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata_language</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.metadata_language" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata_language</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.metadata_language" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>str: Langue des métadonnées.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML.</p>
@@ -497,7 +494,7 @@ du XML.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.iso.map.find_iri">
-<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">find_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thesaurus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.find_iri" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">find_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thesaurus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.find_iri" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Extrait des IRI d’un XML et les renvoie sous forme de triples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -539,7 +536,7 @@ n’était pas présent dans le XML.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.iso.map.find_literal">
-<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">find_literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.find_literal" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">find_literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.find_literal" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Extrait des valeurs litérales d’un XML et les renvoie sous forme de triples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -578,7 +575,7 @@ n’était pas présent dans le XML.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.iso.map.wns">
-<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">wns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.wns" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">wns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.wns" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Explicite le tag en remplaçant le préfixe par l’URL de l’espace de nommage correspondant.</p>
 <p>La fonction n’aura pas d’effet si le tag n’est pas de la forme
 <code class="docutils literal notranslate"><span class="pre">'prefix:objet'</span></code> ou si le préfixe n’est pas reconnu. Le tag
@@ -629,8 +626,9 @@ d’espace de nommage.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

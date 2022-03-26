@@ -8,26 +8,23 @@
 
     <title>Module admin.plume_pg &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,7 +334,7 @@
               <div>
                 
   <section id="module-admin.plume_pg">
-<span id="module-admin-plume-pg"></span><h1>Module admin.plume_pg<a class="headerlink" href="#module-admin.plume_pg" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-admin-plume-pg"></span><h1>Module admin.plume_pg<a class="headerlink" href="#module-admin.plume_pg" title="Lien permanent vers ce titre">#</a></h1>
 <p>Administration des données de l’extension PostgreSQL PlumePg.</p>
 <p>Pour regénérer la requête d’import des métadonnées communes:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query_from_shape</span><span class="p">()</span>
@@ -350,7 +347,7 @@
 <p>Cette commande met à jour le fichier <code class="docutils literal notranslate"><span class="pre">/plume/pg/data/templates.json</span></code>.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="admin.plume_pg.query_from_shape">
-<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">query_from_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.query_from_shape" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">query_from_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.query_from_shape" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Génère la requête permettant de reconstituer la table des catégories communes de PgPlume.</p>
 <p>À l’usage de l’extension PostgreSQL PgPlume. L’utilisation de cette
 fonction requiert une connexion PostgreSQL (paramètres saisis
@@ -369,13 +366,13 @@ de l’extension (qui mettra à jour la partition
 
 <dl class="py function">
 <dt class="sig sig-object py" id="admin.plume_pg.store_sample_templates">
-<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">store_sample_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.store_sample_templates" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">store_sample_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.store_sample_templates" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Importe depuis PostgreSQL et écrit dans le fichier dédié les modèles pré-configurés de PlumePg.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="admin.plume_pg.table_from_shape">
-<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">table_from_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_cast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.table_from_shape" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">admin.plume_pg.</span></span><span class="sig-name descname"><span class="pre">table_from_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_cast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.plume_pg.table_from_shape" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie une représentation du schéma SHACL sous forme de table.</p>
 <p>Le résultat correspond au contenu de la table
 <code class="docutils literal notranslate"><span class="pre">z_plume.meta_shared_categorie</span></code> de l’extension PostgreSQL
@@ -433,8 +430,9 @@ avoir d’autres usages.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

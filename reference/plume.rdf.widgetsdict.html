@@ -8,26 +8,23 @@
 
     <title>Module plume.rdf.widgetsdict &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,7 +334,7 @@
               <div>
                 
   <section id="module-plume.rdf.widgetsdict">
-<span id="module-plume-rdf-widgetsdict"></span><h1>Module plume.rdf.widgetsdict<a class="headerlink" href="#module-plume.rdf.widgetsdict" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-rdf-widgetsdict"></span><h1>Module plume.rdf.widgetsdict<a class="headerlink" href="#module-plume.rdf.widgetsdict" title="Lien permanent vers ce titre">#</a></h1>
 <p>Dictionnaires de widgets.</p>
 <p>Ce module permet de générer des dictionnaires de widgets
 (<a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict" title="plume.rdf.widgetsdict.WidgetsDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WidgetsDict</span></code></a>) rassemblant et structurant
@@ -353,7 +350,7 @@ métadonnées de l’objet PostgreSQL, modèle de formulaire,
 descriptifs des champs…</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.widgetsdict.</span></span><span class="sig-name descname"><span class="pre">WidgetsDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readHideBlank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editHideUnlisted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readHideUnlisted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editOnlyCurrentLanguage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readOnlyCurrentLanguage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLengthLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueLengthLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textEditRowSpan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.widgetsdict.</span></span><span class="sig-name descname"><span class="pre">WidgetsDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readHideBlank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editHideUnlisted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readHideUnlisted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editOnlyCurrentLanguage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readOnlyCurrentLanguage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLengthLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueLengthLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textEditRowSpan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <p>Classe pour les dictionnaires de widgets.</p>
 <dl class="field-list simple">
@@ -600,7 +597,7 @@ du widget de saisie.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.add">
-<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buttonkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.add" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buttonkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.add" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Ajoute une clé sans valeur dans le dictionnaire de widgets.</p>
 <p>Cette méthode est à exécuter après l’activation d’un bouton plus
 ou bouton de traduction par l’utilisateur.</p>
@@ -633,7 +630,7 @@ bouton plus.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.build_metagraph">
-<span class="sig-name descname"><span class="pre">build_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preserve_metadata_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.build_metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">build_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preserve_metadata_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.build_metagraph" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Construit un graphe de métadonnées à partir du contenu du dictionnaire.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -661,7 +658,7 @@ exemple lorsqu’il quittera le mode édition.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.change_language">
-<span class="sig-name descname"><span class="pre">change_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valuekey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_language</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_language" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">change_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valuekey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_language</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_language" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Change la langue déclarée pour une clé du dictionnaire de widgets.</p>
 <p>Cette méthode est à exécuter lorsque l’utilisateur clique sur
 une langue dans le menu d’un bouton de sélection de la langue.</p>
@@ -697,7 +694,7 @@ n’est pas dans la liste des langues autorisées.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.change_source">
-<span class="sig-name descname"><span class="pre">change_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_source" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">change_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_source" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Change la source déclarée pour une clé du dictionnaire de widgets.</p>
 <p>Cette méthode est à exécuter lorsque l’utilisateur clique sur
 une source dans le menu d’un bouton de sélection de la source.</p>
@@ -731,7 +728,7 @@ n’est pas dans la liste des sources autorisées pour la clé.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.change_unit">
-<span class="sig-name descname"><span class="pre">change_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valuekey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_unit" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">change_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valuekey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.change_unit" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Change l’unité déclarée pour une clé du dictionnaire de widgets.</p>
 <p>Cette méthode est à exécuter lorsque l’utilisateur clique sur
 une unité dans le menu d’un bouton de sélection d’unité.</p>
@@ -767,7 +764,7 @@ n’est pas dans la liste des unités autorisées.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.check_grids">
-<span class="sig-name descname"><span class="pre">check_grids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.check_grids" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_grids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.check_grids" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Contrôle rapide de la cohérence du placement des widgets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -786,7 +783,7 @@ sont l’exception qui confirme la règle.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.computing_query">
-<span class="sig-name descname"><span class="pre">computing_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.computing_query" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">computing_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.computing_query" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la requête de calcul de la métadonnée côté serveur.</p>
 <dl>
 <dt>Cette méthode est à utiliser ainsi:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">computing_query</span><span class="p">(</span><span class="n">widgetkey</span><span class="p">,</span>
@@ -829,7 +826,7 @@ considérée vaut <code class="docutils literal notranslate"><span class="pre">N
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.computing_update">
-<span class="sig-name descname"><span class="pre">computing_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.computing_update" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">computing_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.computing_update" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Met à jour le dictionnaire de widgets avec des valeurs calculées.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -858,7 +855,7 @@ pu être renseignées.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook">
-<span class="sig-name descname"><span class="pre">dictisize_actionsbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dictisize_actionsbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actionsbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.dictisize_actionsbook" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Traduit un carnet d’actions en dictionnaire.</p>
 <p>Cette méthode assure également la mise à jour du dictionnaire
 de widgets.</p>
@@ -935,7 +932,7 @@ dans la clé <code class="docutils literal notranslate"><span class="pre">'value
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.drop">
-<span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.drop" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.drop" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Supprime une clé du dictionnaire de widgets.</p>
 <p>Cette méthode est à exécuter après l’activation d’un bouton moins
 par l’utilisateur.</p>
@@ -968,13 +965,13 @@ moins.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.edit">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edit</span></span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.edit" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edit</span></span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.edit" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>bool: Le dictionnaire est-il généré pour l’édition ?</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.group_kind">
-<span class="sig-name descname"><span class="pre">group_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.group_kind" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">group_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.group_kind" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la nature du groupe auquel appartient la clé.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1012,7 +1009,7 @@ si son parent est un groupe de traduction.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.internalize">
-<span class="sig-name descname"><span class="pre">internalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.internalize" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">internalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.internalize" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Retranscrit les attributs d’une clé dans le dictionnaire interne associé.</p>
 <p>Si la clé n’était pas référencée dans le dictionnaire de widgets,
 cette méthode se charge de la référencer.</p>
@@ -1036,7 +1033,7 @@ fantôme.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.list_widgets">
-<span class="sig-name descname"><span class="pre">list_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">list_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la liste des widgets référencés pour la clé considérée.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1060,7 +1057,7 @@ clé du dictionnaire interne où il est référencé).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.main_language">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_language</span></span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.main_language" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_language</span></span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.main_language" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>str: Language principale de saisie.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -1075,7 +1072,7 @@ contient aucune valeur.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.parent_grid">
-<span class="sig-name descname"><span class="pre">parent_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.parent_grid" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">parent_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.parent_grid" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la grille dans laquelle doit être placé le widget de la clé widgetkey.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1096,7 +1093,7 @@ celui-ci a été créée, ladite grille. Sinon None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.prepare_value">
-<span class="sig-name descname"><span class="pre">prepare_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.prepare_value" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">prepare_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.prepare_value" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Prépare une valeur en vue de son enregistrement dans une clé-valeur du dictionnaire de widgets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1122,7 +1119,7 @@ Les valeurs incorrectes sont silencieusement effacées.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.print">
-<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.print" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.print" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Visualisateur très sommaire du contenu du dictionnaire de widgets.</p>
 <p>Les clés sont imprimées dans la console, avec - si
 défini - leur libellé, leur valeur et leurs boutons annexes.
@@ -1132,7 +1129,7 @@ astérisque.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.str_value">
-<span class="sig-name descname"><span class="pre">str_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.str_value" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">str_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.str_value" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la valeur d’une clé-valeur du dictionnaire de widgets sous forme d’une chaîne de caractères.</p>
 <p>Si la clé est en lecture seule, la fonction renvoie, s’il y a lieu,
 un fragment HTML avec un hyperlien.</p>
@@ -1153,7 +1150,7 @@ un fragment HTML avec un hyperlien.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.type_validator">
-<span class="sig-name descname"><span class="pre">type_validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.type_validator" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">type_validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.type_validator" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>S’il y a lieu, renvoie le validateur adapté pour une clé.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1167,7 +1164,7 @@ un fragment HTML avec un hyperlien.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.update_value">
-<span class="sig-name descname"><span class="pre">update_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.update_value" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">update_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.update_value" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Prépare et enregistre une valeur dans une clé-valeur du dictionnaire de widgets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1188,7 +1185,7 @@ en lecture seule.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.widget_placement">
-<span class="sig-name descname"><span class="pre">widget_placement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.widget_placement" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">widget_placement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.widget_placement" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie les paramètres de placement du widget dans la grille.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1220,7 +1217,7 @@ et les onglets, elle renvoie un tuple de zéros.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.widget_type">
-<span class="sig-name descname"><span class="pre">widget_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.widget_type" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">widget_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.widget_type" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie le type de widget adapté pour une clé.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1264,8 +1261,9 @@ et les onglets, elle renvoie un tuple de zéros.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

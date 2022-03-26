@@ -8,26 +8,23 @@
 
     <title>Module plume.pg.computer &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,11 +334,11 @@
               <div>
                 
   <section id="module-plume.pg.computer">
-<span id="module-plume-pg-computer"></span><h1>Module plume.pg.computer<a class="headerlink" href="#module-plume.pg.computer" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-pg-computer"></span><h1>Module plume.pg.computer<a class="headerlink" href="#module-plume.pg.computer" title="Lien permanent vers ce titre">#</a></h1>
 <p>Référencement des méthodes de calcul de métadonnées côté serveur.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.pg.computer.ComputationMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationMethod" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationMethod" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Méthode de calcul de métadonnées côté serveur.</p>
 <dl class="field-list simple">
@@ -403,7 +400,7 @@ par le calcul.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.pg.computer.ComputationResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationResult" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationResult" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Résultat d’un calcul de métadonnées, sous une forme adaptée pour l’alimentation du dictionnaire de widgets.</p>
 <dl class="field-list simple">
@@ -458,7 +455,7 @@ widget qui sera utilisée.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.computer.computation_method">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">computation_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.computation_method" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">computation_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.computation_method" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie l’éventuelle méthode de calcul définie pour la catégorie de métadonnées.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -477,7 +474,7 @@ widget qui sera utilisée.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.computer.crs_parser">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">crs_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crs_auth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.crs_parser" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">crs_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crs_auth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.crs_parser" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie l’URI complet d’un référentiel de coordonnées.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -499,7 +496,7 @@ référentiel.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.computer.default_parser">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">default_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.default_parser" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">default_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.default_parser" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Fonction qui fera office de dé-sérialiseur par défaut.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -533,7 +530,7 @@ leurs équivalents RDF en appliquant la méthode
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.pg.computer.methods">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.methods" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.methods" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.</p>
 <p>Les clés du dictionnaire sont les chemins (<code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.paths.SequencePath</span></code>)
 des catégories de métadonnées. Les valeurs sont des objets <a class="reference internal" href="#plume.pg.computer.ComputationMethod" title="plume.pg.computer.ComputationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationMethod</span></code></a>
@@ -572,8 +569,9 @@ associée.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

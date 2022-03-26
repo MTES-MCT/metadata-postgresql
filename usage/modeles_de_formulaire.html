@@ -8,26 +8,23 @@
 
     <title>Modèles de formulaire &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -202,7 +199,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -315,12 +312,12 @@
               <div>
                 
   <section id="modeles-de-formulaire">
-<h1>Modèles de formulaire<a class="headerlink" href="#modeles-de-formulaire" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Modèles de formulaire<a class="headerlink" href="#modeles-de-formulaire" title="Lien permanent vers ce titre">#</a></h1>
 <p>Les modèles de formulaire sont définis par l’administrateur de données pour tous les utilisateurs de son service. Etant partagés, ils sont stockés sur le serveur PostgreSQL, dans un ensemble de tables créées par l’extension PostgreSQL <em>PlumePg</em>.</p>
 <p>Leur usage est totalement optionnel.</p>
 <p><a class="reference internal" href="#principe"><span class="std std-doc">Principe</span></a> • <a class="reference internal" href="#gestion-dans-postgresql"><span class="std std-doc">Gestion dans PostgreSQL</span></a> • <a class="reference internal" href="#import-des-modeles-par-plume"><span class="std std-doc">Import des modèles par Plume</span></a> • <a class="reference internal" href="#avec-les-modeles-stockes-en-local"><span class="std std-doc">Avec les modèles stockés en local</span></a></p>
 <section id="principe">
-<h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">#</a></h2>
 <p>Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, <a class="reference download internal" download="" href="../_downloads/8459ab72f449604647e363d3002e49be/shape.ttl"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">shape.ttl</span></code></span></a><a class="footnote-reference brackets" href="#metadonnees-masquees" id="id1">1</a>. Souvent, c’est trop. Selon l’organisation du service, selon la table considérée, selon le profil de l’utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.</p>
 <p>Parfois, c’est au contraire insuffisant. Toujours selon l’organisation du service, la table considérée et le profil de l’utilisateur, il peut être très utile voire indispensable de disposer d’informations qui ne sont pas prévues dans les catégories communes.</p>
 <p>Plume y remédie, via l’extension PostgreSQL <em>PlumePg</em>, en permettant à l’administrateur de définir des modèles de formulaire adaptés à son service, que le plugin QGIS saura exploiter.</p>
@@ -328,7 +325,7 @@
 <p>L’admistrateur de données peut prévoir autant de modèles qu’il le souhaite et, selon les besoins, il peut définir des conditions dans lesquelles un modèle sera appliqué par défaut à une fiche de métadonnées (si cela se justifie). Dans l’interface QGIS de Plume, l’utilisateur peut basculer à sa convenance d’un modèle à l’autre.</p>
 </section>
 <section id="gestion-dans-postgresql">
-<h2>Gestion dans PostgreSQL<a class="headerlink" href="#gestion-dans-postgresql" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Gestion dans PostgreSQL<a class="headerlink" href="#gestion-dans-postgresql" title="Lien permanent vers ce titre">#</a></h2>
 <p>L’extension PostgreSQL <em>PlumePg</em> crée une structure de données adaptée au stockage des modèles. Pour bénéficier des modèles, elle doit être installée sur toutes les bases du serveur PostgreSQL dont on souhaite gérer les métadonnées avec Plume<a class="footnote-reference brackets" href="#base-par-base" id="id2">2</a>.</p>
 <p>Cf. <a class="reference internal" href="gestion_plume_pg.html"><span class="doc std std-doc">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></span></a> pour plus de détails sur l’installation et la maintenance de cette extension.</p>
 <p><em>PlumePg</em> crée dans le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> un ensemble de tables permettant de définir les modèles de formulaires :</p>
@@ -339,7 +336,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d’affichage spécifique à un modèle pour certaines catégories, qui remplaceront ceux de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>.</p></li>
 </ul>
 <section id="creation-d-un-modele-de-formulaire">
-<h3>Création d’un modèle de formulaire<a class="headerlink" href="#creation-d-un-modele-de-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Création d’un modèle de formulaire<a class="headerlink" href="#creation-d-un-modele-de-formulaire" title="Lien permanent vers ce titre">#</a></h3>
 <p>La table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code> comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>, qui lui tiendra lieu d’identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n’auront accès qu’à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.</p>
 <p>Les champs <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> et <code class="docutils literal notranslate"><span class="pre">md_conditions</span></code> servent à définir des conditions selon lesquelles le modèle sera appliqué automatiquement à la fiche de métadonnées considérée. Les remplir est bien évidemment optionnel.</p>
 <ul class="simple">
@@ -379,7 +376,7 @@
 <p>À noter que les conditions ne valent qu’à l’ouverture de la fiche. L’utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d’application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n’appliquer aucun modèle, auquel cas le schéma des métadonnées communes s’appliquera tel quel.</p>
 </section>
 <section id="onglets-des-formulaires">
-<h3>Onglets des formulaires<a class="headerlink" href="#onglets-des-formulaires" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Onglets des formulaires<a class="headerlink" href="#onglets-des-formulaires" title="Lien permanent vers ce titre">#</a></h3>
 <p>Sans que ce soit obligatoire en aucune façon, les modèles de formulaires peuvent répartir les catégories de métadonnées par onglets.</p>
 <p>Avant d’y affecter des catégories, les onglets doivent être définis dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_tab</span></code>. Celle-ci contient deux champs :</p>
 <ul class="simple">
@@ -388,7 +385,7 @@
 </ul>
 </section>
 <section id="categories-de-metadonnees">
-<h3>Catégories de métadonnées<a class="headerlink" href="#categories-de-metadonnees" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Catégories de métadonnées<a class="headerlink" href="#categories-de-metadonnees" title="Lien permanent vers ce titre">#</a></h3>
 <p>La table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier <a class="reference download internal" download="" href="../_downloads/8459ab72f449604647e363d3002e49be/shape.ttl"><span class="xref download myst">shape.ttl</span></a>) et les catégories supplémentaires locales définies par l’ADL pour le seul usage de son service.</p>
 <p>Il s’agit en fait d’une table partitionnée avec deux tables filles :</p>
 <ul class="simple">
@@ -476,7 +473,7 @@
 <p>Les caractéristiques spécifiées dans la table <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> seront utilisées pour tous les modèles, sauf – cette possibilité sera détaillée par la suite – à avoir prévu des valeurs spécifiques au modèle via la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma des catégories communes, qui est repris dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> lors de l’initialisation de l’extension.</p>
 </section>
 <section id="association-de-categories-a-un-modele">
-<h3>Association de catégories à un modèle<a class="headerlink" href="#association-de-categories-a-un-modele" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Association de catégories à un modèle<a class="headerlink" href="#association-de-categories-a-un-modele" title="Lien permanent vers ce titre">#</a></h3>
 <p>La définition des catégories associées à chaque modèle (relation n-n) se fait par l’intermédiaire de la table de correspondance <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>.</p>
 <p>Le modèle est identifié par son nom (champ <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>), la catégorie par son chemin (champ <code class="docutils literal notranslate"><span class="pre">path</span></code> de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>, repris dans <code class="docutils literal notranslate"><span class="pre">loccat_path</span></code> pour une catégorie locale et dans <code class="docutils literal notranslate"><span class="pre">shrcat_path</span></code> pour une catégorie commune).</p>
 <p>Hormis ces champs de clés étrangères et la clé primaire séquentielle <code class="docutils literal notranslate"><span class="pre">tplcat_id</span></code>, tous les champs de la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> servent au paramétrage du modèle. Les valeurs qui y sont saisies remplaceront (pour le modèle considéré) celles qui avaient éventuellement été renseignées dans <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> et le paramétrage du schéma des catégories communes.</p>
@@ -494,7 +491,7 @@
 <p><em>NB. Pour les catégories de métadonnées communes imbriquées, il n’est pas nécessaire que le modèle fasse systématiquement apparaître tous les chemins intermédiaires (par exemple <code class="docutils literal notranslate"><span class="pre">'dcat:distribution'</span></code> et <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license'</span></code> pour <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label'</span></code>). Le plugin saura ajouter lui-même les chemins intermédiaires manquants, de même qu’il enlèvera les chemins intermédiaires sans catégorie finale. Ainsi, l’administrateur pourra se contenter d’associer <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label'</span></code> à son modèle, sauf à avoir envie de renommer les catégories <code class="docutils literal notranslate"><span class="pre">'dcat:distribution'</span></code> et/ou <code class="docutils literal notranslate"><span class="pre">'dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license'</span></code>, de leur ajouter un texte d’aide, etc.</em></p>
 </section>
 <section id="modeles-pre-configures">
-<h3>Modèles pré-configurés<a class="headerlink" href="#modeles-pre-configures" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Modèles pré-configurés<a class="headerlink" href="#modeles-pre-configures" title="Lien permanent vers ce titre">#</a></h3>
 <p>L’extension propose des modèles pré-configurés - trois à ce stade - qui peuvent être importés via la commande suivante :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">(</span><span class="o">%</span><span class="n">tpl_label</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -526,7 +523,7 @@
 </section>
 </section>
 <section id="import-des-modeles-par-plume">
-<h2>Import des modèles par Plume<a class="headerlink" href="#import-des-modeles-par-plume" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Import des modèles par Plume<a class="headerlink" href="#import-des-modeles-par-plume" title="Lien permanent vers ce titre">#</a></h2>
 <p>La gestion des modèles par le plugin fait intervenir :</p>
 <ul class="simple">
 <li><p>le module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code> pour les requêtes SQL pré-écrites à exécuter sur les curseurs de Psycopg ;</p></li>
@@ -550,7 +547,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> le nom de son schéma.</p></li>
 </ul>
 <section id="presence-de-l-extension-plumepg">
-<h3>Présence de l’extension <em>PlumePg</em><a class="headerlink" href="#presence-de-l-extension-plumepg" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Présence de l’extension <em>PlumePg</em><a class="headerlink" href="#presence-de-l-extension-plumepg" title="Lien permanent vers ce titre">#</a></h3>
 <p>La première étape consiste à déterminer si l’extension <em>PlumePg</em> est installée sur la base d’où provient la table considérée.</p>
 <p>Pour le vérifier :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -573,7 +570,7 @@
 <p>Dans le cas contraire, on se reportera à la partie <a class="reference internal" href="#avec-les-modeles-stockes-en-local"><span class="std std-doc">Avec les modèles stockés en local</span></a>.</p>
 </section>
 <section id="recuperation-de-la-liste-des-modeles">
-<h3>Récupération de la liste des modèles<a class="headerlink" href="#recuperation-de-la-liste-des-modeles" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Récupération de la liste des modèles<a class="headerlink" href="#recuperation-de-la-liste-des-modeles" title="Lien permanent vers ce titre">#</a></h3>
 <p>Il s’agit simplement d’aller chercher sur le serveur le contenu de la table <code class="docutils literal notranslate"><span class="pre">meta_template</span></code>, à la petite nuance près que <code class="docutils literal notranslate"><span class="pre">query_list_templates()</span></code> exécute ce faisant les filtres SQL du champ <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> (côté serveur, grâce à la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.meta_execute_sql_filter(text,</span> <span class="pre">text,</span> <span class="pre">text)</span></code> de l’extension <em>PlumePg</em>) et c’est le booléen résultant qui est importé plutôt que le filtre lui-même.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -599,7 +596,7 @@
 </div>
 </section>
 <section id="selection-automatique-du-modele">
-<h3>Sélection automatique du modèle<a class="headerlink" href="#selection-automatique-du-modele" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Sélection automatique du modèle<a class="headerlink" href="#selection-automatique-du-modele" title="Lien permanent vers ce titre">#</a></h3>
 <p>Cette étape détermine le modèle qui sera utilisé à l’ouverture initiale du formulaire. Elle mobilise la fonction <code class="docutils literal notranslate"><span class="pre">plume.pg.template.search_template</span></code>, qui parcourt la liste des modèles (avec le résultat du filtre SQL / champ <code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> de la table <code class="docutils literal notranslate"><span class="pre">meta_template</span></code>) en déterminant si les conditions d’usage portant sur les métadonnées (champ <code class="docutils literal notranslate"><span class="pre">md_conditions</span></code>) sont vérifiées. Elle renvoie le nom du modèle de plus haut niveau de priorité (champ <code class="docutils literal notranslate"><span class="pre">priority</span></code>) dont le filtre SQL ou les conditions sur les métadonnées sont satisfaites.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span> <span class="nn">plume.pg.template</span> <span class="kn">import</span> <span class="n">search_template</span>
@@ -620,7 +617,7 @@
 </div>
 </section>
 <section id="recuperation-des-categories-associees-au-modele-retenu">
-<h3>Récupération des catégories associées au modèle retenu<a class="headerlink" href="#recuperation-des-categories-associees-au-modele-retenu" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Récupération des catégories associées au modèle retenu<a class="headerlink" href="#recuperation-des-categories-associees-au-modele-retenu" title="Lien permanent vers ce titre">#</a></h3>
 <p>Une fois le nom du modèle à appliquer connu (s’il y en a un), on peut aller chercher dans la table <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> les catégories associées au modèle.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -640,7 +637,7 @@
 </div>
 </section>
 <section id="recuperation-des-onglets-associes-au-modele-retenu">
-<h3>Récupération des onglets associés au modèle retenu<a class="headerlink" href="#recuperation-des-onglets-associes-au-modele-retenu" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Récupération des onglets associés au modèle retenu<a class="headerlink" href="#recuperation-des-onglets-associes-au-modele-retenu" title="Lien permanent vers ce titre">#</a></h3>
 <p>La liste des onglets est obtenue en exécutant la requête renvoyée par <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_template_tabs</span></code>, avec le nom du modèle en paramètre.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -661,7 +658,7 @@
 <p>Si <code class="docutils literal notranslate"><span class="pre">tabs</span></code> est une liste vide, toutes les catégories seront affectées à un unique onglet nommé <em>« Général »</em>.</p>
 </section>
 <section id="generation-de-template">
-<h3>Génération de <em>template</em><a class="headerlink" href="#generation-de-template" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Génération de <em>template</em><a class="headerlink" href="#generation-de-template" title="Lien permanent vers ce titre">#</a></h3>
 <p>À ce stade, <code class="docutils literal notranslate"><span class="pre">categories</span></code> est une liste de tuples, qui doit être consolidée avant de pouvoir être utilisée pour générer le <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">dictionnaire de widgets</span></a>.</p>
 <p>Concrètement, il s’agit de créer un objet <code class="docutils literal notranslate"><span class="pre">plume.pg.template.TemplateDict</span></code> à partir de <code class="docutils literal notranslate"><span class="pre">categories</span></code> et <code class="docutils literal notranslate"><span class="pre">tabs</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -673,7 +670,7 @@
 </section>
 </section>
 <section id="avec-les-modeles-stockes-en-local">
-<h2>Avec les modèles stockés en local<a class="headerlink" href="#avec-les-modeles-stockes-en-local" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Avec les modèles stockés en local<a class="headerlink" href="#avec-les-modeles-stockes-en-local" title="Lien permanent vers ce titre">#</a></h2>
 <p>Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l’extension PostgreSQL <em>PlumePg</em> n’est pas active sur la base cible (cf. <a class="reference internal" href="#presence-de-l-extension-plumepg"><span class="std std-doc">Présence de l’extension <em>PlumePg</em></span></a> pour le test). Le processus est similaire à celui décrit dans la partie <a class="reference internal" href="#import-des-modeles-par-plume"><span class="std std-doc">Import des modèles par Plume</span></a>, si ce n’est que certaines étapes ne sont plus nécessaires.</p>
 <p>Faute de pouvoir importer les modèles personnalisés par l’administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de <em>PlumePg</em>. Ceux-ci sont stockés dans le fichier <a class="reference download internal" download="" href="../_downloads/5d0cfeed80f67f12ef999f860c76f027/templates.json"><span class="xref download myst">templates.json</span></a>, dont on chargera le contenu en créant un objet de classe <code class="docutils literal notranslate"><span class="pre">plume.pg.template.LocalTemplatesCollection</span></code>. Celui-ci n’étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans <em>PlumePg</em> et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -754,8 +751,9 @@
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

@@ -8,26 +8,23 @@
 
     <title>Actions générales &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -202,7 +199,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -418,15 +415,15 @@
               <div>
                 
   <section id="actions-generales">
-<h1>Actions générales<a class="headerlink" href="#actions-generales" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Actions générales<a class="headerlink" href="#actions-generales" title="Lien permanent vers ce titre">#</a></h1>
 <p>Sont décrites ici les actions que l’utilisateur peut réaliser dans la partie fixe de l’interface du plugin. Pour les interactions de l’utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à <a class="reference internal" href="actions_widgets.html"><span class="doc std std-doc">Actions contrôlées par les widgets du formulaire</span></a>.</p>
 <p>Barre d’outils de Plume : <a class="reference internal" href="#mode-lecture-mode-edition"><span class="std std-doc">Mode lecture, mode édition</span></a> • <a class="reference internal" href="#sauvegarde"><span class="std std-doc">Sauvegarde</span></a> • <a class="reference internal" href="#activation-du-mode-traduction"><span class="std std-doc">Activation du mode traduction</span></a> • <a class="reference internal" href="#choix-de-la-trame-de-formulaire"><span class="std std-doc">Choix de la trame de formulaire</span></a> • <a class="reference internal" href="#langue-principale-des-metadonnees"><span class="std std-doc">Langue principale des métadonnées</span></a> • <a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier"><span class="std std-doc">Import de métadonnées depuis un fichier</span></a> • <a class="reference internal" href="#export-des-metadonnees-dans-un-fichier"><span class="std std-doc">Export des métadonnées dans un fichier</span></a> • <a class="reference internal" href="#reinitialisation"><span class="std std-doc">Réinitialisation</span></a> • <a class="reference internal" href="#copier-coller-d-une-fiche-complete"><span class="std std-doc">Copier / coller d’une fiche complète</span></a></p>
 <p>Détail des fonctionnalités d’import : <a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier"><span class="std std-doc">Import de métadonnées depuis un fichier</span></a> • <a class="reference internal" href="#import-de-metadonnees-depuis-un-service-csw"><span class="std std-doc">Import de métadonnées depuis un service CSW</span></a></p>
 <p>Autres actions : <a class="reference internal" href="#selection-de-la-table-a-documenter"><span class="std std-doc">Sélection de la table à documenter</span></a></p>
 <section id="mode-lecture-mode-edition">
-<h2>Mode lecture, mode édition<a class="headerlink" href="#mode-lecture-mode-edition" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Mode lecture, mode édition<a class="headerlink" href="#mode-lecture-mode-edition" title="Lien permanent vers ce titre">#</a></h2>
 <section id="effet-sur-le-formulaire">
-<h3>Effet sur le formulaire<a class="headerlink" href="#effet-sur-le-formulaire" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effet sur le formulaire<a class="headerlink" href="#effet-sur-le-formulaire" title="Lien permanent vers ce titre">#</a></h3>
 <p>Une fiche de métadonnées peut être ouverte :</p>
 <ul class="simple">
 <li><p>soit en <strong>mode lecture</strong>, qui permet de consulter les métadonnées mais pas de les modifier ;</p></li>
@@ -441,7 +438,7 @@
 <p>Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>, selon les mêmes modalités quel que soit le mode.</p>
 </section>
 <section id="autres-effets">
-<h3>Autres effets<a class="headerlink" href="#autres-effets" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Autres effets<a class="headerlink" href="#autres-effets" title="Lien permanent vers ce titre">#</a></h3>
 <p>Certaines des actions générales décrites dans la suite ne devraient être disponibles qu’en mode édition :</p>
 <ul class="simple">
 <li><p>la sauvegarde des modifications ;</p></li>
@@ -451,7 +448,7 @@
 </ul>
 </section>
 <section id="caracteristiques-du-bouton">
-<h3>Caractéristiques du bouton<a class="headerlink" href="#caracteristiques-du-bouton" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du bouton<a class="headerlink" href="#caracteristiques-du-bouton" title="Lien permanent vers ce titre">#</a></h3>
 <p><strong>Initialement, toutes les fiches s’ouvrent en mode lecture</strong>. L’utilisateur doit cliquer sur le bouton d’activation du mode édition pour basculer dans ce dernier.</p>
 <p>Le bouton utilise l’icône <a class="reference download internal" download="" href="../_downloads/c536f19a8c23a8391241718ad3dc8c33/read.svg"><span class="xref download myst">read.svg</span></a> :
 <img alt="read.svg" src="../_images/read.svg" />.</p>
@@ -500,9 +497,9 @@
 </section>
 </section>
 <section id="sauvegarde">
-<h2>Sauvegarde<a class="headerlink" href="#sauvegarde" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Sauvegarde<a class="headerlink" href="#sauvegarde" title="Lien permanent vers ce titre">#</a></h2>
 <section id="effets">
-<h3>Effets<a class="headerlink" href="#effets" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#effets" title="Lien permanent vers ce titre">#</a></h3>
 <p>Le <strong>bouton de sauvegarde</strong> permet à l’utilisateur d’enregistrer sur le serveur PostgreSQL les métadonnées qu’il a saisies.</p>
 <p>En arrière plan, cela suppose plusieurs opérations successives.</p>
 <ol class="arabic simple">
@@ -595,7 +592,7 @@
 </ul>
 </section>
 <section id="id3">
-<h3>Caractéristiques du bouton<a class="headerlink" href="#id3" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id3" title="Lien permanent vers ce titre">#</a></h3>
 <p>Comme susmentionné, ce bouton ne doit être actif qu’en <a class="reference internal" href="#mode-lecture-mode-edition"><span class="std std-doc">mode édition</span></a>.</p>
 <p>Il utilise l’icône <a class="reference download internal" download="" href="../_downloads/ef8371dc2cf34594aa9851d52526eb95/save.svg"><span class="xref download myst">save.svg</span></a> :
 <img alt="save.svg" src="../_images/save.svg" /></p>
@@ -603,9 +600,9 @@
 </section>
 </section>
 <section id="activation-du-mode-traduction">
-<h2>Activation du mode traduction<a class="headerlink" href="#activation-du-mode-traduction" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Activation du mode traduction<a class="headerlink" href="#activation-du-mode-traduction" title="Lien permanent vers ce titre">#</a></h2>
 <section id="id4">
-<h3>Effets<a class="headerlink" href="#id4" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#id4" title="Lien permanent vers ce titre">#</a></h3>
 <p>Lorsque le mode traduction est actif, l’utilisateur a la possibilité de définir la langue des valeurs qu’il saisit (sinon c’est le paramètre utilisateur <a class="reference internal" href="generation_dictionnaire_widgets.html#language"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">language</span></code></span></a> qui est systématiquement utilisé). Il pourra également saisir des traductions pour des catégories qui n’acceptent qu’une valeur par langue, comme le libellé de la donnée.</p>
 <p>Concrètement, l’activation ou la désactivation du mode traduction impliquera de <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">regénérer le dictionnaire de widgets</span></a> avec la valeur adéquate pour le paramètre <a class="reference internal" href="generation_dictionnaire_widgets.html#translation"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">translation</span></code></span></a> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> :</p>
 <ul class="simple">
@@ -615,7 +612,7 @@
 <p>Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>, selon les mêmes modalités que le mode traduction soit actif ou non.</p>
 </section>
 <section id="id5">
-<h3>Caractéristiques du bouton<a class="headerlink" href="#id5" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id5" title="Lien permanent vers ce titre">#</a></h3>
 <p>Ce bouton ne doit être actif qu’en <a class="reference internal" href="#mode-lecture-mode-edition"><span class="std std-doc">mode édition</span></a>.</p>
 <p>Il utilise l’icône <a class="reference download internal" download="" href="../_downloads/04e4ed2c1d401816ed5b651234bb4a5e/translation.svg"><span class="xref download myst">translation.svg</span></a> :
 <img alt="translation.svg" src="../_images/translation.svg" /></p>
@@ -640,14 +637,14 @@
 </table>
 </section>
 <section id="initialisation">
-<h3>Initialisation<a class="headerlink" href="#initialisation" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Initialisation<a class="headerlink" href="#initialisation" title="Lien permanent vers ce titre">#</a></h3>
 <p>Ce paramètre pourra être systématiquement sauvegardé dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, et initialisé à l’activation du mode édition à partir de la valeur récupérée dans les fichiers de configuration (ou <code class="docutils literal notranslate"><span class="pre">False</span></code> à défaut).</p>
 </section>
 </section>
 <section id="choix-de-la-trame-de-formulaire">
-<h2>Choix de la trame de formulaire<a class="headerlink" href="#choix-de-la-trame-de-formulaire" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Choix de la trame de formulaire<a class="headerlink" href="#choix-de-la-trame-de-formulaire" title="Lien permanent vers ce titre">#</a></h2>
 <section id="id6">
-<h3>Effets<a class="headerlink" href="#id6" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#id6" title="Lien permanent vers ce titre">#</a></h3>
 <p>Le modèle de formulaire détermine les catégories de métadonnées affichées dans le formulaire et la manière dont elles sont présentées - cf. <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">Modèles de formulaire</span></a>.</p>
 <p>Dès lors que des modèles sont disponibles, c’est-à-dire que <a class="reference internal" href="modeles_de_formulaire.html#recuperation-de-la-liste-des-modeles"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">templateLabels</span></code></span></a> n’est pas <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une liste vide, l’utilisateur doit avoir la possibilité de basculer à tout moment d’un modèle pré-défini à l’autre ou de ne pas appliquer de modèle du tout.</p>
 <p>Lorsque l’utilisateur change de modèle, il faut <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">regénérer le dictionnaire de widgets</span></a> avec la valeur adaptée pour le paramètre <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">template</span></code></span> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code> :</p>
@@ -658,7 +655,7 @@
 <p>Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>, selon les mêmes modalités quel que soit le modèle.</p>
 </section>
 <section id="caracteristiques-du-widget">
-<h3>Caractéristiques du widget<a class="headerlink" href="#caracteristiques-du-widget" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du widget<a class="headerlink" href="#caracteristiques-du-widget" title="Lien permanent vers ce titre">#</a></h3>
 <p>Le widget de sélection du modèle est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> similaire aux <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-la-source"><span class="std std-doc">boutons de sélection de la source</span></a> qui apparaissent dans le formulaire.</p>
 <p>Les valeurs disponibles dans son menu sont les noms de modèles listés par <a class="reference internal" href="modeles_de_formulaire.html#recuperation-de-la-liste-des-modeles"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">templateLabels</span></code></span></a>, auxquelles ont ajoutera un item <code class="docutils literal notranslate"><span class="pre">'Aucun'</span></code> (ou autre nom similaire).</p>
 <p>Si <code class="docutils literal notranslate"><span class="pre">templateLabels</span></code> est <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une liste vide, on pourra désactiver le widget, voire ne pas l’afficher. <code class="docutils literal notranslate"><span class="pre">template</span></code> vaudra simplement toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
@@ -667,31 +664,31 @@
 <p>Texte d’aide : <em>Choisir un modèle de formulaire</em>.</p>
 </section>
 <section id="id7">
-<h3>Initialisation<a class="headerlink" href="#id7" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Initialisation<a class="headerlink" href="#id7" title="Lien permanent vers ce titre">#</a></h3>
 <p>La démarche à suivre à l’ouverture d’une fiche de métadonnées est décrite dans <span class="xref myst">Modèles de formulaire</span>. On commencera par récupérer les paramètres <code class="docutils literal notranslate"><span class="pre">preferedTemplate</span></code> et <code class="docutils literal notranslate"><span class="pre">enforcePreferedTemplate</span></code> dans les fichiers de configuration, si tant est qu’ils soient présents.</p>
 </section>
 </section>
 <section id="langue-principale-des-metadonnees">
-<h2>Langue principale des métadonnées<a class="headerlink" href="#langue-principale-des-metadonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Langue principale des métadonnées<a class="headerlink" href="#langue-principale-des-metadonnees" title="Lien permanent vers ce titre">#</a></h2>
 <section id="id8">
-<h3>Effets<a class="headerlink" href="#id8" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#id8" title="Lien permanent vers ce titre">#</a></h3>
 <p>La langue principale des métadonnées correspond au paramètre <a class="reference internal" href="generation_dictionnaire_widgets.html#language"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">language</span></code></span></a> du constructeur de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p>
 <p>Hors mode traduction, toutes les métadonnées saisies qui ne soient pas des dates, nombres, URL ou autres types indépendants de la langue seront présumées être dans cette langue. C’est aussi dans cette langue que seront affichées les valeurs issues des thésaurus (autant que possible, car les thésaurus ne contiennent pas de traductions pour toutes les langues imaginables).</p>
 <p>Lorsque l’utilisateur modifie la langue principale, il est nécessaire de <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">regénérer le dictionnaire de widgets</span></a> avec la nouvelle valeur de <code class="docutils literal notranslate"><span class="pre">language</span></code>. Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>, selon les mêmes modalités quel que soit la langue.</p>
 </section>
 <section id="id9">
-<h3>Caractéristiques du widget<a class="headerlink" href="#id9" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du widget<a class="headerlink" href="#id9" title="Lien permanent vers ce titre">#</a></h3>
 <p>Le widget de choix de la langue principale est un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> similaire aux <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-la-langue"><span class="std std-doc">boutons de sélection de la langue</span></a> affichés dans le formulaire. Les valeurs disponibles dans le menu sont les langues listées par le paramètre utilisateur <a class="reference internal" href="generation_dictionnaire_widgets.html#langlist"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">langList</span></code></span></a>.</p>
 <p>Texte d’aide : <em>Modifier la langue principale des métadonnées</em>.</p>
 </section>
 <section id="id10">
-<h3>Initialisation<a class="headerlink" href="#id10" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Initialisation<a class="headerlink" href="#id10" title="Lien permanent vers ce titre">#</a></h3>
 <p>Le paramètre <code class="docutils literal notranslate"><span class="pre">language</span></code> pourra être systématiquement sauvegardé dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, et initialisé à l’activation du plugin à partir de la valeur récupérée dans les fichiers de configuration.</p>
 <p>Un point important est que <code class="docutils literal notranslate"><span class="pre">language</span></code> doit toujours être l’une des langues listées par le paramètre utilisateur <code class="docutils literal notranslate"><span class="pre">langList</span></code>. Si ce n’est pas le cas avec les valeurs issues des fichiers de configuration, on pourra soit ajouter <code class="docutils literal notranslate"><span class="pre">language</span></code> à <code class="docutils literal notranslate"><span class="pre">langList</span></code>, soit choisir pour <code class="docutils literal notranslate"><span class="pre">language</span></code> une des valeurs effectives de <code class="docutils literal notranslate"><span class="pre">langList</span></code> (sous réserve que ce dernier soit renseigné). Et si aucun de ces paramètres n’est défini, on pourra utiliser les mêmes valeurs par défaut que celles du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>, à savoir <code class="docutils literal notranslate"><span class="pre">'fr'</span></code> pour <code class="docutils literal notranslate"><span class="pre">language</span></code> et <code class="docutils literal notranslate"><span class="pre">['fr',</span> <span class="pre">'en']</span></code> pour <code class="docutils literal notranslate"><span class="pre">langList</span></code>.</p>
 </section>
 </section>
 <section id="import-de-metadonnees">
-<h2>Import de métadonnées<a class="headerlink" href="#import-de-metadonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Import de métadonnées<a class="headerlink" href="#import-de-metadonnees" title="Lien permanent vers ce titre">#</a></h2>
 <p>Le bouton d’import de métadonnées depuis des sources externes n’est actif qu’en mode édition.</p>
 <p>Il s’agit d’un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> dont le menu contient à ce jour deux items, correspondant aux deux sources possibles :</p>
 <ul class="simple">
@@ -704,7 +701,7 @@
 <p>Texte d’aide : <em>Importer les métadonnées depuis un fichier ou un service CSW</em>.</p>
 </section>
 <section id="import-de-metadonnees-depuis-un-fichier">
-<h2>Import de métadonnées depuis un fichier<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Import de métadonnées depuis un fichier<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier" title="Lien permanent vers ce titre">#</a></h2>
 <p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées depuis un fichier. L’import ne fonctionnera que si les métadonnées sont encodées dans un format RDF et il ne donnera un résulat concluant que si elles respectent les profils DCAT-AP, GeoDCAT-AP, ou le profil GeoDCAT-AP étendu mis en oeuvre par le plugin.</p>
 <p>L’import est réalisé via la fonction <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_file</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -759,7 +756,7 @@
 </div>
 </section>
 <section id="import-de-metadonnees-depuis-un-service-csw">
-<h2>Import de métadonnées depuis un service CSW<a class="headerlink" href="#import-de-metadonnees-depuis-un-service-csw" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Import de métadonnées depuis un service CSW<a class="headerlink" href="#import-de-metadonnees-depuis-un-service-csw" title="Lien permanent vers ce titre">#</a></h2>
 <p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées par requête sur le service CSW d’un catalogue INSPIRE, comme GéoIDE ou une plateforme régionale.</p>
 <p>Son activation par l’utilisateur ouvre une boîte de dialogue dans laquelle s’effectue le paramétrage de l’import.</p>
 <table class="colwidths-auto table">
@@ -870,9 +867,9 @@
 </ol>
 </section>
 <section id="export-des-metadonnees-dans-un-fichier">
-<h2>Export des métadonnées dans un fichier<a class="headerlink" href="#export-des-metadonnees-dans-un-fichier" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Export des métadonnées dans un fichier<a class="headerlink" href="#export-des-metadonnees-dans-un-fichier" title="Lien permanent vers ce titre">#</a></h2>
 <section id="id11">
-<h3>Effets<a class="headerlink" href="#id11" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#id11" title="Lien permanent vers ce titre">#</a></h3>
 <p>Cette fonctionnalité permet d’exporter une sérialisation RDF de <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> dans un fichier.</p>
 <p>Elle fait appel à la méthode <code class="docutils literal notranslate"><span class="pre">export</span></code> de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.Metagraph</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -888,7 +885,7 @@
 <p>C’est bien <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> qui est exporté et non le contenu (potentiellement non sauvegardé) du formulaire.</p>
 </section>
 <section id="id12">
-<h3>Caractéristiques du bouton<a class="headerlink" href="#id12" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id12" title="Lien permanent vers ce titre">#</a></h3>
 <p>Ce bouton utilise l’icône <a class="reference download internal" download="" href="../_downloads/6968cdc9d72f6e1ad9dec8bcc46903dc/export.svg"><span class="xref download myst">export.svg</span></a> :
 <img alt="export.svg" src="../_images/export.svg" /></p>
 <p>Texte d’aide : <em>Exporter les métadonnées dans un fichier</em>.</p>
@@ -909,9 +906,9 @@
 </section>
 </section>
 <section id="reinitialisation">
-<h2>Réinitialisation<a class="headerlink" href="#reinitialisation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Réinitialisation<a class="headerlink" href="#reinitialisation" title="Lien permanent vers ce titre">#</a></h2>
 <section id="id13">
-<h3>Effets<a class="headerlink" href="#id13" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#id13" title="Lien permanent vers ce titre">#</a></h3>
 <p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par un graphe vide.</p>
 <p>On utilisera la commande suivante :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -925,7 +922,7 @@
 <p>Il faudra ensuite <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">regénérer le dictionnaire de widgets</span></a> avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre <a class="reference internal" href="generation_dictionnaire_widgets.html#metagraph-le-graphe-des-metadonnees-pre-existantes"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span></a> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>.</p>
 </section>
 <section id="id14">
-<h3>Caractéristiques du bouton<a class="headerlink" href="#id14" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques du bouton<a class="headerlink" href="#id14" title="Lien permanent vers ce titre">#</a></h3>
 <p>Ce bouton ne doit être actif qu’en mode édition.</p>
 <p>Il utilise l’icône <a class="reference download internal" download="" href="../_downloads/cda07fc5deda8251f180317814939fb1/empty.svg"><span class="xref download myst">empty.svg</span></a> :
 <img alt="empty.svg" src="../_images/empty.svg" /></p>
@@ -933,9 +930,9 @@
 </section>
 </section>
 <section id="copier-coller-d-une-fiche-complete">
-<h2>Copier / coller d’une fiche complète<a class="headerlink" href="#copier-coller-d-une-fiche-complete" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Copier / coller d’une fiche complète<a class="headerlink" href="#copier-coller-d-une-fiche-complete" title="Lien permanent vers ce titre">#</a></h2>
 <section id="id15">
-<h3>Effets<a class="headerlink" href="#id15" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Effets<a class="headerlink" href="#id15" title="Lien permanent vers ce titre">#</a></h3>
 <p>Cette fonctionnalité permet à l’utilisateur de copier l’ensemble des métadonnées renseignées pour une table A vers une autre table B.</p>
 <p>Concrètement :</p>
 <ul class="simple">
@@ -953,7 +950,7 @@
 <p><em><code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table B, soit son <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> actuel, dont la fonction conserve l’identifiant. <code class="docutils literal notranslate"><span class="pre">src_metagraph</span></code> est le graphe mémorisé de la table A.</em></p>
 </section>
 <section id="caracteristiques-des-boutons">
-<h3>Caractéristiques des boutons<a class="headerlink" href="#caracteristiques-des-boutons" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Caractéristiques des boutons<a class="headerlink" href="#caracteristiques-des-boutons" title="Lien permanent vers ce titre">#</a></h3>
 <p>Le bouton <em>Copier</em> est actif quel que soit le mode.</p>
 <p>Icône : <img alt="copy_all.svg" src="../_images/copy_all.svg" /></p>
 <p>Texte d’aide : <em>Copier la fiche de métadonnées</em>.</p>
@@ -963,10 +960,10 @@
 </section>
 </section>
 <section id="selection-de-la-table-a-documenter">
-<h2>Sélection de la table à documenter<a class="headerlink" href="#selection-de-la-table-a-documenter" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Sélection de la table à documenter<a class="headerlink" href="#selection-de-la-table-a-documenter" title="Lien permanent vers ce titre">#</a></h2>
 <p>Au contraire de toutes les actions précédemment décrites, la sélection de la table ou vue dont l’utilisateur souhaite éditer les métadonnées se fait hors de l’interface du plugin, dans le panneau explorateur, le panneau des couches ou encore le panneau d’AsgardMenu.</p>
 <section id="si-aucun-objet-n-est-selectionne">
-<h3>Si aucun objet n’est sélectionné<a class="headerlink" href="#si-aucun-objet-n-est-selectionne" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Si aucun objet n’est sélectionné<a class="headerlink" href="#si-aucun-objet-n-est-selectionne" title="Lien permanent vers ce titre">#</a></h3>
 <p>… il n’y a évidemment pas de métadonnées à afficher.</p>
 <p>En principe, cette situation ne devrait se produire qu’à l’ouverture du plugin, lorsque l’utilisateur n’a pas préalablement cliqué sur une table ou vue dans l’un des panneaux pour la sélectionner.</p>
 <p>Dans ce cas, on lui montre une interface vide, avec uniquement la barre de menus.</p>
@@ -979,7 +976,7 @@
 </ul>
 </section>
 <section id="quand-l-utilisateur-selectionne-un-nouvel-objet">
-<h3>Quand l’utilisateur sélectionne un nouvel objet<a class="headerlink" href="#quand-l-utilisateur-selectionne-un-nouvel-objet" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Quand l’utilisateur sélectionne un nouvel objet<a class="headerlink" href="#quand-l-utilisateur-selectionne-un-nouvel-objet" title="Lien permanent vers ce titre">#</a></h3>
 <p><strong>Définir une nouvelle table source ne doit être possible qu’en mode lecture.</strong> Il est important que l’utilisateur ne perde pas involontairement toutes ses modifications en cours à cause d’un clic malencontreux dans l’explorateur… Il n’est bien sûr pas question d’empêcher l’utilisateur de sélectionner des objets dans les panneaux de QGIS, mais le plugin ne devra pas le prendre en compte tant que le mode édition reste actif.</p>
 <p>Lorsqu’une nouvelle tables ou vue est sélectionnée, le plugin devra d’abord extraire les métadonnées contenues dans son descriptif PostgreSQL - cf. <a class="reference internal" href="generation_dictionnaire_widgets.html#metagraph-le-graphe-des-metadonnees-pre-existantes"><span class="std std-doc">metagraph : le graphe des métadonnées pré-existantes</span></a>. Il faudra ensuite régénérer le dictionnaire de widgets avec le nouveau graphe de métadonnées <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> ainsi obtenu (cf. <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">Génération du dictionnaire des widgets</span></a>), puis le formulaire à partir du dictionnaire de widgets mis à jour (cf. <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">Création d’un nouveau widget</span></a>).</p>
 <hr class="footnotes docutils" />
@@ -1023,8 +1020,9 @@
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

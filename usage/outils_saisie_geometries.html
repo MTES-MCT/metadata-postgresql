@@ -8,26 +8,23 @@
 
     <title>Outils d’aide à la saisie des géométries &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -202,7 +199,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -282,12 +279,12 @@
               <div>
                 
   <section id="outils-d-aide-a-la-saisie-des-geometries">
-<h1>Outils d’aide à la saisie des géométries<a class="headerlink" href="#outils-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Outils d’aide à la saisie des géométries<a class="headerlink" href="#outils-d-aide-a-la-saisie-des-geometries" title="Lien permanent vers ce titre">#</a></h1>
 <p>Pour faciliter la saisie des métadonnées prenant pour valeur des géométries, le widget de saisie - <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code> selon les cas - est accompagné d’un bouton annexe proposant des outils de calcul à partir des données et/ou de saisie manuelle dans le canevas principal de QGIS.</p>
 <p>Les modalités de création de ces boutons d’aide à la saisie des géométries sont décrites dans <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-d-aide-a-la-saisie-des-geometries"><span class="std std-doc">Création d’un nouveau widget</span></a>. La présente page précise l’effet des différentes fonctionnalités de saisie proposées, ainsi que quand et comment les mettre en oeuvre.</p>
 <p><a class="reference internal" href="#les-actions-possibles"><span class="std std-doc">Les actions possibles</span></a> • <a class="reference internal" href="#les-calculs-de-geometries-cote-serveur"><span class="std std-doc">Les calculs de géométries côté serveur</span></a> • <a class="reference internal" href="#les-calculs-et-traces-manuels-cote-qgis"><span class="std std-doc">Les calculs et tracés manuels côté QGIS</span></a> • <a class="reference internal" href="#alimentation-du-formulaire"><span class="std std-doc">Alimentation du formulaire</span></a> • <a class="reference internal" href="#lecture-des-geometries-pour-la-visualisation"><span class="std std-doc">Lecture des géométries pour la visualisation</span></a></p>
 <section id="les-actions-possibles">
-<h2>Les actions possibles<a class="headerlink" href="#les-actions-possibles" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Les actions possibles<a class="headerlink" href="#les-actions-possibles" title="Lien permanent vers ce titre">#</a></h2>
 <p>La nature des actions disponibles dépend de la propriété considérée.</p>
 <p>Une action doit :</p>
 <ul class="simple">
@@ -297,7 +294,7 @@
 <p><em>NB : Un même terme peut représenter plusieurs actions, qui seront réalisées par des méthodes différentes selon la situation.</em></p>
 <p>Le terme <code class="docutils literal notranslate"><span class="pre">'show'</span></code> est un cas particulier, la fonctionnalité de visualisation correspondante étant gérée directement par le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> et non par une action dans son menu associé. Sa mise en oeuvre est principalement traitée dans <a class="reference internal" href="creation_widgets.html#avec-fonctionnalite-de-visualisation"><span class="std std-doc">Création d’un nouveau widget</span></a>.</p>
 <section id="actions-sans-condition-d-activation">
-<h3>Actions sans condition d’activation<a class="headerlink" href="#actions-sans-condition-d-activation" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Actions sans condition d’activation<a class="headerlink" href="#actions-sans-condition-d-activation" title="Lien permanent vers ce titre">#</a></h3>
 <p>Dès lors qu’elles sont listées par <code class="docutils literal notranslate"><span class="pre">'geo</span> <span class="pre">tools'</span></code>, les actions suivantes n’auront jamais besoin d’être désactivées.</p>
 <table class="colwidths-auto table">
 <thead>
@@ -343,7 +340,7 @@
 </table>
 </section>
 <section id="actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base">
-<h3>Actions à activer uniquement si l’extension PostGIS est disponible sur la base<a class="headerlink" href="#actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Actions à activer uniquement si l’extension PostGIS est disponible sur la base<a class="headerlink" href="#actions-a-activer-uniquement-si-l-extension-postgis-est-disponible-sur-la-base" title="Lien permanent vers ce titre">#</a></h3>
 <p>… et si la couche sélectionnée est géométrique.</p>
 <table class="colwidths-auto table">
 <thead>
@@ -386,7 +383,7 @@
 <p><em>Si <code class="docutils literal notranslate"><span class="pre">postgis_exists</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, l’extension PostGIS est bien installée sur la base considérée.</em></p>
 </section>
 <section id="actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis">
-<h3>Actions à activer uniquement pour les couches chargées dans QGIS<a class="headerlink" href="#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Actions à activer uniquement pour les couches chargées dans QGIS<a class="headerlink" href="#actions-a-activer-uniquement-pour-les-couches-chargees-dans-qgis" title="Lien permanent vers ce titre">#</a></h3>
 <p>… et si la couche sélectionnée est géométrique.</p>
 <p><em>NB : À date, Plume charge silencieusement les couches sélectionnées dans l’explorateur dont il lit les métadonées, les actions qui suivent pourront donc être activées pour toutes les couches géométriques.</em></p>
 <table class="colwidths-auto table">
@@ -414,7 +411,7 @@
 </section>
 </section>
 <section id="les-calculs-de-geometries-cote-serveur">
-<h2>Les calculs de géométries côté serveur<a class="headerlink" href="#les-calculs-de-geometries-cote-serveur" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Les calculs de géométries côté serveur<a class="headerlink" href="#les-calculs-de-geometries-cote-serveur" title="Lien permanent vers ce titre">#</a></h2>
 <p>Pour l’action <em>Calcul du rectangle d’emprise (PostGIS)</em>, on transmettra successivement les requêtes renvoyées par les fonctions <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_extent</span></code> et <code class="docutils literal notranslate"><span class="pre">plume.pg.queries.query_get_geom_srid</span></code>. La première renvoie la géométrie du rectangle d’emprise de la couche au format WKT. La seconde fournit le référentiel de coordonnées appliqué pour ladite géométrie.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
@@ -454,7 +451,7 @@
 <p>On notera que <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> pourrait être nul si <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code> l’était ou si le référentiel n’a pas été reconnu.</p>
 </section>
 <section id="les-calculs-et-traces-manuels-cote-qgis">
-<h2>Les calculs et tracés manuels côté QGIS<a class="headerlink" href="#les-calculs-et-traces-manuels-cote-qgis" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Les calculs et tracés manuels côté QGIS<a class="headerlink" href="#les-calculs-et-traces-manuels-cote-qgis" title="Lien permanent vers ce titre">#</a></h2>
 <p>Après avoir obtenu une géométrie via les méthodes de QGIS, il faudra là encore la convertir dans le format attendu pour le type RDF <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>.</p>
 <p>Ceci suppose de commencer par l’encoder en WKT, avec les méthodes <code class="docutils literal notranslate"><span class="pre">QgsRectangle.asWktPolygon</span></code>, <code class="docutils literal notranslate"><span class="pre">QgsPointXY.asWkt</span></code>, etc. de QGIS.</p>
 <p>Comme pour les géométries issues de PostGIS, on applique ensuite <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid</span></code>.</p>
@@ -468,11 +465,11 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code> est le résultat de l’encodage de la géométrie en WKT et <code class="docutils literal notranslate"><span class="pre">srid</span></code> le référentiel de coordonnées courant de la couche (pour les fonctionnalités de calcul automatisé) ou du canevas (pour les fonctionnalités de tracé manuel).</em></p>
 </section>
 <section id="alimentation-du-formulaire">
-<h2>Alimentation du formulaire<a class="headerlink" href="#alimentation-du-formulaire" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Alimentation du formulaire<a class="headerlink" href="#alimentation-du-formulaire" title="Lien permanent vers ce titre">#</a></h2>
 <p>Contrairement à tous les autres boutons du formulaire, le bouton d’aide à la saisie des géométries n’affecte pas le dictionnaire. La géométrie obtenue sera simplement saisie dans le <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code> ou <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code>, elle sera ensuite gérée comme n’importe quelle autre valeur.</p>
 </section>
 <section id="lecture-des-geometries-pour-la-visualisation">
-<h2>Lecture des géométries pour la visualisation<a class="headerlink" href="#lecture-des-geometries-pour-la-visualisation" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Lecture des géométries pour la visualisation<a class="headerlink" href="#lecture-des-geometries-pour-la-visualisation" title="Lien permanent vers ce titre">#</a></h2>
 <p>QGIS sait construire des géométries à partir de représentations WKT, mais il ne sait pas lire les WKT incluant un référentiel qu’on trouvera en valeur des widgets. Celui-ci doit être spécifié à part.</p>
 <p>Pour extraire la géométrie seule (toujours en WKT) d’une part, et le référentiel seul d’autre part, on exécutera <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -506,7 +503,7 @@
 </ul>
 </section>
 <section id="gestion-du-referentiel">
-<h2>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers ce titre">#</a></h2>
 <p>Lors de la saisie d’une géométrie, le référentiel fourni en argument à <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.wkt_with_srid</span></code> doit être celui qui a effectivement été utilisé pour les coordonnées du WKT. Aucune transformation n’est nécessaire.</p>
 <p>Lors de la visualisation, il faudra par contre projeter les coordonnées dans le référentiel courant du canevas.</p>
 <table class="colwidths-auto table">
@@ -537,7 +534,7 @@
 </table>
 </section>
 <section id="precision-des-coordonnees">
-<h2>Précision des coordonnées<a class="headerlink" href="#precision-des-coordonnees" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Précision des coordonnées<a class="headerlink" href="#precision-des-coordonnees" title="Lien permanent vers ce titre">#</a></h2>
 <p>Par défaut, <code class="docutils literal notranslate"><span class="pre">qgis.core.QgsAbstractGeometry.asWkt</span></code> encode les WKT avec une précision de 17 décimales, et la fonction <code class="docutils literal notranslate"><span class="pre">ST_AsText</span></code> de PostGIS conserve jusqu’à 15 décimales (pourrait être variable selon les versions).</p>
 <p>Plume permet à l’utilisateur de définir la précision adaptée à ses usages via un paramètre utilisateur. Par défaut, elle est fixée à 8 décimales, ce qui correspond à une précision de l’ordre du millimètre pour les latitudes et pour les longitudes à l’équateur en WGS 84.</p>
 </section>
@@ -571,8 +568,9 @@
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

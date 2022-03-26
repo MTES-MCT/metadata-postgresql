@@ -8,26 +8,23 @@
 
     <title>Conformité au profil GeoDCAT-AP &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -202,7 +199,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -407,12 +404,12 @@
               <div>
                 
   <section id="conformite-au-profil-geodcat-ap">
-<h1>Conformité au profil GeoDCAT-AP<a class="headerlink" href="#conformite-au-profil-geodcat-ap" title="Lien permanent vers ce titre">¶</a></h1>
+<h1>Conformité au profil GeoDCAT-AP<a class="headerlink" href="#conformite-au-profil-geodcat-ap" title="Lien permanent vers ce titre">#</a></h1>
 <p><em>Référence : <a class="reference external" href="https://semiceu.github.io/GeoDCAT-AP/releases/2.0.0">GeoDCAT-AP Version 2.0.0</a>.</em></p>
 <p><a class="reference internal" href="#generalites"><span class="std std-doc">Généralités</span></a> • <a class="reference internal" href="#espace-de-nommage-de-plume"><span class="std std-doc">Espace de nommage de Plume</span></a> • <a class="reference internal" href="#types-de-valeurs-litterales"><span class="std std-doc">Types de valeurs littérales</span></a></p>
 <p>Classes : <a class="reference internal" href="#activite"><span class="std std-doc">Activité</span></a> • <a class="reference internal" href="#adresse-agent"><span class="std std-doc">Adresse (agent)</span></a> • <a class="reference internal" href="#adresse-entite"><span class="std std-doc">Adresse (entité)</span></a> • <a class="reference internal" href="#agent"><span class="std std-doc">Agent</span></a> • <a class="reference internal" href="#attribution"><span class="std std-doc">Attribution</span></a> • <a class="reference internal" href="#catalogue"><span class="std std-doc">Catalogue</span></a> • <a class="reference internal" href="#concept"><span class="std std-doc">Concept</span></a> • <a class="reference internal" href="#agent"><span class="std std-doc">Agent</span></a> • <a class="reference internal" href="#declaration-de-droits"><span class="std std-doc">Déclaration de droits</span></a> • <a class="reference internal" href="#distribution"><span class="std std-doc">Distribution</span></a> • <a class="reference internal" href="#document"><span class="std std-doc">Document</span></a> • <a class="reference internal" href="#emplacement"><span class="std std-doc">Emplacement</span></a> • <a class="reference internal" href="#enregistrement-du-catalogue"><span class="std std-doc">Enregistrement du catalogue</span></a> • <a class="reference internal" href="#ensemble-de-concepts"><span class="std std-doc">Ensemble de concepts</span></a> • <a class="reference internal" href="#entite"><span class="std std-doc">Entité</span></a> • <a class="reference internal" href="#fiche-de-metadonnees-liee"><span class="std std-doc">Fiche de métadonnées liée</span></a> • <a class="reference internal" href="#frequence"><span class="std std-doc">Fréquence</span></a> • <a class="reference internal" href="#genealogie"><span class="std std-doc">Généalogie</span></a> • <a class="reference internal" href="#identifiant"><span class="std std-doc">Identifiant</span></a> • <a class="reference internal" href="#jeu-de-donnees"><span class="std std-doc"><strong>Jeu de données</strong></span></a> • <a class="reference internal" href="#licence"><span class="std std-doc">Licence</span></a> • <a class="reference internal" href="#mesure-de-qualite"><span class="std std-doc">Mesure de qualité</span></a> • <a class="reference internal" href="#metrique"><span class="std std-doc">Métrique</span></a> • <a class="reference internal" href="#periode"><span class="std std-doc">Période</span></a> • <a class="reference internal" href="#relation"><span class="std std-doc">Relation</span></a> • <a class="reference internal" href="#ressource"><span class="std std-doc">Ressource</span></a> • <a class="reference internal" href="#service-de-donnees"><span class="std std-doc">Service de données</span></a> • <a class="reference internal" href="#somme-de-controle"><span class="std std-doc">Somme de contrôle</span></a> • <a class="reference internal" href="#standard"><span class="std std-doc">Standard</span></a> • <a class="reference internal" href="#systeme-linguistique"><span class="std std-doc">Système linguistique</span></a> • <a class="reference internal" href="#type-de-media"><span class="std std-doc">Type de média</span></a> • <a class="reference internal" href="#type-de-media-ou-extension"><span class="std std-doc">Type de média ou extension</span></a></p>
 <section id="generalites">
-<h2>Généralités<a class="headerlink" href="#generalites" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Généralités<a class="headerlink" href="#generalites" title="Lien permanent vers ce titre">#</a></h2>
 <p>Les métadonnées RDF produites par Plume ont les spécificités suivantes :</p>
 <ul class="simple">
 <li><p>Si elles ne sont pas vides, elles contiennent un et un seul objet de classe <a class="reference internal" href="#jeu-de-donnees"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code></span></a>.</p></li>
@@ -429,14 +426,14 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <p>Les propriétés prévues par GeoDCAT-AP mais non gérées par Plume, les propriétés de GeoDCAT-AP sur lesquelles des modifications ont été opérées, et les propriétés ajoutées par Plume sont listées dans la suite.</p>
 </section>
 <section id="espace-de-nommage-de-plume">
-<h2>Espace de nommage de Plume<a class="headerlink" href="#espace-de-nommage-de-plume" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Espace de nommage de Plume<a class="headerlink" href="#espace-de-nommage-de-plume" title="Lien permanent vers ce titre">#</a></h2>
 <p>Les propriétés et classes ajoutées par Plume utilisent l’espace de nommage <code class="docutils literal notranslate"><span class="pre">http://registre.data.developpement-durable.gouv.fr/plume/</span></code>, représenté par le préfixe <code class="docutils literal notranslate"><span class="pre">plume</span></code>.</p>
 <div class="highlight-turtle notranslate"><div class="highlight"><pre><span></span><span class="k">@prefix</span><span class="w"> </span><span class="nn">plume:</span><span class="w"> </span><span class="nv">&lt;http://registre.data.developpement-durable.gouv.fr/plume/&gt;</span><span class="w"> </span><span class="p">.</span>
 </pre></div>
 </div>
 </section>
 <section id="types-de-valeurs-litterales">
-<h2>Types de valeurs littérales<a class="headerlink" href="#types-de-valeurs-litterales" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Types de valeurs littérales<a class="headerlink" href="#types-de-valeurs-litterales" title="Lien permanent vers ce titre">#</a></h2>
 <p>Parmi les types explicitement cités par GeoDCAT-AP (pour les classes et propriétés prises en charges par Plume), seul le type <code class="docutils literal notranslate"><span class="pre">gsp:gmlLiteral</span></code> n’est pas reconnu par Plume. En cas d’import de métadonnées externes, les éventuelles valeurs de ce type seront traitées comme <code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> et aucune des fonctionnalités permettant d’interagir avec les géométries ne sera disponible.</p>
 <p>Les types suivants sont pris en charge sans limitation : <code class="docutils literal notranslate"><span class="pre">xsd:string</span></code>, <code class="docutils literal notranslate"><span class="pre">rdf:langString</span></code> (<code class="docutils literal notranslate"><span class="pre">xsd:string</span></code> avec langue), <code class="docutils literal notranslate"><span class="pre">xsd:integer</span></code>, <code class="docutils literal notranslate"><span class="pre">xsd:decimal</span></code>, <code class="docutils literal notranslate"><span class="pre">xsd:boolean</span></code>.</p>
 <p>Les types suivants sont gérés par Plume, mais avec quelques limites :</p>
@@ -467,24 +464,24 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <p>D’une manière général, toute valeur d’un type non listé ci-avant sera considérée comme de type <code class="docutils literal notranslate"><span class="pre">xsd:string</span></code>.</p>
 </section>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Lien permanent vers ce titre">¶</a></h2>
+<h2>Classes<a class="headerlink" href="#classes" title="Lien permanent vers ce titre">#</a></h2>
 <section id="activite">
-<h3>Activité<a class="headerlink" href="#activite" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Activité<a class="headerlink" href="#activite" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">prov:Activity</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="adresse-agent">
-<h3>Adresse (agent)<a class="headerlink" href="#adresse-agent" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Adresse (agent)<a class="headerlink" href="#adresse-agent" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">locn:Address</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="adresse-entite">
-<h3>Adresse (entité)<a class="headerlink" href="#adresse-entite" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Adresse (entité)<a class="headerlink" href="#adresse-entite" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">vcard:Address</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="agent">
-<h3>Agent<a class="headerlink" href="#agent" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Agent<a class="headerlink" href="#agent" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code>.</em></p>
 <p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
 <table class="colwidths-auto table">
@@ -529,29 +526,29 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="attribution">
-<h3>Attribution<a class="headerlink" href="#attribution" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Attribution<a class="headerlink" href="#attribution" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">prov:Attribution</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="catalogue">
-<h3>Catalogue<a class="headerlink" href="#catalogue" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Catalogue<a class="headerlink" href="#catalogue" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Catalog</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="concept">
-<h3>Concept<a class="headerlink" href="#concept" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Concept<a class="headerlink" href="#concept" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code>.</em></p>
 <p>Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier <a class="reference download internal" download="" href="../_downloads/cb2843acc6d0ac2ebc52779c985c8136/vocabulary.ttl"><span class="xref download myst">vocabulary.ttl</span></a>). Pour chaque concept, celui-ci présente obligatoirement les propriétés <em>category scheme</em> (<code class="docutils literal notranslate"><span class="pre">skos:inScheme</span></code>) et <em>preferred label</em> (<code class="docutils literal notranslate"><span class="pre">skos:prefLabel</span></code>), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d’origine n’en contenait pas.</p>
 <p>Des propriétés supplémentaires peuvent être disponibles pour certains concepts, dont une seule utilisée à ce stade par Plume : <code class="docutils literal notranslate"><span class="pre">foaf:page</span></code>. Celle-ci fournit l’URL d’une page web pertinente pour le concept. En mode lecture, la métadonnée portera un hyperlien pointant sur cette page ou, à défaut, sur l’IRI du concept.</p>
 <p>Seul l’IRI du concept est enregistré dans les métadonnées.</p>
 </section>
 <section id="declaration-de-droits">
-<h3>Déclaration de droits<a class="headerlink" href="#declaration-de-droits" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Déclaration de droits<a class="headerlink" href="#declaration-de-droits" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:RightsStatement</span></code>.</em></p>
 <p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
 </section>
 <section id="distribution">
-<h3>Distribution<a class="headerlink" href="#distribution" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Distribution<a class="headerlink" href="#distribution" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Distribution</span></code>.</em></p>
 <p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
 <table class="colwidths-auto table">
@@ -660,12 +657,12 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="document">
-<h3>Document<a class="headerlink" href="#document" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Document<a class="headerlink" href="#document" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">foaf:Document</span></code>.</em></p>
 <p>Plume n’associe aucune propriété à cette classe. Il est attendu de l’utilisateur qu’il saisisse une URL, qui tiendra lieu d’IRI et sera la seule information relative au document sauvegardée dans les métadonnées.</p>
 </section>
 <section id="emplacement">
-<h3>Emplacement<a class="headerlink" href="#emplacement" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Emplacement<a class="headerlink" href="#emplacement" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:Location</span></code>.</em></p>
 <p>Les propriétés suivantes sont modifiées par Plume :</p>
 <table class="colwidths-auto table">
@@ -706,18 +703,18 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="enregistrement-du-catalogue">
-<h3>Enregistrement du catalogue<a class="headerlink" href="#enregistrement-du-catalogue" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Enregistrement du catalogue<a class="headerlink" href="#enregistrement-du-catalogue" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:CatalogRecord</span></code>.</em></p>
 <p>Dans le contexte de Plume, la classe <code class="docutils literal notranslate"><span class="pre">dcat:CatalogRecord</span></code> sert exclusivement à renseigner les métadonnées sur les métadonnées. Elle est introduite par la propriété <code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span></code> dans la description d’un <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>, et le sujet du triplet <code class="docutils literal notranslate"><span class="pre">[]</span> <span class="pre">a</span> <span class="pre">dcat:CatalogRecord</span></code> est toujours un noeud anonyme.</p>
 <p>Pour l’heure, la seule propriété de cette classe qui soit prise en charge par Plume est <em>update / modification date</em> - <code class="docutils literal notranslate"><span class="pre">dct:modified</span></code> -, que Plume renseigne automatiquement à chaque sauvegarde.</p>
 </section>
 <section id="ensemble-de-concepts">
-<h3>Ensemble de concepts<a class="headerlink" href="#ensemble-de-concepts" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Ensemble de concepts<a class="headerlink" href="#ensemble-de-concepts" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">skos:ConceptScheme</span></code>.</em></p>
 <p>Comme pour la classe <code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code>, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n’est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier <a class="reference download internal" download="" href="../_downloads/cb2843acc6d0ac2ebc52779c985c8136/vocabulary.ttl"><span class="xref download myst">vocabulary.ttl</span></a>, avec pour seule propriété <code class="docutils literal notranslate"><span class="pre">skos:prefLabel</span></code> (et non <code class="docutils literal notranslate"><span class="pre">dct:title</span></code> comme dans GeoDCAT-AP), qui fournit le libellé de l’ensemble, généralement en anglais et en français.</p>
 </section>
 <section id="entite">
-<h3>Entité<a class="headerlink" href="#entite" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Entité<a class="headerlink" href="#entite" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code>.</em></p>
 <p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
 <table class="colwidths-auto table">
@@ -758,7 +755,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="fiche-de-metadonnees-liee">
-<h3>Fiche de métadonnées liée<a class="headerlink" href="#fiche-de-metadonnees-liee" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Fiche de métadonnées liée<a class="headerlink" href="#fiche-de-metadonnees-liee" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">plume:LinkedRecord</span></code>.</em></p>
 <p>Cette classe est ajoutée par Plume. Elle représente une fiche de métadonnées distante avec laquelle la fiche locale doit être régulièrement synchronisée. À ce stade ne sont prises en charge que les métadonnées ISO 19115 exposées par des services CSW. Les métadonnées n’ont pas pour objet de décrire la fiche mais seulement de mémoriser les informations nécessaires à Plume pour l’importer.</p>
 <p>Propriétés :</p>
@@ -785,22 +782,22 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="frequence">
-<h3>Fréquence<a class="headerlink" href="#frequence" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Fréquence<a class="headerlink" href="#frequence" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:Frequency</span></code>.</em></p>
 <p>Cette classe est prise en charge selon les mêmes modalités que <a class="reference internal" href="#concept"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code></span></a>.</p>
 </section>
 <section id="genealogie">
-<h3>Généalogie<a class="headerlink" href="#genealogie" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Généalogie<a class="headerlink" href="#genealogie" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:ProvenanceStatement</span></code>.</em></p>
 <p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
 </section>
 <section id="identifiant">
-<h3>Identifiant<a class="headerlink" href="#identifiant" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Identifiant<a class="headerlink" href="#identifiant" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">adms:Identifier</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="jeu-de-donnees">
-<h3>Jeu de données<a class="headerlink" href="#jeu-de-donnees" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Jeu de données<a class="headerlink" href="#jeu-de-donnees" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>.</em></p>
 <p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
 <table class="colwidths-auto table">
@@ -933,22 +930,22 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="licence">
-<h3>Licence<a class="headerlink" href="#licence" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Licence<a class="headerlink" href="#licence" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:LicenseDocument</span></code>.</em></p>
 <p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
 </section>
 <section id="mesure-de-qualite">
-<h3>Mesure de qualité<a class="headerlink" href="#mesure-de-qualite" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Mesure de qualité<a class="headerlink" href="#mesure-de-qualite" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dqv:QualityMeasurement</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="metrique">
-<h3>Métrique<a class="headerlink" href="#metrique" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Métrique<a class="headerlink" href="#metrique" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dqv:Metric</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="periode">
-<h3>Période<a class="headerlink" href="#periode" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Période<a class="headerlink" href="#periode" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:PeriodOfTime</span></code>.</em></p>
 <p>Les propriétés suivantes sont modifiées par Plume :</p>
 <table class="colwidths-auto table">
@@ -974,17 +971,17 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="relation">
-<h3>Relation<a class="headerlink" href="#relation" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Relation<a class="headerlink" href="#relation" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:Relationship</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="ressource">
-<h3>Ressource<a class="headerlink" href="#ressource" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Ressource<a class="headerlink" href="#ressource" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">rdfs:Resource</span></code>.</em></p>
 <p>GeoDCAT-AP n’associe explicitement aucune propriété à cette classe. De la même façon, Plume propose à l’utilisateur de saisir des URL pour les propriétés qui ont des valeurs de ce type et traite lesdites URL comme des IRI.</p>
 </section>
 <section id="service-de-donnees">
-<h3>Service de données<a class="headerlink" href="#service-de-donnees" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Service de données<a class="headerlink" href="#service-de-donnees" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dcat:DataService</span></code>.</em></p>
 <p>Avec Plume, des objets de classe <code class="docutils literal notranslate"><span class="pre">dcat:DataService</span></code> peuvent être saisis en objet de la propriété <code class="docutils literal notranslate"><span class="pre">dcat:accessService</span></code> des distributions. La vocation primaire de Plume n’est toutefois pas la documentation des services, et encore moins leur catalogage. Ainsi il a été fait le choix de limiter les propriétés disponibles pour décrire ces objets, en éliminant celles qui n’aideront pas l’utilisateur à comprendre sous quelles modalités le service met à disposition les données qui l’intéressent.</p>
 <p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
@@ -1118,12 +1115,12 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="somme-de-controle">
-<h3>Somme de contrôle<a class="headerlink" href="#somme-de-controle" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Somme de contrôle<a class="headerlink" href="#somme-de-controle" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">spdx:Checksum</span></code>.</em></p>
 <p>Cette classe n’est pas prise en charge.</p>
 </section>
 <section id="standard">
-<h3>Standard<a class="headerlink" href="#standard" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Standard<a class="headerlink" href="#standard" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:Standard</span></code>.</em></p>
 <p>Les propriétés suivantes ne sont pas prises en charge par Plume :</p>
 <table class="colwidths-auto table">
@@ -1191,17 +1188,17 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 </table>
 </section>
 <section id="systeme-linguistique">
-<h3>Système linguistique<a class="headerlink" href="#systeme-linguistique" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Système linguistique<a class="headerlink" href="#systeme-linguistique" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:LinguisticSystem</span></code>.</em></p>
 <p>Cette classe est prise en charge selon les mêmes modalités que <a class="reference internal" href="#concept"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">skos:Concept</span></code></span></a>.</p>
 </section>
 <section id="type-de-media">
-<h3>Type de média<a class="headerlink" href="#type-de-media" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Type de média<a class="headerlink" href="#type-de-media" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:MediaType</span></code>.</em></p>
 <p>Cette classe est prise en charge dans les formes prévues par GeoDCAT-AP.</p>
 </section>
 <section id="type-de-media-ou-extension">
-<h3>Type de média ou extension<a class="headerlink" href="#type-de-media-ou-extension" title="Lien permanent vers ce titre">¶</a></h3>
+<h3>Type de média ou extension<a class="headerlink" href="#type-de-media-ou-extension" title="Lien permanent vers ce titre">#</a></h3>
 <p><em>Classe <code class="docutils literal notranslate"><span class="pre">dct:MediaTypeOrExtent</span></code>.</em></p>
 <p>GeoDCAT-AP n’associe aucune propriété à cette classe. Plume ajoute une propriété <code class="docutils literal notranslate"><span class="pre">rdfs:label</span></code> pour la saisie manuelle, comme le fait déjà GeoDCAT-AP pour la classe <a class="reference internal" href="#type-de-media"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">dct:MediaType</span></code></span></a>.</p>
 <p>Les propriétés suivantes sont ajoutées par Plume :</p>
@@ -1262,8 +1259,9 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

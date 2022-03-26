@@ -8,26 +8,23 @@
 
     <title>Module plume.rdf.metagraph &#8212; Documentation Plume 0.3.0-beta</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -45,7 +42,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -337,11 +334,11 @@
               <div>
                 
   <section id="module-plume.rdf.metagraph">
-<span id="module-plume-rdf-metagraph"></span><h1>Module plume.rdf.metagraph<a class="headerlink" href="#module-plume.rdf.metagraph" title="Lien permanent vers ce titre">¶</a></h1>
+<span id="module-plume-rdf-metagraph"></span><h1>Module plume.rdf.metagraph<a class="headerlink" href="#module-plume.rdf.metagraph" title="Lien permanent vers ce titre">#</a></h1>
 <p>Graphes de métadonnées.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">Metagraph</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">Metagraph</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.graph.Graph</span></code></p>
 <p>Graphes de métadonnées.</p>
 <p>Un graphe de métadonnées est présumé décrire un et un seul jeu de
@@ -544,7 +541,7 @@ l’espace de nommage standard de Plume
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.available_export_formats">
-<span class="sig-name descname"><span class="pre">available_export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_export_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">available_export_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_export_formats" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la liste des formats d’export recommandés pour le graphe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -581,7 +578,7 @@ corrigée à l’avenir.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.available_formats">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">available_formats</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_formats" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">available_formats</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.available_formats" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list(str): Liste des formats d’export recommandés pour le graphe.</p>
 <div class="admonition seealso">
 <p class="admonition-title">Voir aussi</p>
@@ -594,7 +591,7 @@ corrigée à l’avenir.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.copy_branch">
-<span class="sig-name descname"><span class="pre">copy_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt_metagraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bnode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.copy_branch" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt_metagraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bnode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.copy_branch" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Copie dans le graphe une branche d’un autre graphe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -618,7 +615,7 @@ dans <cite>alt_metagraph</cite>).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.datasetid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">datasetid</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.datasetid" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">datasetid</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.datasetid" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe.</p>
 <p>Peut être <code class="docutils literal notranslate"><span class="pre">None</span></code> si le graphe de métadonnées ne contient
 pas d’élément <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>.</p>
@@ -647,7 +644,7 @@ ou encore <a class="reference internal" href="plume.rdf.utils.html#plume.rdf.uti
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.delete_branch">
-<span class="sig-name descname"><span class="pre">delete_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bnode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.delete_branch" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bnode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.delete_branch" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Supprime du graphe de métadonnées une branche non liée au dcat:Dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -671,7 +668,7 @@ dont <cite>bnode</cite> était objet ont préalablement
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.export">
-<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.export" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.export" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Sérialise le graphe de métadonnées dans un fichier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -699,7 +696,7 @@ NTriples (encodage ASCII).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.linked_record">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linked_record</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.linked_record" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linked_record</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.linked_record" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>tuple(str): Fiche de métadonnées distante référencée par le graphe, le cas échéant.</p>
 <p>Le tuple est constitué de deux éléments : l’URL de base du service
 CSW et l’identifiant de la fiche.</p>
@@ -723,7 +720,7 @@ sans quoi la tentative de sauvegarde sera silencieusement ignorée.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.merge">
-<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt_metagraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.merge" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alt_metagraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.merge" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Met à jour le graphe de métadonnées avec le contenu d’un autre graphe de métadonnées.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -758,13 +755,13 @@ est censée rester cohérente avec l’URI du dcat:Dataset.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.print">
-<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.print" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.print" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Imprime le graphe de métadonnées dans la console (sérialisation turtle).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.update_metadata_date">
-<span class="sig-name descname"><span class="pre">update_metadata_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.update_metadata_date" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">update_metadata_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.update_metadata_date" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Met à jour la date de dernière modification des métadonnées.</p>
 </dd></dl>
 
@@ -772,7 +769,7 @@ est censée rester cohérente avec l’URI du dcat:Dataset.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.clean_metagraph">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">clean_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.clean_metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">clean_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.clean_metagraph" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Crée un graphe propre à partir d’un graphe issu d’une source externe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -800,7 +797,7 @@ sont des noeuds anonymes.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.copy_metagraph">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">copy_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.copy_metagraph" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">copy_metagraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.copy_metagraph" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Génère un nouveau graphe de métadonnées avec le contenu du graphe cible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -827,7 +824,7 @@ il est préférable d’utiliser <a class="reference internal" href="#plume.rdf.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.metagraph_from_file">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_file" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_file" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Crée un graphe de métadonnées à partir d’un fichier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -861,7 +858,7 @@ PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.metagraph_from_iso">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_xml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'always'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_iso" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_xml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'always'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_iso" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Crée un graphe de métadonnées à partir d’un XML renvoyé par un service CSW.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -912,7 +909,7 @@ renseignées dans l’ancien graphe.</p></li>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.shape">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N6e616f4cf8574c1588735cd1b8ef9cea</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N894cadb37d98489b879a93f1eec46643</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Schéma SHACL définissant la structure des métadonnées communes.</p>
 </dd></dl>
 
@@ -946,8 +943,9 @@ renseignées dans l’ancien graphe.</p></li>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
