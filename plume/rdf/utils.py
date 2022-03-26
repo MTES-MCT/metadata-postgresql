@@ -1010,7 +1010,7 @@ def split_rdf_wkt(rdf_wkt):
         return (r[2], 'OGC:CRS84')
     for auth, url in crs_ns.items():
         if r[1].startswith(url):
-            code = r[1].lstrip(url)
+            code = r[1][len(url):]
             if re.match('^[a-zA-Z0-9.]+$', code):
                 return (r[2], '{}:{}'.format(auth, code))
             else:
