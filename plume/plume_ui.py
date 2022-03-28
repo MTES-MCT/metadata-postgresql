@@ -563,7 +563,7 @@ class Ui_Dialog_plume(object):
     #----------------------
     def ifVectorPostgres(self, itemUri) :
         mStoragePostgres = True
-        listSousChaine = ["host=", "dbname=", "user="]
+        listSousChaine = ["host=", "dbname="]
         for elem in listSousChaine :
             if itemUri.find(elem) == -1 :
                mStoragePostgres = False
