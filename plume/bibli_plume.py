@@ -429,7 +429,7 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautFileHelpPdf   = "https://snum.scenari-community.org/Asgard/PDF/GuideAsgardManager"
        valueDefautFileHelpHtml  = "https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"
        valueDefautDurationBarInfo = 10
-       valueDefautIHM = "window"
+       valueDefautIHM = "dockFalse"
        valueDefautToolBarDialog = "picture"
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
@@ -459,7 +459,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["geomColor"]                   = "#958B62"
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
-       mDicAutreColor["geomZoom"]                    = "false"
+       mDicAutreColor["geomZoom"]                    = "true"
        mDicAutreColor["geomPrecision"]               = "8"
 
        for key, value in mDicAutreColor.items():

@@ -350,6 +350,7 @@ class GeometryMapToolShow(QgsMapTool ):
                   self.canvas.setExtent(QgsGeometry.fromWkt(point1.asWkt()).boundingBox())
                else :   
                   self.canvas.setExtent(QgsGeometry.fromWkt(self.rubberBand.asGeometry().boundingBox().asWktPolygon()).boundingBox())
+               self.canvas.redrawAllLayers()   
       return 
   #-----
   def showCircle(self, pointsCircle):
@@ -409,7 +410,11 @@ class GeometryMapToolShow(QgsMapTool ):
 #==================================================
 # Transform système de projection
 def transformSourceCibleLayer(crsSource, crsCible, mGeom) : 
-    transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem(crsSource), QgsCoordinateReferenceSystem(crsCible), QgsProject.instance())
+    mCrsSource = QgsCoordinateReferenceSystem()
+    mCrsSource.createFromUserInput(crsSource)
+    mCrsCible = QgsCoordinateReferenceSystem()
+    mCrsCible.createFromUserInput(crsCible)
+    transform = QgsCoordinateTransform(mCrsSource, mCrsCible, QgsProject.instance())
     newmGeom = transform.transform(mGeom)
     return newmGeom
 
