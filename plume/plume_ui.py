@@ -82,7 +82,6 @@ class Ui_Dialog_plume(object):
         self.geomPoint       = self.mDic_LH["geomPoint"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
         self.geomPrecision   = int(self.mDic_LH["geomPrecision"])       
-
         #-
         mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
         mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
@@ -187,7 +186,7 @@ class Ui_Dialog_plume(object):
         #Instanciation des "shape, template, vocabulary, mode" 
         self.translation = bibli_plume.returnObjetTranslation(self)
         #-
-        self.displayToolBar(*self.listIconToolBar) 
+        self.displayToolBar(*self.listIconToolBar)
     #= Fin setupUi
 
     #==========================
@@ -489,6 +488,7 @@ class Ui_Dialog_plume(object):
                  self.majQmenuModeleIconFlag(tpl_labelDefaut)
                  #-
                  self.layerQgisBrowserOther = "QGIS"
+                 #-
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
@@ -505,7 +505,7 @@ class Ui_Dialog_plume(object):
         item = self.model.dataItem(self.proxy_model.mapToSource(index))
         #issu code JD Lomenede
         if isinstance(item, QgsLayerItem) :
-           if self.ifVectorPostgres(item.uri()) :
+           if self.ifVectorPostgres(item) :
               self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
               self.getAllFromUri()
               #--
@@ -538,6 +538,7 @@ class Ui_Dialog_plume(object):
                  self.majQmenuModeleIconFlag(tpl_labelDefaut)
                  #-
                  self.layerQgisBrowserOther = "BROWSER"
+                 #-
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         return
 
@@ -561,14 +562,7 @@ class Ui_Dialog_plume(object):
         return
 
     #----------------------
-    def ifVectorPostgres(self, itemUri) :
-        mStoragePostgres = True
-        listSousChaine = ["host=", "dbname="]
-        for elem in listSousChaine :
-            if itemUri.find(elem) == -1 :
-               mStoragePostgres = False
-               break
-        return mStoragePostgres     
+    def ifVectorPostgres(self, item) : return True if item.providerKey() == 'postgres' else False     
 
     #----------------------
     def ifLayerLoad(self, mLayer) :

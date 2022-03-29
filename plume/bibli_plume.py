@@ -431,6 +431,7 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "dockFalse"
        valueDefautToolBarDialog = "picture"
+       valueDefautLayerBeforeClicked = ""
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
@@ -440,6 +441,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
+       mDicAutre["layerBeforeClicked"] = valueDefautLayerBeforeClicked
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
               mSettings.setValue(key, value)
