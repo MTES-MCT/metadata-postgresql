@@ -4,7 +4,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 
-from PyQt5.QtWidgets import QAction, QMenu , QApplication, QMessageBox
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
+                             QDockWidget, QTreeView, QGridLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, 
+                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle)
 from PyQt5.QtGui import QIcon
 
 from qgis.core import *
@@ -60,8 +62,80 @@ class MainPlugin(object):
      self.toolbar = self.iface.addToolBar(self.toolBarName)
      # Pour faire une action
      self.toolbar.addAction(self.plume2)
+     #-
+     #self.initializingDisplay() ICI pour gérer les connections
+     #-
      #=========================
+
+     #==========================
+  def initializingDisplay(self):
+      iface.layerTreeView().clicked.connect(self.returnLayerBeforeClickedQgis)
+                
+      # Interaction avec le navigateur de QGIS
+      self.mNav1, self.mNav2 = 'Browser', 'Browser2' 
+      #1
+      self.navigateur = iface.mainWindow().findChild(QDockWidget, self.mNav1)
+      self.navigateurTreeView = self.navigateur.findChild(QTreeView)
+      self.navigateurTreeView.setObjectName(self.mNav1)
+      self.navigateurTreeView.clicked.connect(self.returnLayerBeforeClickedBrowser)
+      #2
+      self.navigateur2 = iface.mainWindow().findChild(QDockWidget, self.mNav2)
+      self.navigateurTreeView2 = self.navigateur2.findChild(QTreeView)
+      self.navigateurTreeView2.setObjectName(self.mNav2)
+      self.navigateurTreeView2.clicked.connect(self.returnLayerBeforeClickedBrowser)
+      return
+              
+  #==========================
+  def returnLayerBeforeClickedQgis(self) :
+      layerBeforeClicked = ""
+      self.layer = iface.activeLayer()
+      if self.layer:
+         if self.layer.dataProvider().name() == 'postgres':
+            layerBeforeClicked = self.layer
+         
+      self.saveinitializingDisplay("write", layerBeforeClicked)
+
+  #==========================
+  def returnLayerBeforeClickedBrowser(self, index) :
+      layerBeforeClicked = ""
+      mNav = self.iface.sender().objectName()
+      self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
+      # DL
+      self.modelDefaut = iface.browserModel() 
+      self.model = iface.browserModel()
+      item = self.model.dataItem(self.proxy_model.mapToSource(index))
+      #issu code JD Lomenede
+      if isinstance(item, QgsLayerItem) :
+         if item.providerKey() == 'postgres' :
+            self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
+            layerBeforeClicked = self.layer
+      self.saveinitializingDisplay("write", layerBeforeClicked)
+
+  #==========================
+  def saveinitializingDisplay(self, mAction, layerBeforeClicked = None) :
+      mSettings = QgsSettings()
+      mDicAutre = {}
+      mSettings.beginGroup("PLUME")
+      mSettings.beginGroup("Generale")
+      if mAction == "write" : 
+         mDicAutre["layerBeforeClicked"]  = layerBeforeClicked
+         for key, value in mDicAutre.items():
+             mSettings.setValue(key, value)
+      elif mAction == "read" : 
+         mDicAutre["layerBeforeClicked"]  = ""
+         for key, value in mDicAutre.items():
+             if not mSettings.contains(key) :
+                mSettings.setValue(key, value)
+             else :
+                mDicAutre[key] = mSettings.value(key)
+                  
+      mSettings.endGroup()
+      mSettings.endGroup()
+      print(mDicAutre)
+
+      return
      
+  #==========================
   def clickAbout(self):
       d = doabout.Dialog()
       d.exec_()

@@ -14,8 +14,33 @@ def manageLibrary(mBibli) :
            )
            import pip
            subprocess.check_call(['python3', '-m', 'pip', 'uninstall', '--upgrade', 'pip'])
-
-       mPathPerso = os.path.dirname(__file__) + '\\rdflib-6.1.1.tar.gz'
+           
+       # WHEEL
+       mPathPerso = os.path.dirname(__file__) + '\\wheel-0.37.1-py2.py3-none-any.whl'
+       mPathPerso = mPathPerso.replace("\\","/")
+       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+       # ISODATE
+       mPathPerso = os.path.dirname(__file__) + '\\isodate-0.6.1-py2.py3-none-any.whl'
+       mPathPerso = mPathPerso.replace("\\","/")
+       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+       # PYPARSING
+       mPathPerso = os.path.dirname(__file__) + '\\pyparsing-3.0.7-py3-none-any.whl'
+       mPathPerso = mPathPerso.replace("\\","/")
+       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+       # SETUPTOOLS
+       mPathPerso = os.path.dirname(__file__) + '\\setuptools-61.2.0-py3-none-any.whl'
+       mPathPerso = mPathPerso.replace("\\","/")
+       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+       # ZIPP
+       mPathPerso = os.path.dirname(__file__) + '\\zipp-3.7.0-py3-none-any.whl'
+       mPathPerso = mPathPerso.replace("\\","/")
+       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+       # IMPORTLIB-METADATA
+       mPathPerso = os.path.dirname(__file__) + '\\importlib_metadata-4.11.3-py3-none-any.whl'
+       mPathPerso = mPathPerso.replace("\\","/")
+       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+       # RDFLIB
+       mPathPerso = os.path.dirname(__file__) + '\\rdflib-6.1.1-py3-none-any.whl'
        mPathPerso = mPathPerso.replace("\\","/")
        subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
     elif mBibli == "OWSLIB" :
