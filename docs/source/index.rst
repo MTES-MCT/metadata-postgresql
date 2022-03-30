@@ -13,6 +13,7 @@ Plume : gestion des métadonnées du patrimoine PostgreSQL
    usage/usage
    reference/modules
    mechanism/mechanism
+   changelog/changelog
 
 
 
