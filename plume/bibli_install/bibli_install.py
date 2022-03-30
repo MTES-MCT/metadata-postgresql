@@ -2,7 +2,7 @@
 # créé sept 2021
 import os.path
 import subprocess
-from platform import python_version
+import sys
 
 #==================================================
 def manageLibrary(mBibli) :
@@ -36,7 +36,7 @@ def manageLibrary(mBibli) :
        mPathPerso = os.path.dirname(__file__) + '\\setuptools-61.2.0-py3-none-any.whl'
        mPathPerso = mPathPerso.replace("\\","/")
        subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
-       if python_version() < ('3,8') :
+       if sys.version_info < (3, 8) :
           # ZIPP
           mPathPerso = os.path.dirname(__file__) + '\\zipp-3.7.0-py3-none-any.whl'
           mPathPerso = mPathPerso.replace("\\","/")
