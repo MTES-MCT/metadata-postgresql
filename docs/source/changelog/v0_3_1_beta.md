@@ -1,6 +1,6 @@
 # Version mineure 0.3.1 bêta
 
-Cette version mineure améliore la gestion des dépendances. Alors que la v0.3 bêta incorporait uniquement RDFLib, seule dépendance directe de Plume, la v0.3.1 bêta inclus aussi les bibliothèques nécessaires à RDFLib, ainsi que leurs propres dépendances. Cette évolution permet l'installation du plugin QGIS depuis le réseau interne de l'Etat, ou même sans accès internet. Par ailleurs, Plume utilise désormais des installeurs au format *wheel*, plus légers et rapides.
+Cette version mineure améliore la gestion des dépendances. Alors que la v0.3 bêta incorporait uniquement RDFLib, seule dépendance directe de Plume, la v0.3.1 bêta inclut aussi les bibliothèques nécessaires à RDFLib, ainsi que leurs propres dépendances. Cette évolution permet l'installation du plugin QGIS depuis le réseau interne de l'Etat, ou même sans accès internet. Par ailleurs, Plume utilise désormais des installeurs au format *wheel*, plus légers et rapides.
 
 Paquets inclus : 
 
