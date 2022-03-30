@@ -17,7 +17,9 @@ Le plugin QGIS Plume est prévu pour fonctionner avec :
 - QGIS 3.10 ou supérieur ;
 - PostgreSQL 10 ou supérieur.
 
-La bibliothèque RDFLib, qui n'est pas nativement présente dans les distributions de QGIS, est packagée dans le plugin et installée en parallèle.
+### Dépendances
+
+La bibliothèque RDFLib, qui n'est pas nativement présente dans les distributions de QGIS, est packagée dans le plugin et installée en parallèle. Il en va de même pour les bibliothèques dont elle dépend : [`isodate`](https://pypi.org/project/isodate/) (et sa dépendance [`six`](https://pypi.org/project/six/)), [`pyparsing`](https://pypi.org/project/pyparsing/), [`setuptools`](https://pypi.org/project/setuptools/) et, pour les versions de python strictement antérieures à la 3.8.0, [`importlib-metadata`](https://pypi.org/project/importlib-metadata/) (ainsi que sa dépendance [`zipp`](https://pypi.org/project/zipp/)). Plume incorpore également le package [`wheel`](https://pypi.org/project/wheel/), qui permet de gérer les bibliothèques sous forme de fichiers *wheel*, plus légers et rapides à installer.
 
 ## Installation
 
