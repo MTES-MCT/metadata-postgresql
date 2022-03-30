@@ -6,12 +6,12 @@ Paquets inclus :
 
 | Nom du paquet | Dépendance de... | Fiche PyPi | Remarques |
 | --- | --- | --- | --- |
-| `rdflib` | Plume | https://pypi.org/project/rdflib/ | Seule dépendance directe de Plume, déjà incorporée dans Plume v0.3 bêta.|
-| `isodate` | `rdflib` | https://pypi.org/project/isodate/ | |
-| `six` | `isodate` | https://pypi.org/project/six/ | |
-| `pyparsing` | `rdflib` | https://pypi.org/project/pyparsing/ | |
-| `setuptools` | `rdflib` | https://pypi.org/project/setuptools/ | |
-| `importlib-metadata` | `rdflib` | https://pypi.org/project/importlib-metadata/ | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| `zipp` | `importlib-metadata` | https://pypi.org/project/zipp/ | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| `wheel` | | https://pypi.org/project/wheel/ | Pour l'installation des bibliothèques. |
+| `rdflib` | Plume | (https://pypi.org/project/rdflib/)[https://pypi.org/project/rdflib/] | Seule dépendance directe de Plume, déjà incorporée dans Plume v0.3 bêta.|
+| `isodate` | `rdflib` | (https://pypi.org/project/isodate/)[https://pypi.org/project/isodate/] | |
+| `six` | `isodate` | (https://pypi.org/project/six/)[https://pypi.org/project/six/] | |
+| `pyparsing` | `rdflib` | (https://pypi.org/project/pyparsing/)[https://pypi.org/project/pyparsing/] | |
+| `setuptools` | `rdflib` | (https://pypi.org/project/setuptools/)[https://pypi.org/project/setuptools/] | |
+| `importlib-metadata` | `rdflib` | (https://pypi.org/project/importlib-metadata/)[https://pypi.org/project/importlib-metadata/] | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
+| `zipp` | `importlib-metadata` | (https://pypi.org/project/zipp/)[https://pypi.org/project/zipp/] | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
+| `wheel` | | (https://pypi.org/project/wheel/)[https://pypi.org/project/wheel/] | Pour l'installation des bibliothèques. |
 
