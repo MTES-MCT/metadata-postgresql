@@ -36,7 +36,7 @@ def manageLibrary(mBibli) :
        mPathPerso = os.path.dirname(__file__) + '\\setuptools-61.2.0-py3-none-any.whl'
        mPathPerso = mPathPerso.replace("\\","/")
        subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
-       if python_version() < '3.8.0':
+       if python_version() < ('3,8') :
           # ZIPP
           mPathPerso = os.path.dirname(__file__) + '\\zipp-3.7.0-py3-none-any.whl'
           mPathPerso = mPathPerso.replace("\\","/")
