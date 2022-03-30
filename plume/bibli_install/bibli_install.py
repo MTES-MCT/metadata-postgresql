@@ -13,7 +13,7 @@ def manageLibrary(mBibli) :
                open(str(pathlib.Path(plugin_dir, 'scripts', 'get_pip.py'))).read()
            )
            import pip
-           subprocess.check_call(['python3', '-m', 'pip', 'uninstall', '--upgrade', 'pip'])
+           subprocess.check_call(['python3', '-m', 'pip', 'install', '--upgrade', 'pip'])
            
        # WHEEL
        mPathPerso = os.path.dirname(__file__) + '\\wheel-0.37.1-py2.py3-none-any.whl'
