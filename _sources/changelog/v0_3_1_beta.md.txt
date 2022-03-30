@@ -5,6 +5,7 @@ Cette version mineure améliore la gestion des dépendances. Alors que la v0.3 b
 Paquets inclus : 
 
 | Nom du paquet | Dépendance de... | Fiche PyPi | Remarques |
+| --- | --- | --- | --- |
 | `rdflib` | Plume | https://pypi.org/project/rdflib/ | Seule dépendance directe de Plume, déjà incorporée dans Plume v0.3 bêta.|
 | `isodate` | `rdflib` | https://pypi.org/project/isodate/ | |
 | `six` | `isodate` | https://pypi.org/project/six/ | |

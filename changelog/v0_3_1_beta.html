@@ -177,15 +177,57 @@
 <h1>Version mineure 0.3.1 bêta<a class="headerlink" href="#version-mineure-0-3-1-beta" title="Lien permanent vers ce titre">#</a></h1>
 <p>Cette version mineure améliore la gestion des dépendances. Alors que la v0.3 bêta incorporait uniquement RDFLib, seule dépendance directe de Plume, la v0.3.1 bêta inclus aussi les bibliothèques nécessaires à RDFLib, ainsi que leurs propres dépendances. Cette évolution permet l’installation du plugin QGIS depuis le réseau interne de l’Etat, ou même sans accès internet. Par ailleurs, Plume utilise désormais des installeurs au format <em>wheel</em>, plus légers et rapides.</p>
 <p>Paquets inclus :</p>
-<p>| Nom du paquet | Dépendance de… | Fiche PyPi | Remarques |
-| <code class="docutils literal notranslate"><span class="pre">rdflib</span></code> | Plume | https://pypi.org/project/rdflib/ | Seule dépendance directe de Plume, déjà incorporée dans Plume v0.3 bêta.|
-| <code class="docutils literal notranslate"><span class="pre">isodate</span></code> | <code class="docutils literal notranslate"><span class="pre">rdflib</span></code> | https://pypi.org/project/isodate/ | |
-| <code class="docutils literal notranslate"><span class="pre">six</span></code> | <code class="docutils literal notranslate"><span class="pre">isodate</span></code> | https://pypi.org/project/six/ | |
-| <code class="docutils literal notranslate"><span class="pre">pyparsing</span></code> | <code class="docutils literal notranslate"><span class="pre">rdflib</span></code> | https://pypi.org/project/pyparsing/ | |
-| <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> | <code class="docutils literal notranslate"><span class="pre">rdflib</span></code> | https://pypi.org/project/setuptools/ | |
-| <code class="docutils literal notranslate"><span class="pre">importlib-metadata</span></code> | <code class="docutils literal notranslate"><span class="pre">rdflib</span></code> | https://pypi.org/project/importlib-metadata/ | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| <code class="docutils literal notranslate"><span class="pre">zipp</span></code> | <code class="docutils literal notranslate"><span class="pre">importlib-metadata</span></code> | https://pypi.org/project/zipp/ | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| <code class="docutils literal notranslate"><span class="pre">wheel</span></code> | | https://pypi.org/project/wheel/ | Pour l’installation des bibliothèques. |</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Nom du paquet</p></th>
+<th class="head"><p>Dépendance de…</p></th>
+<th class="head"><p>Fiche PyPi</p></th>
+<th class="head"><p>Remarques</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rdflib</span></code></p></td>
+<td><p>Plume</p></td>
+<td><p>https://pypi.org/project/rdflib/</p></td>
+<td><p>Seule dépendance directe de Plume, déjà incorporée dans Plume v0.3 bêta.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isodate</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdflib</span></code></p></td>
+<td><p>https://pypi.org/project/isodate/</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">six</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isodate</span></code></p></td>
+<td><p>https://pypi.org/project/six/</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pyparsing</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdflib</span></code></p></td>
+<td><p>https://pypi.org/project/pyparsing/</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setuptools</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdflib</span></code></p></td>
+<td><p>https://pypi.org/project/setuptools/</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">importlib-metadata</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdflib</span></code></p></td>
+<td><p>https://pypi.org/project/importlib-metadata/</p></td>
+<td><p>Installé uniquement pour les versions de python strictement inférieures à la 3.8.0.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zipp</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">importlib-metadata</span></code></p></td>
+<td><p>https://pypi.org/project/zipp/</p></td>
+<td><p>Installé uniquement pour les versions de python strictement inférieures à la 3.8.0.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">wheel</span></code></p></td>
+<td><p></p></td>
+<td><p>https://pypi.org/project/wheel/</p></td>
+<td><p>Pour l’installation des bibliothèques.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
