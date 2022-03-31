@@ -266,6 +266,11 @@
    </em>
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gestion-des-dependances">
+   Gestion des dépendances
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -290,7 +295,7 @@
   <section id="aide-memoire">
 <h1>Aide-mémoire<a class="headerlink" href="#aide-memoire" title="Lien permanent vers ce titre">#</a></h1>
 <p>Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.</p>
-<p><a class="reference internal" href="#execution-des-tests"><span class="std std-doc">Exécution des tests</span></a> • <a class="reference internal" href="#generer-un-zip-propre-du-plugin"><span class="std std-doc">Générer un ZIP propre du plugin</span></a> • <a class="reference internal" href="#modifier-les-categories-de-metadonnees-communes"><span class="std std-doc">Modifier les catégories de métadonnées communes</span></a> • <a class="reference internal" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees"><span class="std std-doc">Ajouter une option de configuration des catégories de métadonnées</span></a> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span></p>
+<p><a class="reference internal" href="#execution-des-tests"><span class="std std-doc">Exécution des tests</span></a> • <a class="reference internal" href="#generer-un-zip-propre-du-plugin"><span class="std std-doc">Générer un ZIP propre du plugin</span></a> • <a class="reference internal" href="#modifier-les-categories-de-metadonnees-communes"><span class="std std-doc">Modifier les catégories de métadonnées communes</span></a> • <a class="reference internal" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees"><span class="std std-doc">Ajouter une option de configuration des catégories de métadonnées</span></a> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span> • <a class="reference internal" href="#gestion-des-dependances"><span class="std std-doc">Gestion des dépendances</span></a></p>
 <section id="execution-des-tests">
 <h2>Exécution des tests<a class="headerlink" href="#execution-des-tests" title="Lien permanent vers ce titre">#</a></h2>
 <p>On lancera le script <code class="docutils literal notranslate"><span class="pre">/admin/tests.py</span></code> qui compile les tests de tous les modules de Plume.</p>
@@ -542,6 +547,17 @@
 <span class="kn">from</span> <span class="nn">admin.plume_pg</span> <span class="kn">import</span> <span class="n">store_sample_templates</span>
 
 <span class="n">store_sample_templates</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="gestion-des-dependances">
+<h2>Gestion des dépendances<a class="headerlink" href="#gestion-des-dependances" title="Lien permanent vers ce titre">#</a></h2>
+<p>Plume incorpore les bibliothèques python nécessaires à son fonctionnement qui ne sont pas nativement présentes dans QGIS. En pratique, il s’agit de <a class="reference external" href="https://pypi.org/project/rdflib/">RDFLib</a> et de ses dépendances en cascade, qui devront être contrôlées à chaque mise à jour d’une bibliothèque.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">requires</span>
+
+<span class="n">requires</span><span class="p">(</span><span class="s1">&#39;rdflib&#39;</span><span class="p">)</span>
 
 </pre></div>
 </div>
