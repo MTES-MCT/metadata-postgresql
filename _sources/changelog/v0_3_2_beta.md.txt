@@ -1,7 +1,8 @@
 # Version mineure 0.3.2 bêta
 
 *Date de publication : 31 mars 2022.*
-*Sur GitHub : https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.3.2-beta.*
+
+*Sur GitHub : [https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.3.2-beta](https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.3.2-beta).*
 
 Plume v0.3.2 bêta est une version corrective.
 
