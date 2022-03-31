@@ -1,5 +1,8 @@
 # Version mineure 0.3.1 bêta
 
+*Date de publication : 30 mars 2022.*
+*Sur GitHub : https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.3.1-beta.*
+
 Cette version mineure améliore la gestion des dépendances. Alors que la v0.3 bêta incorporait uniquement RDFLib, seule dépendance directe de Plume, la v0.3.1 bêta inclut aussi les bibliothèques nécessaires à RDFLib, ainsi que leurs propres dépendances. Cette évolution permet l'installation du plugin QGIS depuis le réseau interne de l'Etat, ou même sans accès internet. Par ailleurs, Plume utilise désormais des installeurs au format *wheel*, plus légers et rapides.
 
 Paquets inclus : 
