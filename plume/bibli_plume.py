@@ -559,7 +559,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.3 bêta"
+def returnVersion() : return "version 0.3.2 bêta"
 
 #==================================================
 #Execute Pdf 

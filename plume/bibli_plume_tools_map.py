@@ -97,7 +97,8 @@ class GeometryMapTool(QgsMapTool ):
          except :
             pass   
          self.reset()
-         QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )  
+         QApplication.restoreOverrideCursor() 
+         QApplication.restoreOverrideCursor() 
   #-----
   def canvasPressEvent(self, e):
       if self._mAction in ["polygon",] : 
@@ -154,7 +155,8 @@ class GeometryMapTool(QgsMapTool ):
          except :
             pass   
          self.reset()
-         QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )  
+         QApplication.restoreOverrideCursor() 
+         QApplication.restoreOverrideCursor() 
       return
   #-----
   def canvasMoveEvent(self, e):
@@ -277,7 +279,8 @@ class GeometryMapTool(QgsMapTool ):
   def deactivate(self):
       QgsMapTool.deactivate(self)
       self.deactivated.emit()
-      QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )  
+      QApplication.restoreOverrideCursor() 
+      QApplication.restoreOverrideCursor() 
       return
 
 #==================================================

@@ -37,26 +37,16 @@ def manageLibrary(mBibli) :
           mPathPerso = os.path.dirname(__file__) + '\\zipp-3.7.0-py3-none-any.whl'
           mPathPerso = mPathPerso.replace("\\","/")
           subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
+          # TYPING-EXTENSIONS
+          mPathPerso = os.path.dirname(__file__) + '\\typing_extensions-4.1.1-py3-none-any.whl'
+          mPathPerso = mPathPerso.replace("\\","/")
+          subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
           # IMPORTLIB-METADATA
           mPathPerso = os.path.dirname(__file__) + '\\importlib_metadata-4.11.3-py3-none-any.whl'
           mPathPerso = mPathPerso.replace("\\","/")
           subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
        # RDFLIB
        mPathPerso = os.path.dirname(__file__) + '\\rdflib-6.1.1-py3-none-any.whl'
-       mPathPerso = mPathPerso.replace("\\","/")
-       subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
-    elif mBibli == "OWSLIB" :
-       #--
-       try:
-           import pip
-       except ImportError:
-           exec(
-               open(str(pathlib.Path(plugin_dir, 'scripts', 'get_pip.py'))).read()
-           )
-           import pip
-           subprocess.check_call(['python3', '-m', 'pip', 'uninstall', '--upgrade', 'pip'])
-
-       mPathPerso = os.path.dirname(__file__) + '\\OWSLib-0.25.0.tar.gz'
        mPathPerso = mPathPerso.replace("\\","/")
        subprocess.check_call(['python3', '-m', 'pip', 'install', mPathPerso])
     return
