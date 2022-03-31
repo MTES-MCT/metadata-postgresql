@@ -2,7 +2,7 @@
 
 Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.
 
-[Exécution des tests](#exécution-des-tests) • [Générer un ZIP propre du plugin](#générer-un-zip-propre-du-plugin) • [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes) • [Ajouter une option de configuration des catégories de métadonnées](#ajouter-une-option-de-configuration-des-catégories-de-métadonnées) • [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-ré-configurés-de-plumepg)
+[Exécution des tests](#exécution-des-tests) • [Générer un ZIP propre du plugin](#générer-un-zip-propre-du-plugin) • [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes) • [Ajouter une option de configuration des catégories de métadonnées](#ajouter-une-option-de-configuration-des-catégories-de-métadonnées) • [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-ré-configurés-de-plumepg) • [Gestion des dépendances](#gestion-des-dépendances)
 
 ## Exécution des tests
 
@@ -306,5 +306,16 @@ store_sample_templates()
 
 ```
 
+## Gestion des dépendances
+
+Plume incorpore les bibliothèques python nécessaires à son fonctionnement qui ne sont pas nativement présentes dans QGIS. En pratique, il s'agit de [RDFLib](https://pypi.org/project/rdflib/) et de ses dépendances en cascade, qui devront être contrôlées à chaque mise à jour d'une bibliothèque.
+
+```python
+
+from importlib.metadata import requires
+
+requires('rdflib')
+
+``` 
 
 
