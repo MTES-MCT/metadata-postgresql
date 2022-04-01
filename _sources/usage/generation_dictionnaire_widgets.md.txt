@@ -265,7 +265,7 @@ En premier lieu, le dictionnaire de widgets sert de base à la génération du f
 
 ```
 
-Chaque enregistrement du dictionnaire représente l'un objets des objets suivants du formulaire : une zone de saisie, un groupe de valeurs, un groupe de propriétés, un groupe de traduction, un bouton plus ou un bouton de traduction.
+Chaque enregistrement du dictionnaire représente l'un des objets suivants du formulaire : une zone de saisie, un groupe de valeurs, un groupe de propriétés, un groupe de traduction, un bouton plus ou un bouton de traduction.
 
 Les clés du dictionnaire de widgets sont des objets `plume.rdf.widgetkey.WidgetKey`. Elles forment une structure arborescente qui, y compris lorsque des widgets sont ajoutés, supprimés, masqués suite aux actions de l'utilisateur, assure que la cohérence du positionnement des widgets. Elle permet aussi de recréer aisément un graphe de métadonnées à partir du dictionnaire de widgets, en vu de l'enregistrement en JSON-LD des métadonnées actualisées.
 
