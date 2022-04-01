@@ -4,7 +4,7 @@ Plume, pour *PLUgin MEtadonnées*, est un plugin QGIS de consultation et saisie 
 
 **Attention ! Application en cours de développement, l'installation est aux risques et périls de l'utilisateur.**
 
-![Logo](plume/flyers/plume1.png)
+![Logo](plume/icons/plume.svg)
 
 Les métadonnées sont stockées au format RDF (JSON-LD) dans les descriptifs PostgreSQL des objets. L'utilisateur y accède en cliquant sur les couches dans l'explorateur de QGIS ou dans le panneau des couches. Plume prend en charge les tables, tables partionnées, tables étrangères, vues et vues matérialisées.
 
@@ -72,7 +72,7 @@ Il est également possible de télécharger une archive ZIP du code du plugin su
 
 Documentation technique : https://mtes-mct.github.io/metadata-postgresql.
 
-*À venir. La documentation utilisateur sera bientôt disponible à l'adresse : http://snum.scenari-community.org/Metadata/Plume/Documentation.*
+*À venir. La documentation utilisateur sera bientôt disponible à l'adresse : https://snum.scenari-community.org/Plume/Documentation.*
 
 ## Crédits
 
