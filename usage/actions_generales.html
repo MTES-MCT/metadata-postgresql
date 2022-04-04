@@ -469,11 +469,11 @@
 <tbody>
 <tr class="row-even"><td><p>lecture</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">mode</span> <span class="pre">==</span> <span class="pre">'read'</span></code></p></td>
-<td><p><em>Basculer en mode édition</em></p></td>
+<td><p><em>Basculer en mode édition.</em></p></td>
 </tr>
 <tr class="row-odd"><td><p>édition</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">mode</span> <span class="pre">==</span> <span class="pre">'edit'</span></code></p></td>
-<td><p><em>Quitter le mode édition</em></p></td>
+<td><p><em>Quitter le mode édition. Attention : les modifications non enregistrées seront perdues.</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -500,6 +500,12 @@
 </pre></div>
 </div>
 <p><em><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> est la chaîne de connexion à la base de données PostgreSQL, <code class="docutils literal notranslate"><span class="pre">table_name</span></code> est le nom de la table ou vue dont on affiche les métadonnées, <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> est le nom de son schéma.</em></p>
+<p>Lorsque l’utilisateur désactive le mode édition sans avoir sauvegardé, une boîte de dialogue apparaît pour lui demander de confirmer (en le prévenant que ses modifications seront alors perdues) ou d’annuler. Ce comportement pouvant vite devenir lassant, un paramètre utilisateur devra permettre d’inhiber l’affichage de ces messages.</p>
+<p>Il n’est pas possible d’établir de manière certaine si les métadonnées ont réellement été modifiées, mais on pourra épargner à l’utilisateur l’étape de confirmation quand aucune des deux conditions ci-après n’est remplie, puisqu’il est alors certain qu’il n’y a aucun changement :</p>
+<ul class="simple">
+<li><p>Parmi les clés du dictionnaire de widgets correspondant à des widgets de saisie, il en existe au moins une telle que la valeur saisie dans le widget est différente de celle contenue dans la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> du dictionnaire interne.</p></li>
+<li><p>L’attribut <code class="docutils literal notranslate"><span class="pre">modified</span></code> du dictionnaire de widgets vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. Cet attribut, qui vaut toujours <code class="docutils literal notranslate"><span class="pre">False</span></code> à l’initialisation du dictionnaire de widgets, est mis à <code class="docutils literal notranslate"><span class="pre">True</span></code> par toutes les méthodes de manipulation des clés (ajout, suppression, changement de langue, changement d’unité, intégration de valeur calculée…). Il est susceptible de créer des faux positifs : par exemple, ce n’est pas parce qu’une clé est ajoutée dans un groupe de valeurs qu’une valeur y sera effectivement saisie.</p></li>
+</ul>
 </section>
 </section>
 <section id="sauvegarde">
