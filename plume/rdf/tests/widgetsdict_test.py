@@ -2367,6 +2367,67 @@ class WidgetsDictTestCase(unittest.TestCase):
                 columns.remove(k)
         self.assertFalse(columns)
 
+    def test_modified(self):
+        """Attribut traçant les modifications sur les clés.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        # add
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        self.assertFalse(widgetsdict.modified)
+        w = widgetsdict.root.search_from_path(DCAT.keyword)
+        widgetsdict.add(w.button)
+        self.assertTrue(widgetsdict.modified)
+        ## drop
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        w = widgetsdict.root.search_from_path(DCAT.keyword).children[0]
+        widgetsdict.drop(w)
+        self.assertTrue(widgetsdict.modified)
+        # change_language
+        widgetsdict = WidgetsDict(metagraph=metagraph, translation=True)
+        self.assertFalse(widgetsdict.modified)
+        w = widgetsdict.root.search_from_path(DCAT.keyword).children[0]
+        widgetsdict.change_language(w, 'en')
+        self.assertTrue(widgetsdict.modified)
+        # change_source
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        w = widgetsdict.root.search_from_path(DCAT.theme).children[0]
+        widgetsdict.change_source(w, 'Thème de données (UE)')
+        self.assertTrue(widgetsdict.modified)
+        # computing_update
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        w = widgetsdict.root.search_from_path(DCT.conformsTo)
+        widgetsdict.computing_update(w, [('EPSG', '2154')])
+        self.assertTrue(widgetsdict.modified)
+        # change_unit
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        w = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        widgetsdict.change_unit(w, 'min.')
+        self.assertTrue(widgetsdict.modified)
+
 if __name__ == '__main__':
     unittest.main()
 
