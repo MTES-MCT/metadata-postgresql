@@ -84,6 +84,9 @@ class WidgetsDict(dict):
     
     Attributes
     ----------
+    modified : bool
+        ``False`` pour un dictionnaire qui vient d'être généré. Toutes les
+        méthodes d'actions ont pour effet de passer cet attribut à ``True``.
     datasetid : plume.rdf.utils.DatasetId
         L'identifiant du jeu de données dont le dictionnaire présente les
         métadonnées.
@@ -179,6 +182,8 @@ class WidgetsDict(dict):
         readHideBlank=True, editHideUnlisted=False, readHideUnlisted=True,
         editOnlyCurrentLanguage=False, readOnlyCurrentLanguage=True,
         labelLengthLimit=None, valueLengthLimit=None, textEditRowSpan=None):
+        
+        self.modified = False
         
         # ------ Paramètres utilisateur ------
         self.mode = mode if mode in ('edit', 'read') else 'edit'
@@ -889,6 +894,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("Il n'est pas permis d'ajouter des " \
                 'éléments avec un bouton invisible.', buttonkey)
         a = buttonkey.add()
+        self.modified = True
         return self.dictisize_actionsbook(a)
 
     def drop(self, objectkey):
@@ -925,6 +931,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("Il n'est pas permis de supprimer des " \
                 'éléments avec un bouton moins invisible.', objectkey)
         a = objectkey.drop()
+        self.modified = True
         return self.dictisize_actionsbook(a)
 
     def change_language(self, valuekey, new_language):
@@ -969,6 +976,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("La langue {} n'est pas disponible " \
                 'pour les traductions.'.format(new_language), valuekey)
         a = valuekey.change_language(new_language)
+        self.modified = True
         return self.dictisize_actionsbook(a)
 
     def change_source(self, objectkey, new_source):
@@ -1034,6 +1042,7 @@ class WidgetsDict(dict):
         else:
             a = objectkey.change_source(value_source)
         
+        self.modified = True
         return self.dictisize_actionsbook(a)
 
     def change_unit(self, valuekey, new_unit):
@@ -1078,6 +1087,7 @@ class WidgetsDict(dict):
             raise ForbiddenOperation("L'unité {} n'est pas " \
                 'reconnue.'.format(new_unit), valuekey)
         a = valuekey.change_unit(new_unit)
+        self.modified = True
         return self.dictisize_actionsbook(a)
 
     def widget_type(self, widgetkey):
@@ -1256,6 +1266,7 @@ class WidgetsDict(dict):
                 # pas de bouton moins, par exemple parce que c'est
                 # la dernière du groupe.
         a = WidgetKey.unload_actionsbook()
+        self.modified = True
         return self.dictisize_actionsbook(a)
     
     def prepare_value(self, widgetkey, value):
