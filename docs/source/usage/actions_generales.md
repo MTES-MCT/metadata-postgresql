@@ -45,8 +45,8 @@ L'idéal serait que le texte d'aide s'adapte au mode courant :
 
 | Mode actif | Condition | Infobulle |
 | --- | --- | --- |
-| lecture | `if mode == 'read'` | *Basculer en mode édition* |
-| édition | `if mode == 'edit'` | *Quitter le mode édition* |
+| lecture | `if mode == 'read'` | *Basculer en mode édition.* |
+| édition | `if mode == 'edit'` | *Quitter le mode édition. Attention : les modifications non enregistrées seront perdues.* |
 
 Le bouton devra être inactif quand l'utilisateur ne dispose pas des droits nécessaires pour éditer les métadonnées de la table ou vue considérée, soit quand son rôle de connexion n'est pas membre du rôle propriétaire de l'objet.
 
@@ -75,6 +75,11 @@ conn.close()
 
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL, `table_name` est le nom de la table ou vue dont on affiche les métadonnées, `schema_name` est le nom de son schéma.*
 
+Lorsque l'utilisateur désactive le mode édition sans avoir sauvegardé, une boîte de dialogue apparaît pour lui demander de confirmer (en le prévenant que ses modifications seront alors perdues) ou d'annuler. Ce comportement pouvant vite devenir lassant, un paramètre utilisateur devra permettre d'inhiber l'affichage de ces messages.
+
+Il n'est pas possible d'établir de manière certaine si les métadonnées ont réellement été modifiées, mais on pourra épargner à l'utilisateur l'étape de confirmation quand aucune des deux conditions ci-après n'est remplie, puisqu'il est alors certain qu'il n'y a aucun changement :
+- Parmi les clés du dictionnaire de widgets correspondant à des widgets de saisie, il en existe au moins une telle que la valeur saisie dans le widget est différente de celle contenue dans la clé `'value'` du dictionnaire interne.
+- L'attribut `modified` du dictionnaire de widgets vaut `True`. Cet attribut, qui vaut toujours `False` à l'initialisation du dictionnaire de widgets, est mis à `True` par toutes les méthodes de manipulation des clés (ajout, suppression, changement de langue, changement d'unité, intégration de valeur calculée...). Il est susceptible de créer des faux positifs : par exemple, ce n'est pas parce qu'une clé est ajoutée dans un groupe de valeurs qu'une valeur y sera effectivement saisie.
 
 ## Sauvegarde
 
