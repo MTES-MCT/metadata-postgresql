@@ -749,6 +749,8 @@ c’est lui qui porte cette information. Sinon, elle est obligatoire.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_main_twin</span></code></dt><dd><p>bool: La clé est-elle la jumelle référente du couple ?</p>
 </dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_read_only</span></code></dt><dd><p>bool: La clé est-elle en lecture seule ?</p>
+</dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_single_child</span></code></dt><dd><p>bool: La clé est-elle un enfant unique ?</p>
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.key_object" title="plume.rdf.widgetkey.GroupOfPropertiesKey.key_object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key_object</span></code></a></dt><dd><p>str: Transcription littérale du type de clé.</p>
@@ -1390,11 +1392,14 @@ propriétés, mais cela ne présente aucun intérêt.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read_only</span></span><a class="headerlink" href="#plume.rdf.widgetkey.GroupOfValuesKey.is_read_only" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>bool: Les valeurs des clés-valeurs du groupe sont-elles en lecture seule ?</p>
 <p class="rubric">Notes</p>
+<p>Si la clé appartient à un groupe de propriétés, elle
+sera considérée comme étant en lecture seule si le groupe
+parent est en lecture seule ou si la clé elle-même est
+paramétrée comme telle.</p>
+<p>La création de bouton plus est inhibée dans un groupe de valeurs
+en lecture seule.</p>
 <p>Il est permis de fournir des valeurs de type <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>,
 qui seront alors automatiquement converties.</p>
-<p>Il n’est pas interdit de définir une valeur pour cette propriété
-lorsque le groupe de valeurs ne contient que des groupes de 
-propriétés, mais cela ne présente aucun intérêt.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1629,6 +1634,11 @@ qu’une fois, sur la seconde clé créée.</p>
 <dt><strong>is_hidden_m</strong><span class="classifier">bool, default False</span></dt><dd><p>La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
 n’est pris en compte que pour une clé qui a une jumelle.</p>
 </dd>
+<dt><strong>is_read_only</strong><span class="classifier">bool or rdflib.term.Literal, default False</span></dt><dd><p>La clé est-elle en lecture seule ? Si la clé appartient
+à un groupe de valeurs, c’est lui qui porte cette information.
+Une clé appartenant à un groupe de propriétés en lecture seule
+sera elle-même considérée comme étant en lecture seule.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -1686,6 +1696,8 @@ du triplet RDF est un IRI ou une valeur litérale.</p></li>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.ObjectKey.is_hidden_m" title="plume.rdf.widgetkey.ObjectKey.is_hidden_m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden_m</span></code></a></dt><dd><p>bool: La clé appartient-elle à une branche masquée ?</p>
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.ObjectKey.is_main_twin" title="plume.rdf.widgetkey.ObjectKey.is_main_twin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_main_twin</span></code></a></dt><dd><p>bool: La clé est-elle la jumelle référente du couple ?</p>
+</dd>
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.ObjectKey.is_read_only" title="plume.rdf.widgetkey.ObjectKey.is_read_only"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_read_only</span></code></a></dt><dd><p>bool: La clé est-elle en lecture seule ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_single_child</span></code></dt><dd><p>bool: La clé est-elle un enfant unique ?</p>
 </dd>
@@ -1874,6 +1886,23 @@ jumelle.</p>
 Elle ne peut d’ailleurs l’être que lorsque les deux jumelles
 appartiennent à une branche masquée, sinon elle est déduite de
 <a class="reference internal" href="#plume.rdf.widgetkey.ObjectKey.is_hidden_m" title="plume.rdf.widgetkey.ObjectKey.is_hidden_m"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ObjectKey.is_hidden_m</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.ObjectKey.is_read_only">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read_only</span></span><a class="headerlink" href="#plume.rdf.widgetkey.ObjectKey.is_read_only" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>bool: La clé est-elle en lecture seule ?</p>
+<p class="rubric">Notes</p>
+<p>Si la clé appartient à un groupe de valeurs ou de traduction,
+la propriété du groupe parent est renvoyée. Tenter d’en modifier
+la valeur n’aura silencieusement aucun effet.</p>
+<p>Si la clé appartient à un groupe de propriétés, elle
+sera considérée comme étant en lecture seule si le groupe
+parent est en lecture seule ou si la clé elle-même est
+paramétrée comme telle.</p>
+<p>Les clés en lecture seule ne sont accompagnées d’aucun bouton.</p>
+<p>Il est permis de fournir des valeurs de type <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>,
+qui seront alors automatiquement converties.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -3521,9 +3550,6 @@ information.</p>
 clé appartient à un groupe de valeurs, c’est lui qui porte cette
 information.</p>
 </dd>
-<dt><strong>is_read_only</strong><span class="classifier">bool or rdflib.term.Literal, default False</span></dt><dd><p>La valeur de cette clé est-elle en lecture seule ? Si la clé appartient
-à un groupe de valeurs, c’est lui qui porte cette information.</p>
-</dd>
 <dt><strong>regex_validator</strong><span class="classifier">str, optional</span></dt><dd><p>Le cas échéant, expression rationnelle de validation à utiliser pour
 la clé. Si la clé appartient à un groupe de valeurs, c’est lui qui porte
 cette information.</p>
@@ -3642,7 +3668,7 @@ en compte : <code class="docutils literal notranslate"><span class="pre">'show'<
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_mandatory" title="plume.rdf.widgetkey.ValueKey.is_mandatory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_mandatory</span></code></a></dt><dd><p>bool: Cette clé devra-t-elle obligatoirement recevoir une valeur ?</p>
 </dd>
-<dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_read_only" title="plume.rdf.widgetkey.ValueKey.is_read_only"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_read_only</span></code></a></dt><dd><p>bool: La valeur de cette clé est-elle en lecture seule ?</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_read_only</span></code></dt><dd><p>bool: La clé est-elle en lecture seule ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_single_child</span></code></dt><dd><p>bool: La clé est-elle un enfant unique ?</p>
 </dd>
@@ -3976,11 +4002,11 @@ silencieusement éliminées) : <code class="docutils literal notranslate"><span 
 <code class="docutils literal notranslate"><span class="pre">'linestring'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>, <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">'circle'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 <p>Lorsque la clé est en lecture seule, soit quand la propriété
-<a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_read_only" title="plume.rdf.widgetkey.ValueKey.is_read_only"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code></a> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, la liste
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, la liste
 contiendra au plus <cite>“show”</cite>. C’est le getter de la propriété qui 
 génère à la volée une liste tronquée à partir de la liste mémorisée,
 afin de préserver toutes les valeurs pour le cas où
-<a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_read_only" title="plume.rdf.widgetkey.ValueKey.is_read_only"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code></a> reviendrait à <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code> reviendrait à <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <p>Il est permis de fournir en argument une liste de
 <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement convertis.</p>
 </dd></dl>
@@ -4006,7 +4032,7 @@ deux seraient redondants.</p>
 de type <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code>.</p>
 <p>Au contraire de la plupart des autres boutons, des boutons d’aide à la
 saisie des géométries peuvent accompagner des clés en lecture seule
-(c’est-à-dire pour lesquelles la propriété <a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_read_only" title="plume.rdf.widgetkey.ValueKey.is_read_only"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code></a>
+(c’est-à-dire pour lesquelles la propriété <code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.is_read_only</span></code>
 vaut  <code class="docutils literal notranslate"><span class="pre">True</span></code>), car ils portent aussi des fonctionnalités de visualisation.
 C’est la propriété <a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.geo_tools" title="plume.rdf.widgetkey.ValueKey.geo_tools"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ValueKey.geo_tools</span></code></a> qui se charge d’éliminer
 les fonctionnalités d’édition.</p>
@@ -4093,18 +4119,6 @@ la propriété <a class="reference internal" href="#plume.rdf.widgetkey.WidgetKe
 <dt class="sig sig-object py" id="plume.rdf.widgetkey.ValueKey.is_mandatory">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_mandatory</span></span><a class="headerlink" href="#plume.rdf.widgetkey.ValueKey.is_mandatory" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>bool: Cette clé devra-t-elle obligatoirement recevoir une valeur ?</p>
-<p class="rubric">Notes</p>
-<p>Si la clé appartient à un groupe de valeurs ou de traduction,
-la propriété du groupe parent est renvoyée. Tenter d’en modifier
-la valeur n’aura silencieusement aucun effet.</p>
-<p>Il est permis de fournir des valeurs de type <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>,
-qui seront alors automatiquement converties.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="plume.rdf.widgetkey.ValueKey.is_read_only">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read_only</span></span><a class="headerlink" href="#plume.rdf.widgetkey.ValueKey.is_read_only" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>bool: La valeur de cette clé est-elle en lecture seule ?</p>
 <p class="rubric">Notes</p>
 <p>Si la clé appartient à un groupe de valeurs ou de traduction,
 la propriété du groupe parent est renvoyée. Tenter d’en modifier
