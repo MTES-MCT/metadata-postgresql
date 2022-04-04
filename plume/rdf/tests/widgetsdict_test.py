@@ -11,7 +11,7 @@ import unittest, psycopg2
 
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, \
-    PLUME, LOCAL, RDF
+    PLUME, LOCAL, RDF, RDFS
 from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -2427,6 +2427,157 @@ class WidgetsDictTestCase(unittest.TestCase):
         w = widgetsdict.root.search_from_path(DCAT.temporalResolution)
         widgetsdict.change_unit(w, 'min.')
         self.assertTrue(widgetsdict.modified)
+
+    def test_is_read_only(self):
+        """Catégories en lecture seule.
+        
+        """
+        connection_string = ConnectionString()
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    SELECT * FROM z_plume.meta_import_sample_template('Donnée externe') ;
+                    INSERT INTO z_plume.meta_template_categories
+                        (shrcat_path, tpl_label) VALUES
+                        ('dct:spatial / dcat:bbox', 'Donnée externe'),
+                        ('dct:conformsTo', 'Donnée externe'),
+                        ('dcat:temporalResolution', 'Donnée externe') ;
+                    UPDATE z_plume.meta_template_categories
+                        SET is_read_only = True
+                        WHERE tpl_label = 'Donnée externe'
+                            AND shrcat_path IN ('dcat:distribution',
+                                'dcat:keyword', 'dcat:theme',
+                                'dct:spatial / dcat:bbox',
+                                'dcat:temporalResolution', 'dct:title',
+                                'dct:conformsTo') ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Donnée externe',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
+                    "ADMIN EXPRESS - Metropolitan Departments"@en;
+                dcat:keyword "admin express"@fr,
+                    "donnée externe"@fr,
+                    "external data"@en,
+                    "ign"@fr ;
+                dct:temporal [ a dct:PeriodOfTime ;
+                    dcat:endDate "2021-01-15"^^xsd:date ;
+                    dcat:startDate "2021-01-15"^^xsd:date ] ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                dcat:distribution [ a dcat:Distribution ;
+                    dcat:packageFormat <http://publications.europa.eu/resource/authority/file-type/ZIP> ;
+                    dct:license [ a dct:LicenseDocument ;
+                        rdfs:label "Licence ouverte Etalab 2.0"@fr ] ] ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            translation=True)
+        widgetsdict_witness = WidgetsDict(metagraph=metagraph, translation=True)
+        # dcat:keyword (groupe de valeurs)
+        w = widgetsdict.root.search_from_path(DCAT.keyword)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.keyword)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
+        self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
+        self.assertIsNone(w.button)
+        self.assertTrue(ww.button)
+        self.assertTrue(not any(widgetsdict[c]['has minus button'] for c in w.children))
+        self.assertTrue(all(widgetsdict_witness[c]['has minus button'] for c in ww.children))
+        # dct:conformsTo (bouton de calcul)
+        w = widgetsdict.root.search_from_path(DCT.conformsTo)
+        ww = widgetsdict_witness.root.search_from_path(DCT.conformsTo)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
+        self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
+        self.assertIsNone(w.button)
+        self.assertTrue(ww.button)
+        self.assertTrue(not any(widgetsdict[c]['has minus button'] for c in w.children))
+        self.assertTrue(all(widgetsdict_witness[c]['has minus button'] for c in ww.children))
+        self.assertFalse(widgetsdict[w]['has compute button'])
+        self.assertTrue(widgetsdict_witness[ww]['has compute button'])
+        # dcat:theme (plusieurs sources)
+        w = widgetsdict.root.search_from_path(DCAT.theme)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.theme)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
+        self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
+        self.assertIsNone(w.button)
+        self.assertTrue(ww.button)
+        self.assertTrue(not any(widgetsdict[c]['multiple sources'] for c in w.children))
+        self.assertTrue(all(widgetsdict_witness[c]['multiple sources'] for c in ww.children))
+        # dct:title (groupe de traduction)
+        w = widgetsdict.root.search_from_path(DCT.title)
+        ww = widgetsdict_witness.root.search_from_path(DCT.title)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
+        self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
+        self.assertIsNone(w.button)
+        self.assertTrue(ww.button)
+        self.assertTrue(not any(widgetsdict[c]['authorized languages'] for c in w.children))
+        self.assertTrue(all(widgetsdict_witness[c]['authorized languages'] for c in ww.children))
+        self.assertTrue(not any(widgetsdict[c]['has minus button'] for c in w.children))
+        self.assertTrue(all(widgetsdict_witness[c]['has minus button'] for c in ww.children))
+        # dcat:temporalResolution (bouton de changement d'unité)
+        w = widgetsdict.root.search_from_path(DCAT.temporalResolution)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.temporalResolution)
+        self.assertTrue(widgetsdict[w]['read only'])
+        self.assertFalse(widgetsdict_witness[ww]['read only'])
+        self.assertFalse(widgetsdict[w]['units'])
+        self.assertTrue(widgetsdict_witness[ww]['units'])
+        # dcat:bbox (bouton d'aide à la saisie des géométries)
+        w = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
+        ww = widgetsdict_witness.root.search_from_path(DCT.spatial / DCAT.bbox)
+        self.assertTrue(widgetsdict[w]['read only'])
+        self.assertFalse(widgetsdict_witness[ww]['read only'])
+        self.assertEqual(widgetsdict[w]['geo tools'], ['show'])
+        self.assertTrue('bbox' in widgetsdict_witness[ww]['geo tools'])
+        # dcat:distribution (héritage dans un groupe de propriétés)
+        w = widgetsdict.root.search_from_path(DCAT.distribution)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.distribution)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        w = widgetsdict.root.search_from_path(DCAT.distribution / DCT.issued)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.distribution / DCT.issued)
+        self.assertTrue(widgetsdict[w]['read only'])
+        self.assertFalse(widgetsdict_witness[ww]['read only'])
+        w = widgetsdict.root.search_from_path(DCAT.distribution / DCAT.packageFormat)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.distribution / DCAT.packageFormat)
+        self.assertTrue(widgetsdict[w]['read only'])
+        self.assertFalse(widgetsdict_witness[ww]['read only'])
+        w = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.distribution / DCT.license)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        self.assertFalse(widgetsdict[w]['multiple sources'])
+        self.assertTrue(widgetsdict_witness[ww]['multiple sources'])
+        w = widgetsdict.root.search_from_path(DCAT.distribution / DCT.license / RDFS.label)
+        ww = widgetsdict_witness.root.search_from_path(DCAT.distribution / DCT.license / RDFS.label)
+        self.assertTrue(w.is_read_only)
+        self.assertFalse(ww.is_read_only)
+        self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
+        self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
 
 if __name__ == '__main__':
     unittest.main()
