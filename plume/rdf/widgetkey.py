@@ -1234,7 +1234,12 @@ class ObjectKey(WidgetKey):
         qu'une fois, sur la seconde clé créée.
     is_hidden_m : bool, default False
         La clé est-elle la clé masquée du couple de jumelles ? Ce paramètre
-        n'est pris en compte que pour une clé qui a une jumelle.        
+        n'est pris en compte que pour une clé qui a une jumelle.
+    is_read_only : bool or rdflib.term.Literal, default False
+        La clé est-elle en lecture seule ? Si la clé appartient
+        à un groupe de valeurs, c'est lui qui porte cette information.
+        Une clé appartenant à un groupe de propriétés en lecture seule
+        sera elle-même considérée comme étant en lecture seule.        
     
     Warnings
     --------
@@ -1259,6 +1264,7 @@ class ObjectKey(WidgetKey):
         return super().__new__(cls, **kwargs)
     
     def _base_attributes(self, **kwargs):
+        self._is_read_only = None
         self._predicate = None
         self._label = None
         self._description = None
@@ -1266,12 +1272,45 @@ class ObjectKey(WidgetKey):
         self._is_main_twin = None
     
     def _computed_attributes(self, **kwargs):
+        self.is_read_only = kwargs.get('is_read_only')
         self.m_twin = kwargs.get('m_twin')
         self.predicate = kwargs.get('predicate')
         self.label = kwargs.get('label')
         self.description = kwargs.get('description')
         self.is_hidden_m = kwargs.get('is_hidden_m')
         self.is_main_twin = kwargs.get('is_main_twin')
+    
+    @property
+    def is_read_only(self):
+        """bool: La clé est-elle en lecture seule ?
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs ou de traduction,
+        la propriété du groupe parent est renvoyée. Tenter d'en modifier
+        la valeur n'aura silencieusement aucun effet.
+        
+        Si la clé appartient à un groupe de propriétés, elle
+        sera considérée comme étant en lecture seule si le groupe
+        parent est en lecture seule ou si la clé elle-même est
+        paramétrée comme telle.
+        
+        Les clés en lecture seule ne sont accompagnées d'aucun bouton.
+
+        Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
+        qui seront alors automatiquement converties.
+        
+        """
+        if isinstance(self.parent, GroupOfValuesKey):
+            return self.parent.is_read_only
+        elif isinstance(self.parent, GroupOfPropertiesKey):
+            return self.parent.is_read_only or self._is_read_only
+        return self._is_read_only
+
+    @is_read_only.setter
+    def is_read_only(self, value):
+        if not isinstance(self.parent, GroupOfValuesKey):
+            self._is_read_only = bool(value)
     
     @property
     def has_minus_button(self):
@@ -1286,7 +1325,8 @@ class ObjectKey(WidgetKey):
         
         """
         if isinstance(self.parent, GroupOfValuesKey):
-            return bool(self) and self.parent.with_minus_buttons
+            return bool(self) and self.parent.with_minus_buttons \
+                and not self.is_read_only
         return False
     
     @property
@@ -1638,7 +1678,8 @@ class ObjectKey(WidgetKey):
         Réécriture de la propriété :py:attr:`WidgetKey.attr_to_update`.
         
         """
-        return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m']
+        return ['order_idx', 'predicate', 'label', 'description',
+            'is_hidden_m', 'is_read_only']
 
     @property
     def attr_to_copy(self):
@@ -1663,7 +1704,7 @@ class ObjectKey(WidgetKey):
         
         """
         return { 'order_idx': True, 'parent': True, 'predicate': True,
-            'label': True, 'description': True }
+            'label': True, 'description': True, 'is_read_only': True }
 
     def kill(self, preserve_twin=False):
         """Efface une clé de la mémoire de son parent.
@@ -2353,7 +2394,8 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         Réécriture de la propriété :py:attr:`WidgetKey.has_source_button`.
         
         """
-        return self and WidgetKey.with_source_buttons and bool(self.m_twin)
+        return bool(self) and WidgetKey.with_source_buttons \
+            and bool(self.m_twin) and not self.is_read_only
 
     @property
     def is_ghost(self):
@@ -2402,7 +2444,7 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         """
         return ['order_idx', 'predicate', 'label', 'description', 'is_hidden_m',
-            'node', 'rdfclass']
+            'node', 'rdfclass', 'is_read_only']
 
     @property
     def attr_to_copy(self):
@@ -2427,7 +2469,8 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         
         """
         return { 'order_idx': True, 'parent': True, 'predicate': True,
-            'label': True, 'description': True, 'rdfclass': True }
+            'label': True, 'description': True, 'rdfclass': True,
+            'is_read_only': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -3002,14 +3045,20 @@ class GroupOfValuesKey(GroupKey):
         
         Notes
         -----
+        Si la clé appartient à un groupe de propriétés, elle
+        sera considérée comme étant en lecture seule si le groupe
+        parent est en lecture seule ou si la clé elle-même est
+        paramétrée comme telle.
+        
+        La création de bouton plus est inhibée dans un groupe de valeurs
+        en lecture seule.
+        
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
         
-        Il n'est pas interdit de définir une valeur pour cette propriété
-        lorsque le groupe de valeurs ne contient que des groupes de 
-        propriétés, mais cela ne présente aucun intérêt.
-        
         """
+        if isinstance(self.parent, GroupOfPropertiesKey):
+            return self.parent.is_read_only or self._is_read_only
         return self._is_read_only
 
     @is_read_only.setter
@@ -3626,9 +3675,6 @@ class ValueKey(ObjectKey):
         Cette clé devra-t-elle obligatoirement recevoir une valeur ? Si la
         clé appartient à un groupe de valeurs, c'est lui qui porte cette
         information.
-    is_read_only : bool or rdflib.term.Literal, default False
-        La valeur de cette clé est-elle en lecture seule ? Si la clé appartient
-        à un groupe de valeurs, c'est lui qui porte cette information.
     regex_validator : str, optional
         Le cas échéant, expression rationnelle de validation à utiliser pour
         la clé. Si la clé appartient à un groupe de valeurs, c'est lui qui porte
@@ -3715,7 +3761,6 @@ class ValueKey(ObjectKey):
         self._placeholder = None
         self._input_mask = None
         self._is_mandatory = None
-        self._is_read_only = None
         self._regex_validator = None
         self._regex_validator_flags = None
         self._geo_tools = None
@@ -3738,7 +3783,6 @@ class ValueKey(ObjectKey):
         self.placeholder = kwargs.get('placeholder')
         self.input_mask = kwargs.get('input_mask')
         self.is_mandatory = kwargs.get('is_mandatory')
-        self.is_read_only = kwargs.get('is_read_only')
         self.regex_validator = kwargs.get('regex_validator')
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
         self.geo_tools = kwargs.get('geo_tools')
@@ -4116,29 +4160,6 @@ class ValueKey(ObjectKey):
     def is_mandatory(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
             self._is_mandatory = bool(value)
-    
-    @property
-    def is_read_only(self):
-        """bool: La valeur de cette clé est-elle en lecture seule ?
-        
-        Notes
-        -----
-        Si la clé appartient à un groupe de valeurs ou de traduction,
-        la propriété du groupe parent est renvoyée. Tenter d'en modifier
-        la valeur n'aura silencieusement aucun effet.
-
-        Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
-        qui seront alors automatiquement converties.
-        
-        """
-        if isinstance(self.parent, GroupOfValuesKey):
-            return self.parent.is_read_only
-        return self._is_read_only
-
-    @is_read_only.setter
-    def is_read_only(self, value):
-        if not isinstance(self.parent, GroupOfValuesKey):
-            self._is_read_only = bool(value)
     
     @property
     def regex_validator(self):
@@ -4765,7 +4786,8 @@ class PlusButtonKey(WidgetKey):
     def __new__(cls, **kwargs):
         parent = kwargs.get('parent')
         if kwargs.get('is_ghost', False) or not parent \
-            or not isinstance(parent, GroupOfValuesKey):
+            or not isinstance(parent, GroupOfValuesKey) \
+            or parent.is_read_only:
             return
         return super().__new__(cls)
 
@@ -4906,9 +4928,10 @@ class TranslationButtonKey(PlusButtonKey):
     
     def __new__(cls, **kwargs):
         parent = kwargs.get('parent')
-        if kwargs.get('is_ghost', False) or not parent:
+        if kwargs.get('is_ghost', False) or not parent \
+            or parent.is_read_only:
             # inhibe la création de boutons fantômes ou sans
-            # parent
+            # parent ou dans un groupe en lecture seule
             return
         if not isinstance(parent, TranslationGroupKey):
             return PlusButtonKey.__call__(**kwargs)
