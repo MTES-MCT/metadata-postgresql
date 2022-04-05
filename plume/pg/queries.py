@@ -100,10 +100,10 @@ def query_plume_pg_check(min_version=None, max_version=None):
       et la version maximale (exclue) de PlumePg compatibles avec la
       version courante de Plume.
     * ``[2]`` est la version installée de PlumePg, ou ``None``
-      si l'extension n'est pas installée sur le serveur.
+      si l'extension n'est pas installée sur la base courante.
     * ``[3]`` est la version de référence de PlumePg disponible
       sur le serveur, ou ``None`` si l'extension n'est pas
-      disponible.
+      disponible sur le serveur.
     * ``[4]`` est une liste de schémas sur lesquels l'utilisateur
       ne dispose pas du privilège ``USAGE`` requis.
     * ``[5]`` est une liste de tables et vues sur lesquelles
