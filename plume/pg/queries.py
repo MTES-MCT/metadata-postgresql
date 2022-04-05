@@ -117,17 +117,17 @@ def query_plume_pg_check(min_version=None, max_version=None):
     min_version : str, optional
         La version minimale de PlumePg compatible
         avec la version courante de Plume (incluse).
-        Elle doit être de la forme `'x.y.z'` où
-        `x`, `y` et `z` sont des entiers.
+        Elle doit être de la forme ``'x.y.z'`` où
+        ``x``, ``y`` et ``z`` sont des entiers.
     max_version : str, optional
         La version maximale de PlumePg compatible
         avec la version courante de Plume (exclue).
-        Elle doit être de la forme `'x.y.z'` où
-        `x`, `y` et `z` sont des entiers.
+        Elle doit être de la forme ``'x.y.z'`` où
+        ``x``, ``y`` et ``z`` sont des entiers.
         Si non précisée, elle est déduite du premier
         chiffre de la borne inférieure. Par exemple,
-        `'4.0.0'` serait la borne supérieure pour la
-        version de référence `'3.1.1'`.
+        ``'4.0.0'`` serait la borne supérieure pour la
+        version de référence ``'3.1.1'``.
     
     Returns
     -------
