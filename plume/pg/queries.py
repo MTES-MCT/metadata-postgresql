@@ -19,6 +19,7 @@ https://www.psycopg.org
 
 """
 
+import re
 from psycopg2 import sql
 from psycopg2.extras import Json
 
@@ -77,6 +78,127 @@ def query_exists_extension():
             WHERE name = %s
                 AND installed_version IS NOT NULL
         """)
+
+def query_plume_pg_check(min_version=None, max_version=None):
+    """Requête qui vérifie qu'une version compatible de PlumePg est installée sur la base cible.
+    
+    Elle s'assure aussi que l'utilisateur dispose des
+    privilèges nécessaires sur les objets de PlumePg.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_plume_pg_check(min_version='0.1.0')
+        >>> cur.execute(*query)
+        >>> result = cur.fetchone()
+    
+    ``result`` est un tuple constitué des éléments suivants :
+    
+    * ``[0]`` est un booléen. S'il vaut ``True``, tout est en ordre
+      pour l'utilisation des modèles de PlumePg. Sinon, les autres
+      éléments du tuple précisent le problème.
+    * ``[1]`` est une liste rappelant la version minimale (incluse)
+      et la version maximale (exclue) de PlumePg compatibles avec la
+      version courante de Plume.
+    * ``[2]`` est la version installée de PlumePg, ou ``None``
+      si l'extension n'est pas installée sur le serveur.
+    * ``[3]`` est la version de référence de PlumePg disponible
+      sur le serveur, ou ``None`` si l'extension n'est pas
+      disponible.
+    * ``[4]`` est une liste de schémas sur lesquels l'utilisateur
+      ne dispose pas du privilège ``USAGE`` requis.
+    * ``[5]`` est une liste de tables et vues sur lesquelles
+      l'utilisateur ne dispose pas du privilège ``SELECT`` requis.
+      À noter que les droits sur les tables et vues ne sont 
+      contrôlés que si l'utilisateur dispose de tous les privilèges
+      nécessaires sur les schémas.
+    
+    Parameters
+    ----------
+    min_version : str, optional
+        La version minimale de PlumePg compatible
+        avec la version courante de Plume (incluse).
+        Elle doit être de la forme `'x.y.z'` où
+        `x`, `y` et `z` sont des entiers.
+    max_version : str, optional
+        La version maximale de PlumePg compatible
+        avec la version courante de Plume (exclue).
+        Elle doit être de la forme `'x.y.z'` où
+        `x`, `y` et `z` sont des entiers.
+        Si non précisée, elle est déduite du premier
+        chiffre de la borne inférieure. Par exemple,
+        `'4.0.0'` serait la borne supérieure pour la
+        version de référence `'3.1.1'`.
+    
+    Returns
+    -------
+    tuple(psycopg2.sql.SQL, tuple(str, str))
+        Une requête prête à être envoyée au serveur PostgreSQL
+        et son tuple de paramètres.
+    
+    """
+    if min_version:
+        if not re.match(r'^\d+[.]\d+[.]\d+$', min_version):
+            raise ValueError('La forme de la version' \
+                " minimum '{}' est incorrecte.".format(min_version))
+        l_min = [int(x) for x in min_version.split('.')]
+    else:
+        l_min = [0, 0, 0]
+    
+    if max_version:
+        if not re.match(r'^\d+[.]\d+[.]\d+$', max_version):
+            raise ValueError('La forme de la version' \
+                " maximum '{}' est incorrecte.".format(max_version))
+        l_max = [int(x) for x in max_version.split('.')]
+    elif min_version:
+        l_max = [l_min[0] + 1, 0, 0]
+        max_version = '.'.join(str(x) for x in l_max)
+    else:
+        l_max = [9999, 0, 0]
+        
+    return (sql.SQL("""
+        WITH check_plumepg AS (
+        SELECT
+            regexp_split_to_array(installed_version, '[.]')::int[] >= %(l_min)s
+                AND regexp_split_to_array(installed_version, '[.]')::int[] < %(l_max)s
+                AS plumepg_ok,
+            installed_version,
+            default_version
+            FROM pg_available_extensions WHERE name = 'plume_pg'
+        ),
+        check_schema AS (
+        SELECT
+            n_schema,
+            CASE WHEN plumepg_ok
+                THEN has_schema_privilege(n_schema, 'USAGE') END
+                AS schema_ok
+            FROM check_plumepg, unnest(ARRAY['z_plume'])
+                AS p_schemas (n_schema)
+        ),
+        check_relation AS (
+        SELECT
+            n_table,
+            CASE WHEN plumepg_ok and (SELECT bool_and(schema_ok) FROM check_schema)
+                THEN has_table_privilege(n_table, 'SELECT') END
+                AS table_ok
+            FROM check_plumepg, unnest(ARRAY['z_plume.meta_template',
+                'z_plume.meta_categorie', 'z_plume.meta_tab',
+                'z_plume.meta_template_categories',
+                'z_plume.meta_template_categories_full'])
+                AS p_tables (n_table)
+        )
+        SELECT
+            coalesce(plumepg_ok AND bool_and(schema_ok) AND bool_and(table_ok), False),
+            ARRAY[%(min_version)s, %(max_version)s],
+            installed_version,
+            default_version,
+            coalesce(array_agg(DISTINCT n_schema ORDER BY n_schema)
+                FILTER (WHERE NOT schema_ok), ARRAY[]::text[]),
+            coalesce(array_agg(DISTINCT n_table ORDER BY n_table)
+                FILTER (WHERE NOT table_ok), ARRAY[]::text[])
+            FROM check_plumepg, check_relation, check_schema
+            GROUP BY plumepg_ok, installed_version, default_version
+        """), {'min_version': min_version, 'l_min': l_min,
+            'max_version': max_version, 'l_max': l_max})
 
 def query_get_relation_kind(schema_name, table_name):
     """Requête qui récupère le type d'une relation PostgreSQL.
