@@ -20,7 +20,7 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
     query_list_templates, query_get_categories, query_template_tabs, \
     query_get_columns, query_update_column_comment, query_update_columns_comments, \
     query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
-    query_get_geom_centroid, query_evaluate_local_templates
+    query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check
 from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.utils import data_from_file, abspath
@@ -663,6 +663,152 @@ class QueriesTestCase(unittest.TestCase):
                 # suppression de la table de test
         conn.close()
         self.assertListEqual(srid_list, [('EPSG', '2154'), ('EPSG', '4326')])
+
+    def test_query_plume_pg_check(self):
+        """Contrôle de la présence de PlumePg et de l'accès aux objets.
+        
+        Les tests sont réalisés avec la version 0.0.1
+        de PlumePg, qui doit donc être disponible sur
+        le serveur.
+        Il serait nécessaire de modifier cette version si
+        :py:func:`plume.pg.queries.query_plume_pg_check`
+        venait à contrôler les droits sur des objets qui
+        n'existaient pas dans cette version.
+        
+        """
+        # PlumePg installée, pas de spécification de version
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg VERSION '0.0.1'""")
+                query = query_plume_pg_check()
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertTrue(result[0])
+        self.assertListEqual(result[1], [None, None])
+        self.assertIsNotNone(result[2])
+        self.assertIsNotNone(result[3])
+        self.assertListEqual(result[4], [])
+        self.assertListEqual(result[5], [])
+        # PlumePg installée, avec spécification de version min
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_plume_pg_check(min_version='0.0.1')
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertTrue(result[0])
+        self.assertListEqual(result[1], ['0.0.1', '1.0.0'])
+        # PlumePg installée, avec spécification de versions min et max
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_plume_pg_check(min_version='0.0.1',
+                    max_version='2.0.1')
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertTrue(result[0])
+        self.assertListEqual(result[1], ['0.0.1', '2.0.1'])
+        # PlumePg installée, avec spécification de version max
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_plume_pg_check(max_version='2.0.1')
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertTrue(result[0])
+        self.assertListEqual(result[1], [None, '2.0.1'])
+        # PlumePg non installée
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_plume_pg_check()
+                cur.execute('DROP EXTENSION plume_pg')
+                cur.execute(*query)
+                result = cur.fetchone()
+                cur.execute("CREATE EXTENSION plume_pg VERSION '0.0.1'")
+        conn.close()
+        self.assertFalse(result[0])
+        self.assertIsNone(result[2])
+        self.assertIsNotNone(result[3])
+        self.assertListEqual(result[4], [])
+        self.assertListEqual(result[5], [])
+        # Non respect borne min
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_plume_pg_check(min_version='0.3.0')
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertFalse(result[0])
+        self.assertIsNotNone(result[2])
+        self.assertIsNotNone(result[3])
+        self.assertListEqual(result[4], [])
+        self.assertListEqual(result[5], [])
+        # Non respect borne max
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_plume_pg_check(max_version='0.0.1')
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertFalse(result[0])
+        self.assertIsNotNone(result[2])
+        self.assertIsNotNone(result[3])
+        self.assertListEqual(result[4], [])
+        self.assertListEqual(result[5], [])
+        # Droits manquants
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                q, p  = query_plume_pg_check()
+                cur.execute(psycopg2.sql.SQL('''
+                    CREATE ROLE g_plumepg_test ;
+                    GRANT SELECT ON ALL TABLES IN SCHEMA z_plume TO g_plumepg_test ;
+                    REVOKE SELECT ON z_plume.meta_tab FROM g_plumepg_test ;
+                    REVOKE SELECT ON z_plume.meta_template FROM g_plumepg_test ;
+                    SET ROLE g_plumepg_test ;
+                    {} ;
+                    ''').format(q), p)
+                result = cur.fetchone()
+                cur.execute(psycopg2.sql.SQL('''
+                    RESET ROLE ;
+                    GRANT USAGE ON SCHEMA z_plume TO g_plumepg_test ;
+                    SET ROLE g_plumepg_test ;
+                    {} ;
+                    ''').format(q), p)
+                result2 = cur.fetchone()
+                cur.execute('''
+                    RESET ROLE ;
+                    REVOKE SELECT ON ALL TABLES IN SCHEMA z_plume FROM g_plumepg_test ;
+                    REVOKE USAGE ON SCHEMA z_plume FROM g_plumepg_test ;
+                    DROP ROLE g_plumepg_test ;
+                    ''')
+        conn.close()
+        self.assertFalse(result[0])
+        self.assertFalse(result2[0])
+        self.assertIsNotNone(result[2])
+        self.assertIsNotNone(result2[2])
+        self.assertIsNotNone(result[3])
+        self.assertIsNotNone(result2[3])
+        self.assertListEqual(result[4], ['z_plume'])
+        self.assertListEqual(result2[4], [])
+        self.assertListEqual(result[5], [])
+        self.assertListEqual(result2[5], ['z_plume.meta_tab', 'z_plume.meta_template'])
+        
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg""")
+        conn.close()
 
 if __name__ == '__main__':
     unittest.main()
