@@ -1,5 +1,5 @@
 # extension plume_pg
-default_version = '0.0.1'
+default_version = '0.1.0'
 comment = 'PlumePg - Gestion des métadonnées locales.'
 superuser = false
 encoding = 'UTF8'
