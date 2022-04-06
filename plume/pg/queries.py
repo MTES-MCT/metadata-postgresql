@@ -25,6 +25,7 @@ from psycopg2.extras import Json
 
 from plume.rdf.exceptions import UnknownParameterValue
 from plume.rdf.namespaces import PLUME
+from plume.pg.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
 
 
 def query_is_relation_owner():
@@ -79,7 +80,8 @@ def query_exists_extension():
                 AND installed_version IS NOT NULL
         """)
 
-def query_plume_pg_check(min_version=None, max_version=None):
+def query_plume_pg_check(min_version=PLUME_PG_MIN_VERSION,
+    max_version=PLUME_PG_MAX_VERSION):
     """Requête qui vérifie qu'une version compatible de PlumePg est installée sur la base cible.
     
     Elle s'assure aussi que l'utilisateur dispose des
@@ -119,12 +121,17 @@ def query_plume_pg_check(min_version=None, max_version=None):
         avec la version courante de Plume (incluse).
         Elle doit être de la forme ``'x.y.z'`` où
         ``x``, ``y`` et ``z`` sont des entiers.
+        Par défaut, il s'agira de :py:const:`PLUME_PG_MIN_VERSION`.
+        Il est possible d'indiquer ``None`` lorsqu'il
+        n'y a pas de contrainte sur la version minimale.        
     max_version : str, optional
         La version maximale de PlumePg compatible
         avec la version courante de Plume (exclue).
         Elle doit être de la forme ``'x.y.z'`` où
         ``x``, ``y`` et ``z`` sont des entiers.
-        Si non précisée, elle est déduite du premier
+        Par défaut, il s'agira de :py:const:`PLUME_PG_MAX_VERSION`.
+        Il est possible d'indiquer ``None``, la version
+        maximale sera alors déduite du premier
         chiffre de la borne inférieure. Par exemple,
         ``'4.0.0'`` serait la borne supérieure pour la
         version de référence ``'3.1.1'``.
