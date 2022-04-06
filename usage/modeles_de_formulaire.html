@@ -222,6 +222,11 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#privileges-necessaires">
+     Privilèges nécessaires
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#creation-d-un-modele-de-formulaire">
      Création d’un modèle de formulaire
     </a>
@@ -341,6 +346,25 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_tab</span></code> liste des noms d’onglets de formulaires dans lesquels pourront être classées les catégories.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d’affichage spécifique à un modèle pour certaines catégories, qui remplaceront ceux de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>.</p></li>
 </ul>
+<section id="privileges-necessaires">
+<h3>Privilèges nécessaires<a class="headerlink" href="#privileges-necessaires" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour bénéficier des modèles de <em>PlumePg</em>, les rôles de connexion des utilisateurs de Plume doivent disposer des privilèges suivants :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">USAGE</span></code> sur le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SELECT</span></code> sur les tables et vues <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code>, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code>, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_tab</span></code>, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories_full</span></code> (ou plus généralement toutes les tables du schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>).</p></li>
+</ul>
+<p>Lorsqu’Asgard était installé sur la base au moment de l’installation de Plume, cette condition est remplie sous réserve que tous les rôles de connexion soient membres du rôle <code class="docutils literal notranslate"><span class="pre">g_consult</span></code>, car <code class="docutils literal notranslate"><span class="pre">g_consult</span></code> est automatiquement désigné comme lecteur du schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>. Cf. <a class="reference internal" href="gestion_plume_pg.html#cohabitation-avec-asgard"><span class="std std-doc">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></span></a> pour plus de détails.</p>
+<p>Sans Asgard, une solution simple consisterait à donner les droits suivants au pseudo-rôle <code class="docutils literal notranslate"><span class="pre">public</span></code> :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span><span class="w"> </span><span class="k">USAGE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">z_plume</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">z_plume</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>De plus, pour limiter les risques d’avoir à attribuer des droits supplémentaires si une mise à jour de <em>PlumePg</em> devait introduire de nouveaux objets, on pourrait définir des privilèges par défaut :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">role_proprietaire</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">z_plume</span><span class="w"> </span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p><em>Où <code class="docutils literal notranslate"><span class="pre">role_proprietaire</span></code> est le rôle propriétaire de l’extension.</em></p>
+</section>
 <section id="creation-d-un-modele-de-formulaire">
 <h3>Création d’un modèle de formulaire<a class="headerlink" href="#creation-d-un-modele-de-formulaire" title="Lien permanent vers ce titre">#</a></h3>
 <p>La table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code> comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>, qui lui tiendra lieu d’identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n’auront accès qu’à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.</p>
@@ -554,8 +578,13 @@
 </ul>
 <section id="presence-de-l-extension-plumepg">
 <h3>Présence de l’extension <em>PlumePg</em><a class="headerlink" href="#presence-de-l-extension-plumepg" title="Lien permanent vers ce titre">#</a></h3>
-<p>La première étape consiste à déterminer si l’extension <em>PlumePg</em> est installée sur la base d’où provient la table considérée.</p>
-<p>Pour le vérifier :</p>
+<p>La première étape consiste à déterminer :</p>
+<ul class="simple">
+<li><p>si l’extension <em>PlumePg</em> est installée sur la base d’où provient la table considérée ;</p></li>
+<li><p>si la version installée est compatible avec la version du plugin QGIS de l’utilisateur ;</p></li>
+<li><p>si l’utilisateur dispose bien des <a class="reference internal" href="#privileges-necessaires"><span class="std std-doc">privilèges requis</span></a> sur les objets de l’extension.</p></li>
+</ul>
+<p>Pour le vérifier, une seule requête :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -565,15 +594,52 @@
 <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
     
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">(),</span> <span class="p">(</span><span class="s1">&#39;plume_pg&#39;</span><span class="p">,))</span>
-        <span class="n">plume_pg_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">()</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
 
 <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 </pre></div>
 </div>
-<p>Si <code class="docutils literal notranslate"><span class="pre">plume_pg_exists</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, <em>PlumePg</em> est bien disponible. On pourra donc poursuivre avec les opérations suivantes.</p>
+<p>Si le premier élément du tuple <code class="docutils literal notranslate"><span class="pre">result</span></code> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>, toutes les conditions sont réunies pour utiliser les modèles définis par <em>PlumePg</em>. On pourra donc poursuivre avec les opérations décrites dans les parties suivantes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="o">...</span>
+
+</pre></div>
+</div>
 <p>Dans le cas contraire, on se reportera à la partie <a class="reference internal" href="#avec-les-modeles-stockes-en-local"><span class="std std-doc">Avec les modèles stockés en local</span></a>.</p>
+<p>Les autres éléments de <code class="docutils literal notranslate"><span class="pre">result</span></code> permettent de décrire plus précisément le problème :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">result[1]</span></code> est une liste de longueur 2 qui rappelle les versions de <em>PlumePg</em> compatibles avec la version du plugin QGIS dont dispose l’utilisateur. Concrètement, toutes les versions supérieures ou égales au premier élément de la liste et strictement inférieures au second sont considérées comme compatibles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result[2]</span></code> fournit la version de <em>PlumePg</em> installée sur la base cible. Si cet élément vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>, l’extension n’est pas installée sur la base.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result[3]</span></code> fournit la version de référence de <em>PlumePg</em> disponible sur le serveur. Si cet élément vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>, l’extension n’est pas disponible pour l’installation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result[4]</span></code> est une liste de schémas sur lesquels l’utilisateur ne dispose par du privilège <code class="docutils literal notranslate"><span class="pre">USAGE</span></code> requis. La liste est vide si l’extension n’est pas installée dans une version compatible ou si les droits sur les schémas sont suffisants.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result[5]</span></code> est une liste de tables et vues sur lesquels l’utilisateur ne dispose par du privilège <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> requis. La liste est vide si l’extension n’est pas installée dans une version compatible, si l’utilisateur ne dispose pas des droits requis sur les schémas, ou si les droits sur les tables sont suffisants.</p></li>
+</ul>
+<p>L’infobulle du <a class="reference internal" href="actions_generales.html#choix-de-la-trame-de-formulaire"><span class="std std-doc">bouton de sélection du modèle</span></a> pourrait expliquer pourquoi les modèles n’ont pas pu être chargés depuis la base. Le message serait alors construit par une suite de conditions similaire à celle-ci :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="n">pb</span> <span class="o">=</span> <span class="s2">&quot;L&#39;extension PlumePg n&#39;est pas disponible sur le serveur cible.&quot;</span>
+<span class="k">elif</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+    <span class="n">pb</span> <span class="o">=</span> <span class="s2">&quot;L&#39;extension PlumePg n&#39;est pas installée sur la base cible.&quot;</span>
+<span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="n">pb</span> <span class="o">=</span> <span class="s1">&#39;Votre rôle de connexion ne dispose pas du privilège &#39;</span> \
+        <span class="s1">&#39;SELECT sur </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="s1">&#39;la table&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;les tables&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+<span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>
+    <span class="n">pb</span> <span class="o">=</span> <span class="s1">&#39;Votre rôle de connexion ne dispose pas du privilège &#39;</span> \
+        <span class="s1">&#39;USAGE sur </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="s1">&#39;le schéma&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;les schémas&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">pb</span> <span class="o">=</span> <span class="s1">&#39;Votre version de Plume est incompatible avec PlumePg &lt; </span><span class="si">{}</span><span class="s1"> ou ≥ </span><span class="si">{}</span><span class="s1">&#39;</span> \
+        <span class="s1">&#39; (version base cible : PlumePg </span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+</pre></div>
+</div>
 </section>
 <section id="recuperation-de-la-liste-des-modeles">
 <h3>Récupération de la liste des modèles<a class="headerlink" href="#recuperation-de-la-liste-des-modeles" title="Lien permanent vers ce titre">#</a></h3>

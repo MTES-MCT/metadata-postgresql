@@ -783,7 +783,7 @@ condition qu’il spécifie est remplie.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_plume_pg_check">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_check" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.1.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1.0.0'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_check" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Requête qui vérifie qu’une version compatible de PlumePg est installée sur la base cible.</p>
 <p>Elle s’assure aussi que l’utilisateur dispose des
 privilèges nécessaires sur les objets de PlumePg.</p>
@@ -820,13 +820,18 @@ nécessaires sur les schémas.</p></li>
 <dt><strong>min_version</strong><span class="classifier">str, optional</span></dt><dd><p>La version minimale de PlumePg compatible
 avec la version courante de Plume (incluse).
 Elle doit être de la forme <code class="docutils literal notranslate"><span class="pre">'x.y.z'</span></code> où
-<code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> et <code class="docutils literal notranslate"><span class="pre">z</span></code> sont des entiers.</p>
+<code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> et <code class="docutils literal notranslate"><span class="pre">z</span></code> sont des entiers.
+Par défaut, il s’agira de <code class="xref py py-const docutils literal notranslate"><span class="pre">PLUME_PG_MIN_VERSION</span></code>.
+Il est possible d’indiquer <code class="docutils literal notranslate"><span class="pre">None</span></code> lorsqu’il
+n’y a pas de contrainte sur la version minimale.</p>
 </dd>
 <dt><strong>max_version</strong><span class="classifier">str, optional</span></dt><dd><p>La version maximale de PlumePg compatible
 avec la version courante de Plume (exclue).
 Elle doit être de la forme <code class="docutils literal notranslate"><span class="pre">'x.y.z'</span></code> où
 <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> et <code class="docutils literal notranslate"><span class="pre">z</span></code> sont des entiers.
-Si non précisée, elle est déduite du premier
+Par défaut, il s’agira de <code class="xref py py-const docutils literal notranslate"><span class="pre">PLUME_PG_MAX_VERSION</span></code>.
+Il est possible d’indiquer <code class="docutils literal notranslate"><span class="pre">None</span></code>, la version
+maximale sera alors déduite du premier
 chiffre de la borne inférieure. Par exemple,
 <code class="docutils literal notranslate"><span class="pre">'4.0.0'</span></code> serait la borne supérieure pour la
 version de référence <code class="docutils literal notranslate"><span class="pre">'3.1.1'</span></code>.</p>
