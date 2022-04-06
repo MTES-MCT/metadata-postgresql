@@ -344,6 +344,8 @@ class GeometryMapToolShow(QgsMapTool ):
             self.rubberBand.setColor(QColor(self.Dialog.geomColor))
             self.rubberBand.setFillColor(QColor(255, 0, 0, 0)) #For transparent
             self.rubberBand.show()
+            QApplication.restoreOverrideCursor() 
+            QApplication.restoreOverrideCursor() 
             
             #Zoom si case cochée dans personnalisation de l'interface
             if self.Dialog.geomZoom : 

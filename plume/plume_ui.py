@@ -86,6 +86,9 @@ class Ui_Dialog_plume(object):
         mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
         mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
         self.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
+        #-
+        #Management Click before open IHM 
+        self.layerBeforeClicked = (self.mDic_LH["layerBeforeClicked"], self.mDic_LH["layerBeforeClickedWho"]) # Couche mémorisée avant ouverture et de l'origine  
         # for geometry
         # liste des Paramétres UTILISATEURS
         bibli_plume.listUserParam(self)
@@ -113,14 +116,16 @@ class Ui_Dialog_plume(object):
         _iconSourcesInterrogation = _pathIcons + "/info.svg"
         _iconSourcesHelp          = _pathIcons + "/assistance.png"
         _iconSourcesAbout         = _pathIcons + "/about.png"
+        _iconSourcesVerrou        = _pathIcons + "/verrou.svg"
         # For menu contex QGroupBox
         self._iconSourcesCopy, self._iconSourcesPaste = _iconSourcesCopy, _iconSourcesPaste
         _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
         
-        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ]
+        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
-        Dialog.setWindowTitle("PLUME (Metadata storage in PostGreSQL)")
+        self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
+        Dialog.setWindowTitle(self.messWindowTitle)
         Dialog.setWindowModality(Qt.WindowModal)
         Dialog.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint) 
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
@@ -165,9 +170,12 @@ class Ui_Dialog_plume(object):
         # Window Versus Dock
         if self.ihm in ["dockTrue", "dockFalse"] :
            monDock = MONDOCK(self.Dialog)
+           self.monDock = monDock
         # Window Versus Dock
         #----
-        self.mode = "read"  #Intiialise les autres instances  
+        self.mode            = "read"  #Intiialise les autres instances  
+        self.verrouLayer     = False   #Verrouillage de la couche 
+        self.nameVerrouLayer = None    #Couche verrouillée 
         #----
         #=====================================================  
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
@@ -185,7 +193,16 @@ class Ui_Dialog_plume(object):
         #==========================
         #Instanciation des "shape, template, vocabulary, mode" 
         self.translation = bibli_plume.returnObjetTranslation(self)
-        #-
+
+        #==========================
+        #Management Click before open IHM 
+        if self.layerBeforeClicked[0] != "" : 
+           if self.layerBeforeClicked[1] == "qgis" : 
+              self.retrieveInfoLayerQgis(None)
+           elif self.layerBeforeClicked[1] == "postgres" : 
+              self.retrieveInfoLayerQgis(self.layerBeforeClicked[0])
+        #Management Click before open IHM 
+           
         self.displayToolBar(*self.listIconToolBar)
     #= Fin setupUi
 
@@ -199,6 +216,11 @@ class Ui_Dialog_plume(object):
         mItem = self.mMenuBarDialog.sender().objectName()
         #**********************
         if mItem == "Edition" :
+           #Interroge l'utilisateur si modifications
+           if self.mode == "edit" and self.zoneConfirmMessage :
+              if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
+                 if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_main", "Si vous poursuivez, les modifications non enregistrées seront perdues."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+        
            if self.mode == None or self.mode == "read" : 
               self.mode = "edit"
            elif self.mode == "edit" : 
@@ -211,6 +233,14 @@ class Ui_Dialog_plume(object):
            else :   
               self.metagraph     = self.oldMetagraph
            self.saveMetaGraph = False
+           # For mode Edit
+           if self.mode == "edit" : 
+              if self.nameVerrouLayer == None  : self.nameVerrouLayer = self.layer 
+              self.verrouLayer = True
+           else :
+              self.iface.setActiveLayer(self.nameVerrouLayer)
+              self.nameVerrouLayer = None 
+              self.verrouLayer = False
         #**********************
         elif mItem == "Save" :                                            
            bibli_plume.saveMetaIhm(self, self.schema, self.table) 
@@ -253,12 +283,17 @@ class Ui_Dialog_plume(object):
         #**********************
         elif mItem == "Traduction" :
            self.translation = (False if self.translation else True) 
+        elif mItem == "Verrouillage" :
+           self.verrouLayer = (False if self.verrouLayer else True) 
+           self.nameVerrouLayer = (self.layer if self.verrouLayer else None) 
+
         #**********************
         #*** commun
         if mItem in ["Edition", "Save", "Empty", "plumeImportFile", "Paste", "Traduction"] :
            bibli_plume.saveObjetTranslation(self.translation)
            self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
         #-
+        #self.verrouLayer = (True if self.mode == "Edit" else False) 
         self.displayToolBar(*self.listIconToolBar)
         return
     # == Gestion des actions de boutons de la barre de menu
@@ -435,8 +470,7 @@ class Ui_Dialog_plume(object):
         self.table   = None
         self.comment = None
         #Interaction avec le gestionnaire de couche de QGIS
-        #iface.layerTreeView().currentLayerChanged.connect(self.retrieveInfoLayerQgis)
-        iface.layerTreeView().clicked.connect(self.retrieveInfoLayerQgis)
+        iface.layerTreeView().clicked.connect(lambda : self.retrieveInfoLayerQgis(None))
                 
         # Interaction avec le navigateur de QGIS
         self.mNav1, self.mNav2 = 'Browser', 'Browser2' 
@@ -453,11 +487,21 @@ class Ui_Dialog_plume(object):
         return
 
     #---------------------------
-    def retrieveInfoLayerQgis(self) :
-        self.layer = iface.activeLayer()
+    def retrieveInfoLayerQgis(self, _layerBeforeClicked = None) :
+        #-
+        #Management Click before open IHM
+        if _layerBeforeClicked != None :  
+           self.layer = _layerBeforeClicked #Management Click before open IHM
+        else :    
+           if self.verrouLayer :
+              return
+           else :
+              self.layer = iface.activeLayer()
+        #-
         if self.layer:
            if self.layer.dataProvider().name() == 'postgres':
               self.getAllFromUri()
+              self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
               #--                                                                          
               if self.connectBaseOKorKO[0] :
                  self.afficheNoConnections("hide")
@@ -490,10 +534,15 @@ class Ui_Dialog_plume(object):
                  self.layerQgisBrowserOther = "QGIS"
                  #-
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+           else :
+              if not self.verrouLayer : self.initIhmNoConnection()
         return
 
     #---------------------------
     def retrieveInfoLayerBrowser(self, index):
+        # MONDOCK fermer Important
+        #if not self.Dialog.isVisible() : self.updateMetadata = None
+
         mNav = self.sender().objectName()
         # DL
         #issu code JD Lomenede
@@ -506,8 +555,14 @@ class Ui_Dialog_plume(object):
         #issu code JD Lomenede
         if isinstance(item, QgsLayerItem) :
            if self.ifVectorPostgres(item) :
-              self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
-              self.getAllFromUri()
+
+              if self.verrouLayer :
+                 return
+              else :
+                 self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
+                 self.getAllFromUri()
+                 self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
+              
               #--
               if self.connectBaseOKorKO[0] :
                  self.afficheNoConnections("hide")
@@ -540,6 +595,10 @@ class Ui_Dialog_plume(object):
                  self.layerQgisBrowserOther = "BROWSER"
                  #-
                  self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+           else :
+              if not self.verrouLayer : self.initIhmNoConnection()
+        else :
+           if not self.verrouLayer : self.initIhmNoConnection()
         return
 
     #---------------------------
@@ -563,6 +622,15 @@ class Ui_Dialog_plume(object):
 
     #----------------------
     def ifVectorPostgres(self, item) : return True if item.providerKey() == 'postgres' else False     
+
+    #----------------------
+    def returnSchemaTableGeom(self, mLayer) :
+        try :
+           uri = QgsDataSourceUri(self.layer.source())
+           _schema, _table, _geom = uri.schema(), uri.table(), uri.geometryColumn()
+        except : 
+           _schema, _table, _geom = "", "", ""
+        return (_schema, _table, _geom)
 
     #----------------------
     def ifLayerLoad(self, mLayer) :
@@ -608,7 +676,6 @@ class Ui_Dialog_plume(object):
 
     #==========================
     def closeEvent(self, event):
-
         try :
            if hasattr(self, 'mConnectEnCours') :
               self.mConnectEnCours.close()
@@ -660,7 +727,7 @@ class Ui_Dialog_plume(object):
         
     #==========================
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
+        Dialog.setWindowTitle(self.messWindowTitle)
 
     #==========================
     def clickColorDialog(self):
@@ -680,6 +747,32 @@ class Ui_Dialog_plume(object):
         d.exec_()
         return
         
+    #==========================
+    #Regeneration de l'IHML et de la barre d'icone comme à l'ouverture
+    def initIhmNoConnection(self) :
+        self.tabWidget.clear()
+        tab_widget_Onglet = QWidget()
+        tab_widget_Onglet.setObjectName("Informations")
+        labelTabOnglet = "Informations"
+        self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
+        #-
+        self.plumeEdit.setEnabled(False)
+        self.plumeSave.setEnabled(False)
+        self.plumeEmpty.setEnabled(False)
+        self.plumeExport.setEnabled(False)
+        self.plumeImport.setEnabled(False)
+        self.plumeCopy.setEnabled(False)
+        self.plumePaste.setEnabled(False)
+        self.plumeTemplate.setEnabled(False)
+        self.plumeTranslation.setEnabled(False)
+        self.plumeChoiceLang.setEnabled(False)
+        self.plumeVerrou.setEnabled(False)
+        self.afficheNoConnections("show")
+        self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
+        self.Dialog.setWindowTitle(self.messWindowTitle)   
+        if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitle)   
+        return
+
     #==========================
     def afficheNoConnections(self, action = ""):
         if action == "first" :
@@ -715,7 +808,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
-    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout):
+    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou):
         #-- Désactivation
         self.plumeEdit.setEnabled(False)
         self.plumeSave.setEnabled(False)
@@ -727,6 +820,7 @@ class Ui_Dialog_plume(object):
         self.plumeTemplate.setEnabled(False)
         self.plumeTranslation.setEnabled(False)
         self.plumeChoiceLang.setEnabled(False)
+        self.plumeVerrou.setEnabled(False)
 
         #====================
         #====================
@@ -775,6 +869,10 @@ class Ui_Dialog_plume(object):
            self.plumeTemplate.setEnabled(r)
            self.plumeTranslation.setEnabled(True if self.mode == "edit" else False)
            self.plumeChoiceLang.setEnabled(r)
+           
+           self.plumeVerrou.setEnabled(False if self.mode == "edit" else True)
+           if self.mode == "edit" : self.verrouLayer = True
+           
            #Mode edition avec les droits
            if r == True and self.mode == 'read' : 
               self.plumeSave.setEnabled(False)
@@ -789,6 +887,8 @@ class Ui_Dialog_plume(object):
                                         "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
            self.plumeTranslation.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if not self.translation else \
                                         "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
+           self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if not self.verrouLayer else \
+                                        "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
 
         #-ToolTip
         #-
@@ -799,7 +899,17 @@ class Ui_Dialog_plume(object):
         self.plumePaste.setToolTip(mTextToolTip)
         #-
         self.plumeTranslation.setToolTip(self.mTextToolTipOui if self.translation else self.mTextToolTipNon)   
-        
+        #-
+        if self.mode == "edit" :
+           self.plumeVerrou.setToolTip("")
+        else :   
+           self.plumeVerrou.setToolTip(self.mTextToolTipVerrouEdit if self.verrouLayer else self.mTextToolTipVerrouRead)
+        if self.nameVerrouLayer != None :   
+           self.messWindowTitleVerrou = "Plume | " + self.returnSchemaTableGeom(self.nameVerrouLayer)[0] + "." + self.returnSchemaTableGeom(self.nameVerrouLayer)[1] + " (" + self.returnSchemaTableGeom(self.nameVerrouLayer)[2] + ")"
+        else :    
+           self.messWindowTitleVerrou = ""
+        self.Dialog.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
+        if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
         return
 
     #==========================
@@ -862,10 +972,17 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setMenu(self._mObjetQMenuExport)
         return
     #==========================
-    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout ):
+    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ):
         #Menu Dialog                                                                                                                                                                
         self.mMenuBarDialog = QMenuBar(self)
-        self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 420, 20))
+        try : 
+           if hasattr(self, "monDock") :
+              self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, self.monDock.width() - 150, 20))
+           else:    
+              self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, self.Dialog.width() - 30, 20))
+        except :
+              pass 
+              self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 500, 20))
         _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
         #--
         mText = QtWidgets.QApplication.translate("plume_main", "Edition") 
@@ -1077,6 +1194,18 @@ class Ui_Dialog_plume(object):
         self.plumeInterrogation.setPopupMode(self.plumeInterrogation.MenuButtonPopup)
         self.plumeInterrogation.setMenu(_mObjetQMenu)
         #--QToolButton POINT ?                                               
+        #-- Verrouillage
+        mText = QtWidgets.QApplication.translate("plume_main", "Verrouillage") 
+        self.plumeVerrou = QtWidgets.QPushButton(self.mMenuBarDialog)
+        if self.toolBarDialog == "picture" : self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black;}")
+        self.plumeVerrou.setIcon(QIcon(_iconSourcesVerrou))
+        self.plumeVerrou.setObjectName(mText)
+        self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_main", 'Verrouiller l\'affichage sur la fiche de métadonnées courante.') 
+        self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_main", 'Déverrouiller l\'affichage.') 
+        self.plumeVerrou.setToolTip(self.mTextToolTipVerrouEdit)
+        self.plumeVerrou.setGeometry(QtCore.QRect(self.mMenuBarDialog.width() - 20,0,18,18))
+        self.plumeVerrou.clicked.connect(self.clickButtonsActions)
+        #-- Verrouillage
         #====================
         return
 
@@ -1100,7 +1229,7 @@ class MONDOCK(QDockWidget):
         dlg = QDockWidget()
         dlg.setObjectName("PLUME")
         dlg.setMinimumSize(420, 300)
-        dlg.setWindowTitle(QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
+        dlg.setWindowTitle(mDialog.messWindowTitle)
         mDialog.iface.addDockWidget(Qt.RightDockWidgetArea, dlg)
         dlg.setFloating(True if mDialog.ihm in ["dockTrue"] else False)
         dlg.setWidget(mDialog)
@@ -1108,12 +1237,8 @@ class MONDOCK(QDockWidget):
         mDialog.dlg = dlg
 
     #==========================
-    def event(self, event):
-        event.accept()
-        return
-
-    #==========================
     def closeEvent(self, event):
+
         try :
            if hasattr(self, 'mConnectEnCours') :
               self.mConnectEnCours.close()

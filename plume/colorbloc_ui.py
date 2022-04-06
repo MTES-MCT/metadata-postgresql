@@ -365,8 +365,8 @@ class Ui_Dialog_ColorBloc(object):
         """ 
         #------ 
         #hauteurLabel     = 40 
-        #------ 
-        ordonneeLabelSaisie += deltaLabelSaisie
+        #------   A voir plus tard
+        #ordonneeLabelSaisie += deltaLabelSaisie
         mLabelGeoideJSONText    = QtWidgets.QApplication.translate("colorbloc_ui", "GeoideJSON", None)
         mLabelGeoideJSONToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "GeoideJSONToolTip", None)
         mLabelGeoideJSON = QtWidgets.QLabel(self.tab_widget_User)
@@ -383,6 +383,10 @@ class Ui_Dialog_ColorBloc(object):
         mZoneGeoideJSON.setObjectName("mZoneGeoideJSON")
         mZoneGeoideJSON.setChecked(True if self.geoideJSON else False)
         mZoneGeoideJSON.setToolTip(mLabelGeoideJSONToolTip)
+        #------   A voir plus tard
+        mLabelGeoideJSON.setVisible(False)
+        mZoneGeoideJSON.setVisible(False)
+        #------   A voir plus tard
         #------ 
         deltaLabelSaisie = hauteurLabel + 8
         ordonneeLabelSaisie += deltaLabelSaisie
@@ -591,9 +595,27 @@ class Ui_Dialog_ColorBloc(object):
         mZoneTextEditRowSpan.setCursorPosition(0)
         mZoneTextEditRowSpan.setInputMask("99999")
         mZoneTextEditRowSpan.setToolTip(mLabelTextEditRowSpanToolTip)
+        #------ Affiche message box pour confirmation 
+        ordonneeLabelSaisie += deltaLabelSaisie
+        mLabelConfirmMessageText    = QtWidgets.QApplication.translate("colorbloc_ui", "ConfirmeMessage", None)
+        mLabelConfirmMessageToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "ConfirmeMessageToolTip", None)
+        mLabelConfirmMessage = QtWidgets.QLabel(self.tab_widget_User)
+        mLabelConfirmMessage.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mLabelConfirmMessage.setGeometry(QtCore.QRect(abscisseLabel, ordonneeLabelSaisie, largeurLabel,  hauteurLabel))
+        mLabelConfirmMessage.setObjectName("mLabelConfirmMessage")
+        mLabelConfirmMessage.setText(mLabelConfirmMessageText)
+        mLabelConfirmMessage.setToolTip(mLabelConfirmMessageToolTip)
+        mLabelConfirmMessage.setWordWrap(True)
+        #- 
+        mZoneConfirmMessage = QtWidgets.QCheckBox(self.tab_widget_User)
+        mZoneConfirmMessage.setStyleSheet("QCheckBox {  font-family:" + self.policeQGroupBox  +";}")
+        mZoneConfirmMessage.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, 18, hauteurSaisie))
+        mZoneConfirmMessage.setObjectName("mZoneConfirmMessage")
+        mZoneConfirmMessage.setChecked(True if self.zoneConfirmMessage else False)
+        mZoneConfirmMessage.setToolTip(mLabelConfirmMessageToolTip)
 
-        self.mZoneLangList, self.mZoneGeoideJSON, self.mZonePreferedTemplate, self.mZoneEnforcePreferedTemplate, self.mZoneReadHideBlank, self.mZoneReadHideUnlisted, self.mZoneEditHideUnlisted, self.mZonereadOnlyCurrentLanguage, self.mZoneEditOnlyCurrentLanguage, self.mZoneLabelLengthLimit, self.mZoneValueLengthLimit, self.mZoneTextEditRowSpan = \
-        mZoneLangList, mZoneGeoideJSON, mZonePreferedTemplate, mZoneEnforcePreferedTemplate, mZoneReadHideBlank, mZoneReadHideUnlisted, mZoneEditHideUnlisted, mZonereadOnlyCurrentLanguage, mZoneEditOnlyCurrentLanguage, mZoneLabelLengthLimit, mZoneValueLengthLimit, mZoneTextEditRowSpan 
+        self.mZoneLangList, self.mZoneGeoideJSON, self.mZonePreferedTemplate, self.mZoneEnforcePreferedTemplate, self.mZoneReadHideBlank, self.mZoneReadHideUnlisted, self.mZoneEditHideUnlisted, self.mZonereadOnlyCurrentLanguage, self.mZoneEditOnlyCurrentLanguage, self.mZoneLabelLengthLimit, self.mZoneValueLengthLimit, self.mZoneTextEditRowSpan, self.mZoneConfirmMessage = \
+        mZoneLangList, mZoneGeoideJSON, mZonePreferedTemplate, mZoneEnforcePreferedTemplate, mZoneReadHideBlank, mZoneReadHideUnlisted, mZoneEditHideUnlisted, mZonereadOnlyCurrentLanguage, mZoneEditOnlyCurrentLanguage, mZoneLabelLengthLimit, mZoneValueLengthLimit, mZoneTextEditRowSpan, mZoneConfirmMessage 
         return 
 
     #==========================         
@@ -692,7 +714,6 @@ class Ui_Dialog_ColorBloc(object):
         self.epaiQGroupBox    = self.mDic_LH["QGroupBoxEpaisseur"] #épaisseur QGroupBox
         self.lineQGroupBox    = self.mDic_LH["QGroupBoxLine"]    #trait QGroupBox
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]  #Police QGroupBox
-        #print( [  self.policeQGroupBox, self.lineQGroupBox, self.epaiQGroupBox, self.colorQGroupBox, self.labelBackGround ] )
         self.writeColorIconForVisu(_iconPlus, _iconMinus, _mListeIconsButtonPlusMinus) 
 
         #
@@ -1198,7 +1219,6 @@ class Ui_Dialog_ColorBloc(object):
                   mX3, mY3 = (ii * 10) + 230, (i * 30) + 10
                   if i > 0 : mY1, mY2, mY3 = mY1 - 30, mY2 - 30, mY3 - 30         
                   if i == compt : break 
-           print([mX1, mY1])       
            #
            mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
            mButton.setObjectName(mButtonName)
@@ -1278,7 +1298,6 @@ class Ui_Dialog_ColorBloc(object):
            mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
            mDicSaveColor["geomPoint"]     = self.geomPoint
            mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
-           print(mDicSaveColor)
            #======== for Geometry
            #-
            mSettings.beginGroup("PLUME")
@@ -1314,7 +1333,7 @@ class Ui_Dialog_ColorBloc(object):
            # liste des Paramétres UTILISATEURS
            mDicUserSettings = {}
            mDicUserSettings["langList"]                = self.mZoneLangList.text().split(",")
-           mDicUserSettings["geoideJSON"]              = "true" if self.mZoneGeoideJSON else "false"
+           mDicUserSettings["geoideJSON"]              = "true" if self.mZoneGeoideJSON.isChecked() else "false"
            #----
            mDicUserSettings["preferedTemplate"]        = self.mZonePreferedTemplate.text().strip()
            mDicUserSettings["enforcePreferedTemplate"] = ("true" if self.mZoneEnforcePreferedTemplate.checkState() == Qt.Checked else "false") if self.mZoneEnforcePreferedTemplate.checkState() != Qt.PartiallyChecked else ""
@@ -1327,6 +1346,7 @@ class Ui_Dialog_ColorBloc(object):
            mDicUserSettings["labelLengthLimit"]        = "" if self.mZoneLabelLengthLimit.text().strip(",") == "" else int(self.mZoneLabelLengthLimit.text())
            mDicUserSettings["valueLengthLimit"]        = "" if self.mZoneValueLengthLimit.text().strip(",") == "" else int(self.mZoneValueLengthLimit.text())
            mDicUserSettings["textEditRowSpan"]         = "" if self.mZoneTextEditRowSpan.text().strip(",")  == "" else int(self.mZoneTextEditRowSpan.text())
+           mDicUserSettings["zoneConfirmMessage"]      = "true" if self.mZoneConfirmMessage.isChecked() else "false"
            #----
            for key, value in mDicUserSettings.items():
                mSettings.setValue(key, value)
