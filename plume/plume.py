@@ -63,7 +63,9 @@ class MainPlugin(object):
      # Pour faire une action
      self.toolbar.addAction(self.plume2)
      #-
-     #self.initializingDisplay() ICI pour gérer les connections
+     #Management Click before open IHM 
+     self.initializingDisplay()
+     #Management Click before open IHM 
      #-
      #=========================
 
@@ -87,54 +89,29 @@ class MainPlugin(object):
               
   #==========================
   def returnLayerBeforeClickedQgis(self) :
-      layerBeforeClicked = ""
+      layerBeforeClicked = ("", "")
       self.layer = iface.activeLayer()
       if self.layer:
          if self.layer.dataProvider().name() == 'postgres':
-            layerBeforeClicked = self.layer
-         
-      self.saveinitializingDisplay("write", layerBeforeClicked)
+            layerBeforeClicked = (self.layer, "qgis")
+      bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
 
   #==========================
   def returnLayerBeforeClickedBrowser(self, index) :
-      layerBeforeClicked = ""
+      layerBeforeClicked = ("", "")
       mNav = self.iface.sender().objectName()
       self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
-      # DL
+
       self.modelDefaut = iface.browserModel() 
       self.model = iface.browserModel()
       item = self.model.dataItem(self.proxy_model.mapToSource(index))
-      #issu code JD Lomenede
+
       if isinstance(item, QgsLayerItem) :
          if item.providerKey() == 'postgres' :
             self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
-            layerBeforeClicked = self.layer
-      self.saveinitializingDisplay("write", layerBeforeClicked)
+            layerBeforeClicked = (self.layer, "postgres")
+      bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
 
-  #==========================
-  def saveinitializingDisplay(self, mAction, layerBeforeClicked = None) :
-      mSettings = QgsSettings()
-      mDicAutre = {}
-      mSettings.beginGroup("PLUME")
-      mSettings.beginGroup("Generale")
-      if mAction == "write" : 
-         mDicAutre["layerBeforeClicked"]  = layerBeforeClicked
-         for key, value in mDicAutre.items():
-             mSettings.setValue(key, value)
-      elif mAction == "read" : 
-         mDicAutre["layerBeforeClicked"]  = ""
-         for key, value in mDicAutre.items():
-             if not mSettings.contains(key) :
-                mSettings.setValue(key, value)
-             else :
-                mDicAutre[key] = mSettings.value(key)
-                  
-      mSettings.endGroup()
-      mSettings.endGroup()
-      print(mDicAutre)
-
-      return
-     
   #==========================
   def clickAbout(self):
       d = doabout.Dialog()

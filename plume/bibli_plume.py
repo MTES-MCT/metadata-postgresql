@@ -30,6 +30,37 @@ import datetime
 import os.path
 import time
 
+
+#==================================================
+def ifChangeValues(_dict):
+    # Retourne si valeur changer dans l'IHM
+    ret = False
+    for key, value in _dict.items() :
+        if _dict[key]['main widget type'] != None :
+           oldValue = _dict[key]['value'] 
+           if _dict[key]['main widget type'] in ("QLineEdit",) :
+               goodValue = _dict[key]['main widget'].text() if _dict[key]['main widget'].text() != "" else None 
+               if oldValue != (_dict[key]['main widget'].text() if _dict[key]['main widget'].text() != "" else None ) : ret = True
+           elif _dict[key]['main widget type'] in ("QTextEdit",) :
+               goodValue = _dict[key]['main widget'].toPlainText() if _dict[key]['main widget'].toPlainText() != "" else None 
+               if oldValue != (_dict[key]['main widget'].toPlainText() if _dict[key]['main widget'].toPlainText() != "" else None ) : ret = True
+           elif _dict[key]['main widget type'] in ("QComboBox",) :
+               goodValue = _dict[key]['main widget'].currentText() if _dict[key]['main widget'].currentText() != "" else None 
+               if oldValue != (_dict[key]['main widget'].currentText() if _dict[key]['main widget'].currentText() != "" else None) : ret = True
+           elif _dict[key]['main widget type'] in ("QDateEdit",) :
+               goodValue = _dict[key]['main widget'].date().toString("dd/MM/yyyy") if _dict[key]['main widget'].date().toString("dd/MM/yyyy") != "" else None 
+               if oldValue != (_dict[key]['main widget'].date().toString("dd/MM/yyyy") if _dict[key]['main widget'].date().toString("dd/MM/yyyy") != "" else None ) : ret = True
+           elif _dict[key]['main widget type'] in ("QDateTimeEdit",) :
+               goodValue = _dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") if _dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") != "" else None 
+               if oldValue != (_dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") if _dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") != "" else None ) : ret = True
+           elif _dict[key]['main widget type'] in ("QCheckBox",) :
+               goodValue = ("True" if _dict[key]['main widget'].checkState() == Qt.Checked else "False") if  _dict[key]['main widget'].checkState() != Qt.PartiallyChecked else None 
+               if oldValue != ("True" if _dict[key]['main widget'].checkState() == Qt.Checked else "False") if  _dict[key]['main widget'].checkState() != Qt.PartiallyChecked else None : ret = True
+           if ret :
+              #print([_dict[key]['main widget type'], oldValue, goodValue ])
+              break
+    return ret
+    
 #==================================================
 def listUserParam(self):
     # liste des Paramétres UTILISATEURS
@@ -47,8 +78,9 @@ def listUserParam(self):
     self.labelLengthLimit        = self.mDic_LH["labelLengthLimit"]                                       if ("labelLengthLimit"        in self.mDic_LH and self.mDic_LH["labelLengthLimit"] != "")        else None
     self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if ("valueLengthLimit"        in self.mDic_LH and self.mDic_LH["valueLengthLimit"] != "")        else None
     self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if ("textEditRowSpan"         in self.mDic_LH and self.mDic_LH["textEditRowSpan"] != "")         else None
+    self.zoneConfirmMessage      = (True if self.mDic_LH["zoneConfirmMessage"]      == "true" else False) if "zoneConfirmMessage"       in self.mDic_LH                                                    else True
+
     # liste des Paramétres UTILISATEURS
-    return 
     
 #==================================================
 def returnObjetMetagraph(self, old_description) : return old_description.metagraph
@@ -408,6 +440,32 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     return  
 
 #==================================================
+#Lecture du fichier ini pour click before open IHM
+#==================================================
+def saveinitializingDisplay(mAction, layerBeforeClicked = None) :
+    mSettings = QgsSettings()
+    mDicAutre = {}
+    mSettings.beginGroup("PLUME")
+    mSettings.beginGroup("Generale")
+    if mAction == "write" : 
+       mDicAutre["layerBeforeClicked"]     = layerBeforeClicked[0]
+       mDicAutre["layerBeforeClickedWho"]  = layerBeforeClicked[1]
+       for key, value in mDicAutre.items():
+           mSettings.setValue(key, value)
+    elif mAction == "read" : 
+       mDicAutre["layerBeforeClicked"]     = ""
+       mDicAutre["layerBeforeClickedWho"]  = ""
+       for key, value in mDicAutre.items():
+           if not mSettings.contains(key) :
+              mSettings.setValue(key, value)
+           else :
+              mDicAutre[key] = mSettings.value(key)
+                  
+    mSettings.endGroup()
+    mSettings.endGroup()
+    return
+
+#==================================================
 #Lecture du fichier ini pour dimensions Dialog
 #==================================================
 def returnAndSaveDialogParam(self, mAction):
@@ -427,11 +485,12 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautDisplayMessage = "dialogBox"
        valueDefautFileHelp  = "html"
        valueDefautFileHelpPdf   = "https://snum.scenari-community.org/Asgard/PDF/GuideAsgardManager"
-       valueDefautFileHelpHtml  = "https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"
+       valueDefautFileHelpHtml  = "https://snum.scenari-community.org/Plume/Documentation"
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "dockFalse"
        valueDefautToolBarDialog = "picture"
-       valueDefautLayerBeforeClicked = ""
+       valueDefautLayerBeforeClicked    = ""
+       valueDefautLayerBeforeClickedWho = ""
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
@@ -441,7 +500,9 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
-       mDicAutre["layerBeforeClicked"] = valueDefautLayerBeforeClicked
+       mDicAutre["layerBeforeClicked"]    = valueDefautLayerBeforeClicked
+       mDicAutre["layerBeforeClickedWho"] = valueDefautLayerBeforeClickedWho
+
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
               mSettings.setValue(key, value)
@@ -510,6 +571,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicUserSettings["labelLengthLimit"]        = ""
        mDicUserSettings["valueLengthLimit"]        = ""
        mDicUserSettings["textEditRowSpan"]         = ""
+       mDicUserSettings["zoneConfirmMessage"]      = "true"
        #----
        for key, value in mDicUserSettings.items():
            if not mSettings.contains(key) :
@@ -559,7 +621,7 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "version 0.3.2 bêta"
+def returnVersion() : return "v0.4 bêta"
 
 #==================================================
 #Execute Pdf 
