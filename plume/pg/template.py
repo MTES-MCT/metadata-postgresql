@@ -52,7 +52,7 @@ class TemplateDict:
             is_node, datatype, is_long_text, rowspan, \
             placeholder, input_mask, is_multiple, unilang, \
             is_mandatory, sources, geo_tools, compute, \
-            template_order, is_read_only, tab \
+            template_order, is_read_only, tab, compute_params \
             in sorted(categories, reverse=True):
             
             config = {
@@ -72,7 +72,8 @@ class TemplateDict:
                 'compute': compute,
                 'template_order': template_order,
                 'is_read_only': is_read_only,
-                'tab': tab
+                'tab': tab,
+                'compute_params': compute_params
                 }
             
             if template_order is not None:
