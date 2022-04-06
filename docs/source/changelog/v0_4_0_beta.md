@@ -1,8 +1,10 @@
-# Version 0.4.0 bêta
+# Version 0.4.0 bêta (*en cours de développement*)
 
 *Date de publication : à venir.*
 
 *Sur GitHub : à venir.*
+
+La version 0.4 apporte notamment plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.
 
 ## Verrouillage de l'affichage sur la fiche courante
 
@@ -18,9 +20,15 @@ Références : [issue #36](https://github.com/MTES-MCT/metadata-postgresql/issue
 
 ## Confirmation à la sortie du mode édition
 
-Lorsque l'utilisateur quitte le mode édition sans avoir préalablement sauvegardé ses modifications, Plume lui demande maintenant une confirmation.
+Lorsque l'utilisateur quitte le mode édition sans avoir préalablement sauvegardé ses modifications, Plume lui demande maintenant une confirmation. Un paramètre utilisateur permet de supprimer cette étape.
 
 Références : [issue #46](https://github.com/MTES-MCT/metadata-postgresql/issues/46).
+
+## Affichage des métadonnées de la couche sélectionnée au lancement de Plume
+
+Si l'utilisateur sélectionne une couche PostgreSQL dans l'explorateur ou le panneau des couches *puis* lance Plume, les métadonnées de cette couche sont maintenant immédiatement affichées. Auparavant, seules les couches sélectionnées après le lancement de Plume étaient prises en compte.
+
+Références : [issue #38](https://github.com/MTES-MCT/metadata-postgresql/issues/38).
 
 ## PlumePg v0.1.0
 
@@ -31,6 +39,8 @@ La version 0.1.0 de PlumePg complète le paramétrage du calcul automatique des 
 Les champs `compute` des tables `meta_categorie` et `meta_template_categories` admettent maintenant deux nouvelles valeurs, `empty` et `new`. Comme `auto`, ces mots-clés signalent à Plume que la métadonnée doit être calculée automatiquement à partir des informations disponibles sur le serveur PostgreSQL lors du chargement de la fiche de métadonnées. Toutefois, ils posent des conditions à cette action :
 - `empty` indique que le calcul automatique doit avoir lieu si et seulement si aucune valeur n'est encore renseignée pour la métadonnée considérée.
 - `new` signale que le calcul doit s'exécuter si et seulement si la fiche de métadonnées est vierge.
+
+Les tables `meta_categorie` et `meta_template_categories`, ainsi que la vue `meta_template_categories_full` présentent maintenant un champ supplémentaire de type `jsonb` qui permet de paramétrer la méthode de calcul des métadonnées définie pour la catégorie, lorsque la méthode le prévoit.
 
 ## Amélioration de la gestion des métadonnées en lecture seule
 
