@@ -192,6 +192,7 @@ CREATE TABLE z_plume.meta_categorie (
     geo_tools z_plume.meta_geo_tool[],
     compute z_plume.meta_compute[],
     template_order int,
+    compute_params jsonb,
     CONSTRAINT meta_categorie_origin_check CHECK (origin IN ('local', 'shared')),
     CONSTRAINT meta_categorie_rowspan_check CHECK (rowspan BETWEEN 1 AND 99)
     )
@@ -217,6 +218,7 @@ COMMENT ON COLUMN z_plume.meta_categorie.sources IS 'Pour une catégorie prenant
 COMMENT ON COLUMN z_plume.meta_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_categorie.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres.' ;
 
 
 -- Table: z_plume.meta_shared_categorie
@@ -247,6 +249,7 @@ COMMENT ON COLUMN z_plume.meta_shared_categorie.sources IS 'Pour une catégorie 
 COMMENT ON COLUMN z_plume.meta_shared_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Pour retirer toutes les fonctionnalités proposées par défaut pour la catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_shared_categorie.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_shared_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
+COMMENT ON COLUMN z_plume.meta_shared_categorie.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_shared_categorie'::regclass, '') ;
@@ -554,6 +557,7 @@ COMMENT ON COLUMN z_plume.meta_local_categorie.sources IS 'Pour une catégorie p
 COMMENT ON COLUMN z_plume.meta_local_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''.' ;
 COMMENT ON COLUMN z_plume.meta_local_categorie.compute IS 'Ignoré pour les catégories locales.' ;
 COMMENT ON COLUMN z_plume.meta_local_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
+COMMENT ON COLUMN z_plume.meta_local_categorie.compute_params IS 'Ignoré pour les catégories locales.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_local_categorie'::regclass, '') ;
@@ -662,7 +666,7 @@ SELECT pg_extension_config_dump('z_plume.meta_tab'::regclass, '') ;
 
 ---- 1.4 - ASSOCIATION DES CATEGORIES AUX MODELES ------
 
--- Table z_plume.meta_template_categories
+-- Table: z_plume.meta_template_categories
 
 CREATE TABLE z_plume.meta_template_categories (
     tplcat_id serial PRIMARY KEY,
@@ -686,6 +690,7 @@ CREATE TABLE z_plume.meta_template_categories (
     template_order int,
     is_read_only boolean,
     tab varchar(48),
+    compute_params jsonb,
     CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_label, shrcat_path, loccat_path),
     CONSTRAINT meta_template_categories_tpl_label_fkey FOREIGN KEY (tpl_label)
         REFERENCES z_plume.meta_template (tpl_label)
@@ -730,6 +735,7 @@ COMMENT ON COLUMN z_plume.meta_template_categories.compute IS 'Liste des fonctio
 COMMENT ON COLUMN z_plume.meta_template_categories.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.is_read_only IS 'True si la catégorie est en lecture seule.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle dans la présente table ou, à défaut, dans un onglet "Général".' ;
+COMMENT ON COLUMN z_plume.meta_template_categories.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 
 -- la table et la séquence sont marquées comme tables de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_template_categories'::regclass, '') ;
@@ -761,7 +767,8 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
         coalesce(tc.compute, c.compute) AS compute,
         coalesce(tc.template_order, c.template_order) AS template_order,
         tc.is_read_only,
-        tc.tab
+        tc.tab,
+        coalesce(tc.compute_params, c.compute_params) AS compute_params
         FROM z_plume.meta_template_categories AS tc
             LEFT JOIN z_plume.meta_categorie AS c
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
@@ -793,6 +800,7 @@ COMMENT ON COLUMN z_plume.meta_template_categories_full.compute IS 'Liste des fo
 COMMENT ON COLUMN z_plume.meta_template_categories_full.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Plume classe les catégories selon l''ordre spécifié par le présent modèle, puis selon l''ordre défini par le schéma des métadonnées communes.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.is_read_only IS 'True si la catégorie est en lecture seule.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, à défaut, dans un onglet "Général".' ;
+COMMENT ON COLUMN z_plume.meta_template_categories_full.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
 
 
 ------ 1.5 - IMPORT DE MODELES PRE-CONFIGURES -------
