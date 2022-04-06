@@ -441,7 +441,8 @@ def query_get_categories():
             compute::text[],
             template_order,
             is_read_only,
-            tab
+            tab,
+            compute_params
             FROM z_plume.meta_template_categories_full
             WHERE tpl_label = %s
         """)
