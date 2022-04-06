@@ -2652,9 +2652,12 @@ class GroupOfValuesKey(GroupKey):
         seront prises en compte : ``'show'``, ``'point'``, ``'linestring'``,
         ``'rectangle'``, ``'polygon'``, ``circle``, ``'bbox'``,
         ``'centroid'``. 
-    compute : list(str or rdflib.term.Literal)
+    compute : list(str or rdflib.term.Literal), optional
         Liste de modes de calcul disponibles pour le groupe. Seules les
-        valeurs `'manual'` et `'auto'` sont reconnues à ce stade.
+        valeurs `'manual'`, `'auto'`, `'empty'` et `'new'` sont reconnues
+        à ce stade.
+    compute_params : dict, optional
+        Paramètres à fournir à la méthode de calcul.
     
     Attributes
     ----------
@@ -2681,6 +2684,7 @@ class GroupOfValuesKey(GroupKey):
         self._regex_validator_flags = None
         self._geo_tools = None
         self._compute = None
+        self._compute_params = None
         
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -2700,6 +2704,7 @@ class GroupOfValuesKey(GroupKey):
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
         self.geo_tools = kwargs.get('geo_tools')
         self.compute = kwargs.get('compute')
+        self.compute_params = kwargs.get('compute_params')
     
     def _validate_parent(self, parent):
         return isinstance(parent, (GroupOfPropertiesKey, TabKey, RootKey))
@@ -3182,7 +3187,7 @@ class GroupOfValuesKey(GroupKey):
     
     @property
     def compute(self):
-        """list(str): Méthodes de calcul définies pour la clé.
+        """list(str): Modes de calcul définis pour la clé.
         
         Notes
         -----
@@ -3191,7 +3196,8 @@ class GroupOfValuesKey(GroupKey):
         celle-ci porte bien sur le groupe de valeurs.
         
         Il est permis de fournir en argument une liste de
-        ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
+        ``rdflib.term.Literal``, qui seront alors automatiquement
+        convertis.
 
         """
         return self._compute
@@ -3199,9 +3205,40 @@ class GroupOfValuesKey(GroupKey):
     @compute.setter
     def compute(self, value):
         if value:
-            l = ['manual', 'auto']
+            l = ['manual', 'auto', 'empty', 'new']
             value = [str(o) for o in value if str(o) in l]
         self._compute = value or []
+
+    @property
+    def compute_params(self):
+        """dict: Paramètres à fournir à la méthode de calcul.
+        
+        Notes
+        -----
+        Contrairement à beaucoup d'autre propriétés qui valent 
+        pour les clés du groupe et non pour le groupe lui-même,
+        celle-ci porte bien sur le groupe de valeurs.
+        
+        Les paramètres sont fournis sous la forme clé/valeur,
+        où la clé est une chaîne de caractères correspondant
+        au nom du paramètre.
+
+        """
+        return self._compute_params
+    
+    @compute_params.setter
+    def compute_params(self, value):
+        if isinstance(value, dict):
+            params = value.copy()
+            for p in params:
+                if not isinstance(p, str):
+                    del params[p]
+            if params:
+                self._compute_params = params
+            else:
+                self._compute_params = None
+        else:
+            self._compute_params = None
 
     def _hide_m(self, value, rec=False):
         super()._hide_m(value, rec=rec)
@@ -3226,7 +3263,7 @@ class GroupOfValuesKey(GroupKey):
             'sources', 'datatype', 'transform', 'placeholder', 'input_mask',
             'is_mandatory', 'is_read_only', 'regex_validator',
             'regex_validator_flags', 'with_minus_buttons', 'geo_tools',
-            'compute']
+            'compute', 'compute_params']
 
     @property
     def attr_to_copy(self):
@@ -3255,7 +3292,8 @@ class GroupOfValuesKey(GroupKey):
             'with_minus_buttons' : True, 'label': True, 'description': True,
             'placeholder': True, 'input_mask': True, 'is_mandatory': True,
             'is_read_only': True, 'regex_validator': True,
-            'regex_validator_flags': True, 'geo_tools': True, 'compute': True }
+            'regex_validator_flags': True, 'geo_tools': True, 'compute': True,
+            'compute_params': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
@@ -3732,9 +3770,11 @@ class ValueKey(ObjectKey):
         disponibles pour la clé. Seules les valeurs suivantes seront prises
         en compte : ``'show'``, ``'point'``, ``'linestring'``, ``'rectangle'``,
         ``'polygon'``, ``circle``, ``'bbox'``, ``'centroid'``.
-    compute : list(str or rdflib.term.Literal)
+    compute : list(str or rdflib.term.Literal), optional
         Liste de modes de calcul disponibles pour la clé. Seules les valeurs
-        `'manual'` et `'auto'` sont reconnues à ce stade.
+        `'manual'`, `'auto'`, `'empty'` et `'new'` sont reconnues à ce stade.
+    compute_params : dict, optional
+        Paramètres à fournir à la méthode de calcul.
     
     """
     
@@ -3764,7 +3804,8 @@ class ValueKey(ObjectKey):
         self._regex_validator = None
         self._regex_validator_flags = None
         self._geo_tools = None
-        self._compute = None        
+        self._compute = None
+        self._compute_params = None        
         self._value = None
         self._value_language = None
         self._value_source = None
@@ -3787,6 +3828,7 @@ class ValueKey(ObjectKey):
         self.regex_validator_flags = kwargs.get('regex_validator_flags')
         self.geo_tools = kwargs.get('geo_tools')
         self.compute = kwargs.get('compute')
+        self.compute_params = kwargs.get('compute_params')
         self.value = kwargs.get('value')
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
@@ -4280,7 +4322,7 @@ class ValueKey(ObjectKey):
     
     @property
     def compute(self):
-        """list(str): Méthodes de calcul définies pour la clé.
+        """list(str): Modes de calcul définis pour la clé.
         
         Notes
         -----
@@ -4298,11 +4340,43 @@ class ValueKey(ObjectKey):
     def compute(self, value):
         if not isinstance(self.parent, GroupOfValuesKey):
             if value:
-                l = ['manual', 'auto']
+                l = ['manual', 'auto', 'empty', 'new']
                 value = [str(o) for o in value if str(o) in l]
             self._compute = value or []
         else:
             self._compute = None
+    
+    @property
+    def compute_params(self):
+        """dict: Paramètres à fournir à la méthode de calcul.
+        
+        Notes
+        -----
+        Si la clé appartient à un groupe de valeurs, cette propriété
+        vaudra toujours ``None``.
+        
+        Les paramètres sont fournis sous la forme clé/valeur,
+        où la clé est une chaîne de caractères correspondant
+        au nom du paramètre.
+
+        """
+        if not isinstance(self.parent, GroupOfValuesKey):
+            return self._compute_params
+    
+    @compute_params.setter
+    def compute_params(self, value):
+        if not isinstance(self.parent, GroupOfValuesKey) \
+            and isinstance(value, dict):
+            params = value.copy()
+            for p in params:
+                if not isinstance(p, str):
+                    del params[p]
+            if params:
+                self._compute_params = params
+            else:
+                self._compute_params = None
+        else:
+            self._compute_params = None
     
     @property
     def value_language(self):
@@ -4585,7 +4659,7 @@ class ValueKey(ObjectKey):
             'input_mask', 'is_mandatory', 'is_read_only', 'regex_validator', 
             'regex_validator_flags', 'value_language', 'value_source',
             'do_not_save', 'is_long_text', 'transform', 'sources', 'independant_label',
-            'value_unit', 'geo_tools', 'compute']
+            'value_unit', 'geo_tools', 'compute', 'compute_params']
 
     @property
     def attr_to_copy(self):
@@ -4617,7 +4691,7 @@ class ValueKey(ObjectKey):
             'is_mandatory': True, 'is_read_only': True, 'regex_validator': True,
             'regex_validator_flags': True, 'is_long_text': True,
             'independant_label': True, 'value_unit': False, 'geo_tools': True,
-            'compute': True }
+            'compute': True, 'compute_params': True }
 
     def copy(self, parent=None, empty=True):
         """Renvoie une copie de la clé.
