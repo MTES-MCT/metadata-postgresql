@@ -682,7 +682,8 @@ class QueriesTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute("""DROP EXTENSION plume_pg ;
                     CREATE EXTENSION plume_pg VERSION '0.0.1'""")
-                query = query_plume_pg_check()
+                query = query_plume_pg_check(min_version=None,
+                    max_version=None)
                 cur.execute(*query)
                 result = cur.fetchone()
         conn.close()
@@ -717,7 +718,8 @@ class QueriesTestCase(unittest.TestCase):
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                query = query_plume_pg_check(max_version='2.0.1')
+                query = query_plume_pg_check(min_version=None,
+                    max_version='2.0.1')
                 cur.execute(*query)
                 result = cur.fetchone()
         conn.close()
@@ -742,7 +744,8 @@ class QueriesTestCase(unittest.TestCase):
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                query = query_plume_pg_check(min_version='0.3.0')
+                query = query_plume_pg_check(min_version='0.3.0',
+                    max_version=None)
                 cur.execute(*query)
                 result = cur.fetchone()
         conn.close()
@@ -755,7 +758,8 @@ class QueriesTestCase(unittest.TestCase):
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                query = query_plume_pg_check(max_version='0.0.1')
+                query = query_plume_pg_check(min_version=None,
+                    max_version='0.0.1')
                 cur.execute(*query)
                 result = cur.fetchone()
         conn.close()
@@ -768,7 +772,7 @@ class QueriesTestCase(unittest.TestCase):
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                q, p  = query_plume_pg_check()
+                q, p  = query_plume_pg_check(min_version=None, max_version=None)
                 cur.execute(psycopg2.sql.SQL('''
                     CREATE ROLE g_plumepg_test ;
                     GRANT SELECT ON ALL TABLES IN SCHEMA z_plume TO g_plumepg_test ;
@@ -803,12 +807,24 @@ class QueriesTestCase(unittest.TestCase):
         self.assertListEqual(result[5], [])
         self.assertListEqual(result2[5], ['z_plume.meta_tab', 'z_plume.meta_template'])
         
+        # PlumePg dans la version de référence,
+        # bornes issues de la configuration
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""DROP EXTENSION plume_pg ;
                     CREATE EXTENSION plume_pg""")
+                query = query_plume_pg_check()
+                cur.execute(*query)
+                result = cur.fetchone()
         conn.close()
+        self.assertTrue(result[0])
+        self.assertIsNotNone(result[1][0])
+        self.assertIsNotNone(result[1][1])
+        self.assertIsNotNone(result[2])
+        self.assertIsNotNone(result[3])
+        self.assertListEqual(result[4], [])
+        self.assertListEqual(result[5], [])
 
 if __name__ == '__main__':
     unittest.main()
