@@ -36,6 +36,33 @@ Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plum
 - `meta_tab` liste des noms d'onglets de formulaires dans lesquels pourront être classées les catégories.
 - `meta_template_categories` permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d'affichage spécifique à un modèle pour certaines catégories, qui remplaceront ceux de `meta_categorie`.
 
+### Privilèges nécessaires
+
+Pour bénéficier des modèles de *PlumePg*, les rôles de connexion des utilisateurs de Plume doivent disposer des privilèges suivants :
+- `USAGE` sur le schéma `z_plume` ;
+- `SELECT` sur les tables et vues `z_plume.meta_template`, `z_plume.meta_categorie`, `z_plume.meta_tab`, `z_plume.meta_template_categories` et `z_plume.meta_template_categories_full` (ou plus généralement toutes les tables du schéma `z_plume`).
+
+Lorsqu'Asgard était installé sur la base au moment de l'installation de Plume, cette condition est remplie sous réserve que tous les rôles de connexion soient membres du rôle `g_consult`, car `g_consult` est automatiquement désigné comme lecteur du schéma `z_plume`. Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plume_pg.md#cohabitation-avec-asgard) pour plus de détails.
+
+Sans Asgard, une solution simple consisterait à donner les droits suivants au pseudo-rôle `public` :
+
+```sql
+
+GRANT USAGE ON SCHEMA z_plume TO public ;
+GRANT SELECT ON ALL TABLES IN SCHEMA z_plume TO public ;
+
+```
+
+De plus, pour limiter les risques d'avoir à attribuer des droits supplémentaires si une mise à jour de *PlumePg* devait introduire de nouveaux objets, on pourrait définir des privilèges par défaut :
+
+```sql
+
+ALTER DEFAULT PRIVILEGES FOR ROLE role_proprietaire IN SCHEMA z_plume GRANT SELECT ON TABLES TO public ;
+
+```
+
+*Où `role_proprietaire` est le rôle propriétaire de l'extension.*
+
 ### Création d'un modèle de formulaire
 
 La table `z_plume.meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ `tpl_label`, qui lui tiendra lieu d'identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.
@@ -216,9 +243,12 @@ Soit :
 
 ### Présence de l'extension *PlumePg*
 
-La première étape consiste à déterminer si l'extension *PlumePg* est installée sur la base d'où provient la table considérée.
+La première étape consiste à déterminer :
+- si l'extension *PlumePg* est installée sur la base d'où provient la table considérée ;
+- si la version installée est compatible avec la version du plugin QGIS de l'utilisateur ;
+- si l'utilisateur dispose bien des [privilèges requis](#privilèges-nécessaires) sur les objets de l'extension.
 
-Pour le vérifier :
+Pour le vérifier, une seule requête :
 
 ```python
 
@@ -230,17 +260,55 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        cur.execute(queries.query_exists_extension(), ('plume_pg',))
-        plume_pg_exists = cur.fetchone()[0]
+        query = queries.query_exists_extension()
+        cur.execute(*query)
+        result = cur.fetchone()
 
 conn.close()
 
 ```
 
-Si `plume_pg_exists` vaut `True`, *PlumePg* est bien disponible. On pourra donc poursuivre avec les opérations suivantes.
+Si le premier élément du tuple `result` vaut `True`, toutes les conditions sont réunies pour utiliser les modèles définis par *PlumePg*. On pourra donc poursuivre avec les opérations décrites dans les parties suivantes.
+
+```python
+
+if result[0]:
+    ...
+
+```
 
 Dans le cas contraire, on se reportera à la partie [Avec les modèles stockés en local](#avec-les-modèles-stockés-en-local).
 
+Les autres éléments de `result` permettent de décrire plus précisément le problème :
+- `result[1]` est une liste de longueur 2 qui rappelle les versions de *PlumePg* compatibles avec la version du plugin QGIS dont dispose l'utilisateur. Concrètement, toutes les versions supérieures ou égales au premier élément de la liste et strictement inférieures au second sont considérées comme compatibles.
+- `result[2]` fournit la version de *PlumePg* installée sur la base cible. Si cet élément vaut `None`, l'extension n'est pas installée sur la base.
+- `result[3]` fournit la version de référence de *PlumePg* disponible sur le serveur. Si cet élément vaut `None`, l'extension n'est pas disponible pour l'installation.
+- `result[4]` est une liste de schémas sur lesquels l'utilisateur ne dispose par du privilège `USAGE` requis. La liste est vide si l'extension n'est pas installée dans une version compatible ou si les droits sur les schémas sont suffisants.
+- `result[5]` est une liste de tables et vues sur lesquels l'utilisateur ne dispose par du privilège `SELECT` requis. La liste est vide si l'extension n'est pas installée dans une version compatible, si l'utilisateur ne dispose pas des droits requis sur les schémas, ou si les droits sur les tables sont suffisants.
+
+L'infobulle du [bouton de sélection du modèle](./actions_generales.md#choix-de-la-trame-de-formulaire) pourrait expliquer pourquoi les modèles n'ont pas pu être chargés depuis la base. Le message serait alors construit par une suite de conditions similaire à celle-ci :
+
+```python
+
+if not result[3]:
+    pb = "L'extension PlumePg n'est pas disponible sur le serveur cible."
+elif not result[2]:
+    pb = "L'extension PlumePg n'est pas installée sur la base cible."
+elif result[5]:
+    pb = 'Votre rôle de connexion ne dispose pas du privilège ' \
+        'SELECT sur {} {}.'.format(
+        'la table' if len(result[5]) == 1 else 'les tables',
+        ', '.join(result[5]))
+elif result[4]:
+    pb = 'Votre rôle de connexion ne dispose pas du privilège ' \
+        'USAGE sur {} {}.'.format(
+        'le schéma' if len(result[4]) == 1 else 'les schémas',
+        ', '.join(result[4]))
+else:
+    pb = 'Votre version de Plume est incompatible avec PlumePg < {} ou ≥ {}' \
+        ' (version base cible : PlumePg {}).'.format(result[1][0], result[1][1], result[2])
+
+```
 
 ### Récupération de la liste des modèles
 
