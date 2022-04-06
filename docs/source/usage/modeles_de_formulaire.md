@@ -260,7 +260,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        query = queries.query_exists_extension()
+        query = queries.query_plume_pg_check()
         cur.execute(*query)
         result = cur.fetchone()
 
@@ -284,7 +284,7 @@ Les autres éléments de `result` permettent de décrire plus précisément le p
 - `result[2]` fournit la version de *PlumePg* installée sur la base cible. Si cet élément vaut `None`, l'extension n'est pas installée sur la base.
 - `result[3]` fournit la version de référence de *PlumePg* disponible sur le serveur. Si cet élément vaut `None`, l'extension n'est pas disponible pour l'installation.
 - `result[4]` est une liste de schémas sur lesquels l'utilisateur ne dispose par du privilège `USAGE` requis. La liste est vide si l'extension n'est pas installée dans une version compatible ou si les droits sur les schémas sont suffisants.
-- `result[5]` est une liste de tables et vues sur lesquels l'utilisateur ne dispose par du privilège `SELECT` requis. La liste est vide si l'extension n'est pas installée dans une version compatible, si l'utilisateur ne dispose pas des droits requis sur les schémas, ou si les droits sur les tables sont suffisants.
+- `result[5]` est une liste de tables et vues sur lesquelles l'utilisateur ne dispose par du privilège `SELECT` requis. La liste est vide si l'extension n'est pas installée dans une version compatible, si l'utilisateur ne dispose pas des droits requis sur les schémas, ou si les droits sur les tables sont suffisants.
 
 L'infobulle du [bouton de sélection du modèle](./actions_generales.md#choix-de-la-trame-de-formulaire) pourrait expliquer pourquoi les modèles n'ont pas pu être chargés depuis la base. Le message serait alors construit par une suite de conditions similaire à celle-ci :
 
@@ -306,7 +306,8 @@ elif result[4]:
         ', '.join(result[4]))
 else:
     pb = 'Votre version de Plume est incompatible avec PlumePg < {} ou ≥ {}' \
-        ' (version base cible : PlumePg {}).'.format(result[1][0], result[1][1], result[2])
+        ' (version base cible : PlumePg {}).'.format(result[1][0],
+        result[1][1], result[2])
 
 ```
 
