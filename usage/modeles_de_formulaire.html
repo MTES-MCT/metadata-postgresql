@@ -594,7 +594,7 @@
 <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
     
-        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_plume_pg_check</span><span class="p">()</span>
         <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
 
@@ -616,7 +616,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">result[2]</span></code> fournit la version de <em>PlumePg</em> installée sur la base cible. Si cet élément vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>, l’extension n’est pas installée sur la base.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">result[3]</span></code> fournit la version de référence de <em>PlumePg</em> disponible sur le serveur. Si cet élément vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>, l’extension n’est pas disponible pour l’installation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">result[4]</span></code> est une liste de schémas sur lesquels l’utilisateur ne dispose par du privilège <code class="docutils literal notranslate"><span class="pre">USAGE</span></code> requis. La liste est vide si l’extension n’est pas installée dans une version compatible ou si les droits sur les schémas sont suffisants.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">result[5]</span></code> est une liste de tables et vues sur lesquels l’utilisateur ne dispose par du privilège <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> requis. La liste est vide si l’extension n’est pas installée dans une version compatible, si l’utilisateur ne dispose pas des droits requis sur les schémas, ou si les droits sur les tables sont suffisants.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result[5]</span></code> est une liste de tables et vues sur lesquelles l’utilisateur ne dispose par du privilège <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> requis. La liste est vide si l’extension n’est pas installée dans une version compatible, si l’utilisateur ne dispose pas des droits requis sur les schémas, ou si les droits sur les tables sont suffisants.</p></li>
 </ul>
 <p>L’infobulle du <a class="reference internal" href="actions_generales.html#choix-de-la-trame-de-formulaire"><span class="std std-doc">bouton de sélection du modèle</span></a> pourrait expliquer pourquoi les modèles n’ont pas pu être chargés depuis la base. Le message serait alors construit par une suite de conditions similaire à celle-ci :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -636,7 +636,8 @@
         <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">pb</span> <span class="o">=</span> <span class="s1">&#39;Votre version de Plume est incompatible avec PlumePg &lt; </span><span class="si">{}</span><span class="s1"> ou ≥ </span><span class="si">{}</span><span class="s1">&#39;</span> \
-        <span class="s1">&#39; (version base cible : PlumePg </span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="s1">&#39; (version base cible : PlumePg </span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
 </pre></div>
 </div>
