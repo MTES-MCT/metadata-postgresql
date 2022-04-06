@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Version 0.4.0 bêta &#8212; Documentation Plume 0.3.0-beta</title>
+    <title>Version 0.4.0 bêta (en cours de développement) &#8212; Documentation Plume 0.3.0-beta</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -33,6 +33,7 @@
     <link rel="shortcut icon" href="../_static/plume.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="prev" title="Version mineure 0.3.2 bêta" href="v0_3_2_beta.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="fr">
     
@@ -87,7 +88,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 nav-item">
+<li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="changelog.html">
   Notes de version
  </a>
@@ -127,7 +128,28 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="v0_3_1_beta.html">
+   Version mineure 0.3.1 bêta
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="v0_3_2_beta.html">
+   Version mineure 0.3.2 bêta
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Version 0.4.0 bêta (
+   <em>
+    en cours de développement
+   </em>
+   )
+  </a>
+ </li>
+</ul>
+
   </div>
 </nav>
               </div>
@@ -157,6 +179,11 @@
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#confirmation-a-la-sortie-du-mode-edition">
    Confirmation à la sortie du mode édition
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume">
+   Affichage des métadonnées de la couche sélectionnée au lancement de Plume
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -190,10 +217,11 @@
               
               <div>
                 
-  <section id="version-0-4-0-beta">
-<h1>Version 0.4.0 bêta<a class="headerlink" href="#version-0-4-0-beta" title="Lien permanent vers ce titre">#</a></h1>
+  <section id="version-0-4-0-beta-en-cours-de-developpement">
+<h1>Version 0.4.0 bêta (<em>en cours de développement</em>)<a class="headerlink" href="#version-0-4-0-beta-en-cours-de-developpement" title="Lien permanent vers ce titre">#</a></h1>
 <p><em>Date de publication : à venir.</em></p>
 <p><em>Sur GitHub : à venir.</em></p>
+<p>La version 0.4 apporte notamment plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.</p>
 <section id="verrouillage-de-l-affichage-sur-la-fiche-courante">
 <h2>Verrouillage de l’affichage sur la fiche courante<a class="headerlink" href="#verrouillage-de-l-affichage-sur-la-fiche-courante" title="Lien permanent vers ce titre">#</a></h2>
 <p>La version 0.4 ajoute à la barre d’outil de Plume un bouton en forme de cadenas qui permet de verrouiller l’affichage sur la fiche de métadonnées courante.</p>
@@ -204,8 +232,13 @@
 </section>
 <section id="confirmation-a-la-sortie-du-mode-edition">
 <h2>Confirmation à la sortie du mode édition<a class="headerlink" href="#confirmation-a-la-sortie-du-mode-edition" title="Lien permanent vers ce titre">#</a></h2>
-<p>Lorsque l’utilisateur quitte le mode édition sans avoir préalablement sauvegardé ses modifications, Plume lui demande maintenant une confirmation.</p>
+<p>Lorsque l’utilisateur quitte le mode édition sans avoir préalablement sauvegardé ses modifications, Plume lui demande maintenant une confirmation. Un paramètre utilisateur permet de supprimer cette étape.</p>
 <p>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/46">issue #46</a>.</p>
+</section>
+<section id="affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume">
+<h2>Affichage des métadonnées de la couche sélectionnée au lancement de Plume<a class="headerlink" href="#affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume" title="Lien permanent vers ce titre">#</a></h2>
+<p>Si l’utilisateur sélectionne une couche PostgreSQL dans l’explorateur ou le panneau des couches <em>puis</em> lance Plume, les métadonnées de cette couche sont maintenant immédiatement affichées. Auparavant, seules les couches sélectionnées après le lancement de Plume étaient prises en compte.</p>
+<p>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/38">issue #38</a>.</p>
 </section>
 <section id="plumepg-v0-1-0">
 <h2>PlumePg v0.1.0<a class="headerlink" href="#plumepg-v0-1-0" title="Lien permanent vers ce titre">#</a></h2>
@@ -216,6 +249,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">empty</span></code> indique que le calcul automatique doit avoir lieu si et seulement si aucune valeur n’est encore renseignée pour la métadonnée considérée.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">new</span></code> signale que le calcul doit s’exécuter si et seulement si la fiche de métadonnées est vierge.</p></li>
 </ul>
+<p>Les tables <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>, ainsi que la vue <code class="docutils literal notranslate"><span class="pre">meta_template_categories_full</span></code> présentent maintenant un champ supplémentaire de type <code class="docutils literal notranslate"><span class="pre">jsonb</span></code> qui permet de paramétrer la méthode de calcul des métadonnées définie pour la catégorie, lorsque la méthode le prévoit.</p>
 </section>
 <section id="amelioration-de-la-gestion-des-metadonnees-en-lecture-seule">
 <h2>Amélioration de la gestion des métadonnées en lecture seule<a class="headerlink" href="#amelioration-de-la-gestion-des-metadonnees-en-lecture-seule" title="Lien permanent vers ce titre">#</a></h2>
@@ -237,6 +271,13 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="v0_3_2_beta.html" title="précédent page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">précédent</p>
+            <p class="prev-next-title">Version mineure 0.3.2 bêta</p>
+        </div>
+    </a>
 </div>
               
           </main>

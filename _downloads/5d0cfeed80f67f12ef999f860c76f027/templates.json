@@ -21,6 +21,7 @@
                 null,
                 2,
                 null,
+                null,
                 null
             ],
             [
@@ -42,6 +43,7 @@
                 null,
                 null,
                 12,
+                null,
                 null,
                 null
             ],
@@ -65,6 +67,7 @@
                 null,
                 10,
                 null,
+                null,
                 null
             ],
             [
@@ -86,6 +89,7 @@
                 null,
                 null,
                 1,
+                null,
                 null,
                 null
             ],
@@ -109,6 +113,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -130,6 +135,7 @@
                 null,
                 null,
                 0,
+                null,
                 null,
                 null
             ],
@@ -153,6 +159,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ]
         ],
@@ -162,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-03-07 à 12:59:35."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-04-06 à 18:41:20."
         ]
     },
     "Classique": {
@@ -187,6 +194,7 @@
                 null,
                 21,
                 null,
+                null,
                 null
             ],
             [
@@ -208,6 +216,7 @@
                 null,
                 null,
                 40,
+                null,
                 null,
                 null
             ],
@@ -231,6 +240,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -252,6 +262,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -275,6 +286,7 @@
                 null,
                 3,
                 null,
+                null,
                 null
             ],
             [
@@ -296,6 +308,7 @@
                 null,
                 null,
                 4,
+                null,
                 null,
                 null
             ],
@@ -319,6 +332,7 @@
                 null,
                 5,
                 null,
+                null,
                 null
             ],
             [
@@ -340,6 +354,7 @@
                 null,
                 null,
                 6,
+                null,
                 null,
                 null
             ],
@@ -363,6 +378,7 @@
                 null,
                 60,
                 null,
+                null,
                 null
             ],
             [
@@ -384,6 +400,7 @@
                 null,
                 null,
                 24,
+                null,
                 null,
                 null
             ],
@@ -409,6 +426,7 @@
                 null,
                 null,
                 4,
+                null,
                 null,
                 null
             ],
@@ -436,6 +454,7 @@
                 null,
                 30,
                 null,
+                null,
                 null
             ],
             [
@@ -457,6 +476,7 @@
                 null,
                 null,
                 1,
+                null,
                 null,
                 null
             ],
@@ -483,6 +503,7 @@
                 null,
                 14,
                 null,
+                null,
                 null
             ],
             [
@@ -507,6 +528,7 @@
                 null,
                 22,
                 null,
+                null,
                 null
             ],
             [
@@ -528,6 +550,7 @@
                 null,
                 null,
                 4,
+                null,
                 null,
                 null
             ],
@@ -551,6 +574,7 @@
                 null,
                 5,
                 null,
+                null,
                 null
             ],
             [
@@ -572,6 +596,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -595,6 +620,7 @@
                 null,
                 8,
                 null,
+                null,
                 null
             ],
             [
@@ -616,6 +642,7 @@
                 null,
                 null,
                 3,
+                null,
                 null,
                 null
             ],
@@ -639,6 +666,7 @@
                 null,
                 11,
                 null,
+                null,
                 null
             ],
             [
@@ -660,6 +688,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -683,6 +712,7 @@
                 null,
                 83,
                 null,
+                null,
                 null
             ],
             [
@@ -704,6 +734,7 @@
                 null,
                 null,
                 12,
+                null,
                 null,
                 null
             ],
@@ -727,6 +758,7 @@
                 null,
                 20,
                 null,
+                null,
                 null
             ],
             [
@@ -748,6 +780,7 @@
                 null,
                 null,
                 0,
+                null,
                 null,
                 null
             ],
@@ -771,6 +804,7 @@
                 null,
                 9,
                 null,
+                null,
                 null
             ],
             [
@@ -792,6 +826,7 @@
                 null,
                 null,
                 1,
+                null,
                 null,
                 null
             ],
@@ -817,6 +852,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -838,6 +874,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -863,6 +900,7 @@
                 null,
                 5,
                 null,
+                null,
                 null
             ],
             [
@@ -884,6 +922,7 @@
                 null,
                 null,
                 10,
+                null,
                 null,
                 null
             ],
@@ -907,6 +946,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -928,6 +968,7 @@
                 null,
                 null,
                 0,
+                null,
                 null,
                 null
             ],
@@ -951,6 +992,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -972,6 +1014,7 @@
                 null,
                 null,
                 61,
+                null,
                 null,
                 null
             ],
@@ -995,6 +1038,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -1017,6 +1061,7 @@
                 null,
                 3,
                 null,
+                null,
                 null
             ]
         ],
@@ -1026,7 +1071,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-03-07 à 12:59:35."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-04-06 à 18:41:20."
         ]
     },
     "Donnée externe": {
@@ -1051,6 +1096,7 @@
                 null,
                 21,
                 null,
+                null,
                 null
             ],
             [
@@ -1072,6 +1118,7 @@
                 null,
                 null,
                 40,
+                null,
                 null,
                 null
             ],
@@ -1095,6 +1142,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -1116,6 +1164,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -1139,6 +1188,7 @@
                 null,
                 3,
                 null,
+                null,
                 null
             ],
             [
@@ -1160,6 +1210,7 @@
                 null,
                 null,
                 4,
+                null,
                 null,
                 null
             ],
@@ -1183,6 +1234,7 @@
                 null,
                 5,
                 null,
+                null,
                 null
             ],
             [
@@ -1204,6 +1256,7 @@
                 null,
                 null,
                 59,
+                null,
                 null,
                 null
             ],
@@ -1227,6 +1280,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -1248,6 +1302,7 @@
                 null,
                 null,
                 5,
+                null,
                 null,
                 null
             ],
@@ -1274,6 +1329,7 @@
                 null,
                 31,
                 null,
+                null,
                 null
             ],
             [
@@ -1295,6 +1351,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -1318,6 +1375,7 @@
                 null,
                 6,
                 null,
+                null,
                 null
             ],
             [
@@ -1339,6 +1397,7 @@
                 null,
                 null,
                 60,
+                null,
                 null,
                 null
             ],
@@ -1364,6 +1423,7 @@
                 null,
                 null,
                 4,
+                null,
                 null,
                 null
             ],
@@ -1391,6 +1451,7 @@
                 null,
                 30,
                 null,
+                null,
                 null
             ],
             [
@@ -1412,6 +1473,7 @@
                 null,
                 null,
                 1,
+                null,
                 null,
                 null
             ],
@@ -1438,6 +1500,7 @@
                 null,
                 14,
                 null,
+                null,
                 null
             ],
             [
@@ -1459,6 +1522,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -1482,6 +1546,7 @@
                 null,
                 12,
                 null,
+                null,
                 null
             ],
             [
@@ -1503,6 +1568,7 @@
                 null,
                 null,
                 20,
+                null,
                 null,
                 null
             ],
@@ -1526,6 +1592,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -1547,6 +1614,7 @@
                 null,
                 null,
                 41,
+                null,
                 null,
                 null
             ],
@@ -1570,6 +1638,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -1592,6 +1661,7 @@
                 null,
                 9,
                 null,
+                null,
                 null
             ],
             [
@@ -1613,6 +1683,7 @@
                 null,
                 null,
                 1,
+                null,
                 null,
                 null
             ],
@@ -1638,6 +1709,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -1659,6 +1731,7 @@
                 null,
                 null,
                 2,
+                null,
                 null,
                 null
             ],
@@ -1684,6 +1757,7 @@
                 null,
                 5,
                 null,
+                null,
                 null
             ],
             [
@@ -1705,6 +1779,7 @@
                 null,
                 null,
                 10,
+                null,
                 null,
                 null
             ],
@@ -1728,6 +1803,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -1749,6 +1825,7 @@
                 null,
                 null,
                 0,
+                null,
                 null,
                 null
             ],
@@ -1772,6 +1849,7 @@
                 null,
                 0,
                 null,
+                null,
                 null
             ],
             [
@@ -1793,6 +1871,7 @@
                 null,
                 null,
                 61,
+                null,
                 null,
                 null
             ],
@@ -1816,6 +1895,7 @@
                 null,
                 1,
                 null,
+                null,
                 null
             ],
             [
@@ -1838,6 +1918,7 @@
                 null,
                 3,
                 null,
+                null,
                 null
             ]
         ],
@@ -1851,7 +1932,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-03-07 à 12:59:35."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-04-06 à 18:41:20."
         ]
     }
 }

@@ -1115,8 +1115,11 @@ seront prises en compte : <code class="docutils literal notranslate"><span class
 <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>, <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">circle</span></code>, <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 </dd>
-<dt><strong>compute</strong><span class="classifier">list(str or rdflib.term.Literal)</span></dt><dd><p>Liste de modes de calcul disponibles pour le groupe. Seules les
-valeurs <cite>“manual”</cite> et <cite>“auto”</cite> sont reconnues à ce stade.</p>
+<dt><strong>compute</strong><span class="classifier">list(str or rdflib.term.Literal), optional</span></dt><dd><p>Liste de modes de calcul disponibles pour le groupe. Seules les
+valeurs <cite>“manual”</cite>, <cite>“auto”</cite>, <cite>“empty”</cite> et <cite>“new”</cite> sont reconnues
+à ce stade.</p>
+</dd>
+<dt><strong>compute_params</strong><span class="classifier">dict, optional</span></dt><dd><p>Paramètres à fournir à la méthode de calcul.</p>
 </dd>
 </dl>
 </dd>
@@ -1204,13 +1207,27 @@ ils requièrent un traitement spécifique.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.widgetkey.GroupOfValuesKey.compute">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute</span></span><a class="headerlink" href="#plume.rdf.widgetkey.GroupOfValuesKey.compute" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>list(str): Méthodes de calcul définies pour la clé.</p>
+<dd><p>list(str): Modes de calcul définis pour la clé.</p>
 <p class="rubric">Notes</p>
 <p>Contrairement à beaucoup d’autre propriétés qui valent 
 pour les clés du groupe et non pour le groupe lui-même,
 celle-ci porte bien sur le groupe de valeurs.</p>
 <p>Il est permis de fournir en argument une liste de
-<code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement convertis.</p>
+<code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement
+convertis.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.GroupOfValuesKey.compute_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_params</span></span><a class="headerlink" href="#plume.rdf.widgetkey.GroupOfValuesKey.compute_params" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>dict: Paramètres à fournir à la méthode de calcul.</p>
+<p class="rubric">Notes</p>
+<p>Contrairement à beaucoup d’autre propriétés qui valent 
+pour les clés du groupe et non pour le groupe lui-même,
+celle-ci porte bien sur le groupe de valeurs.</p>
+<p>Les paramètres sont fournis sous la forme clé/valeur,
+où la clé est une chaîne de caractères correspondant
+au nom du paramètre.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -3229,9 +3246,11 @@ toujours <code class="docutils literal notranslate"><span class="pre">None</span
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">columnspan</span></code></dt><dd><p>int: Nombre de colonnes de la grille occupées par le widget principal de la clé.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code></dt><dd><p>list(str): Méthodes de calcul définies pour la clé.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code></dt><dd><p>list(str): Modes de calcul définis pour la clé.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_button_placement</span></code></dt><dd><p>tuple(int): Placement du bouton de calcul dans la grille, le cas échéant.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_params</span></code></dt><dd><p>dict: Paramètres à fournir à la méthode de calcul.</p>
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.TranslationGroupKey.datatype" title="plume.rdf.widgetkey.TranslationGroupKey.datatype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datatype</span></code></a></dt><dd><p>rdflib.term.URIRef: Type de valeur commun à toutes les valeurs du groupe.</p>
 </dd>
@@ -3607,8 +3626,10 @@ disponibles pour la clé. Seules les valeurs suivantes seront prises
 en compte : <code class="docutils literal notranslate"><span class="pre">'show'</span></code>, <code class="docutils literal notranslate"><span class="pre">'point'</span></code>, <code class="docutils literal notranslate"><span class="pre">'linestring'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rectangle'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">'polygon'</span></code>, <code class="docutils literal notranslate"><span class="pre">circle</span></code>, <code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>, <code class="docutils literal notranslate"><span class="pre">'centroid'</span></code>.</p>
 </dd>
-<dt><strong>compute</strong><span class="classifier">list(str or rdflib.term.Literal)</span></dt><dd><p>Liste de modes de calcul disponibles pour la clé. Seules les valeurs
-<cite>“manual”</cite> et <cite>“auto”</cite> sont reconnues à ce stade.</p>
+<dt><strong>compute</strong><span class="classifier">list(str or rdflib.term.Literal), optional</span></dt><dd><p>Liste de modes de calcul disponibles pour la clé. Seules les valeurs
+<cite>“manual”</cite>, <cite>“auto”</cite>, <cite>“empty”</cite> et <cite>“new”</cite> sont reconnues à ce stade.</p>
+</dd>
+<dt><strong>compute_params</strong><span class="classifier">dict, optional</span></dt><dd><p>Paramètres à fournir à la méthode de calcul.</p>
 </dd>
 </dl>
 </dd>
@@ -3620,9 +3641,11 @@ en compte : <code class="docutils literal notranslate"><span class="pre">'show'<
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.available_languages" title="plume.rdf.widgetkey.ValueKey.available_languages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_languages</span></code></a></dt><dd><p>list(str): Renvoie la liste des langues disponibles pour la clé.</p>
 </dd>
-<dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.compute" title="plume.rdf.widgetkey.ValueKey.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code></a></dt><dd><p>list(str): Méthodes de calcul définies pour la clé.</p>
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.compute" title="plume.rdf.widgetkey.ValueKey.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code></a></dt><dd><p>list(str): Modes de calcul définis pour la clé.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_button_placement</span></code></dt><dd><p>tuple(int): Placement du bouton de calcul dans la grille, le cas échéant.</p>
+</dd>
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.compute_params" title="plume.rdf.widgetkey.ValueKey.compute_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_params</span></code></a></dt><dd><p>dict: Paramètres à fournir à la méthode de calcul.</p>
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.datatype" title="plume.rdf.widgetkey.ValueKey.datatype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datatype</span></code></a></dt><dd><p>rdflib.term.URIRef: Renvoie le type de la valeur portée par la clé.</p>
 </dd>
@@ -3900,12 +3923,24 @@ d’unité sur les widgets.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.widgetkey.ValueKey.compute">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute</span></span><a class="headerlink" href="#plume.rdf.widgetkey.ValueKey.compute" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>list(str): Méthodes de calcul définies pour la clé.</p>
+<dd><p>list(str): Modes de calcul définis pour la clé.</p>
 <p class="rubric">Notes</p>
 <p>Si la clé appartient à un groupe de valeurs, cette propriété
 vaudra toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>Il est permis de fournir en argument une liste de
 <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement convertis.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.ValueKey.compute_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_params</span></span><a class="headerlink" href="#plume.rdf.widgetkey.ValueKey.compute_params" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>dict: Paramètres à fournir à la méthode de calcul.</p>
+<p class="rubric">Notes</p>
+<p>Si la clé appartient à un groupe de valeurs, cette propriété
+vaudra toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>Les paramètres sont fournis sous la forme clé/valeur,
+où la clé est une chaîne de caractères correspondant
+au nom du paramètre.</p>
 </dd></dl>
 
 <dl class="py method">

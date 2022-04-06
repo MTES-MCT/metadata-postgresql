@@ -124,8 +124,8 @@ plume:LocationShape
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [
-		sh:path dcat:centroid ;
-		sh:name "Centroïde"@fr ;
+        sh:path dcat:centroid ;
+        sh:name "Centroïde"@fr ;
         sh:description "Localisant du centre géographique des données, au format textuel WKT."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype gsp:wktLiteral ;
@@ -167,9 +167,9 @@ Le plus souvent, une nouvelle option de configuration se manifestera dans *Plume
 
 Si le champ n'admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à `z_plume.meta_datatype`.
 
-Pour l'actualisation des informations relatives aux métadonnées communes incluses dans *PlumePg*, on se reportera à [Mise à jour des catégories communes dans les scripts de *PlumePg*](#mise-à-jour-des-catégories-communes-dans-les-scripts-de-plumepg). Il faudra néanmoins commencer par modifier les fonctions `_table_from_shape` et `query_from_shape` pour qu'elles prennent en compte le nouveau champ.
+Pour l'actualisation des informations relatives aux métadonnées communes incluses dans *PlumePg*, on se reportera à [Mise à jour des catégories communes dans les scripts de *PlumePg*](#mise-à-jour-des-catégories-communes-dans-les-scripts-de-plumepg). Il faudra néanmoins commencer par modifier les fonctions `admin.plume_pg._table_from_shape` et `admin.plume_pg.query_from_shape` pour qu'elles prennent en compte le nouveau champ.
 
-Dans `_table_from_shape`, il s'agira d'ajouter le champ au tuple `category`. Dans le cas général, `prop_dict.get('option')` suffit (où `option` est le nom python de l'option de configuration). S'il est nécessaire de caster la valeur, on utilisera la même syntaxe que pour `geo_tool` :
+Dans `admin.plume_pg._table_from_shape`, il s'agira d'ajouter le champ au tuple `category`. Dans le cas général, `prop_dict.get('option')` suffit (où `option` est le nom python de l'option de configuration). S'il est nécessaire de caster la valeur, on utilisera la même syntaxe que pour `geo_tool` :
 
 ```python
 
@@ -185,7 +185,7 @@ Dans `_table_from_shape`, il s'agira d'ajouter le champ au tuple `category`. Dan
 
 ```
 
-Dans `query_from_shape` on ajoute le champ supplémentaire à ceux qui apparaissent dans la commande `INSERT`, en prenant soin de respecter l'ordre du tuple `category` de `_table_from_shape`.
+Dans `admin.plume_pg.query_from_shape` on ajoute le champ supplémentaire à ceux qui apparaissent dans la commande `INSERT`, en prenant soin de respecter l'ordre du tuple `category` de `admin.plume_pg._table_from_shape`.
 
 ### Import des modèles de formulaires
 
