@@ -39,7 +39,7 @@
 -- schéma contenant les objets : z_plume
 --
 -- objets créés par le script :
--- - Function: z_plume.meta_regexp_matches(text, text)
+-- - Function: z_plume.meta_regexp_matches(text, text, text)
 --
 -- objets modifiés par le script :
 -- - Type: z_plume.meta_compute
@@ -459,7 +459,7 @@ $BODY$ ;
 COMMENT ON FUNCTION z_plume.meta_execute_sql_filter(text, text, text) IS 'Détermine si un filtre SQL est vérifié.' ;
 
 
--- Function: z_plume.meta_regexp_matches(text, text)
+-- Function: z_plume.meta_regexp_matches(text, text, text)
 
 CREATE OR REPLACE FUNCTION z_plume.meta_regexp_matches(
 		string text, pattern text, flags text DEFAULT NULL
