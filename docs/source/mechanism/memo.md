@@ -247,7 +247,7 @@ S'il était nécessaire d'avoir un comportement différent pour l'option consid�
 
 L'arbre des clés est la colonne vertébrale de Plume. Il porte la structure des formulaires de saisie, garantie leur cohérence et permet leur évolution dynamique selon les commandes de l'utilisateur.
 
-Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (`plume.rdf.widgetkey.ValueKey` et autres classes de clés héritant de [`plume.rdf.widgetkey.WidgetKey`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetkey.py)) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour [la clé de `config`](#désérialisation-des-modèles-de-formulaire) et/ou [le premier élément du tuple de `prop_map`](#désérialisation-du-schéma-des-métadonnées-communes), soit `geo_tools` dans le cas des fonctionnalités d'aide à la saisie des géométries.
+Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (`plume.rdf.widgetkey.ValueKey` et autres classes de clés héritant de [`plume.rdf.widgetkey.WidgetKey`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetkey.py)) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour [la clé de `config`](#désérialisation-des-modèles-de-formulaire) et/ou [le premier élément du tuple de `prop_map`](#désérialisation-du-schéma-des-métadonnées-communes), soit `'geo_tools'` dans le cas des fonctionnalités d'aide à la saisie des géométries.
 
 Ce que font les clés de cette information peut être très variable. Pour `geo_tools`, il s'agissait de définir un nouveau bouton annexe et ses caractéristiques, et cela a nécessité les opérations suivantes.
 
@@ -279,7 +279,11 @@ Classe `GroupOfValuesKey` (car cette propriété doit être identique pour toute
 
 ### Dictionnaire interne
 
-*TODO*
+Lorsque l'option de configuration est un élément d'entrée pour la génération du formulaire, il peut être nécessaire d'ajouter aux dictionnaires internes du dictionnaire de widgets une ou plusieurs clés portant cette information.
+
+Les noms de nouvelles clés sont à déclarer dans la liste `keys` de la fonction d'initialisation de la classe `plume.rdf.internaldict.InternalDict`. Chaque clé doit être décrite dans le *docstring* de la classe.
+
+Par convention, les noms des clés sont écrits en language naturel (ou presque). Ils doivent être explicites et utilisent des espaces comme séparateurs.
  
 ### Dictionnaire de widgets
 
@@ -287,7 +291,7 @@ Classe `GroupOfValuesKey` (car cette propriété doit être identique pour toute
 
 ### Génération du formulaire
 
-*TODO*
+La documentation technique, et particulièrement sa page [Création d'un nouveau widget](./creation_widgets.html), devra être complétée d'autant que de besoin pour expliquer comment la nouvelle option de configuration doit être considérée lors de la génération du formulaire.
 
 
 ## Modifier les modèles pré-configurés de *PlumePg*
