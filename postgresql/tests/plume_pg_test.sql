@@ -3,7 +3,7 @@
 -- PlumePg - Système de gestion des métadonnées locales
 -- > Script de recette
 --
--- Copyright République Française, 2020-2021.
+-- Copyright République Française, 2022.
 -- Secrétariat général du Ministère de la transition écologique, du
 -- Ministère de la cohésion des territoires et des relations avec les
 -- collectivités territoriales et du Ministère de la Mer.
@@ -41,8 +41,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t000()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
 
@@ -60,7 +60,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t000() IS 'Métadonnées (recette). TEST : .' ;
+COMMENT ON FUNCTION z_plume_recette.t000() IS 'PlumePg (recette). TEST : .' ;
 
 */
 
@@ -76,7 +76,7 @@ COMMENT ON FUNCTION z_plume_recette.t000() IS 'Métadonnées (recette). TEST : .
 
 CREATE SCHEMA IF NOT EXISTS z_plume_recette ;
 
-COMMENT ON SCHEMA z_plume_recette IS 'Métadonnées. Bibliothèque de fonctions pour la recette technique.' ;
+COMMENT ON SCHEMA z_plume_recette IS 'PlumePg. Bibliothèque de fonctions pour la recette technique.' ;
 
 
 ----------------------------------
@@ -129,7 +129,7 @@ BEGIN
 END
 $_$ ;
 
-COMMENT ON FUNCTION z_plume_recette.execute_recette() IS 'Métadonnées (recette). Exécution de la recette.' ;
+COMMENT ON FUNCTION z_plume_recette.execute_recette() IS 'PlumePg (recette). Exécution de la recette.' ;
 
 
 ---------------------------------------
@@ -143,8 +143,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t001()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
     DROP EXTENSION plume_pg ;
@@ -169,7 +169,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t001() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation.' ;
+COMMENT ON FUNCTION z_plume_recette.t001() IS 'PlumePg (recette). TEST : Désinstallation et ré-installation.' ;
 
 
 -- Function: z_plume_recette.t002()
@@ -179,11 +179,11 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t002()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
-   crea bool ;
-   lec text ;
-   prod text ;
+    e_mssg text ;
+    e_detl text ;
+    crea bool ;
+    lec text ;
+    prod text ;
 BEGIN
 
     DROP EXTENSION plume_pg ;
@@ -230,7 +230,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t002() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec ASGARD et par g_admin.' ;
+COMMENT ON FUNCTION z_plume_recette.t002() IS 'PlumePg (recette). TEST : Désinstallation et ré-installation avec ASGARD et par g_admin.' ;
 
 
 -- Function: z_plume_recette.t003()
@@ -240,8 +240,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t003()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
     DROP EXTENSION plume_pg ;
@@ -261,7 +261,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t003() IS 'Métadonnées (recette). TEST : Installation depuis une version antérieure.' ;
+COMMENT ON FUNCTION z_plume_recette.t003() IS 'PlumePg (recette). TEST : Installation depuis une version antérieure.' ;
 
 
 -- Function: z_plume_recette.t004()
@@ -271,9 +271,9 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t004()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
-   p text ;
+    e_mssg text ;
+    e_detl text ;
+    p text ;
 BEGIN
 
     INSERT INTO z_plume.meta_categorie (label)
@@ -300,7 +300,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t004() IS 'Métadonnées (recette). TEST : Génération des chemins des catégories locales.' ;
+COMMENT ON FUNCTION z_plume_recette.t004() IS 'PlumePg (recette). TEST : Génération des chemins des catégories locales.' ;
 
 
 -- Function: z_plume_recette.t005()
@@ -310,8 +310,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t005()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
     DROP EXTENSION plume_pg ;
@@ -341,7 +341,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t005() IS 'Métadonnées (recette). TEST : Désinstallation et ré-installation avec schéma z_plume pré-existant.' ;
+COMMENT ON FUNCTION z_plume_recette.t005() IS 'PlumePg (recette). TEST : Désinstallation et ré-installation avec schéma z_plume pré-existant.' ;
 
 
 -- Function: z_plume_recette.t006()
@@ -351,8 +351,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t006()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 	
 	-- mime une commande INSERT produite par un
@@ -390,7 +390,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t006() IS 'Métadonnées (recette). TEST : Restauration des modifications utilisateur dans meta_shared_categorie.' ;
+COMMENT ON FUNCTION z_plume_recette.t006() IS 'PlumePg (recette). TEST : Restauration des modifications utilisateur dans meta_shared_categorie.' ;
 
 
 -- Function: z_plume_recette.t007()
@@ -400,8 +400,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t007()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
 	-- sans schéma ni table :
@@ -497,7 +497,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t007() IS 'Métadonnées (recette). TEST : Exécution des filtres SQL par meta_execute_sql_filter.' ;
+COMMENT ON FUNCTION z_plume_recette.t007() IS 'PlumePg (recette). TEST : Exécution des filtres SQL par meta_execute_sql_filter.' ;
 
 
 
@@ -508,9 +508,9 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t008()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   res record ;
-   e_mssg text ;
-   e_detl text ;
+    res record ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
 	-- import d'un modèle
@@ -578,7 +578,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t008() IS 'Métadonnées (recette). TEST : Insertion des modèles pré-configurés avec meta_import_sample_template.' ;
+COMMENT ON FUNCTION z_plume_recette.t008() IS 'PlumePg (recette). TEST : Insertion des modèles pré-configurés avec meta_import_sample_template.' ;
 
 
 -- Function: z_plume_recette.t009()
@@ -588,8 +588,8 @@ CREATE OR REPLACE FUNCTION z_plume_recette.t009()
     LANGUAGE plpgsql
     AS $_$
 DECLARE
-   e_mssg text ;
-   e_detl text ;
+    e_mssg text ;
+    e_detl text ;
 BEGIN
 
     UPDATE z_plume.meta_categorie
@@ -620,5 +620,88 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t009() IS 'Métadonnées (recette). TEST : Cast automatique du type text[] en meta_geo_tool[] et meta_compute[].' ;
+COMMENT ON FUNCTION z_plume_recette.t009() IS 'PlumePg (recette). TEST : Cast automatique du type text[] en meta_geo_tool[] et meta_compute[].' ;
+
+
+-- Function: z_plume_recette.t010()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t010()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    f text ;
+    i int ;
+    e_mssg text ;
+    e_detl text ;
+BEGIN
+
+    -- expression régulière valide
+    SELECT string_agg(a, '')
+        INTO f
+        FROM z_plume.meta_regexp_matches('A..b-/c!', '([a-z])([-])?', 'gi') AS t(a) ;
+
+    ASSERT f = 'Ab-c', 'échec assertion #1' ;
+
+    SELECT count(*)
+        INTO i
+        FROM z_plume.meta_regexp_matches('A..b-/c!', '([a-z])([-])?', 'gi') ;
+
+    ASSERT i = 4, 'échec assertion #2' ;
+
+    -- expression régulière invalide (parenthèses déséquilibrées)
+    SELECT a
+        INTO f
+        FROM z_plume.meta_regexp_matches('A..b-/c!', '(([a-z])([-])?', 'gi') AS t(a) ;
+
+    ASSERT f IS NULL, 'échec assertion #3' ;
+    
+    -- pas de texte
+    SELECT a
+        INTO f
+        FROM z_plume.meta_regexp_matches(NULL, '([a-z])([-])?', 'gi') AS t(a) ;
+
+    ASSERT f IS NULL, 'échec assertion #4' ;
+    
+    -- flag inconnu
+    SELECT a
+        INTO f
+        FROM z_plume.meta_regexp_matches('', '([a-z])([-])?', 'z') AS t(a) ;
+
+    ASSERT f IS NULL, 'échec assertion #5' ;
+    
+    -- pas d'expression régulière
+    SELECT a
+        INTO f
+        FROM z_plume.meta_regexp_matches('A..b-/c!', '', 'gi') AS t(a) ;
+
+    ASSERT f IS NULL, 'échec assertion #6' ;
+    
+    SELECT a
+        INTO f
+        FROM z_plume.meta_regexp_matches('A..b-/c!', NULL, 'gi') AS t(a) ;
+
+    ASSERT f IS NULL, 'échec assertion #7' ;
+
+    -- expression régulière valide sans flag
+    SELECT string_agg(a, '')
+        INTO f
+        FROM z_plume.meta_regexp_matches('A..b-/c!', '([a-z])([-])?') AS t(a) ;
+
+    ASSERT f = 'b-', 'échec assertion #8' ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t010() IS 'PlumePg (recette). TEST : Extraction de fragments d''un texte avec meta_regexp_matches(text, text, text).' ;
 
