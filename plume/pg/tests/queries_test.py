@@ -20,7 +20,8 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
     query_list_templates, query_get_categories, query_template_tabs, \
     query_get_columns, query_update_column_comment, query_update_columns_comments, \
     query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
-    query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check
+    query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check, \
+    query_get_comment_fragments
 from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.utils import data_from_file, abspath
@@ -825,6 +826,51 @@ class QueriesTestCase(unittest.TestCase):
         self.assertIsNotNone(result[3])
         self.assertListEqual(result[4], [])
         self.assertListEqual(result[5], [])
+
+    def test_query_get_comment_fragments(self):
+        """Récupération d'un ou plusieurs fragments du descriptif d'une table.
+        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test () ;
+                    COMMENT ON TABLE z_plume.table_test IS 'Ma + table + est. une table'
+                    ''')
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='[a-z]+', flags='gi')
+                cur.execute(*query)
+                result1 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='^[^.]*')
+                cur.execute(*query)
+                result2 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='[a-z+', flags='g')
+                cur.execute(*query)
+                result3 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='[a-z]+', flags='gz')
+                cur.execute(*query)
+                result4 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='^[^.]*', truc='machin')
+                cur.execute(*query)
+                result5 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test')
+                cur.execute(*query)
+                result6 = cur.fetchall()
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertListEqual(result1, [('Ma',), ('table',), ('est',), ('une',), ('table',)])
+        self.assertListEqual(result2, [('Ma + table + est',)])
+        self.assertListEqual(result3, [])
+        self.assertListEqual(result4, [])
+        self.assertListEqual(result5, [('Ma + table + est',)])
+        self.assertListEqual(result6, [('Ma + table + est. une table',)])
 
 if __name__ == '__main__':
     unittest.main()
