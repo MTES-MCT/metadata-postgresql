@@ -8,7 +8,7 @@ import sys
 def manageLibrary(mBibli) :
     if mBibli == "RDFLIB" :
        try:
-           subprocess.check_call(['python3', '-m', 'pip', 'install', '--upgrade', 'pip'])
+           subprocess.check_call(['python3', '-m', 'pip', 'install', '--upgrade', '--retries 1', '--timeout 2', 'pip'])
        except :
            pass
            
