@@ -493,7 +493,7 @@
 <section id="arbre-des-cles">
 <h3>Arbre des clés<a class="headerlink" href="#arbre-des-cles" title="Lien permanent vers ce titre">#</a></h3>
 <p>L’arbre des clés est la colonne vertébrale de Plume. Il porte la structure des formulaires de saisie, garantie leur cohérence et permet leur évolution dynamique selon les commandes de l’utilisateur.</p>
-<p>Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code> et autres classes de clés héritant de <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetkey.py"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour <a class="reference internal" href="#deserialisation-des-modeles-de-formulaire"><span class="std std-doc">la clé de <code class="docutils literal notranslate"><span class="pre">config</span></code></span></a> et/ou <a class="reference internal" href="#deserialisation-du-schema-des-metadonnees-communes"><span class="std std-doc">le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code></span></a>, soit <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code> dans le cas des fonctionnalités d’aide à la saisie des géométries.</p>
+<p>Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code> et autres classes de clés héritant de <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetkey.py"><code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code></a>) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour <a class="reference internal" href="#deserialisation-des-modeles-de-formulaire"><span class="std std-doc">la clé de <code class="docutils literal notranslate"><span class="pre">config</span></code></span></a> et/ou <a class="reference internal" href="#deserialisation-du-schema-des-metadonnees-communes"><span class="std std-doc">le premier élément du tuple de <code class="docutils literal notranslate"><span class="pre">prop_map</span></code></span></a>, soit <code class="docutils literal notranslate"><span class="pre">'geo_tools'</span></code> dans le cas des fonctionnalités d’aide à la saisie des géométries.</p>
 <p>Ce que font les clés de cette information peut être très variable. Pour <code class="docutils literal notranslate"><span class="pre">geo_tools</span></code>, il s’agissait de définir un nouveau bouton annexe et ses caractéristiques, et cela a nécessité les opérations suivantes.</p>
 <p>Classe <code class="docutils literal notranslate"><span class="pre">WidgetKey</span></code> :</p>
 <ul class="simple">
@@ -527,7 +527,9 @@
 </section>
 <section id="dictionnaire-interne">
 <h3>Dictionnaire interne<a class="headerlink" href="#dictionnaire-interne" title="Lien permanent vers ce titre">#</a></h3>
-<p><em>TODO</em></p>
+<p>Lorsque l’option de configuration est un élément d’entrée pour la génération du formulaire, il peut être nécessaire d’ajouter aux dictionnaires internes du dictionnaire de widgets une ou plusieurs clés portant cette information.</p>
+<p>Les noms de nouvelles clés sont à déclarer dans la liste <code class="docutils literal notranslate"><span class="pre">keys</span></code> de la fonction d’initialisation de la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.internaldict.InternalDict</span></code>. Chaque clé doit être décrite dans le <em>docstring</em> de la classe.</p>
+<p>Par convention, les noms des clés sont écrits en language naturel (ou presque). Ils doivent être explicites et utilisent des espaces comme séparateurs.</p>
 </section>
 <section id="dictionnaire-de-widgets">
 <h3>Dictionnaire de widgets<a class="headerlink" href="#dictionnaire-de-widgets" title="Lien permanent vers ce titre">#</a></h3>
@@ -535,7 +537,7 @@
 </section>
 <section id="generation-du-formulaire">
 <h3>Génération du formulaire<a class="headerlink" href="#generation-du-formulaire" title="Lien permanent vers ce titre">#</a></h3>
-<p><em>TODO</em></p>
+<p>La documentation technique, et particulièrement sa page <span class="xref myst">Création d’un nouveau widget</span>, devra être complétée d’autant que de besoin pour expliquer comment la nouvelle option de configuration doit être considérée lors de la génération du formulaire.</p>
 </section>
 </section>
 <section id="modifier-les-modeles-pre-configures-de-plumepg">

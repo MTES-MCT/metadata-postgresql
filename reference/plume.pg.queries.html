@@ -486,6 +486,60 @@ créée par l’extension PlumePg.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_get_comment_fragments">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_comment_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_comment_fragments" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête de récupération d’une partie du descriptif PostgreSQL d’une table.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_comment_fragments</span><span class="p">(</span><span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">compute_params</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">compute_params</span></code> est le dictionnaire fourni par la clé
+<cite>“compute parameters”</cite> du dictionnaire interne associé à
+la clé courante du dictionnaire de widgets. Si spécifié par
+le modèle, il contiendra la valeur du paramètre <cite>regexp</cite>.</p>
+<p>La liste ainsi obtenue contient des tuples d’un élément, un
+pour chaque fragment du descriptif capturé par l’expression
+régulière. Si aucune expression régulière n’a été spécifiée,
+c’est tout le descriptif qui est renvoyé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>pattern</strong><span class="classifier">str, optional</span></dt><dd><p>Une expression régulière déterminant le ou les
+fragments du descriptif PostgreSQL à renvoyer.
+Si non spécifié, la requête récupèrera tout le
+descriptif. Si l’expression régulière est invalide
+(d’après les critères de PostgreSQL), la requête
+ne renverra rien.</p>
+</dd>
+<dt><strong>flags</strong><span class="classifier">str, optional</span></dt><dd><p>Paramètres associés à l’expression rationnelle.
+Si PostgreSQL ne les reconnaît pas, la requête
+ne renverra rien.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Paramètres supplémentaires ignorés.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(psycopg2.sql.SQL, tuple(str,))</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL
+et son tuple de paramètres.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction est référencée par le module
+<a class="reference internal" href="plume.pg.computer.html#module-plume.pg.computer" title="plume.pg.computer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.pg.computer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_geom_centroid">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_geom_centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_geom_centroid" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Requête de calcul côté serveur du centre du rectangle d’emprise d’une couche.</p>
@@ -660,14 +714,18 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_get_srid_list">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_srid_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_srid_list" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_get_srid_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_get_srid_list" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d’une relation.</p>
 <p>À utiliser comme suit :</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_srid_list</span><span class="p">(</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la relation&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_get_srid_list</span><span class="p">(</span><span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;nom de la relation&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">compute_params</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">srid_list</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">compute_params</span></code> est le dictionnaire fourni par la clé
+<cite>“compute parameters”</cite> du dictionnaire interne associé à
+la clé courante du dictionnaire de widgets.</p>
 <p>La liste ainsi obtenue contient des tuples dont le premier
 élément est l’identifiant de l’autorité qui référence le
 référentiel et le second élément est le code du référentiel
@@ -678,6 +736,8 @@ dans le registre de cette autorité.</p>
 <dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
 </dd>
 <dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la relation (table, vue…).</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Paramètres supplémentaires ignorés.</p>
 </dd>
 </dl>
 </dd>

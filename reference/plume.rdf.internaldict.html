@@ -480,13 +480,17 @@ proposer. La non nullité de cette clé emporte la création d’un bouton d’a
 à la saisie des géométries (<code class="docutils literal notranslate"><span class="pre">geo</span> <span class="pre">widget</span></code>) par lequel l’utilisateur accédera
 à ces fonctionnalités.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">has</span> <span class="pre">compute</span> <span class="pre">button</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si un bouton de calcul de la métadonnée doit être
-créé. Il sera alors référencé dans <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">widget</span></code>.  La méthode de calcul est
+créé. Il sera alors référencé dans <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">widget</span></code>. La méthode de calcul est
 fournie par la clé <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">auto</span> <span class="pre">compute</span></code> : <code class="docutils literal notranslate"><span class="pre">True</span></code> si la métadonnée doit être calculée automatiquement à
 la création du dictionnaire. La méthode de calcul est fournie par la clé
 <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">method</span></code> : un objet <code class="xref py py-class docutils literal notranslate"><span class="pre">plume.pg.computer.ComputeMethod</span></code> qui porte
 les informations nécessaires pour exécuter le calcul de la métadonnée.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">parameters</span></code> : un dictionnaire (clé-valeur) contenant les paramètres
+optionnels à fournir à la requête de calcul de la métadonnée. <code class="docutils literal notranslate"><span class="pre">None</span></code> pour une clé
+qui n’a pas de méthode de calcul. Il s’agira d’un dictionnaire vide s’il y a une
+méthode de calcul mais qu’aucun paramètre optionnel n’est spécifié.</p></li>
 </ul>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable table autosummary">
