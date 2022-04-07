@@ -50,22 +50,24 @@
 -- - Table: z_plume.meta_local_categorie
 -- - Table: z_plume.meta_template
 -- - Table: z_plume.meta_template_categories
--- - Function: z_plume.meta_execute_sql_filter(text, text, text)
 -- - View: z_plume.meta_template_categories_full
 -- - Function: z_plume.meta_import_sample_template(text)
+-- - Function: z_plume.meta_execute_sql_filter(text, text, text)
+-- - Function: z_plume.meta_regexp_matches(text, text, text)
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 /* 0 - SCHEMA z_plume
-   1 - MODELES DE FORMULAIRES */
+   1 - MODELES DE FORMULAIRES 
+   2 - FONCTIONS UTILITAIRES */
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
------------------------------------
+--------------------------------
 ------ 0 - SCHEMA z_plume ------
------------------------------------
+--------------------------------
 
 -- Schema: z_plume
 
@@ -485,23 +487,22 @@ CREATE OR REPLACE FUNCTION z_plume.meta_shared_categorie_before_insert()
 	RETURNS trigger
     LANGUAGE plpgsql
     AS $BODY$
-/* OBJET : Fonction exécutée par le trigger meta_shared_categorie_before_insert,
-qui supprime les lignes pré-existantes (même valeur de "path") faisant l'objet
-de commandes INSERT. Autrement dit, elle permet d'utiliser des commandes INSERT
-pour réaliser des UPDATE.
+/* Fonction exécutée par le trigger meta_shared_categorie_before_insert.
 
-Ne vaut que pour les catégories des métadonnées communes (les seules stockées
-dans z_plume.meta_shared_categorie).
+    Elle supprime les lignes pré-existantes (même valeur de "path") faisant l'objet
+    de commandes INSERT. Autrement dit, elle permet d'utiliser des commandes INSERT
+    pour réaliser des UPDATE.
 
-Cette fonction est nécessaire pour que l'extension metadata puisse initialiser
-la table avec les catégories partagées, et que les modifications faites par
-l'administrateur sur ces enregistrements puissent ensuite être préservées en cas
-de sauvegarde/restauration (table marquée comme table de configuration de
-l'extension).
+    Ne vaut que pour les catégories des métadonnées communes (les seules stockées
+    dans z_plume.meta_shared_categorie).
 
-CIBLE : z_plume.meta_shared_categorie.
-PORTEE : FOR EACH ROW.
-DECLENCHEMENT : BEFORE INSERT.*/
+    Cette fonction est nécessaire pour que l'extension PlumePg puisse initialiser
+    la table avec les catégories partagées, et que les modifications faites par
+    l'administrateur sur ces enregistrements puissent ensuite être préservées en cas
+    de sauvegarde/restauration (table marquée comme table de configuration de
+    l'extension).
+
+*/
 BEGIN
 	
 	DELETE FROM z_plume.meta_shared_categorie
@@ -597,55 +598,6 @@ COMMENT ON COLUMN z_plume.meta_template.comment IS 'Commentaire libre.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_template'::regclass, '') ;
-
-
--- Function: z_plume.meta_execute_sql_filter(text, text, text)
-
-CREATE OR REPLACE FUNCTION z_plume.meta_execute_sql_filter(
-		sql_filter text, schema_name text, table_name text
-		)
-	RETURNS boolean
-    LANGUAGE plpgsql
-    AS $BODY$
-/* OBJET : Détermine si un filtre SQL est vérifié.
-
-Le filtre peut faire référence au nom du schéma avec $1
-et au nom de la table avec $2.
-
-ARGUMENTS :
-- sql_filter : un filtre SQL exprimé sous la forme d'une
-chaîne de caractères ;
-- schema_name : le nom du schéma considéré ;
-- table_name : le nom de la table ou vue considérée.
-
-RESULTAT : True si la condition du filtre est vérifiée.
-Si le filtre n'est pas valide, la fonction renvoie NULL,
-avec un message d'alerte. S'il n'y a pas de filtre, la
-fonction renvoie NULL. Si le filtre est valide mais non
-vérifié, la fonction renvoie False.
-*/
-DECLARE
-    b boolean ;
-BEGIN
-
-	IF nullif(sql_filter, '') IS NULL
-	THEN
-		RETURN NULL ;
-	END IF ;
-
-	EXECUTE 'SELECT ' || sql_filter
-		INTO b
-		USING schema_name, coalesce(table_name, '') ;
-	RETURN b ;
-
-EXCEPTION WHEN OTHERS
-THEN
-	RAISE NOTICE 'Filtre invalide : %', sql_filter ;
-	RETURN NULL ;
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.meta_execute_sql_filter(text, text, text) IS 'Détermine si un filtre SQL est vérifié.' ;
 
 
 ---- 1.3 - TABLE DES ONGLETS ------
@@ -813,24 +765,30 @@ CREATE OR REPLACE FUNCTION z_plume.meta_import_sample_template(
 	RETURNS TABLE (label text, summary text)
     LANGUAGE plpgsql
     AS $BODY$
-/* OBJET : Importe l'un des modèles de formulaires pré-
-configurés (ou tous si l'argument n'est pas renseigné).
+/* Importe l'un des modèles de formulaires pré-configurés (ou tous si l'argument n'est pas renseigné).
 
-Réexécuter la fonction sur un modèle déjà répertorié aura
-pour effet de le réinitialiser.
+    Réexécuter la fonction sur un modèle déjà répertorié aura
+    pour effet de le réinitialiser.
+    
+    Si le nom de modèle fourni en argument est inconnu, la
+    fonction n'a aucun effet et renverra une table vide.
 
-ARGUMENTS :
-- [optionnel] tpl_label : nom du modèle à importer.
+    Parameters
+    ----------
+    tpl_label : text, optional
+        Nom du modèle à importer.
 
-RESULTAT :
-La fonction renvoie une table listant les modèles importés.
-- label : nom du modèle effectivement importé ;
-- summary : résumé des opérations réalisées. À ce stade,
-vaudra 'created' pour un modèle qui n'était pas encore
-répertorié et 'updated' pour un modèle déjà répertorié.
+    Returns
+    -------
+    table (label : text, summary : text)
+        La fonction renvoie une table listant les modèles
+        effectivement importés.
+        Le champ "label" contient le nom du modèle.
+        Le champ "summary" fournit un résumé des opérations
+        réalisées. À ce stade, il vaudra 'created' pour un modèle
+        qui n'était pas encore répertorié et 'updated' pour un
+        modèle déjà répertorié.
 
-Si le nom de modèle fourni en argument est inconnu, la
-fonction n'a aucun effet et renverra une table vide.
 */
 DECLARE
     tpl record ;
@@ -993,6 +951,131 @@ END
 $BODY$ ;
 
 COMMENT ON FUNCTION z_plume.meta_import_sample_template(text) IS 'Importe l''un des modèles de formulaires pré-configurés (ou tous si l''argument n''est pas renseigné).' ;
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+---------------------------------------
+------ 2 - FONCTIONS UTILITAIRES ------
+---------------------------------------
+
+-- Function: z_plume.meta_execute_sql_filter(text, text, text)
+
+CREATE OR REPLACE FUNCTION z_plume.meta_execute_sql_filter(
+		sql_filter text, schema_name text, table_name text
+		)
+	RETURNS boolean
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Détermine si un filtre SQL est vérifié.
+
+    Le filtre peut faire référence au nom du schéma avec $1
+    et au nom de la table avec $2.
+
+    Parameters
+    ----------
+    sql_filter : text
+        Un filtre SQL exprimé sous la forme d'une
+        chaîne de caractères.
+    schema_name : text
+        Le nom du schéma considéré.
+    table_name : text
+        Le nom de la table ou vue considérée.
+
+    Returns
+    -------
+    boolean
+        True si la condition du filtre est vérifiée.
+        Si le filtre n'est pas valide, la fonction renvoie NULL,
+        avec un message d'alerte. S'il n'y a pas de filtre, la
+        fonction renvoie NULL. Si le filtre est valide mais non
+        vérifié, la fonction renvoie False.
+    
+*/
+DECLARE
+    b boolean ;
+BEGIN
+
+	IF nullif(sql_filter, '') IS NULL
+	THEN
+		RETURN NULL ;
+	END IF ;
+
+	EXECUTE format('SELECT %s', sql_filter)
+		INTO b
+		USING schema_name, coalesce(table_name, '') ;
+	RETURN b ;
+
+EXCEPTION WHEN OTHERS
+THEN
+	RAISE NOTICE 'Filtre invalide : %', sql_filter ;
+	RETURN NULL ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.meta_execute_sql_filter(text, text, text) IS 'Détermine si un filtre SQL est vérifié.' ;
+
+
+-- Function: z_plume.meta_regexp_matches(text, text, text)
+
+CREATE OR REPLACE FUNCTION z_plume.meta_regexp_matches(
+		string text, pattern text, flags text DEFAULT NULL
+		)
+	RETURNS TABLE(fragment text)
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Exécute la fonction regexp_matches avec le contrôle d'erreur adéquat.
+
+    En particulier, elle renvoie une table vide (et un
+    message d'alerte) au lieu d'échouer si l'expression
+    régulière n'était pas valide.
+
+    Cette fonction a aussi pour effet notable d'éclater
+    les fragments capturés sur des lignes distinctes.
+
+    Parameters
+    ----------
+    string : text
+        Le texte dont on souhaite capturer un ou
+        plusieurs fragments.
+    pattern : text
+        L'expression régulière délimitant les
+        fragments.
+    flags : text, optional
+        Paramètres associés à l'expression régulière.
+
+    Returns
+    -------
+    table (fragment : text)
+        Une table avec un unique champ "fragment" de type
+        text et autant de lignes que de fragments de texte
+        extraits.
+        
+*/
+DECLARE
+    e_mssg text ;
+BEGIN
+
+	IF nullif(pattern, '') IS NULL OR nullif(string, '') IS NULL
+	THEN
+		RETURN ;
+	END IF ;
+
+    RETURN QUERY
+        EXECUTE 'WITH a AS (SELECT unnest(regexp_matches($1, $2, $3)) AS b)
+                    SELECT * FROM a WHERE b IS NOT NULL'
+        USING string, pattern, coalesce(flags, '') ;
+
+EXCEPTION WHEN OTHERS
+THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT ;
+	RAISE NOTICE '%', e_mssg ;
+	RETURN ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.meta_regexp_matches(text, text, text) IS 'Exécute la fonction regexp_matches avec le contrôle d''erreur adéquat' ;
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
