@@ -136,13 +136,17 @@ class InternalDict(dict):
       à la saisie des géométries (``geo widget``) par lequel l'utilisateur accédera
       à ces fonctionnalités.
     * ``has compute button`` : ``True`` si un bouton de calcul de la métadonnée doit être
-      créé. Il sera alors référencé dans ``compute widget``.  La méthode de calcul est
+      créé. Il sera alors référencé dans ``compute widget``. La méthode de calcul est
       fournie par la clé ``compute method``.
     * ``auto compute`` : ``True`` si la métadonnée doit être calculée automatiquement à
       la création du dictionnaire. La méthode de calcul est fournie par la clé
       ``compute method``.
     * ``compute method`` : un objet :py:class:`plume.pg.computer.ComputeMethod` qui porte
       les informations nécessaires pour exécuter le calcul de la métadonnée.
+    * ``compute parameters`` : un dictionnaire (clé-valeur) contenant les paramètres
+      optionnels à fournir à la requête de calcul de la métadonnée. ``None`` pour une clé
+      qui n'a pas de méthode de calcul. Il s'agira d'un dictionnaire vide s'il y a une
+      méthode de calcul mais qu'aucun paramètre optionnel n'est spécifié.
     
     """
     
@@ -163,7 +167,7 @@ class InternalDict(dict):
             'type validator', 'multiple sources', 'sources', 'current source',
             'thesaurus values', 'authorized languages', 'language value', 'units',
             'current unit', 'geo tools', 'has compute button', 'auto compute',
-            'compute method'
+            'compute method', 'compute parameters'
             ]
         self.update({ k:None for k in keys })
 
