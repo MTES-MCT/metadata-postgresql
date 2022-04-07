@@ -648,14 +648,19 @@ def query_get_geom_srid():
                 AND auth_srid IS NOT NULL
         """)
 
-def query_get_srid_list(schema_name, table_name):
+def query_get_srid_list(schema_name, table_name, **kwargs):
     """Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d'une relation.
     
     À utiliser comme suit :
     
-        >>> query = query_get_srid_list('nom du schéma', 'nom de la relation')
+        >>> query = query_get_srid_list(schema_name='nom du schéma',
+        ...     table_name='nom de la relation', **compute_params)
         >>> cur.execute(*query)
-        >>> srid_list = cur.fetchall()
+        >>> result = cur.fetchall()
+    
+    ``compute_params`` est le dictionnaire fourni par la clé
+    `'compute parameters'` du dictionnaire interne associé à
+    la clé courante du dictionnaire de widgets.
     
     La liste ainsi obtenue contient des tuples dont le premier
     élément est l'identifiant de l'autorité qui référence le
@@ -668,6 +673,8 @@ def query_get_srid_list(schema_name, table_name):
         Nom du schéma.
     table_name : str
         Nom de la relation (table, vue...).
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
     
     Returns
     -------
@@ -818,3 +825,79 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
             relation=sql.Identifier(schema_name, table_name),
             geom=sql.Identifier(geom_name)
             )
+
+def query_get_comment_fragments(schema_name, table_name, pattern=None,
+    flags=None, **kwargs):
+    """Requête de récupération d'une partie du descriptif PostgreSQL d'une table.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_get_comment_fragments(schema_name='nom du schéma',
+        ...     table_name='nom de la relation', **compute_params)
+        >>> cur.execute(*query)
+        >>> result = cur.fetchall()
+    
+    ``compute_params`` est le dictionnaire fourni par la clé
+    `'compute parameters'` du dictionnaire interne associé à
+    la clé courante du dictionnaire de widgets. Si spécifié par
+    le modèle, il contiendra la valeur du paramètre `regexp`.
+    
+    La liste ainsi obtenue contient des tuples d'un élément, un
+    pour chaque fragment du descriptif capturé par l'expression
+    régulière. Si aucune expression régulière n'a été spécifiée,
+    c'est tout le descriptif qui est renvoyé.    
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    pattern : str, optional
+        Une expression régulière déterminant le ou les
+        fragments du descriptif PostgreSQL à renvoyer.
+        Si non spécifié, la requête récupèrera tout le
+        descriptif. Si l'expression régulière est invalide
+        (d'après les critères de PostgreSQL), la requête
+        ne renverra rien.
+    flags : str, optional
+        Paramètres associés à l'expression rationnelle.
+        Si PostgreSQL ne les reconnaît pas, la requête
+        ne renverra rien.
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
+    
+    Returns
+    -------
+    tuple(psycopg2.sql.SQL, tuple(str,))
+        Une requête prête à être envoyée au serveur PostgreSQL
+        et son tuple de paramètres.
+    
+    Notes
+    -----
+    Cette fonction est référencée par le module
+    :py:mod:`plume.pg.computer`.
+    
+    """
+    if not pattern:
+        return (
+            sql.SQL("""
+                SELECT obj_description('{}'::regclass, 'pg_class')
+                """
+                ).format(
+                    sql.Identifier(schema_name, table_name)
+                    ),
+            )
+    return (
+        sql.SQL(
+            """
+            SELECT z_plume.meta_regexp_matches(
+                obj_description('{}'::regclass, 'pg_class'),
+                %s, %s)
+            """
+            ).format(
+                sql.Identifier(schema_name, table_name)
+                ),
+        (pattern, flags)
+        )
+
