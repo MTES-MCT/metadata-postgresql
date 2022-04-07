@@ -7,7 +7,7 @@ import re
 from plume.rdf.rdflib import URIRef
 from plume.rdf.utils import crs_ns
 from plume.rdf.namespaces import DCT
-from plume.pg.queries import query_get_srid_list
+from plume.pg.queries import query_get_srid_list, query_get_comment_fragments
 
 class ComputationMethod():
     """Méthode de calcul de métadonnées côté serveur.
@@ -17,10 +17,15 @@ class ComputationMethod():
     query_builder : function
         Une fonction de création de requête, en principe
         rattachée au module :py:mod:`plume.pg.queries`.
-        Cette fonction doit prendre pour argument le
-        nom du schéma et le nom de la table et renvoyer un
-        tuple dont le premier élément est la requête et, s'il
-        y a lieu, le second est un tuple contenant ses paramètres.
+        Cette fonction doit accepter des paramètres arbitraires
+        et renvoyer un tuple dont le premier élément est la requête et,
+        s'il y a lieu, le second est un tuple contenant ses paramètres.
+        Si le nom du schéma est un de ses paramètres, ce paramètre
+        devra s'appeler ``schema_name``. Si le nom de la table est
+        un de ses paramètres, il devra s'appeler ``table_name``.
+        Seuls ces deux paramètres peuvent être obligatoires.
+        Les noms des autres paramètres (optionnels, donc) sont à la
+        discrétion de la fonction.
     dependances: list(str), optional
         Liste d'extensions PostgreSQL devant être installées sur
         la base cible pour que la méthode soit valable.
@@ -189,6 +194,12 @@ methods = {
         dependances=['postgis'],
         sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')],
         parser=crs_parser
+        ),
+    DCT.title : ComputationMethod(
+        query_builder=query_get_comment_fragments
+        ),
+    DCT.description : ComputationMethod(
+        query_builder=query_get_comment_fragments
         )
     }
 """Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.
