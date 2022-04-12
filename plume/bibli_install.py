@@ -2,7 +2,6 @@
 # créé sept 2021
 import os.path
 import subprocess
-import sys
 import logging
 from qgis.core import QgsSettings
 
@@ -14,7 +13,7 @@ def manageLibrary(mVersionPlume, mVersionPlumeBibli) :
        try:
            subprocess.check_call(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '1', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'])
        except subprocess.CalledProcessError:
-           logging.exception("Installation échouée") 
+           logging.exception("pip n'a pas été mis à jour.") 
 
        mPathPerso = mPath.replace("\\","/") + "/requirements.txt"
        subprocess.check_call(['python3', '-m', 'pip', 'install', '-r', mPathPerso])
