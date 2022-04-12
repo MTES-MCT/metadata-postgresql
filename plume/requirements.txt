@@ -1,0 +1,21 @@
+# (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
+# créé sept 2022
+
+--no-index
+--find-links ./bibli_install
+
+wheel==0.37.1
+
+# Python < 3.8
+zipp==3.7.0  ; python_version < '3.8'
+typing_extensions==4.1.1  ; python_version < '3.8'
+importlib_metadata==4.11.3  ; python_version < '3.8'
+
+# Python All
+six==1.16.0
+isodate==0.6.1
+pyparsing==3.0.7
+setuptools==61.2.0
+rdflib==6.1.1
+                    
+                                           

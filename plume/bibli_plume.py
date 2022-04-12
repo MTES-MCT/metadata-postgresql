@@ -10,6 +10,20 @@ from PyQt5.QtGui import *
 from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayerCache, QgsFeatureRequest, QgsSettings, QgsDataSourceUri, QgsCredentials
 from qgis.utils import iface
 
+from importlib.util import find_spec
+
+#==================================================
+#==================================================
+def returnVersion() : return "v0.4 bêta"
+#==================================================
+# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+if find_spec('rdflib') ==  None :
+   from plume.bibli_install import manageLibrary
+   manageLibrary(returnVersion(), "")
+# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+#==================================================
+#==================================================
+
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph
 from plume.rdf.utils import export_extension_from_format, import_formats, import_extensions_from_format, export_format_from_extension
@@ -491,6 +505,7 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautToolBarDialog = "picture"
        valueDefautLayerBeforeClicked    = ""
        valueDefautLayerBeforeClickedWho = ""
+       valueDefautVersion = ""
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
@@ -502,6 +517,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
        mDicAutre["layerBeforeClicked"]    = valueDefautLayerBeforeClicked
        mDicAutre["layerBeforeClickedWho"] = valueDefautLayerBeforeClickedWho
+       mDicAutre["versionPlumeBibli"]     = valueDefautVersion
 
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
@@ -621,9 +637,6 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
-def returnVersion() : return "v0.4 bêta"
-
-#==================================================
 #Execute Pdf 
 #==================================================
 def execPdf(nameciblePdf):
@@ -665,6 +678,14 @@ def CorrigePath(nPath):
     if a != b : return (nPath + "/")
     else: return nPath
 
+#==================================================
+def createFolder(mFolder):
+    try:
+       os.makedirs(mFolder)
+    except OSError:
+       pass
+    return mFolder
+    
 #==================================================
 #==================================================
 def displayMess(mDialog, type,zTitre,zMess, level=Qgis.Critical, duration = 10):

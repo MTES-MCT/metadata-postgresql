@@ -688,18 +688,19 @@ class Ui_Dialog_ColorBloc(object):
         _thesaurus = ['', 'Agriculture, pêche, sylviculture et alimentation', 'Économie et finances', 'Éducation, culture et sport', 'Énergie', 'Environnement', 'Gouvernement et secteur public', 'Justice, système juridique et sécurité publique', 'Population et société', 'Questions internationales', 'Régions et villes', 'Santé', 'Science et technologie', 'Transports']
         _thesaurus2 = ['', 'Adresses', 'Altitude', 'Bâtiments', 'Caractéristiques géographiques météorologiques', 'Caractéristiques géographiques océanographiques', 'Conditions atmosphériques', 'Dénominations géographiques', 'Géologie', 'Habitats et biotopes', 'Hydrographie', 'Installations agricoles et aquacoles', 'Installations de suivi environnemental', 'Lieux de production et sites industriels', 'Occupation des terres', 'Ortho-imagerie', 'Parcelles cadastrales', 'Référentiels de coordonnées', 'Régions biogéographiques', 'Régions maritimes', 'Répartition de la population — démographie', 'Répartition des espèces', 'Réseaux de transport', 'Ressources minérales', 'Santé et sécurité des personnes', "Services d'utilité publique et services publics", 'Sites protégés', 'Sols', "Sources d'énergie", 'Systèmes de maillage géographique', 'Unités administratives', 'Unités statistiques', 'Usage des sols', 'Zones à risque naturel', 'Zones de gestion']
 
-        _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
+        _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
+        _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
         _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
         _iconQComboBox = _iconQComboBox.replace("\\","/")
         _iconSources               = _pathIcons + "/source_button.svg"
         _iconSourcesSelect         = _pathIcons + "/source_button.png"
         _iconSourcesVierge         = _pathIcons + "/vierge.png"
         _iconPlus                  = _pathIcons + "/plus_button.svg"
-        _iconPlusTempGoValues      = _pathIcons + "/color_button_Plus_GoValues_ForVisu.svg"
-        _iconPlusTempTgroup        = _pathIcons + "/color_button_Plus_Tgroup_ForVisu.svg"
+        _iconPlusTempGoValues      = _pathIconsUser + "/color_button_Plus_GoValues_ForVisu.svg"
+        _iconPlusTempTgroup        = _pathIconsUser + "/color_button_Plus_Tgroup_ForVisu.svg"
         _iconMinus                 = _pathIcons + "/minus_button.svg"
-        _iconMinusTempGoValues     = _pathIcons + "/color_button_Minus_GoValues_ForVisu.svg"
-        _iconMinusTempTgroup       = _pathIcons + "/color_button_Minus_Tgroup_ForVisu.svg"
+        _iconMinusTempGoValues     = _pathIconsUser + "/color_button_Minus_GoValues_ForVisu.svg"
+        _iconMinusTempTgroup       = _pathIconsUser + "/color_button_Minus_Tgroup_ForVisu.svg"
         _mListeIconsButtonPlusMinus = [ _iconPlusTempGoValues,  _iconPlusTempTgroup, \
                                         _iconMinusTempGoValues, _iconMinusTempTgroup ]
         #
@@ -1053,18 +1054,19 @@ class Ui_Dialog_ColorBloc(object):
     #==========================         
     #==========================         
     def applyWYSIWYG(self): 
-        _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
+        _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
+        _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
         _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
         _iconQComboBox = _iconQComboBox.replace("\\","/")
         _iconSources               = _pathIcons + "/source_button.svg"
         _iconSourcesSelect         = _pathIcons + "/source_button.png"
         _iconSourcesVierge         = _pathIcons + "/vierge.png"
         _iconPlus                  = _pathIcons + "/plus_button.svg"
-        _iconPlusTempGoValues      = _pathIcons + "/color_button_Plus_GoValues_ForVisu.svg"
-        _iconPlusTempTgroup        = _pathIcons + "/color_button_Plus_Tgroup_ForVisu.svg"
+        _iconPlusTempGoValues      = _pathIconsUser + "/color_button_Plus_GoValues_ForVisu.svg"
+        _iconPlusTempTgroup        = _pathIconsUser + "/color_button_Plus_Tgroup_ForVisu.svg"
         _iconMinus                 = _pathIcons + "/minus_button.svg"
-        _iconMinusTempGoValues     = _pathIcons + "/color_button_Minus_GoValues_ForVisu.svg"
-        _iconMinusTempTgroup       = _pathIcons + "/color_button_Minus_Tgroup_ForVisu.svg"
+        _iconMinusTempGoValues     = _pathIconsUser + "/color_button_Minus_GoValues_ForVisu.svg"
+        _iconMinusTempTgroup       = _pathIconsUser + "/color_button_Minus_Tgroup_ForVisu.svg"
         _mListeIconsButtonPlusMinus = [ _iconPlusTempGoValues,  _iconPlusTempTgroup, \
                                         _iconMinusTempGoValues, _iconMinusTempTgroup ]
 

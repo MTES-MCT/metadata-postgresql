@@ -37,6 +37,7 @@ import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
 from plume.pg.template import LocalTemplatesCollection
+from plume.bibli_install import manageLibrary
 
 class Ui_Dialog_plume(object):
     def __init__(self):
@@ -50,14 +51,16 @@ class Ui_Dialog_plume(object):
         #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
+
         self.lScreenDialog, self.hScreenDialog = int(self.mDic_LH["dialogLargeur"]), int(self.mDic_LH["dialogHauteur"])
-        self.displayMessage  = False if self.mDic_LH["displayMessage"] == 'dialogTitle' else True #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
-        self.fileHelp        = self.mDic_LH["fileHelp"]      #Type Fichier Help
-        self.fileHelpPdf     = self.mDic_LH["fileHelpPdf"]   #Fichier Help  PDF
-        self.fileHelpHtml    = self.mDic_LH["fileHelpHtml"]  #Fichier Help  HTML
-        self.durationBarInfo = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
-        self.ihm             = self.mDic_LH["ihm"]  #window/dock
-        self.toolBarDialog   = self.mDic_LH["toolBarDialog"]    #toolBarDialog
+        self.displayMessage    = False if self.mDic_LH["displayMessage"] == 'dialogTitle' else True #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
+        self.fileHelp          = self.mDic_LH["fileHelp"]      #Type Fichier Help
+        self.fileHelpPdf       = self.mDic_LH["fileHelpPdf"]   #Fichier Help  PDF
+        self.fileHelpHtml      = self.mDic_LH["fileHelpHtml"]  #Fichier Help  HTML
+        self.durationBarInfo   = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
+        self.ihm               = self.mDic_LH["ihm"]  #window/dock
+        self.toolBarDialog     = self.mDic_LH["toolBarDialog"]    #toolBarDialog
+        self.versionPlumeBibli = self.mDic_LH["versionPlumeBibli"]  #version Plume des bibliothèques
         #---
         self.colorDefaut                      = self.mDic_LH["defaut"]                      #Color QGroupBox
         self.colorQGroupBox                   = self.mDic_LH["QGroupBox"]                   #Color QGroupBox
@@ -86,6 +89,13 @@ class Ui_Dialog_plume(object):
         mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
         mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
         self.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
+        _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
+        createFolder(_pathIconsUser)        
+
+        # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+        manageLibrary(bibli_plume.returnVersion(), self.versionPlumeBibli)
+        # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+
         #-
         #Management Click before open IHM 
         self.layerBeforeClicked = (self.mDic_LH["layerBeforeClicked"], self.mDic_LH["layerBeforeClickedWho"]) # Couche mémorisée avant ouverture et de l'origine  
@@ -455,7 +465,7 @@ class Ui_Dialog_plume(object):
         # For Réaffichage du dimensionnement
         bibli_plume.resizeIhm(self, self.Dialog.width(), self.Dialog.height())
         #--------------------------
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(0) 
     #--
     #Génération à la volée 
     #==========================

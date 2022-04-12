@@ -18,20 +18,21 @@ from plume.rdf.utils import wkt_with_srid
 
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
-    _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
+    _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
+    _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
     _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
     _iconQComboBox = _iconQComboBox.replace("\\","/")
     _iconSources               = _pathIcons + "/source_button.svg"
     _iconSourcesSelect         = _pathIcons + "/source_button.png"
     _iconSourcesVierge         = _pathIcons + "/vierge.png"
     _iconPlus                  = _pathIcons + "/plus_button.svg"
-    _iconPlusTempGoProperties  = _pathIcons + "/color_button_Plus_GoProperties.svg"
-    _iconPlusTempGoValues      = _pathIcons + "/color_button_Plus_GoValues.svg"
-    _iconPlusTempTgroup        = _pathIcons + "/color_button_Plus_Tgroup.svg"
+    _iconPlusTempGoProperties  = _pathIconsUser + "/color_button_Plus_GoProperties.svg"
+    _iconPlusTempGoValues      = _pathIconsUser + "/color_button_Plus_GoValues.svg"
+    _iconPlusTempTgroup        = _pathIconsUser + "/color_button_Plus_Tgroup.svg"
     _iconMinus                 = _pathIcons + "/minus_button.svg"
-    _iconMinusTempGoProperties = _pathIcons + "/color_button_Minus_GoProperties.svg"
-    _iconMinusTempGoValues     = _pathIcons + "/color_button_Minus_GoValues.svg"
-    _iconMinusTempTgroup       = _pathIcons + "/color_button_Minus_Tgroup.svg"
+    _iconMinusTempGoProperties = _pathIconsUser + "/color_button_Minus_GoProperties.svg"
+    _iconMinusTempGoValues     = _pathIconsUser + "/color_button_Minus_GoValues.svg"
+    _iconMinusTempTgroup       = _pathIconsUser + "/color_button_Minus_Tgroup.svg"
     _iconSourcesGeoButton      = _pathIcons + "/geo_button.svg"
     #-
     _pathIconsgeo = os.path.dirname(__file__) + "/icons/buttons/geo"
@@ -78,7 +79,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #ICI Gestion et Génération à la volée des onglets 
        _mParentEnCours = gestionOnglets(self, _keyObjet, _valueObjet)
        #- Create button color
-       if self.mFirstColor : writeColorIcon(self, _iconPlus, _iconMinus, _mListeIconsButtonPlusMinus) 
+       if self.mFirstColor : writeColorIcon(self, _iconPlus, _iconMinus, _mListeIconsButtonPlusMinus)
     else :
        _mParentEnCours = self.mDicObjetsInstancies.parent_grid(_keyObjet)
 
@@ -360,9 +361,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
-
-       # == QICON
-       _mObjetQToolButton.setIcon(QIcon(changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus )))
+       # == QICON  
+       _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
        # == QICON
               
        #- Actions
