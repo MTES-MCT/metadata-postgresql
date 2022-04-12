@@ -322,4 +322,6 @@ requires('rdflib')
 
 ``` 
 
+Les installateurs *wheel* des packages doivent être placés dans le répertoire `/plume/bibli_install`. Les bibliothèques avec leur version de référence sont listées par le fichier [`/plume/requirements.txt`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt).
 
+Pour que les mises à jour se fassent, il est nécessaire de modifier la valeur renvoyée par la fonction `plume.bibli_plume.returnVersion`. Plume - plus précisément `plume.bibli_install.manageLibrary` - compare cette chaîne de caractères (supposée correspondre au numéro de version) avec le paramètre `versionPlumeBibli` inscrit dans le fichier `QGIS3.ini`, avant d'actualiser le paramètre selon la valeur. La commande de mise à jour selon `requirements.txt` n'est lancée que si le paramètre et la valeur retournée par la fonction sont différents.
