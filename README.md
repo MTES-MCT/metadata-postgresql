@@ -23,19 +23,7 @@ La bibliothèque [RDFLib](https://pypi.org/project/rdflib/), qui n'est pas nativ
 
 Plume incorpore également le package [`wheel`](https://pypi.org/project/wheel/), qui permet de gérer les bibliothèques sous forme de fichiers *wheel*, plus légers et rapides à installer.
 
-Paquets inclus : 
-
-| Nom du paquet | Dépendance de... | Fiche PyPi | Remarques |
-| --- | --- | --- | --- |
-| `rdflib` | Plume | [https://pypi.org/project/rdflib/](https://pypi.org/project/rdflib/) | |
-| `isodate` | `rdflib` | [https://pypi.org/project/isodate/](https://pypi.org/project/isodate/) | |
-| `six` | `isodate` | [https://pypi.org/project/six/](https://pypi.org/project/six/) | |
-| `pyparsing` | `rdflib` | [https://pypi.org/project/pyparsing/](https://pypi.org/project/pyparsing/) | |
-| `setuptools` | `rdflib` | [https://pypi.org/project/setuptools/](https://pypi.org/project/setuptools/) | |
-| `importlib-metadata` | `rdflib` | [https://pypi.org/project/importlib-metadata/](https://pypi.org/project/importlib-metadata/) | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| `zipp` | `importlib-metadata` | [https://pypi.org/project/zipp/](https://pypi.org/project/zipp/) | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| `typing-extensions` | `importlib-metadata` | [https://pypi.org/project/typing-extensions/](https://pypi.org/project/typing-extensions/) | Installé uniquement pour les versions de python strictement inférieures à la 3.8.0. |
-| `wheel` | | [https://pypi.org/project/wheel/](https://pypi.org/project/wheel/) | Pour l'installation des bibliothèques. |
+Pour la liste complète, on se réfèrera au fichier [plume/requirements.txt](/plume/requirements.txt).
 
 
 ## Installation
