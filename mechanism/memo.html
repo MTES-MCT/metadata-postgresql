@@ -563,6 +563,8 @@
 
 </pre></div>
 </div>
+<p>Les installateurs <em>wheel</em> des packages doivent être placés dans le répertoire <code class="docutils literal notranslate"><span class="pre">/plume/bibli_install</span></code>. Les bibliothèques avec leur version de référence sont listées par le fichier <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt"><code class="docutils literal notranslate"><span class="pre">/plume/requirements.txt</span></code></a>.</p>
+<p>Pour que les mises à jour se fassent, il est nécessaire de modifier la valeur renvoyée par la fonction <code class="docutils literal notranslate"><span class="pre">plume.bibli_plume.returnVersion</span></code>. Plume - plus précisément <code class="docutils literal notranslate"><span class="pre">plume.bibli_install.manageLibrary</span></code> - compare cette chaîne de caractères (supposée correspondre au numéro de version) avec le paramètre <code class="docutils literal notranslate"><span class="pre">versionPlumeBibli</span></code> inscrit dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, avant d’actualiser le paramètre selon la valeur. La commande de mise à jour selon <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> n’est lancée que si le paramètre et la valeur retournée par la fonction sont différents.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="pgcrypto"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
