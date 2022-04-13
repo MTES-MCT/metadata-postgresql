@@ -6,8 +6,59 @@ from plume.rdf.utils import abspath, data_from_file, DatasetId
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, \
     metagraph_from_iso, clean_metagraph
 from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF
+from plume.rdf.widgetsdict import WidgetsDict
 
 class MetagraphTestCase(unittest.TestCase):
+
+    def test_fresh(self):
+        """Contrôle de la mise à jour adéquate de l'attribut fresh.
+        
+        """
+        metagraph = Metagraph()
+        self.assertTrue(metagraph.fresh)
+        metagraph = WidgetsDict().build_metagraph()
+        self.assertFalse(metagraph.fresh)
+        metagraph = copy_metagraph(metagraph, metagraph)
+        self.assertTrue(metagraph.fresh)
+        metagraph = clean_metagraph(metagraph, metagraph)
+        self.assertTrue(metagraph.fresh)
+
+    def test_is_empty(self):
+        """Propriété servant à l'identification des graphes quasi vides.
+        
+        On attend notamment de cette propriété qu'elle reconnaisse comme
+        vide le résultat de la désérialisation d'un dictionnaire de widgets
+        vide.
+        
+        """
+        self.assertTrue(Metagraph().is_empty)
+        metagraph = WidgetsDict().build_metagraph()
+        self.assertTrue(metagraph.is_empty)
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(metagraph.is_empty)
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertFalse(metagraph.is_empty)
 
     def test_clean_metagraph_classmap(self):
         """Nettoyage d'un graphe avec mapping de classes et de prédicats.
