@@ -1869,6 +1869,24 @@ class GroupKey(WidgetKey):
         return 0 if not self else 2
     
     @property
+    def is_empty(self):
+        """bool: Le groupe est-il vide ?
+        
+        Un groupe est considéré comme vide quand il ne contient
+        que des groupes vides ou des clés-valeurs sans valeur.
+        Les fantômes sont pris en compte.
+        
+        """
+        for child in self.children:
+            if isinstance(child, ValueKey):
+                if child.value is not None:
+                    return False
+            else:
+                if not child.is_empty:
+                    return False
+        return True
+    
+    @property
     def has_real_children(self):
         """bool: Y a-t-il au moins un enfant dans ce groupe qui ne soit pas un fantôme ?
         
@@ -3195,12 +3213,19 @@ class GroupOfValuesKey(GroupKey):
         pour les clés du groupe et non pour le groupe lui-même,
         celle-ci porte bien sur le groupe de valeurs.
         
+        Le getter de la propriété ne retiendra le mode ``'empty'``
+        que si le groupe est effectivement vide au sens de la
+        propriété :py:attr:`GroupKey.is_empty`.
+        
         Il est permis de fournir en argument une liste de
         ``rdflib.term.Literal``, qui seront alors automatiquement
         convertis.
 
         """
-        return self._compute
+        l = self._compute.copy()
+        if 'empty' in l and not self.is_empty:
+            l.remove('empty')
+        return l
     
     @compute.setter
     def compute(self, value):
@@ -4329,12 +4354,18 @@ class ValueKey(ObjectKey):
         Si la clé appartient à un groupe de valeurs, cette propriété
         vaudra toujours ``None``.
         
+        Le getter de la propriété ne retiendra le mode ``'empty'``
+        que si la clé ne contient effectivement pas de valeur.
+        
         Il est permis de fournir en argument une liste de
         ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
 
         """
         if not isinstance(self.parent, GroupOfValuesKey):
-            return self._compute
+            l = self._compute.copy()
+            if 'empty' in l and self.value is not None:
+                l.remove('empty')
+            return l
     
     @compute.setter
     def compute(self, value):
