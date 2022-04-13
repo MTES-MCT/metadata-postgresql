@@ -184,6 +184,8 @@ class WidgetsDict(dict):
         labelLengthLimit=None, valueLengthLimit=None, textEditRowSpan=None):
         
         self.modified = False
+        self._fresh = metagraph.fresh if metagraph else True
+        self._is_empty = metagraph.is_empty if metagraph else True
         
         # ------ Paramètres utilisateur ------
         self.mode = mode if mode in ('edit', 'read') else 'edit'
@@ -287,6 +289,12 @@ class WidgetsDict(dict):
         # et référencement dans le dictionnaire
         for widgetkey in self.root.tree_keys():
             self.internalize(widgetkey)
+        
+        # après cette première génération des dictionnaires
+        # internes, la clé 'auto compute' ne sera plus
+        # mise à True pour les options 'empty' et 'new'
+        # (cf. internalize)
+        self._fresh = False
 
     def _build_tree(self, parent, metagraph=None, template=None, data=None):
         # ------ Constitution de la liste des catégories ------
@@ -566,13 +574,16 @@ class WidgetsDict(dict):
         internaldict['multiple sources'] = widgetkey.has_source_button
         internaldict['has label'] = widgetkey.has_label
         
-        if isinstance(widgetkey, (ValueKey, GroupOfValuesKey)) and widgetkey.compute \
-            and ('auto' in widgetkey.compute or widgetkey.has_compute_button):
+        if isinstance(widgetkey, (ValueKey, GroupOfValuesKey)) and widgetkey.compute:
             method = computation_method(widgetkey.path)
-            if method:
+            auto = ('auto' in widgetkey.compute
+                or 'empty' in widgetkey.compute and self._fresh
+                or 'new' in widgetkey.compute and self._is_empty and self._fresh)
+            if method and (auto or widgetkey.has_compute_button):
                 internaldict['has compute button'] = widgetkey.has_compute_button
                 internaldict['compute method'] = method
-                internaldict['auto compute'] = 'auto' in widgetkey.compute
+                internaldict['auto compute'] = auto
+                internaldict['compute parameters'] = widgetkey.compute_params
         
         if isinstance(widgetkey, ValueKey):
             internaldict['placeholder text'] = widgetkey.placeholder
@@ -1179,9 +1190,10 @@ class WidgetsDict(dict):
         
         """
         method = self[widgetkey]['compute method']
+        params = self[widgetkey]['compute parameters'] or {}
         if not method:
             return
-        return method.query_builder.__call__(schema_name, table_name)
+        return method.query_builder.__call__(schema_name, table_name, **params)
     
     def computing_update(self, widgetkey, result):
         """Met à jour le dictionnaire de widgets avec des valeurs calculées.
@@ -1451,6 +1463,7 @@ class WidgetsDict(dict):
             metagraph = self.root.build_metagraph()
             if not preserve_metadata_date:
                 metagraph.update_metadata_date()
+            metagraph.fresh = False
             return metagraph
 
     def group_kind(self, widgetkey):
