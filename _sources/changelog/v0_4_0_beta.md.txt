@@ -34,13 +34,20 @@ Si l'utilisateur sélectionne une couche PostgreSQL dans l'explorateur ou le pan
 
 **Une mise à jour de l'extension PostgreSQL PlumePg sera nécessaire** pour continuer à utiliser les modèles personnalisés avec la version 0.4 de Plume.
 
-La version 0.1.0 de PlumePg complète le paramétrage du calcul automatique des métadonnées.
+La version 0.1.0 de PlumePg apporte plusieurs petites évolutions fonctionnelles.
+
+### Paramétrage du calcul automatique des métadonnées
 
 Les champs `compute` des tables `meta_categorie` et `meta_template_categories` admettent maintenant deux nouvelles valeurs, `empty` et `new`. Comme `auto`, ces mots-clés signalent à Plume que la métadonnée doit être calculée automatiquement à partir des informations disponibles sur le serveur PostgreSQL lors du chargement de la fiche de métadonnées. Toutefois, ils posent des conditions à cette action :
 - `empty` indique que le calcul automatique doit avoir lieu si et seulement si aucune valeur n'est encore renseignée pour la métadonnée considérée.
 - `new` signale que le calcul doit s'exécuter si et seulement si la fiche de métadonnées est vierge.
 
 Les tables `meta_categorie` et `meta_template_categories`, ainsi que la vue `meta_template_categories_full` présentent maintenant un champ supplémentaire de type `jsonb` qui permet de paramétrer la méthode de calcul des métadonnées définie pour la catégorie, lorsque la méthode le prévoit.
+
+### Désactivation d'un modèle
+
+La table `meta_template` présente désormais un champ supplémentaire, `enabled`, qui peut être mis à `False` pour empêcher qu'un modèle soit proposé aux utilisateurs du plugin QGIS. Ce mécanisme pourra notamment être mis à profit pendant la consitution des modèles, afin de ne pas mettre à disposition des utilisateurs des modèles non finalisés.
+
 
 ## Amélioration de la gestion des métadonnées en lecture seule
 

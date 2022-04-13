@@ -356,16 +356,10 @@ l’espace de nommage standard de Plume
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.available_formats" title="plume.rdf.metagraph.Metagraph.available_formats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_formats</span></code></a></dt><dd><p>list(str): Liste des formats d’export recommandés pour le graphe.</p>
+<dt><strong>fresh</strong><span class="classifier">bool</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> pour un graphe de métadonnées généré par
+désérialisation d’un dictionnaire de widgets (méthode
+<a class="reference internal" href="plume.rdf.widgetsdict.html#plume.rdf.widgetsdict.WidgetsDict.build_metagraph" title="plume.rdf.widgetsdict.WidgetsDict.build_metagraph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.build_metagraph()</span></code></a>).</p>
 </dd>
-<dt><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.datasetid" title="plume.rdf.metagraph.Metagraph.datasetid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datasetid</span></code></a></dt><dd><p>rdflib.term.URIRef: Identifiant du jeu de données décrit par le graphe.</p>
-</dd>
-<dt><strong>identifier</strong></dt><dd></dd>
-<dt><a class="reference internal" href="#plume.rdf.metagraph.Metagraph.linked_record" title="plume.rdf.metagraph.Metagraph.linked_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linked_record</span></code></a></dt><dd><p>tuple(str): Fiche de métadonnées distante référencée par le graphe, le cas échéant.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace_manager</span></code></dt><dd><p>this graph’s namespace-manager</p>
-</dd>
-<dt><strong>store</strong></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -701,6 +695,17 @@ NTriples (encodage ASCII).</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.is_empty">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.is_empty" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>bool: Le graphe est-il vide ?</p>
+<p>Au sens de cette propriété, un graphe de métadonnées est considéré
+comme vide quand il contient au plus un identifiant et une
+date de dernière modification de la fiche de métadonnées.</p>
+<p>Un graphe qui ne contiendrait pas d’élément de classe <code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>
+sera toujours considéré comme vide.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.Metagraph.linked_record">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linked_record</span></span><a class="headerlink" href="#plume.rdf.metagraph.Metagraph.linked_record" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>tuple(str): Fiche de métadonnées distante référencée par le graphe, le cas échéant.</p>
@@ -915,7 +920,7 @@ renseignées dans l’ancien graphe.</p></li>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.shape">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N0ef80004e1c7471395a78fde89a6ed6b</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N1702396ff4ca4bd99465ad1620452220</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.shape" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Schéma SHACL définissant la structure des métadonnées communes.</p>
 </dd></dl>
 

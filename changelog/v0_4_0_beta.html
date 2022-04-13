@@ -190,6 +190,18 @@
   <a class="reference internal nav-link" href="#plumepg-v0-1-0">
    PlumePg v0.1.0
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametrage-du-calcul-automatique-des-metadonnees">
+     Paramétrage du calcul automatique des métadonnées
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#desactivation-d-un-modele">
+     Désactivation d’un modèle
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#amelioration-de-la-gestion-des-metadonnees-en-lecture-seule">
@@ -248,13 +260,20 @@
 <section id="plumepg-v0-1-0">
 <h2>PlumePg v0.1.0<a class="headerlink" href="#plumepg-v0-1-0" title="Lien permanent vers ce titre">#</a></h2>
 <p><strong>Une mise à jour de l’extension PostgreSQL PlumePg sera nécessaire</strong> pour continuer à utiliser les modèles personnalisés avec la version 0.4 de Plume.</p>
-<p>La version 0.1.0 de PlumePg complète le paramétrage du calcul automatique des métadonnées.</p>
+<p>La version 0.1.0 de PlumePg apporte plusieurs petites évolutions fonctionnelles.</p>
+<section id="parametrage-du-calcul-automatique-des-metadonnees">
+<h3>Paramétrage du calcul automatique des métadonnées<a class="headerlink" href="#parametrage-du-calcul-automatique-des-metadonnees" title="Lien permanent vers ce titre">#</a></h3>
 <p>Les champs <code class="docutils literal notranslate"><span class="pre">compute</span></code> des tables <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> admettent maintenant deux nouvelles valeurs, <code class="docutils literal notranslate"><span class="pre">empty</span></code> et <code class="docutils literal notranslate"><span class="pre">new</span></code>. Comme <code class="docutils literal notranslate"><span class="pre">auto</span></code>, ces mots-clés signalent à Plume que la métadonnée doit être calculée automatiquement à partir des informations disponibles sur le serveur PostgreSQL lors du chargement de la fiche de métadonnées. Toutefois, ils posent des conditions à cette action :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">empty</span></code> indique que le calcul automatique doit avoir lieu si et seulement si aucune valeur n’est encore renseignée pour la métadonnée considérée.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">new</span></code> signale que le calcul doit s’exécuter si et seulement si la fiche de métadonnées est vierge.</p></li>
 </ul>
 <p>Les tables <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code>, ainsi que la vue <code class="docutils literal notranslate"><span class="pre">meta_template_categories_full</span></code> présentent maintenant un champ supplémentaire de type <code class="docutils literal notranslate"><span class="pre">jsonb</span></code> qui permet de paramétrer la méthode de calcul des métadonnées définie pour la catégorie, lorsque la méthode le prévoit.</p>
+</section>
+<section id="desactivation-d-un-modele">
+<h3>Désactivation d’un modèle<a class="headerlink" href="#desactivation-d-un-modele" title="Lien permanent vers ce titre">#</a></h3>
+<p>La table <code class="docutils literal notranslate"><span class="pre">meta_template</span></code> présente désormais un champ supplémentaire, <code class="docutils literal notranslate"><span class="pre">enabled</span></code>, qui peut être mis à <code class="docutils literal notranslate"><span class="pre">False</span></code> pour empêcher qu’un modèle soit proposé aux utilisateurs du plugin QGIS. Ce mécanisme pourra notamment être mis à profit pendant la consitution des modèles, afin de ne pas mettre à disposition des utilisateurs des modèles non finalisés.</p>
+</section>
 </section>
 <section id="amelioration-de-la-gestion-des-metadonnees-en-lecture-seule">
 <h2>Amélioration de la gestion des métadonnées en lecture seule<a class="headerlink" href="#amelioration-de-la-gestion-des-metadonnees-en-lecture-seule" title="Lien permanent vers ce titre">#</a></h2>

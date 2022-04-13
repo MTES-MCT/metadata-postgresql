@@ -302,7 +302,7 @@
 <p>L’exécution des tests nécessite de se connecter à une base PostgreSQL avec un compte super-utilisateur. La base doit remplir les conditions suivantes :</p>
 <ul class="simple">
 <li><p>la version de PostgreSQL est supérieure ou égale à PostgreSQL 10.</p></li>
-<li><p>l’extension <em>PlumePg</em> (<code class="docutils literal notranslate"><span class="pre">plume_pg</span></code>) est active et à jour ;</p></li>
+<li><p>l’extension <em>PlumePg</em> (<code class="docutils literal notranslate"><span class="pre">plume_pg</span></code>) est disponible dans sa dernière version ainsi qu’en version 0.0.1, avec tous les fichiers de mise à jour pour passer de l’une à l’autre ;</p></li>
 <li><p>si requise pour l’installation de <em>PlumePg</em><a class="footnote-reference brackets" href="#pgcrypto" id="id1">1</a>, l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> est active ;</p></li>
 <li><p>la bibliothèque de tests de <em>PlumePg</em> est installée (fichier <code class="docutils literal notranslate"><span class="pre">/postgresql/tests/plume_pg_test.sql</span></code>) ;</p></li>
 <li><p>l’extension <em>PostGIS</em> (<code class="docutils literal notranslate"><span class="pre">postgis</span></code>) est active ;</p></li>
@@ -533,7 +533,15 @@
 </section>
 <section id="dictionnaire-de-widgets">
 <h3>Dictionnaire de widgets<a class="headerlink" href="#dictionnaire-de-widgets" title="Lien permanent vers ce titre">#</a></h3>
-<p><em>TODO</em></p>
+<p>Les modifications à réaliser dans le module <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict</span></code> peuvent varier fortement selon la nature de la nouvelle option de configuration.</p>
+<p>Si toutefois il s’agit d’un élément d’entrée pour générer le formulaire, et qu’une ou plusieurs clés ont ainsi été ajoutées à la classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.internaldict.InternalDict</span></code>, il faudra a minima compléter la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.internalize</span></code> pour qu’elle sache définir les valeurs des nouvelles clés des dictionnaires internes en fonction des attributs des <code class="docutils literal notranslate"><span class="pre">WidgetKey</span></code>.</p>
+<p>Si la nouvelle option suppose l’ajout de widgets annexes dans le formulaire, il faudra au moins :</p>
+<ul class="simple">
+<li><p>adapter la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.widget_placement</span></code> pour qu’elle spécifie leur placement ;</p></li>
+<li><p>compléter <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.list_widgets</span></code> pour qu’elle liste également ces widgets ;</p></li>
+<li><p>compléter <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.print</span></code> (méthode d’aperçu sommaire des formulaires utilisée à des fins de test) pour qu’elle représente ces widgets ;</p></li>
+<li><p>compléter <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.check_grids</span></code> pour que ces widgets soient pris en compte dans les tests de contrôle de placement.</p></li>
+</ul>
 </section>
 <section id="generation-du-formulaire">
 <h3>Génération du formulaire<a class="headerlink" href="#generation-du-formulaire" title="Lien permanent vers ce titre">#</a></h3>

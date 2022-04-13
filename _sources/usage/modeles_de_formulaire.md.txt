@@ -34,7 +34,7 @@ Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plum
 - `meta_template` liste les modèles.
 - `meta_categorie` liste les catégories de métadonnées disponibles, qu'il s'agisse des catégories du schéma commun ou de catégories locales, et paramètre leur affichage dans les formulaires.
 - `meta_tab` liste des noms d'onglets de formulaires dans lesquels pourront être classées les catégories.
-- `meta_template_categories` permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d'affichage spécifique à un modèle pour certaines catégories, qui remplaceront ceux de `meta_categorie`.
+- `meta_template_categories` permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d'affichage spécifiques à un modèle pour certaines catégories, qui remplaceront ceux de `meta_categorie`.
 
 ### Privilèges nécessaires
 
@@ -116,6 +116,27 @@ La comparaison des valeurs ne tient pas compte de la casse.
 Il faudra soit que toutes les conditions de l'un des ensembles du JSON soient vérifiées, soit que le filtre SQL ait renvoyé True pour que le modèle soit considéré comme applicable. Si un jeu de données remplit les conditions de plusieurs modèles, c'est celui dont le niveau de priorité, (champ `priority`) est le plus élevé qui sera retenu.
 
 À noter que les conditions ne valent qu'à l'ouverture de la fiche. L'utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d'application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n'appliquer aucun modèle, auquel cas le schéma des métadonnées communes s'appliquera tel quel.
+
+Le champ `enabled` de `meta_template` permet de désactiver un modèle, qui ne sera alors plus proposé aux utilisateurs du plugin QGIS, en passant simplement la valeur du champ de `True` (valeur par défaut) à `False`. Ce mécanisme peut notamment être utilisé pour les modèles en cours de construction, dont l'administrateur pourra souhaiter qu'ils n'apparaissent pas dans la liste des modèles disponibles tant qu'ils ne sont pas prêts à l'usage.
+
+On pourra ainsi initier la création d'un nouveau modèle avec une requête de ce type :
+
+```sql
+
+INSERT INTO z_plume.meta_template (tpl_label, enabled)
+	VALUES ('Mon nouveau modèle', False) ;
+
+```
+
+Puis, une fois finalisée l'association des catégories au modèle (cf. ci-après), on activera le modèle : 
+
+```sql
+
+UPDATE z_plume.meta_template
+    SET enabled = True
+	WHERE tpl_label = 'Mon nouveau modèle' ;
+
+``` 
 
 
 ### Onglets des formulaires

@@ -344,7 +344,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_template</span></code> liste les modèles.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> liste les catégories de métadonnées disponibles, qu’il s’agisse des catégories du schéma commun ou de catégories locales, et paramètre leur affichage dans les formulaires.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_tab</span></code> liste des noms d’onglets de formulaires dans lesquels pourront être classées les catégories.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d’affichage spécifique à un modèle pour certaines catégories, qui remplaceront ceux de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d’affichage spécifiques à un modèle pour certaines catégories, qui remplaceront ceux de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>.</p></li>
 </ul>
 <section id="privileges-necessaires">
 <h3>Privilèges nécessaires<a class="headerlink" href="#privileges-necessaires" title="Lien permanent vers ce titre">#</a></h3>
@@ -404,6 +404,18 @@
 <p>La comparaison des valeurs ne tient pas compte de la casse.</p>
 <p>Il faudra soit que toutes les conditions de l’un des ensembles du JSON soient vérifiées, soit que le filtre SQL ait renvoyé True pour que le modèle soit considéré comme applicable. Si un jeu de données remplit les conditions de plusieurs modèles, c’est celui dont le niveau de priorité, (champ <code class="docutils literal notranslate"><span class="pre">priority</span></code>) est le plus élevé qui sera retenu.</p>
 <p>À noter que les conditions ne valent qu’à l’ouverture de la fiche. L’utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d’application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n’appliquer aucun modèle, auquel cas le schéma des métadonnées communes s’appliquera tel quel.</p>
+<p>Le champ <code class="docutils literal notranslate"><span class="pre">enabled</span></code> de <code class="docutils literal notranslate"><span class="pre">meta_template</span></code> permet de désactiver un modèle, qui ne sera alors plus proposé aux utilisateurs du plugin QGIS, en passant simplement la valeur du champ de <code class="docutils literal notranslate"><span class="pre">True</span></code> (valeur par défaut) à <code class="docutils literal notranslate"><span class="pre">False</span></code>. Ce mécanisme peut notamment être utilisé pour les modèles en cours de construction, dont l’administrateur pourra souhaiter qu’ils n’apparaissent pas dans la liste des modèles disponibles tant qu’ils ne sont pas prêts à l’usage.</p>
+<p>On pourra ainsi initier la création d’un nouveau modèle avec une requête de ce type :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template</span><span class="w"> </span><span class="p">(</span><span class="n">tpl_label</span><span class="p">,</span><span class="w"> </span><span class="n">enabled</span><span class="p">)</span><span class="w"></span>
+<span class="w">	</span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Mon nouveau modèle&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">False</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Puis, une fois finalisée l’association des catégories au modèle (cf. ci-après), on activera le modèle :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template</span><span class="w"></span>
+<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">True</span><span class="w"></span>
+<span class="w">	</span><span class="k">WHERE</span><span class="w"> </span><span class="n">tpl_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Mon nouveau modèle&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
 </section>
 <section id="onglets-des-formulaires">
 <h3>Onglets des formulaires<a class="headerlink" href="#onglets-des-formulaires" title="Lien permanent vers ce titre">#</a></h3>

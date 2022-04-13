@@ -609,6 +609,15 @@ copie des filles de la clé.</p>
 <dd><p>bool: Y a-t-il au moins un enfant dans ce groupe qui ne soit pas un fantôme ?</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.GroupKey.is_empty">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><a class="headerlink" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>bool: Le groupe est-il vide ?</p>
+<p>Un groupe est considéré comme vide quand il ne contient
+que des groupes vides ou des clés-valeurs sans valeur.
+Les fantômes sont pris en compte.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetkey.GroupKey.real_children">
 <span class="sig-name descname"><span class="pre">real_children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetkey.GroupKey.real_children" title="Lien permanent vers cette définition">#</a></dt>
@@ -738,6 +747,8 @@ c’est lui qui porte cette information. Sinon, elle est obligatoire.</p>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_unit_button</span></code></dt><dd><p>bool: Un bouton annexe de sélection de l’unité doit-il être créé pour la clé ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
 </dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.is_ghost" title="plume.rdf.widgetkey.GroupOfPropertiesKey.is_ghost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></a></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
@@ -1212,6 +1223,9 @@ ils requièrent un traitement spécifique.</p>
 <p>Contrairement à beaucoup d’autre propriétés qui valent 
 pour les clés du groupe et non pour le groupe lui-même,
 celle-ci porte bien sur le groupe de valeurs.</p>
+<p>Le getter de la propriété ne retiendra le mode <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>
+que si le groupe est effectivement vide au sens de la
+propriété <a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="plume.rdf.widgetkey.GroupKey.is_empty"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GroupKey.is_empty</span></code></a>.</p>
 <p>Il est permis de fournir en argument une liste de
 <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement
 convertis.</p>
@@ -2358,6 +2372,8 @@ dans ce sens serait ignorée.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
 </dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
+</dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.is_ghost" title="plume.rdf.widgetkey.RootKey.is_ghost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></a></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
@@ -2856,6 +2872,8 @@ condition.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
 </dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
+</dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.TabKey.is_ghost" title="plume.rdf.widgetkey.TabKey.is_ghost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></a></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
@@ -3281,6 +3299,8 @@ toujours <code class="docutils literal notranslate"><span class="pre">None</span
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">input_mask</span></code></dt><dd><p>str: Masque de saisie à utiliser pour les clés-valeurs du groupe.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
@@ -3927,6 +3947,8 @@ d’unité sur les widgets.</p>
 <p class="rubric">Notes</p>
 <p>Si la clé appartient à un groupe de valeurs, cette propriété
 vaudra toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>Le getter de la propriété ne retiendra le mode <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>
+que si la clé ne contient effectivement pas de valeur.</p>
 <p>Il est permis de fournir en argument une liste de
 <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement convertis.</p>
 </dd></dl>
