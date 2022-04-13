@@ -56,6 +56,7 @@ plume:DatasetShape
         sh:order 2 ;
         plume:longText true ;
         plume:rowSpan 15 ;
+		plume:compute "manual" ;
 	] ;
     sh:property [
 		sh:path plume:isExternal ;
