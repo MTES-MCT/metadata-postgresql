@@ -26,6 +26,13 @@ class Metagraph(Graph):
     Un graphe de métadonnées est présumé décrire un et un seul jeu de
     données (dcat:Dataset).
     
+    Attributes
+    ----------
+    fresh : bool
+        ``False`` pour un graphe de métadonnées généré par
+        désérialisation d'un dictionnaire de widgets (méthode
+        :py:meth:`plume.rdf.widgetsdict.WidgetsDict.build_metagraph`).
+    
     Notes
     -----   
     Tous les graphes de métadonnées sont initialisés avec
@@ -35,6 +42,7 @@ class Metagraph(Graph):
     """
     def __init__(self):
         super().__init__(namespace_manager=PlumeNamespaceManager())
+        self.fresh = True
 
     def __str__(self):
         datasetid = self.datasetid
@@ -42,6 +50,30 @@ class Metagraph(Graph):
         if gid:
             return 'dataset {}'.format(gid)
         return 'no dataset'
+
+    @property
+    def is_empty(self):
+        """bool: Le graphe est-il vide ?
+        
+        Au sens de cette propriété, un graphe de métadonnées est considéré
+        comme vide quand il contient au plus un identifiant et une
+        date de dernière modification de la fiche de métadonnées.
+        
+        Un graphe qui ne contiendrait pas d'élément de classe ``dcat:Dataset``
+        sera toujours considéré comme vide.
+        
+        """
+        datasetid = self.datasetid
+        if datasetid is None:
+            return True
+        bnode = self.value(datasetid, FOAF.isPrimaryTopicOf)
+        for s, p, o in self:
+            if p == RDF.type or (s == datasetid and \
+                p in (DCT.identifier, FOAF.isPrimaryTopicOf)) \
+                or (bnode and (s, p) == (bnode, DCT.modified)):
+                continue
+            return False
+        return True
 
     @property
     def datasetid(self):
