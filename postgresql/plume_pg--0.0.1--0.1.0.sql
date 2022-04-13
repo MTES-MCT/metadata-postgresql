@@ -64,6 +64,7 @@
 ----------------------------------------
 
 /* 1.1 - TABLE DE CATEGORIES
+   1.2 - TABLE DES MODELES
    1.4 - ASSOCIATION DES CATEGORIES AUX MODELES
    1.5 - IMPORT DE MODELES PRE-CONFIGURES */
 
@@ -126,6 +127,16 @@ $BODY$ ;
 COMMENT ON COLUMN z_plume.meta_local_categorie.compute_params IS 'Ignoré pour les catégories locales.' ;
 
 
+------ 1.2 - TABLE DES MODELES ------
+
+-- Table: z_plume.meta_template
+
+ALTER TABLE z_plume.meta_template
+    ADD COLUMN enabled boolean NOT NULL DEFAULT True ;
+
+COMMENT ON COLUMN z_plume.meta_template.enabled IS 'Booléen indiquant si le modèle est actif. Les modèles désactivés n''apparaîtront pas dans la liste de modèles du plugin QGIS, même si leurs conditions d''application automatique sont remplies.' ;
+
+
 ---- 1.4 - ASSOCIATION DES CATEGORIES AUX MODELES ------
 
 -- Table: z_plume.meta_template_categories
@@ -168,6 +179,7 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
             LEFT JOIN z_plume.meta_template AS t
                 ON tc.tpl_label = t.tpl_label
+	    WHERE t.enabled
     ) ;
 
 COMMENT ON VIEW z_plume.meta_template_categories_full IS 'Description complète des modèles de formulaire (rassemble les informations de meta_categorie et meta_template_categories).' ;
