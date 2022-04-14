@@ -1868,22 +1868,28 @@ class GroupKey(WidgetKey):
         """
         return 0 if not self else 2
     
-    @property
-    def is_empty(self):
-        """bool: Le groupe est-il vide ?
+    def is_empty(self, **kwargs):
+        """Le groupe est-il vide ?
         
         Un groupe est considéré comme vide quand il ne contient
         que des groupes vides ou des clés-valeurs sans valeur.
         Les fantômes sont pris en compte.
         
+        Notes
+        -----
+        Cette méthode admet des paramètres arbitraires pour
+        qu'elle puisse être appelée dans les mêmes conditions
+        que les méthodes de même nom définies sur d'autres
+        classes de clés. En pratique, elle n'en utilise aucun.
+        
+        See Also
+        --------
+        GroupOfValuesKey.is_empty
+        
         """
         for child in self.children:
-            if isinstance(child, ValueKey):
-                if child.value is not None:
-                    return False
-            else:
-                if not child.is_empty:
-                    return False
+            if not child.is_empty():
+                return False
         return True
     
     @property
@@ -3213,19 +3219,12 @@ class GroupOfValuesKey(GroupKey):
         pour les clés du groupe et non pour le groupe lui-même,
         celle-ci porte bien sur le groupe de valeurs.
         
-        Le getter de la propriété ne retiendra le mode ``'empty'``
-        que si le groupe est effectivement vide au sens de la
-        propriété :py:attr:`GroupKey.is_empty`.
-        
         Il est permis de fournir en argument une liste de
         ``rdflib.term.Literal``, qui seront alors automatiquement
         convertis.
 
         """
-        l = self._compute.copy()
-        if 'empty' in l and not self.is_empty:
-            l.remove('empty')
-        return l
+        return self._compute
     
     @compute.setter
     def compute(self, value):
@@ -3264,6 +3263,35 @@ class GroupOfValuesKey(GroupKey):
                 self._compute_params = None
         else:
             self._compute_params = None
+
+    def is_empty(self, sources=None):
+        """Le groupe est-il vide ?
+        
+        Un groupe est considéré comme vide quand il ne contient
+        que des groupes vides ou des clés-valeurs sans valeur.
+        Les fantômes sont pris en compte.
+        
+        Parameters
+        ----------
+        sources : list
+            Une liste de sources à prendre en compte. Si ce
+            paramètre est renseigné, toutes les clés-valeurs dont la
+            source ne fait pas partie de la liste seront
+            ignorées, de même que les groupes de propriétés.
+        
+        Notes
+        -----
+        Réécriture de la méthode :py:meth:`GroupKey.is_empty`.
+        
+        """
+        if not sources:
+            return super().is_empty()
+        for child in self.children:
+            if isinstance(child, ValueKey) \
+                and child.value_source in sources \
+                and not child.is_empty():
+                return False
+        return True
 
     def _hide_m(self, value, rec=False):
         super()._hide_m(value, rec=rec)
@@ -4354,18 +4382,12 @@ class ValueKey(ObjectKey):
         Si la clé appartient à un groupe de valeurs, cette propriété
         vaudra toujours ``None``.
         
-        Le getter de la propriété ne retiendra le mode ``'empty'``
-        que si la clé ne contient effectivement pas de valeur.
-        
         Il est permis de fournir en argument une liste de
         ``rdflib.term.Literal``, qui seront alors automatiquement convertis.
 
         """
         if not isinstance(self.parent, GroupOfValuesKey):
-            l = self._compute.copy()
-            if 'empty' in l and self.value is not None:
-                l.remove('empty')
-            return l
+            return self._compute
     
     @compute.setter
     def compute(self, value):
@@ -4376,6 +4398,22 @@ class ValueKey(ObjectKey):
             self._compute = value or []
         else:
             self._compute = None
+    
+    def is_empty(self, **kwargs):
+        """La clé est-elle vide ?
+        
+        Renvoie simplement ``True`` si l'attribut
+        :py:attr:``ValueKey.value`` de la clé vaut ``None``.
+        
+        Notes
+        -----
+        Cette méthode admet des paramètres arbitraires pour
+        qu'elle puisse être appelée dans les mêmes conditions
+        que les méthodes de même nom définies sur d'autres
+        classes de clés. En pratique, elle n'en utilise aucun.
+        
+        """
+        return self.value is None
     
     @property
     def compute_params(self):
@@ -4446,8 +4484,9 @@ class ValueKey(ObjectKey):
                     value = self.available_languages[0]
                 else:
                     raise IntegrityBreach('Plus de langue disponible.', self)
-            self.parent.language_in(self._value_language)
-            self.parent.language_out(value)
+            if self._value_language != value:
+                self.parent.language_in(self._value_language)
+                self.parent.language_out(value)
         elif self.value_language != value:
             WidgetKey.actionsbook.languages.append(self)
         self._value_language = value
