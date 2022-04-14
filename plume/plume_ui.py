@@ -7,9 +7,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtQuick 
 
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QToolBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
                              QDockWidget, QTreeView, QGridLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, 
-                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle)
+                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle, QToolBar)
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
 
@@ -83,11 +83,12 @@ class Ui_Dialog_plume(object):
         self.geomColor       = self.mDic_LH["geomColor"]       
         self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
         self.geomPoint       = self.mDic_LH["geomPoint"]       
+        self.geomPointEpaisseur = self.mDic_LH["geomPointEpaisseur"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
         self.geomPrecision   = int(self.mDic_LH["geomPrecision"])       
         #-
-        mDicType         = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
-        mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
+        mDicType         = ["ICON_CROSS", "ICON_X", "ICON_BOX", "ICON_CIRCLE", "ICON_FULL_BOX" , "ICON_DIAMOND" , "ICON_FULL_DIAMOND"]
+        mDicTypeObj      = [QgsRubberBand.ICON_X, QgsRubberBand.ICON_CROSS, QgsRubberBand.ICON_BOX, QgsRubberBand.ICON_CIRCLE, QgsRubberBand.ICON_FULL_BOX, QgsRubberBand.ICON_DIAMOND, QgsRubberBand.ICON_FULL_DIAMOND]
         self.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
         _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
         createFolder(_pathIconsUser)        
@@ -190,8 +191,8 @@ class Ui_Dialog_plume(object):
         #=====================================================  
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
         self.createToolBar(*self.listIconToolBar)
+
         #------------
-        
         if self.ihm in ["dockTrue", "dockFalse"] : self.mMenuBarDialog.show()
         #==========================
         self.retranslateUi(Dialog)
@@ -983,8 +984,8 @@ class Ui_Dialog_plume(object):
         return
     #==========================
     def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ):
-        #Menu Dialog                                                                                                                                                                
-        self.mMenuBarDialog = QMenuBar(self)
+        #Menu Dialog  
+        self.mMenuBarDialog = QMenuBar(self) 
         try : 
            if hasattr(self, "monDock") :
               self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, self.monDock.width() - 150, 20))

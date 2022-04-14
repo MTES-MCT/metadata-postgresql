@@ -43,6 +43,7 @@ class GeometryMapTool(QgsMapTool ):
          self.rubberBand = QgsVertexMarker(self.canvas)
          self.rubberBand.setPenWidth(int(self.Dialog.geomEpaisseur))
          self.rubberBand.setIconType(self.Dialog.mDicTypeObj[self.Dialog.geomPoint]) 
+         self.rubberBand.setIconSize(int(self.Dialog.geomPointEpaisseur))
       elif self._mAction in ["polygon", "linestring"] : 
          self.rubberBand = QgsRubberBand(self.canvas, True)
          self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
@@ -297,131 +298,46 @@ class GeometryMapToolShow(QgsMapTool ):
       #Supprime si l'objet existe l'affichage du rubberBand
       eraseRubberBand(self, self.Dialog.dic_objetMap, self.__keyObjet)
 
-      if etat :
+      if etat:
          res = split_rdf_wkt(mCoordSaisie)
-         if res :
-            #-
-            try : 
-               geom_wkt, self.srid = res
-               if geomtype_from_wkt(mCoordSaisie) == "circularstring" :
-                  mPolygone = geom_wkt
-               else :   
-                  mPolygone = shapely.wkt.loads(geom_wkt)
-            except : 
-               zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-               zMess  = QtWidgets.QApplication.translate("plume_ui", "Géométrie invalide ou type non pris en charge.", None)
-               bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-               return
-            #-
-            if geomtype_from_wkt(mCoordSaisie) == "polygon" :
-               self.rubberBand = QgsRubberBand(self.canvas, True)
-               self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
-               self.showPolygon(mPolygone)
-            elif geomtype_from_wkt(mCoordSaisie) == "rectangle" :
-               self.rubberBand = QgsRubberBand(self.canvas, True)
-               self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
-               self.startPoint = Point(mPolygone.bounds[0], mPolygone.bounds[1]) 
-               self.endPoint   = Point(mPolygone.bounds[2], mPolygone.bounds[3]) 
-               self.showRect(self.startPoint, self.endPoint)
-            elif geomtype_from_wkt(mCoordSaisie) == "circularstring" :
-               self.rubberBand = QgsRubberBand(self.canvas, True)
-               self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
-               self.showCircle(mPolygone)
-            elif geomtype_from_wkt(mCoordSaisie) == "point" : 
-               self.rubberBand = QgsVertexMarker(self.canvas)
-               self.rubberBand.setPenWidth(int(self.Dialog.geomEpaisseur))
-               self.rubberBand.setIconType(self.Dialog.mDicTypeObj[self.Dialog.geomPoint]) 
-               self.showPoint(mPolygone)
-            elif geomtype_from_wkt(mCoordSaisie) == "linestring" :
-               self.rubberBand = QgsRubberBand(self.canvas, False)
-               self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
-               self.showLine(mPolygone)
-            else :
-               self.rubberBand = QgsRubberBand(self.canvas, False)
-               self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
-               self.showLine(mPolygone)
-
-            self.rubberBand.setColor(QColor(self.Dialog.geomColor))
-            self.rubberBand.setFillColor(QColor(255, 0, 0, 0)) #For transparent
-            self.rubberBand.show()
-            QApplication.restoreOverrideCursor() 
-            QApplication.restoreOverrideCursor() 
-            
-            #Zoom si case cochée dans personnalisation de l'interface
-            if self.Dialog.geomZoom : 
-               if geomtype_from_wkt(mCoordSaisie) == "point" : 
-                  point1 = QgsPointXY(mPolygone.x, mPolygone.y)
-                  point1 = transformSourceCibleLayer(self.srid, self.mAuthid, point1)
-                  self.canvas.setExtent(QgsGeometry.fromWkt(point1.asWkt()).boundingBox())
-               else :   
-                  self.canvas.setExtent(QgsGeometry.fromWkt(self.rubberBand.asGeometry().boundingBox().asWktPolygon()).boundingBox())
-               self.canvas.redrawAllLayers()   
+         if res:
+             geom_wkt, self.srid = res
+             self.crs = QgsCoordinateReferenceSystem()
+             try: 
+                self.geom = QgsGeometry.fromWkt(geom_wkt)
+                self.crs.createFromUserInput(self.srid)
+             except: 
+                zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+                zMess  = QtWidgets.QApplication.translate("plume_ui", "Géométrie invalide ou type non pris en charge.", None)
+                bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+                return
+        
+             # NB. le type de géométrie du QgsRubberBand est automatiquement défini par setToGeometry
+             self.rubberBand = QgsRubberBand(self.canvas)
+             self.rubberBand.setToGeometry(self.geom, crs=self.crs)
+        
+             # configuration du QgsRubberBand :
+             self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
+             self.rubberBand.setColor(QColor(self.Dialog.geomColor))
+             self.rubberBand.setFillColor(QColor(255, 0, 0, 0)) # transparent
+             
+             # dont paramètres qui ne serviront qu'aux géométries ponctuelles :
+             icon = getattr(QgsRubberBand, self.Dialog.geomPoint, QgsRubberBand.ICON_X)
+             self.rubberBand.setIcon(icon)
+             self.rubberBand.setIconSize(int(self.Dialog.geomPointEpaisseur))
+              
+             self.rubberBand.show()
+             QApplication.restoreOverrideCursor() 
+             QApplication.restoreOverrideCursor() 
+        
+             # Zoom si case cochée dans personnalisation de l'interface :
+             if self.Dialog.geomZoom: 
+                map_crs = QgsCoordinateReferenceSystem()
+                map_crs.createFromUserInput(self.mAuthid)
+                transform = QgsCoordinateTransform(self.crs, map_crs, QgsProject.instance())
+                self.canvas.setExtent(transform.transformBoundingBox(self.geom.boundingBox()))
+             self.canvas.redrawAllLayers()
       return 
-  #-----
-  def showCircle(self, pointsCircle):
-      #Instanciation d'une géom QgsCircularString
-      geomCircle = QgsCircularString()
-      geomCircle.fromWkt(pointsCircle)
-      #Lecture de chaque points pour la transformation
-      points = geomCircle.points() 
-      points = [ transformSourceCibleLayer(self.srid, self.mAuthid, QgsPointXY(p)) for p in points ]
-      #Instanciation d'une géom QgsCircularString pour alimenter la géométrie du rubberBand
-      feature = QgsFeature()
-      geomCircleString = QgsCircularString()
-      geomCircleString.setPoints(QgsPoint(p) for p in points)
-      feature.setGeometry(geomCircleString)
-      self.rubberBand.addGeometry(feature.geometry(),None)
-      return 
-  #-----        
-  def showPolygon(self, pointsPolygone):
-      points = [ transformSourceCibleLayer(self.srid, self.mAuthid, QgsPointXY(p[0], p[1])) for p in list(pointsPolygone.exterior.coords) ]
-      self.rubberBand.setToGeometry(QgsGeometry.fromPolygonXY([ points ]), None)
-      return 
-  #-----
-  def showLine(self, pointsLine):
-      points = [ transformSourceCibleLayer(self.srid, self.mAuthid, QgsPointXY(p[0], p[1])) for p in pointsLine.coords ]
-      self.rubberBand.setToGeometry(QgsGeometry.fromPolylineXY(points), None)
-      return 
-  #-----
-  def showRect(self, startPoint, endPoint):
-      self.rubberBand.reset()
-      if startPoint.x == endPoint.x or startPoint.y == endPoint.y:
-        return
-
-      point1 = QgsPointXY(startPoint.x, startPoint.y)
-      point5 = QgsPointXY(startPoint.x, startPoint.y) #Point5 = Point1
-      point1 = transformSourceCibleLayer(self.srid, self.mAuthid, point1)
-      point2 = QgsPointXY(startPoint.x, endPoint.y)
-      point2 = transformSourceCibleLayer(self.srid, self.mAuthid, point2)
-      point3 = QgsPointXY(endPoint.x, endPoint.y)
-      point3 = transformSourceCibleLayer(self.srid, self.mAuthid, point3)
-      point4 = QgsPointXY(endPoint.x, startPoint.y)
-      point4 = transformSourceCibleLayer(self.srid, self.mAuthid, point4)
-      point5 = transformSourceCibleLayer(self.srid, self.mAuthid, point5)
-
-      self.rubberBand.addPoint(point1, False)
-      self.rubberBand.addPoint(point2, False)
-      self.rubberBand.addPoint(point3, False)
-      self.rubberBand.addPoint(point4, False) 
-      self.rubberBand.addPoint(point1, True)    # true to update canvas
-      return 
-  #-----
-  def showPoint(self, startPoint):
-      point1 = QgsPointXY(startPoint.x, startPoint.y)
-      point1 = transformSourceCibleLayer(self.srid, self.mAuthid, point1)
-      self.rubberBand.setCenter(point1)
-      return 
-
-#==================================================
-# Transform système de projection
-def transformSourceCibleLayer(crsSource, crsCible, mGeom) : 
-    mCrsSource = QgsCoordinateReferenceSystem()
-    mCrsSource.createFromUserInput(crsSource)
-    mCrsCible = QgsCoordinateReferenceSystem()
-    mCrsCible.createFromUserInput(crsCible)
-    transform = QgsCoordinateTransform(mCrsSource, mCrsCible, QgsProject.instance())
-    newmGeom = transform.transform(mGeom)
-    return newmGeom
 
 #==================================================
 # Maj text, Icon, ToolTip

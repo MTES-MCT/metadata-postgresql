@@ -538,6 +538,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["geomColor"]                   = "#958B62"
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
+       mDicAutreColor["geomPointEpaisseur"]          = "8"
        mDicAutreColor["geomZoom"]                    = "true"
        mDicAutreColor["geomPrecision"]               = "8"
 

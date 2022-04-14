@@ -14,7 +14,7 @@ from .bibli_plume import *
 from .bibli_plume_tools_map import *
 import psycopg2
 from plume.pg import queries
-from plume.rdf.utils import wkt_with_srid
+from plume.rdf.utils import wkt_with_srid                  
 
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
@@ -216,7 +216,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #========== 
        #QCOMBOBOX 
        if _valueObjet['main widget type'] in ("QComboBox") :
-          _thesaurus = _valueObjet['thesaurus values']
+          _thesaurus = _valueObjet['thesaurus values']                                                           
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
           _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
           _mObjetQSaisie.setEditable(True)
@@ -239,6 +239,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQLabel = QtWidgets.QLabel()
        _mObjetQLabel.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        _mObjetQLabel.setObjectName(str(_keyObjet))
+       _mObjetQLabel.setTextInteractionFlags(Qt.TextSelectableByMouse) # for select text"
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQLabel.setVisible(False)
        #--                        
@@ -656,6 +657,9 @@ def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, 
     else :
        #if not create rubberBand res = None
        eraseRubberBand(self, self.dic_objetMap, __keyObjet)
+    
+    #Rafraichissement du Canvas   
+    mCanvas.redrawAllLayers()
     return  
 
 #==================================================

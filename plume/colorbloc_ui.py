@@ -19,7 +19,7 @@ class Ui_Dialog_ColorBloc(object):
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
 
         self.DialogColorBloc.setObjectName("DialogConfirme")
-        self.DialogColorBloc.setFixedSize(900,585)
+        self.DialogColorBloc.setFixedSize(900, 605)
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
@@ -187,6 +187,7 @@ class Ui_Dialog_ColorBloc(object):
         self.geomPrecision   = self.mDic_LH["geomPrecision"]       
         self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
         self.geomPoint       = self.mDic_LH["geomPoint"]       
+        self.geomPointEpaisseur = self.mDic_LH["geomPointEpaisseur"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
         #-
         self.groupBoxLineGeom = QtWidgets.QGroupBox(self.groupBoxAll)
@@ -210,7 +211,6 @@ class Ui_Dialog_ColorBloc(object):
         self.spingeomPrecision.setValue(int(self.geomPrecision))         
         self.spingeomPrecision.valueChanged.connect(self.functiongeomPrecision)
         self.geomPrecision = self.spingeomPrecision.value()  # si ouverture sans chgt et sauve
-
         #-
         self.labelgeomEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
         self.labelgeomEpaisseur.setGeometry(QtCore.QRect(10, 300, 180, 30))
@@ -219,7 +219,7 @@ class Ui_Dialog_ColorBloc(object):
         #-
         self.spingeomEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
         self.spingeomEpaisseur.setGeometry(QtCore.QRect(205,296 ,50, 20))
-        self.spingeomEpaisseur.setMaximum(5)
+        self.spingeomEpaisseur.setMaximum(10)
         self.spingeomEpaisseur.setMinimum(0)
         self.spingeomEpaisseur.setValue(1)
         self.spingeomEpaisseur.setSingleStep(1)
@@ -230,8 +230,8 @@ class Ui_Dialog_ColorBloc(object):
         self.spingeomEpaisseur.valueChanged.connect(self.functiongeomEpaisseur)
         self.geomEpaisseur = self.spingeomEpaisseur.value()  # si ouverture sans chgt et sauve
         #--
-        mDicTypeCle      = ["ICON_X", "ICON_CROSS", "ICON_BOX", "ICON_CIRCLE", "ICON_DOUBLE_TRIANGLE"]
-        mDicTypeObj      = [QgsVertexMarker.ICON_X, QgsVertexMarker.ICON_CROSS, QgsVertexMarker.ICON_BOX, QgsVertexMarker.ICON_CIRCLE, QgsVertexMarker.ICON_DOUBLE_TRIANGLE]
+        mDicTypeCle      = ["ICON_CROSS", "ICON_X", "ICON_BOX", "ICON_CIRCLE", "ICON_FULL_BOX" , "ICON_DIAMOND" , "ICON_FULL_DIAMOND"]
+        mDicTypeObj      = [QgsRubberBand.ICON_X, QgsRubberBand.ICON_CROSS, QgsRubberBand.ICON_BOX, QgsRubberBand.ICON_CIRCLE, QgsRubberBand.ICON_FULL_BOX, QgsRubberBand.ICON_DIAMOND, QgsRubberBand.ICON_FULL_DIAMOND]
         self.mDialog.mDicTypeObj = dict(zip(mDicTypeCle, mDicTypeObj)) # For bibli_plume_tools_map
 
         mDicTypeCle = [ elem.lower().capitalize() for elem in mDicTypeCle ]
@@ -247,14 +247,32 @@ class Ui_Dialog_ColorBloc(object):
         self.comboTypegeomPoint.currentTextChanged.connect(self.functioncomboTypegeomPoint)
         self.comboTypegeomPoint.setCurrentText(self.geomPoint.lower().capitalize())         
         self.geomPoint = self.comboTypegeomPoint.currentText().upper()  # si ouverture sans chgt et sauve
+        #-
+        self.labelgeomPointEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
+        self.labelgeomPointEpaisseur.setGeometry(QtCore.QRect(10, 340, 180, 30))
+        self.labelgeomPointEpaisseur.setAlignment(Qt.AlignRight)        
+        self.labelgeomPointEpaisseur.setText("Taille de la géométrie POINT :")        
+        #-
+        self.spingeomPointEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
+        self.spingeomPointEpaisseur.setGeometry(QtCore.QRect(205,335 ,50, 20))
+        self.spingeomPointEpaisseur.setMaximum(20)
+        self.spingeomPointEpaisseur.setMinimum(0)
+        self.spingeomPointEpaisseur.setValue(1)
+        self.spingeomPointEpaisseur.setSingleStep(1)
+        self.spingeomPointEpaisseur.setDecimals(0)
+        self.spingeomPointEpaisseur.setSuffix(" px")
+        self.spingeomPointEpaisseur.setObjectName("spingeomPointEpaisseur")
+        self.spingeomPointEpaisseur.setValue(int(self.geomPointEpaisseur))         
+        self.spingeomPointEpaisseur.valueChanged.connect(self.functiongeomPointEpaisseur)
+        self.geomPointEpaisseur = self.spingeomPointEpaisseur.value()  # si ouverture sans chgt et sauve
         #--
         self.labelgeomZoom = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelgeomZoom.setGeometry(QtCore.QRect(-20, 340, 210, 30))
+        self.labelgeomZoom.setGeometry(QtCore.QRect(-20, 360, 210, 30))
         self.labelgeomZoom.setAlignment(Qt.AlignRight)        
         self.labelgeomZoom.setText("Zoom sur la visualisation géométrique :")        
         #--
         self.QCheckgeomZoom = QtWidgets.QCheckBox(self.groupBoxAll)
-        self.QCheckgeomZoom.setGeometry(QtCore.QRect(205, 335, 190, 20))
+        self.QCheckgeomZoom.setGeometry(QtCore.QRect(205, 355, 190, 20))
         self.QCheckgeomZoom.setObjectName("QCheckgeomZoom")
         self.QCheckgeomZoom.setChecked(self.geomZoom)  
         self.QCheckgeomZoom.toggled.connect(self.functiongeomZoom)       
@@ -672,6 +690,10 @@ class Ui_Dialog_ColorBloc(object):
         self.geomEpaisseur = self.spingeomEpaisseur.value()
         return 
 
+    def functiongeomPointEpaisseur(self):
+        self.geomPointEpaisseur = self.spingeomPointEpaisseur.value()
+        return 
+
     def functioncomboTypegeomPoint(self):
         self.geomPoint = self.comboTypegeomPoint.currentText().upper()
         return 
@@ -758,7 +780,7 @@ class Ui_Dialog_ColorBloc(object):
                                 }")
         #self.falseGroupBox.setTitle(self.dicListLettreLabel[1]) # "Enlève Groupe Général"
         x, y = 5, 5
-        larg, haut =  self.tabWidgetFalse.width()- 15, self.tabWidgetFalse.height()-40
+        larg, haut =  self.tabWidgetFalse.width()- 15, self.tabWidgetFalse.height() - 40
         self.falseGroupBox.setGeometry(QtCore.QRect(x, y, larg, haut))
         #------ 
         self.falseGroupBoxProperties = QtWidgets.QGroupBox(self.falseGroupBox)
@@ -775,7 +797,7 @@ class Ui_Dialog_ColorBloc(object):
                                 padding: 6px;            \
                                 }")
         x, y = 10, 5
-        larg, haut =  self.falseGroupBox.width()- 20, self.falseGroupBox.height()/3 - 15
+        larg, haut =  self.falseGroupBox.width()- 20, self.falseGroupBox.height()/3 - 35
         self.falseGroupBoxProperties.setGeometry(QtCore.QRect(x, y, larg, haut))
         self.falseGroupBoxProperties.setTitle(self.dicListLettreLabel[2]) 
         #------ 
@@ -826,7 +848,7 @@ class Ui_Dialog_ColorBloc(object):
                                 padding: 6px;            \
                                 }")
         x, y = 10, 100
-        larg, haut =  self.falseGroupBox.width()- 20, self.falseGroupBox.height()/3 + 0
+        larg, haut =  self.falseGroupBox.width()- 20, self.falseGroupBox.height()/3 - 20
         self.falseBoxGroupOfValues.setGeometry(QtCore.QRect(x, y, larg, haut))
         self.falseBoxGroupOfValues.setTitle(self.dicListLettreLabel[3]) 
         #------------------------
@@ -982,7 +1004,7 @@ class Ui_Dialog_ColorBloc(object):
                                 padding: 6px;            \
                                 }")
         x, y = 10, 210
-        larg, haut =  self.falseGroupBox.width()- 20, self.falseGroupBox.height()/3 + 0
+        larg, haut =  self.falseGroupBox.width()- 20, self.falseGroupBox.height()/3 - 20
         self.falseBoxTranslationGroup.setGeometry(QtCore.QRect(x, y, larg, haut))
         self.falseBoxTranslationGroup.setTitle(self.dicListLettreLabel[4]) 
         #------------------------ 
@@ -1250,9 +1272,9 @@ class Ui_Dialog_ColorBloc(object):
         elif compt == 6 :  
            ii = 1
            i = compt
-           mX1, mY1 = (ii * 10) +  0,  360 
-           mX2, mY2 = (ii * 10) + 185, 360
-           mX3, mY3 = (ii * 10) + 230, 360
+           mX1, mY1 = (ii * 10) +  0,  380 
+           mX2, mY2 = (ii * 10) + 185, 380
+           mX3, mY3 = (ii * 10) + 230, 380
            mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
            mButton.setObjectName(mButtonName)
            mButton.setText(self.dicListLettreLabel[i])
@@ -1299,6 +1321,7 @@ class Ui_Dialog_ColorBloc(object):
            mDicSaveColor["geomPrecision"] = self.geomPrecision
            mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
            mDicSaveColor["geomPoint"]     = self.geomPoint
+           mDicSaveColor["geomPointEpaisseur"] = self.geomPointEpaisseur
            mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
            #======== for Geometry
            #-
