@@ -847,7 +847,9 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
     La liste ainsi obtenue contient des tuples d'un élément, un
     pour chaque fragment du descriptif capturé par l'expression
     régulière. Si aucune expression régulière n'a été spécifiée,
-    c'est tout le descriptif qui est renvoyé.    
+    c'est tout le descriptif hors métadonnées qui est renvoyé.
+    Avec ou sans expression régulière, la requête commence en effet
+    par retirer les balises ``<METADATA>`` et leur contenu.
     
     Parameters
     ----------
@@ -859,9 +861,10 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
         Une expression régulière déterminant le ou les
         fragments du descriptif PostgreSQL à renvoyer.
         Si non spécifié, la requête récupèrera tout le
-        descriptif. Si l'expression régulière est invalide
-        (d'après les critères de PostgreSQL), la requête
-        ne renverra rien.
+        descriptif expurgé des balises ``<METADATA>`` et
+        de leur contenu. Si l'expression régulière est
+        invalide (d'après les critères de PostgreSQL), la
+        requête ne renverra rien.
     flags : str, optional
         Paramètres associés à l'expression rationnelle.
         Si PostgreSQL ne les reconnaît pas, la requête
@@ -884,7 +887,7 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
     if not pattern:
         return (
             sql.SQL("""
-                SELECT obj_description('{}'::regclass, 'pg_class')
+                SELECT z_plume.meta_ante_post_description('{}'::regclass, 'pg_class')
                 """
                 ).format(
                     sql.Identifier(schema_name, table_name)
@@ -894,7 +897,8 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
         sql.SQL(
             """
             SELECT z_plume.meta_regexp_matches(
-                obj_description('{}'::regclass, 'pg_class'),
+                z_plume.meta_ante_post_description(
+                    '{}'::regclass, 'pg_class'),
                 %s, %s)
             """
             ).format(
