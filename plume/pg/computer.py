@@ -26,10 +26,10 @@ class ComputationMethod():
         Seuls ces deux paramètres peuvent être obligatoires.
         Les noms des autres paramètres (optionnels, donc) sont à la
         discrétion de la fonction.
-    dependances: list(str), optional
+    dependances : list(str), optional
         Liste d'extensions PostgreSQL devant être installées sur
         la base cible pour que la méthode soit valable.
-    parser: function, default default_parser
+    parser : function, default default_parser
         Une fonction qui servira à retraiter le résultat
         retourné par le serveur avant de le passer aux
         clés du dictionnaire de widgets. Elle doit prendre
@@ -41,11 +41,14 @@ class ComputationMethod():
         concernées par le calcul. Concrètement, les clés-valeurs
         dont la source courante fait partie de cette liste seront
         remplacées par les valeurs calculées tandis que les autres
-        seront préservées. Si ce paramètre est ``None`` ou une
-        liste vide, toutes les clés (clés-valeurs et groupes de
-        propriétés) seront remplacées, quelle que soit leur source.
-        Cette information n'est considérée que dans un groupe de
-        valeurs.
+        seront préservées. Si ce paramètre est ``None``, toutes les
+        clés (clés-valeurs et groupes de propriétés) seront remplacées,
+        quelle que soit leur source. Si c'est une liste vide, toutes
+        les clés sont préservées. Cette information n'est considérée
+        que dans un groupe de valeurs.
+    description : str, optional
+        Description de l'effet de la méthode de calcul. Si non
+        spécifié, une description générique est renvoyée.
     
     Attributes
     ----------
@@ -67,14 +70,18 @@ class ComputationMethod():
         Pour les métadonnées prenant leurs valeurs dans plusieurs
         sources de vocabulaire contrôlé, les sources concernées
         par le calcul.
+    description : str
+        Description de l'effet de la méthode de calcul.
     
     """
     
-    def __init__(self, query_builder, dependances=None, parser=None, sources=None):
+    def __init__(self, query_builder, dependances=None, parser=None,
+        sources=None, description=None):
         self.query_builder = query_builder
         self.dependances = dependances or []
-        self.sources = sources or []
+        self.sources = sources
         self.parser = parser or default_parser
+        self.description = description or 'Calcul côté serveur'
 
 class ComputationResult():
     """Résultat d'un calcul de métadonnées, sous une forme adaptée pour l'alimentation du dictionnaire de widgets.
@@ -193,13 +200,19 @@ methods = {
         query_builder=query_get_srid_list,
         dependances=['postgis'],
         sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')],
-        parser=crs_parser
+        parser=crs_parser,
+        description='Import des référentiels de coordonnées déclarés ' \
+            'pour les champs de géométrie de la table ou vue'
         ),
     DCT.title : ComputationMethod(
-        query_builder=query_get_comment_fragments
+        query_builder=query_get_comment_fragments,
+        dependances=['plume_pg'],
+        description='Extraction depuis le descriptif PostgreSQL de la table ou vue'
         ),
     DCT.description : ComputationMethod(
-        query_builder=query_get_comment_fragments
+        query_builder=query_get_comment_fragments,
+        dependances=['plume_pg'],
+        description='Extraction depuis le descriptif PostgreSQL de la table ou vue'
         )
     }
 """Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.
