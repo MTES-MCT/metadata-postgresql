@@ -29,11 +29,8 @@ class WidgetKeyTestCase(unittest.TestCase):
         """
         WidgetKey.reinitiate_shared_attributes()
 
-    def test_compute(self):
-        """Clé avec calcul côté serveur.
-        
-        Le test vérifie simplement que le mode ``'empty'``
-        n'est bien disponible que pour une clé vide.
+    def test_is_empty(self):
+        """Méthode d'identification des clés vides.
         
         """
         r = RootKey()
@@ -41,7 +38,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         g = GroupOfValuesKey(parent=t, predicate=DCT.conformsTo,
             rdfclass=DCT.Standard, sources=[
             URIRef('http://www.opengis.net/def/crs/EPSG/0'),
-            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')], compute=['manual', 'empty'])
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')])
         b = PlusButtonKey(parent=g)
         p1 = GroupOfPropertiesKey(parent=g)
         v1 = ValueKey(parent=g, m_twin=p1, is_hidden_m=True,
@@ -50,27 +47,25 @@ class WidgetKeyTestCase(unittest.TestCase):
         v2 = ValueKey(parent=g, m_twin=p2, is_hidden_m=False,
             value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'))
         # groupe vide
-        self.assertTrue(g.is_empty)
-        self.assertTrue('empty' in g.compute)
+        self.assertTrue(g.is_empty())
+        self.assertTrue(g.is_empty(sources=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')))
         # groupe avec une clé-valeur remplie
         v2.value = URIRef('http://www.opengis.net/def/serviceType/ogc/wfs')
-        self.assertFalse(g.is_empty)
-        self.assertFalse('empty' in g.compute)
-        self.assertTrue('manual' in g.compute)
+        self.assertFalse(g.is_empty())
+        self.assertFalse(g.is_empty(sources=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')))
+        self.assertTrue(g.is_empty(sources=URIRef('http://www.opengis.net/def/crs/EPSG/0')))
         v2.value = None
         # groupe avec un groupe de propriétés non vide
         p1v = ValueKey(parent=p1, predicate=DCT.title)
-        self.assertTrue(g.is_empty)
-        self.assertTrue('empty' in g.compute)
+        self.assertTrue(p1v.is_empty())
+        self.assertTrue(p1.is_empty())
+        self.assertTrue(g.is_empty())
+        self.assertTrue(g.is_empty(sources=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')))
         p1v.value = Literal('Mon standard', lang='fr')
-        self.assertFalse(g.is_empty)
-        self.assertFalse('empty' in g.compute)
-        self.assertTrue('manual' in g.compute)
-        # clé-valeur non vide
-        p1v.compute = ['empty']
-        self.assertFalse(p1v.compute)
-        p1v.value = None
-        self.assertTrue('empty' in p1v.compute)
+        self.assertFalse(p1v.is_empty())
+        self.assertFalse(p1.is_empty())
+        self.assertFalse(g.is_empty())
+        self.assertTrue(g.is_empty(sources=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')))
 
     def test_shrink_expend(self):
         """Préparation d'un groupe de valeurs en vue d'un import massif.
