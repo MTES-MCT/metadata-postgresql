@@ -1029,7 +1029,7 @@ if widgetsdict[widgetkey]['has compute button']:
 
 ### Stockage
 
-Le boutoin de calcul est stocké dans la clé `'compute widget'` du dictionnaire interne.
+Le bouton de calcul est stocké dans la clé `'compute widget'` du dictionnaire interne.
 
 ```python
 
@@ -1061,11 +1061,11 @@ L'image ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) �
 
 ### Texte d'aide
 
-On pourra afficher en infobulle sur le bouton le texte suivant :
+On pourra afficher en infobulle sur le bouton le texte obtenu comme suit, qui fournit une description détaillée de l'information effectivement importée depuis le serveur.
 
 ```python
 
-'Calculer côté serveur'
+help_text = widgetsdict[widgetkey]['compute method'].description
 
 ```
 
