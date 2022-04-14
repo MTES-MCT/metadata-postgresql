@@ -185,7 +185,7 @@ class WidgetsDict(dict):
         
         self.modified = False
         self._fresh = metagraph.fresh if metagraph else True
-        self._is_empty = metagraph.is_empty if metagraph else True
+        self._was_empty = metagraph.is_empty if metagraph else True
         
         # ------ Paramètres utilisateur ------
         self.mode = mode if mode in ('edit', 'read') else 'edit'
@@ -574,15 +574,16 @@ class WidgetsDict(dict):
         internaldict['multiple sources'] = widgetkey.has_source_button
         internaldict['has label'] = widgetkey.has_label
         
-        if isinstance(widgetkey, (ValueKey, GroupOfValuesKey)) and widgetkey.compute:
+        if isinstance(widgetkey, (ValueKey, GroupOfValuesKey)) \
+            and widgetkey.compute:
             method = computation_method(widgetkey.path)
             auto = ('auto' in widgetkey.compute
-                or 'empty' in widgetkey.compute and self._fresh
-                or 'new' in widgetkey.compute and self._is_empty and self._fresh)
-            if method and (auto or widgetkey.has_compute_button):
+                or 'empty' in widgetkey.compute and widgetkey.is_empty(sources=method.sources)
+                or 'new' in widgetkey.compute and self._was_empty)
+            if method and (auto and self._fresh or widgetkey.has_compute_button):
                 internaldict['has compute button'] = widgetkey.has_compute_button
                 internaldict['compute method'] = method
-                internaldict['auto compute'] = auto
+                internaldict['auto compute'] = auto and self._fresh
                 internaldict['compute parameters'] = widgetkey.compute_params
         
         if isinstance(widgetkey, ValueKey):
@@ -1228,10 +1229,11 @@ class WidgetsDict(dict):
         # sera complété au fur et à mesure et non réinitialisé
         # après chaque opération, grâce aux paramètres append_book
         # des méthodes d'actions sur les clés.
-        if result and isinstance(widgetkey, ValueKey):
+        if result and isinstance(widgetkey, (ValueKey, TranslationGroupKey)):
             result=result[:1]
-            # on ne garde que la première valeur, même s'il
-            # y en avait davantage
+            # pour une clé-valeur ou un groupe de traduction,
+            # on ne garde que la première valeur calculée, même
+            # s'il y en avait davantage
         e_list = []
         for r in result:
             e = method.parser.__call__(*r)
