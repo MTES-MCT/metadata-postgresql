@@ -284,20 +284,49 @@
 </ul>
 <section id="principe">
 <h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">#</a></h2>
-<p>Plume permet à l’administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (option <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>), soit à la demande de l’utilisateur (option <code class="docutils literal notranslate"><span class="pre">'manual'</span></code>).</p>
-<p>Les catégories pour lesquels le calcul est proposé sont, à ce stade :</p>
+<p>Plume permet à l’administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (options <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, <code class="docutils literal notranslate"><span class="pre">'new'</span></code> ou <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>), soit à la demande de l’utilisateur (option <code class="docutils literal notranslate"><span class="pre">'manual'</span></code>).</p>
+<p>Les catégories pour lesquelles le calcul est proposé sont, à ce stade :</p>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Chemin de la catégorie</p></th>
 <th class="head"><p>Information calculée</p></th>
+<th class="head"><p>Paramètres optionnels</p></th>
+<th class="head"><p>Dépendances</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
 <td><p>Tous les référentiels de coordonnées déclarés pour les géométries de la table ou vue.</p></td>
+<td><p>Aucun.</p></td>
+<td><p>L’extension PostGIS doit être active sur la base.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:description</span></code></p></td>
+<td><p>Importe le contenu du descriptif PostgreSQL de l’objet<a class="footnote-reference brackets" href="#extrait-descriptif" id="id1">1</a>, soit dans son intégralité, soit en utilisant une expression régulière.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code> est l’expression régulière spécifiant l’extrait du descriptif à importer<a class="footnote-reference brackets" href="#doc-pattern" id="id2">2</a>. Si l’expression renvoie plusieurs fragments, seul le premier est conservé. S’il y a lieu, <code class="docutils literal notranslate"><span class="pre">flags</span></code> contient les paramètres associés à l’expression régulière<a class="footnote-reference brackets" href="#doc-flags" id="id3">3</a>.</p></td>
+<td><p>L’extension PlumePg doit être active sur la base.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:title</span></code></p></td>
+<td><p>Idem <code class="docutils literal notranslate"><span class="pre">dct:description</span></code>.</p></td>
+<td><p>Idem <code class="docutils literal notranslate"><span class="pre">dct:description</span></code>.</p></td>
+<td><p>Idem <code class="docutils literal notranslate"><span class="pre">dct:description</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
+<p>Les paramètres optionnels sont spécifiés via le champ <code class="docutils literal notranslate"><span class="pre">compute_params</span></code> des tables <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code>. Il s’agit d’un champ de type <code class="docutils literal notranslate"><span class="pre">jsonb</span></code>, qui attend un dictionnaire dont les clés sont les noms des paramètres et les valeurs les valeurs des paramètres.</p>
+<p>Par exemple :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_categorie</span><span class="w"></span>
+<span class="w">	</span><span class="k">SET</span><span class="w"> </span><span class="n">compute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]::</span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_compute</span><span class="p">[],</span><span class="w"></span>
+<span class="w">		</span><span class="n">compute_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{&quot;pattern&quot;: &quot;^(?:\\w+\\s*)+&quot;}&#39;</span><span class="p">::</span><span class="n">jsonb</span><span class="w"></span>
+<span class="w">	</span><span class="k">WHERE</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;dct:title&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Les trois modes de calcul automatique opèrent comme suit :</p>
+<ul class="simple">
+<li><p>Avec <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, le calcul est effectué systématiquement à l’ouverture de la fiche de métadonnées ou lorsqu’elle est re-générée par une réinitialisation, un import, une copie… Il n’est pas exécuté lorsque le formulaire est reconstruit après une sauvegarde.</p></li>
+<li><p>Avec <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>, le calcul est effectué dans les mêmes conditions que pour <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, avec une condition supplémentaire : le widget ou le groupe de widgets ne doit contenir aucune valeur.</p></li>
+<li><p>Avec <code class="docutils literal notranslate"><span class="pre">'new'</span></code>, le calcul n’est effectué que si la fiche de métadonnées est entièrement vide<a class="footnote-reference brackets" href="#quasi-vide" id="id4">4</a>, soit dans le cas d’une table dont le descriptif ne contenait par encore de métadonnées, dans le cas d’une réinitialisation ou encore dans le cas de l’import d’une fiche vide.</p></li>
+</ul>
+<p>Si plusieurs de ces modes sont spécifiés simultanément, <code class="docutils literal notranslate"><span class="pre">'auto'</span></code> prévaut sur <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>, qui prévaut sur <code class="docutils literal notranslate"><span class="pre">'new'</span></code>.</p>
 </section>
 <section id="processus-de-calcul">
 <h2>Processus de calcul<a class="headerlink" href="#processus-de-calcul" title="Lien permanent vers ce titre">#</a></h2>
@@ -387,6 +416,21 @@
 <h2>Implémentation du calcul à déclenchement manuel<a class="headerlink" href="#implementation-du-calcul-a-declenchement-manuel" title="Lien permanent vers ce titre">#</a></h2>
 <p>Lorsque l’utilisateur clique sur un bouton de calcul du formulaire, toutes les étapes du <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">processus de calcul</span></a> sont à réaliser.</p>
 <p>Cf. <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-calcul"><span class="std std-doc">Création d’un nouveau widget</span></a> pour les modalités de création de ces boutons.</p>
+<hr class="footnotes docutils" />
+<dl class="footnote brackets">
+<dt class="label" id="extrait-descriptif"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Si des métadonnées ont déjà été saisies pour la table, seule la partie du descriptif qui précède la balise <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> sera considérée.</p>
+</dd>
+<dt class="label" id="doc-pattern"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Pour plus de détails, on se reportera à la documentation de PostgreSQL. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.</p>
+</dd>
+<dt class="label" id="doc-flags"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>Les valeurs acceptées sont les mêmes que pour les arguments <code class="docutils literal notranslate"><span class="pre">flags</span></code> des fonctions d’expression régulière de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.</p>
+</dd>
+<dt class="label" id="quasi-vide"><span class="brackets"><a class="fn-backref" href="#id4">4</a></span></dt>
+<dd><p>Incluant les fiches qui ne comportent que les champs mis à jour automatiquement, soit l’identifiant et/ou la date de dernière modification.</p>
+</dd>
+</dl>
 </section>
 </section>
 

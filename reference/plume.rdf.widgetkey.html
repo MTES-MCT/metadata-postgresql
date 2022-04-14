@@ -492,25 +492,28 @@ de ses méthodes et attributs :</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.copy" title="plume.rdf.widgetkey.GroupKey.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([parent, empty])</p></td>
 <td><p>Renvoie une copie de la clé.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="plume.rdf.widgetkey.GroupKey.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>(**kwargs)</p></td>
+<td><p>Le groupe est-il vide ?</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.real_children" title="plume.rdf.widgetkey.GroupKey.real_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.real_children" title="plume.rdf.widgetkey.GroupKey.real_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code></a>()</p></td>
 <td><p>Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.search_tab" title="plume.rdf.widgetkey.GroupKey.search_tab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code></a>([label])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.search_tab" title="plume.rdf.widgetkey.GroupKey.search_tab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code></a>([label])</p></td>
 <td><p>Cherche parmi les filles du groupe et renvoie l'onglet d'étiquette donnée.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -609,13 +612,24 @@ copie des filles de la clé.</p>
 <dd><p>bool: Y a-t-il au moins un enfant dans ce groupe qui ne soit pas un fantôme ?</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetkey.GroupKey.is_empty">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><a class="headerlink" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>bool: Le groupe est-il vide ?</p>
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Le groupe est-il vide ?</p>
 <p>Un groupe est considéré comme vide quand il ne contient
 que des groupes vides ou des clés-valeurs sans valeur.
 Les fantômes sont pris en compte.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfValuesKey.is_empty" title="plume.rdf.widgetkey.GroupOfValuesKey.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GroupOfValuesKey.is_empty</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Cette méthode admet des paramètres arbitraires pour
+qu’elle puisse être appelée dans les mêmes conditions
+que les méthodes de même nom définies sur d’autres
+classes de clés. En pratique, elle n’en utilise aucun.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -748,8 +762,6 @@ c’est lui qui porte cette information. Sinon, elle est obligatoire.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
-</dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.is_ghost" title="plume.rdf.widgetkey.GroupOfPropertiesKey.is_ghost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></a></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
@@ -826,31 +838,34 @@ c’est lui qui porte cette information. Sinon, elle est obligatoire.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop</span></code>([append_book])</p></td>
 <td><p>Supprime une clé d'un groupe de valeur ou de traduction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.kill" title="plume.rdf.widgetkey.GroupOfPropertiesKey.kill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code>(**kwargs)</p></td>
+<td><p>Le groupe est-il vide ?</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.kill" title="plume.rdf.widgetkey.GroupOfPropertiesKey.kill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code></a>(**kwargs)</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.paste_from_rdfclass" title="plume.rdf.widgetkey.GroupOfPropertiesKey.paste_from_rdfclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_from_rdfclass</span></code></a>(widgetkey)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.paste_from_rdfclass" title="plume.rdf.widgetkey.GroupOfPropertiesKey.paste_from_rdfclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_from_rdfclass</span></code></a>(widgetkey)</p></td>
 <td><p>Remplace la branche par une branche de même type.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
 <td><p>Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
 <td><p>Cherche parmi les filles du groupe et renvoie l'onglet d'étiquette donnée.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_twin</span></code>([value_source, append_book])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_twin</span></code>([value_source, append_book])</p></td>
 <td><p>Intervertit la visibilité d'un couple de jumelles.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -1160,28 +1175,31 @@ valeurs <cite>“manual”</cite>, <cite>“auto”</cite>, <cite>“empty”</c
 <tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfValuesKey.copy" title="plume.rdf.widgetkey.GroupOfValuesKey.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([parent, empty])</p></td>
 <td><p>Renvoie une copie de la clé.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfValuesKey.is_empty" title="plume.rdf.widgetkey.GroupOfValuesKey.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>([sources])</p></td>
+<td><p>Le groupe est-il vide ?</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
 <td><p>Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
 <td><p>Cherche parmi les filles du groupe et renvoie l'onglet d'étiquette donnée.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfValuesKey.shrink_expend" title="plume.rdf.widgetkey.GroupOfValuesKey.shrink_expend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shrink_expend</span></code></a>(length[, sources])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfValuesKey.shrink_expend" title="plume.rdf.widgetkey.GroupOfValuesKey.shrink_expend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shrink_expend</span></code></a>(length[, sources])</p></td>
 <td><p>Prépare les clés filles du groupe en vue d'une saisie massive des valeurs.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -1223,9 +1241,6 @@ ils requièrent un traitement spécifique.</p>
 <p>Contrairement à beaucoup d’autre propriétés qui valent 
 pour les clés du groupe et non pour le groupe lui-même,
 celle-ci porte bien sur le groupe de valeurs.</p>
-<p>Le getter de la propriété ne retiendra le mode <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>
-que si le groupe est effectivement vide au sens de la
-propriété <a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="plume.rdf.widgetkey.GroupKey.is_empty"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GroupKey.is_empty</span></code></a>.</p>
 <p>Il est permis de fournir en argument une liste de
 <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement
 convertis.</p>
@@ -1386,6 +1401,28 @@ qui seront alors automatiquement converties.</p>
 <p>Il n’est pas interdit de définir une valeur pour cette propriété
 lorsque le groupe de valeurs ne contient que des groupes de 
 propriétés, mais cela ne présente aucun intérêt.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.GroupOfValuesKey.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetkey.GroupOfValuesKey.is_empty" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Le groupe est-il vide ?</p>
+<p>Un groupe est considéré comme vide quand il ne contient
+que des groupes vides ou des clés-valeurs sans valeur.
+Les fantômes sont pris en compte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sources</strong><span class="classifier">list</span></dt><dd><p>Une liste de sources à prendre en compte. Si ce
+paramètre est renseigné, toutes les clés-valeurs dont la
+source ne fait pas partie de la liste seront
+ignorées, de même que les groupes de propriétés.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Réécriture de la méthode <a class="reference internal" href="#plume.rdf.widgetkey.GroupKey.is_empty" title="plume.rdf.widgetkey.GroupKey.is_empty"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupKey.is_empty()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -2372,8 +2409,6 @@ dans ce sens serait ignorée.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
-</dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.is_ghost" title="plume.rdf.widgetkey.RootKey.is_ghost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></a></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
@@ -2441,40 +2476,43 @@ dans ce sens serait ignorée.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>([parent, empty])</p></td>
 <td><p>Renvoie une copie de la clé.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.kill" title="plume.rdf.widgetkey.RootKey.kill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code></a>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code>(**kwargs)</p></td>
+<td><p>Le groupe est-il vide ?</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.kill" title="plume.rdf.widgetkey.RootKey.kill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code></a>()</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.paste_from_path" title="plume.rdf.widgetkey.RootKey.paste_from_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_from_path</span></code></a>(widgetkey)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.paste_from_path" title="plume.rdf.widgetkey.RootKey.paste_from_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_from_path</span></code></a>(widgetkey)</p></td>
 <td><p>Copie et colle une branche dans l'arbre de clés.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
 <td><p>Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.search_from_path" title="plume.rdf.widgetkey.RootKey.search_from_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_from_path</span></code></a>(path[, allow_ghosts])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.search_from_path" title="plume.rdf.widgetkey.RootKey.search_from_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_from_path</span></code></a>(path[, allow_ghosts])</p></td>
 <td><p>Renvoie la première clé de l'arbre dont le chemin correspond à celui recherché.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.search_from_rdfclass" title="plume.rdf.widgetkey.RootKey.search_from_rdfclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_from_rdfclass</span></code></a>(rdfclass)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.search_from_rdfclass" title="plume.rdf.widgetkey.RootKey.search_from_rdfclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_from_rdfclass</span></code></a>(rdfclass)</p></td>
 <td><p>Renvoie la liste des groupes de propriétés du type recherché.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.search_from_uuid" title="plume.rdf.widgetkey.RootKey.search_from_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_from_uuid</span></code></a>(uuid)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.search_from_uuid" title="plume.rdf.widgetkey.RootKey.search_from_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_from_uuid</span></code></a>(uuid)</p></td>
 <td><p>Renvoie la clé de l'arbre dont l'identifiant est l'UUID recherché.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
 <td><p>Cherche parmi les filles du groupe et renvoie l'onglet d'étiquette donnée.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.tree_keys" title="plume.rdf.widgetkey.RootKey.tree_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tree_keys</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.RootKey.tree_keys" title="plume.rdf.widgetkey.RootKey.tree_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tree_keys</span></code></a>()</p></td>
 <td><p>Générateur sur les clés de l'arbre.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -2872,8 +2910,6 @@ condition.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">independant_label</span></code></dt><dd><p>bool: L’étiquette de la clé occupe-t-elle sa propre ligne de la grille ?</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
-</dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.TabKey.is_ghost" title="plume.rdf.widgetkey.TabKey.is_ghost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></a></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
@@ -2935,25 +2971,28 @@ condition.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>([parent, empty])</p></td>
 <td><p>Renvoie une copie de la clé.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code>(**kwargs)</p></td>
+<td><p>Le groupe est-il vide ?</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
 <td><p>Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
 <td><p>Cherche parmi les filles du groupe et renvoie l'onglet d'étiquette donnée.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -3300,8 +3339,6 @@ toujours <code class="docutils literal notranslate"><span class="pre">None</span
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">input_mask</span></code></dt><dd><p>str: Masque de saisie à utiliser pour les clés-valeurs du groupe.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></dt><dd><p>bool: Le groupe est-il vide ?</p>
-</dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ghost</span></code></dt><dd><p>bool: La clé est-elle une clé fantôme non matérialisée ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
@@ -3386,34 +3423,37 @@ toujours <code class="docutils literal notranslate"><span class="pre">None</span
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>([parent, empty])</p></td>
 <td><p>Renvoie une copie de la clé.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code>([sources])</p></td>
+<td><p>Le groupe est-il vide ?</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>()</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.TranslationGroupKey.language_in" title="plume.rdf.widgetkey.TranslationGroupKey.language_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">language_in</span></code></a>(value_language)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.TranslationGroupKey.language_in" title="plume.rdf.widgetkey.TranslationGroupKey.language_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">language_in</span></code></a>(value_language)</p></td>
 <td><p>Ajoute une langue à la liste des langues disponibles.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.TranslationGroupKey.language_out" title="plume.rdf.widgetkey.TranslationGroupKey.language_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">language_out</span></code></a>(value_language)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.TranslationGroupKey.language_out" title="plume.rdf.widgetkey.TranslationGroupKey.language_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">language_out</span></code></a>(value_language)</p></td>
 <td><p>Retire une langue de la liste des langues disponibles.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_children</span></code>()</p></td>
 <td><p>Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_tab</span></code>([label])</p></td>
 <td><p>Cherche parmi les filles du groupe et renvoie l'onglet d'étiquette donnée.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shrink_expend</span></code>(length[, sources])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shrink_expend</span></code>(length[, sources])</p></td>
 <td><p>Prépare les clés filles du groupe en vue d'une saisie massive des valeurs.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -3799,22 +3839,25 @@ en compte : <code class="docutils literal notranslate"><span class="pre">'show'<
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop</span></code>([append_book])</p></td>
 <td><p>Supprime une clé d'un groupe de valeur ou de traduction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>([preserve_twin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetkey.ValueKey.is_empty" title="plume.rdf.widgetkey.ValueKey.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>(**kwargs)</p></td>
+<td><p>La clé est-elle vide ?</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kill</span></code>([preserve_twin])</p></td>
 <td><p>Efface une clé de la mémoire de son parent.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reinitiate_shared_attributes</span></code>()</p></td>
 <td><p>Rend leur valeur par défaut à toutes les variables partagées par les instances de la classe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_twin</span></code>([value_source, append_book])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_twin</span></code>([value_source, append_book])</p></td>
 <td><p>Intervertit la visibilité d'un couple de jumelles.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unload_actionsbook</span></code>([preserve_book])</p></td>
 <td><p>Renvoie le carnet d'actions et le remplace par un carnet vierge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([exclude_none])</p></td>
 <td><p>Met à jour les attributs de la clé selon les valeurs fournies.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code>(kind)</p></td>
 <td><p>Renvoie le nombre de colonnes occupées par l'élément.</p></td>
 </tr>
 </tbody>
@@ -3947,8 +3990,6 @@ d’unité sur les widgets.</p>
 <p class="rubric">Notes</p>
 <p>Si la clé appartient à un groupe de valeurs, cette propriété
 vaudra toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-<p>Le getter de la propriété ne retiendra le mode <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>
-que si la clé ne contient effectivement pas de valeur.</p>
 <p>Il est permis de fournir en argument une liste de
 <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>, qui seront alors automatiquement convertis.</p>
 </dd></dl>
@@ -4156,6 +4197,19 @@ la propriété du groupe parent est renvoyée. Tenter d’en modifier
 la valeur n’aura silencieusement aucun effet.</p>
 <p>Il est permis de fournir des valeurs de type <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>,
 qui seront alors automatiquement converties.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.ValueKey.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetkey.ValueKey.is_empty" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>La clé est-elle vide ?</p>
+<p>Renvoie simplement <code class="docutils literal notranslate"><span class="pre">True</span></code> si l’attribut
+:py:attr:<code class="docutils literal notranslate"><span class="pre">ValueKey.value</span></code> de la clé vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p class="rubric">Notes</p>
+<p>Cette méthode admet des paramètres arbitraires pour
+qu’elle puisse être appelée dans les mêmes conditions
+que les méthodes de même nom définies sur d’autres
+classes de clés. En pratique, elle n’en utilise aucun.</p>
 </dd></dl>
 
 <dl class="py property">

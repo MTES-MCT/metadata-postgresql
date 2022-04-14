@@ -504,7 +504,9 @@ et <cite>flags</cite>.</p>
 <p>La liste ainsi obtenue contient des tuples d’un élément, un
 pour chaque fragment du descriptif capturé par l’expression
 régulière. Si aucune expression régulière n’a été spécifiée,
-c’est tout le descriptif qui est renvoyé.</p>
+c’est tout le descriptif hors métadonnées qui est renvoyé.
+Avec ou sans expression régulière, la requête commence en effet
+par retirer les balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et leur contenu.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -515,9 +517,10 @@ c’est tout le descriptif qui est renvoyé.</p>
 <dt><strong>pattern</strong><span class="classifier">str, optional</span></dt><dd><p>Une expression régulière déterminant le ou les
 fragments du descriptif PostgreSQL à renvoyer.
 Si non spécifié, la requête récupèrera tout le
-descriptif. Si l’expression régulière est invalide
-(d’après les critères de PostgreSQL), la requête
-ne renverra rien.</p>
+descriptif expurgé des balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et
+de leur contenu. Si l’expression régulière est
+invalide (d’après les critères de PostgreSQL), la
+requête ne renverra rien.</p>
 </dd>
 <dt><strong>flags</strong><span class="classifier">str, optional</span></dt><dd><p>Paramètres associés à l’expression rationnelle.
 Si PostgreSQL ne les reconnaît pas, la requête

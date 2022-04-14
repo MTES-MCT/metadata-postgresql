@@ -344,7 +344,7 @@
 <p>Référencement des méthodes de calcul de métadonnées côté serveur.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.pg.computer.ComputationMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationMethod" title="Lien permanent vers cette définition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">ComputationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.ComputationMethod" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Méthode de calcul de métadonnées côté serveur.</p>
 <dl class="field-list simple">
@@ -362,10 +362,10 @@ Seuls ces deux paramètres peuvent être obligatoires.
 Les noms des autres paramètres (optionnels, donc) sont à la
 discrétion de la fonction.</p>
 </dd>
-<dt><strong>dependances: list(str), optional</strong></dt><dd><p>Liste d’extensions PostgreSQL devant être installées sur
+<dt><strong>dependances</strong><span class="classifier">list(str), optional</span></dt><dd><p>Liste d’extensions PostgreSQL devant être installées sur
 la base cible pour que la méthode soit valable.</p>
 </dd>
-<dt><strong>parser: function, default default_parser</strong></dt><dd><p>Une fonction qui servira à retraiter le résultat
+<dt><strong>parser</strong><span class="classifier">function, default default_parser</span></dt><dd><p>Une fonction qui servira à retraiter le résultat
 retourné par le serveur avant de le passer aux
 clés du dictionnaire de widgets. Elle doit prendre
 pour argument les éléments des tuples résultant de la
@@ -376,11 +376,14 @@ sources de vocabulaire contrôlé, les sources
 concernées par le calcul. Concrètement, les clés-valeurs
 dont la source courante fait partie de cette liste seront
 remplacées par les valeurs calculées tandis que les autres
-seront préservées. Si ce paramètre est <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une
-liste vide, toutes les clés (clés-valeurs et groupes de
-propriétés) seront remplacées, quelle que soit leur source.
-Cette information n’est considérée que dans un groupe de
-valeurs.</p>
+seront préservées. Si ce paramètre est <code class="docutils literal notranslate"><span class="pre">None</span></code>, toutes les
+clés (clés-valeurs et groupes de propriétés) seront remplacées,
+quelle que soit leur source. Si c’est une liste vide, toutes
+les clés sont préservées. Cette information n’est considérée
+que dans un groupe de valeurs.</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str, optional</span></dt><dd><p>Description de l’effet de la méthode de calcul. Si non
+spécifié, une description générique est renvoyée.</p>
 </dd>
 </dl>
 </dd>
@@ -403,6 +406,8 @@ résultant de la requête et renvoie un objet
 <dt><strong>sources</strong><span class="classifier">list(rdflib.term.URIRef)</span></dt><dd><p>Pour les métadonnées prenant leurs valeurs dans plusieurs
 sources de vocabulaire contrôlé, les sources concernées
 par le calcul.</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str</span></dt><dd><p>Description de l’effet de la méthode de calcul.</p>
 </dd>
 </dl>
 </dd>

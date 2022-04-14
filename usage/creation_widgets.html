@@ -1510,7 +1510,7 @@
 </div>
 <section id="id28">
 <h3>Stockage<a class="headerlink" href="#id28" title="Lien permanent vers ce titre">#</a></h3>
-<p>Le boutoin de calcul est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'compute</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
+<p>Le bouton de calcul est stocké dans la clé <code class="docutils literal notranslate"><span class="pre">'compute</span> <span class="pre">widget'</span></code> du dictionnaire interne.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;compute widget&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_widget</span>
 
@@ -1537,9 +1537,9 @@
 </section>
 <section id="id31">
 <h3>Texte d’aide<a class="headerlink" href="#id31" title="Lien permanent vers ce titre">#</a></h3>
-<p>On pourra afficher en infobulle sur le bouton le texte suivant :</p>
+<p>On pourra afficher en infobulle sur le bouton le texte obtenu comme suit, qui fournit une description détaillée de l’information effectivement importée depuis le serveur.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="s1">&#39;Calculer côté serveur&#39;</span>
+<span class="n">help_text</span> <span class="o">=</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;compute method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">description</span>
 
 </pre></div>
 </div>
