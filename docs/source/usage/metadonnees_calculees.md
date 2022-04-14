@@ -8,13 +8,43 @@ Dans la suite, on considère :
 
 ## Principe
 
-Plume permet à l'administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (option `'auto'`), soit à la demande de l'utilisateur (option `'manual'`).
+Plume permet à l'administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (options `'auto'`, `'new'` ou `'empty'`), soit à la demande de l'utilisateur (option `'manual'`).
 
-Les catégories pour lesquels le calcul est proposé sont, à ce stade :
+Les catégories pour lesquelles le calcul est proposé sont, à ce stade :
 
-| Chemin de la catégorie | Information calculée |
-| --- | --- |
-| `dct:conformsTo` | Tous les référentiels de coordonnées déclarés pour les géométries de la table ou vue. |
+| Chemin de la catégorie | Information calculée | Paramètres optionnels | Dépendances |
+| --- | --- | --- | --- |
+| `dct:conformsTo` | Tous les référentiels de coordonnées déclarés pour les géométries de la table ou vue. | Aucun. | L'extension PostGIS doit être active sur la base. |
+| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. | L'extension PlumePg doit être active sur la base. |
+| `dct:title` | Idem `dct:description`. | Idem `dct:description`. | Idem `dct:description`. |
+
+[^extrait-descriptif]: Si des métadonnées ont déjà été saisies pour la table, seule la partie du descriptif qui précède la balise `<METADATA>` sera considérée.
+
+[^doc-pattern]: Pour plus de détails, on se reportera à la documentation de PostgreSQL. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.
+
+[^doc-flags]: Les valeurs acceptées sont les mêmes que pour les arguments `flags` des fonctions d'expression régulière de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.
+
+Les paramètres optionnels sont spécifiés via le champ `compute_params` des tables `z_plume.meta_categorie` et `z_plume.meta_template_categories`. Il s'agit d'un champ de type `jsonb`, qui attend un dictionnaire dont les clés sont les noms des paramètres et les valeurs les valeurs des paramètres.
+
+Par exemple :
+
+```sql
+
+UPDATE z_plume.meta_categorie
+	SET compute = ARRAY['new']::z_plume.meta_compute[],
+		compute_params = '{"pattern": "^(?:\\w+\\s*)+"}'::jsonb
+	WHERE path = 'dct:title' ;
+
+```
+
+Les trois modes de calcul automatique opèrent comme suit :
+- Avec `'auto'`, le calcul est effectué systématiquement à l'ouverture de la fiche de métadonnées ou lorsqu'elle est re-générée par une réinitialisation, un import, une copie... Il n'est pas exécuté lorsque le formulaire est reconstruit après une sauvegarde.
+- Avec `'empty'`, le calcul est effectué dans les mêmes conditions que pour `'auto'`, avec une condition supplémentaire : le widget ou le groupe de widgets ne doit contenir aucune valeur.
+- Avec `'new'`, le calcul n'est effectué que si la fiche de métadonnées est entièrement vide[^quasi-vide], soit dans le cas d'une table dont le descriptif ne contenait par encore de métadonnées, dans le cas d'une réinitialisation ou encore dans le cas de l'import d'une fiche vide.
+
+[^quasi-vide]: Incluant les fiches qui ne comportent que les champs mis à jour automatiquement, soit l'identifiant et/ou la date de dernière modification.
+
+Si plusieurs de ces modes sont spécifiés simultanément, `'auto'` prévaut sur `'empty'`, qui prévaut sur `'new'`.
 
 ## Processus de calcul
 
