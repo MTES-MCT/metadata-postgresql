@@ -39,12 +39,14 @@
 -- schéma contenant les objets : z_plume
 --
 -- objets créés par le script :
+-- - Function: z_plume.meta_ante_post_description(oid, text)
 -- - Function: z_plume.meta_regexp_matches(text, text, text)
 --
 -- objets modifiés par le script :
 -- - Type: z_plume.meta_compute
 -- - Table: z_plume.meta_categorie
 -- - Table: z_plume.meta_shared_categorie
+-- - Table: z_plume.meta_template
 -- - Function: z_plume.meta_shared_categorie_before_insert()
 -- - Table: z_plume.meta_local_categorie
 -- - Table: z_plume.meta_template_categories
@@ -92,7 +94,7 @@ COMMENT ON COLUMN z_plume.meta_shared_categorie.compute_params IS 'Paramètres d
 -- Function: z_plume.meta_shared_categorie_before_insert()
 
 CREATE OR REPLACE FUNCTION z_plume.meta_shared_categorie_before_insert()
-	RETURNS trigger
+    RETURNS trigger
     LANGUAGE plpgsql
     AS $BODY$
 /* Fonction exécutée par le trigger meta_shared_categorie_before_insert.
@@ -112,11 +114,11 @@ CREATE OR REPLACE FUNCTION z_plume.meta_shared_categorie_before_insert()
 
 */
 BEGIN
-	
-	DELETE FROM z_plume.meta_shared_categorie
-		WHERE meta_shared_categorie.path = NEW.path ;
-		
-	RETURN NEW ;
+    
+    DELETE FROM z_plume.meta_shared_categorie
+        WHERE meta_shared_categorie.path = NEW.path ;
+        
+    RETURN NEW ;
 
 END
 $BODY$ ;
@@ -158,8 +160,8 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
         coalesce(tc.label, c.label) AS label,
         coalesce(tc.description, c.description) AS description,
         coalesce(tc.special, c.special) AS special,
-		c.is_node,
-		coalesce(tc.datatype, c.datatype) AS datatype,
+        c.is_node,
+        coalesce(tc.datatype, c.datatype) AS datatype,
         coalesce(tc.is_long_text, c.is_long_text) AS is_long_text,
         coalesce(tc.rowspan, c.rowspan) AS rowspan,
         coalesce(tc.placeholder, c.placeholder) AS placeholder,
@@ -179,7 +181,7 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
             LEFT JOIN z_plume.meta_template AS t
                 ON tc.tpl_label = t.tpl_label
-	    WHERE t.enabled
+        WHERE t.enabled
     ) ;
 
 COMMENT ON VIEW z_plume.meta_template_categories_full IS 'Description complète des modèles de formulaire (rassemble les informations de meta_categorie et meta_template_categories).' ;
@@ -214,9 +216,9 @@ COMMENT ON COLUMN z_plume.meta_template_categories_full.compute_params IS 'Param
 -- Function: z_plume.meta_import_sample_template(text)
 
 CREATE OR REPLACE FUNCTION z_plume.meta_import_sample_template(
-		tpl_label text default NULL::text
-		)
-	RETURNS TABLE (label text, summary text)
+        tpl_label text default NULL::text
+        )
+    RETURNS TABLE (label text, summary text)
     LANGUAGE plpgsql
     AS $BODY$
 /* Importe l'un des modèles de formulaires pré-configurés (ou tous si l'argument n'est pas renseigné).
@@ -249,66 +251,66 @@ DECLARE
     tplcat record ;
 BEGIN
 
-	-- boucle sur les modèles :
-	FOR tpl IN SELECT * FROM (
-	    VALUES
-			(
-				'Donnée externe',
-				'$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
-				'[{"plume:isExternal": true}]'::jsonb,
-				10,
-				format(
-					'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
-					now()::date,
-					left(now()::time::text, 8)
-					)
-			),
+    -- boucle sur les modèles :
+    FOR tpl IN SELECT * FROM (
+        VALUES
             (
-				'Classique',
-				'$1 ~ ''^c_''',
+                'Donnée externe',
+                '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
+                '[{"plume:isExternal": true}]'::jsonb,
+                10,
+                format(
+                    'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
+                    now()::date,
+                    left(now()::time::text, 8)
+                    )
+            ),
+            (
+                'Classique',
+                '$1 ~ ''^c_''',
                 NULL,
-				5,
-				format(
-					'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
-					now()::date,
-					left(now()::time::text, 8)
-					)
-			),
-			(
-				'Basique', NULL, NULL, 0,
-				format(
-					'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
-					now()::date,
-					left(now()::time::text, 8)
-					)
-			)
-	    ) AS t (tpl_label, sql_filter, md_conditions, priority, comment)
-		WHERE meta_import_sample_template.tpl_label IS NULL
-			OR meta_import_sample_template.tpl_label = t.tpl_label
-	LOOP
-	
-		DELETE FROM z_plume.meta_template
-			WHERE meta_template.tpl_label = tpl.tpl_label ;
-			
-		IF FOUND
-		THEN
-			RETURN QUERY SELECT tpl.tpl_label, 'updated' ;
-		ELSE
-			RETURN QUERY SELECT tpl.tpl_label, 'created' ;
-		END IF ;
-		
-		INSERT INTO z_plume.meta_template
-			(tpl_label, sql_filter, md_conditions, priority, comment)
-			VALUES (tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority, tpl.comment) ;
-		
-		-- boucle sur les associations modèles-catégories :
-		FOR tplcat IN SELECT * FROM (
-			VALUES
-				('Basique', 'dct:description'),
-				('Basique', 'dct:modified'),
-				('Basique', 'dct:temporal'),
-				('Basique', 'dct:temporal / dcat:startDate'),
-				('Basique', 'dct:temporal / dcat:endDate'),
+                5,
+                format(
+                    'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
+                    now()::date,
+                    left(now()::time::text, 8)
+                    )
+            ),
+            (
+                'Basique', NULL, NULL, 0,
+                format(
+                    'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
+                    now()::date,
+                    left(now()::time::text, 8)
+                    )
+            )
+        ) AS t (tpl_label, sql_filter, md_conditions, priority, comment)
+        WHERE meta_import_sample_template.tpl_label IS NULL
+            OR meta_import_sample_template.tpl_label = t.tpl_label
+    LOOP
+    
+        DELETE FROM z_plume.meta_template
+            WHERE meta_template.tpl_label = tpl.tpl_label ;
+            
+        IF FOUND
+        THEN
+            RETURN QUERY SELECT tpl.tpl_label, 'updated' ;
+        ELSE
+            RETURN QUERY SELECT tpl.tpl_label, 'created' ;
+        END IF ;
+        
+        INSERT INTO z_plume.meta_template
+            (tpl_label, sql_filter, md_conditions, priority, comment)
+            VALUES (tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority, tpl.comment) ;
+        
+        -- boucle sur les associations modèles-catégories :
+        FOR tplcat IN SELECT * FROM (
+            VALUES
+                ('Basique', 'dct:description'),
+                ('Basique', 'dct:modified'),
+                ('Basique', 'dct:temporal'),
+                ('Basique', 'dct:temporal / dcat:startDate'),
+                ('Basique', 'dct:temporal / dcat:endDate'),
                 ('Basique', 'dct:title'),
                 ('Basique', 'owl:versionInfo'),
                 
@@ -320,11 +322,11 @@ BEGIN
                 ('Classique', 'dcat:contactPoint / vcard:hasURL'),
                 ('Classique', 'dcat:contactPoint / vcard:organization-name'),
                 ('Classique', 'dcat:keyword'),
-				('Classique', 'dcat:landingPage'),
+                ('Classique', 'dcat:landingPage'),
                 ('Classique', 'dcat:spatialResolutionInMeters'),
-				('Classique', 'dcat:theme'),
+                ('Classique', 'dcat:theme'),
                 ('Classique', 'dct:accessRights'),
-				('Classique', 'dct:accessRights / rdfs:label'),
+                ('Classique', 'dct:accessRights / rdfs:label'),
                 ('Classique', 'dct:accrualPeriodicity'),
                 ('Classique', 'dct:conformsTo'),
                 ('Classique', 'dct:conformsTo / dct:description'),
@@ -333,19 +335,19 @@ BEGIN
                 ('Classique', 'dct:conformsTo / foaf:page'),
                 ('Classique', 'dct:conformsTo / owl:versionInfo'),
                 ('Classique', 'dct:created'),
-				('Classique', 'dct:description'),
+                ('Classique', 'dct:description'),
                 ('Classique', 'dct:identifier'),
-				('Classique', 'dct:modified'),
-				('Classique', 'dct:provenance'),
-				('Classique', 'dct:provenance / rdfs:label'),
+                ('Classique', 'dct:modified'),
+                ('Classique', 'dct:provenance'),
+                ('Classique', 'dct:provenance / rdfs:label'),
                 ('Classique', 'dct:spatial'),
                 ('Classique', 'dct:spatial / dct:identifier'),
                 ('Classique', 'dct:spatial / skos:inScheme'),
                 ('Classique', 'dct:spatial / skos:prefLabel'),
                 ('Classique', 'dct:subject'),
                 ('Classique', 'dct:temporal'),
-				('Classique', 'dct:temporal / dcat:startDate'),
-				('Classique', 'dct:temporal / dcat:endDate'),
+                ('Classique', 'dct:temporal / dcat:startDate'),
+                ('Classique', 'dct:temporal / dcat:endDate'),
                 ('Classique', 'dct:title'),
                 ('Classique', 'foaf:page'),
                 ('Classique', 'owl:versionInfo'),
@@ -358,27 +360,27 @@ BEGIN
                 ('Donnée externe', 'dcat:contactPoint / vcard:hasTelephone'),
                 ('Donnée externe', 'dcat:contactPoint / vcard:hasURL'),
                 ('Donnée externe', 'dcat:contactPoint / vcard:organization-name'),
-				('Donnée externe', 'dcat:distribution'),
-				('Donnée externe', 'dcat:distribution / dcat:accessURL'),
-				('Donnée externe', 'dcat:distribution / dct:issued'),
-				('Donnée externe', 'dcat:distribution / dct:license'),
-				('Donnée externe', 'dcat:distribution / dct:license / rdfs:label'),
-				('Donnée externe', 'dcat:keyword'),
-				('Donnée externe', 'dcat:landingPage'),
-				('Donnée externe', 'dcat:theme'),
+                ('Donnée externe', 'dcat:distribution'),
+                ('Donnée externe', 'dcat:distribution / dcat:accessURL'),
+                ('Donnée externe', 'dcat:distribution / dct:issued'),
+                ('Donnée externe', 'dcat:distribution / dct:license'),
+                ('Donnée externe', 'dcat:distribution / dct:license / rdfs:label'),
+                ('Donnée externe', 'dcat:keyword'),
+                ('Donnée externe', 'dcat:landingPage'),
+                ('Donnée externe', 'dcat:theme'),
                 ('Donnée externe', 'dct:accessRights'),
-				('Donnée externe', 'dct:accessRights / rdfs:label'),
+                ('Donnée externe', 'dct:accessRights / rdfs:label'),
                 ('Donnée externe', 'dct:accrualPeriodicity'),
-				('Donnée externe', 'dct:description'),
-				('Donnée externe', 'dct:modified'),
-				('Donnée externe', 'dct:provenance'),
-				('Donnée externe', 'dct:provenance / rdfs:label'),
-				('Donnée externe', 'dct:publisher'),
-				('Donnée externe', 'dct:publisher / foaf:name'),
-				('Donnée externe', 'dct:temporal'),
-				('Donnée externe', 'dct:temporal / dcat:startDate'),
-				('Donnée externe', 'dct:temporal / dcat:endDate'),
-				('Donnée externe', 'dct:title'),
+                ('Donnée externe', 'dct:description'),
+                ('Donnée externe', 'dct:modified'),
+                ('Donnée externe', 'dct:provenance'),
+                ('Donnée externe', 'dct:provenance / rdfs:label'),
+                ('Donnée externe', 'dct:publisher'),
+                ('Donnée externe', 'dct:publisher / foaf:name'),
+                ('Donnée externe', 'dct:temporal'),
+                ('Donnée externe', 'dct:temporal / dcat:startDate'),
+                ('Donnée externe', 'dct:temporal / dcat:endDate'),
+                ('Donnée externe', 'dct:title'),
                 ('Donnée externe', 'dct:spatial'),
                 ('Donnée externe', 'dct:spatial / dct:identifier'),
                 ('Donnée externe', 'dct:spatial / skos:inScheme'),
@@ -387,20 +389,20 @@ BEGIN
                 ('Donnée externe', 'foaf:page'),
                 ('Donnée externe', 'owl:versionInfo'),
                 ('Donnée externe', 'plume:isExternal')
-			) AS t (tpl_label, shrcat_path)
-			WHERE t.tpl_label = tpl.tpl_label
-		LOOP
-		
-			INSERT INTO z_plume.meta_template_categories
-				(tpl_label, shrcat_path)
-				VALUES (tpl.tpl_label, tplcat.shrcat_path) ;
-		
-		END LOOP ;
-	
-	END LOOP ;
+            ) AS t (tpl_label, shrcat_path)
+            WHERE t.tpl_label = tpl.tpl_label
+        LOOP
+        
+            INSERT INTO z_plume.meta_template_categories
+                (tpl_label, shrcat_path)
+                VALUES (tpl.tpl_label, tplcat.shrcat_path) ;
+        
+        END LOOP ;
+    
+    END LOOP ;
 
-	RETURN ;
-	
+    RETURN ;
+    
 END
 $BODY$ ;
 
@@ -417,9 +419,9 @@ COMMENT ON FUNCTION z_plume.meta_import_sample_template(text) IS 'Importe l''un 
 -- Function: z_plume.meta_execute_sql_filter(text, text, text)
 
 CREATE OR REPLACE FUNCTION z_plume.meta_execute_sql_filter(
-		sql_filter text, schema_name text, table_name text
-		)
-	RETURNS boolean
+        sql_filter text, schema_name text, table_name text
+        )
+    RETURNS boolean
     LANGUAGE plpgsql
     AS $BODY$
 /* Détermine si un filtre SQL est vérifié.
@@ -451,32 +453,85 @@ DECLARE
     b boolean ;
 BEGIN
 
-	IF nullif(sql_filter, '') IS NULL
-	THEN
-		RETURN NULL ;
-	END IF ;
+    IF nullif(sql_filter, '') IS NULL
+    THEN
+        RETURN NULL ;
+    END IF ;
 
-	EXECUTE format('SELECT %s', sql_filter)
-		INTO b
-		USING schema_name, coalesce(table_name, '') ;
-	RETURN b ;
+    EXECUTE format('SELECT %s', sql_filter)
+        INTO b
+        USING schema_name, coalesce(table_name, '') ;
+    RETURN b ;
 
 EXCEPTION WHEN OTHERS
 THEN
-	RAISE NOTICE 'Filtre invalide : %', sql_filter ;
-	RETURN NULL ;
+    RAISE NOTICE 'Filtre invalide : %', sql_filter ;
+    RETURN NULL ;
 END
 $BODY$ ;
 
 COMMENT ON FUNCTION z_plume.meta_execute_sql_filter(text, text, text) IS 'Détermine si un filtre SQL est vérifié.' ;
 
 
+-- Function: z_plume.meta_ante_post_description(oid, text)
+
+CREATE OR REPLACE FUNCTION z_plume.meta_ante_post_description(
+        object_oid oid, catalog_name text
+        )
+    RETURNS text
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Extrait du descriptif de l'objet ce qui précède et suit les métadonnées.
+
+    Parameters
+    ----------
+    object_oid : oid
+        L'identifiant de l'objet considéré.
+    catalog_name : text
+        Le catalogue auquel appartient l'objet.
+
+    Returns
+    -------
+    text
+        Le descriptif de l'objet expurgé de ses métadonnées,
+        c'est-à-dire sans les éventuelles balises <METADATA>
+        et </METADATA> et leur contenu. Concrètement, cette
+        partie du descriptif, si elle existait, est remplacée
+        par une chaîne de caractères vide.
+    
+    Examples
+    --------
+    SELECT * FROM z_plume.meta_ante_post_description(
+        'schema_name.table_name'::regclass, 'pg_class') ;
+    
+    Notes
+    -----
+    L'expression régulière utilisée par cette fonction est
+    identique à celle du constructeur de la classe
+    plume.pg.description.PgDescription du plugin QGIS. Il est
+    impératif qu'elle le reste.
+
+*/
+BEGIN
+
+    RETURN regexp_replace(
+        obj_description(object_oid, catalog_name),
+        '\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}',
+        ''
+        ) ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.meta_ante_post_description(oid, text) IS 'Extrait du descriptif de l''objet ce qui précède et suit les métadonnées.' ;
+
+
 -- Function: z_plume.meta_regexp_matches(text, text, text)
 
 CREATE OR REPLACE FUNCTION z_plume.meta_regexp_matches(
-		string text, pattern text, flags text DEFAULT NULL
-		)
-	RETURNS TABLE(fragment text)
+        string text, pattern text, flags text DEFAULT NULL
+        )
+    RETURNS TABLE (fragment text)
     LANGUAGE plpgsql
     AS $BODY$
 /* Exécute la fonction regexp_matches avec le contrôle d'erreur adéquat.
@@ -511,10 +566,10 @@ DECLARE
     e_mssg text ;
 BEGIN
 
-	IF nullif(pattern, '') IS NULL OR nullif(string, '') IS NULL
-	THEN
-		RETURN ;
-	END IF ;
+    IF nullif(pattern, '') IS NULL OR nullif(string, '') IS NULL
+    THEN
+        RETURN ;
+    END IF ;
 
     RETURN QUERY
         EXECUTE 'WITH a AS (SELECT unnest(regexp_matches($1, $2, $3)) AS b)
@@ -524,8 +579,8 @@ BEGIN
 EXCEPTION WHEN OTHERS
 THEN
     GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT ;
-	RAISE NOTICE '%', e_mssg ;
-	RETURN ;
+    RAISE NOTICE '%', e_mssg ;
+    RETURN ;
 END
 $BODY$ ;
 
