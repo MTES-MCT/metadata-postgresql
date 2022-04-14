@@ -705,3 +705,77 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t010() IS 'PlumePg (recette). TEST : Extraction de fragments d''un texte avec meta_regexp_matches(text, text, text).' ;
 
+
+-- Function: z_plume_recette.t011()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t011()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+	t text ;
+    e_mssg text ;
+    e_detl text ;
+BEGIN
+
+	CREATE TABLE z_plume.table_test () ;
+	
+	SELECT z_plume.meta_ante_post_description(
+		'z_plume.table_test'::regclass, 'pg_class')
+		INTO t ;
+	
+	ASSERT t IS NULL, 'échec assertion #1' ;
+	
+	COMMENT ON TABLE z_plume.table_test IS 'Une description.' ;
+	
+	SELECT z_plume.meta_ante_post_description(
+		'z_plume.table_test'::regclass, 'pg_class')
+		INTO t ;
+	
+	ASSERT t = 'Une description.', 'échec assertion #2' ;
+	
+	COMMENT ON TABLE z_plume.table_test IS 'Une autre description.<METADATA></METADATA>' ;
+	
+	SELECT z_plume.meta_ante_post_description(
+		'z_plume.table_test'::regclass, 'pg_class')
+		INTO t ;
+	
+	ASSERT t = 'Une autre description.', 'échec assertion #3' ;
+	
+	COMMENT ON TABLE z_plume.table_test IS 'Encore une <METADATA></METADATA>description.' ;
+	
+	SELECT z_plume.meta_ante_post_description(
+		'z_plume.table_test'::regclass, 'pg_class')
+		INTO t ;
+	
+	ASSERT t = 'Encore une description.', 'échec assertion #4' ;
+	
+	COMMENT ON TABLE z_plume.table_test IS 'Et encore une <METADATA>
+		bla
+		bla
+		bla
+		</METADATA>description.' ;
+	
+	SELECT z_plume.meta_ante_post_description(
+		'z_plume.table_test'::regclass, 'pg_class')
+		INTO t ;
+	
+	ASSERT t = 'Et encore une description.', 'échec assertion #5' ;
+	
+	DROP TABLE z_plume.table_test ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t011() IS 'PlumePg (recette). TEST : Récupération d''un descriptif expurgé des métadonnées avec meta_ante_post_description(oid, text).' ;
+
