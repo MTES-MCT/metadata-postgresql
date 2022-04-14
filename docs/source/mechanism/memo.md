@@ -10,7 +10,7 @@ On lancera le script `/admin/tests.py` qui compile les tests de tous les modules
 
 L'exécution des tests nécessite de se connecter à une base PostgreSQL avec un compte super-utilisateur. La base doit remplir les conditions suivantes :
 - la version de PostgreSQL est supérieure ou égale à PostgreSQL 10.
-- l'extension *PlumePg* (`plume_pg`) est active et à jour ;
+- l'extension *PlumePg* (`plume_pg`) est disponible dans sa dernière version ainsi qu'en version 0.0.1, avec tous les fichiers de mise à jour pour passer de l'une à l'autre ;
 - si requise pour l'installation de *PlumePg*[^pgcrypto], l'extension `pgcrypto` est active ;
 - la bibliothèque de tests de *PlumePg* est installée (fichier `/postgresql/tests/plume_pg_test.sql`) ;
 - l'extension *PostGIS* (`postgis`) est active ;
@@ -287,7 +287,15 @@ Par convention, les noms des clés sont écrits en language naturel (ou presque)
  
 ### Dictionnaire de widgets
 
-*TODO*
+Les modifications à réaliser dans le module `plume.rdf.widgetsdict` peuvent varier fortement selon la nature de la nouvelle option de configuration.
+
+Si toutefois il s'agit d'un élément d'entrée pour générer le formulaire, et qu'une ou plusieurs clés ont ainsi été ajoutées à la classe `plume.rdf.internaldict.InternalDict`, il faudra a minima compléter la méthode `plume.rdf.widgetsdict.WidgetsDict.internalize` pour qu'elle sache définir les valeurs des nouvelles clés des dictionnaires internes en fonction des attributs des `WidgetKey`.
+
+Si la nouvelle option suppose l'ajout de widgets annexes dans le formulaire, il faudra au moins :
+- adapter la méthode `plume.rdf.widgetsdict.WidgetsDict.widget_placement` pour qu'elle spécifie leur placement ;
+- compléter `plume.rdf.widgetsdict.WidgetsDict.list_widgets` pour qu'elle liste également ces widgets ;
+- compléter `plume.rdf.widgetsdict.WidgetsDict.print` (méthode d'aperçu sommaire des formulaires utilisée à des fins de test) pour qu'elle représente ces widgets ;
+- compléter `plume.rdf.widgetsdict.WidgetsDict.check_grids` pour que ces widgets soient pris en compte dans les tests de contrôle de placement.
 
 ### Génération du formulaire
 
@@ -322,4 +330,6 @@ requires('rdflib')
 
 ``` 
 
+Les installateurs *wheel* des packages doivent être placés dans le répertoire `/plume/bibli_install`. Les bibliothèques avec leur version de référence sont listées par le fichier [`/plume/requirements.txt`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt).
 
+Pour que les mises à jour se fassent, il est nécessaire de modifier la valeur renvoyée par la fonction `plume.bibli_plume.returnVersion`. Plume - plus précisément `plume.bibli_install.manageLibrary` - compare cette chaîne de caractères (supposée correspondre au numéro de version) avec le paramètre `versionPlumeBibli` inscrit dans le fichier `QGIS3.ini`, avant d'actualiser le paramètre selon la valeur. La commande de mise à jour selon `requirements.txt` n'est lancée que si le paramètre et la valeur retournée par la fonction sont différents.

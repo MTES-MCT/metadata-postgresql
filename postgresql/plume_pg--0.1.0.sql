@@ -573,7 +573,8 @@ CREATE TABLE z_plume.meta_template (
 	sql_filter text,
     md_conditions jsonb,
     priority int,
-	comment text
+	comment text,
+	enabled boolean NOT NULL DEFAULT True
     ) ;
     
 COMMENT ON TABLE z_plume.meta_template IS 'Modèles de formulaires définis pour le plugin QGIS.' ;
@@ -595,6 +596,7 @@ COMMENT ON COLUMN z_plume.meta_template.md_conditions IS 'Ensemble de conditions
 ]' ;
 COMMENT ON COLUMN z_plume.meta_template.priority IS 'Niveau de priorité du modèle. Si un jeu de données remplit les conditions de plusieurs modèles, celui dont la priorité est la plus élevée sera retenu comme modèle par défaut.' ;
 COMMENT ON COLUMN z_plume.meta_template.comment IS 'Commentaire libre.' ;
+COMMENT ON COLUMN z_plume.meta_template.enabled IS 'Booléen indiquant si le modèle est actif. Les modèles désactivés n''apparaîtront pas dans la liste de modèles du plugin QGIS, même si leurs conditions d''application automatique sont remplies.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_template'::regclass, '') ;
@@ -726,6 +728,7 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
             LEFT JOIN z_plume.meta_template AS t
                 ON tc.tpl_label = t.tpl_label
+	    WHERE t.enabled
     ) ;
 
 COMMENT ON VIEW z_plume.meta_template_categories_full IS 'Description complète des modèles de formulaire (rassemble les informations de meta_categorie et meta_template_categories).' ;

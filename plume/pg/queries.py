@@ -340,6 +340,7 @@ def query_list_templates():
             md_conditions,
             priority
             FROM z_plume.meta_template
+            WHERE enabled
             ORDER BY tpl_label
         """)
 
@@ -840,7 +841,8 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
     ``compute_params`` est le dictionnaire fourni par la clé
     `'compute parameters'` du dictionnaire interne associé à
     la clé courante du dictionnaire de widgets. Si spécifié par
-    le modèle, il contiendra la valeur du paramètre `regexp`.
+    le modèle, il contiendra la valeur des paramètres `pattern`
+    et `flags`.
     
     La liste ainsi obtenue contient des tuples d'un élément, un
     pour chaque fragment du descriptif capturé par l'expression

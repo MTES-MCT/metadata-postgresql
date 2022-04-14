@@ -42,7 +42,7 @@ class PlumePgTestCase(unittest.TestCase):
                 cur.execute(create_tests)
                 cur.execute("""
                     DROP EXTENSION IF EXISTS plume_pg ;
-                    CREATE EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg CASCADE ;
                     """)  
         conn.close()
     
