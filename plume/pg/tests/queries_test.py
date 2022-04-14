@@ -837,6 +837,12 @@ class QueriesTestCase(unittest.TestCase):
                 # création d'une table de test
                 cur.execute('''
                     CREATE TABLE z_plume.table_test () ;
+                    ''')
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='[a-z]+', flags='gi')
+                cur.execute(*query)
+                result0 = cur.fetchall()
+                cur.execute('''
                     COMMENT ON TABLE z_plume.table_test IS 'Ma + table + est. une table'
                     ''')
                 query = query_get_comment_fragments('z_plume', 'table_test',
@@ -862,15 +868,34 @@ class QueriesTestCase(unittest.TestCase):
                 query = query_get_comment_fragments('z_plume', 'table_test')
                 cur.execute(*query)
                 result6 = cur.fetchall()
+                cur.execute("""
+                    COMMENT ON TABLE z_plume.table_test IS 'Ma + table + est.<METADATA>
+                        ...
+                        </METADATA> une table'""")
+                query = query_get_comment_fragments('z_plume', 'table_test')
+                cur.execute(*query)
+                result7 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='^[^.]*')
+                cur.execute(*query)
+                result8 = cur.fetchall()
+                query = query_get_comment_fragments('z_plume', 'table_test',
+                    pattern='zzzz')
+                cur.execute(*query)
+                result9 = cur.fetchall()
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
         conn.close()
+        self.assertListEqual(result0, [])
         self.assertListEqual(result1, [('Ma',), ('table',), ('est',), ('une',), ('table',)])
         self.assertListEqual(result2, [('Ma + table + est',)])
         self.assertListEqual(result3, [])
         self.assertListEqual(result4, [])
         self.assertListEqual(result5, [('Ma + table + est',)])
         self.assertListEqual(result6, [('Ma + table + est. une table',)])
+        self.assertListEqual(result7, [('Ma + table + est. une table',)])
+        self.assertListEqual(result8, [('Ma + table + est',)])
+        self.assertListEqual(result9, [])
 
 if __name__ == '__main__':
     unittest.main()
