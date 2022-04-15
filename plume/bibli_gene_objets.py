@@ -980,8 +980,16 @@ def gestionOnglets(self, _key, _value):
                 border-radius: 10px;     \
                 border-color: red;      \
                 font: bold 11px;     \
-                padding: 6px;        \
+                padding-top: 6px;        \
                 }")
+    #Zone affichage du modèle
+    self.modeleEnCours = QtWidgets.QLabel(zoneWidgetsGroupBox)
+    self.modeleEnCours.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  +" ; border-width: 0px;}")
+    self.modeleEnCours.setObjectName("modeleEnCours")
+    self.modeleEnCours.setText("Mon modèle en cours qui va bien")
+    self.modeleEnCours.setGeometry(QtCore.QRect(10, 0, tab_widget_Onglet.width(), 20))
+    #Zone affichage du modèle
+    self.modeleEnCours.setVisible(False)
 
     x, y = 0, 0
     larg, haut =  self.tabWidget.width()- 5, self.tabWidget.height()-5

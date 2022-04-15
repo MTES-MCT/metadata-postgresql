@@ -11,12 +11,10 @@ from qgis.core import *
 from qgis.gui import *
 import qgis
 from math import sqrt,pi,sin,cos
-import shapely.wkt
-from shapely.geometry import Point, Polygon
 from . import bibli_plume
 from .bibli_plume import *
 
-from plume.rdf.utils import split_rdf_wkt, geomtype_from_wkt, wkt_with_srid
+from plume.rdf.utils import split_rdf_wkt, wkt_with_srid
 
 #==================================================
 #==================================================

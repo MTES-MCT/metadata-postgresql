@@ -106,7 +106,7 @@ class Ui_Dialog(object):
         MonHtml2 += QtWidgets.QApplication.translate("about", "The metadata is stored in RDF (JSON-LD) format in the PostgreSQL descriptions of objects, the user can access by clicking on the layers in the QGIS explorer or in the layers panel. Plume supports tables, partitioned tables, foreign tables, views, and materialized views.", None)
         MonHtml += MonHtml2
         MonHtml += "<br><br>"
-        MonHtml3 = QtWidgets.QApplication.translate("about", "It is based on the GeoDCAT-AP 2.0 profile of DCAT v2, which constitutes a common and exchangeable metadata base, while allowing a wide customization of the metadata categories presented to the user when it is coupled with the PostgreSQL metadata extension.", None) 
+        MonHtml3 = QtWidgets.QApplication.translate("about", "It is based on the GeoDCAT-AP 2.0 profile of DCAT v2, which constitutes a common and exchangeable metadata base, while allowing a wide customization of the metadata categories presented to the user when it is coupled with the PostgreSQL plume_pg extension.", None) 
         MonHtml += MonHtml3
         MonHtml += "</b><br>"
         MonHtml += "</p></td></tr></table>"
@@ -118,7 +118,7 @@ class Ui_Dialog(object):
         mLinkDL = '<a href=\"' + mLinkDL + '\">' + MonHtmlDL + '</a>'
 
         mLinkLL = "mailto:leslie.lemaire@developpement-durable.gouv.fr"
-        MonHtmlLL = "<font color='#0000FF'><b><u>" + QtWidgets.QApplication.translate("about", "Leslie LEMAIRE: design and development of the underlying mechanics (bibli_rdf and bibli_pg), creation of logos and icons.", None) + "</u></b></font><br><br>"
+        MonHtmlLL = "<font color='#0000FF'><b><u>" + QtWidgets.QApplication.translate("about", "Leslie LEMAIRE: design and development of the underlying mechanics (plume.rdf, plume.pg et plume.iso.), creation of logos and icons.", None) + "</u></b></font><br><br>"
         mLinkLL = '<a href=\"' + mLinkLL + '\">' + MonHtmlLL + '</a>'
         
         MonHtml += "<b>"
