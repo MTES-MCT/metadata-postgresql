@@ -7,7 +7,7 @@ from plume.rdf.utils import sort_by_language, pick_translation, \
     path_from_n3, int_from_duration, duration_from_int, str_from_duration, \
     wkt_with_srid, split_rdf_wkt, str_from_datetime, str_from_date, \
     str_from_time, datetime_from_str, date_from_str, time_from_str, \
-    str_from_decimal, decimal_from_str, main_datatype, geomtype_from_wkt, \
+    str_from_decimal, decimal_from_str, main_datatype, \
     export_format_from_extension, export_formats
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
@@ -43,26 +43,6 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(export_format_from_extension('', 'turtle'), 'turtle')
         self.assertIsNone(export_format_from_extension(None))
         self.assertEqual(export_format_from_extension(None, 'turtle'), 'turtle')
-
-    def test_geomtype_from_wkt(self):
-        """Identification du type de géométrie d'une représentation WKT.
-        
-        """
-        self.assertEqual(
-            geomtype_from_wkt('POLYGON((0 0,0 1,1 1,1 0,0 0))'),
-            'polygon'
-            )
-        self.assertEqual(
-            geomtype_from_wkt('<http://www.opengis.net/def/crs/EPSG/0/2154> ' \
-                'CircularString (0.5 1.20, 1.20 0.5, 0.5 -0.20, -0.20 0.5, 0.5 1.20)'),
-            'circularstring'
-            )
-        self.assertEqual(
-            geomtype_from_wkt('< ... > POINT(-71.064544 42.28787)'),
-            'point'
-            )
-        self.assertIsNone(geomtype_from_wkt(
-            'MULTIPOLYGON((0 0,0 1,1 1,1 0,0 0))'))
 
     def test_main_datatype(self):
         """Identification du type de valeur littéral dominant.
