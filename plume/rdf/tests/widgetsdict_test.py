@@ -2214,6 +2214,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         c = widgetsdict.root.search_from_path(DCT.conformsTo)
         self.assertTrue(widgetsdict[c]['has compute button'])
         self.assertTrue(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'].description)
         
         # --- dépendances ---
         dependances = widgetsdict[c]['compute method'].dependances
@@ -2316,6 +2317,14 @@ class WidgetsDictTestCase(unittest.TestCase):
         metagraph = Metagraph().parse(data=metadata)
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))
+        
+        # --- post-sauvegarde ---
+        widgetsdict = WidgetsDict(metagraph=widgetsdict.build_metagraph(),
+            template=template)
+        c = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertTrue(widgetsdict[c]['has compute button'])
+        self.assertFalse(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'])
 
     def test_local_template(self):
         """Génération du dictionnaire avec un modèle local et non issu de PlumePg.
@@ -2350,6 +2359,273 @@ class WidgetsDictTestCase(unittest.TestCase):
             template=templates_collection['Basique'])
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))   
+
+    def test_compute_description(self):
+        """Processus complet de calcul des métadonnées pour dct:description.
+        
+        Avec le mode ``'empty'`` pour le calcul automatique,
+        hors mode traduction (le calcul porte donc sur une
+        clé-valeur).
+        
+        """
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute('''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['manual', 'empty']::z_plume.meta_compute[]
+                        WHERE path = 'dct:description' ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(template=template)
+        c = widgetsdict.root.search_from_path(DCT.description)
+        self.assertTrue(widgetsdict[c]['has compute button'])
+        self.assertTrue(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'].description)
+
+        # --- dépendances ---
+        dependances = widgetsdict[c]['compute method'].dependances
+        if dependances:
+            conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+            dependances_ok = True
+            with conn:
+                with conn.cursor() as cur:
+                    for extension in dependances:
+                        cur.execute(query_exists_extension(), (extension,))
+                        dependances_ok = dependances_ok and cur.fetchone()[0]
+                        if not dependances_ok:
+                            break
+            conn.close()
+        self.assertTrue(dependances_ok)
+        self.assertEqual(dependances, ['plume_pg'])
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test () ;
+                    COMMENT ON TABLE z_plume.table_test IS 'Ceci est une description.' ;
+                    ''')
+                query = widgetsdict.computing_query(c, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertListEqual(result, [('Ceci est une description.',)])
+        
+        widgetsdict[c]['main widget'] = '<c QTextEdit dct:description>'
+        widgetsdict[c]['compute widget'] = '<c-compute QToolButton dct:description>'
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(c, result)
+        self.assertEqual(c.value, Literal('Ceci est une description.', lang='fr'))
+        self.assertEqual(actionsdict['value to update'], [c])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a == 'value to update':
+                    self.assertFalse(l)
+
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:{uuid} a dcat:Dataset ;
+                dct:description "Ceci est une description."@fr ;
+                dct:identifier "{uuid}" .
+            """.format(uuid=widgetsdict.datasetid.uuid)
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
+        
+        # --- champ non vide ---
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        d = widgetsdict.root.search_from_path(DCT.description)
+        self.assertTrue(widgetsdict[d]['has compute button'])
+        self.assertFalse(widgetsdict[d]['auto compute'])
+        self.assertIsNotNone(widgetsdict[d]['compute method'])
+        
+        # --- post-sauvegarde ---
+        widgetsdict.update_value(d, '')
+        self.assertIsNone(d.value)
+        metagraph = widgetsdict.build_metagraph()
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        c = widgetsdict.root.search_from_path(DCT.description)
+        self.assertTrue(widgetsdict[c]['has compute button'])
+        self.assertFalse(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'])
+        
+        metagraph.fresh = True
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        c = widgetsdict.root.search_from_path(DCT.description)
+        self.assertTrue(widgetsdict[c]['has compute button'])
+        self.assertTrue(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'])
+
+    def test_compute_title(self):
+        """Processus complet de calcul des métadonnées pour dct:title.
+        
+        Avec le mode ``'new'`` pour le calcul automatique, 
+        avec une expression régulière (renvoyant plusieurs
+        valeurs) + flags, en mode traduction.
+        
+        """
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(r'''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['new']::z_plume.meta_compute[],
+                            compute_params = '{"pattern": "(t(?:\\s|\\w)+)[.]", "flags": "gi"}'::jsonb
+                        WHERE path = 'dct:title' ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(template=template, translation=True)
+        c = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[c]['has compute button'])
+        self.assertTrue(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'].description)
+        
+        # --- dépendances ---
+        dependances = widgetsdict[c]['compute method'].dependances
+        if dependances:
+            conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+            dependances_ok = True
+            with conn:
+                with conn.cursor() as cur:
+                    for extension in dependances:
+                        cur.execute(query_exists_extension(), (extension,))
+                        dependances_ok = dependances_ok and cur.fetchone()[0]
+                        if not dependances_ok:
+                            break
+            conn.close()
+        self.assertTrue(dependances_ok)
+        self.assertEqual(dependances, ['plume_pg'])
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test () ;
+                    COMMENT ON TABLE z_plume.table_test IS 'Titre 1. Titre 2.
+                        t<METADATA> blabla </METADATA>. Titre 3.' ;
+                    ''')
+                query = widgetsdict.computing_query(c, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertListEqual(result, [('Titre 1',), ('Titre 2',), ('Titre 3',)])
+        
+        widgetsdict[c]['grid widget'] = '<c QGridLayout dct:description>'
+        widgetsdict[c]['compute widget'] = '<c-compute QToolButton dct:description>'
+        d = c.children[0]
+        widgetsdict[d]['main widget'] = '<d QTextEdit dct:description>'
+        widgetsdict[d]['minus widget'] = '<d-minus QToolButton dct:description>'
+        widgetsdict[d]['language widget'] = '<d-language QToolButton dct:description>'
+        widgetsdict[d]['language menu'] = '<d-language QMenu dct:description>'
+        widgetsdict[d]['language actions'] = ['<d-language QAction n°1', '<d-language QAction n°2']
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(c, result)
+        self.assertEqual(len(c.children), 1)
+        self.assertEqual(d.value, Literal('Titre 1', lang='fr'))
+        self.assertEqual(actionsdict['value to update'], [d])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a == 'value to update':
+                    self.assertFalse(l)
+        
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:{uuid} a dcat:Dataset ;
+                dct:title "Titre 1"@fr ;
+                dct:identifier "{uuid}" .
+            """.format(uuid=widgetsdict.datasetid.uuid)
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
+        
+        # --- champ non vide ---
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        d = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[d]['has compute button'])
+        self.assertFalse(widgetsdict[d]['auto compute'])
+        self.assertIsNone(widgetsdict[d]['compute method'])
+        
+        # --- post-sauvegarde ---
+        widgetsdict.update_value(d, '')
+        self.assertIsNone(d.value)
+        metagraph = widgetsdict.build_metagraph()
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        c = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[c]['has compute button'])
+        self.assertFalse(widgetsdict[c]['auto compute'])
+        self.assertIsNone(widgetsdict[c]['compute method'])
+        
+        metagraph.fresh = True
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        c = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[c]['has compute button'])
+        self.assertTrue(widgetsdict[c]['auto compute'])
+        self.assertIsNotNone(widgetsdict[c]['compute method'])
+        
+        # --- graphe non vide ---
+        # mais sans dct:title
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:{uuid} a dcat:Dataset ;
+                dct:description "Ceci est une description."@fr ;
+                dct:identifier "{uuid}" .
+            """.format(uuid=widgetsdict.datasetid.uuid)
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph,
+            template=template)
+        c = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[c]['has compute button'])
+        self.assertFalse(widgetsdict[c]['auto compute'])
+        self.assertIsNone(widgetsdict[c]['compute method'])
+        
 
     def test_columns(self):
         """Intégration des descriptifs des champs.

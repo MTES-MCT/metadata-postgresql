@@ -30,6 +30,18 @@ Si l'utilisateur sélectionne une couche PostgreSQL dans l'explorateur ou le pan
 
 *Références : [issue #38](https://github.com/MTES-MCT/metadata-postgresql/issues/38).*
 
+## Visualisation de tous les types de géométries
+
+Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT.
+
+*Références : [issue #34](https://github.com/MTES-MCT/metadata-postgresql/issues/34).*
+
+## Sélection du texte dans une fiche de métadonées en mode lecture
+
+Il est désormais possible de sélectionner et copier du texte dans les fiches de métadonnées ouvertes en mode lecture.
+
+*Références : [issue #56](https://github.com/MTES-MCT/metadata-postgresql/issues/56).*
+
 ## PlumePg v0.1.0
 
 **Une mise à jour de l'extension PostgreSQL PlumePg sera nécessaire** pour continuer à utiliser les modèles personnalisés avec la version 0.4 de Plume.
