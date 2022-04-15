@@ -491,22 +491,6 @@
 <p><em>Où <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> est la valeur saisie dans le widget principal de la clé.</em></p>
 <p><code class="docutils literal notranslate"><span class="pre">wkt_with_srid</span></code> peut renvoyer <code class="docutils literal notranslate"><span class="pre">None</span></code> si <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code> n’était pas exploitable, ce qui peut arriver en cas de modification manuelle. À défaut de référentiel explicitement déclaré dans <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code>, il sera considéré que la géométrie était implicitement en <code class="docutils literal notranslate"><span class="pre">'OGC:CRS84'</span></code>.</p>
 <p>Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n’assure a priori qu’elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d’erreurs.</p>
-<p>Le module <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils</span></code> propose également une fonction <code class="docutils literal notranslate"><span class="pre">geomtype_from_wkt</span></code> qui prend en argument une représentation WKT et renvoie le type de géométrie correspondant.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="kn">from</span> <span class="nn">plume.rdf.utils</span> <span class="kn">import</span> <span class="n">geomtype_from_wkt</span>
-
-<span class="n">geomtype</span> <span class="o">=</span> <span class="n">geomtype_from_wkt</span><span class="p">(</span><span class="n">wkt</span><span class="p">)</span>
-
-</pre></div>
-</div>
-<p><em>Où <code class="docutils literal notranslate"><span class="pre">wkt</span></code> est soit la valeur saisie dans le widget principal de la clé (ci-avant <code class="docutils literal notranslate"><span class="pre">rdf_wkt</span></code>), soit la représentation WKT sans référentiel résultant de l’application de <code class="docutils literal notranslate"><span class="pre">plume.rdf.utils.split_rdf_wkt</span></code> (ci-avant <code class="docutils literal notranslate"><span class="pre">geom_wkt</span></code>).</em></p>
-<p>Cette fonction renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si le type de géométrie n’est pas pris en charge par Plume. Sinon, elle renvoie :</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'polygon'</span></code> pour un polygone simple (pas de multi-polygones),</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'point'</span></code> pour un point simple (pas de multi-points),</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'linestring'</span></code> pour une ligne simple (pas de multi-lignes),</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'circularstring'</span></code> pour une ligne circulaire.</p></li>
-</ul>
 </section>
 <section id="gestion-du-referentiel">
 <h2>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers ce titre">#</a></h2>

@@ -165,23 +165,6 @@ if res:
 
 Il est important de noter que seul un contrôle de forme superficiel est réalisé sur les référentiels, et à peu près aucun contrôle sur les géométries, dont rien n'assure a priori qu'elles soient valides. Les utiliser pour construire des objets géométriques avec les méthodes de QGIS supposera donc une solide gestion d'erreurs.
 
-Le module `plume.rdf.utils` propose également une fonction `geomtype_from_wkt` qui prend en argument une représentation WKT et renvoie le type de géométrie correspondant.
-
-```python
-
-from plume.rdf.utils import geomtype_from_wkt
-
-geomtype = geomtype_from_wkt(wkt)
-
-```
-
-*Où `wkt` est soit la valeur saisie dans le widget principal de la clé (ci-avant `rdf_wkt`), soit la représentation WKT sans référentiel résultant de l'application de `plume.rdf.utils.split_rdf_wkt` (ci-avant `geom_wkt`).*
-
-Cette fonction renvoie `None` si le type de géométrie n'est pas pris en charge par Plume. Sinon, elle renvoie :
-- `'polygon'` pour un polygone simple (pas de multi-polygones),
-- `'point'` pour un point simple (pas de multi-points),
-- `'linestring'` pour une ligne simple (pas de multi-lignes),
-- `'circularstring'` pour une ligne circulaire.
 
 ## Gestion du référentiel
 

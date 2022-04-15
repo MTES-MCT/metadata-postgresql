@@ -85,4 +85,8 @@ En pratique, l'utilisateur pourra constater les changements suivants :
 *Référence : [issue #51](https://github.com/MTES-MCT/metadata-postgresql/issues/51), [issue #53](https://github.com/MTES-MCT/metadata-postgresql/issues/53).*
 
 
+## Divers
+
+Complément sur la traduction anglaise des textes de l'interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. *Référence : [issue #50](https://github.com/MTES-MCT/metadata-postgresql/issues/50).*
+
 
