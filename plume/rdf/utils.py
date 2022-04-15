@@ -1016,32 +1016,6 @@ def split_rdf_wkt(rdf_wkt):
             else:
                 return
 
-def geomtype_from_wkt(wkt):
-    """Déduit le type de géométrie d'une représentation WKT.
-    
-    Si le type de géométrie n'est pas l'un des types
-    gérés par Plume, la fonction renvoie ``None``.
-    
-    Parameters
-    ----------
-    wkt : str or rdflib.term.Literal
-        Une représentation WKT de géométrie (avec ou sans
-        référentiel explicitement déclaré).
-    
-    Returns
-    -------
-    str
-        Le type de géométrie, parmi `'polygon'`, `'point'`,
-        `'linestring'` et `'circularstring'`.
-    
-    """
-    if not wkt:
-        return
-    l = ('polygon', 'point', 'linestring', 'circularstring')
-    for t in l:
-        if re.match(r'^(.*[\s\n])?{}'.format(t), wkt.lower()):
-            return t
-
 def get_datasetid(anygraph):
     """Renvoie l'identifiant du jeu de données éventuellement contenu dans le graphe.
     
