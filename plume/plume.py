@@ -38,11 +38,11 @@ class MainPlugin(object):
   def initGui(self):
      #Construction du menu
      self.menu=QMenu("plume")
-     self.menu.setTitle(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADONNEES") + "  (" + str(bibli_plume.returnVersion()) + ")")
+     self.menu.setTitle(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA") + "  (" + str(bibli_plume.returnVersion()) + ")")
      _pathIcons = os.path.dirname(__file__) + "/icons/logo"
      menuIcon          = _pathIcons + "/plume.svg"
-     self.plume2 = QAction(QIcon(menuIcon),"PLUGIN METADONNEES (Metadata storage in PostGreSQL)" + "  (" + str(bibli_plume.returnVersion()) + ")",self.iface.mainWindow())
-     self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADONNEES (Metadata storage in PostGreSQL) ") + "  (" + str(bibli_plume.returnVersion()) + ")")
+     self.plume2 = QAction(QIcon(menuIcon),"PLUGIN METADATA (Metadata storage in PostGreSQL)" + "  (" + str(bibli_plume.returnVersion()) + ")",self.iface.mainWindow())
+     self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) ") + "  (" + str(bibli_plume.returnVersion()) + ")")
      self.plume2.triggered.connect(self.clickIHMplume2)
      
      #Construction du menu

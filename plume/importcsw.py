@@ -105,7 +105,7 @@ class Ui_Dialog_ImportCSW(object):
 
         #------ 
         ordonneeLabelSaisie = groupBoxOptionsListeUrl.y() + groupBoxOptionsListeUrl.height() + 10
-        mLabelUrlText = QtWidgets.QApplication.translate("ImportCSW_ui", "Url du CSW", None)
+        mLabelUrlText = QtWidgets.QApplication.translate("ImportCSW_ui", "CSW URL", None)
         mLabelUrlToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "URL of the CSW service, without any parameters.", None)
         mLabelUrl = QtWidgets.QLabel(self.DialogImportCSW)
         mLabelUrl.setStyleSheet("QLabel {  font-family:" + Dialog.policeQGroupBox  +"; background-color:" + Dialog.labelBackGround  +";}")
@@ -125,7 +125,7 @@ class Ui_Dialog_ImportCSW(object):
         self.mZoneUrl = mZoneUrl
         #------ 
         ordonneeLabelSaisie           += deltaLabelSaisie
-        mLabelUrlIdText = QtWidgets.QApplication.translate("ImportCSW_ui", "Id du CSW", None)
+        mLabelUrlIdText = QtWidgets.QApplication.translate("ImportCSW_ui", "CSW ID", None)
         mLabelUrlIdToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "This identifier, not to be confused with the resource identifier, generally appears in the URL of the catalog file. This is the gmd: fileIdentifier property of XML.", None)
         mLabelUrlId = QtWidgets.QLabel(self.DialogImportCSW)
         mLabelUrlId.setStyleSheet("QLabel {  font-family:" + Dialog.policeQGroupBox  +"; background-color:" + Dialog.labelBackGround  +";}")
@@ -193,23 +193,23 @@ class Ui_Dialog_ImportCSW(object):
         self.option1 = QtWidgets.QRadioButton(groupBoxOptions)
         self.option1.setGeometry(QtCore.QRect(15,15,largeur - 20,23))
         self.option1.setObjectName("option1")
-        self.option1.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Compléter avec les métadonnées distantes", None))
+        self.option1.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Complete with remote metadata", None)) 
         self.option1.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
-        self.option1.setToolTip("Pour toutes les catégories de métadonnées renseignées dans la fiche du catalogue qui n'ont pas de valeur dans la fiche locale, la valeur de la fiche distante est ajoutée.")
+        self.option1.setToolTip(QtWidgets.QApplication.translate("ImportCSW_ui", "For all metadata categories entered in the catalog record that do not have a value in the local record, the value of the remote record is added.", None))
         #-
         self.option2 = QtWidgets.QRadioButton(groupBoxOptions)
         self.option2.setGeometry(QtCore.QRect(15,35,largeur - 20,23))
         self.option2.setObjectName("option2")
-        self.option2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Mettre à jour avec les métadonnées distantes", None))
+        self.option2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Update with remote metadata", None))  
         self.option2.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
-        self.option2.setToolTip("Pour toutes les catégories de métadonnées renseignées dans la fiche du catalogue, la valeur de la fiche locale est remplacée par celle du catalogue ou ajoutée s'il n'y avait pas de valeur.")
+        self.option2.setToolTip(QtWidgets.QApplication.translate("ImportCSW_ui", "For all metadata categories entered in the catalog record, the value of the local record is replaced by that of the catalog or added if there was no value.", None))
         #-
         self.option3 = QtWidgets.QRadioButton(groupBoxOptions)
         self.option3.setGeometry(QtCore.QRect(15,55,largeur - 20,23))
         self.option3.setObjectName("option3")
-        self.option3.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Remplacer par les métadonnées distantes", None))
+        self.option3.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Replace with remote metadata", None))  
         self.option3.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
-        self.option3.setToolTip("Génère une nouvelle fiche à partir des métadonnées distantes. La différence avec l'option 1 est que les informations des catégories non renseignées dans la fiche du catalogue mais qui auraient pu exister en local vont être effacées.")
+        self.option3.setToolTip(QtWidgets.QApplication.translate("ImportCSW_ui", "Generates a new form from remote metadata. The difference with option 1 is that the information of the categories not filled in the catalog record but which could have existed locally will be erased.", None))
         self.option1.setChecked(True)
         #options 
         #------ 
@@ -230,7 +230,7 @@ class Ui_Dialog_ImportCSW(object):
     #===============================              
     def functionAddCsw(self):
        zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
-       zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "Vous devez saisir une Url d'un service CSW.", None)
+       zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "You must enter a URL of a CSW service.", None)
        if self.mZoneUrl.text() == "" :
           bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
@@ -240,7 +240,7 @@ class Ui_Dialog_ImportCSW(object):
     #===============================              
     def functionImport(self):
        zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
-       zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "Vous devez saisir une Url d'un service CSW et un identifiant de fiche de mùétadonnées.", None)
+       zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "You must enter a URL of a CSW service and a metadata record identifier.", None) 
        if self.mZoneUrl.text() == "" or self.mZoneUrlId.text() == "" :
           bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :
@@ -443,7 +443,7 @@ class TREEVIEWCSW(QTreeWidget):
            itemValueText = iterator.value().text(0)
            if str(mCsw) == itemValueText :
               zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
-              zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "L'Url existe déjà dans la liste.", None)
+              zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "The URL already exists in the list.", None)  
               bibli_plume.displayMess(self, (2 if mDialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, mDialog.durationBarInfo)
               _save = False
               break

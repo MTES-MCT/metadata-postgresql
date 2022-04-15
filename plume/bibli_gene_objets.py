@@ -409,7 +409,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'minus widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
        #Tooltip                        
-       _mObjetQToolButton.setToolTip('Supprimer l\'élément')
+       _mObjetQToolButton.setToolTip(QtWidgets.QApplication.translate("bibli_gene_objet", "Delete item"))
        #Masqué /Visible Générale                               
        if _valueObjet['hide minus button'] : _mObjetQToolButton.setVisible(False)
        if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
@@ -495,7 +495,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'language widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
        #Tooltip                        
-       _mObjetQToolButton.setToolTip('Sélection de la langue de la métadonnée')
+       _mObjetQToolButton.setToolTip(QtWidgets.QApplication.translate("bibli_gene_objet", "Metadata language selection"))
                                           
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'language widget'  : _mObjetQToolButton, 
@@ -535,7 +535,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'unit widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
        #Tooltip                        
-       _mObjetQToolButton.setToolTip("Sélection de l'unité de mesure")
+       _mObjetQToolButton.setToolTip(QtWidgets.QApplication.translate("bibli_gene_objet", "Unit of measurement selection"))  
                                           
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'unit widget'  : _mObjetQToolButton, 
@@ -1087,17 +1087,6 @@ def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
        if valueExiste('help text', __valueObjet) : __mObjetQLabelEtiquette.setToolTip(__valueObjet['help text'])
     # == QLABEL
     
-    """
-    # == Couverture géographiques QLabel "Rectangle d'emprise" or "Centroide"
-    if __valueObjet['label'] == "Rectangle d'emprise" : 
-       _pathIcons = os.path.dirname(__file__) + "/icons/general"
-       _iconSourcesAuto          = _pathIcons + "/geoauto.svg"
-       _iconSourcesManu          = _pathIcons + "/geomanu.svg"
-       createToolBarGeographic(self, __keyObjet, self.mDicObjetsInstancies[__keyObjet]['label widget'], _iconSourcesAuto, _iconSourcesManu) 
-    # == Couverture géographiques QLabel "Rectangle d'emprise" or "Centroide"
-    """
-
-
     return __mObjetQLabelEtiquette
 
 #==========================
@@ -1116,7 +1105,7 @@ def createToolBarGeographic(self, key_keyObjet,  _keyObjet, _iconSourcesAuto, _i
     plumeAutoGeographic.setGeometry(QtCore.QRect( 0, -2,18,18))
     plumeAutoGeographic.clicked.connect(lambda : self.clickButtonsActionsGeographic(self.mDicObjetsInstancies[key_keyObjet]['main widget']))
     #--
-    mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Manuel") 
+    mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Manual") 
     plumeManuGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
     if self.toolBarDialog == "picture" : plumeManuGeographic.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
     plumeManuGeographic.setIcon(QIcon(_iconSourcesManu))

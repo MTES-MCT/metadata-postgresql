@@ -307,8 +307,8 @@ class GeometryMapToolShow(QgsMapTool ):
                 self.geom = QgsGeometry.fromWkt(geom_wkt)
                 self.crs.createFromUserInput(self.srid)
              except: 
-                zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-                zMess  = QtWidgets.QApplication.translate("plume_ui", "Géométrie invalide ou type non pris en charge.", None)
+                zTitre = QtWidgets.QApplication.translate("bibli_plume_tools_map", "PLUME : Warning", None)
+                zMess  = QtWidgets.QApplication.translate("bibli_plume_tools_map", "Invalid geometry or unsupported type.", None)  
                 bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
                 return
         

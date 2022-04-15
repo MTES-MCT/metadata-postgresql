@@ -135,7 +135,7 @@ class Ui_Dialog_plume(object):
         self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
-        self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
+        self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
         Dialog.setWindowTitle(self.messWindowTitle)
         Dialog.setWindowModality(Qt.WindowModal)
         Dialog.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint) 
@@ -230,7 +230,8 @@ class Ui_Dialog_plume(object):
            #Interroge l'utilisateur si modifications
            if self.mode == "edit" and self.zoneConfirmMessage :
               if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
-                 if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_main", "Si vous poursuivez, les modifications non enregistrées seront perdues."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+                 if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+                 #Si vous poursuivez, les modifications non enregistrées seront perdues.
         
            if self.mode == None or self.mode == "read" : 
               self.mode = "edit"
@@ -270,9 +271,9 @@ class Ui_Dialog_plume(object):
         elif mItem == "Copy" :
            self.copyMetagraph = self.metagraph
            if self.copyMetagraph !=  None :
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées de <b>") + str(self.schema) + "." + str(self.table) + "</b>"
+              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the metadata card of ") + "<b>" + str(self.schema) + "." + str(self.table) + "</b>" 
            else :    
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées mémorisée.") 
+              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the saved metadata card.")    
            self.copyMetagraphTooltip = mTextToolTip
            self.plumePaste.setToolTip(mTextToolTip)
         #**********************
@@ -294,7 +295,7 @@ class Ui_Dialog_plume(object):
         #**********************
         elif mItem == "Traduction" :
            self.translation = (False if self.translation else True) 
-        elif mItem == "Verrouillage" :
+        elif QtWidgets.QApplication.translate("plume_ui", mItem) == "Verrouillage" :
            self.verrouLayer = (False if self.verrouLayer else True) 
            self.nameVerrouLayer = (self.layer if self.verrouLayer else None) 
 
@@ -779,7 +780,7 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setEnabled(False)
         self.plumeVerrou.setEnabled(False)
         self.afficheNoConnections("show")
-        self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADONNEES (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
+        self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
         self.Dialog.setWindowTitle(self.messWindowTitle)   
         if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitle)   
         return
@@ -795,11 +796,12 @@ class Ui_Dialog_plume(object):
            self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
            self.labelImage.setGeometry(QtCore.QRect(30, 20, 100, 100))
            self.labelImage.setObjectName("labelImage")
-           #----------
-           _zMess  = "<html>Sélectionnez une couche PostgreSQL\
-                         <ul style='margin: 0;'><li>dans le panneau des couches ou</li><li>dans l'explorateur</li></ul>\
-                         \npour consulter ses métadonnées.</html>"
-           zMess  = QtWidgets.QApplication.translate("plume_ui", _zMess, None)
+           #---------- Sélectionnez une couche PostgreSQL  dans le panneau des couches ou   dans l'explorateur   pour consulter ses métadonnées.
+           _zMess1 = QtWidgets.QApplication.translate("plume_ui", "Select a PostgreSQL layer", None) 
+           _zMess2 = QtWidgets.QApplication.translate("plume_ui", "in the layers panel or", None) 
+           _zMess3 = QtWidgets.QApplication.translate("plume_ui", "in explorer", None)
+           _zMess4 = QtWidgets.QApplication.translate("plume_ui", "to view its metadata.", None) 
+           zMess   = "<html>" + _zMess1 + "<ul style='margin: 0;'><li>" + _zMess2 + "</li><li>" + _zMess3 + "</li></ul>\n" + _zMess4 + "</html>"
            self.zoneWarningClickSource = QtWidgets.QLabel(self.tabWidget )
            self.zoneWarningClickSource.setGeometry(30, 110, 300, 100)
            self.zoneWarningClickSource.setStyleSheet("QLabel {   \
@@ -849,7 +851,7 @@ class Ui_Dialog_plume(object):
               self.plumeTemplate.setEnabled(True)
               #MenuQToolButton                        
               # Génération des items via def createQmenuModele(self, _mObjetQMenu, templateLabels)
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Choisir un modèle de formulaire.") 
+              mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")  
               self.plumeTemplate.setEnabled(True)
            else :
               #instanciation des modèles LOCAUX disponibles si l'extension PLUME n'est pas installée 
@@ -857,7 +859,7 @@ class Ui_Dialog_plume(object):
               #instanciation des modèles LOCAUX disponibles si l'extension PLUME n'est pas installée 
 
               self.plumeTemplate.setEnabled(False)
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "L'extension PostgreSQL plume_pg n'est pas installée.") 
+              mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "The PostgreSQL plume_pg extension is not installed.") 
            self.plumeTemplate.setToolTip(mTextToolTip)
         #--QToolButton TEMPLATE                                               
         #====================
@@ -906,7 +908,7 @@ class Ui_Dialog_plume(object):
         if self.copyMetagraph !=  None :
            mTextToolTip = self.copyMetagraphTooltip
         else :    
-           mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées mémorisée.") 
+           mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card.")  
         self.plumePaste.setToolTip(mTextToolTip)
         #-
         self.plumeTranslation.setToolTip(self.mTextToolTipOui if self.translation else self.mTextToolTipNon)   
@@ -973,7 +975,7 @@ class Ui_Dialog_plume(object):
             _mObjetQMenuItem = QAction(elemQMenuItem, self._mObjetQMenuExport)
             _mObjetQMenuItem.setText(elemQMenuItem)
             _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
-            mTextToolTip = "Export de la fiche de métadonnées au format " + str(elemQMenuItem.upper())
+            mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Export of the metadata sheet in the format ") + str(elemQMenuItem.upper())  
             _mObjetQMenuItem.setToolTip(mTextToolTip)
             self._mObjetQMenuExport.addAction(_mObjetQMenuItem)   
             #- Actions
@@ -996,18 +998,18 @@ class Ui_Dialog_plume(object):
               self.mMenuBarDialog.setGeometry(QtCore.QRect(0, 0, 500, 20))
         _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
         #--
-        mText = QtWidgets.QApplication.translate("plume_main", "Edition") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Edition") 
         self.plumeEdit = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeEdit.setStyleSheet("QPushButton { border: 0px solid black;}")
         self.plumeEdit.setIcon(QIcon(_iconSourcesRead))
-        self.plumeEdit.setObjectName(mText)
-        self.mTextToolTipRead = QtWidgets.QApplication.translate("plume_main", "Edit") 
-        self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_main", "Read") 
+        self.plumeEdit.setObjectName("Edition")
+        self.mTextToolTipRead = QtWidgets.QApplication.translate("plume_ui", "Edit") 
+        self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_ui", "Read") 
         self.plumeEdit.setToolTip(self.mTextToolTipEdit)
         self.plumeEdit.setGeometry(QtCore.QRect(10,0,18,18))
         self.plumeEdit.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("plume_main", "Save") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Save") 
         self.plumeSave = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeSave.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeSave.setIcon(QIcon(_iconSourcesSave))
@@ -1016,25 +1018,25 @@ class Ui_Dialog_plume(object):
         self.plumeSave.setGeometry(QtCore.QRect(40,0,18,18))
         self.plumeSave.clicked.connect(self.clickButtonsActions)
         #--
-        mText = QtWidgets.QApplication.translate("plume_main", "Empty") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Empty") 
         self.plumeEmpty = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeEmpty.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeEmpty.setIcon(QIcon(_iconSourcesEmpty))
         self.plumeEmpty.setObjectName("Empty")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Vider la fiche de métadonnées.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card.")
         self.plumeEmpty.setToolTip(mTextToolTip)
         self.plumeEmpty.setGeometry(QtCore.QRect(70,0,18,18))
         self.plumeEmpty.clicked.connect(self.clickButtonsActions)
         #--                                        
         #====================
         #--QToolButton EXPORT                                               
-        mText = QtWidgets.QApplication.translate("plume_main", "Export") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Export") 
         self.plumeExport = QtWidgets.QToolButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QToolButton { border: 0px solid black;}")  
         self.plumeExport.setIcon(QIcon(_iconSourcesExport))
         self.plumeExport.setObjectName("Export")
         self.plumeExport.setGeometry(QtCore.QRect(85,0,42,18))
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Exporter les métadonnées dans un fichier.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file.")
         self.plumeExport.setToolTip(mTextToolTip)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
@@ -1051,7 +1053,7 @@ class Ui_Dialog_plume(object):
         self.plumeImport.setIcon(QIcon(_iconSourcesImport))
         self.plumeImport.setObjectName("Import")
         self.plumeImport.setGeometry(QtCore.QRect(125,0,42,18))
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Importer les métadonnées depuis un fichier ou depuis un service CSW.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata from a file or from a CSW service.") 
         self.plumeImport.setToolTip(mTextToolTip)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
@@ -1060,7 +1062,7 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:220px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
         #-- Importer les métadonnées depuis un fichier
-        mText = QtWidgets.QApplication.translate("plume_main", "Importer depuis un fichier") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Import from file")
         self.plumeImportFile = QAction("plumeImportFile",self.plumeImport)
         self.plumeImportFile.setText(mText)
         self.plumeImportFile.setObjectName("plumeImportFile")
@@ -1069,7 +1071,7 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.addAction(self.plumeImportFile)
         #-- Importer les métadonnées depuis un fichier
         #-- Importer les métadonnées depuis un service CSW
-        mText = QtWidgets.QApplication.translate("plume_main", "Importer depuis un service CSW") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Import from a CSW service") 
         self.plumeImportCsw = QAction("plumeImportCSW",self.plumeImport)
         self.plumeImportCsw.setText(mText)
         self.plumeImportCsw.setObjectName("plumeImportCSW")
@@ -1083,12 +1085,12 @@ class Ui_Dialog_plume(object):
         #--QToolButton IMPORT                                               
         #====================
         #--
-        mText = QtWidgets.QApplication.translate("plume_main", "Copy") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Copy") 
         self.plumeCopy = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeCopy.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeCopy.setIcon(QIcon(_iconSourcesCopy))
         self.plumeCopy.setObjectName("Copy")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Copier la fiche de métadonnées.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card.") 
         self.plumeCopy.setToolTip(mTextToolTip)
         self.plumeCopy.setGeometry(QtCore.QRect(175,0,18,18))
         self.plumeCopy.clicked.connect(self.clickButtonsActions)
@@ -1100,20 +1102,20 @@ class Ui_Dialog_plume(object):
         if self.toolBarDialog == "picture" : self.plumePaste.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumePaste.setIcon(QIcon(_iconSourcesPaste))
         self.plumePaste.setObjectName("Paste")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Coller la fiche de métadonnées mémorisée.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card.") 
         self.plumePaste.setToolTip(mTextToolTip)
         self.plumePaste.setGeometry(QtCore.QRect(205,0,18,18))
         self.plumePaste.clicked.connect(self.clickButtonsActions)
         #====================
         #--QToolButton TEMPLATE                                               
-        mText = QtWidgets.QApplication.translate("plume_main", "Template") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Template") 
         self.plumeTemplate = QtWidgets.QToolButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { border: 0px solid black;}")  
         self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
         self.plumeTemplate.setObjectName("Template")
         self.plumeTemplate.setGeometry(QtCore.QRect(230,0,42,18))
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Extension METADATA non installée.") 
-        mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Choisir un modèle de formulaire.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "METADATA extension not installed.")   
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")    
         self.plumeTemplate.setToolTip(mTextToolTip)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
@@ -1121,13 +1123,13 @@ class Ui_Dialog_plume(object):
         #--QToolButton TEMPLATE                                               
         #====================
         #--
-        mText = QtWidgets.QApplication.translate("plume_main", "Translation") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Translation") 
         self.plumeTranslation = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeTranslation.setStyleSheet("QPushButton { border: 0px solid black;}")  
         self.plumeTranslation.setIcon(QIcon(_iconSourcesTranslation))
-        self.plumeTranslation.setObjectName(mText)
-        self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_main", "Activer les fonctions de traduction.") 
-        self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_main", "Désactiver les fonctions de traduction.") 
+        self.plumeTranslation.setObjectName("Traduction")
+        self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_ui", "Enable translation functions.") 
+        self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
         self.plumeTranslation.setToolTip(self.mTextToolTipNon)
         self.plumeTranslation.setGeometry(QtCore.QRect(280,0,18,18))
         self.plumeTranslation.clicked.connect(self.clickButtonsActions)
@@ -1136,7 +1138,7 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang = QtWidgets.QToolButton(self.mMenuBarDialog)
         self.plumeChoiceLang.setObjectName("plumeChoiceLang")
         self.plumeChoiceLang.setText(self.language)
-        self.mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Modifier la langue principale des métadonnées.") 
+        self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") 
         self.plumeChoiceLang.setToolTip(self.mTextToolTip)
         self.plumeChoiceLang.setGeometry(QtCore.QRect(300,0,40,18))
         if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { border: 0px solid black;}")  
@@ -1157,11 +1159,11 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setMenu(_mObjetQMenu)
         #--QToolButton LANGUAGE                                               
         #====================
-        mText = QtWidgets.QApplication.translate("plume_main", "Customization of the IHM") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM") 
         self.paramColor = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.paramColor.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.paramColor.setIcon(QIcon(_iconSourcesParam))
-        self.paramColor.setObjectName(mText)
+        self.paramColor.setObjectName("Customization of the IHM")
         self.paramColor.setToolTip(mText)
         self.paramColor.setGeometry(QtCore.QRect(350,0,18,18))
         self.paramColor.clicked.connect(self.clickColorDialog)
@@ -1169,7 +1171,7 @@ class Ui_Dialog_plume(object):
         #--QToolButton POINT ?                                               
         self.plumeInterrogation = QtWidgets.QToolButton(self.mMenuBarDialog)
         self.plumeInterrogation.setObjectName("plumeInterrogation")
-        self.mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Aide / À propos") 
+        self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Help / About") 
         self.plumeInterrogation.setIcon(QIcon(_iconSourcesInterrogation))
         self.plumeInterrogation.setToolTip(self.mTextToolTip)
         self.plumeInterrogation.setGeometry(QtCore.QRect(370,0,40,18))
@@ -1181,22 +1183,22 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
         #-- Aide
-        mText = QtWidgets.QApplication.translate("plume_main", "Help") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Help") 
         self.plumeHelp = QAction("Help",self.plumeInterrogation)
         self.plumeHelp.setText(mText)
         #self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
-        self.plumeHelp.setObjectName(mText)
+        self.plumeHelp.setObjectName("Help")
         self.plumeHelp.setToolTip(mText)
         self.plumeHelp.triggered.connect(self.myHelpAM)
         _mObjetQMenu.addAction(self.plumeHelp)
         #-- Aide
         _mObjetQMenu.addSeparator()
         #-- About
-        mText = QtWidgets.QApplication.translate("plume_main", "About") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "About") 
         self.plumeAbout = QAction("About",self.plumeInterrogation)
         self.plumeAbout.setText(mText)
         #self.plumeAbout.setIcon(QIcon(_iconSourcesAbout))
-        self.plumeAbout.setObjectName(mText)
+        self.plumeAbout.setObjectName("About")
         self.plumeAbout.setToolTip(mText)
         self.plumeAbout.triggered.connect(self.clickAbout)
         _mObjetQMenu.addAction(self.plumeAbout)
@@ -1206,13 +1208,13 @@ class Ui_Dialog_plume(object):
         self.plumeInterrogation.setMenu(_mObjetQMenu)
         #--QToolButton POINT ?                                               
         #-- Verrouillage
-        mText = QtWidgets.QApplication.translate("plume_main", "Verrouillage") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Lockdown") 
         self.plumeVerrou = QtWidgets.QPushButton(self.mMenuBarDialog)
         if self.toolBarDialog == "picture" : self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black;}")
         self.plumeVerrou.setIcon(QIcon(_iconSourcesVerrou))
-        self.plumeVerrou.setObjectName(mText)
-        self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_main", 'Verrouiller l\'affichage sur la fiche de métadonnées courante.') 
-        self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_main", 'Déverrouiller l\'affichage.') 
+        self.plumeVerrou.setObjectName("Verrouillage")
+        self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_ui", 'Lock the display on the current metadata card.') 
+        self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_ui", 'Unlock the display.')                       
         self.plumeVerrou.setToolTip(self.mTextToolTipVerrouEdit)
         self.plumeVerrou.setGeometry(QtCore.QRect(self.mMenuBarDialog.width() - 20,0,18,18))
         self.plumeVerrou.clicked.connect(self.clickButtonsActions)

@@ -72,7 +72,13 @@ class Ui_Dialog_ColorBloc(object):
         #========
         self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor"}
-        self.dicListLettreLabel = { 0:"Onglet", 1:"Groupe général",  2:"Groupe de propriétés",  3:"Groupe de valeurs",  4:"Groupe de traduction", 5:"Libellé", 6:"Couleur des outils de géométrie"}
+        self.dicListLettreLabel = { 0:QtWidgets.QApplication.translate("colorbloc_ui", "Tab"),\
+                                    1:QtWidgets.QApplication.translate("colorbloc_ui", "General group"),\
+                                    2:QtWidgets.QApplication.translate("colorbloc_ui", "Property group"),\
+                                    3:QtWidgets.QApplication.translate("colorbloc_ui", "Value group"),\
+                                    4:QtWidgets.QApplication.translate("colorbloc_ui", "Translation group"),\
+                                    5:QtWidgets.QApplication.translate("colorbloc_ui", "Wording"),\
+                                    6:QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tools color")}
         #========
         self.groupBoxAll = QtWidgets.QGroupBox(self.tab_widget_Perso)
         self.groupBoxAll.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
@@ -109,7 +115,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelQGroupBox = QtWidgets.QLabel(self.groupBoxAll)
         self.labelQGroupBox.setGeometry(QtCore.QRect(10, 165, 180, 30))
         self.labelQGroupBox.setAlignment(Qt.AlignRight)        
-        self.labelQGroupBox.setText("Police :")        
+        self.labelQGroupBox.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Police :"))        
         #-
         self.fontQGroupBox = QtWidgets.QFontComboBox(self.groupBoxAll)
         self.fontQGroupBox.setGeometry(QtCore.QRect(205, 160, 190, 20))
@@ -122,7 +128,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelTypeLine = QtWidgets.QLabel(self.groupBoxAll)
         self.labelTypeLine.setGeometry(QtCore.QRect(10, 185, 180, 30))
         self.labelTypeLine.setAlignment(Qt.AlignRight)        
-        self.labelTypeLine.setText("Type de trait des cadres :")        
+        self.labelTypeLine.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Line type of frames :"))         
         #--
         self.comboTypeLine = QtWidgets.QComboBox(self.groupBoxAll)
         self.comboTypeLine.setGeometry(QtCore.QRect(205, 180, 190, 20))
@@ -135,7 +141,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelBoxEpai = QtWidgets.QLabel(self.groupBoxAll)
         self.labelBoxEpai.setGeometry(QtCore.QRect(10, 205, 180, 30))
         self.labelBoxEpai.setAlignment(Qt.AlignRight)        
-        self.labelBoxEpai.setText("Epaisseur de trait des cadres :")        
+        self.labelBoxEpai.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Frame line thickness :"))         
         #-
         self.spinBoxEpai = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
         self.spinBoxEpai.setGeometry(QtCore.QRect(205,200 ,50, 20))
@@ -155,7 +161,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelWinVsDock = QtWidgets.QLabel(self.groupBoxAll)
         self.labelWinVsDock.setGeometry(QtCore.QRect(10, 225, 180, 30))
         self.labelWinVsDock.setAlignment(Qt.AlignRight)        
-        self.labelWinVsDock.setText("Interface :")        
+        self.labelWinVsDock.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Interface"))         
         #-
         mDicWinVsDock = {"window":"Fenêtre", "dockFalse":"Panneau ancré", "dockTrue":"Panneau flottant"}
         self.comboWinVsDock = QtWidgets.QComboBox(self.groupBoxAll)
@@ -170,7 +176,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelToolBarDialog = QtWidgets.QLabel(self.groupBoxAll)
         self.labelToolBarDialog.setGeometry(QtCore.QRect(10, 245, 180, 30))
         self.labelToolBarDialog.setAlignment(Qt.AlignRight)        
-        self.labelToolBarDialog.setText("Barre d'outil :")        
+        self.labelToolBarDialog.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Tools Bar :"))         
         #-
         mDicToolBarDialog = {"button":"Mode 'Bouton'", "picture":"Mode 'Image'"}
         self.comboToolBarDialog = QtWidgets.QComboBox(self.groupBoxAll)
@@ -198,7 +204,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelgeomPrecision = QtWidgets.QLabel(self.groupBoxAll)
         self.labelgeomPrecision.setGeometry(QtCore.QRect(10, 280, 180, 30))
         self.labelgeomPrecision.setAlignment(Qt.AlignRight)        
-        self.labelgeomPrecision.setText("Précision des coords. WKT :")        
+        self.labelgeomPrecision.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Coordinate accuracy. WKT :"))         
         #-
         self.spingeomPrecision = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
         self.spingeomPrecision.setGeometry(QtCore.QRect(205,276 ,50, 20))
@@ -215,7 +221,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelgeomEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
         self.labelgeomEpaisseur.setGeometry(QtCore.QRect(10, 300, 180, 30))
         self.labelgeomEpaisseur.setAlignment(Qt.AlignRight)        
-        self.labelgeomEpaisseur.setText("Epaisseur des outils de géométrie :")        
+        self.labelgeomEpaisseur.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tool thickness :"))        
         #-
         self.spingeomEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
         self.spingeomEpaisseur.setGeometry(QtCore.QRect(205,296 ,50, 20))
@@ -238,7 +244,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelTypegeomPoint = QtWidgets.QLabel(self.groupBoxAll)
         self.labelTypegeomPoint.setGeometry(QtCore.QRect(-20, 320, 210, 30))
         self.labelTypegeomPoint.setAlignment(Qt.AlignRight)        
-        self.labelTypegeomPoint.setText("Symbole de la géométrie POINT :")        
+        self.labelTypegeomPoint.setText(QtWidgets.QApplication.translate("colorbloc_ui", "POINT geometry symbol :"))         
         #--
         self.comboTypegeomPoint = QtWidgets.QComboBox(self.groupBoxAll)
         self.comboTypegeomPoint.setGeometry(QtCore.QRect(205, 315, 190, 20))
@@ -251,7 +257,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelgeomPointEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
         self.labelgeomPointEpaisseur.setGeometry(QtCore.QRect(10, 340, 180, 30))
         self.labelgeomPointEpaisseur.setAlignment(Qt.AlignRight)        
-        self.labelgeomPointEpaisseur.setText("Taille de la géométrie POINT :")        
+        self.labelgeomPointEpaisseur.setText(QtWidgets.QApplication.translate("colorbloc_ui", "POINT geometry size :"))         
         #-
         self.spingeomPointEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
         self.spingeomPointEpaisseur.setGeometry(QtCore.QRect(205,335 ,50, 20))
@@ -269,7 +275,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelgeomZoom = QtWidgets.QLabel(self.groupBoxAll)
         self.labelgeomZoom.setGeometry(QtCore.QRect(-20, 360, 210, 30))
         self.labelgeomZoom.setAlignment(Qt.AlignRight)        
-        self.labelgeomZoom.setText("Zoom sur la visualisation géométrique :")        
+        self.labelgeomZoom.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Zoom on the geometric visualization :"))         
         #--
         self.QCheckgeomZoom = QtWidgets.QCheckBox(self.groupBoxAll)
         self.QCheckgeomZoom.setGeometry(QtCore.QRect(205, 355, 190, 20))
@@ -293,7 +299,7 @@ class Ui_Dialog_ColorBloc(object):
         self.labelPushButton.setObjectName("pushButton")
         self.labelPushButton.setGeometry(QtCore.QRect(self.DialogColorBloc.width() / 2 - 250, self.DialogColorBloc.height() - 30, 500, 25))
         self.labelPushButton.setAlignment(Qt.AlignCenter)        
-        self.labelPushButton.setText("<i>Les modifications seront prises en compte au prochain démarrage de Plume.</i>")        
+        self.labelPushButton.setText("<i>" + QtWidgets.QApplication.translate("colorbloc_ui", "The modifications will be taken into account the next time you start Plume.") + "</i>")         
         #--
         self.pushButton = QtWidgets.QPushButton(self.DialogColorBloc)
         self.pushButton.setObjectName("pushButton")
@@ -305,7 +311,7 @@ class Ui_Dialog_ColorBloc(object):
         self.pushButtonAnnuler.setGeometry(QtCore.QRect(self.DialogColorBloc.width() / 2 + 20, self.DialogColorBloc.height() - 60, 80, 25))
         self.pushButtonAnnuler.clicked.connect(self.DialogColorBloc.reject)
         #----------
-        self.DialogColorBloc.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(bibli_plume.returnVersion()) + ")")
+        self.DialogColorBloc.setWindowTitle(QtWidgets.QApplication.translate("colorbloc_ui", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(bibli_plume.returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("colorbloc_ui", self.zMessTitle, None))
         self.pushButton.setText(QtWidgets.QApplication.translate("colorbloc_ui", "OK", None))
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Cancel", None))
@@ -324,26 +330,6 @@ class Ui_Dialog_ColorBloc(object):
         ordonneeLabelSaisie           = 15
         deltaLabelSaisie              = hauteurLabel + 8
         #------
-        """ 
-        mLabelLanguageText    = QtWidgets.QApplication.translate("colorbloc_ui", "Language", None)
-        mLabelLanguageToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "LanguageToolTip", None)
-        mLabelLanguage = QtWidgets.QLabel(self.tab_widget_User)
-        mLabelLanguage.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
-        mLabelLanguage.setGeometry(QtCore.QRect(abscisseLabel, ordonneeLabelSaisie, largeurLabel,  hauteurLabel))
-        mLabelLanguage.setObjectName("mLabelLanguage")
-        mLabelLanguage.setText(mLabelLanguageText)
-        mLabelLanguage.setToolTip(mLabelLanguageToolTip)
-        mLabelLanguage.setWordWrap(True)
-        #- 
-        mZoneLanguage = QtWidgets.QLineEdit(self.tab_widget_User)
-        #mZoneLanguage.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  +" ; border-width: 0px;}")
-        mZoneLanguage.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +";}")
-        mZoneLanguage.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, 50, hauteurSaisie))
-        mZoneLanguage.setObjectName("mZoneLanguage")
-        mZoneLanguage.setText(self.language)
-        mZoneLanguage.setToolTip(mLabelLanguageToolTip)
-        """ 
-        #------ 
         #ordonneeLabelSaisie += deltaLabelSaisie
         mLabelLangListText    = QtWidgets.QApplication.translate("colorbloc_ui", "LangList", None)
         mLabelLangListToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "LangListToolTip", None)
@@ -361,26 +347,6 @@ class Ui_Dialog_ColorBloc(object):
         mZoneLangList.setObjectName("mZoneLangList")
         mZoneLangList.setText(",".join(self.langList))
         mZoneLangList.setToolTip(mLabelLangListToolTip)
-        #------ 
-        """ 
-        ordonneeLabelSaisie += deltaLabelSaisie
-        mLabelTranslationText    = QtWidgets.QApplication.translate("colorbloc_ui", "Translation", None)
-        mLabelTranslationToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "TranslationToolTip", None)
-        mLabelTranslation = QtWidgets.QLabel(self.tab_widget_User)
-        mLabelTranslation.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
-        mLabelTranslation.setGeometry(QtCore.QRect(abscisseLabel, ordonneeLabelSaisie, largeurLabel,  hauteurLabel))
-        mLabelTranslation.setObjectName("mLabelTranslation")
-        mLabelTranslation.setText(mLabelTranslationText)
-        mLabelTranslation.setToolTip(mLabelTranslationToolTip)
-        mLabelTranslation.setWordWrap(True)
-        #- 
-        mZoneTranslation = QtWidgets.QCheckBox(self.tab_widget_User)
-        mZoneTranslation.setStyleSheet("QCheckBox {  font-family:" + self.policeQGroupBox  +";}")
-        mZoneTranslation.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, 18, hauteurSaisie))
-        mZoneTranslation.setObjectName("mZoneTranslation")
-        mZoneTranslation.setChecked(True if self.initTranslation == 'true' else False)
-        mZoneTranslation.setToolTip(mLabelTranslationToolTip)
-        """ 
         #------ 
         #hauteurLabel     = 40 
         #------   A voir plus tard
@@ -419,7 +385,6 @@ class Ui_Dialog_ColorBloc(object):
         mLabelPreferedTemplate.setWordWrap(True)
         #- 
         mZonePreferedTemplate = QtWidgets.QLineEdit(self.tab_widget_User)
-        #mZonePreferedTemplate.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  +" ; border-width: 0px;}")
         mZonePreferedTemplate.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +";}")
         mZonePreferedTemplate.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, largeurSaisie, hauteurSaisie))
         mZonePreferedTemplate.setObjectName("mZonePreferedTemplate")
@@ -755,12 +720,12 @@ class Ui_Dialog_ColorBloc(object):
         #--------------------------
         self.tab_widget_Tab1 = QWidget()
         self.tab_widget_Tab1.setObjectName("tab_widget_Tab1")
-        labeltab_widget_Tab1 = QtWidgets.QApplication.translate("colorbloc_ui", "  Onglet 1   ", None)
+        labeltab_widget_Tab1 = QtWidgets.QApplication.translate("colorbloc_ui", "  tab 1   ", None)
         self.tabWidgetFalse.addTab(self.tab_widget_Tab1, labeltab_widget_Tab1)
         #--------------------------
         self.tab_widget_Tab2 = QWidget()
         self.tab_widget_Tab2.setObjectName("tab_widget_Tab2")
-        labeltab_widget_Tab2 = QtWidgets.QApplication.translate("colorbloc_ui", "  Onglet 2   ", None)
+        labeltab_widget_Tab2 = QtWidgets.QApplication.translate("colorbloc_ui", "  tab 2   ", None)
         self.tabWidgetFalse.addTab(self.tab_widget_Tab2, labeltab_widget_Tab2)
         #--------------------------
         self.tabWidgetFalse.setCurrentIndex(0)
@@ -806,7 +771,7 @@ class Ui_Dialog_ColorBloc(object):
         self.mLabelEdit.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
         self.mLabelEdit.setGeometry(QtCore.QRect(20, 25, 120, 18))
         self.mLabelEdit.setObjectName("mLabelEdit")
-        self.mLabelEdit.setText("Rectangle d'emprise")
+        self.mLabelEdit.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Boundary rectangle"))
         #- 
         self.mzoneEdit = QtWidgets.QLineEdit(self.falseGroupBoxProperties)
         self.mzoneEdit.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  +" ; border-width: 0px;}")
@@ -820,7 +785,7 @@ class Ui_Dialog_ColorBloc(object):
         self.mLabelDate.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
         self.mLabelDate.setGeometry(QtCore.QRect(20, 50, 120, 18))
         self.mLabelDate.setObjectName("mLabelEdit")
-        self.mLabelDate.setText("Date de création")
+        self.mLabelDate.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Creation date")) 
         #- 
         self.mzoneDate = QgsDateTimeEdit(self.falseGroupBoxProperties)
         self.mzoneDate.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
@@ -1257,7 +1222,7 @@ class Ui_Dialog_ColorBloc(object):
            #
            mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
            mReset.setObjectName(mResetName)
-           mReset.setText("Réinitialiser")
+           mReset.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Reset")) 
            #
            mButton.clicked.connect(lambda : self.functionColor(mImage, i))
            mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))
@@ -1288,7 +1253,7 @@ class Ui_Dialog_ColorBloc(object):
            #
            mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
            mReset.setObjectName(mResetName)
-           mReset.setText("Réinitialiser")
+           mReset.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Reset")) 
            #
            mButton.clicked.connect(lambda : self.functionColor(mImage, i))
            mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))

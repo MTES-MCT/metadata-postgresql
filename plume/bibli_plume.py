@@ -111,7 +111,7 @@ def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     table = table.replace(".","_").replace(" ","_")
     InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
     mDialogueSave = QFileDialog
-    fileName  = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("plume_ui", "PLUME Export des fiches de métadonnées", None),InitDir,TypeList)[0]
+    fileName  = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("bibli_plume", "PLUME Export of metadata files", None),InitDir,TypeList)[0] 
     format    = export_format_from_extension(os.path.splitext(fileName)[1], format)
     if fileName == "" : return
     #**********************
@@ -119,14 +119,9 @@ def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
     try:
        self.metagraph.export(fileName, format)
     except:
-       zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-       zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à exporter votre fiche de métadonnées.", None)
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("bibli_plume", "PLUME failed to export your metadata record.", None)  
        displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-    return  
-
-#==================================================
-def importObjetMetagraphCSW(self) :
-    #boite de dialogue CSW
     return  
 
 #==================================================
@@ -145,7 +140,7 @@ def importObjetMetagraph(self) :
     MonFichierPath = MonFichierPath.replace("\\","/")        
     InitDir = MonFichierPath
     TypeList = extStr[2:]
-    fileName = QFileDialog.getOpenFileName(None,"Fiches de métadonnées",InitDir,TypeList)
+    fileName = QFileDialog.getOpenFileName(None,QtWidgets.QApplication.translate("bibli_plume", "Metadata cards", None),InitDir,TypeList) 
     filepath = str(fileName[0]) if fileName[0] != "" else "" 
     if filepath == "" : return
     #**********************
@@ -154,8 +149,8 @@ def importObjetMetagraph(self) :
        old_metagraph = self.metagraph
        metagraph  = metagraph_from_file(filepath, old_metagraph=old_metagraph)
     except:
-       zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-       zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME n'a pas réussi à importer votre fiche de métadonnées.", None)
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("bibli_plume", "PLUME failed to import your metadata record.", None) 
        displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
 
        metagraph = None
@@ -669,7 +664,7 @@ def returnIcon( iconAdress) :
     icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     icon.actualSize(QSize(15, 15))
     return icon 
-    
+
 #==================================================
 def CorrigePath(nPath):
     nPath = str(nPath)

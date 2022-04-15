@@ -9,11 +9,11 @@ from qgis.core import QgsSettings
 def manageLibrary(mVersionPlume, mVersionPlumeBibli) :
     mPath = os.path.dirname(__file__)
     if mVersionPlume != mVersionPlumeBibli :
-       logging.debug("Installation des bibliothèques ...")
+       logging.debug(QtWidgets.QApplication.translate("bibli_install", "Installing Libraries ...")) 
        try:
            subprocess.check_call(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '1', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'])
        except subprocess.CalledProcessError:
-           logging.exception("pip n'a pas été mis à jour.") 
+           logging.exception(QtWidgets.QApplication.translate("bibli_install", "pip has not been updated.")) 
 
        mPathPerso = mPath.replace("\\","/") + "/requirements.txt"
        subprocess.check_call(['python3', '-m', 'pip', 'install', '-r', mPathPerso])
