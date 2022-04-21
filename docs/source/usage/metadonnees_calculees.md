@@ -15,14 +15,18 @@ Les catégories pour lesquelles le calcul est proposé sont, à ce stade :
 | Chemin de la catégorie | Information calculée | Paramètres optionnels | Dépendances |
 | --- | --- | --- | --- |
 | `dct:conformsTo` | Tous les référentiels de coordonnées déclarés pour les géométries de la table ou vue. | Aucun. | L'extension PostGIS doit être active sur la base. |
-| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. | L'extension PlumePg doit être active sur la base. |
-| `dct:title` | Idem `dct:description`. | Idem `dct:description`. | Idem `dct:description`. |
+| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. | L'extension *PlumePg* doit être active sur la base. |
+| `dct:title` | Idem `dct:description`. | Idem. | Idem. |
+| `dct:created` | La date de création de la table si l'information est présente dans la table `z_plume.stamp.timestamp`. | Aucun. | L'extension *PlumePg* doit être active sur la base[^activation-suivi-dates]. |
+| `dct:modified` | La date de dernière modification de la table si l'information est présente dans la table `z_plume.stamp.timestamp`. | Aucun. | L'extension *PlumePg* doit être active sur la base[^activation-suivi-dates]. |
 
 [^extrait-descriptif]: Si des métadonnées ont déjà été saisies pour la table, seule la partie du descriptif qui précède la balise `<METADATA>` sera considérée.
 
 [^doc-pattern]: Pour plus de détails, on se reportera à la documentation de PostgreSQL. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.
 
 [^doc-flags]: Les valeurs acceptées sont les mêmes que pour les arguments `flags` des fonctions d'expression régulière de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.
+
+[^activation-suivi-dates]: Il est également recommandé d'avoir [activé les fonctionnalités d'enregistrement des dates](#activation-de-lenregistrement-des-dates), sans quoi le calcul ne renverra jamais rien.
 
 Les paramètres optionnels sont spécifiés via le champ `compute_params` des tables `z_plume.meta_categorie` et `z_plume.meta_template_categories`. Il s'agit d'un champ de type `jsonb`, qui attend un dictionnaire dont les clés sont les noms des paramètres et les valeurs les valeurs des paramètres.
 
