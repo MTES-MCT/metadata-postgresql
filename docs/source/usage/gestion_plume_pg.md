@@ -138,6 +138,14 @@ De manière très classique, le processus de restauration est le suivant :
 2. Créer une base vierge.
 3. Lancer la restauration sur cette base vierge, par la méthode habituelle.
 
+### Considérations spécifiques au mécanisme d'enregistrement des dates
+
+En l'état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table `z_plume.stamp_timestamp` ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu'elles aient été préalablement intégrées aux fiches de métadonnées via le plugin QGIS Plume pour ne pas être **perdues**.
+
+Les déclencheurs sur évènement seront inactifs après la restauration et devront donc être réactivés manuellement d'autant que de besoin. Il n'est pas nécessaire de recréer les déclencheurs sur les tables, qui sont pour leur part restaurés.
+
+Des erreurs peuvent apparaître à la restauration des politiques de sécurité niveau ligne, qui sont créées par l'extension mais peuvent aussi (de manière inappropriée) être sauvegardées à part par `pg_dump`. Ces messages signalant que `pg_restore` n'a pas pu recréer les politiques de sécurité car elles existaient déjà sont sans conséquence.
+
 ## Activation de l'enregistrement des dates
 
 *PlumePg* propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.
@@ -218,6 +226,7 @@ Le mécanisme mis en place par *PLumePg* peut donner lieu à des faux positifs, 
 Le déclencheur sur évènement `plume_stamp_modification` est ainsi activé par toutes les commandes `ALTER TABLE`, y compris celles qui n'affectent pas réellement la table, comme un changement de nom qui conserve le nom d'origine.
 
 Les déclencheurs `plume_stamp_action` sont activés par toutes les commandes `INSERT`, `UPDATE`, `DELETE` et `TRUNCATE`, y compris celles qui - sans pour autant échouer - n'ont aucun effet. Par exemple une commande `UPDATE` ou `DELETE` telle qu'aucune ligne ne remplit la condition de sa clause `WHERE`. Il paraissait préférable d'avoir recours à des déclencheurs `ON EACH STATEMENT` qu'à des déclencheurs `ON EACH ROW`, certes moins susceptibles de retenir des fausses modifications mais susceptibles d'allonger considérablement le temps d'exécution des requêtes.
+
 
 ## Usage des modèles de formulaires
 
