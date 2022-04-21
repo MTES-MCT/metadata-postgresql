@@ -253,6 +253,13 @@
   <a class="reference internal nav-link" href="#sauvegarde-et-restauration-de-la-base">
    Sauvegarde et restauration de la base
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#considerations-specifiques-au-mecanisme-d-enregistrement-des-dates">
+     Considérations spécifiques au mécanisme d’enregistrement des dates
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#activation-de-l-enregistrement-des-dates">
@@ -445,6 +452,12 @@
 <li><p>Créer une base vierge.</p></li>
 <li><p>Lancer la restauration sur cette base vierge, par la méthode habituelle.</p></li>
 </ol>
+<section id="considerations-specifiques-au-mecanisme-d-enregistrement-des-dates">
+<h3>Considérations spécifiques au mécanisme d’enregistrement des dates<a class="headerlink" href="#considerations-specifiques-au-mecanisme-d-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h3>
+<p>En l’état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu’elles aient été préalablement intégrées aux fiches de métadonnées via le plugin QGIS Plume pour ne pas être <strong>perdues</strong>.</p>
+<p>Les déclencheurs sur évènement seront inactifs après la restauration et devront donc être réactivés manuellement d’autant que de besoin. Il n’est pas nécessaire de recréer les déclencheurs sur les tables, qui sont pour leur part restaurés.</p>
+<p>Des erreurs peuvent apparaître à la restauration des politiques de sécurité niveau ligne, qui sont créées par l’extension mais peuvent aussi (de manière inappropriée) être sauvegardées à part par <code class="docutils literal notranslate"><span class="pre">pg_dump</span></code>. Ces messages signalant que <code class="docutils literal notranslate"><span class="pre">pg_restore</span></code> n’a pas pu recréer les politiques de sécurité car elles existaient déjà sont sans conséquence.</p>
+</section>
 </section>
 <section id="activation-de-l-enregistrement-des-dates">
 <h2>Activation de l’enregistrement des dates<a class="headerlink" href="#activation-de-l-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h2>
