@@ -511,6 +511,25 @@ référentiel.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.computer.datetime_parser">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">datetime_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.datetime_parser" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Désérialisation d’un tampon de date et heure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>timestamp</strong><span class="classifier">datetime.datetime</span></dt><dd><p>Une date avec heure.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>ComputationResult</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.computer.default_parser">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">default_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.default_parser" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Fonction qui fera office de dé-sérialiseur par défaut.</p>
@@ -546,7 +565,7 @@ leurs équivalents RDF en appliquant la méthode
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.pg.computer.methods">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/description'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/title'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.methods" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/created'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/description'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/modified'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/title'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.methods" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.</p>
 <p>Les clés du dictionnaire sont les chemins (<code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.paths.SequencePath</span></code>)
 des catégories de métadonnées. Les valeurs sont des objets <a class="reference internal" href="#plume.pg.computer.ComputationMethod" title="plume.pg.computer.ComputationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationMethod</span></code></a>

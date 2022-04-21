@@ -341,7 +341,44 @@
                 
   <section id="module-admin.tests">
 <span id="module-admin-tests"></span><h1>Module admin.tests<a class="headerlink" href="#module-admin.tests" title="Lien permanent vers ce titre">#</a></h1>
-<p>Exécution de l’ensemble des modules de test de Plume.</p>
+<p>Interface minimale pour l’exécution des tests de Plume.</p>
+<p>On pourra soit exécuter ce fichier comme un script, ce qui
+lancera l’ensemble des tests, soit utiliser la fonction
+<a class="reference internal" href="#admin.tests.run" title="admin.tests.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a>.</p>
+<p>Pour lancer tous les tests :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">admin.tests</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">run</span><span class="p">()</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p>Pour lancer uniquement les tests de certains modules ou
+packages, il faut les lister en argument. Le dernier niveau
+d’arborescence suffit - <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> - même s’il ne serait
+pas gênant de spécifier <code class="docutils literal notranslate"><span class="pre">rdf.widgetkey</span></code> ou <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey</span></code>.</p>
+<p>Ainsi, la commande suivante exécute les tests de tous les modules du
+package <a class="reference internal" href="plume.pg.html#module-plume.pg" title="plume.pg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.pg</span></code></a>, ainsi que les tests du module
+<a class="reference internal" href="plume.rdf.widgetkey.html#module-plume.rdf.widgetkey" title="plume.rdf.widgetkey"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.rdf.widgetkey</span></code></a> :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">admin.tests</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;pg&#39;</span><span class="p">,</span> <span class="s1">&#39;widgetkey&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="admin.tests.run">
+<span class="sig-prename descclassname"><span class="pre">admin.tests.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.tests.run" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Exécute les tests des modules listés en argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>*names</strong><span class="classifier">list(str), optional</span></dt><dd><p>Liste des noms des modules ou package à tester.
+En l’absence d’argument, tous les tests sont
+exécutés.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

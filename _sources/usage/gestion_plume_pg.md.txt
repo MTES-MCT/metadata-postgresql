@@ -1,8 +1,8 @@
 # Installation et gestion de l'extension PostgreSQL *PlumePg*
 
-L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre la possibilité d'utiliser des [modèles de formulaire](./modeles_de_formulaire.md).
+L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre la possibilité d'utiliser des [modèles de formulaire](./modeles_de_formulaire.md) et d'[enregistrer les dates de création et dernière modification des tables](#activation-de-lenregistrement-des-dates).
 
-[Compatibilité](#compatibilité) • [Installation](#installation) • [Localisation des objets de l'extension](#localisation-des-objets-de-lextension) • [Cohabitation avec *Asgard*](#cohabitation-avec-asgard) • [Mise à jour](#mise-à-jour) • [Désinstallation](#désinstallation) • [Sauvegarde et restauration de la base](#sauvegarde-et-restauration-de-la-base)
+[Compatibilité](#compatibilité) • [Installation](#installation) • [Localisation des objets de l'extension](#localisation-des-objets-de-lextension) • [Privilèges](#privilèges) • [Cohabitation avec *Asgard*](#cohabitation-avec-asgard) • [Mise à jour](#mise-à-jour) • [Désinstallation](#désinstallation) • [Sauvegarde et restauration de la base](#sauvegarde-et-restauration-de-la-base) • [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates) • [Usage des modèles de formulaires](#usage-des-modèles-de-formulaires)
 
 ## Compatibilité
 
@@ -27,7 +27,7 @@ Les fichiers d'installation de *PlumePg* se trouvent dans le dossier [`postgresq
 
 Ces deux fichiers doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l'environnement d'installation, mais il est vraisemblable qu'il soit de la forme `C:\Program Files\PostgreSQL\xx\share\extension` sous Windows et `/usr/share/postgresql/xx/extension` sous Linux, `xx` étant la version de PostgreSQL.
 
-L'activation de *PlumePg* sur une base passe par une simple commande `CREATE EXTENSION`. Pour PostgreSQL 12 et les versions antérieures, il est toutefois nécessaire d'installer préalablement l'extension [`pgcrypto`](https://www.postgresql.org/docs/12/pgcrypto.html), sur laquelle *PlumePg* s'appuie pour la génération des UUID[^pgcrypto]. Il s'agit d'une extension standard de PostgreSQL, qui est en principe disponible dans toutes les distributions des versions de PostgreSQL compatibles avec *PlumePg*.
+L'activation de *PlumePg* sur une base passe par une simple commande `CREATE EXTENSION`, qui **doit être exécutée par un super-utilisateur** (création de déclencheurs sur évènement). Pour PostgreSQL 12 et les versions antérieures, il est nécessaire d'installer préalablement l'extension [`pgcrypto`](https://www.postgresql.org/docs/12/pgcrypto.html), sur laquelle *PlumePg* s'appuie pour la génération des UUID[^pgcrypto]. Il s'agit d'une extension standard de PostgreSQL, qui est en principe disponible dans toutes les distributions des versions de PostgreSQL compatibles avec *PlumePg*.
 
 ```sql
 
@@ -46,22 +46,30 @@ CREATE EXTENSION plume_pg CASCADE ;
 
 [^pgcrypto]: *PlumePg* se sert de la fonction `gen_random_uuid()` pour générer des UUID. Pour les versions 10, 11, et 12 de PostgreSQL, elle est fournie par l'extension *pgcrypto*. Pour les versions 13 et supérieures, cette fonction est incluse dans le coeur de PostgreSQL (cf. [documentation de PostgreSQL](https://www.postgresql.org/docs/13/functions-uuid.html)), installer `pgcrypto` n'est donc en principe plus nécessaire et il pourrait être pertinent de modifier le fichier `plume_pg.control` pour retirer `pgcrypto` de la liste des extensions requises.
 
-L'installation est à réaliser par l'ADL. Il n'était pas pertinent que celle-ci puisse se faire via l'interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, [*AsgardManager*](https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager) propose cette fonctionnalité, via son menu [`Gestion de la base`](https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase).
+L'installation est à réaliser par l'administrateur du serveur PostgreSQL. Il n'était pas pertinent que celle-ci puisse se faire via l'interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, [*AsgardManager*](https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager) propose cette fonctionnalité, via son menu [`Gestion de la base`](https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase).
 
 ## Localisation des objets de l'extension
 
 Tous les objets de l'extension sont créés dans le schéma `z_plume`.
 
+## Privilèges
+
+Les données du schéma `z_plume` alimentent le plugin QGIS et doivent dès lors être accessibles à tous ses utilisateurs. Pour simplifier la gestion des droits, le pseudo rôle `public` reçoit automatiquement les privilèges suivants lorsque *PlumePg* est installée sur une base :
+- `USAGE` sur le schéma `z_plume` ;
+- `SELECT` sur toutes les tables et vues de ce schéma.
+
+Une politique de sécurité niveau ligne est définie sur la table `z_plume.stamp_timestamp`, permettant au propriétaire d'une table - et seulement à lui - de modifier manuellement les dates enregistrées pour cette table.
+
 ## Cohabitation avec *Asgard*
 
 Il n'y a pas de lien fonctionnel direct entre *PlumePg* et l'extension [*Asgard*](https://snum.scenari-community.org/Asgard/Documentation/), outil créé dans le cadre du GT PostGIS pour faciliter la gestion des droits.
 
-Si l'extension *PlumePg* est installée sur une base disposant déjà d'*Asgard*, `g_admin` sera automatiquement désigné comme *producteur* du schéma et `g_consult` en sera fait *lecteur*. Il s'agit juste de faciliter le travail de l'administrateur, cette opération ne crée aucune adhérence durable. Il est ensuite tout à fait possible, sans que cela ne pose de problème particulier, y compris lors des futures montées de version de *PlumePg* :
-- de choisir d'autres rôles comme *producteur*, *éditeur* et *lecteur* de `z_plume` ;
+Si l'extension *PlumePg* est installée sur une base disposant déjà d'*Asgard*, `g_admin` sera automatiquement désigné comme *producteur* du schéma et `public` en sera fait *lecteur*[^asgard-version]. Il s'agit juste de faciliter le travail de l'administrateur, cette opération ne crée aucune adhérence durable. Il est ensuite tout à fait possible, sans que cela ne pose de problème particulier, y compris lors des futures montées de version de *PlumePg* :
+- de choisir d'autres rôles comme *producteur*, *éditeur* et *lecteur* de `z_plume`. *Attention tout de même à sélectionner un lecteur dont sont membres les rôles de connexion de tous les utilisateurs potentiels du plugin QGIS !*
 - de déréférencer le schéma `z_plume` pour gérer ses droits hors d'*Asgard* ;
 - de désinstaller *Asgard*.
 
-*NB. Pour que l'affectation automatique de droits sur `z_plume` ait lieu, il faudra utiliser une version d'Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n'étaient pas automatiquement référencés.*
+[^asgard-version]: Sous réserve d'utiliser une version d'Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n'étaient pas automatiquement référencés.
 
 ## Mise à jour
 
@@ -129,3 +137,89 @@ De manière très classique, le processus de restauration est le suivant :
 1. Sauvegarder la base originale, par la méthode habituelle.
 2. Créer une base vierge.
 3. Lancer la restauration sur cette base vierge, par la méthode habituelle.
+
+## Activation de l'enregistrement des dates
+
+*PlumePg* propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.
+
+Les dates sont enregistrées dans la table `z_plume.stamp_timestamp`. Son champ `relid` contient les identifiants PostgreSQL des tables (OID), son champ `created` les dates de création et son champ `modified` les dates de dernière modification.
+
+À l'installation de *PlumePg*, les fonctionnalités d'enregistrement des dates de création et dernière modification des tables sont inactives. La table `z_plume.stamp_timestamp` est et restera vide sans intervention de l'administrateur.
+
+Dès lors que l'administrateur le souhaite, deux stratégies peuvent être mises en oeuvre : soit enregistrer automatiquement les dates pour toutes les tables dès leur création, soit enregistrer les dates de dernière modification uniquement pour certaines tables explicitement désignées.
+
+### Suivi automatique intégral
+
+Pour mettre en place le suivi intégral, on activera les trois déclencheurs sur évènement de *PlumePg*.
+
+```sql
+
+ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
+ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
+ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+
+```
+
+`plume_stamp_creation` se charge d'enregistrer les dates de création des tables dans `z_plume.stamp_timestamp` et crée sur les nouvelles tables les déclencheurs `plume_stamp_action` qui assureront le suivi des modifications des données.
+
+`plume_stamp_modification` met à jour la date de dernière modification en cas de modification de structure des tables (commandes `ALTER TABLE`).
+
+`plume_stamp_drop` efface de `z_plume.stamp_timestamp` les lignes correspondant aux tables qui viennent d'être supprimées.
+
+### Suivi au cas par cas
+
+Pour n'activer le suivi des modifications que sur certaines tables, il faut laisser inactif le déclencheur sur évènement `plume_stamp_creation`.
+
+```sql
+
+ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
+ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+
+```
+
+Il faut alors lancer la fonction `z_plume.stamp_create_trigger` sur une table pour commencer à enregistrer ses dates de modification, tant les modifications des données que celles de la structure. 
+
+```sql
+
+SELECT z_plume.stamp_create_trigger('schema_name.table_name'::regclass) ;
+
+```
+
+La fonction renvoie `True` si la création du déclencheur a fonctionné, `False` sinon. Elle doit être exécutée par le propriétaire de la table.
+
+Une alternative consisterait à activer `plume_stamp_creation`, mais à supprimer le suivi des modifications sur certaines tables qui ne le justifient pas :
+
+```sql
+
+DROP TRIGGER plume_stamp_action ON schema_name.table_name ;
+DELETE FROM z_plume.stamp_timestamp WHERE relid = 'schema_name.table_name'::regclass ;
+
+```
+
+### Observations sur la gestion des suppressions de tables 
+
+Quelle que soit la stratégie choisie, il n'est pas indispensable d'activer le déclencheur sur évènement `plume_stamp_drop`. À défaut, il faudra éliminer régulièrement les lignes de `z_plume.stamp_timestamp` correspondant aux tables qui n'existent plus avec la fonction `z_plume.stamp_clean_timestamp`.
+
+```sql
+
+SELECT z_plume.stamp_clean_timestamp() ;
+
+```
+
+La fonction renvoie le nombre de lignes supprimées de `z_plume.stamp_timestamp`.
+
+À noter toutefois qu'il n'est généralement pas intéressant de conserver des lignes mortes dans la `z_plume.stamp_clean_timestamp`, sauf à disposer d'un moyen pour retrouver le nom de la table à partir de son identifiant désormais non référencé dans `pg_class`.
+
+
+### Fausses modifications 
+
+Le mécanisme mis en place par *PLumePg* peut donner lieu à des faux positifs, soit des cas où la date de dernière modification sera actualisée sans que la table ni son contenu n'aient véritablement changé.
+
+Le déclencheur sur évènement `plume_stamp_modification` est ainsi activé par toutes les commandes `ALTER TABLE`, y compris celles qui n'affectent pas réellement la table, comme un changement de nom qui conserve le nom d'origine.
+
+Les déclencheurs `plume_stamp_action` sont activés par toutes les commandes `INSERT`, `UPDATE`, `DELETE` et `TRUNCATE`, y compris celles qui - sans pour autant échouer - n'ont aucun effet. Par exemple une commande `UPDATE` ou `DELETE` telle qu'aucune ligne ne remplit la condition de sa clause `WHERE`. Il paraissait préférable d'avoir recours à des déclencheurs `ON EACH STATEMENT` qu'à des déclencheurs `ON EACH ROW`, certes moins susceptibles de retenir des fausses modifications mais susceptibles d'allonger considérablement le temps d'exécution des requêtes.
+
+## Usage des modèles de formulaires
+
+Cf. [Modèles de formulaires](./modeles_de_formulaire.md).
+

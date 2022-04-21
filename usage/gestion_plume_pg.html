@@ -227,6 +227,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#privileges">
+   Privilèges
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#cohabitation-avec-asgard">
    Cohabitation avec
    <em>
@@ -247,6 +252,38 @@
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#sauvegarde-et-restauration-de-la-base">
    Sauvegarde et restauration de la base
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#activation-de-l-enregistrement-des-dates">
+   Activation de l’enregistrement des dates
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#suivi-automatique-integral">
+     Suivi automatique intégral
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#suivi-au-cas-par-cas">
+     Suivi au cas par cas
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#observations-sur-la-gestion-des-suppressions-de-tables">
+     Observations sur la gestion des suppressions de tables
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fausses-modifications">
+     Fausses modifications
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#usage-des-modeles-de-formulaires">
+   Usage des modèles de formulaires
   </a>
  </li>
 </ul>
@@ -272,8 +309,8 @@
                 
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
 <h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">#</a></h1>
-<p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>.</p>
-<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a></p>
+<p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a> et d”<a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">enregistrer les dates de création et dernière modification des tables</span></a>.</p>
+<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#privileges"><span class="std std-doc">Privilèges</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a> • <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a> • <a class="reference internal" href="#usage-des-modeles-de-formulaires"><span class="std std-doc">Usage des modèles de formulaires</span></a></p>
 <section id="compatibilite">
 <h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">#</a></h2>
 <table class="colwidths-auto table">
@@ -326,7 +363,7 @@
 <li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">plume_pg.control</span></code></span> contient quelques métadonnées et des informations de paramétrage.</p></li>
 </ul>
 <p>Ces deux fichiers doivent être copiés dans le répertoire des extensions du serveur. Son chemin varie selon l’environnement d’installation, mais il est vraisemblable qu’il soit de la forme <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\PostgreSQL\xx\share\extension</span></code> sous Windows et <code class="docutils literal notranslate"><span class="pre">/usr/share/postgresql/xx/extension</span></code> sous Linux, <code class="docutils literal notranslate"><span class="pre">xx</span></code> étant la version de PostgreSQL.</p>
-<p>L’activation de <em>PlumePg</em> sur une base passe par une simple commande <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span></code>. Pour PostgreSQL 12 et les versions antérieures, il est toutefois nécessaire d’installer préalablement l’extension <a class="reference external" href="https://www.postgresql.org/docs/12/pgcrypto.html"><code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></a>, sur laquelle <em>PlumePg</em> s’appuie pour la génération des UUID<a class="footnote-reference brackets" href="#pgcrypto" id="id3">3</a>. Il s’agit d’une extension standard de PostgreSQL, qui est en principe disponible dans toutes les distributions des versions de PostgreSQL compatibles avec <em>PlumePg</em>.</p>
+<p>L’activation de <em>PlumePg</em> sur une base passe par une simple commande <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span></code>, qui <strong>doit être exécutée par un super-utilisateur</strong> (création de déclencheurs sur évènement). Pour PostgreSQL 12 et les versions antérieures, il est nécessaire d’installer préalablement l’extension <a class="reference external" href="https://www.postgresql.org/docs/12/pgcrypto.html"><code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code></a>, sur laquelle <em>PlumePg</em> s’appuie pour la génération des UUID<a class="footnote-reference brackets" href="#pgcrypto" id="id3">3</a>. Il s’agit d’une extension standard de PostgreSQL, qui est en principe disponible dans toutes les distributions des versions de PostgreSQL compatibles avec <em>PlumePg</em>.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">pgcrypto</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 <span class="k">CREATE</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -335,22 +372,30 @@
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">plume_pg</span><span class="w"> </span><span class="k">CASCADE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
-<p>L’installation est à réaliser par l’ADL. Il n’était pas pertinent que celle-ci puisse se faire via l’interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"><em>AsgardManager</em></a> propose cette fonctionnalité, via son menu <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase"><code class="docutils literal notranslate"><span class="pre">Gestion</span> <span class="pre">de</span> <span class="pre">la</span> <span class="pre">base</span></code></a>.</p>
+<p>L’installation est à réaliser par l’administrateur du serveur PostgreSQL. Il n’était pas pertinent que celle-ci puisse se faire via l’interface QGIS de Plume, dont la grande majorité des utilisateurs ne disposera pas des droits nécessaires sur le serveur PostgreSQL. Par contre, <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"><em>AsgardManager</em></a> propose cette fonctionnalité, via son menu <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/#SEC_MenuGestionBase"><code class="docutils literal notranslate"><span class="pre">Gestion</span> <span class="pre">de</span> <span class="pre">la</span> <span class="pre">base</span></code></a>.</p>
 </section>
 <section id="localisation-des-objets-de-l-extension">
 <h2>Localisation des objets de l’extension<a class="headerlink" href="#localisation-des-objets-de-l-extension" title="Lien permanent vers ce titre">#</a></h2>
 <p>Tous les objets de l’extension sont créés dans le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>.</p>
 </section>
+<section id="privileges">
+<h2>Privilèges<a class="headerlink" href="#privileges" title="Lien permanent vers ce titre">#</a></h2>
+<p>Les données du schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> alimentent le plugin QGIS et doivent dès lors être accessibles à tous ses utilisateurs. Pour simplifier la gestion des droits, le pseudo rôle <code class="docutils literal notranslate"><span class="pre">public</span></code> reçoit automatiquement les privilèges suivants lorsque <em>PlumePg</em> est installée sur une base :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">USAGE</span></code> sur le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SELECT</span></code> sur toutes les tables et vues de ce schéma.</p></li>
+</ul>
+<p>Une politique de sécurité niveau ligne est définie sur la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>, permettant au propriétaire d’une table - et seulement à lui - de modifier manuellement les dates enregistrées pour cette table.</p>
+</section>
 <section id="cohabitation-avec-asgard">
 <h2>Cohabitation avec <em>Asgard</em><a class="headerlink" href="#cohabitation-avec-asgard" title="Lien permanent vers ce titre">#</a></h2>
 <p>Il n’y a pas de lien fonctionnel direct entre <em>PlumePg</em> et l’extension <a class="reference external" href="https://snum.scenari-community.org/Asgard/Documentation/"><em>Asgard</em></a>, outil créé dans le cadre du GT PostGIS pour faciliter la gestion des droits.</p>
-<p>Si l’extension <em>PlumePg</em> est installée sur une base disposant déjà d”<em>Asgard</em>, <code class="docutils literal notranslate"><span class="pre">g_admin</span></code> sera automatiquement désigné comme <em>producteur</em> du schéma et <code class="docutils literal notranslate"><span class="pre">g_consult</span></code> en sera fait <em>lecteur</em>. Il s’agit juste de faciliter le travail de l’administrateur, cette opération ne crée aucune adhérence durable. Il est ensuite tout à fait possible, sans que cela ne pose de problème particulier, y compris lors des futures montées de version de <em>PlumePg</em> :</p>
+<p>Si l’extension <em>PlumePg</em> est installée sur une base disposant déjà d”<em>Asgard</em>, <code class="docutils literal notranslate"><span class="pre">g_admin</span></code> sera automatiquement désigné comme <em>producteur</em> du schéma et <code class="docutils literal notranslate"><span class="pre">public</span></code> en sera fait <em>lecteur</em><a class="footnote-reference brackets" href="#asgard-version" id="id4">4</a>. Il s’agit juste de faciliter le travail de l’administrateur, cette opération ne crée aucune adhérence durable. Il est ensuite tout à fait possible, sans que cela ne pose de problème particulier, y compris lors des futures montées de version de <em>PlumePg</em> :</p>
 <ul class="simple">
-<li><p>de choisir d’autres rôles comme <em>producteur</em>, <em>éditeur</em> et <em>lecteur</em> de <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ;</p></li>
+<li><p>de choisir d’autres rôles comme <em>producteur</em>, <em>éditeur</em> et <em>lecteur</em> de <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>. <em>Attention tout de même à sélectionner un lecteur dont sont membres les rôles de connexion de tous les utilisateurs potentiels du plugin QGIS !</em></p></li>
 <li><p>de déréférencer le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> pour gérer ses droits hors d”<em>Asgard</em> ;</p></li>
 <li><p>de désinstaller <em>Asgard</em>.</p></li>
 </ul>
-<p><em>NB. Pour que l’affectation automatique de droits sur <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ait lieu, il faudra utiliser une version d’Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n’étaient pas automatiquement référencés.</em></p>
 </section>
 <section id="mise-a-jour">
 <h2>Mise à jour<a class="headerlink" href="#mise-a-jour" title="Lien permanent vers ce titre">#</a></h2>
@@ -400,6 +445,62 @@
 <li><p>Créer une base vierge.</p></li>
 <li><p>Lancer la restauration sur cette base vierge, par la méthode habituelle.</p></li>
 </ol>
+</section>
+<section id="activation-de-l-enregistrement-des-dates">
+<h2>Activation de l’enregistrement des dates<a class="headerlink" href="#activation-de-l-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h2>
+<p><em>PlumePg</em> propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.</p>
+<p>Les dates sont enregistrées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>. Son champ <code class="docutils literal notranslate"><span class="pre">relid</span></code> contient les identifiants PostgreSQL des tables (OID), son champ <code class="docutils literal notranslate"><span class="pre">created</span></code> les dates de création et son champ <code class="docutils literal notranslate"><span class="pre">modified</span></code> les dates de dernière modification.</p>
+<p>À l’installation de <em>PlumePg</em>, les fonctionnalités d’enregistrement des dates de création et dernière modification des tables sont inactives. La table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> est et restera vide sans intervention de l’administrateur.</p>
+<p>Dès lors que l’administrateur le souhaite, deux stratégies peuvent être mises en oeuvre : soit enregistrer automatiquement les dates pour toutes les tables dès leur création, soit enregistrer les dates de dernière modification uniquement pour certaines tables explicitement désignées.</p>
+<section id="suivi-automatique-integral">
+<h3>Suivi automatique intégral<a class="headerlink" href="#suivi-automatique-integral" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour mettre en place le suivi intégral, on activera les trois déclencheurs sur évènement de <em>PlumePg</em>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_creation</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_modification</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_drop</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_creation</span></code> se charge d’enregistrer les dates de création des tables dans <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> et crée sur les nouvelles tables les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_action</span></code> qui assureront le suivi des modifications des données.</p>
+<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_modification</span></code> met à jour la date de dernière modification en cas de modification de structure des tables (commandes <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_drop</span></code> efface de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> les lignes correspondant aux tables qui viennent d’être supprimées.</p>
+</section>
+<section id="suivi-au-cas-par-cas">
+<h3>Suivi au cas par cas<a class="headerlink" href="#suivi-au-cas-par-cas" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour n’activer le suivi des modifications que sur certaines tables, il faut laisser inactif le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_creation</span></code>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_modification</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_drop</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Il faut alors lancer la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_create_trigger</span></code> sur une table pour commencer à enregistrer ses dates de modification, tant les modifications des données que celles de la structure.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_create_trigger</span><span class="p">(</span><span class="s1">&#39;schema_name.table_name&#39;</span><span class="p">::</span><span class="n">regclass</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si la création du déclencheur a fonctionné, <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon. Elle doit être exécutée par le propriétaire de la table.</p>
+<p>Une alternative consisterait à activer <code class="docutils literal notranslate"><span class="pre">plume_stamp_creation</span></code>, mais à supprimer le suivi des modifications sur certaines tables qui ne le justifient pas :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_action</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">schema_name</span><span class="p">.</span><span class="k">table_name</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_timestamp</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">relid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;schema_name.table_name&#39;</span><span class="p">::</span><span class="n">regclass</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="observations-sur-la-gestion-des-suppressions-de-tables">
+<h3>Observations sur la gestion des suppressions de tables<a class="headerlink" href="#observations-sur-la-gestion-des-suppressions-de-tables" title="Lien permanent vers ce titre">#</a></h3>
+<p>Quelle que soit la stratégie choisie, il n’est pas indispensable d’activer le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_drop</span></code>. À défaut, il faudra éliminer régulièrement les lignes de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> correspondant aux tables qui n’existent plus avec la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_clean_timestamp</span></code>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_clean_timestamp</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>La fonction renvoie le nombre de lignes supprimées de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>.</p>
+<p>À noter toutefois qu’il n’est généralement pas intéressant de conserver des lignes mortes dans la <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_clean_timestamp</span></code>, sauf à disposer d’un moyen pour retrouver le nom de la table à partir de son identifiant désormais non référencé dans <code class="docutils literal notranslate"><span class="pre">pg_class</span></code>.</p>
+</section>
+<section id="fausses-modifications">
+<h3>Fausses modifications<a class="headerlink" href="#fausses-modifications" title="Lien permanent vers ce titre">#</a></h3>
+<p>Le mécanisme mis en place par <em>PLumePg</em> peut donner lieu à des faux positifs, soit des cas où la date de dernière modification sera actualisée sans que la table ni son contenu n’aient véritablement changé.</p>
+<p>Le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_modification</span></code> est ainsi activé par toutes les commandes <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code>, y compris celles qui n’affectent pas réellement la table, comme un changement de nom qui conserve le nom d’origine.</p>
+<p>Les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_action</span></code> sont activés par toutes les commandes <code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> et <code class="docutils literal notranslate"><span class="pre">TRUNCATE</span></code>, y compris celles qui - sans pour autant échouer - n’ont aucun effet. Par exemple une commande <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> ou <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> telle qu’aucune ligne ne remplit la condition de sa clause <code class="docutils literal notranslate"><span class="pre">WHERE</span></code>. Il paraissait préférable d’avoir recours à des déclencheurs <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">EACH</span> <span class="pre">STATEMENT</span></code> qu’à des déclencheurs <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">EACH</span> <span class="pre">ROW</span></code>, certes moins susceptibles de retenir des fausses modifications mais susceptibles d’allonger considérablement le temps d’exécution des requêtes.</p>
+</section>
+</section>
+<section id="usage-des-modeles-de-formulaires">
+<h2>Usage des modèles de formulaires<a class="headerlink" href="#usage-des-modeles-de-formulaires" title="Lien permanent vers ce titre">#</a></h2>
+<p>Cf. <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">Modèles de formulaires</span></a>.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="withasgard"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -410,6 +511,9 @@
 </dd>
 <dt class="label" id="pgcrypto"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
 <dd><p><em>PlumePg</em> se sert de la fonction <code class="docutils literal notranslate"><span class="pre">gen_random_uuid()</span></code> pour générer des UUID. Pour les versions 10, 11, et 12 de PostgreSQL, elle est fournie par l’extension <em>pgcrypto</em>. Pour les versions 13 et supérieures, cette fonction est incluse dans le coeur de PostgreSQL (cf. <a class="reference external" href="https://www.postgresql.org/docs/13/functions-uuid.html">documentation de PostgreSQL</a>), installer <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> n’est donc en principe plus nécessaire et il pourrait être pertinent de modifier le fichier <code class="docutils literal notranslate"><span class="pre">plume_pg.control</span></code> pour retirer <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> de la liste des extensions requises.</p>
+</dd>
+<dt class="label" id="asgard-version"><span class="brackets"><a class="fn-backref" href="#id4">4</a></span></dt>
+<dd><p>Sous réserve d’utiliser une version d’Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n’étaient pas automatiquement référencés.</p>
 </dd>
 </dl>
 </section>

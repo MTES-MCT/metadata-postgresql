@@ -303,12 +303,22 @@
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:description</span></code></p></td>
 <td><p>Importe le contenu du descriptif PostgreSQL de l’objet<a class="footnote-reference brackets" href="#extrait-descriptif" id="id1">1</a>, soit dans son intégralité, soit en utilisant une expression régulière.</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code> est l’expression régulière spécifiant l’extrait du descriptif à importer<a class="footnote-reference brackets" href="#doc-pattern" id="id2">2</a>. Si l’expression renvoie plusieurs fragments, seul le premier est conservé. S’il y a lieu, <code class="docutils literal notranslate"><span class="pre">flags</span></code> contient les paramètres associés à l’expression régulière<a class="footnote-reference brackets" href="#doc-flags" id="id3">3</a>.</p></td>
-<td><p>L’extension PlumePg doit être active sur la base.</p></td>
+<td><p>L’extension <em>PlumePg</em> doit être active sur la base.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:title</span></code></p></td>
 <td><p>Idem <code class="docutils literal notranslate"><span class="pre">dct:description</span></code>.</p></td>
-<td><p>Idem <code class="docutils literal notranslate"><span class="pre">dct:description</span></code>.</p></td>
-<td><p>Idem <code class="docutils literal notranslate"><span class="pre">dct:description</span></code>.</p></td>
+<td><p>Idem.</p></td>
+<td><p>Idem.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:created</span></code></p></td>
+<td><p>La date de création de la table si l’information est présente dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp.timestamp</span></code>.</p></td>
+<td><p>Aucun.</p></td>
+<td><p>L’extension <em>PlumePg</em> doit être active sur la base<a class="footnote-reference brackets" href="#activation-suivi-dates" id="id4">4</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
+<td><p>La date de dernière modification de la table si l’information est présente dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp.timestamp</span></code>.</p></td>
+<td><p>Aucun.</p></td>
+<td><p>L’extension <em>PlumePg</em> doit être active sur la base<a class="footnote-reference brackets" href="#activation-suivi-dates" id="id5">4</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -324,7 +334,7 @@
 <ul class="simple">
 <li><p>Avec <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, le calcul est effectué systématiquement à l’ouverture de la fiche de métadonnées ou lorsqu’elle est re-générée par une réinitialisation, un import, une copie… Il n’est pas exécuté lorsque le formulaire est reconstruit après une sauvegarde.</p></li>
 <li><p>Avec <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>, le calcul est effectué dans les mêmes conditions que pour <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, avec une condition supplémentaire : le widget ou le groupe de widgets ne doit contenir aucune valeur.</p></li>
-<li><p>Avec <code class="docutils literal notranslate"><span class="pre">'new'</span></code>, le calcul n’est effectué que si la fiche de métadonnées est entièrement vide<a class="footnote-reference brackets" href="#quasi-vide" id="id4">4</a>, soit dans le cas d’une table dont le descriptif ne contenait par encore de métadonnées, dans le cas d’une réinitialisation ou encore dans le cas de l’import d’une fiche vide.</p></li>
+<li><p>Avec <code class="docutils literal notranslate"><span class="pre">'new'</span></code>, le calcul n’est effectué que si la fiche de métadonnées est entièrement vide<a class="footnote-reference brackets" href="#quasi-vide" id="id6">5</a>, soit dans le cas d’une table dont le descriptif ne contenait par encore de métadonnées, dans le cas d’une réinitialisation ou encore dans le cas de l’import d’une fiche vide.</p></li>
 </ul>
 <p>Si plusieurs de ces modes sont spécifiés simultanément, <code class="docutils literal notranslate"><span class="pre">'auto'</span></code> prévaut sur <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>, qui prévaut sur <code class="docutils literal notranslate"><span class="pre">'new'</span></code>.</p>
 </section>
@@ -427,7 +437,10 @@
 <dt class="label" id="doc-flags"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
 <dd><p>Les valeurs acceptées sont les mêmes que pour les arguments <code class="docutils literal notranslate"><span class="pre">flags</span></code> des fonctions d’expression régulière de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.</p>
 </dd>
-<dt class="label" id="quasi-vide"><span class="brackets"><a class="fn-backref" href="#id4">4</a></span></dt>
+<dt class="label" id="activation-suivi-dates"><span class="brackets">4</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id5">2</a>)</span></dt>
+<dd><p>Il est également recommandé d’avoir <span class="xref myst">activé les fonctionnalités d’enregistrement des dates</span>, sans quoi le calcul ne renverra jamais rien.</p>
+</dd>
+<dt class="label" id="quasi-vide"><span class="brackets"><a class="fn-backref" href="#id6">5</a></span></dt>
 <dd><p>Incluant les fiches qui ne comportent que les champs mis à jour automatiquement, soit l’identifiant et/ou la date de dernière modification.</p>
 </dd>
 </dl>

@@ -298,7 +298,22 @@
 <p><a class="reference internal" href="#execution-des-tests"><span class="std std-doc">Exécution des tests</span></a> • <a class="reference internal" href="#generer-un-zip-propre-du-plugin"><span class="std std-doc">Générer un ZIP propre du plugin</span></a> • <a class="reference internal" href="#modifier-les-categories-de-metadonnees-communes"><span class="std std-doc">Modifier les catégories de métadonnées communes</span></a> • <a class="reference internal" href="#ajouter-une-option-de-configuration-des-categories-de-metadonnees"><span class="std std-doc">Ajouter une option de configuration des catégories de métadonnées</span></a> • <span class="xref myst">Modifier les modèles pré-configurés de <em>PlumePg</em></span> • <a class="reference internal" href="#gestion-des-dependances"><span class="std std-doc">Gestion des dépendances</span></a></p>
 <section id="execution-des-tests">
 <h2>Exécution des tests<a class="headerlink" href="#execution-des-tests" title="Lien permanent vers ce titre">#</a></h2>
-<p>On lancera le script <code class="docutils literal notranslate"><span class="pre">/admin/tests.py</span></code> qui compile les tests de tous les modules de Plume.</p>
+<p>Le module <code class="docutils literal notranslate"><span class="pre">admin.tests</span></code> compile les tests de tous les modules de Plume.</p>
+<p>On pourra soit exécuter le fichier <code class="docutils literal notranslate"><span class="pre">/admin/tests.py</span></code> comme un script, ce qui lancera l’ensemble des tests, soit utiliser la fonction <code class="docutils literal notranslate"><span class="pre">admin.tests.run</span></code>.</p>
+<p>Pour lancer tous les tests :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">admin.tests</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">run</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Pour lancer uniquement les tests de certains modules ou packages, il faut les lister en argument (uniquement le dernier niveau d’arborescence). Par exemple, la commande suivante exécute les tests de tous les modules du package <code class="docutils literal notranslate"><span class="pre">plume.pg</span></code>, ainsi que les tests du module <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">admin.tests</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">run</span><span class="p">(</span><span class="s1">&#39;pg&#39;</span><span class="p">,</span> <span class="s1">&#39;widgetkey&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
 <p>L’exécution des tests nécessite de se connecter à une base PostgreSQL avec un compte super-utilisateur. La base doit remplir les conditions suivantes :</p>
 <ul class="simple">
 <li><p>la version de PostgreSQL est supérieure ou égale à PostgreSQL 10.</p></li>

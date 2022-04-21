@@ -222,11 +222,6 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#privileges-necessaires">
-     Privilèges nécessaires
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#creation-d-un-modele-de-formulaire">
      Création d’un modèle de formulaire
     </a>
@@ -346,25 +341,6 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_tab</span></code> liste des noms d’onglets de formulaires dans lesquels pourront être classées les catégories.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d’affichage spécifiques à un modèle pour certaines catégories, qui remplaceront ceux de <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code>.</p></li>
 </ul>
-<section id="privileges-necessaires">
-<h3>Privilèges nécessaires<a class="headerlink" href="#privileges-necessaires" title="Lien permanent vers ce titre">#</a></h3>
-<p>Pour bénéficier des modèles de <em>PlumePg</em>, les rôles de connexion des utilisateurs de Plume doivent disposer des privilèges suivants :</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">USAGE</span></code> sur le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SELECT</span></code> sur les tables et vues <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code>, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code>, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_tab</span></code>, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories_full</span></code> (ou plus généralement toutes les tables du schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>).</p></li>
-</ul>
-<p>Lorsqu’Asgard était installé sur la base au moment de l’installation de Plume, cette condition est remplie sous réserve que tous les rôles de connexion soient membres du rôle <code class="docutils literal notranslate"><span class="pre">g_consult</span></code>, car <code class="docutils literal notranslate"><span class="pre">g_consult</span></code> est automatiquement désigné comme lecteur du schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>. Cf. <a class="reference internal" href="gestion_plume_pg.html#cohabitation-avec-asgard"><span class="std std-doc">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></span></a> pour plus de détails.</p>
-<p>Sans Asgard, une solution simple consisterait à donner les droits suivants au pseudo-rôle <code class="docutils literal notranslate"><span class="pre">public</span></code> :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span><span class="w"> </span><span class="k">USAGE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">z_plume</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-<span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">z_plume</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-<p>De plus, pour limiter les risques d’avoir à attribuer des droits supplémentaires si une mise à jour de <em>PlumePg</em> devait introduire de nouveaux objets, on pourrait définir des privilèges par défaut :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">role_proprietaire</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">z_plume</span><span class="w"> </span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-<p><em>Où <code class="docutils literal notranslate"><span class="pre">role_proprietaire</span></code> est le rôle propriétaire de l’extension.</em></p>
-</section>
 <section id="creation-d-un-modele-de-formulaire">
 <h3>Création d’un modèle de formulaire<a class="headerlink" href="#creation-d-un-modele-de-formulaire" title="Lien permanent vers ce titre">#</a></h3>
 <p>La table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code> comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ <code class="docutils literal notranslate"><span class="pre">tpl_label</span></code>, qui lui tiendra lieu d’identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n’auront accès qu’à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.</p>
@@ -598,7 +574,7 @@
 <ul class="simple">
 <li><p>si l’extension <em>PlumePg</em> est installée sur la base d’où provient la table considérée ;</p></li>
 <li><p>si la version installée est compatible avec la version du plugin QGIS de l’utilisateur ;</p></li>
-<li><p>si l’utilisateur dispose bien des <a class="reference internal" href="#privileges-necessaires"><span class="std std-doc">privilèges requis</span></a> sur les objets de l’extension.</p></li>
+<li><p>si l’utilisateur dispose bien des <span class="xref myst">privilèges requis</span> sur les objets de l’extension.</p></li>
 </ul>
 <p>Pour le vérifier, une seule requête :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
