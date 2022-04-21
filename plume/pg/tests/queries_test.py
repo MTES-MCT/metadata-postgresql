@@ -13,6 +13,7 @@ l'extension est désinstallée et réinstallée, etc.).
 """
 
 import unittest, psycopg2
+from datetime import datetime
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
@@ -21,7 +22,7 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
     query_get_columns, query_update_column_comment, query_update_columns_comments, \
     query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
     query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check, \
-    query_get_comment_fragments
+    query_get_comment_fragments, query_get_creation_date, query_get_modification_date
 from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.utils import data_from_file, abspath
@@ -896,6 +897,69 @@ class QueriesTestCase(unittest.TestCase):
         self.assertListEqual(result7, [('Ma + table + est. une table',)])
         self.assertListEqual(result8, [('Ma + table + est',)])
         self.assertListEqual(result9, [])
+
+    def test_query_get_creation_date(self):
+        """Récupération de la date de création d'une table.
+        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # activation des fonctionnalités d'enregistrement
+                # des dates + création d'une table de test
+                cur.execute('''
+                    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+                    CREATE TABLE z_plume.table_test () ;
+                    ''')
+                query = query_get_creation_date('z_plume', 'table_test')
+                cur.execute(*query)
+                result1 = cur.fetchall()
+                query = query_get_creation_date('z_plume', 'meta_template_categories_full')
+                result2 = cur.fetchall()
+                cur.execute('''
+                    DROP TABLE z_plume.table_test ;
+                    TRUNCATE z_plume.stamp_timestamp ;
+                    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+                    ''')
+        conn.close()
+        self.assertTrue(isinstance(result1[0][0], datetime))
+        self.assertListEqual(result2, [])
+
+    def test_query_get_modification_date(self):
+        """Récupération de la date de création d'une table.
+        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # activation des fonctionnalités d'enregistrement
+                # des dates + création d'une table de test
+                cur.execute('''
+                    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+                    CREATE TABLE z_plume.table_test () ;
+                    ALTER TABLE z_plume.table_test RENAME TO table_test_2 ;
+                    ''')
+                query = query_get_modification_date('z_plume', 'table_test_2')
+                cur.execute(*query)
+                result1 = cur.fetchall()
+                query = query_get_modification_date('z_plume', 'meta_template_categories_full')
+                result2 = cur.fetchall()
+                cur.execute('''
+                    DROP TABLE z_plume.table_test_2 ;
+                    TRUNCATE z_plume.stamp_timestamp ;
+                    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+                    ''')
+        conn.close()
+        self.assertTrue(isinstance(result1[0][0], datetime))
+        self.assertListEqual(result2, [])
 
 if __name__ == '__main__':
     unittest.main()
