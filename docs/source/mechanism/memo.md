@@ -6,7 +6,27 @@ Cette page récapitule les actions à réaliser pour maintenir et modifier diff�
 
 ## Exécution des tests
 
-On lancera le script `/admin/tests.py` qui compile les tests de tous les modules de Plume.
+Le module `admin.tests` compile les tests de tous les modules de Plume.
+
+On pourra soit exécuter le fichier `/admin/tests.py` comme un script, ce qui lancera l'ensemble des tests, soit utiliser la fonction `admin.tests.run`.
+
+Pour lancer tous les tests :
+
+```python
+
+>>> from admin.tests import run
+>>> run()
+
+```
+
+Pour lancer uniquement les tests de certains modules ou packages, il faut les lister en argument (uniquement le dernier niveau d'arborescence). Par exemple, la commande suivante exécute les tests de tous les modules du package `plume.pg`, ainsi que les tests du module `plume.rdf.widgetkey` :
+
+```python
+
+>>> from admin.tests import run
+>>> run('pg', 'widgetkey')
+
+```
 
 L'exécution des tests nécessite de se connecter à une base PostgreSQL avec un compte super-utilisateur. La base doit remplir les conditions suivantes :
 - la version de PostgreSQL est supérieure ou égale à PostgreSQL 10.
