@@ -878,6 +878,11 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
         Une requête prête à être envoyée au serveur PostgreSQL
         et son tuple de paramètres.
     
+    Warnings
+    --------
+    Cette requête échouera si PlumePg n'est pas installée sur la
+    base.
+    
     Notes
     -----
     Cette fonction est référencée par le module
@@ -906,4 +911,115 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
                 ),
         (pattern, flags)
         )
+
+def query_get_modification_date(schema_name, table_name, **kwargs):
+    """Requête de récupération de la date de dernière modification d'une table.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_get_modification_date(schema_name='nom du schéma',
+        ...     table_name='nom de la table', **compute_params)
+        >>> cur.execute(*query)
+        >>> result = cur.fetchall()
+    
+    ``compute_params`` est le dictionnaire fourni par la clé
+    `'compute parameters'` du dictionnaire interne associé à
+    la clé courante du dictionnaire de widgets.
+    
+    La liste ainsi obtenue contient un unique tuple dont le seul
+    élément est la date recherchée, si tant est que l'information
+    soit disponible.
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la table. Il est possible d'appliquer cette
+        fonction sur des vues ou d'autres types de relations,
+        mais la requête produite ne renverra à coup sûr rien.
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
+    
+    Returns
+    -------
+    tuple(psycopg2.sql.SQL, tuple(str, str))
+        Une requête prête à être envoyée au serveur PostgreSQL
+        et son tuple de paramètres.
+    
+    Warnings
+    --------
+    Cette requête échouera si PlumePg n'est pas installée sur la
+    base. Par ailleurs, elle ne renverra de date que si le suivi
+    des dates a été activé pour la table considérée.
+    
+    Notes
+    -----
+    Cette fonction est référencée par le module
+    :py:mod:`plume.pg.computer`.
+    
+    """
+    return (sql.SQL("""
+        SELECT modified FROM z_plume.stamp_timestamp
+            WHERE relid = '{}'::regclass
+        """
+        ).format(
+            sql.Identifier(schema_name, table_name)
+            ), )
+
+
+def query_get_creation_date(schema_name, table_name, **kwargs):
+    """Requête de récupération de la date de création d'une table.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_get_creation_date(schema_name='nom du schéma',
+        ...     table_name='nom de la table', **compute_params)
+        >>> cur.execute(*query)
+        >>> result = cur.fetchall()
+    
+    ``compute_params`` est le dictionnaire fourni par la clé
+    `'compute parameters'` du dictionnaire interne associé à
+    la clé courante du dictionnaire de widgets.
+    
+    La liste ainsi obtenue contient un unique tuple dont le seul
+    élément est la date recherchée, si tant est que l'information
+    soit disponible.
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la table. Il est possible d'appliquer cette
+        fonction sur des vues ou d'autres types de relations,
+        mais la requête produite ne renverra à coup sûr rien.
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
+    
+    Returns
+    -------
+    tuple(psycopg2.sql.SQL, tuple(str, str))
+        Une requête prête à être envoyée au serveur PostgreSQL
+        et son tuple de paramètres.
+    
+    Warnings
+    --------
+    Cette requête échouera si PlumePg n'est pas installée sur la
+    base. Par ailleurs, elle ne renverra de date que si le suivi
+    des dates a été activé pour la table considérée.
+    
+    Notes
+    -----
+    Cette fonction est référencée par le module
+    :py:mod:`plume.pg.computer`.
+    
+    """
+    return (sql.SQL("""
+        SELECT created FROM z_plume.stamp_timestamp
+            WHERE relid = '{}'::regclass
+        """
+        ).format(
+            sql.Identifier(schema_name, table_name)
+            ), )
 
