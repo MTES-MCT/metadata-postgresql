@@ -7,7 +7,8 @@ un super-utilisateur.
 
 """
 
-import unittest, psycopg2
+import unittest, psycopg2, re
+from datetime import datetime, date
 
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, \
@@ -2625,7 +2626,128 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(widgetsdict[c]['has compute button'])
         self.assertFalse(widgetsdict[c]['auto compute'])
         self.assertIsNone(widgetsdict[c]['compute method'])
+    
+    def test_compute_modified_created(self):
+        """Processus complet de calcul des métadonnées pour dct:modified et dct:created.
         
+        Le calcul est fait avec un rôle sans
+        aucun privilège.
+        
+        """
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    SELECT * FROM z_plume.meta_import_sample_template() ;
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['auto']::z_plume.meta_compute[]
+                        WHERE path = 'dct:modified' ;
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['manual', 'new']::z_plume.meta_compute[]
+                        WHERE path = 'dct:created' ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Classique',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg ;
+                    ''')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(template=template)
+        cc = widgetsdict.root.search_from_path(DCT.created)
+        cm = widgetsdict.root.search_from_path(DCT.modified)
+        self.assertTrue(widgetsdict[cc]['has compute button'])
+        self.assertTrue(widgetsdict[cc]['auto compute'])
+        self.assertIsNotNone(widgetsdict[cc]['compute method'].description)
+        self.assertFalse(widgetsdict[cm]['has compute button'])
+        self.assertTrue(widgetsdict[cm]['auto compute'])
+        self.assertIsNotNone(widgetsdict[cm]['compute method'].description)
+        
+        # --- dépendances ---
+        dependances = widgetsdict[cm]['compute method'].dependances
+        if dependances:
+            conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+            dependances_ok = True
+            with conn:
+                with conn.cursor() as cur:
+                    for extension in dependances:
+                        cur.execute(query_exists_extension(), (extension,))
+                        dependances_ok = dependances_ok and cur.fetchone()[0]
+                        if not dependances_ok:
+                            break
+            conn.close()
+        self.assertTrue(dependances_ok)
+        self.assertEqual(dependances, ['plume_pg'])
+        self.assertEqual(widgetsdict[cc]['compute method'].dependances, ['plume_pg'])
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+                    CREATE TABLE z_plume.table_test_x () ;
+                    ALTER TABLE z_plume.table_test_x RENAME TO table_test ;
+                    CREATE ROLE g_compute_test ;
+                    SET ROLE g_compute_test ;
+                    ''')
+                query_c = widgetsdict.computing_query(cc, 'z_plume', 'table_test')
+                query_m = widgetsdict.computing_query(cm, 'z_plume', 'table_test')
+                cur.execute(*query_c)
+                result_c = cur.fetchall()
+                cur.execute(*query_m)
+                result_m = cur.fetchall()
+                cur.execute('''
+                    RESET ROLE ;
+                    DROP TABLE z_plume.table_test ;
+                    DROP ROLE g_compute_test ;
+                    TRUNCATE z_plume.stamp_timestamp ;
+                    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+                    ''')
+        conn.close()
+        self.assertTrue(isinstance(result_c[0][0], datetime))
+        self.assertTrue(isinstance(result_m[0][0], datetime))
+        
+        widgetsdict[cc]['main widget'] = '<cc QTextEdit dct:created>'
+        widgetsdict[cc]['compute widget'] = '<cc-compute QToolButton dct:created>'
+        widgetsdict[cm]['main widget'] = '<cm QTextEdit dct:modified>'
+        widgetsdict[cm]['compute widget'] = '<cm-compute QToolButton dct:modified>'
+        
+        # --- intégration ---
+        actionsdict_c = widgetsdict.computing_update(cc, result_c)
+        self.assertIsNotNone(cc.value)
+        self.assertTrue(isinstance(cc.value.toPython(), date))
+        self.assertTrue(re.match(
+            r'[0-9]{2}/[0-9]{2}/[0-9]{2}',
+            widgetsdict[cc]['value']
+            ))
+        self.assertEqual(actionsdict_c['value to update'], [cc])
+        for a, l in actionsdict_c.items():
+            with self.subTest(action = a):
+                if not a == 'value to update':
+                    self.assertFalse(l)
+        
+        actionsdict_m = widgetsdict.computing_update(cm, result_m)
+        self.assertIsNotNone(cm.value)
+        self.assertTrue(isinstance(cm.value.toPython(), date))
+        self.assertTrue(re.match(
+            r'[0-9]{2}/[0-9]{2}/[0-9]{2}',
+            widgetsdict[cm]['value']
+            ))
+        self.assertEqual(actionsdict_m['value to update'], [cm])
+        for a, l in actionsdict_m.items():
+            with self.subTest(action = a):
+                if not a == 'value to update':
+                    self.assertFalse(l)
 
     def test_columns(self):
         """Intégration des descriptifs des champs.
