@@ -36,33 +36,6 @@ Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plum
 - `meta_tab` liste des noms d'onglets de formulaires dans lesquels pourront être classées les catégories.
 - `meta_template_categories` permet de déclarer les catégories utilisées par chaque modèle, de les ranger dans des onglets, et de définir si besoin des paramètres d'affichage spécifiques à un modèle pour certaines catégories, qui remplaceront ceux de `meta_categorie`.
 
-### Privilèges nécessaires
-
-Pour bénéficier des modèles de *PlumePg*, les rôles de connexion des utilisateurs de Plume doivent disposer des privilèges suivants :
-- `USAGE` sur le schéma `z_plume` ;
-- `SELECT` sur les tables et vues `z_plume.meta_template`, `z_plume.meta_categorie`, `z_plume.meta_tab`, `z_plume.meta_template_categories` et `z_plume.meta_template_categories_full` (ou plus généralement toutes les tables du schéma `z_plume`).
-
-Lorsqu'Asgard était installé sur la base au moment de l'installation de Plume, cette condition est remplie sous réserve que tous les rôles de connexion soient membres du rôle `g_consult`, car `g_consult` est automatiquement désigné comme lecteur du schéma `z_plume`. Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plume_pg.md#cohabitation-avec-asgard) pour plus de détails.
-
-Sans Asgard, une solution simple consisterait à donner les droits suivants au pseudo-rôle `public` :
-
-```sql
-
-GRANT USAGE ON SCHEMA z_plume TO public ;
-GRANT SELECT ON ALL TABLES IN SCHEMA z_plume TO public ;
-
-```
-
-De plus, pour limiter les risques d'avoir à attribuer des droits supplémentaires si une mise à jour de *PlumePg* devait introduire de nouveaux objets, on pourrait définir des privilèges par défaut :
-
-```sql
-
-ALTER DEFAULT PRIVILEGES FOR ROLE role_proprietaire IN SCHEMA z_plume GRANT SELECT ON TABLES TO public ;
-
-```
-
-*Où `role_proprietaire` est le rôle propriétaire de l'extension.*
-
 ### Création d'un modèle de formulaire
 
 La table `z_plume.meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ `tpl_label`, qui lui tiendra lieu d'identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.
