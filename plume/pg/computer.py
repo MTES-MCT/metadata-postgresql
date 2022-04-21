@@ -3,11 +3,13 @@
 """
 
 import re
+from datetime import datetime
 
 from plume.rdf.rdflib import URIRef
 from plume.rdf.utils import crs_ns
 from plume.rdf.namespaces import DCT
-from plume.pg.queries import query_get_srid_list, query_get_comment_fragments
+from plume.pg.queries import query_get_srid_list, query_get_comment_fragments, \
+    query_get_creation_date, query_get_modification_date
 
 class ComputationMethod():
     """Méthode de calcul de métadonnées côté serveur.
@@ -173,6 +175,25 @@ def default_parser(*result):
         return ComputationResult()
     return ComputationResult(str_value=result[0])
 
+def datetime_parser(timestamp):
+    """Désérialisation d'un tampon de date et heure.
+    
+    Parameters
+    ----------
+    timestamp : datetime.datetime
+        Une date avec heure.
+    
+    Returns
+    -------
+    ComputationResult
+    
+    """
+    if isinstance(timestamp, datetime):
+        return ComputationResult(
+            str_value=timestamp.strftime('%d/%m/%Y %H:%M:%S')
+            )
+    return ComputationResult()
+
 def crs_parser(crs_auth, crs_code):
     """Renvoie l'URI complet d'un référentiel de coordonnées.
     
@@ -213,6 +234,18 @@ methods = {
         query_builder=query_get_comment_fragments,
         dependances=['plume_pg'],
         description='Extraction depuis le descriptif PostgreSQL de la table ou vue'
+        ),
+    DCT.created : ComputationMethod(
+        query_builder=query_get_creation_date,
+        dependances=['plume_pg'],
+        parser=datetime_parser,
+        description='Import de la date de création, si enregistrée côté serveur'
+        ),
+    DCT.modified : ComputationMethod(
+        query_builder=query_get_modification_date,
+        dependances=['plume_pg'],
+        parser=datetime_parser,
+        description='Import de la date de dernière modification, si enregistrée côté serveur'
         )
     }
 """Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.
