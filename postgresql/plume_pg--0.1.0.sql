@@ -55,13 +55,25 @@
 -- - Function: z_plume.meta_execute_sql_filter(text, text, text)
 -- - Function: z_plume.meta_ante_post_description(oid, text)
 -- - Function: z_plume.meta_regexp_matches(text, text, text)
+-- - Function: z_plume.is_relowner(oid)
+-- - Table: z_plume.stamp_timestamp
+-- - Function: z_plume.stamp_data_modification()
+-- - Function: z_plume.stamp_create_trigger(oid)
+-- - Function: z_plume.stamp_table_creation()
+-- - Event trigger: plume_stamp_creation
+-- - Function: z_plume.stamp_table_modification()
+-- - Event trigger: plume_stamp_modification
+-- - Function: z_plume.stamp_table_drop()
+-- - Event trigger: plume_stamp_drop
+-- - Function: z_plume.stamp_clean_timestamp()
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 /* 0 - SCHEMA z_plume
    1 - MODELES DE FORMULAIRES 
-   2 - FONCTIONS UTILITAIRES */
+   2 - FONCTIONS UTILITAIRES
+   3 - DATES DE MODIFICATION */
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,9 +98,12 @@ BEGIN
         
         COMMENT ON SCHEMA z_plume IS 'Utilitaires pour la gestion des métadonnées.' ;
         
+        -- si le schéma existe déjà, il ne sera pas marqué comme
+        -- dépendant de l'extension
+        
         -- si l'extension asgard est présente, on déclare g_admin
-        -- comme producteur et g_consult comme lecteur pour le
-        -- nouveau schéma
+        -- comme producteur et le pseudo-rôle public comme lecteur
+        -- pour le nouveau schéma
         IF EXISTS (
             SELECT * FROM pg_available_extensions
                 WHERE name = 'asgard'
@@ -98,7 +113,7 @@ BEGIN
             BEGIN
                 UPDATE z_asgard.gestion_schema_usr
                     SET producteur = 'g_admin',
-                        lecteur = 'g_consult'
+                        lecteur = 'public'
                     WHERE nom_schema = 'z_plume' ;
             EXCEPTION WHEN OTHERS THEN NULL ;
             END ;
@@ -107,13 +122,12 @@ BEGIN
     END IF ;
     
     -- si le schéma existe déjà, il ne sera pas marqué comme
-    -- dépendant de l'extension et les droits ne sont pas
-    -- altérés. Il pourra être nécessaire de définir des permissions
-    -- supplémentaires sur les objets créés par l'extension
+    -- dépendant de l'extension
     
 END
 $$ ;
 
+GRANT USAGE ON SCHEMA z_plume TO public ;
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -201,6 +215,8 @@ CREATE TABLE z_plume.meta_categorie (
     )
     PARTITION BY LIST (origin) ;
 
+GRANT SELECT ON TABLE z_plume.meta_categorie TO public ;
+
 COMMENT ON TABLE z_plume.meta_categorie IS 'Catégories de métadonnées disponibles pour les modèles de formulaires.' ;
 
 COMMENT ON COLUMN z_plume.meta_categorie.path IS 'Chemin N3 de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
@@ -231,7 +247,9 @@ CREATE TABLE z_plume.meta_shared_categorie
         CONSTRAINT meta_shared_categorie_pkey PRIMARY KEY (path)
     )
     FOR VALUES IN ('shared') ;
-    
+
+GRANT SELECT ON TABLE z_plume.meta_shared_categorie TO public ;
+
 COMMENT ON TABLE z_plume.meta_shared_categorie IS 'Catégories de métadonnées communes.' ;
 
 COMMENT ON COLUMN z_plume.meta_shared_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
@@ -538,7 +556,9 @@ CREATE TABLE z_plume.meta_local_categorie
         CONSTRAINT meta_local_categorie_sources_check CHECK (sources IS NULL)
     )
     FOR VALUES IN ('local') ;
-    
+
+GRANT SELECT ON TABLE z_plume.meta_local_categorie TO public ;
+  
 COMMENT ON TABLE z_plume.meta_local_categorie IS 'Catégories de métadonnées supplémentaires (ajouts locaux).' ;
 
 COMMENT ON COLUMN z_plume.meta_local_categorie.path IS 'Chemin SPARQL de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
@@ -577,7 +597,9 @@ CREATE TABLE z_plume.meta_template (
     comment text,
     enabled boolean NOT NULL DEFAULT True
     ) ;
-    
+
+GRANT SELECT ON TABLE z_plume.meta_template TO public ;
+   
 COMMENT ON TABLE z_plume.meta_template IS 'Modèles de formulaires définis pour le plugin QGIS.' ;
 
 COMMENT ON COLUMN z_plume.meta_template.tpl_label IS 'Nom du modèle (limité à 48 caractères).' ;
@@ -609,7 +631,9 @@ CREATE TABLE z_plume.meta_tab (
     tab varchar(48) PRIMARY KEY,
     tab_num int
     ) ;
-    
+
+GRANT SELECT ON TABLE z_plume.meta_tab TO public ;
+   
 COMMENT ON TABLE z_plume.meta_tab IS 'Onglets des modèles.' ;
 
 COMMENT ON COLUMN z_plume.meta_tab.tab IS 'Nom de l''onglet.' ;
@@ -665,6 +689,8 @@ CREATE TABLE z_plume.meta_template_categories (
         ),
     CONSTRAINT meta_template_categories_rowspan_check CHECK (rowspan BETWEEN 1 AND 99)
     ) ;
+
+GRANT SELECT ON TABLE z_plume.meta_template_categories TO public ;
 
 COMMENT ON TABLE z_plume.meta_template_categories IS 'Désignation des catégories utilisées par chaque modèle de formulaire.
 Les autres champs permettent de personnaliser la présentation des catégories pour le modèle considéré. S''ils ne sont pas renseignés, les valeurs saisies dans meta_categorie seront utilisées. À défaut, le plugin s''appuyera sur le schéma des catégories communes (évidemment pour les catégories communes uniquement).' ;
@@ -731,6 +757,8 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
                 ON tc.tpl_label = t.tpl_label
         WHERE t.enabled
     ) ;
+
+GRANT SELECT ON TABLE z_plume.meta_template_categories_full TO public ;
 
 COMMENT ON VIEW z_plume.meta_template_categories_full IS 'Description complète des modèles de formulaire (rassemble les informations de meta_categorie et meta_template_categories).' ;
 
@@ -1133,6 +1161,438 @@ END
 $BODY$ ;
 
 COMMENT ON FUNCTION z_plume.meta_regexp_matches(text, text, text) IS 'Exécute la fonction regexp_matches avec le contrôle d''erreur adéquat' ;
+
+
+-- Function: z_plume.is_relowner(oid)
+
+CREATE OR REPLACE FUNCTION z_plume.is_relowner(relid oid)
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Le rôle courant est-il propriétaire de la table ?
+
+    Parameters
+    ----------
+    relid : oid
+        L'identifiant d'une relation. S'il s'agit d'un OID
+        non référencé, la fonction renverra False.
+
+    Returns
+    -------
+    boolean
+        True si le rôle courant est membre du rôle propriétaire
+        de la table et hérite de ses privilèges.
+    
+*/
+DECLARE
+    b boolean ;
+BEGIN
+        
+    SELECT pg_has_role(relowner, 'USAGE')
+        INTO b
+        FROM pg_catalog.pg_class
+        WHERE oid = relid ;
+    
+    IF FOUND
+    THEN
+        RETURN b ;
+    ELSE
+        RETURN False ;
+    END IF ;
+
+END
+$BODY$ ;
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+---------------------------------------
+------ 3 - DATES DE MODIFICATION ------
+---------------------------------------
+
+-- Table: z_plume.stamp_timestamp
+
+CREATE TABLE z_plume.stamp_timestamp (
+    relid oid PRIMARY KEY,
+    created timestamp with time zone,
+    modified timestamp with time zone
+    ) ;
+
+ALTER TABLE z_plume.stamp_timestamp ENABLE ROW LEVEL SECURITY ;
+
+CREATE POLICY timestamp_public_select ON z_plume.stamp_timestamp
+    FOR SELECT USING (True) ;
+CREATE POLICY timestamp_owner_insert ON z_plume.stamp_timestamp
+    FOR INSERT WITH CHECK (z_plume.is_relowner(relid)) ;
+CREATE POLICY timestamp_owner_update ON z_plume.stamp_timestamp
+    FOR UPDATE USING (z_plume.is_relowner(relid))
+    WITH CHECK (z_plume.is_relowner(relid)) ;
+CREATE POLICY timestamp_owner_delete ON z_plume.stamp_timestamp
+    FOR DELETE USING (z_plume.is_relowner(relid)) ;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE z_plume.stamp_timestamp TO public ;
+
+COMMENT ON TABLE z_plume.stamp_timestamp IS 'Suivi des dates de modification des tables.' ;
+
+COMMENT ON COLUMN z_plume.stamp_timestamp.relid IS 'Identifiant système de la table.' ;
+COMMENT ON COLUMN z_plume.stamp_timestamp.created IS 'Date de création.' ;
+COMMENT ON COLUMN z_plume.stamp_timestamp.modified IS 'Date de dernière modification.' ;
+
+
+-- Function: z_plume.stamp_data_modification()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_data_modification()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par les déclencheurs plume_stamp qui mettent à jour la date de dernière modification des tables.
+
+    Elle enregistre la nouvelle date de dernière modification
+    de la table dans la table stamp_timestamp.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    UPDATE z_plume.stamp_timestamp
+        SET modified = now()
+        WHERE relid = TG_RELID ;
+    
+    IF NOT FOUND
+    THEN
+        INSERT INTO z_plume.stamp_timestamp (relid, modified)
+            VALUES (TG_RELID, now()) ;
+    END IF ;
+    
+    RETURN NULL ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+    
+    RETURN NULL ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_data_modification() IS 'Fonction exécutée par les déclencheurs plume_stamp qui mettent à jour la date de dernière modification des tables.' ;
+
+
+-- Function: z_plume.stamp_create_trigger(oid)
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_create_trigger(tabid oid)
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Crée sur la table cible un déclencheur qui assurera la mise à jour de sa date de modification.
+
+    Elle ajoute également une entrée pour la table dans
+    z_plume.stamp_timestamp.
+
+    Cette fonction doit être exécutée par un rôle membre du
+    propriétaire de la table et disposant de droits d'écriture
+    sur z_plume.stamp_timestamp pour donner un résultat probant.
+    Néanmoins, elle ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+    Parameters
+    ----------
+    tabid : oid
+        L'identifiant de la table sur laquelle le déclencheur
+        doit être créé.
+
+    Returns
+    -------
+    boolean
+        True si la création du déclencheur a réussi.
+        En cas d'échec, elle renvoie False et le détail
+        de l'erreur sera précisé par un message.
+    
+*/
+DECLARE
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+        
+    EXECUTE format('CREATE TRIGGER plume_stamp_action
+        AFTER INSERT OR DELETE OR UPDATE OR TRUNCATE
+        ON %s
+        FOR EACH STATEMENT
+        EXECUTE PROCEDURE z_plume.stamp_data_modification() ;',
+        tabid::regclass) ;
+    
+    EXECUTE format('COMMENT ON TRIGGER plume_stamp_action ON %s
+        IS ''Mise à jour de la date de dernière modification de la table.'' ;',
+        tabid::regclass) ;
+    
+    INSERT INTO z_plume.stamp_timestamp (relid)
+        VALUES (tabid)
+        ON CONFLICT (relid) DO NOTHING ;
+    
+    RETURN True ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+            
+    RETURN False ;
+
+END
+$BODY$ ;
+
+
+-- Function: z_plume.stamp_table_creation()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_table_creation()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur sur évènement plume_stamp_creation, activé sur les créations de tables.
+
+    Elle enregistre la date de création de la table dans la
+    table stamp_timestamp et crée un déclencheur sur la table
+    créée qui permettra de suivre ses modifications.
+    
+    Elle n'a pas d'effet sur les vues et plus généralement
+    tous les types de relations qui ne sont pas de
+    simples tables.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid
+        FROM pg_event_trigger_ddl_commands()
+        WHERE object_type = 'table'
+    LOOP
+        
+        PERFORM z_plume.stamp_create_trigger(obj.objid) ;
+        
+        UPDATE z_plume.stamp_timestamp
+            SET created = now()
+            WHERE relid = obj.objid ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+    
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ; 
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_table_creation() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_creation, activé sur les créations de tables.' ;
+
+
+-- Event trigger: plume_stamp_creation
+
+CREATE EVENT TRIGGER plume_stamp_creation ON ddl_command_end
+    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS', 'CREATE SCHEMA', 'SELECT INTO')
+    EXECUTE PROCEDURE z_plume.stamp_table_creation() ;
+
+ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_creation IS 'Enregistrement des dates de création des tables et mise en place des déclencheurs assurant la mise à jour de la date de dernière modification des données.' ;
+
+
+-- Function: z_plume.stamp_table_modification()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_table_modification()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur sur évènement plume_stamp_modification, activé par les commandes qui modifient la structure des tables.
+
+    Elle enregistre la nouvelle date de dernière modification
+    de la table dans la table stamp_timestamp.
+    
+    Elle n'a pas d'effet sur les vues et plus généralement
+    tous les types de relations qui ne sont pas de
+    simples tables.
+    
+    Elle n'a pas non plus d'effet si la table modifiée n'était
+    pas référencée dans stamp_timestamp.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid
+        FROM pg_event_trigger_ddl_commands()
+        WHERE object_type = 'table'
+    LOOP
+    
+        UPDATE z_plume.stamp_timestamp
+            SET modified = now()
+            WHERE relid = obj.objid ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_table_modification() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_modification, activé par les commandes qui modifient la structure des tables.' ;
+
+
+-- Event trigger: plume_stamp_rewrite
+
+CREATE EVENT TRIGGER plume_stamp_modification ON ddl_command_end
+    WHEN TAG IN ('ALTER TABLE')
+    EXECUTE PROCEDURE z_plume.stamp_table_modification() ;
+
+ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_modification IS 'Mise à jour des dates de dernière modification des tables.' ;
+
+
+-- Function: z_plume.stamp_table_drop()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_table_drop()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur sur évènement plume_stamp_drop, activé par les commandes de suppression de tables.
+
+    Elle supprime de la table stamp_timestamp Les 
+    enregistrements correspondant aux tables
+    supprimées, s'il y en avait.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid
+        FROM pg_event_trigger_dropped_objects()
+        WHERE object_type = 'table'
+    LOOP
+    
+        DELETE FROM z_plume.stamp_timestamp
+            WHERE relid = obj.objid ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_table_drop() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_drop, activé par les commandes de suppression de tables.' ;
+
+
+-- Event trigger: plume_stamp_drop
+
+CREATE EVENT TRIGGER plume_stamp_drop ON sql_drop
+    WHEN TAG IN ('DROP TABLE', 'DROP SCHEMA')
+    EXECUTE PROCEDURE z_plume.stamp_table_drop() ;
+
+ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_drop IS 'Suppression du suivi des dates de modification sur les tables supprimées.' ;
+
+
+-- Function: z_plume.stamp_clean_timestamp()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_clean_timestamp()
+    RETURNS int
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n'existent plus.
+
+    Cette fonction doit être exécutée par le
+    propriétaire de la table stamp_timestamp,
+    sans quoi elle renverra une erreur.
+
+    Returns
+    -------
+    int
+        Nombre de lignes supprimées.
+    
+*/
+DECLARE
+    n int ;
+BEGIN
+
+    DELETE FROM z_plume.stamp_timestamp
+        WHERE NOT relid IN (SELECT oid FROM pg_class) ;
+        
+    GET DIAGNOSTICS n = ROW_COUNT ;
+    RETURN n ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_clean_timestamp() IS 'Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n''existent plus.' ;
+
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
