@@ -1115,3 +1115,183 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t013() IS 'PlumePg (recette). TEST : Tampons de date et privilèges.' ;
 
+
+-- Function: z_plume_recette.t014()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t014()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+BEGIN
+
+    CREATE SCHEMA c_bibliotheque ;
+    CREATE TABLE c_bibliotheque.test_stamp (id int PRIMARY KEY) ;
+    PERFORM z_plume.stamp_create_trigger('c_bibliotheque.test_stamp'::regclass) ;
+    
+    ASSERT EXISTS (SELECT * FROM pg_catalog.pg_trigger
+        WHERE tgrelid = 'c_bibliotheque.test_stamp'::regclass
+        AND tgname = 'plume_stamp_action'), 'échec assertion #1' ;
+    
+    DROP EXTENSION plume_pg ;
+    
+    ASSERT NOT EXISTS (SELECT * FROM pg_catalog.pg_trigger
+        WHERE tgrelid = 'c_bibliotheque.test_stamp'::regclass
+        AND tgname = 'plume_stamp_action'), 'échec assertion #2' ;
+
+    DROP SCHEMA c_bibliotheque CASCADE ;
+    CREATE EXTENSION plume_pg ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t014() IS 'PlumePg (recette). TEST : Suppression des triggers plume_stamp_action lors de la suppression de plume_pg.' ;
+
+
+-- Function: z_plume_recette.t015()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t015()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    metadata jsonb ;
+    descr text ;
+    jsonld text ;
+    modif timestamp with time zone ;
+    e_mssg text ;
+    e_detl text ;
+BEGIN
+
+    CREATE ROLE g_stamp_edit ;
+
+    CREATE SCHEMA c_bibliotheque ;
+    CREATE TABLE c_bibliotheque.test_stamp (id int PRIMARY KEY) ;
+    COMMENT ON TABLE c_bibliotheque.test_stamp IS 'Ma table de test.' ;
+    GRANT USAGE ON SCHEMA c_bibliotheque TO g_stamp_edit ;
+    GRANT INSERT ON TABLE c_bibliotheque.test_stamp TO g_stamp_edit ;
+    PERFORM z_plume.stamp_create_trigger('c_bibliotheque.test_stamp'::regclass) ;
+    
+    ASSERT NOT EXISTS (SELECT * FROM pg_catalog.pg_trigger
+        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
+        AND tgname = 'record_modification_date'), 'échec assertion #1' ;
+    
+    ------ activation du déclencheur ------
+    
+    PERFORM z_plume.stamp_activate_recording() ;
+    ASSERT EXISTS (SELECT * FROM pg_catalog.pg_trigger
+        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
+        AND tgname = 'record_modification_date'), 'échec assertion #2' ;
+    
+    SET ROLE g_stamp_edit ;
+    INSERT INTO c_bibliotheque.test_stamp (id) VALUES (1) ;
+    
+    SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
+        INTO metadata ;
+    ASSERT metadata IS NULL, 'échec assertion #3' ;
+    
+    RESET ROLE ;
+    descr = 'Ma table de test.
+
+<METADATA>
+%s
+</METADATA>' ;
+    jsonld = '[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/modified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#%s",
+        "@value": %s
+      }
+    ],
+    "http://purl.org/dc/terms/temporal": [
+      {
+        "@id": "_:ub6bL18C18"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "fr",
+        "@value": "TEST"
+      }
+    ]
+  },
+  {
+    "@id": "_:ub6bL18C18",
+    "@type": [
+      "http://purl.org/dc/terms/PeriodOfTime"
+    ],
+    "http://www.w3.org/ns/dcat#endDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ],
+    "http://www.w3.org/ns/dcat#startDate": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2021-01-15"
+      }
+    ]
+  }
+]' ;
+    
+    EXECUTE format('COMMENT ON TABLE c_bibliotheque.test_stamp IS %L',
+        format(descr, format(jsonld, 'date', '"2022-01-01"'))) ;
+
+    SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
+        INTO metadata ;
+    ASSERT metadata IS NOT NULL, 'échec assertion #4' ;
+
+    SET ROLE g_stamp_edit ;
+    INSERT INTO c_bibliotheque.test_stamp (id) VALUES (2) ;
+    
+    SELECT modified INTO modif FROM z_plume.stamp_timestamp
+        WHERE relid =  'c_bibliotheque.test_stamp'::regclass ;
+    
+    SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
+        INTO metadata ;
+    ASSERT metadata = format(jsonld, 'dateTime', to_jsonb(modif)::text)::jsonb, 'échec assertion #5' ;
+    
+    ------ désactivation du déclencheur ------
+    
+    RESET ROLE ;
+    PERFORM z_plume.stamp_activate_recording() ;
+    ASSERT NOT EXISTS (SELECT * FROM pg_catalog.pg_trigger
+        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
+        AND tgname = 'record_modification_date'), 'échec assertion #6' ;
+
+    DROP SCHEMA c_bibliotheque CASCADE ;
+    DROP ROLE g_stamp_edit ;
+    
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t015() IS 'PlumePg (recette). TEST : Enregistrement des tampons de dates dans les fiches de métadonnées.' ;
+
