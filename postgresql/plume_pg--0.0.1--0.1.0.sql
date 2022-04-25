@@ -40,9 +40,14 @@
 --
 -- objets créés par le script :
 -- - Function: z_plume.meta_ante_post_description(oid, text)
+-- - Function: z_plume.meta_description(oid, text)
 -- - Function: z_plume.meta_regexp_matches(text, text, text)
 -- - Function: z_plume.is_relowner(oid)
 -- - Table: z_plume.stamp_timestamp
+-- - Policy: timestamp_public_select
+-- - Policy: timestamp_owner_insert
+-- - Policy: timestamp_owner_update
+-- - Policy: timestamp_owner_delete
 -- - Function: z_plume.stamp_data_modification()
 -- - Function: z_plume.stamp_create_trigger(oid)
 -- - Function: z_plume.stamp_table_creation()
@@ -52,6 +57,7 @@
 -- - Function: z_plume.stamp_table_drop()
 -- - Event trigger: plume_stamp_drop
 -- - Function: z_plume.stamp_clean_timestamp()
+-- - Function: z_plume.stamp_activate_recording()
 --
 -- objets modifiés par le script :
 -- - Schema: z_plume
@@ -547,7 +553,7 @@ CREATE OR REPLACE FUNCTION z_plume.meta_ante_post_description(
     
     Examples
     --------
-    SELECT * FROM z_plume.meta_ante_post_description(
+    SELECT z_plume.meta_ante_post_description(
         'schema_name.table_name'::regclass, 'pg_class') ;
     
     Notes
@@ -570,6 +576,56 @@ END
 $BODY$ ;
 
 COMMENT ON FUNCTION z_plume.meta_ante_post_description(oid, text) IS 'Extrait du descriptif de l''objet ce qui précède et suit les métadonnées.' ;
+
+
+-- Function: z_plume.meta_description(oid, text)
+
+CREATE OR REPLACE FUNCTION z_plume.meta_description(
+        object_oid oid, catalog_name text
+        )
+    RETURNS jsonb
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Extrait les métadonnées du descriptif de l'objet.
+
+    Parameters
+    ----------
+    object_oid : oid
+        L'identifiant de l'objet considéré.
+    catalog_name : text
+        Le catalogue auquel appartient l'objet.
+
+    Returns
+    -------
+    jsonb
+        Les métadonnées, soit le contenu désérialisé des
+        éventuelles balises <METADATA> et </METADATA>.
+        NULL en l'absence des balises ou si leur contenu
+        n'était pas un JSON valide.
+    
+    Examples
+    --------
+    SELECT z_plume.meta_description(
+        'schema_name.table_name'::regclass, 'pg_class') ;
+    
+    Notes
+    -----
+    L'expression régulière utilisée par cette fonction est
+    identique à celle du constructeur de la classe
+    plume.pg.description.PgDescription du plugin QGIS. Il est
+    impératif qu'elle le reste.
+
+*/
+BEGIN
+
+    RETURN substring(obj_description(object_oid, catalog_name),
+        '\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}')::jsonb ;
+    
+EXCEPTION WHEN OTHERS THEN RETURN NULL ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.meta_description(oid, text) IS 'Extrait les métadonnées du descriptif de l''objet.' ;
 
 
 -- Function: z_plume.meta_regexp_matches(text, text, text)
@@ -800,16 +856,16 @@ DECLARE
     e_detl text ;
 BEGIN
         
-    EXECUTE format('CREATE TRIGGER plume_stamp_action
-        AFTER INSERT OR DELETE OR UPDATE OR TRUNCATE
-        ON %s
-        FOR EACH STATEMENT
-        EXECUTE PROCEDURE z_plume.stamp_data_modification() ;',
-        tabid::regclass) ;
-    
-    EXECUTE format('COMMENT ON TRIGGER plume_stamp_action ON %s
-        IS ''Mise à jour de la date de dernière modification de la table.'' ;',
-        tabid::regclass) ;
+    EXECUTE format('
+        CREATE TRIGGER plume_stamp_action
+            AFTER INSERT OR DELETE OR UPDATE OR TRUNCATE
+            ON %1$s
+            FOR EACH STATEMENT
+            EXECUTE PROCEDURE z_plume.stamp_data_modification() ;
+        ALTER TRIGGER plume_stamp_action ON %1$s DEPENDS ON EXTENSION plume_pg ;
+        COMMENT ON TRIGGER plume_stamp_action ON %1$s
+            IS ''Mise à jour de la date de dernière modification de la table.'' ;
+        ', tabid::regclass) ;
     
     INSERT INTO z_plume.stamp_timestamp (relid)
         VALUES (tabid)
@@ -832,6 +888,8 @@ EXCEPTION WHEN OTHERS THEN
 
 END
 $BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_create_trigger(oid) IS 'Crée sur la table cible un déclencheur qui assurera la mise à jour de sa date de modification.' ;
 
 
 -- Function: z_plume.stamp_table_creation()
@@ -1063,6 +1121,155 @@ END
 $BODY$ ;
 
 COMMENT ON FUNCTION z_plume.stamp_clean_timestamp() IS 'Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n''existent plus.' ;
+
+
+-- Function: z_plume.stamp_record_modification_date()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_record_modification_date()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur record_modification_date qui met à jour la date de dernière modification dans les métadonnées de la table.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification. Elle
+    n'aura pas d'effet si le descriptif de la table ne
+    contient pas encore de fiche de métadonnées.
+
+*/
+DECLARE
+    old_metadata jsonb ;
+    new_metadata jsonb := '[]'::jsonb ;
+    r record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    old_metadata := z_plume.meta_description(NEW.relid, 'pg_class') ;
+    
+    IF old_metadata IS NULL
+    THEN
+        RETURN NULL ;
+    END IF ;
+    
+    -- boucle sur les éléments de premier niveau du JSON-LD
+    FOR r IN (
+        SELECT 
+            item
+            FROM jsonb_array_elements(old_metadata) AS t (item)
+        )
+    LOOP
+    
+        IF r.item @> '{"@type": ["http://www.w3.org/ns/dcat#Dataset"]}'
+        THEN
+            new_metadata := new_metadata || jsonb_build_array(jsonb_set(
+                r.item, '{http://purl.org/dc/terms/modified}',
+                jsonb_build_array(jsonb_build_object('@type',
+                    'http://www.w3.org/2001/XMLSchema#dateTime',
+                    '@value', NEW.modified)),
+                create_if_missing := True
+                )) ;
+        ELSE
+            new_metadata := new_metadata || jsonb_build_array(r.item) ;
+        END IF ;
+        
+    END LOOP ;
+    
+    EXECUTE format(
+        'COMMENT ON TABLE %s IS %L ;',
+        NEW.relid::regclass,
+        regexp_replace(
+            obj_description(NEW.relid, 'pg_class'),
+            '\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}',
+            format(
+                '
+
+<METADATA>
+%s
+</METADATA>
+',
+                jsonb_pretty(new_metadata)
+                )
+            )
+        ) ;
+    
+    RETURN NULL ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+    
+    RETURN NULL ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_record_modification_date() IS 'Fonction exécutée par le déclencheur record_modification_date qui enregistre la date de dernière modification dans les métadonnées de la table.' ;
+
+
+-- Function: z_plume.stamp_activate_recording()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_activate_recording()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Crée ou supprime le déclencheur sur la table stamp_timestamp qui enregistre automatiquement les dates de modification dans les fiches de métadonnées.
+
+    Si le déclencheur n'existait pas, il est créé. S'il existait,
+    il est supprimé.
+
+    Cette fonction doit être exécutée par un rôle membre du
+    propriétaire de la table z_plume.stamp_timestamp.
+
+    Returns
+    -------
+    boolean
+        True si la création du déclencheur a réussi.
+        False si la suppression du déclencheur a réussi.
+        En cas d'échec, elle renvoie une erreur.
+    
+*/
+DECLARE
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    IF EXISTS (SELECT * FROM pg_catalog.pg_trigger
+        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
+        AND tgname = 'record_modification_date')
+    THEN
+        DROP TRIGGER record_modification_date ON z_plume.stamp_timestamp ;
+        
+        RETURN False ;
+    ELSE        
+        CREATE TRIGGER record_modification_date
+            AFTER INSERT OR UPDATE
+            ON z_plume.stamp_timestamp
+            FOR EACH ROW
+            WHEN (NEW.modified IS NOT NULL)
+            EXECUTE PROCEDURE z_plume.stamp_record_modification_date() ;
+        
+        COMMENT ON TRIGGER record_modification_date ON z_plume.stamp_timestamp
+            IS 'Enregistre les dates de dernière modification dans les métadonnées des tables.' ;
+        
+        RETURN True ;
+    END IF ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_activate_recording() IS 'Crée ou supprime le déclencheur sur la table stamp_timestamp qui enregistre automatiquement les dates de modification dans les fiches de métadonnées.' ;
+
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
