@@ -908,9 +908,9 @@ class QueriesTestCase(unittest.TestCase):
                 # activation des fonctionnalités d'enregistrement
                 # des dates + création d'une table de test
                 cur.execute('''
-                    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
                     CREATE TABLE z_plume.table_test () ;
                     ''')
                 query = query_get_creation_date('z_plume', 'table_test')
@@ -921,9 +921,9 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('''
                     DROP TABLE z_plume.table_test ;
                     TRUNCATE z_plume.stamp_timestamp ;
-                    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
                     ''')
         conn.close()
         self.assertTrue(isinstance(result1[0][0], datetime))
@@ -939,9 +939,9 @@ class QueriesTestCase(unittest.TestCase):
                 # activation des fonctionnalités d'enregistrement
                 # des dates + création d'une table de test
                 cur.execute('''
-                    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
                     CREATE TABLE z_plume.table_test () ;
                     ALTER TABLE z_plume.table_test RENAME TO table_test_2 ;
                     ''')
@@ -953,9 +953,9 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('''
                     DROP TABLE z_plume.table_test_2 ;
                     TRUNCATE z_plume.stamp_timestamp ;
-                    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
                     ''')
         conn.close()
         self.assertTrue(isinstance(result1[0][0], datetime))
