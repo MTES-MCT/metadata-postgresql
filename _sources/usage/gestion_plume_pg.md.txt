@@ -2,18 +2,18 @@
 
 L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre la possibilité d'utiliser des [modèles de formulaire](./modeles_de_formulaire.md) et d'[enregistrer les dates de création et dernière modification des tables](#activation-de-lenregistrement-des-dates).
 
-[Compatibilité](#compatibilité) • [Installation](#installation) • [Localisation des objets de l'extension](#localisation-des-objets-de-lextension) • [Privilèges](#privilèges) • [Cohabitation avec *Asgard*](#cohabitation-avec-asgard) • [Mise à jour](#mise-à-jour) • [Désinstallation](#désinstallation) • [Sauvegarde et restauration de la base](#sauvegarde-et-restauration-de-la-base) • [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates) • [Usage des modèles de formulaires](#usage-des-modèles-de-formulaires)
+[Compatibilité](#compatibilité) • [Installation](#installation) • [Localisation des objets de l'extension](#localisation-des-objets-de-lextension) • [Privilèges](#privilèges) • [Cohabitation avec *Asgard*](#cohabitation-avec-asgard) • [Mise à jour](#mise-à-jour) • [Désinstallation](#désinstallation) • [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates) • [Usage des modèles de formulaires](#usage-des-modèles-de-formulaires) • [Sauvegarde et restauration de la base](#sauvegarde-et-restauration-de-la-base)
 
 ## Compatibilité
 
 | Version | Compatibilité | Remarques | Modalités de test |
 | --- | --- | --- | --- |
 | PostgreSQL <= 9.6 | non | *PlumePg* requiert la prise en charge des tables partitionnées, introduites par PostgreSQL 10. | |
-| PostgreSQL 10 | oui | Nécessite l'extension `pgcrypto`. | 2022.03.07. PostgreSQL 10.12 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2[^withasgard]. |
-| PostgreSQL 11 | oui | Nécessite l'extension `pgcrypto`. | 2022.03.07. PostgreSQL 11.9 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2. |
-| PostgreSQL 12 | oui | Nécessite l'extension `pgcrypto`. | 2022.03.07. PostgreSQL 12.4 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2. |
-| PostgreSQL 13 | oui | | 2022.03.07. PostgreSQL 13.0 + PlumePg 0.0.1 + pgcrypto 1.3[^withcrypto] + Asgard 1.3.2. |
-| PostgreSQL 14 | oui | | 2022.03.07. PostgreSQL 14.2 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2. |
+| PostgreSQL 10 | oui | Nécessite l'extension `pgcrypto`. | 2022.04.26. PostgreSQL 10.12 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2[^withasgard]. |
+| PostgreSQL 11 | oui | Nécessite l'extension `pgcrypto`. | 2022.04.26. PostgreSQL 11.9 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2. |
+| PostgreSQL 12 | oui | Nécessite l'extension `pgcrypto`. | 2022.04.26. PostgreSQL 12.4 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2. |
+| PostgreSQL 13 | oui | | 2022.04.26. PostgreSQL 13.0 + PlumePg 0.1.0 + pgcrypto 1.3[^withcrypto] + Asgard 1.3.2. |
+| PostgreSQL 14 | oui | | 2022.04.26. PostgreSQL 14.2 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2. |
 
 [^withasgard]: L'extension PostgreSQL *Asgard* n'est en aucune façon requise pour utiliser Plume et *PlumePg*. Les tests faisant intervenir *Asgard* s'assure simplement que, dans le cas où les deux extensions sont présentes, *Asgard* gère correctement les droits sur les objets de *PlumePg*. Cf. [Cohabitation avec *Asgard*](#cohabitation-avec-asgard)
 
@@ -58,7 +58,7 @@ Les données du schéma `z_plume` alimentent le plugin QGIS et doivent dès lors
 - `USAGE` sur le schéma `z_plume` ;
 - `SELECT` sur toutes les tables et vues de ce schéma.
 
-Une politique de sécurité niveau ligne est définie sur la table `z_plume.stamp_timestamp`, permettant au propriétaire d'une table - et seulement à lui - de modifier manuellement les dates enregistrées pour cette table.
+Des droits étendus sont conférés sur la table `z_plume.stamp_timestamp`, permettant au propriétaire d'une table - et seulement à lui - de modifier manuellement les dates enregistrées pour cette table. *NB : Ce contrôle d'accès est réalisé par un déclencheur et non des politiques de sécurité niveau ligne, car l'usage de ces dernières par les extensions provoque actuellement des erreurs en cas de sauvegarde/restauration.*
 
 ## Cohabitation avec *Asgard*
 
@@ -110,6 +110,110 @@ La désinstallation entraîne la perte définitive de tous les [modèles de form
 
 *NB. Si le schéma `z_plume` existait avant l'installation de l'extension, il ne sera pas marqué comme dépendant de l'extension et ne sera donc pas supprimé en cas de désinstallation. Tout son contenu le sera, par contre.*
 
+## Activation de l'enregistrement des dates
+
+*PlumePg* propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.
+
+Les dates sont enregistrées dans la table `z_plume.stamp_timestamp`. Son champ `relid` contient les identifiants PostgreSQL des tables (OID), son champ `created` les dates de création et son champ `modified` les dates de dernière modification.
+
+À l'installation de *PlumePg*, les fonctionnalités d'enregistrement des dates de création et dernière modification des tables sont inactives. La table `z_plume.stamp_timestamp` est et restera vide sans intervention de l'administrateur.
+
+Dès lors que l'administrateur le souhaite, deux stratégies peuvent être mises en oeuvre : soit enregistrer automatiquement les dates pour toutes les tables dès leur création, soit enregistrer les dates de dernière modification uniquement pour certaines tables explicitement désignées.
+
+### Suivi automatique intégral
+
+Pour mettre en place le suivi intégral, on activera les trois déclencheurs sur évènement de *PlumePg*.
+
+```sql
+
+ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+
+```
+
+`plume_stamp_table_creation` se charge d'enregistrer les dates de création des tables dans `z_plume.stamp_timestamp` et crée sur les nouvelles tables les déclencheurs `plume_stamp_data_edit` qui assureront le suivi des modifications des données.
+
+`plume_stamp_table_modification` met à jour la date de dernière modification en cas de modification de structure des tables (commandes `ALTER TABLE`).
+
+`plume_stamp_table_drop` efface de `z_plume.stamp_timestamp` les lignes correspondant aux tables qui viennent d'être supprimées.
+
+### Suivi au cas par cas
+
+Pour n'activer le suivi des modifications que sur certaines tables explicitement désignées, il faut laisser inactif le déclencheur sur évènement `plume_stamp_table_creation`.
+
+```sql
+
+ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+
+```
+
+Il faut alors lancer la fonction `z_plume.stamp_create_trigger` sur une table pour commencer à enregistrer ses dates de modification, tant les modifications des données que celles de la structure. 
+
+```sql
+
+SELECT z_plume.stamp_create_trigger('schema_name.table_name'::regclass) ;
+
+```
+
+La fonction renvoie `True` si la création du déclencheur a fonctionné, `False` sinon. Elle doit être exécutée par le propriétaire de la table.
+
+Une alternative consisterait à activer `plume_stamp_table_creation` en supprimant le suivi des modifications sur certaines tables qui ne le justifient pas :
+
+```sql
+
+DROP TRIGGER plume_stamp_data_edit ON schema_name.table_name ;
+DELETE FROM z_plume.stamp_timestamp WHERE relid = 'schema_name.table_name'::regclass ;
+
+```
+
+### Intégration directe dans les métadonnées
+
+Pour ne pas trop affecter les performances et laisser au producteur de la donnée la maîtrise de ces informations, les dates ne sont pas immédiatement mises à jour dans les fiches de métadonnées, seulement dans la table `stamp_timestamp`, qui peut être considérée comme un espace de stockage temporaire. Le plugin QGIS permet de les importer facilement lors de l'édition d'une fiche, soit à la demande en cliquant sur un bouton, soit automatiquement à l'ouverture de la fiche (cf. [Métadonnées calculées](./metadonnees_calculees.md)).
+
+Il est toutefois possible de forcer l'actualisation au fil de l'eau de la date de dernière modification en activant le déclencheur `stamp_timestamp_to_metadata` défini sur la table `stamp_timestamp`.
+
+```sql
+
+ALTER TABLE z_plume.stamp_timestamp ENABLE TRIGGER stamp_timestamp_to_metadata ;
+
+```
+
+Ceci ne vaudra que pour les tables qui ont déjà une fiche de métadonnées, raison pour laquelle les dates de création ne sont pas concernées.
+
+Lorsque ce déclencheur est actif, il n'y a aucun intérêt à utiliser les fonctionnalités de calcul pour la date de dernière modification (catégorie `dct:modified`).
+
+
+### Observations sur la gestion des suppressions de tables 
+
+Quelle que soit la stratégie choisie, il n'est pas indispensable d'activer le déclencheur sur évènement `plume_stamp_table_drop`. À défaut, il faudra éliminer régulièrement les lignes de `z_plume.stamp_timestamp` correspondant aux tables qui n'existent plus avec la fonction `z_plume.stamp_clean_timestamp`.
+
+```sql
+
+SELECT z_plume.stamp_clean_timestamp() ;
+
+```
+
+La fonction renvoie le nombre de lignes supprimées de `z_plume.stamp_timestamp`. Elle doit être exécutée par le propriétaire de `z_plume.stamp_timestamp`.
+
+À noter qu'il n'est généralement pas intéressant de conserver des lignes mortes dans la `z_plume.stamp_clean_timestamp`, sauf à disposer d'un moyen pour retrouver le nom de la table à partir de son identifiant (OID) désormais non référencé dans `pg_class`.
+
+
+### Fausses modifications 
+
+Le mécanisme mis en place par *PLumePg* peut donner lieu à des faux positifs, soit des cas où la date de dernière modification sera actualisée sans que la table ni son contenu n'aient véritablement changé.
+
+Le déclencheur sur évènement `plume_stamp_table_modification` est ainsi activé par toutes les commandes `ALTER TABLE`, y compris celles qui n'affectent pas réellement la table, comme un changement de nom qui conserve le nom d'origine.
+
+Les déclencheurs `plume_stamp_data_edit` sont activés par toutes les commandes `INSERT`, `UPDATE`, `DELETE` et `TRUNCATE`, y compris celles qui - sans pour autant échouer - n'ont aucun effet. Par exemple une commande `UPDATE` ou `DELETE` telle qu'aucune ligne ne remplit la condition de sa clause `WHERE`. Il paraissait préférable d'avoir recours à des déclencheurs `ON EACH STATEMENT` qu'à des déclencheurs `ON EACH ROW`, certes moins susceptibles de retenir des fausses modifications mais susceptibles d'allonger considérablement le temps d'exécution des requêtes.
+
+
+## Usage des modèles de formulaires
+
+Cf. [Modèles de formulaires](./modeles_de_formulaire.md).
+
+
 ## Sauvegarde et restauration de la base
 
 Pour que les données de *PlumePg* soient préservées lors de la restauration, notamment les [modèles de formulaire](./modeles_de_formulaire.md), il est essentiel de **ne pas chercher à réinstaller manuellement l'extension sur la base de restauration**. Tout est automatique. On veillera seulement à ce que :
@@ -140,95 +244,7 @@ De manière très classique, le processus de restauration est le suivant :
 
 ### Considérations spécifiques au mécanisme d'enregistrement des dates
 
-En l'état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table `z_plume.stamp_timestamp` ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu'elles aient été préalablement intégrées aux fiches de métadonnées via le plugin QGIS Plume pour ne pas être **perdues**.
+En l'état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table `z_plume.stamp_timestamp` ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu'elles aient été préalablement intégrées aux fiches de métadonnées pour ne pas être **perdues**. Cette intégration s'effectue en principe lors de l'édition des fiches de métadonnées avec le plugin QGIS, sous réserve d'avoir activé la [fonctionnalité de calcul](./metadonnees_calculees.md) pour les catégories `dct:created` et `dct:modified`. Pour les dates de dernières modifications, elle peut aussi être réalisée automatiquement côté serveur en activant le déclencheur prévu à cette fin - cf. [Intégration directe dans les métadonnées](#intégration-directe-dans-les-métadonnées).
 
-Les déclencheurs sur évènement seront inactifs après la restauration et devront donc être réactivés manuellement d'autant que de besoin. Il n'est pas nécessaire de recréer les déclencheurs sur les tables, qui sont pour leur part restaurés.
-
-Des erreurs peuvent apparaître à la restauration des politiques de sécurité niveau ligne, qui sont créées par l'extension mais peuvent aussi (de manière inappropriée) être sauvegardées à part par `pg_dump`. Ces messages signalant que `pg_restore` n'a pas pu recréer les politiques de sécurité car elles existaient déjà sont sans conséquence.
-
-## Activation de l'enregistrement des dates
-
-*PlumePg* propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.
-
-Les dates sont enregistrées dans la table `z_plume.stamp_timestamp`. Son champ `relid` contient les identifiants PostgreSQL des tables (OID), son champ `created` les dates de création et son champ `modified` les dates de dernière modification.
-
-À l'installation de *PlumePg*, les fonctionnalités d'enregistrement des dates de création et dernière modification des tables sont inactives. La table `z_plume.stamp_timestamp` est et restera vide sans intervention de l'administrateur.
-
-Dès lors que l'administrateur le souhaite, deux stratégies peuvent être mises en oeuvre : soit enregistrer automatiquement les dates pour toutes les tables dès leur création, soit enregistrer les dates de dernière modification uniquement pour certaines tables explicitement désignées.
-
-### Suivi automatique intégral
-
-Pour mettre en place le suivi intégral, on activera les trois déclencheurs sur évènement de *PlumePg*.
-
-```sql
-
-ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
-ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
-ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
-
-```
-
-`plume_stamp_creation` se charge d'enregistrer les dates de création des tables dans `z_plume.stamp_timestamp` et crée sur les nouvelles tables les déclencheurs `plume_stamp_action` qui assureront le suivi des modifications des données.
-
-`plume_stamp_modification` met à jour la date de dernière modification en cas de modification de structure des tables (commandes `ALTER TABLE`).
-
-`plume_stamp_drop` efface de `z_plume.stamp_timestamp` les lignes correspondant aux tables qui viennent d'être supprimées.
-
-### Suivi au cas par cas
-
-Pour n'activer le suivi des modifications que sur certaines tables, il faut laisser inactif le déclencheur sur évènement `plume_stamp_creation`.
-
-```sql
-
-ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
-ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
-
-```
-
-Il faut alors lancer la fonction `z_plume.stamp_create_trigger` sur une table pour commencer à enregistrer ses dates de modification, tant les modifications des données que celles de la structure. 
-
-```sql
-
-SELECT z_plume.stamp_create_trigger('schema_name.table_name'::regclass) ;
-
-```
-
-La fonction renvoie `True` si la création du déclencheur a fonctionné, `False` sinon. Elle doit être exécutée par le propriétaire de la table.
-
-Une alternative consisterait à activer `plume_stamp_creation`, mais à supprimer le suivi des modifications sur certaines tables qui ne le justifient pas :
-
-```sql
-
-DROP TRIGGER plume_stamp_action ON schema_name.table_name ;
-DELETE FROM z_plume.stamp_timestamp WHERE relid = 'schema_name.table_name'::regclass ;
-
-```
-
-### Observations sur la gestion des suppressions de tables 
-
-Quelle que soit la stratégie choisie, il n'est pas indispensable d'activer le déclencheur sur évènement `plume_stamp_drop`. À défaut, il faudra éliminer régulièrement les lignes de `z_plume.stamp_timestamp` correspondant aux tables qui n'existent plus avec la fonction `z_plume.stamp_clean_timestamp`.
-
-```sql
-
-SELECT z_plume.stamp_clean_timestamp() ;
-
-```
-
-La fonction renvoie le nombre de lignes supprimées de `z_plume.stamp_timestamp`.
-
-À noter toutefois qu'il n'est généralement pas intéressant de conserver des lignes mortes dans la `z_plume.stamp_clean_timestamp`, sauf à disposer d'un moyen pour retrouver le nom de la table à partir de son identifiant désormais non référencé dans `pg_class`.
-
-
-### Fausses modifications 
-
-Le mécanisme mis en place par *PLumePg* peut donner lieu à des faux positifs, soit des cas où la date de dernière modification sera actualisée sans que la table ni son contenu n'aient véritablement changé.
-
-Le déclencheur sur évènement `plume_stamp_modification` est ainsi activé par toutes les commandes `ALTER TABLE`, y compris celles qui n'affectent pas réellement la table, comme un changement de nom qui conserve le nom d'origine.
-
-Les déclencheurs `plume_stamp_action` sont activés par toutes les commandes `INSERT`, `UPDATE`, `DELETE` et `TRUNCATE`, y compris celles qui - sans pour autant échouer - n'ont aucun effet. Par exemple une commande `UPDATE` ou `DELETE` telle qu'aucune ligne ne remplit la condition de sa clause `WHERE`. Il paraissait préférable d'avoir recours à des déclencheurs `ON EACH STATEMENT` qu'à des déclencheurs `ON EACH ROW`, certes moins susceptibles de retenir des fausses modifications mais susceptibles d'allonger considérablement le temps d'exécution des requêtes.
-
-
-## Usage des modèles de formulaires
-
-Cf. [Modèles de formulaires](./modeles_de_formulaire.md).
+Les déclencheurs et déclencheurs sur évènement retrouvent leur état initial après la restauration et **devront donc être réactivés manuellement** d'autant que de besoin - cf. [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates). Il n'est pas nécessaire de chercher à recréer les déclencheurs `plume_stamp_data_edit` sur les tables, ils sont pour leur part restaurés.
 

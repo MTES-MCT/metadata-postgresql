@@ -250,18 +250,6 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sauvegarde-et-restauration-de-la-base">
-   Sauvegarde et restauration de la base
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#considerations-specifiques-au-mecanisme-d-enregistrement-des-dates">
-     Considérations spécifiques au mécanisme d’enregistrement des dates
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#activation-de-l-enregistrement-des-dates">
    Activation de l’enregistrement des dates
   </a>
@@ -274,6 +262,11 @@
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#suivi-au-cas-par-cas">
      Suivi au cas par cas
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#integration-directe-dans-les-metadonnees">
+     Intégration directe dans les métadonnées
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -292,6 +285,18 @@
   <a class="reference internal nav-link" href="#usage-des-modeles-de-formulaires">
    Usage des modèles de formulaires
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sauvegarde-et-restauration-de-la-base">
+   Sauvegarde et restauration de la base
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#considerations-specifiques-au-mecanisme-d-enregistrement-des-dates">
+     Considérations spécifiques au mécanisme d’enregistrement des dates
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -317,7 +322,7 @@
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
 <h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">#</a></h1>
 <p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a> et d”<a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">enregistrer les dates de création et dernière modification des tables</span></a>.</p>
-<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#privileges"><span class="std std-doc">Privilèges</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a> • <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a> • <a class="reference internal" href="#usage-des-modeles-de-formulaires"><span class="std std-doc">Usage des modèles de formulaires</span></a></p>
+<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#privileges"><span class="std std-doc">Privilèges</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a> • <a class="reference internal" href="#usage-des-modeles-de-formulaires"><span class="std std-doc">Usage des modèles de formulaires</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a></p>
 <section id="compatibilite">
 <h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">#</a></h2>
 <table class="colwidths-auto table">
@@ -337,27 +342,27 @@
 <tr class="row-odd"><td><p>PostgreSQL 10</p></td>
 <td><p>oui</p></td>
 <td><p>Nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>.</p></td>
-<td><p>2022.03.07. PostgreSQL 10.12 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2<a class="footnote-reference brackets" href="#withasgard" id="id1">1</a>.</p></td>
+<td><p>2022.04.26. PostgreSQL 10.12 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2<a class="footnote-reference brackets" href="#withasgard" id="id1">1</a>.</p></td>
 </tr>
 <tr class="row-even"><td><p>PostgreSQL 11</p></td>
 <td><p>oui</p></td>
 <td><p>Nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>.</p></td>
-<td><p>2022.03.07. PostgreSQL 11.9 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
+<td><p>2022.04.26. PostgreSQL 11.9 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
 </tr>
 <tr class="row-odd"><td><p>PostgreSQL 12</p></td>
 <td><p>oui</p></td>
 <td><p>Nécessite l’extension <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code>.</p></td>
-<td><p>2022.03.07. PostgreSQL 12.4 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
+<td><p>2022.04.26. PostgreSQL 12.4 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
 </tr>
 <tr class="row-even"><td><p>PostgreSQL 13</p></td>
 <td><p>oui</p></td>
 <td><p></p></td>
-<td><p>2022.03.07. PostgreSQL 13.0 + PlumePg 0.0.1 + pgcrypto 1.3<a class="footnote-reference brackets" href="#withcrypto" id="id2">2</a> + Asgard 1.3.2.</p></td>
+<td><p>2022.04.26. PostgreSQL 13.0 + PlumePg 0.1.0 + pgcrypto 1.3<a class="footnote-reference brackets" href="#withcrypto" id="id2">2</a> + Asgard 1.3.2.</p></td>
 </tr>
 <tr class="row-odd"><td><p>PostgreSQL 14</p></td>
 <td><p>oui</p></td>
 <td><p></p></td>
-<td><p>2022.03.07. PostgreSQL 14.2 + PlumePg 0.0.1 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
+<td><p>2022.04.26. PostgreSQL 14.2 + PlumePg 0.1.0 + pgcrypto 1.3 + Asgard 1.3.2.</p></td>
 </tr>
 </tbody>
 </table>
@@ -392,7 +397,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">USAGE</span></code> sur le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> ;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SELECT</span></code> sur toutes les tables et vues de ce schéma.</p></li>
 </ul>
-<p>Une politique de sécurité niveau ligne est définie sur la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>, permettant au propriétaire d’une table - et seulement à lui - de modifier manuellement les dates enregistrées pour cette table.</p>
+<p>Des droits étendus sont conférés sur la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>, permettant au propriétaire d’une table - et seulement à lui - de modifier manuellement les dates enregistrées pour cette table. <em>NB : Ce contrôle d’accès est réalisé par un déclencheur et non des politiques de sécurité niveau ligne, car l’usage de ces dernières par les extensions provoque actuellement des erreurs en cas de sauvegarde/restauration.</em></p>
 </section>
 <section id="cohabitation-avec-asgard">
 <h2>Cohabitation avec <em>Asgard</em><a class="headerlink" href="#cohabitation-avec-asgard" title="Lien permanent vers ce titre">#</a></h2>
@@ -431,6 +436,72 @@
 <p>La désinstallation entraîne la perte définitive de tous les <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>.</p>
 <p><em>NB. Si le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code> existait avant l’installation de l’extension, il ne sera pas marqué comme dépendant de l’extension et ne sera donc pas supprimé en cas de désinstallation. Tout son contenu le sera, par contre.</em></p>
 </section>
+<section id="activation-de-l-enregistrement-des-dates">
+<h2>Activation de l’enregistrement des dates<a class="headerlink" href="#activation-de-l-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h2>
+<p><em>PlumePg</em> propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.</p>
+<p>Les dates sont enregistrées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>. Son champ <code class="docutils literal notranslate"><span class="pre">relid</span></code> contient les identifiants PostgreSQL des tables (OID), son champ <code class="docutils literal notranslate"><span class="pre">created</span></code> les dates de création et son champ <code class="docutils literal notranslate"><span class="pre">modified</span></code> les dates de dernière modification.</p>
+<p>À l’installation de <em>PlumePg</em>, les fonctionnalités d’enregistrement des dates de création et dernière modification des tables sont inactives. La table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> est et restera vide sans intervention de l’administrateur.</p>
+<p>Dès lors que l’administrateur le souhaite, deux stratégies peuvent être mises en oeuvre : soit enregistrer automatiquement les dates pour toutes les tables dès leur création, soit enregistrer les dates de dernière modification uniquement pour certaines tables explicitement désignées.</p>
+<section id="suivi-automatique-integral">
+<h3>Suivi automatique intégral<a class="headerlink" href="#suivi-automatique-integral" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour mettre en place le suivi intégral, on activera les trois déclencheurs sur évènement de <em>PlumePg</em>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_table_creation</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_table_modification</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_table_drop</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_table_creation</span></code> se charge d’enregistrer les dates de création des tables dans <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> et crée sur les nouvelles tables les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_data_edit</span></code> qui assureront le suivi des modifications des données.</p>
+<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_table_modification</span></code> met à jour la date de dernière modification en cas de modification de structure des tables (commandes <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_table_drop</span></code> efface de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> les lignes correspondant aux tables qui viennent d’être supprimées.</p>
+</section>
+<section id="suivi-au-cas-par-cas">
+<h3>Suivi au cas par cas<a class="headerlink" href="#suivi-au-cas-par-cas" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour n’activer le suivi des modifications que sur certaines tables explicitement désignées, il faut laisser inactif le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_table_creation</span></code>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_table_modification</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_table_drop</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Il faut alors lancer la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_create_trigger</span></code> sur une table pour commencer à enregistrer ses dates de modification, tant les modifications des données que celles de la structure.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_create_trigger</span><span class="p">(</span><span class="s1">&#39;schema_name.table_name&#39;</span><span class="p">::</span><span class="n">regclass</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si la création du déclencheur a fonctionné, <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon. Elle doit être exécutée par le propriétaire de la table.</p>
+<p>Une alternative consisterait à activer <code class="docutils literal notranslate"><span class="pre">plume_stamp_table_creation</span></code> en supprimant le suivi des modifications sur certaines tables qui ne le justifient pas :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_data_edit</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">schema_name</span><span class="p">.</span><span class="k">table_name</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_timestamp</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">relid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;schema_name.table_name&#39;</span><span class="p">::</span><span class="n">regclass</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="integration-directe-dans-les-metadonnees">
+<h3>Intégration directe dans les métadonnées<a class="headerlink" href="#integration-directe-dans-les-metadonnees" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour ne pas trop affecter les performances et laisser au producteur de la donnée la maîtrise de ces informations, les dates ne sont pas immédiatement mises à jour dans les fiches de métadonnées, seulement dans la table <code class="docutils literal notranslate"><span class="pre">stamp_timestamp</span></code>, qui peut être considérée comme un espace de stockage temporaire. Le plugin QGIS permet de les importer facilement lors de l’édition d’une fiche, soit à la demande en cliquant sur un bouton, soit automatiquement à l’ouverture de la fiche (cf. <a class="reference internal" href="metadonnees_calculees.html"><span class="doc std std-doc">Métadonnées calculées</span></a>).</p>
+<p>Il est toutefois possible de forcer l’actualisation au fil de l’eau de la date de dernière modification en activant le déclencheur <code class="docutils literal notranslate"><span class="pre">stamp_timestamp_to_metadata</span></code> défini sur la table <code class="docutils literal notranslate"><span class="pre">stamp_timestamp</span></code>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_timestamp</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">stamp_timestamp_to_metadata</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Ceci ne vaudra que pour les tables qui ont déjà une fiche de métadonnées, raison pour laquelle les dates de création ne sont pas concernées.</p>
+<p>Lorsque ce déclencheur est actif, il n’y a aucun intérêt à utiliser les fonctionnalités de calcul pour la date de dernière modification (catégorie <code class="docutils literal notranslate"><span class="pre">dct:modified</span></code>).</p>
+</section>
+<section id="observations-sur-la-gestion-des-suppressions-de-tables">
+<h3>Observations sur la gestion des suppressions de tables<a class="headerlink" href="#observations-sur-la-gestion-des-suppressions-de-tables" title="Lien permanent vers ce titre">#</a></h3>
+<p>Quelle que soit la stratégie choisie, il n’est pas indispensable d’activer le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_table_drop</span></code>. À défaut, il faudra éliminer régulièrement les lignes de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> correspondant aux tables qui n’existent plus avec la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_clean_timestamp</span></code>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_clean_timestamp</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>La fonction renvoie le nombre de lignes supprimées de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>. Elle doit être exécutée par le propriétaire de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>.</p>
+<p>À noter qu’il n’est généralement pas intéressant de conserver des lignes mortes dans la <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_clean_timestamp</span></code>, sauf à disposer d’un moyen pour retrouver le nom de la table à partir de son identifiant (OID) désormais non référencé dans <code class="docutils literal notranslate"><span class="pre">pg_class</span></code>.</p>
+</section>
+<section id="fausses-modifications">
+<h3>Fausses modifications<a class="headerlink" href="#fausses-modifications" title="Lien permanent vers ce titre">#</a></h3>
+<p>Le mécanisme mis en place par <em>PLumePg</em> peut donner lieu à des faux positifs, soit des cas où la date de dernière modification sera actualisée sans que la table ni son contenu n’aient véritablement changé.</p>
+<p>Le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_table_modification</span></code> est ainsi activé par toutes les commandes <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code>, y compris celles qui n’affectent pas réellement la table, comme un changement de nom qui conserve le nom d’origine.</p>
+<p>Les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_data_edit</span></code> sont activés par toutes les commandes <code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> et <code class="docutils literal notranslate"><span class="pre">TRUNCATE</span></code>, y compris celles qui - sans pour autant échouer - n’ont aucun effet. Par exemple une commande <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> ou <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> telle qu’aucune ligne ne remplit la condition de sa clause <code class="docutils literal notranslate"><span class="pre">WHERE</span></code>. Il paraissait préférable d’avoir recours à des déclencheurs <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">EACH</span> <span class="pre">STATEMENT</span></code> qu’à des déclencheurs <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">EACH</span> <span class="pre">ROW</span></code>, certes moins susceptibles de retenir des fausses modifications mais susceptibles d’allonger considérablement le temps d’exécution des requêtes.</p>
+</section>
+</section>
+<section id="usage-des-modeles-de-formulaires">
+<h2>Usage des modèles de formulaires<a class="headerlink" href="#usage-des-modeles-de-formulaires" title="Lien permanent vers ce titre">#</a></h2>
+<p>Cf. <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">Modèles de formulaires</span></a>.</p>
+</section>
 <section id="sauvegarde-et-restauration-de-la-base">
 <h2>Sauvegarde et restauration de la base<a class="headerlink" href="#sauvegarde-et-restauration-de-la-base" title="Lien permanent vers ce titre">#</a></h2>
 <p>Pour que les données de <em>PlumePg</em> soient préservées lors de la restauration, notamment les <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a>, il est essentiel de <strong>ne pas chercher à réinstaller manuellement l’extension sur la base de restauration</strong>. Tout est automatique. On veillera seulement à ce que :</p>
@@ -454,66 +525,8 @@
 </ol>
 <section id="considerations-specifiques-au-mecanisme-d-enregistrement-des-dates">
 <h3>Considérations spécifiques au mécanisme d’enregistrement des dates<a class="headerlink" href="#considerations-specifiques-au-mecanisme-d-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h3>
-<p>En l’état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu’elles aient été préalablement intégrées aux fiches de métadonnées via le plugin QGIS Plume pour ne pas être <strong>perdues</strong>.</p>
-<p>Les déclencheurs sur évènement seront inactifs après la restauration et devront donc être réactivés manuellement d’autant que de besoin. Il n’est pas nécessaire de recréer les déclencheurs sur les tables, qui sont pour leur part restaurés.</p>
-<p>Des erreurs peuvent apparaître à la restauration des politiques de sécurité niveau ligne, qui sont créées par l’extension mais peuvent aussi (de manière inappropriée) être sauvegardées à part par <code class="docutils literal notranslate"><span class="pre">pg_dump</span></code>. Ces messages signalant que <code class="docutils literal notranslate"><span class="pre">pg_restore</span></code> n’a pas pu recréer les politiques de sécurité car elles existaient déjà sont sans conséquence.</p>
-</section>
-</section>
-<section id="activation-de-l-enregistrement-des-dates">
-<h2>Activation de l’enregistrement des dates<a class="headerlink" href="#activation-de-l-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h2>
-<p><em>PlumePg</em> propose un système pour garder une trace des dates de création et dernière modification des tables. Assez rudimentaire, il ne prend en charge que les tables simples, ignorant notamment les vues et vues matérialisées.</p>
-<p>Les dates sont enregistrées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>. Son champ <code class="docutils literal notranslate"><span class="pre">relid</span></code> contient les identifiants PostgreSQL des tables (OID), son champ <code class="docutils literal notranslate"><span class="pre">created</span></code> les dates de création et son champ <code class="docutils literal notranslate"><span class="pre">modified</span></code> les dates de dernière modification.</p>
-<p>À l’installation de <em>PlumePg</em>, les fonctionnalités d’enregistrement des dates de création et dernière modification des tables sont inactives. La table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> est et restera vide sans intervention de l’administrateur.</p>
-<p>Dès lors que l’administrateur le souhaite, deux stratégies peuvent être mises en oeuvre : soit enregistrer automatiquement les dates pour toutes les tables dès leur création, soit enregistrer les dates de dernière modification uniquement pour certaines tables explicitement désignées.</p>
-<section id="suivi-automatique-integral">
-<h3>Suivi automatique intégral<a class="headerlink" href="#suivi-automatique-integral" title="Lien permanent vers ce titre">#</a></h3>
-<p>Pour mettre en place le suivi intégral, on activera les trois déclencheurs sur évènement de <em>PlumePg</em>.</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_creation</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_modification</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_drop</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_creation</span></code> se charge d’enregistrer les dates de création des tables dans <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> et crée sur les nouvelles tables les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_action</span></code> qui assureront le suivi des modifications des données.</p>
-<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_modification</span></code> met à jour la date de dernière modification en cas de modification de structure des tables (commandes <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code>).</p>
-<p><code class="docutils literal notranslate"><span class="pre">plume_stamp_drop</span></code> efface de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> les lignes correspondant aux tables qui viennent d’être supprimées.</p>
-</section>
-<section id="suivi-au-cas-par-cas">
-<h3>Suivi au cas par cas<a class="headerlink" href="#suivi-au-cas-par-cas" title="Lien permanent vers ce titre">#</a></h3>
-<p>Pour n’activer le suivi des modifications que sur certaines tables, il faut laisser inactif le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_creation</span></code>.</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_modification</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-<span class="k">ALTER</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_drop</span><span class="w"> </span><span class="n">ENABLE</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Il faut alors lancer la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_create_trigger</span></code> sur une table pour commencer à enregistrer ses dates de modification, tant les modifications des données que celles de la structure.</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_create_trigger</span><span class="p">(</span><span class="s1">&#39;schema_name.table_name&#39;</span><span class="p">::</span><span class="n">regclass</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-<p>La fonction renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si la création du déclencheur a fonctionné, <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon. Elle doit être exécutée par le propriétaire de la table.</p>
-<p>Une alternative consisterait à activer <code class="docutils literal notranslate"><span class="pre">plume_stamp_creation</span></code>, mais à supprimer le suivi des modifications sur certaines tables qui ne le justifient pas :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">plume_stamp_action</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">schema_name</span><span class="p">.</span><span class="k">table_name</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_timestamp</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">relid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;schema_name.table_name&#39;</span><span class="p">::</span><span class="n">regclass</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-</section>
-<section id="observations-sur-la-gestion-des-suppressions-de-tables">
-<h3>Observations sur la gestion des suppressions de tables<a class="headerlink" href="#observations-sur-la-gestion-des-suppressions-de-tables" title="Lien permanent vers ce titre">#</a></h3>
-<p>Quelle que soit la stratégie choisie, il n’est pas indispensable d’activer le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_drop</span></code>. À défaut, il faudra éliminer régulièrement les lignes de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> correspondant aux tables qui n’existent plus avec la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_clean_timestamp</span></code>.</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">stamp_clean_timestamp</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-</pre></div>
-</div>
-<p>La fonction renvoie le nombre de lignes supprimées de <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code>.</p>
-<p>À noter toutefois qu’il n’est généralement pas intéressant de conserver des lignes mortes dans la <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_clean_timestamp</span></code>, sauf à disposer d’un moyen pour retrouver le nom de la table à partir de son identifiant désormais non référencé dans <code class="docutils literal notranslate"><span class="pre">pg_class</span></code>.</p>
-</section>
-<section id="fausses-modifications">
-<h3>Fausses modifications<a class="headerlink" href="#fausses-modifications" title="Lien permanent vers ce titre">#</a></h3>
-<p>Le mécanisme mis en place par <em>PLumePg</em> peut donner lieu à des faux positifs, soit des cas où la date de dernière modification sera actualisée sans que la table ni son contenu n’aient véritablement changé.</p>
-<p>Le déclencheur sur évènement <code class="docutils literal notranslate"><span class="pre">plume_stamp_modification</span></code> est ainsi activé par toutes les commandes <code class="docutils literal notranslate"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code>, y compris celles qui n’affectent pas réellement la table, comme un changement de nom qui conserve le nom d’origine.</p>
-<p>Les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_action</span></code> sont activés par toutes les commandes <code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> et <code class="docutils literal notranslate"><span class="pre">TRUNCATE</span></code>, y compris celles qui - sans pour autant échouer - n’ont aucun effet. Par exemple une commande <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> ou <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> telle qu’aucune ligne ne remplit la condition de sa clause <code class="docutils literal notranslate"><span class="pre">WHERE</span></code>. Il paraissait préférable d’avoir recours à des déclencheurs <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">EACH</span> <span class="pre">STATEMENT</span></code> qu’à des déclencheurs <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">EACH</span> <span class="pre">ROW</span></code>, certes moins susceptibles de retenir des fausses modifications mais susceptibles d’allonger considérablement le temps d’exécution des requêtes.</p>
-</section>
-</section>
-<section id="usage-des-modeles-de-formulaires">
-<h2>Usage des modèles de formulaires<a class="headerlink" href="#usage-des-modeles-de-formulaires" title="Lien permanent vers ce titre">#</a></h2>
-<p>Cf. <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">Modèles de formulaires</span></a>.</p>
+<p>En l’état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu’elles aient été préalablement intégrées aux fiches de métadonnées pour ne pas être <strong>perdues</strong>. Cette intégration s’effectue en principe lors de l’édition des fiches de métadonnées avec le plugin QGIS, sous réserve d’avoir activé la <a class="reference internal" href="metadonnees_calculees.html"><span class="doc std std-doc">fonctionnalité de calcul</span></a> pour les catégories <code class="docutils literal notranslate"><span class="pre">dct:created</span></code> et <code class="docutils literal notranslate"><span class="pre">dct:modified</span></code>. Pour les dates de dernières modifications, elle peut aussi être réalisée automatiquement côté serveur en activant le déclencheur prévu à cette fin - cf. <a class="reference internal" href="#integration-directe-dans-les-metadonnees"><span class="std std-doc">Intégration directe dans les métadonnées</span></a>.</p>
+<p>Les déclencheurs et déclencheurs sur évènement retrouvent leur état initial après la restauration et <strong>devront donc être réactivés manuellement</strong> d’autant que de besoin - cf. <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a>. Il n’est pas nécessaire de chercher à recréer les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_data_edit</span></code> sur les tables, ils sont pour leur part restaurés.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="withasgard"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -529,6 +542,7 @@
 <dd><p>Sous réserve d’utiliser une version d’Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n’étaient pas automatiquement référencés.</p>
 </dd>
 </dl>
+</section>
 </section>
 </section>
 
