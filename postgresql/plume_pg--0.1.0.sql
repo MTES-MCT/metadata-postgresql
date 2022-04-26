@@ -58,20 +58,21 @@
 -- - Function: z_plume.meta_regexp_matches(text, text, text)
 -- - Function: z_plume.is_relowner(oid)
 -- - Table: z_plume.stamp_timestamp
--- - Policy: timestamp_public_select
--- - Policy: timestamp_owner_insert
--- - Policy: timestamp_owner_update
--- - Policy: timestamp_owner_delete
--- - Function: z_plume.stamp_data_modification()
+-- - Function: stamp_timestamp_access_control()
+-- - Trigger: stamp_timestamp_access_control
+-- - Function: stamp_timestamp_to_metadata()
+-- - Trigger: stamp_timestamp_to_metadata
+-- - Function: z_plume.stamp_data_edit()
 -- - Function: z_plume.stamp_create_trigger(oid)
+-- - Function: z_plume.stamp_new_entry()
+-- - Event trigger: plume_stamp_new_entry
 -- - Function: z_plume.stamp_table_creation()
--- - Event trigger: plume_stamp_creation
+-- - Event trigger: plume_stamp_table_creation
 -- - Function: z_plume.stamp_table_modification()
--- - Event trigger: plume_stamp_modification
+-- - Event trigger: plume_stamp_table_modification
 -- - Function: z_plume.stamp_table_drop()
--- - Event trigger: plume_stamp_drop
+-- - Event trigger: plume_stamp_table_drop
 -- - Function: z_plume.stamp_clean_timestamp()
--- - Function: z_plume.stamp_activate_recording()
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1267,6 +1268,13 @@ $BODY$ ;
 ------ 3 - DATES DE MODIFICATION ------
 ---------------------------------------
 
+/* 3.1 - TABLE DE STOCKAGE DES DATES
+   3.2 - MISE À JOUR DES DATES
+   3.3 - MAINTENANCE */
+
+
+------ 3.1 - TABLE DE STOCKAGE DES DATES ------
+
 -- Table: z_plume.stamp_timestamp
 
 CREATE TABLE z_plume.stamp_timestamp (
@@ -1275,403 +1283,84 @@ CREATE TABLE z_plume.stamp_timestamp (
     modified timestamp with time zone
     ) ;
 
-ALTER TABLE z_plume.stamp_timestamp ENABLE ROW LEVEL SECURITY ;
-
 COMMENT ON TABLE z_plume.stamp_timestamp IS 'Suivi des dates de modification des tables.' ;
 
 COMMENT ON COLUMN z_plume.stamp_timestamp.relid IS 'Identifiant système de la table.' ;
 COMMENT ON COLUMN z_plume.stamp_timestamp.created IS 'Date de création.' ;
 COMMENT ON COLUMN z_plume.stamp_timestamp.modified IS 'Date de dernière modification.' ;
 
--- Policy: timestamp_public_select
 
-CREATE POLICY timestamp_public_select ON z_plume.stamp_timestamp
-    FOR SELECT USING (True) ;
+-- Function: z_plume.stamp_timestamp_access_control()
 
--- Policy: timestamp_owner_insert
+CREATE OR REPLACE FUNCTION z_plume.stamp_timestamp_access_control()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Fonction exécutée par le déclencheur stamp_timestamp_access_control qui empêche les utilisateurs non habilités de modifier les données de stamp_timestamp.
 
-CREATE POLICY timestamp_owner_insert ON z_plume.stamp_timestamp
-    FOR INSERT WITH CHECK (z_plume.is_relowner(relid)) ;
+    Elle provoque une erreur si le rôle qui exécute la
+    fonction n'est pas le propriétaire de la table dont
+    l'OID est NEW.relid / OLD.relid.
     
--- Policy: timestamp_owner_update
+    Notes
+    -----
+    Cette fonction et le déclencheur qui l'appelle font office
+    de substituts temporaires à des politiques de sécurité
+    niveau ligne, celles-ci n'étant pas correctement prises en
+    charge par PostgreSQL dans les extensions à ce stade.
 
-CREATE POLICY timestamp_owner_update ON z_plume.stamp_timestamp
-    FOR UPDATE USING (z_plume.is_relowner(relid))
-    WITH CHECK (z_plume.is_relowner(relid)) ;
+*/
+BEGIN
 
--- Policy: timestamp_owner_delete
+    IF TG_OP IN ('DELETE', 'UPDATE')
+    THEN
+        IF NOT z_plume.is_relowner(OLD.relid)
+        THEN
+            RAISE insufficient_privilege ;
+        END IF ;
+    END IF ;
+    
+    IF TG_OP IN ('INSERT', 'UPDATE')
+    THEN
+        IF NOT z_plume.is_relowner(NEW.relid)
+        THEN
+            RAISE insufficient_privilege ;
+        END IF ;
+    END IF ;
 
-CREATE POLICY timestamp_owner_delete ON z_plume.stamp_timestamp
-    FOR DELETE USING (z_plume.is_relowner(relid)) ;
+    IF TG_OP = 'DELETE'
+    THEN
+        RETURN OLD ;
+    ELSE
+        RETURN NEW ;
+    END IF ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_timestamp_access_control() IS 'Fonction exécutée par le déclencheur stamp_timestamp_access_control qui empêche les utilisateurs non habilités de modifier les données de stamp_timestamp.' ;
+
+-- Trigger: stamp_timestamp_access_control
+
+CREATE TRIGGER stamp_timestamp_access_control
+    BEFORE INSERT OR UPDATE OR DELETE
+    ON z_plume.stamp_timestamp
+    FOR EACH ROW
+    WHEN (NOT z_plume.is_relowner('z_plume.stamp_timestamp'::regclass))
+    EXECUTE PROCEDURE z_plume.stamp_timestamp_access_control() ;
+
+COMMENT ON TRIGGER stamp_timestamp_access_control ON z_plume.stamp_timestamp IS 'Empêche les utilisateurs non habilités de modifier les données de stamp_timestamp.' ;
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE z_plume.stamp_timestamp TO public ;
 
+-- Function: z_plume.stamp_timestamp_to_metadata()
 
--- Function: z_plume.stamp_data_modification()
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_data_modification()
+CREATE OR REPLACE FUNCTION z_plume.stamp_timestamp_to_metadata()
     RETURNS TRIGGER
     LANGUAGE plpgsql
     SECURITY DEFINER
     AS $BODY$
-/* Fonction exécutée par les déclencheurs plume_stamp qui mettent à jour la date de dernière modification des tables.
-
-    Elle enregistre la nouvelle date de dernière modification
-    de la table dans la table stamp_timestamp.
-    
-    Cette fonction ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification.
-
-*/
-DECLARE
-    e_mssg text ;
-    e_hint text ;
-    e_detl text ;
-BEGIN
-
-    UPDATE z_plume.stamp_timestamp
-        SET modified = now()
-        WHERE relid = TG_RELID ;
-    
-    IF NOT FOUND
-    THEN
-        INSERT INTO z_plume.stamp_timestamp (relid, modified)
-            VALUES (TG_RELID, now()) ;
-    END IF ;
-    
-    RETURN NULL ;
-
-EXCEPTION WHEN OTHERS THEN
-
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
-        
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ;
-    
-    RETURN NULL ;
-
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.stamp_data_modification() IS 'Fonction exécutée par les déclencheurs plume_stamp qui mettent à jour la date de dernière modification des tables.' ;
-
-
--- Function: z_plume.stamp_create_trigger(oid)
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_create_trigger(tabid oid)
-    RETURNS boolean
-    LANGUAGE plpgsql
-    AS $BODY$
-/* Crée sur la table cible un déclencheur qui assurera la mise à jour de sa date de modification.
-
-    Elle ajoute également une entrée pour la table dans
-    z_plume.stamp_timestamp.
-
-    Cette fonction doit être exécutée par un rôle membre du
-    propriétaire de la table et disposant de droits d'écriture
-    sur z_plume.stamp_timestamp pour donner un résultat probant.
-    Néanmoins, elle ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification.
-
-    Parameters
-    ----------
-    tabid : oid
-        L'identifiant de la table sur laquelle le déclencheur
-        doit être créé.
-
-    Returns
-    -------
-    boolean
-        True si la création du déclencheur a réussi.
-        En cas d'échec, elle renvoie False et le détail
-        de l'erreur sera précisé par un message.
-    
-*/
-DECLARE
-    e_mssg text ;
-    e_hint text ;
-    e_detl text ;
-BEGIN
-        
-    EXECUTE format('
-        CREATE TRIGGER plume_stamp_action
-            AFTER INSERT OR DELETE OR UPDATE OR TRUNCATE
-            ON %1$s
-            FOR EACH STATEMENT
-            EXECUTE PROCEDURE z_plume.stamp_data_modification() ;
-        ALTER TRIGGER plume_stamp_action ON %1$s DEPENDS ON EXTENSION plume_pg ;
-        COMMENT ON TRIGGER plume_stamp_action ON %1$s
-            IS ''Mise à jour de la date de dernière modification de la table.'' ;
-        ', tabid::regclass) ;
-    
-    INSERT INTO z_plume.stamp_timestamp (relid)
-        VALUES (tabid)
-        ON CONFLICT (relid) DO NOTHING ;
-    
-    RETURN True ;
-
-EXCEPTION WHEN OTHERS THEN
-
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
-        
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ;
-            
-    RETURN False ;
-
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.stamp_create_trigger(oid) IS 'Crée sur la table cible un déclencheur qui assurera la mise à jour de sa date de modification.' ;
-
-
--- Function: z_plume.stamp_table_creation()
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_table_creation()
-    RETURNS event_trigger
-    LANGUAGE plpgsql
-    SECURITY DEFINER
-    AS $BODY$
-/* Fonction exécutée par le déclencheur sur évènement plume_stamp_creation, activé sur les créations de tables.
-
-    Elle enregistre la date de création de la table dans la
-    table stamp_timestamp et crée un déclencheur sur la table
-    créée qui permettra de suivre ses modifications.
-    
-    Elle n'a pas d'effet sur les vues et plus généralement
-    tous les types de relations qui ne sont pas de
-    simples tables.
-    
-    Cette fonction ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification.
-
-*/
-DECLARE
-    obj record ;
-    e_mssg text ;
-    e_hint text ;
-    e_detl text ;
-BEGIN
-
-    FOR obj IN SELECT DISTINCT objid
-        FROM pg_event_trigger_ddl_commands()
-        WHERE object_type = 'table'
-    LOOP
-        
-        PERFORM z_plume.stamp_create_trigger(obj.objid) ;
-        
-        UPDATE z_plume.stamp_timestamp
-            SET created = now()
-            WHERE relid = obj.objid ;
-    
-    END LOOP ;
-
-EXCEPTION WHEN OTHERS THEN
-
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
-    
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ; 
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.stamp_table_creation() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_creation, activé sur les créations de tables.' ;
-
-
--- Event trigger: plume_stamp_creation
-
-CREATE EVENT TRIGGER plume_stamp_creation ON ddl_command_end
-    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS', 'CREATE SCHEMA', 'SELECT INTO')
-    EXECUTE PROCEDURE z_plume.stamp_table_creation() ;
-
-ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
-
-COMMENT ON EVENT TRIGGER plume_stamp_creation IS 'Enregistrement des dates de création des tables et mise en place des déclencheurs assurant la mise à jour de la date de dernière modification des données.' ;
-
-
--- Function: z_plume.stamp_table_modification()
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_table_modification()
-    RETURNS event_trigger
-    LANGUAGE plpgsql
-    SECURITY DEFINER
-    AS $BODY$
-/* Fonction exécutée par le déclencheur sur évènement plume_stamp_modification, activé par les commandes qui modifient la structure des tables.
-
-    Elle enregistre la nouvelle date de dernière modification
-    de la table dans la table stamp_timestamp.
-    
-    Elle n'a pas d'effet sur les vues et plus généralement
-    tous les types de relations qui ne sont pas de
-    simples tables.
-    
-    Elle n'a pas non plus d'effet si la table modifiée n'était
-    pas référencée dans stamp_timestamp.
-    
-    Cette fonction ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification.
-
-*/
-DECLARE
-    obj record ;
-    e_mssg text ;
-    e_hint text ;
-    e_detl text ;
-BEGIN
-
-    FOR obj IN SELECT DISTINCT objid
-        FROM pg_event_trigger_ddl_commands()
-        WHERE object_type = 'table'
-    LOOP
-    
-        UPDATE z_plume.stamp_timestamp
-            SET modified = now()
-            WHERE relid = obj.objid ;
-    
-    END LOOP ;
-
-EXCEPTION WHEN OTHERS THEN
-
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
-        
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ;
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.stamp_table_modification() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_modification, activé par les commandes qui modifient la structure des tables.' ;
-
-
--- Event trigger: plume_stamp_rewrite
-
-CREATE EVENT TRIGGER plume_stamp_modification ON ddl_command_end
-    WHEN TAG IN ('ALTER TABLE')
-    EXECUTE PROCEDURE z_plume.stamp_table_modification() ;
-
-ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
-
-COMMENT ON EVENT TRIGGER plume_stamp_modification IS 'Mise à jour des dates de dernière modification des tables.' ;
-
-
--- Function: z_plume.stamp_table_drop()
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_table_drop()
-    RETURNS event_trigger
-    LANGUAGE plpgsql
-    SECURITY DEFINER
-    AS $BODY$
-/* Fonction exécutée par le déclencheur sur évènement plume_stamp_drop, activé par les commandes de suppression de tables.
-
-    Elle supprime de la table stamp_timestamp Les 
-    enregistrements correspondant aux tables
-    supprimées, s'il y en avait.
-    
-    Cette fonction ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification.
-
-*/
-DECLARE
-    obj record ;
-    e_mssg text ;
-    e_hint text ;
-    e_detl text ;
-BEGIN
-
-    FOR obj IN SELECT DISTINCT objid
-        FROM pg_event_trigger_dropped_objects()
-        WHERE object_type = 'table'
-    LOOP
-    
-        DELETE FROM z_plume.stamp_timestamp
-            WHERE relid = obj.objid ;
-    
-    END LOOP ;
-
-EXCEPTION WHEN OTHERS THEN
-
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
-        
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ;
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.stamp_table_drop() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_drop, activé par les commandes de suppression de tables.' ;
-
-
--- Event trigger: plume_stamp_drop
-
-CREATE EVENT TRIGGER plume_stamp_drop ON sql_drop
-    WHEN TAG IN ('DROP TABLE', 'DROP SCHEMA')
-    EXECUTE PROCEDURE z_plume.stamp_table_drop() ;
-
-ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
-
-COMMENT ON EVENT TRIGGER plume_stamp_drop IS 'Suppression du suivi des dates de modification sur les tables supprimées.' ;
-
-
--- Function: z_plume.stamp_clean_timestamp()
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_clean_timestamp()
-    RETURNS int
-    LANGUAGE plpgsql
-    AS $BODY$
-/* Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n'existent plus.
-
-    Cette fonction doit être exécutée par le
-    propriétaire de la table stamp_timestamp,
-    sans quoi elle renverra une erreur.
-
-    Returns
-    -------
-    int
-        Nombre de lignes supprimées.
-    
-*/
-DECLARE
-    n int ;
-BEGIN
-
-    DELETE FROM z_plume.stamp_timestamp
-        WHERE NOT relid IN (SELECT oid FROM pg_class) ;
-        
-    GET DIAGNOSTICS n = ROW_COUNT ;
-    RETURN n ;
-
-END
-$BODY$ ;
-
-COMMENT ON FUNCTION z_plume.stamp_clean_timestamp() IS 'Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n''existent plus.' ;
-
-
--- Function: z_plume.stamp_record_modification_date()
-
-CREATE OR REPLACE FUNCTION z_plume.stamp_record_modification_date()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
-    SECURITY DEFINER
-    AS $BODY$
-/* Fonction exécutée par le déclencheur record_modification_date qui met à jour la date de dernière modification dans les métadonnées de la table.
+/* Fonction exécutée par le déclencheur stamp_timestamp_to_metadata qui met à jour la date de dernière modification dans les métadonnées de la table concernée.
     
     Cette fonction ne provoque pas d'erreur. En cas d'échec,
     elle se contente d'un message de notification. Elle
@@ -1754,30 +1443,40 @@ EXCEPTION WHEN OTHERS THEN
 END
 $BODY$ ;
 
-COMMENT ON FUNCTION z_plume.stamp_record_modification_date() IS 'Fonction exécutée par le déclencheur record_modification_date qui enregistre la date de dernière modification dans les métadonnées de la table.' ;
+COMMENT ON FUNCTION z_plume.stamp_timestamp_to_metadata() IS 'Fonction exécutée par le déclencheur stamp_timestamp_to_metadata qui enregistre la date de dernière modification dans les métadonnées de la table.' ;
+
+-- Trigger: stamp_timestamp_to_metadata
+
+CREATE TRIGGER stamp_timestamp_to_metadata
+    AFTER INSERT OR UPDATE
+    ON z_plume.stamp_timestamp
+    FOR EACH ROW
+    WHEN (NEW.modified IS NOT NULL)
+    EXECUTE PROCEDURE z_plume.stamp_timestamp_to_metadata() ;
+
+COMMENT ON TRIGGER stamp_timestamp_to_metadata ON z_plume.stamp_timestamp
+    IS 'Enregistre les dates de dernière modification dans les métadonnées des tables.' ;
+
+ALTER TABLE z_plume.stamp_timestamp DISABLE TRIGGER stamp_timestamp_to_metadata ;
 
 
--- Function: z_plume.stamp_activate_recording()
+------ 3.2 - MISE À JOUR DES DATES ------
 
-CREATE OR REPLACE FUNCTION z_plume.stamp_activate_recording()
-    RETURNS boolean
+-- Function: z_plume.stamp_data_edit()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_data_edit()
+    RETURNS TRIGGER
     LANGUAGE plpgsql
+    SECURITY DEFINER
     AS $BODY$
-/* Crée ou supprime le déclencheur sur la table stamp_timestamp qui enregistre automatiquement les dates de modification dans les fiches de métadonnées.
+/* Fonction exécutée par les déclencheurs plume_stamp_data_edit qui mettent à jour la date de dernière modification des tables.
 
-    Si le déclencheur n'existait pas, il est créé. S'il existait,
-    il est supprimé.
-
-    Cette fonction doit être exécutée par un rôle membre du
-    propriétaire de la table z_plume.stamp_timestamp.
-
-    Returns
-    -------
-    boolean
-        True si la création du déclencheur a réussi.
-        False si la suppression du déclencheur a réussi.
-        En cas d'échec, elle renvoie une erreur.
+    Elle enregistre la nouvelle date de dernière modification
+    de la table dans la table stamp_timestamp.
     
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
 */
 DECLARE
     e_mssg text ;
@@ -1785,31 +1484,401 @@ DECLARE
     e_detl text ;
 BEGIN
 
-    IF EXISTS (SELECT * FROM pg_catalog.pg_trigger
-        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
-        AND tgname = 'record_modification_date')
+    UPDATE z_plume.stamp_timestamp
+        SET modified = now()
+        WHERE relid = TG_RELID ;
+    
+    IF NOT FOUND
     THEN
-        DROP TRIGGER record_modification_date ON z_plume.stamp_timestamp ;
-        
-        RETURN False ;
-    ELSE        
-        CREATE TRIGGER record_modification_date
-            AFTER INSERT OR UPDATE
-            ON z_plume.stamp_timestamp
-            FOR EACH ROW
-            WHEN (NEW.modified IS NOT NULL)
-            EXECUTE PROCEDURE z_plume.stamp_record_modification_date() ;
-        
-        COMMENT ON TRIGGER record_modification_date ON z_plume.stamp_timestamp
-            IS 'Enregistre les dates de dernière modification dans les métadonnées des tables.' ;
-        
-        RETURN True ;
+        INSERT INTO z_plume.stamp_timestamp (relid, modified)
+            VALUES (TG_RELID, now()) ;
     END IF ;
+    
+    RETURN NULL ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+    
+    RETURN NULL ;
 
 END
 $BODY$ ;
 
-COMMENT ON FUNCTION z_plume.stamp_activate_recording() IS 'Crée ou supprime le déclencheur sur la table stamp_timestamp qui enregistre automatiquement les dates de modification dans les fiches de métadonnées.' ;
+COMMENT ON FUNCTION z_plume.stamp_data_edit() IS 'Fonction exécutée par les déclencheurs plume_stamp_data_edit qui mettent à jour la date de dernière modification des tables.' ;
+
+
+-- Function: z_plume.stamp_create_trigger(oid)
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_create_trigger(relid oid)
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Crée sur la table cible un déclencheur qui assurera la mise à jour de sa date de modification.
+
+    Elle ajoute également une entrée pour la table dans
+    z_plume.stamp_timestamp.
+
+    Cette fonction doit être exécutée par un rôle membre du
+    propriétaire de la table et disposant de droits d'écriture
+    sur z_plume.stamp_timestamp pour donner un résultat probant.
+    Néanmoins, elle ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+    Parameters
+    ----------
+    relid : oid
+        L'identifiant de la table sur laquelle le déclencheur
+        doit être créé.
+
+    Returns
+    -------
+    boolean
+        True si la création du déclencheur a réussi.
+        En cas d'échec, elle renvoie False et le détail
+        de l'erreur sera précisé par un message.
+    
+*/
+DECLARE
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+        
+    EXECUTE format('
+        CREATE TRIGGER plume_stamp_data_edit
+            AFTER INSERT OR DELETE OR UPDATE OR TRUNCATE
+            ON %1$s
+            FOR EACH STATEMENT
+            EXECUTE PROCEDURE z_plume.stamp_data_edit() ;
+        ALTER TRIGGER plume_stamp_data_edit ON %1$s DEPENDS ON EXTENSION plume_pg ;
+        COMMENT ON TRIGGER plume_stamp_data_edit ON %1$s
+            IS ''Mise à jour de la date de dernière modification de la table.'' ;
+        ', relid::regclass) ;
+    
+    -- La création du déclencheur entraîne l'exécution de
+    -- stamp_new_entry() qui insère une ligne dans
+    -- stamp_timestamp pour la table.
+    
+    RETURN True ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+            
+    RETURN False ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_create_trigger(oid) IS 'Crée sur la table cible un déclencheur qui assurera la mise à jour de sa date de modification.' ;
+
+
+-- Function: z_plume.stamp_new_entry()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_new_entry()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Référence dans stamp_timestamp la table sur laquelle un déclencheur plume_stamp_data_edit vient d'être créé.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    tabid oid ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid, objsubid, object_identity
+        FROM pg_event_trigger_ddl_commands()
+        WHERE object_type = 'trigger'
+            AND object_identity ~ '^plume_stamp_data_edit[[:space:]]on'
+    LOOP
+        
+        SELECT tgrelid INTO STRICT tabid
+            FROM pg_catalog.pg_trigger
+            WHERE oid = obj.objid ;
+        
+        INSERT INTO z_plume.stamp_timestamp (relid)
+            VALUES (tabid)
+            ON CONFLICT (relid) DO NOTHING ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+    
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ; 
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_new_entry() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_new_entry qui référence dans stamp_timestamp la table sur laquelle un déclencheur plume_stamp_data_edit vient d''être créé.' ;
+
+-- Event trigger: plume_stamp_new_entry
+
+CREATE EVENT TRIGGER plume_stamp_new_entry ON ddl_command_end
+    WHEN TAG IN ('CREATE TRIGGER')
+    EXECUTE PROCEDURE z_plume.stamp_new_entry() ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_new_entry IS 'Référence dans stamp_timestamp la table sur laquelle un déclencheur plume_stamp_data_edit vient d''être créé.' ;
+
+
+-- Function: z_plume.stamp_table_creation()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_table_creation()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur sur évènement plume_stamp_table_creation, activé sur les créations de tables.
+
+    Elle enregistre la date de création de la table dans la
+    table stamp_timestamp et crée un déclencheur sur la table
+    créée qui permettra de suivre ses modifications.
+    
+    Elle n'a pas d'effet sur les vues et plus généralement
+    tous les types de relations qui ne sont pas de
+    simples tables.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid
+        FROM pg_event_trigger_ddl_commands()
+        WHERE object_type = 'table'
+    LOOP
+        
+        PERFORM z_plume.stamp_create_trigger(obj.objid) ;
+        
+        UPDATE z_plume.stamp_timestamp
+            SET created = now()
+            WHERE relid = obj.objid ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+    
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ; 
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_table_creation() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_table_creation, activé sur les créations de tables.' ;
+
+
+-- Event trigger: plume_stamp_table_creation
+
+CREATE EVENT TRIGGER plume_stamp_table_creation ON ddl_command_end
+    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS', 'CREATE SCHEMA', 'SELECT INTO')
+    EXECUTE PROCEDURE z_plume.stamp_table_creation() ;
+
+ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_table_creation IS 'Enregistrement des dates de création des tables et mise en place des déclencheurs assurant la mise à jour de la date de dernière modification des données.' ;
+
+
+-- Function: z_plume.stamp_table_modification()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_table_modification()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur sur évènement plume_stamp_table_modification, activé par les commandes qui modifient la structure des tables.
+
+    Elle enregistre la nouvelle date de dernière modification
+    de la table dans la table stamp_timestamp.
+    
+    Elle n'a pas d'effet sur les vues et plus généralement
+    tous les types de relations qui ne sont pas de
+    simples tables.
+    
+    Elle n'a pas non plus d'effet si la table modifiée n'était
+    pas référencée dans stamp_timestamp.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid
+        FROM pg_event_trigger_ddl_commands()
+        WHERE object_type = 'table'
+    LOOP
+    
+        UPDATE z_plume.stamp_timestamp
+            SET modified = now()
+            WHERE relid = obj.objid ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_table_modification() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_table_modification, activé par les commandes qui modifient la structure des tables.' ;
+
+
+-- Event trigger: plume_stamp_table_modification
+
+CREATE EVENT TRIGGER plume_stamp_table_modification ON ddl_command_end
+    WHEN TAG IN ('ALTER TABLE')
+    EXECUTE PROCEDURE z_plume.stamp_table_modification() ;
+
+ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_table_modification IS 'Mise à jour des dates de dernière modification des tables.' ;
+
+
+-- Function: z_plume.stamp_table_drop()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_table_drop()
+    RETURNS event_trigger
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $BODY$
+/* Fonction exécutée par le déclencheur sur évènement plume_stamp_table_drop, activé par les commandes de suppression de tables.
+
+    Elle supprime de la table stamp_timestamp Les 
+    enregistrements correspondant aux tables
+    supprimées, s'il y en avait.
+    
+    Cette fonction ne provoque pas d'erreur. En cas d'échec,
+    elle se contente d'un message de notification.
+
+*/
+DECLARE
+    obj record ;
+    e_mssg text ;
+    e_hint text ;
+    e_detl text ;
+BEGIN
+
+    FOR obj IN SELECT DISTINCT objid
+        FROM pg_event_trigger_dropped_objects()
+        WHERE object_type = 'table'
+    LOOP
+    
+        DELETE FROM z_plume.stamp_timestamp
+            WHERE relid = obj.objid ;
+    
+    END LOOP ;
+
+EXCEPTION WHEN OTHERS THEN
+
+    GET STACKED DIAGNOSTICS
+        e_mssg = MESSAGE_TEXT,
+        e_hint = PG_EXCEPTION_HINT,
+        e_detl = PG_EXCEPTION_DETAIL ;
+        
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl,
+            HINT = e_hint ;
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_table_drop() IS 'Fonction exécutée par le déclencheur sur évènement plume_stamp_table_drop, activé par les commandes de suppression de tables.' ;
+
+
+-- Event trigger: plume_stamp_table_drop
+
+CREATE EVENT TRIGGER plume_stamp_table_drop ON sql_drop
+    WHEN TAG IN ('DROP TABLE', 'DROP SCHEMA')
+    EXECUTE PROCEDURE z_plume.stamp_table_drop() ;
+
+ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+
+COMMENT ON EVENT TRIGGER plume_stamp_table_drop IS 'Suppression du suivi des dates de modification sur les tables supprimées.' ;
+
+
+----- 3.3 - MAINTENANCE ------
+
+-- Function: z_plume.stamp_clean_timestamp()
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_clean_timestamp()
+    RETURNS int
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n'existent plus.
+
+    Cette fonction doit être exécutée par le rôle
+    propriétaire de stamp_timestamp.
+
+    Returns
+    -------
+    int
+        Nombre de lignes supprimées.
+    
+*/
+DECLARE
+    n int ;
+BEGIN
+
+    DELETE FROM z_plume.stamp_timestamp
+        WHERE NOT relid IN (SELECT oid FROM pg_class) ;
+        
+    GET DIAGNOSTICS n = ROW_COUNT ;
+    RETURN n ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_clean_timestamp() IS 'Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n''existent plus.' ;
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
