@@ -2690,9 +2690,9 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 # création d'une table de test
                 cur.execute('''
-                    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
                     CREATE TABLE z_plume.table_test_x () ;
                     ALTER TABLE z_plume.table_test_x RENAME TO table_test ;
                     CREATE ROLE g_compute_test ;
@@ -2709,9 +2709,9 @@ class WidgetsDictTestCase(unittest.TestCase):
                     DROP TABLE z_plume.table_test ;
                     DROP ROLE g_compute_test ;
                     TRUNCATE z_plume.stamp_timestamp ;
-                    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
-                    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
                     ''')
         conn.close()
         self.assertTrue(isinstance(result_c[0][0], datetime))
