@@ -819,16 +819,16 @@ BEGIN
     SELECT count(*) INTO n FROM z_plume.stamp_timestamp ;
     ASSERT n = 0, 'échec assertion #5' ;
     
-    ------ avec plume_stamp_modification ------
+    ------ avec plume_stamp_table_modification ------
     
-    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
     
     CREATE TABLE z_plume_recette.test_stamp_1 (id int PRIMARY KEY) ;
     SELECT count(*) INTO n FROM z_plume.stamp_timestamp ;
     ASSERT n = 0, 'échec assertion #6-a' ;
     SELECT count(*) INTO n FROM pg_trigger
         WHERE tgrelid = 'z_plume_recette.test_stamp_1'::regclass
-            AND tgname = 'plume_stamp_action' ;
+            AND tgname = 'plume_stamp_data_edit' ;
     ASSERT n = 0, 'échec assertion #6-b' ;
 
     PERFORM z_plume.stamp_create_trigger('z_plume_recette.test_stamp_1'::regclass) ;
@@ -840,7 +840,7 @@ BEGIN
     ASSERT d2 IS NOT NULL, 'échec assertion #7-b' ;
     SELECT count(*) INTO n FROM pg_trigger
         WHERE tgrelid = 'z_plume_recette.test_stamp_1'::regclass
-            AND tgname = 'plume_stamp_action' ;
+            AND tgname = 'plume_stamp_data_edit' ;
     ASSERT n = 1, 'échec assertion #7-c' ;
 
     UPDATE z_plume.stamp_timestamp SET modified = NULL ;
@@ -854,9 +854,9 @@ BEGIN
     ASSERT d1 IS NULL, 'échec assertion #8-b' ;
     ASSERT d2 IS NOT NULL, 'échec assertion #8-c' ;
 
-    ------ avec plume_stamp_creation ------
+    ------ avec plume_stamp_table_creation ------
     
-    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
     
     CREATE TABLE z_plume_recette.test_stamp_2 (id int PRIMARY KEY) ;
     SELECT created, modified  INTO d1, d2
@@ -937,9 +937,9 @@ BEGIN
         WHERE relid = 'z_plume_recette.test_stamp_1'::regclass ;
     ASSERT n = 1, 'échec assertion #15-b' ;
 
-    ------ avec plume_stamp_drop ------
+    ------ avec plume_stamp_table_drop ------
     
-    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
     
     i1 = 'z_plume_recette.test_stamp_1'::regclass::oid ;
     DROP TABLE z_plume_recette.test_stamp_1 ;
@@ -953,9 +953,9 @@ BEGIN
     DROP TABLE z_plume_recette.test_stamp_0 ;
     
     TRUNCATE z_plume.stamp_timestamp ;
-    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
-    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
-    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
 
     RETURN True ;
     
@@ -991,21 +991,30 @@ BEGIN
     CREATE SCHEMA c_librairie ;
     CREATE TABLE c_librairie.test_stamp (id int PRIMARY KEY) ;
 
-    ALTER EVENT TRIGGER plume_stamp_creation ENABLE ;
-    ALTER EVENT TRIGGER plume_stamp_modification ENABLE ;
-    ALTER EVENT TRIGGER plume_stamp_drop ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
 
     CREATE EXTENSION asgard ;
     CREATE ROLE g_stamp_edit ;
+    CREATE ROLE g_stamp_prod ;
     
     CREATE SCHEMA c_bibliotheque ;
     PERFORM z_asgard.asgard_initialise_schema('c_librairie') ;
+    PERFORM z_asgard.asgard_initialise_schema('z_plume', b_preserve := True) ;
+    PERFORM z_asgard.asgard_initialise_schema('z_asgard') ;
     UPDATE z_asgard.gestion_schema_usr
         SET editeur = 'g_stamp_edit',
-            producteur = 'g_admin'
+            producteur = 'g_stamp_prod'
         WHERE nom_schema IN ('c_bibliotheque', 'c_librairie') ;
+    UPDATE z_asgard.gestion_schema_usr
+        SET producteur = 'g_admin'
+        WHERE nom_schema = 'z_plume' ;
+    UPDATE z_asgard.gestion_schema_usr
+        SET lecteur = 'public'
+        WHERE nom_schema = 'z_asgard' ;
     
-    SET ROLE g_admin ;
+    SET ROLE g_stamp_prod ;
     CREATE TABLE c_bibliotheque.test_stamp (id int PRIMARY KEY) ;
     
     RESET ROLE ;
@@ -1014,7 +1023,7 @@ BEGIN
         WHERE relid = 'c_bibliotheque.test_stamp'::regclass ;
     ASSERT d IS NOT NULL, 'échec assertion #1' ;
     
-    SET ROLE g_admin ;
+    SET ROLE g_stamp_prod ;
     ALTER TABLE c_bibliotheque.test_stamp ADD COLUMN txt text ;
     
     RESET ROLE ;
@@ -1039,32 +1048,66 @@ BEGIN
     ASSERT n = 1, 'échec assertion #3-b' ;
     
     SET ROLE g_stamp_edit ;
-    UPDATE z_plume.stamp_timestamp SET modified = NULL ;
-    GET DIAGNOSTICS n = ROW_COUNT ;
-    ASSERT n = 0, 'échec assertion #4' ;  
+    BEGIN
+        UPDATE z_plume.stamp_timestamp SET modified = NULL ;
+        GET DIAGNOSTICS n = ROW_COUNT ;
+        ASSERT n = 0, 'échec assertion #4a' ;
+    EXCEPTION WHEN insufficient_privilege THEN NULL ;
+    END ;
     
-    SET ROLE g_stamp_edit ;
+    BEGIN
+        INSERT INTO z_plume.stamp_timestamp (relid)
+            VALUES ('c_librairie.test_stamp'::regclass) ;
+        GET DIAGNOSTICS n = ROW_COUNT ;
+        ASSERT n = 0, 'échec assertion #4b' ;
+    EXCEPTION WHEN insufficient_privilege THEN NULL ;
+    END ;
+    
+    BEGIN
+        DELETE FROM z_plume.stamp_timestamp
+           WHERE relid = 'c_bibliotheque.test_stamp'::regclass ;
+        GET DIAGNOSTICS n = ROW_COUNT ;
+        ASSERT n = 0, 'échec assertion #4c' ;
+    EXCEPTION WHEN insufficient_privilege THEN NULL ;
+    END ;
+    
     SELECT z_plume.stamp_create_trigger('c_librairie.test_stamp'::regclass)
         INTO b ;
     
     ASSERT NOT b, 'échec assertion #5-a' ; 
     SELECT count(*) INTO n FROM pg_trigger
         WHERE tgrelid = 'c_librairie.test_stamp'::regclass
-            AND tgname = 'plume_stamp_action' ;
+            AND tgname = 'plume_stamp_data_edit' ;
     ASSERT n = 0, 'échec assertion #5-b' ;
     
-    SET ROLE g_admin ;
+    SET ROLE g_stamp_prod ;
+    INSERT INTO z_plume.stamp_timestamp (relid)
+        VALUES ('c_librairie.test_stamp'::regclass) ;
+    GET DIAGNOSTICS n = ROW_COUNT ;
+    ASSERT n = 1, 'échec assertion #6a' ;
+    
+    UPDATE z_plume.stamp_timestamp
+        SET modified = NULL
+        WHERE relid = 'c_librairie.test_stamp'::regclass ;
+    GET DIAGNOSTICS n = ROW_COUNT ;
+    ASSERT n = 1, 'échec assertion #6b' ;
+
+    DELETE FROM z_plume.stamp_timestamp
+       WHERE relid = 'c_librairie.test_stamp'::regclass ;
+    GET DIAGNOSTICS n = ROW_COUNT ;
+    ASSERT n = 1, 'échec assertion #6c' ;
+    
     PERFORM z_plume.stamp_create_trigger('c_librairie.test_stamp'::regclass) ;
     ALTER TABLE c_librairie.test_stamp ADD COLUMN txt text ;
     
     SELECT modified INTO d
         FROM z_plume.stamp_timestamp
         WHERE relid = 'c_librairie.test_stamp'::regclass ;
-    ASSERT d IS NOT NULL, 'échec assertion #6-a' ;
+    ASSERT d IS NOT NULL, 'échec assertion #7-a' ;
     SELECT count(*) INTO n FROM pg_trigger
         WHERE tgrelid = 'c_librairie.test_stamp'::regclass
-            AND tgname = 'plume_stamp_action' ;
-    ASSERT n = 1, 'échec assertion #6-b' ;
+            AND tgname = 'plume_stamp_data_edit' ;
+    ASSERT n = 1, 'échec assertion #7-b' ;
     
     i = 'c_bibliotheque.test_stamp'::regclass::oid ;
     DROP TABLE c_bibliotheque.test_stamp ;
@@ -1072,33 +1115,41 @@ BEGIN
     SELECT count(*) INTO n
         FROM z_plume.stamp_timestamp
         WHERE relid = i ;
-    ASSERT n = 0, 'échec assertion #7' ;
+    ASSERT n = 0, 'échec assertion #8' ;
     
     RESET ROLE ;
-    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
     
-    SET ROLE g_admin ;
+    SET ROLE g_stamp_prod ;
     i = 'c_librairie.test_stamp'::regclass::oid ;
     DROP TABLE c_librairie.test_stamp ;
     
     SELECT count(*) INTO n
         FROM z_plume.stamp_timestamp
         WHERE relid = i ;
-    ASSERT n = 1, 'échec assertion #8' ;
-    
-    SELECT z_plume.stamp_clean_timestamp() INTO n ;
     ASSERT n = 1, 'échec assertion #9' ;
     
+    SET ROLE g_stamp_edit ;
+    BEGIN
+        SELECT z_plume.stamp_clean_timestamp() INTO n ;
+        GET DIAGNOSTICS n = ROW_COUNT ;
+        ASSERT n = 0, 'échec assertion #10' ;
+    EXCEPTION WHEN insufficient_privilege THEN NULL ;
+    END ;
+    
+    SET ROLE g_admin ;
+    SELECT z_plume.stamp_clean_timestamp() INTO n ;
+    ASSERT n = 1, 'échec assertion #11' ;
+
     RESET ROLE ;
     DROP EXTENSION asgard ;
     DROP SCHEMA c_bibliotheque CASCADE ;
     DROP SCHEMA c_librairie CASCADE ;
     DROP ROLE g_stamp_edit ;
+    DROP ROLE g_stamp_prod ;
 
-    TRUNCATE z_plume.stamp_timestamp ;
-    ALTER EVENT TRIGGER plume_stamp_drop DISABLE ;
-    ALTER EVENT TRIGGER plume_stamp_modification DISABLE ;
-    ALTER EVENT TRIGGER plume_stamp_creation DISABLE ;
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg ;
 
     RETURN True ;
     
@@ -1133,13 +1184,13 @@ BEGIN
     
     ASSERT EXISTS (SELECT * FROM pg_catalog.pg_trigger
         WHERE tgrelid = 'c_bibliotheque.test_stamp'::regclass
-        AND tgname = 'plume_stamp_action'), 'échec assertion #1' ;
+        AND tgname = 'plume_stamp_data_edit'), 'échec assertion #1' ;
     
     DROP EXTENSION plume_pg ;
     
     ASSERT NOT EXISTS (SELECT * FROM pg_catalog.pg_trigger
         WHERE tgrelid = 'c_bibliotheque.test_stamp'::regclass
-        AND tgname = 'plume_stamp_action'), 'échec assertion #2' ;
+        AND tgname = 'plume_stamp_data_edit'), 'échec assertion #2' ;
 
     DROP SCHEMA c_bibliotheque CASCADE ;
     CREATE EXTENSION plume_pg ;
@@ -1157,7 +1208,7 @@ EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
 END
 $_$;
 
-COMMENT ON FUNCTION z_plume_recette.t014() IS 'PlumePg (recette). TEST : Suppression des triggers plume_stamp_action lors de la suppression de plume_pg.' ;
+COMMENT ON FUNCTION z_plume_recette.t014() IS 'PlumePg (recette). TEST : Suppression des triggers plume_stamp_data_edit lors de la suppression de plume_pg.' ;
 
 
 -- Function: z_plume_recette.t015()
@@ -1184,23 +1235,16 @@ BEGIN
     GRANT INSERT ON TABLE c_bibliotheque.test_stamp TO g_stamp_edit ;
     PERFORM z_plume.stamp_create_trigger('c_bibliotheque.test_stamp'::regclass) ;
     
-    ASSERT NOT EXISTS (SELECT * FROM pg_catalog.pg_trigger
-        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
-        AND tgname = 'record_modification_date'), 'échec assertion #1' ;
-    
     ------ activation du déclencheur ------
     
-    PERFORM z_plume.stamp_activate_recording() ;
-    ASSERT EXISTS (SELECT * FROM pg_catalog.pg_trigger
-        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
-        AND tgname = 'record_modification_date'), 'échec assertion #2' ;
+    ALTER TABLE z_plume.stamp_timestamp ENABLE TRIGGER stamp_timestamp_to_metadata ;
     
     SET ROLE g_stamp_edit ;
     INSERT INTO c_bibliotheque.test_stamp (id) VALUES (1) ;
     
     SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
         INTO metadata ;
-    ASSERT metadata IS NULL, 'échec assertion #3' ;
+    ASSERT metadata IS NULL, 'échec assertion #1' ;
     
     RESET ROLE ;
     descr = 'Ma table de test.
@@ -1257,7 +1301,7 @@ BEGIN
 
     SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
         INTO metadata ;
-    ASSERT metadata IS NOT NULL, 'échec assertion #4' ;
+    ASSERT metadata IS NOT NULL, 'échec assertion #2' ;
 
     SET ROLE g_stamp_edit ;
     INSERT INTO c_bibliotheque.test_stamp (id) VALUES (2) ;
@@ -1267,16 +1311,25 @@ BEGIN
     
     SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
         INTO metadata ;
-    ASSERT metadata = format(jsonld, 'dateTime', to_jsonb(modif)::text)::jsonb, 'échec assertion #5' ;
+    ASSERT metadata = format(jsonld, 'dateTime', to_jsonb(modif)::text)::jsonb, 'échec assertion #3' ;
     
     ------ désactivation du déclencheur ------
     
     RESET ROLE ;
-    PERFORM z_plume.stamp_activate_recording() ;
-    ASSERT NOT EXISTS (SELECT * FROM pg_catalog.pg_trigger
-        WHERE tgrelid = 'z_plume.stamp_timestamp'::regclass
-        AND tgname = 'record_modification_date'), 'échec assertion #6' ;
+    ALTER TABLE z_plume.stamp_timestamp DISABLE TRIGGER stamp_timestamp_to_metadata ;
 
+    UPDATE z_plume.stamp_timestamp
+        SET modified = NULL
+        WHERE relid =  'c_bibliotheque.test_stamp'::regclass ;
+
+    SET ROLE g_stamp_edit ;
+    INSERT INTO c_bibliotheque.test_stamp (id) VALUES (3) ;
+
+    SELECT z_plume.meta_description('c_bibliotheque.test_stamp'::regclass, 'pg_class')
+        INTO metadata ;
+    ASSERT metadata = format(jsonld, 'dateTime', to_jsonb(modif)::text)::jsonb, 'échec assertion #4' ;
+
+    RESET ROLE ;
     DROP SCHEMA c_bibliotheque CASCADE ;
     DROP ROLE g_stamp_edit ;
     
