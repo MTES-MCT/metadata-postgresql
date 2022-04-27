@@ -172,29 +172,26 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#verrouillage-de-l-affichage-sur-la-fiche-courante">
-   Verrouillage de l’affichage sur la fiche courante
+  <a class="reference internal nav-link" href="#amelioration-de-la-navigation">
+   Amélioration de la navigation
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#confirmation-a-la-sortie-du-mode-edition">
-   Confirmation à la sortie du mode édition
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume">
-   Affichage des métadonnées de la couche sélectionnée au lancement de Plume
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#visualisation-de-tous-les-types-de-geometries">
-   Visualisation de tous les types de géométries
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#selection-du-texte-dans-une-fiche-de-metadonees-en-mode-lecture">
-   Sélection du texte dans une fiche de métadonées en mode lecture
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#verrouillage-de-l-affichage-sur-la-fiche-courante">
+     Verrouillage de l’affichage sur la fiche courante
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#confirmation-a-la-sortie-du-mode-edition">
+     Confirmation à la sortie du mode édition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume">
+     Affichage des métadonnées de la couche sélectionnée au lancement de Plume
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#plumepg-v0-1-0">
@@ -209,6 +206,16 @@
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#desactivation-d-un-modele">
      Désactivation d’un modèle
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#enregistrement-des-dates-de-creation-et-derniere-modification-des-tables">
+     Enregistrement des dates de création et dernière modification des tables
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#acces-aux-donnees-de-l-extension">
+     Accès aux données de l’extension
     </a>
    </li>
   </ul>
@@ -254,8 +261,10 @@
 <p><em>Date de publication : à venir.</em></p>
 <p><em>Sur GitHub : à venir.</em></p>
 <p>La version 0.4 apporte notamment plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.</p>
+<section id="amelioration-de-la-navigation">
+<h2>Amélioration de la navigation<a class="headerlink" href="#amelioration-de-la-navigation" title="Lien permanent vers ce titre">#</a></h2>
 <section id="verrouillage-de-l-affichage-sur-la-fiche-courante">
-<h2>Verrouillage de l’affichage sur la fiche courante<a class="headerlink" href="#verrouillage-de-l-affichage-sur-la-fiche-courante" title="Lien permanent vers ce titre">#</a></h2>
+<h3>Verrouillage de l’affichage sur la fiche courante<a class="headerlink" href="#verrouillage-de-l-affichage-sur-la-fiche-courante" title="Lien permanent vers ce titre">#</a></h3>
 <p>La version 0.4 ajoute à la barre d’outil de Plume un bouton en forme de cadenas qui permet de verrouiller l’affichage sur la fiche de métadonnées courante.</p>
 <p>En mode lecture, ce bouton est désactivé par défaut. Quand l’utilisateur sélectionne une nouvelle couche PostgreSQL dans l’explorateur ou le panneau, les métadonnées de cette couche s’affichent dans le panneau de Plume. Lorsqu’il sélectionne une couche dont le fournisseur n’est pas un serveur PostgreSQL, Plume revient à son écran d’accueil.</p>
 <p>Si l’utilisateur actionne le bouton de verrouillage, la fiche de métadonnées courante restera affichée dans le panneau de Plume quelles que soient les manipulations réalisées par l’utilisateur dans l’explorateur et le panneau des couches.</p>
@@ -263,29 +272,24 @@
 <p><em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/36">issue #36</a>, <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/41">issue #41</a>, <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/47">issue #47</a>.</em></p>
 </section>
 <section id="confirmation-a-la-sortie-du-mode-edition">
-<h2>Confirmation à la sortie du mode édition<a class="headerlink" href="#confirmation-a-la-sortie-du-mode-edition" title="Lien permanent vers ce titre">#</a></h2>
+<h3>Confirmation à la sortie du mode édition<a class="headerlink" href="#confirmation-a-la-sortie-du-mode-edition" title="Lien permanent vers ce titre">#</a></h3>
 <p>Lorsque l’utilisateur quitte le mode édition sans avoir préalablement sauvegardé ses modifications, Plume lui demande maintenant une confirmation. Un paramètre utilisateur permet de supprimer cette étape.</p>
 <p><em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/46">issue #46</a>.</em></p>
 </section>
 <section id="affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume">
-<h2>Affichage des métadonnées de la couche sélectionnée au lancement de Plume<a class="headerlink" href="#affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume" title="Lien permanent vers ce titre">#</a></h2>
+<h3>Affichage des métadonnées de la couche sélectionnée au lancement de Plume<a class="headerlink" href="#affichage-des-metadonnees-de-la-couche-selectionnee-au-lancement-de-plume" title="Lien permanent vers ce titre">#</a></h3>
 <p>Si l’utilisateur sélectionne une couche PostgreSQL dans l’explorateur ou le panneau des couches <em>puis</em> lance Plume, les métadonnées de cette couche sont maintenant immédiatement affichées. Auparavant, seules les couches sélectionnées après le lancement de Plume étaient prises en compte.</p>
 <p><em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/38">issue #38</a>.</em></p>
 </section>
-<section id="visualisation-de-tous-les-types-de-geometries">
-<h2>Visualisation de tous les types de géométries<a class="headerlink" href="#visualisation-de-tous-les-types-de-geometries" title="Lien permanent vers ce titre">#</a></h2>
-<p>Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT.</p>
-<p><em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/34">issue #34</a>.</em></p>
-</section>
-<section id="selection-du-texte-dans-une-fiche-de-metadonees-en-mode-lecture">
-<h2>Sélection du texte dans une fiche de métadonées en mode lecture<a class="headerlink" href="#selection-du-texte-dans-une-fiche-de-metadonees-en-mode-lecture" title="Lien permanent vers ce titre">#</a></h2>
-<p>Il est désormais possible de sélectionner et copier du texte dans les fiches de métadonnées ouvertes en mode lecture.</p>
-<p><em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/56">issue #56</a>.</em></p>
 </section>
 <section id="plumepg-v0-1-0">
 <h2>PlumePg v0.1.0<a class="headerlink" href="#plumepg-v0-1-0" title="Lien permanent vers ce titre">#</a></h2>
 <p><strong>Une mise à jour de l’extension PostgreSQL PlumePg sera nécessaire</strong> pour continuer à utiliser les modèles personnalisés avec la version 0.4 de Plume.</p>
-<p>La version 0.1.0 de PlumePg apporte plusieurs petites évolutions fonctionnelles.</p>
+<p>La version 0.1.0 de PlumePg apporte deux évolutions fonctionnelles notables :</p>
+<ul class="simple">
+<li><p>un paramétrage plus fin des <a class="reference internal" href="../usage/metadonnees_calculees.html"><span class="doc std std-doc">fonctionnalités de calcul des métadonnées</span></a> par les modèles ;</p></li>
+<li><p>un mécanisme pour enregistrer les dates de création et de dernière modification des tables, en vue de les intégrer aux fiches de métadonnées.</p></li>
+</ul>
 <section id="parametrage-du-calcul-automatique-des-metadonnees">
 <h3>Paramétrage du calcul automatique des métadonnées<a class="headerlink" href="#parametrage-du-calcul-automatique-des-metadonnees" title="Lien permanent vers ce titre">#</a></h3>
 <p>Les champs <code class="docutils literal notranslate"><span class="pre">compute</span></code> des tables <code class="docutils literal notranslate"><span class="pre">meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">meta_template_categories</span></code> admettent maintenant deux nouvelles valeurs, <code class="docutils literal notranslate"><span class="pre">empty</span></code> et <code class="docutils literal notranslate"><span class="pre">new</span></code>. Comme <code class="docutils literal notranslate"><span class="pre">auto</span></code>, ces mots-clés signalent à Plume que la métadonnée doit être calculée automatiquement à partir des informations disponibles sur le serveur PostgreSQL lors du chargement de la fiche de métadonnées. Toutefois, ils posent des conditions à cette action :</p>
@@ -298,6 +302,15 @@
 <section id="desactivation-d-un-modele">
 <h3>Désactivation d’un modèle<a class="headerlink" href="#desactivation-d-un-modele" title="Lien permanent vers ce titre">#</a></h3>
 <p>La table <code class="docutils literal notranslate"><span class="pre">meta_template</span></code> présente désormais un champ supplémentaire, <code class="docutils literal notranslate"><span class="pre">enabled</span></code>, qui peut être mis à <code class="docutils literal notranslate"><span class="pre">False</span></code> pour empêcher qu’un modèle soit proposé aux utilisateurs du plugin QGIS. Ce mécanisme pourra notamment être mis à profit pendant la consitution des modèles, afin de ne pas mettre à disposition des utilisateurs des modèles non finalisés.</p>
+</section>
+<section id="enregistrement-des-dates-de-creation-et-derniere-modification-des-tables">
+<h3>Enregistrement des dates de création et dernière modification des tables<a class="headerlink" href="#enregistrement-des-dates-de-creation-et-derniere-modification-des-tables" title="Lien permanent vers ce titre">#</a></h3>
+<p>PlumePg propose désormais un mécanisme, entièrement optionnel, pour enregistrer automatiquement les dates de création et dernière modification des tables. Cf. <a class="reference internal" href="../usage/gestion_plume_pg.html#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></span></a>.</p>
+<p><em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/60">issue #60</a>.</em></p>
+</section>
+<section id="acces-aux-donnees-de-l-extension">
+<h3>Accès aux données de l’extension<a class="headerlink" href="#acces-aux-donnees-de-l-extension" title="Lien permanent vers ce titre">#</a></h3>
+<p>Pour faciliter la gestion des droits sur l’extension, PlumePg confère désormais à tous les utilisateurs un accès en lecture à toutes ses données, via le pseudo-rôle <code class="docutils literal notranslate"><span class="pre">public</span></code>. Cf. <a class="reference internal" href="../usage/gestion_plume_pg.html#privileges"><span class="std std-doc">Installation et gestion de l’extension PostgreSQL <em>PlumePg</em></span></a>.</p>
 </section>
 </section>
 <section id="amelioration-de-la-gestion-des-metadonnees-en-lecture-seule">
@@ -320,6 +333,9 @@
 </section>
 <section id="divers">
 <h2>Divers<a class="headerlink" href="#divers" title="Lien permanent vers ce titre">#</a></h2>
+<p>Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/34">issue #34</a>.</em></p>
+<p>Il est désormais possible de sélectionner et copier du texte dans les fiches de métadonnées ouvertes en mode lecture. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/56">issue #56</a>.</em></p>
+<p>Le nom du modèle courant est dorénavant explicitement affiché dans la barre d’outils de Plume. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/55">issue #55</a>.</em></p>
 <p>Complément sur la traduction anglaise des textes de l’interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/50">issue #50</a>.</em></p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">

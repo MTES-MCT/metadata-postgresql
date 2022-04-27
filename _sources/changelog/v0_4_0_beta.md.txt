@@ -6,7 +6,10 @@
 
 La version 0.4 apporte notamment plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.
 
-## Verrouillage de l'affichage sur la fiche courante
+
+## Amélioration de la navigation
+
+### Verrouillage de l'affichage sur la fiche courante
 
 La version 0.4 ajoute à la barre d'outil de Plume un bouton en forme de cadenas qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
 
@@ -18,35 +21,26 @@ En mode édition, ce bouton est activé par défaut et ne peut pas être désact
 
 *Références : [issue #36](https://github.com/MTES-MCT/metadata-postgresql/issues/36), [issue #41](https://github.com/MTES-MCT/metadata-postgresql/issues/41), [issue #47](https://github.com/MTES-MCT/metadata-postgresql/issues/47).*
 
-## Confirmation à la sortie du mode édition
+### Confirmation à la sortie du mode édition
 
 Lorsque l'utilisateur quitte le mode édition sans avoir préalablement sauvegardé ses modifications, Plume lui demande maintenant une confirmation. Un paramètre utilisateur permet de supprimer cette étape.
 
 *Références : [issue #46](https://github.com/MTES-MCT/metadata-postgresql/issues/46).*
 
-## Affichage des métadonnées de la couche sélectionnée au lancement de Plume
+### Affichage des métadonnées de la couche sélectionnée au lancement de Plume
 
 Si l'utilisateur sélectionne une couche PostgreSQL dans l'explorateur ou le panneau des couches *puis* lance Plume, les métadonnées de cette couche sont maintenant immédiatement affichées. Auparavant, seules les couches sélectionnées après le lancement de Plume étaient prises en compte.
 
 *Références : [issue #38](https://github.com/MTES-MCT/metadata-postgresql/issues/38).*
 
-## Visualisation de tous les types de géométries
-
-Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT.
-
-*Références : [issue #34](https://github.com/MTES-MCT/metadata-postgresql/issues/34).*
-
-## Sélection du texte dans une fiche de métadonées en mode lecture
-
-Il est désormais possible de sélectionner et copier du texte dans les fiches de métadonnées ouvertes en mode lecture.
-
-*Références : [issue #56](https://github.com/MTES-MCT/metadata-postgresql/issues/56).*
 
 ## PlumePg v0.1.0
 
 **Une mise à jour de l'extension PostgreSQL PlumePg sera nécessaire** pour continuer à utiliser les modèles personnalisés avec la version 0.4 de Plume.
 
-La version 0.1.0 de PlumePg apporte plusieurs petites évolutions fonctionnelles.
+La version 0.1.0 de PlumePg apporte deux évolutions fonctionnelles notables :
+- un paramétrage plus fin des [fonctionnalités de calcul des métadonnées](../usage/metadonnees_calculees.md) par les modèles ;
+- un mécanisme pour enregistrer les dates de création et de dernière modification des tables, en vue de les intégrer aux fiches de métadonnées.
 
 ### Paramétrage du calcul automatique des métadonnées
 
@@ -60,6 +54,16 @@ Les tables `meta_categorie` et `meta_template_categories`, ainsi que la vue `met
 
 La table `meta_template` présente désormais un champ supplémentaire, `enabled`, qui peut être mis à `False` pour empêcher qu'un modèle soit proposé aux utilisateurs du plugin QGIS. Ce mécanisme pourra notamment être mis à profit pendant la consitution des modèles, afin de ne pas mettre à disposition des utilisateurs des modèles non finalisés.
 
+### Enregistrement des dates de création et dernière modification des tables
+
+PlumePg propose désormais un mécanisme, entièrement optionnel, pour enregistrer automatiquement les dates de création et dernière modification des tables. Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](../usage/gestion_plume_pg.md#activation-de-lenregistrement-des-dates).
+
+*Références : [issue #60](https://github.com/MTES-MCT/metadata-postgresql/issues/60).*
+
+### Accès aux données de l'extension
+
+Pour faciliter la gestion des droits sur l'extension, PlumePg confère désormais à tous les utilisateurs un accès en lecture à toutes ses données, via le pseudo-rôle `public`. Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](../usage/gestion_plume_pg.md#privilèges).
+
 
 ## Amélioration de la gestion des métadonnées en lecture seule
 
@@ -70,6 +74,7 @@ La lecture seule est désormais une caractéristique héritable. Ainsi, si le mo
 [^isreadonly]: Une catégorie peut être déclarée comme étant "en lecture seule" (non éditable) par un modèle de fiche défini avec *PlumePg*. On indiquera `True` dans le champ `is_read_only` de la table `z_plume.meta_template_categories` pour le modèle et la catégorie considérés.
 
 *Référence : [issue #48](https://github.com/MTES-MCT/metadata-postgresql/issues/48).*
+
 
 ## Gestion des dépendances
 
@@ -86,6 +91,12 @@ En pratique, l'utilisateur pourra constater les changements suivants :
 
 
 ## Divers
+
+Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT. *Références : [issue #34](https://github.com/MTES-MCT/metadata-postgresql/issues/34).*
+
+Il est désormais possible de sélectionner et copier du texte dans les fiches de métadonnées ouvertes en mode lecture. *Références : [issue #56](https://github.com/MTES-MCT/metadata-postgresql/issues/56).*
+
+Le nom du modèle courant est dorénavant explicitement affiché dans la barre d'outils de Plume. *Références : [issue #55](https://github.com/MTES-MCT/metadata-postgresql/issues/55).*
 
 Complément sur la traduction anglaise des textes de l'interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. *Référence : [issue #50](https://github.com/MTES-MCT/metadata-postgresql/issues/50).*
 
