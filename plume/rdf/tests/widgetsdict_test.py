@@ -979,21 +979,26 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict[g.button]['main widget'] = '<P QToolButton dct:temporal>'
         widgetsdict[b]['main widget'] = '<B QGroupBox dct:temporal>'
         widgetsdict[b]['minus widget'] = '<B-minus QToolButton dct:temporal>'
-        widgetsdict[b.children[0]]['main widget'] = '<B QGroupBox dcat:startDate>'
-        widgetsdict[b.children[1]]['main widget'] = '<B QGroupBox dcat:endDate>'
+        widgetsdict[b.children[0]]['main widget'] = '<B QLineEdit dcat:startDate>'
+        widgetsdict[b.children[1]]['main widget'] = '<B QLineEdit dcat:endDate>'
+        widgetsdict[b]['grid widget'] = '<B QGridLayout dct:temporal>'
         widgetsdict[c]['main widget'] = '<C QGroupBox dct:temporal>'
         widgetsdict[c]['minus widget'] = '<C-minus QToolButton dct:temporal>'
+        widgetsdict[c.children[0]]['main widget'] = '<C QLineEdit dcat:startDate>'
+        widgetsdict[c.children[1]]['main widget'] = '<C QLineEdit dcat:endDate>'
+        widgetsdict[c]['grid widget'] = '<C QGridLayout dct:temporal>'
         actionsdict = widgetsdict.drop(b)
         self.assertEqual(len(g.children), 1)
         self.assertFalse(b in widgetsdict)
         self.assertFalse(b.children[0] in widgetsdict)
         self.assertFalse(b.children[1] in widgetsdict)
         self.assertTrue(widgetsdict[c]['hide minus button'])
-        self.assertEqual(actionsdict['widgets to hide'], ['<C-minus QToolButton dct:temporal>'])
-        self.assertEqual(actionsdict['widgets to delete'],
+        self.assertListEqual(actionsdict['widgets to hide'], ['<C-minus QToolButton dct:temporal>'])
+        self.assertListEqual(actionsdict['widgets to delete'],
             ['<B QGroupBox dct:temporal>', '<B-minus QToolButton dct:temporal>',
-             '<B QGroupBox dcat:startDate>', '<B QGroupBox dcat:endDate>'])
-        self.assertEqual(actionsdict['widgets to move'],
+             '<B QLineEdit dcat:startDate>', '<B QLineEdit dcat:endDate>'])
+        self.assertListEqual(actionsdict['grids to delete'], ['<B QGridLayout dct:temporal>'])
+        self.assertListEqual(actionsdict['widgets to move'],
             [('<QGridLayout dct:temporal>', '<C QGroupBox dct:temporal>',
                 0, 0, 1, WidgetsDictTestCase.grid - 1),
              ('<QGridLayout dct:temporal>', '<C-minus QToolButton dct:temporal>',
@@ -1001,7 +1006,8 @@ class WidgetsDictTestCase(unittest.TestCase):
              ('<QGridLayout dct:temporal>', '<P QToolButton dct:temporal>',
                 1, 0, 1, 1)])
         for k in actionsdict.keys():
-            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move'):
+            if not k in ('widgets to hide', 'widgets to delete', 'widgets to move',
+                'grids to delete'):
                 self.assertFalse(actionsdict[k])
 
         # --- suppression des clés jumelles ---
