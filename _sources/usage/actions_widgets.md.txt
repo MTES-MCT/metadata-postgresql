@@ -17,7 +17,8 @@ Les dictionnaires renvoyés par les méthodes d'actions de la classe `plume.rdf.
 | `'new keys'` | Liste de nouvelles clés du dictionnaire de widgets à matérialiser (`plume.rdf.widgetkey.WidgetKey`). Elles sont évidemment fournies dans le bon ordre, d'abord les clés parents puis les clés filles. Pour toutes ces clés, il sera nécessaire de générer les widgets, actions et menus, comme à la création initiale du dictionnaire (cf. [Création d'un nouveau widget](./creation_widgets.md)). |
 | `'widgets to show'` | Liste de widgets (`QtWidgets.QWidget`) à rendre visibles. Il s'agit a priori de widgets antérieurement masqués, mais ce n'est pas une règle absolue. |
 | `'widgets to hide'` | Liste de widgets (`QtWidgets.QWidget`) à masquer. Il s'agit a priori de widgets antérieurement visibles, mais ce n'est pas une règle absolue. |
-| `'widgets to delete'` | Liste de widgets (`QtWidgets.QWidget`) à détruire, incluant les grilles associées, le cas échéant (`QtWidgets.QGridLayout`). |
+| `'widgets to delete'` | Liste de widgets (`QtWidgets.QWidget`) à détruire. |
+| `'grids to delete'` | Liste de grilles (`QtWidgets.QGridLayout`) à détruire. |
 | `'actions to delete'` | Liste d'actions (`QtGui.QAction`) à détruire. |
 | `'menus to delete'` | Liste de menus (`QtWidgets.QMenu`) à détruire. |
 | `'language menu to update'` | Liste de clés du dictionnaire de widgets (`plume.rdf.widgetkey.WidgetKey`) pour lesquelles le menu du bouton de sélection de la langue doit être régénéré. Cf. [Création d'un nouveau widget](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) pour plus de détails sur la génération des menus de langues. |
@@ -101,6 +102,7 @@ Les informations renvoyées par `drop` permettent de réaliser les opérations s
 Le dictionnaire résultant, ici `r`, pourra contenir des informations dans les clés suivantes :
 
 - `'widgets to delete'`. Cette liste contient les widgets que l'utilisateur a voulu faire disparaître. Ils ne sont dorénavant plus référencés dans le dictionnaire de widgets, ce qui fait qu'il ne sera plus jamais possible d'interagir avec eux. Les supprimer paraît la meilleure chose à faire.
+- `'grids to delete'`. Le cas échéant, cette liste contient les grilles/`QGridLayout` associées aux widgets susmentionnés.
 -  `'actions to delete'`. Le cas échéant, cette liste contient les `QAction` associées aux widgets susmentionnés.
 - `'menus to delete'`. Le cas échéant, cette liste contient les `QMenu` associées aux widgets susmentionnés.
 - `'widgets to show'`. Cette liste sera toujours vide pour un bouton "moins" dans un groupe de valeur. Dans un groupe de traduction, elle pourra contenir le `QToolButton` du bouton "plus" du groupe si retirer une traduction fait que toutes les langues ne sont désormais plus utilisées, et qu'il est donc de nouveau possible d'ajouter des traductions supplémentaires.

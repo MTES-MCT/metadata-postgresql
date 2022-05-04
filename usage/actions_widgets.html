@@ -353,30 +353,33 @@
 <td><p>Liste de widgets (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à masquer. Il s’agit a priori de widgets antérieurement visibles, mais ce n’est pas une règle absolue.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
-<td><p>Liste de widgets (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à détruire, incluant les grilles associées, le cas échéant (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>).</p></td>
+<td><p>Liste de widgets (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QWidget</span></code>) à détruire.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'actions</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'grids</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
+<td><p>Liste de grilles (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QGridLayout</span></code>) à détruire.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'actions</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
 <td><p>Liste d’actions (<code class="docutils literal notranslate"><span class="pre">QtGui.QAction</span></code>) à détruire.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'menus</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'menus</span> <span class="pre">to</span> <span class="pre">delete'</span></code></p></td>
 <td><p>Liste de menus (<code class="docutils literal notranslate"><span class="pre">QtWidgets.QMenu</span></code>) à détruire.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'language</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
 <td><p>Liste de clés du dictionnaire de widgets (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) pour lesquelles le menu du bouton de sélection de la langue doit être régénéré. Cf. <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-la-langue"><span class="std std-doc">Création d’un nouveau widget</span></a> pour plus de détails sur la génération des menus de langues.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'switch</span> <span class="pre">source</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'switch</span> <span class="pre">source</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
 <td><p>Liste de clés du dictionnaire de widgets (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) pour lesquelles le menu du bouton de sélection de la source doit être régénéré. Cf. <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-la-source"><span class="std std-doc">Création d’un nouveau widget</span></a> pour plus de détails sur la génération des menus de sélection de la source.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'unit</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'unit</span> <span class="pre">menu</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
 <td><p>Liste de clés du dictionnaire de widgets (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) pour lesquelles le menu du bouton de sélection de l’unité doit être régénéré. Cf. <a class="reference internal" href="creation_widgets.html#widget-annexe-bouton-de-selection-de-l-unite"><span class="std std-doc">Création d’un nouveau widget</span></a> pour plus de détails sur la génération des menus de sélection de l’unité.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'concepts</span> <span class="pre">list</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'concepts</span> <span class="pre">list</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
 <td><p>Liste de clés du dictionnaire (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>) tel que le widget principal est un widget <code class="docutils literal notranslate"><span class="pre">QComboBox</span></code> dont la liste de termes doit être régénérée. Cf. <a class="reference internal" href="creation_widgets.html#parametres-specifiques-aux-widgets-qcombobox"><span class="std std-doc">Création d’un nouveau widget</span></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">move'</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">move'</span></code></p></td>
 <td><p>Liste de tuples contenant les informations relatives à des widgets dont - parce qu’on a supprimé un widget antérieurement positionné au-dessus d’eux dans la grille - il faut à présent modifier la position.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'value</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'value</span> <span class="pre">to</span> <span class="pre">update'</span></code></p></td>
 <td><p>Liste de clés (<code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.ValueKey</span></code>) tels que la valeur renseignée dans le widget principal doit être mise à jour selon celle de la clé <code class="docutils literal notranslate"><span class="pre">'value'</span></code> du dictionnaire interne.</p></td>
 </tr>
 </tbody>
@@ -443,6 +446,7 @@
 <p>Le dictionnaire résultant, ici <code class="docutils literal notranslate"><span class="pre">r</span></code>, pourra contenir des informations dans les clés suivantes :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Cette liste contient les widgets que l’utilisateur a voulu faire disparaître. Ils ne sont dorénavant plus référencés dans le dictionnaire de widgets, ce qui fait qu’il ne sera plus jamais possible d’interagir avec eux. Les supprimer paraît la meilleure chose à faire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'grids</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Le cas échéant, cette liste contient les grilles/<code class="docutils literal notranslate"><span class="pre">QGridLayout</span></code> associées aux widgets susmentionnés.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'actions</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Le cas échéant, cette liste contient les <code class="docutils literal notranslate"><span class="pre">QAction</span></code> associées aux widgets susmentionnés.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'menus</span> <span class="pre">to</span> <span class="pre">delete'</span></code>. Le cas échéant, cette liste contient les <code class="docutils literal notranslate"><span class="pre">QMenu</span></code> associées aux widgets susmentionnés.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'widgets</span> <span class="pre">to</span> <span class="pre">show'</span></code>. Cette liste sera toujours vide pour un bouton « moins » dans un groupe de valeur. Dans un groupe de traduction, elle pourra contenir le <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> du bouton « plus » du groupe si retirer une traduction fait que toutes les langues ne sont désormais plus utilisées, et qu’il est donc de nouveau possible d’ajouter des traductions supplémentaires.</p></li>
