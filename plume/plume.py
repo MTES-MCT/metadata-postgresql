@@ -71,46 +71,58 @@ class MainPlugin(object):
 
      #==========================
   def initializingDisplay(self):
-      iface.layerTreeView().clicked.connect(self.returnLayerBeforeClickedQgis)
+      try : 
+         iface.layerTreeView().clicked.connect(self.returnLayerBeforeClickedQgis)
                 
-      # Interaction avec le navigateur de QGIS
-      self.mNav1, self.mNav2 = 'Browser', 'Browser2' 
-      #1
-      self.navigateur = iface.mainWindow().findChild(QDockWidget, self.mNav1)
-      self.navigateurTreeView = self.navigateur.findChild(QTreeView)
-      self.navigateurTreeView.setObjectName(self.mNav1)
-      self.navigateurTreeView.clicked.connect(self.returnLayerBeforeClickedBrowser)
-      #2
-      self.navigateur2 = iface.mainWindow().findChild(QDockWidget, self.mNav2)
-      self.navigateurTreeView2 = self.navigateur2.findChild(QTreeView)
-      self.navigateurTreeView2.setObjectName(self.mNav2)
-      self.navigateurTreeView2.clicked.connect(self.returnLayerBeforeClickedBrowser)
+         # Interaction avec le navigateur de QGIS
+         self.mNav1, self.mNav2 = 'Browser', 'Browser2' 
+         #1
+         self.navigateur = iface.mainWindow().findChild(QDockWidget, self.mNav1)
+         self.navigateurTreeView = self.navigateur.findChild(QTreeView)
+         self.navigateurTreeView.setObjectName(self.mNav1)
+         self.navigateurTreeView.clicked.connect(self.returnLayerBeforeClickedBrowser)
+         #2
+         self.navigateur2 = iface.mainWindow().findChild(QDockWidget, self.mNav2)
+         self.navigateurTreeView2 = self.navigateur2.findChild(QTreeView)
+         self.navigateurTreeView2.setObjectName(self.mNav2)
+         self.navigateurTreeView2.clicked.connect(self.returnLayerBeforeClickedBrowser)
+      except :
+         pass   
       return
               
   #==========================
   def returnLayerBeforeClickedQgis(self) :
       layerBeforeClicked = ("", "")
-      self.layer = iface.activeLayer()
-      if self.layer:
-         if self.layer.dataProvider().name() == 'postgres':
-            layerBeforeClicked = (self.layer, "qgis")
-      bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
+      try : 
+         self.layer = iface.activeLayer()
+         if self.layer:
+            if self.layer.dataProvider().name() == 'postgres':
+               layerBeforeClicked = (self.layer, "qgis")
+         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
+      except :
+         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
+      return
 
   #==========================
   def returnLayerBeforeClickedBrowser(self, index) :
       layerBeforeClicked = ("", "")
-      mNav = self.iface.sender().objectName()
-      self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
+      self.index = index
+      try : 
+         mNav = self.iface.sender().objectName()
+         self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
 
-      self.modelDefaut = iface.browserModel() 
-      self.model = iface.browserModel()
-      item = self.model.dataItem(self.proxy_model.mapToSource(index))
+         self.modelDefaut = iface.browserModel() 
+         self.model = iface.browserModel()
+         item = self.model.dataItem(self.proxy_model.mapToSource(index))
 
-      if isinstance(item, QgsLayerItem) :
-         if item.providerKey() == 'postgres' :
-            self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
-            layerBeforeClicked = (self.layer, "postgres")
-      bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
+         if isinstance(item, QgsLayerItem) :
+            if item.providerKey() == 'postgres' :
+               self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
+               layerBeforeClicked = (self.layer, "postgres")
+         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
+      except :
+         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
+      return
 
   #==========================
   def clickAbout(self):

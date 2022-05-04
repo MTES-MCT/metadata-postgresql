@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle) 
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle, QGridLayout) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -173,12 +173,14 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           _mObjetQSaisie.setMinimumSize(QtCore.QSize(100, 23))
 
        if _valueObjet['main widget type'] in ("QLineEdit") :
-          #Valeur                        
-          _mObjetQSaisie.setText(_valueObjet['value'])
+          #Valeur 
+          bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          #_mObjetQSaisie.setText(_valueObjet['value'])
        elif _valueObjet['main widget type'] in ("QTextEdit") :
           #Valeur  
           _mObjetQSaisie.setAcceptRichText(True)                      
-          _mObjetQSaisie.setPlainText(_valueObjet['value'])
+          bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          #_mObjetQSaisie.setPlainText(_valueObjet['value'])
 
        if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
           #Lecture seule                        
@@ -218,7 +220,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if _valueObjet['main widget type'] in ("QComboBox") :
           _thesaurus = _valueObjet['thesaurus values']                                                           
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
-          _mObjetQSaisie.setCurrentText(_valueObjet['value']) 
+          bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          #_mObjetQSaisie.setCurrentText(_valueObjet['value']) 
           _mObjetQSaisie.setEditable(True)
           #-
           mCompleter = QCompleter(_thesaurus, self)
@@ -246,7 +249,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan)
        #Valeur                        
-       _mObjetQLabel.setText(_valueObjet['value']) 
+       bibli_plume.majObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+       #_mObjetQLabel.setText(_valueObjet['value']) 
        #Tooltip                        
        if valueExiste('help text', _valueObjet) : _mObjetQLabel.setToolTip(_valueObjet['help text'])
        #--                        
@@ -276,10 +280,12 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignLeft)
         #Valeur 
        if valueExiste('value', _valueObjet) :
-           _mObjetQDateEdit.setDate(QDate.fromString( _valueObjet['value'], _displayFormat)) 
+           bibli_plume.majObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+           #_mObjetQDateEdit.setDate(QDate.fromString( _valueObjet['value'], _displayFormat)) 
        else :
-          _mObjetQDateEdit.clear()
-          _mObjetQDateEdit.setDate(QDate.fromString( None, _displayFormat))
+           _mObjetQDateEdit.clear()
+           bibli_plume.majObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          #_mObjetQDateEdit.setDate(QDate.fromString( None, _displayFormat))
        #Lecture seule                        
        _mObjetQDateEdit.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -307,7 +313,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 
        #-- Trois états                        
        _mObjetQCheckBox.setTristate(True)
-       _mObjetQCheckBox.setCheckState((Qt.Checked if str(_valueObjet['value']).lower() == 'true' else Qt.Unchecked) if _valueObjet['value'] != None else Qt.PartiallyChecked)
+       bibli_plume.majObjetWithValue(_mObjetQCheckBox, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+       #_mObjetQCheckBox.setCheckState((Qt.Checked if str(_valueObjet['value']).lower() == 'true' else Qt.Unchecked) if _valueObjet['value'] != None else Qt.PartiallyChecked)
 
        #Lecture seule                        
        _mObjetQCheckBox.setEnabled(False if _valueObjet['read only'] else True)
@@ -340,10 +347,12 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQDateTime, row, column, rowSpan, columnSpan, Qt.AlignLeft)
        #Valeur
        if valueExiste('value', _valueObjet) :  
-          _mObjetQDateTime.setDateTime(QDateTime.fromString( _valueObjet['value'], _displayFormat))       
+          bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          #_mObjetQDateTime.setDateTime(QDateTime.fromString( _valueObjet['value'], _displayFormat))       
        else :
           _mObjetQDateTime.clear()
-          _mObjetQDateTime.setDate(QDate.fromString( None, _displayFormat))
+          bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          #_mObjetQDateTime.setDate(QDate.fromString( None, _displayFormat))
        #Lecture seule                        
        _mObjetQDateTime.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -632,6 +641,10 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 #==================================================
 # Traitement action sur QToolButton Geo Visualisation
 def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, __valueObjet):
+    # If suppression d'une couche active pour les métadonnées affichées
+    if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
+    # If suppression d'une couche active pour les métadonnées affichées
+
     #Supprime si l'objet existe et desactive le process QgsMapTool
     try : 
        for k, v in self.dic_objetMap.items() :
@@ -665,6 +678,10 @@ def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, 
 #==================================================
 # Traitement action sur QToolButton Geo Actions
 def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __valueObjet):
+    # If suppression d'une couche active pour les métadonnées affichées
+    if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
+    # If suppression d'une couche active pour les métadonnées affichées
+
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['geo menu'].sender()
     self.dic_geoToolsShow[__keyObjet] = False  # Param for display BBOX ou no
     #-
@@ -726,16 +743,16 @@ def action_mObjetQToolButtonUnits(self, __keyObjet, __valueObjet):
     #---------------------------------------------
     self.mDicObjetsInstancies[__keyObjet]['unit widget'].setText(__valueObjet['current unit']) 
     #---------------------------------------------
-    #- Masquer          
+    #- regénération et matérialisation en fonction de la structure du dictionnaire
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet)
+    """          
+    #- Masquer
     for elem in ret['widgets to hide'] : 
-        try :
-           elem.setVisible(False)
-        except : 
-           pass   
-
+        elem.setVisible(False)
     #---------------------------------------------
     #- Regénération du Menu 
     regenerationMenuUnit(self, ret['unit menu to update'], __valueObjet)
+    """          
 
     return  
 
@@ -748,16 +765,16 @@ def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, 
     #---------------------------------------------
     self.mDicObjetsInstancies[__keyObjet]['language widget'].setText(__valueObjet['language value']) 
     #---------------------------------------------
+    #- regénération et matérialisation en fonction de la structure du dictionnaire
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
+    """          
     #- Masquer          
     for elem in ret['widgets to hide'] : 
-        try :
-           elem.setVisible(False)
-        except : 
-           pass   
-
+        elem.setVisible(False)
     #---------------------------------------------
     #- Regénération du Menu 
     regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
+    """          
 
     #maj apparence QToolButton 
     #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
@@ -769,45 +786,33 @@ def action_mObjetQToolButton_Minus(self, __keyObjet, __valueObjet, _language, _l
     #Mise à jour du dictionnaire des widgets 
     ret = self.mDicObjetsInstancies.drop(__keyObjet)
 
+    #- regénération et matérialisation en fonction de la structure du dictionnaire
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
+    """
     #- Supprimer Widget        
     for elem in ret['widgets to delete'] :
-        try :                                                   
-           self.mDicObjetsInstancies.parent_grid(__keyObjet).removeWidget(elem)
-           elem.deleteLater()
-        except : 
-           pass
+        self.mDicObjetsInstancies.parent_grid(__keyObjet).removeWidget(elem)
+        elem.deleteLater()
     #- Supprimer Menu        
     for elem in ret['menus to delete'] :
-        try :                                                   
-           elem.deleteLater()
-        except : 
-           pass
+        elem.deleteLater()
     #- Supprimer Actions        
     for elem in ret['actions to delete'] :
-        try :                                                   
-           elem.deleteLater()
-        except : 
-           pass
+        elem.deleteLater()
     #- Afficher          
     for elem in ret['widgets to show'] :
-        try :                                                   
-           elem.setVisible(True)
-        except : 
-           pass
+        elem.setVisible(True)
     #- Masquer          
     for elem in ret['widgets to hide'] : 
-        try :
-           elem.setVisible(False)
-        except : 
-           pass  
+        elem.setVisible(False)
     #- Déplacer 
     for elem in ret['widgets to move'] :
         elem[0].removeWidget(elem[1])
         #-- 
         elem[0].addWidget(elem[1], elem[2], elem[3], elem[4], elem[5])
-
     #- Regénération du menu des langues          
     regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
+    """
     return  
 
 #==================================================
@@ -816,6 +821,9 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
     #Mise à jour du dictionnaire des widgets 
     ret = self.mDicObjetsInstancies.add(__keyObjet)
     
+    #- regénération et matérialisation en fonction de la structure du dictionnaire
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
+    """
     #- Nouveaux objets à créer avec les nouvelles clefs          
     for key in ret['new keys'] :
         mParent, self.mFirst = self.mDicObjetsInstancies.parent_grid(key), False
@@ -825,27 +833,22 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
            generationObjets(self, key, value)
         else :
            pass
+
     #- Afficher          
     for elem in ret['widgets to show'] :
-        try :                                                   
-           elem.setVisible(True)
-        except : 
-           pass
+        elem.setVisible(True)
     #- Masquer          
     for elem in ret['widgets to hide'] : 
-        try :
-           elem.setVisible(False)
-        except : 
-           pass  
+        elem.setVisible(False)
     #- Déplacer 
     for elem in ret['widgets to move'] :
         elem[0].removeWidget(elem[1])
         #--
         elem[0].addWidget(elem[1], elem[2], elem[3], elem[4], elem[5])
-
     #---------------------------------------------
     #- Regénération du Menu 
     regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
+    """
     return
 
 #==================================================
@@ -855,24 +858,23 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
     #maj Source 
     ret = self.mDicObjetsInstancies.change_source(__keyObjet, _selectItem.text() )
     #---------------------------------------------
-    #- Effacer          
-    for elem in ret['widgets to empty'] : 
-        try :
-           elem.setText("")
-        except : 
-           pass
+    """
+    #- Maj de la valeur          
+    for elem in ret['value to update'] :
+        __valueObjet = self.mDicObjetsInstancies[elem]
+        bibli_plume.majObjetWithValue(__valueObjet['main widget'], __valueObjet['value'])  #Mets à jour la valeur de l'objet en fonction de son type                       
+        #__valueObjet['main widget'].setText(__valueObjet['value'])
+    """
+
+    #- regénération et matérialisation en fonction de la structure du dictionnaire
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _selectItem = _selectItem, _iconSources = _iconSources, _iconSourcesSelect = _iconSourcesSelect, _iconSourcesVierge = _iconSourcesVierge)
+    """
     #- Afficher          
     for elem in ret['widgets to show'] : 
-        try :                                                   
-           elem.setVisible(True)
-        except : 
-           pass
+        elem.setVisible(True)
     #- Masquer          
     for elem in ret['widgets to hide'] : 
-        try :
-           elem.setVisible(False)
-        except : 
-           pass   
+        elem.setVisible(False)
     #- Maj QComboBox
     for elem in ret['concepts list to update'] : 
         __valueObjet = self.mDicObjetsInstancies[elem]
@@ -915,17 +917,124 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
 
        #Dict des objets instanciés
        __valueObjet.update({'switch source actions' : _mListActions}) 
-
     #maj apparence QToolButton 
     #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
+    """
     return  
 
+#==================================================
+# Traitement pour la structuration des dictionnaires contenant les informations de matérialisation
+# Les dictionnaires renvoyés par les méthodes d'actions de la classe plume.rdf.widgetsdict.WidgetsDict présentent une structure fixe,
+# indépendante de la méthode exécutée. Ainsi, il est possible (et certainement préférable) de prévoir 
+# des mécanismes de matérialisation eux-mêmes indépendants de la nature de l'action initialement effectuée par l'utilisateur.
+def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _language = None, _langList = None, _selectItem = None, _iconSources = None, _iconSourcesSelect = None, _iconSourcesVierge = None) :
+    print(_selectItem.text() if _selectItem != None else _selectItem)
+    #- Nouveaux objets à créer avec les nouvelles clefs          
+    for key in _ret['new keys'] :
+        mParent, self.mFirst = self.mDicObjetsInstancies.parent_grid(key), False
+        self.mFirst = False
+        value = self.mDicObjetsInstancies[key]
+        if value['main widget type'] != None :
+           generationObjets(self, key, value)
+        else :
+           pass
+    #- Afficher          
+    for elem in _ret['widgets to show'] : 
+        elem.setVisible(True)
+    #- Masquer          
+    for elem in _ret['widgets to hide'] : 
+        elem.setVisible(False)
+    #- Supprimer Widget        
+    for elem in _ret['widgets to delete'] :
+        self.mDicObjetsInstancies.parent_grid(__keyObjet).removeWidget(elem)
+        elem.deleteLater()
+    #- Supprimer QGridLayout        
+    for elem in _ret['grids to delete'] :
+        self.mDicObjetsInstancies.parent_grid(__keyObjet).removeItem(elem)
+        elem.deleteLater()
+    #- Supprimer Actions        
+    for elem in _ret['actions to delete'] :
+        elem.deleteLater()
+    #- Supprimer Menu        
+    for elem in _ret['menus to delete'] :
+        elem.deleteLater()
+    #---------------------------------------------
+    #- Regénération du Menu Languages, Sources, Translation, Moins, Plus
+    if _language != None : regenerationMenu(self, _ret['language menu to update'], __valueObjet, _language, _langList)
+    #---------------------------------------------        
+    #- Regénération du Menu des QToolButton 
+    if _selectItem != None : regenerationMenuQToolButton(self, _ret['switch source menu to update'], __valueObjet, _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge)
+    #---------------------------------------------
+    #- Regénération du Menu Unit 
+    regenerationMenuUnit(self, _ret['unit menu to update'], __valueObjet)
+    #---------------------------------------------
+    #- Maj QComboBox
+    for elem in _ret['concepts list to update'] : 
+        __valueObjet = self.mDicObjetsInstancies[elem]
+        _thesaurus = __valueObjet['thesaurus values']
+        __valueObjet['main widget'].clear()
+        __valueObjet['main widget'].addItems(_thesaurus)
+    #- Déplacer 
+    for elem in _ret['widgets to move'] :
+        elem[0].removeWidget(elem[1])
+        #-- 
+        elem[0].addWidget(elem[1], elem[2], elem[3], elem[4], elem[5])
+    #- Maj de la valeur          
+    for elem in _ret['value to update'] :
+        __valueObjet = self.mDicObjetsInstancies[elem]
+        bibli_plume.majObjetWithValue(__valueObjet['main widget'], __valueObjet['value'])  #Mets à jour la valeur de l'objet en fonction de son type                       
+        #__valueObjet['main widget'].setText(__valueObjet['value'])
+    return
 
 #==================================================
 # Traitement Regénération du menu Unités avec la clé "unit menu to update" 
 # Pour le moment ne fait rien, en attente si utilisation nécessaire de la clé "unit menu to update")
 def regenerationMenuUnit(self, _ret, __valueObjet) :
     pass
+    return
+
+#==================================================
+# Traitement Regénération du menu des QToolButton 
+def regenerationMenuQToolButton(self, _ret, __valueObjet, _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge) :
+    #---------------------------------------------
+    #- Regénération du Menu 
+    mListeKeyQMenuUpdate = _ret 
+    
+    for mKeyQMenuUpdate in mListeKeyQMenuUpdate : 
+       #Nouveau __valueObjet en fonction nouvelle clef                        
+       __valueObjet  = self.mDicObjetsInstancies[mKeyQMenuUpdate]     
+       #MenuQToolButton                        
+       for act in __valueObjet['switch source menu'].actions() :
+           __valueObjet['switch source menu'].removeAction(act)
+       #--    
+       _mObjetQMenu = __valueObjet['switch source menu']
+       #------------
+       _mListActions = []
+       for elemQMenuItem in __valueObjet['sources'] :
+           _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+           _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
+           print([ elemQMenuItem, _selectItem.text() ]) 
+
+           if elemQMenuItem == _selectItem.text() : 
+              _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
+           else :                 
+              _mObjetQMenuIcon = QIcon(_iconSourcesVierge)
+           _mObjetQMenuItem.setText(elemQMenuItem)
+           _mObjetQMenuItem.setIcon(_mObjetQMenuIcon)
+
+           _mObjetQMenu.addAction(_mObjetQMenuItem)
+           #- Actions
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, mKeyQMenuUpdate, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language))
+           _mListActions.append(_mObjetQMenuItem)
+    
+       __valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].MenuButtonPopup)
+       __valueObjet['switch source widget'].setMenu(_mObjetQMenu)
+
+       #Dict des objets instanciés
+       __valueObjet.update({'switch source actions' : _mListActions}) 
+
+    #maj apparence QToolButton 
+    #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
     return
 
 #==================================================

@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow) 
+from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QWidget) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -44,6 +44,170 @@ import datetime
 import os.path
 import time
 
+#==========================
+#Regeneration de l'IHML et de la barre d'icone comme à l'ouverture
+def initIhmNoConnection(self) :
+    self.tabWidget.clear()
+    tab_widget_Onglet = QWidget()
+    tab_widget_Onglet.setObjectName("Informations")
+    labelTabOnglet = "Informations"
+    self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
+    #-
+    self.plumeEdit.setEnabled(False)
+    self.plumeSave.setEnabled(False)
+    self.plumeEmpty.setEnabled(False)
+    self.plumeExport.setEnabled(False)
+    self.plumeImport.setEnabled(False)
+    self.plumeCopy.setEnabled(False)
+    self.plumePaste.setEnabled(False)
+    self.plumeTemplate.setEnabled(False)
+    self.plumeTranslation.setEnabled(False)
+    self.plumeChoiceLang.setEnabled(False)
+    self.plumeVerrou.setEnabled(False)
+    afficheNoConnections(self, "show")
+    self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(returnVersion()) + ")" 
+    self.Dialog.setWindowTitle(self.messWindowTitle)   
+    if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitle)   
+    return
+
+#==========================
+def afficheNoConnections(self, action = ""):
+    if action == "first" :
+       myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
+       #----------    
+       self.labelImage = QtWidgets.QLabel(self.tabWidget)
+       myDefPath = myPath.replace("\\","/")
+       carIcon = QtGui.QImage(myDefPath)
+       self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
+       self.labelImage.setGeometry(QtCore.QRect(30, 20, 100, 100))
+       self.labelImage.setObjectName("labelImage")
+       #---------- Sélectionnez une couche PostgreSQL  dans le panneau des couches ou   dans l'explorateur   pour consulter ses métadonnées.
+       _zMess1 = QtWidgets.QApplication.translate("plume_ui", "Select a PostgreSQL layer", None) 
+       _zMess2 = QtWidgets.QApplication.translate("plume_ui", "in the layers panel or", None) 
+       _zMess3 = QtWidgets.QApplication.translate("plume_ui", "in explorer", None)
+       _zMess4 = QtWidgets.QApplication.translate("plume_ui", "to view its metadata.", None) 
+       zMess   = "<html>" + _zMess1 + "<ul style='margin: 0;'><li>" + _zMess2 + "</li><li>" + _zMess3 + "</li></ul>\n" + _zMess4 + "</html>"
+       self.zoneWarningClickSource = QtWidgets.QLabel(self.tabWidget )
+       self.zoneWarningClickSource.setGeometry(30, 110, 300, 100)
+       self.zoneWarningClickSource.setStyleSheet("QLabel {   \
+                font-family:" + self.policeQGroupBox  +" ; \
+                }")
+       self.zoneWarningClickSource.setText(zMess)
+    else :
+       self.labelImage.setVisible(True if action == "show" else False)
+       self.zoneWarningClickSource.setVisible(True if action == "show" else False)
+    if hasattr(self, "plumeTemplate") : self.plumeTemplate.setFixedSize(QSize(30, 18))
+    return
+
+
+#==========================
+# If suppression d'une couche active pour les métadonnées affichées
+#
+#Gestion des erreurs et Liste des couches dans la légende
+def gestionErreurExisteLegendeInterface(self, _first = False) :
+    ret = True
+    try : 
+       if not ifExisteInLegendeInterface(self, self.layerBeforeClicked) :
+          if not _first : 
+             zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+             zMess  = QtWidgets.QApplication.translate("plume_ui", "The layer corresponding to the metadata in Plume no longer exists.") + "\n" + QtWidgets.QApplication.translate("plume_ui", "Please reselect in the layer panel or in the explorer.", None)  
+             displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+          self.layerBeforeClicked = ("", "")
+          saveinitializingDisplay("write", self.layerBeforeClicked)
+          initIhmNoConnection(self)
+          ret = False
+    except :
+       if not _first : 
+          zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+          zMess  = QtWidgets.QApplication.translate("plume_ui", "The layer corresponding to the metadata in Plume no longer exists.") + "\n" + QtWidgets.QApplication.translate("plume_ui", "Please reselect in the layer panel or in the explorer.", None)  
+          displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+       self.layerBeforeClicked = ("", "")
+       saveinitializingDisplay("write", self.layerBeforeClicked)
+       initIhmNoConnection(self)
+       ret = False
+    return ret
+#
+#Retounre si la couche existe ou pas
+def ifExisteInLegendeInterface(self, _layerBeforeClick) :
+    ret = False
+    if _layerBeforeClick[1] == "qgis" : #uniquement sur le gestionnaire de couches
+       layers = QgsProject.instance().mapLayers()
+       for layer_id, layer in layers.items() :
+          if _layerBeforeClick[0] == layer :
+             ret = True
+             break
+    else : 
+       ret = True 
+    return ret   
+#
+# If suppression d'une couche active pour les métadonnées affichées
+#==========================
+
+#==========================
+#Retounre si l'objet de type QgsVectorlayer en fonction de l'id
+def returnIfExisteInLegendeInterface(self, _IdLayerBeforeClick) :
+    ret = None
+    layers = QgsProject.instance().mapLayers()
+    for layer_id, layer in layers.items() :
+        if _IdLayerBeforeClick == layer_id : ret = layer
+    return ret   
+
+#==========================
+#Retounre si l'objet de type QgsVectorlayer en fonction de l'id
+def returnIfExisteInBrowser(self, _ItemLayerBeforeClick) :
+    index = _ItemLayerBeforeClick
+    ret = None
+
+    # Interaction avec le navigateur de QGIS
+    mNav1, mNav2 = 'Browser', 'Browser2' 
+    #1
+    self.navi = iface.mainWindow().findChild(QDockWidget, mNav1)
+    self.naviTreeView = self.navi.findChild(QTreeView)
+    self.naviTreeView.setObjectName(mNav1)
+    #2
+    self.navi2 = iface.mainWindow().findChild(QDockWidget, mNav2)
+    self.naviTreeView2 = self.navi2.findChild(QTreeView)
+    self.naviTreeView2.setObjectName(mNav2)
+
+    mNav = self.iface.sender().objectName()
+    self.proxy_model = self.naviTreeView.model() if self.mDic_LH["layerBeforeClickedBrowser"] == mNav1 else self.navTreeView2.model()
+
+    self.modelDefaut = iface.browserModel() 
+    self.model = iface.browserModel()
+    item = self.model.dataItem(self.proxy_model.mapToSource(index))
+
+    if isinstance(item, QgsLayerItem) :
+       if item.providerKey() == 'postgres' :
+          ret = QgsVectorLayer(item.uri(), item.name(), 'postgres')
+    return ret   
+#==========================
+
+#==================================================
+#Mets à jour la valeur de l'objet en fonction de son type
+def majObjetWithValue(_mObjetQSaisie, _valueObjet) : 
+    #if _valueObjet['main widget type'] != None :
+    if _valueObjet == None : return
+    __Val = _valueObjet['value'] if _valueObjet['value'] != None else None
+
+    if _valueObjet['main widget type'] in ("QLineEdit",) :
+       _mObjetQSaisie.setText(__Val)  
+    elif _valueObjet['main widget type'] in ("QTextEdit",) :
+       _mObjetQSaisie.setPlainText(__Val)  
+    elif _valueObjet['main widget type'] in ("QComboBox",) :
+       _mObjetQSaisie.setCurrentText(__Val)  
+    elif _valueObjet['main widget type'] in ("QLabel",) :
+       _mObjetQSaisie.setText(__Val)  
+    elif _valueObjet['main widget type'] in ("QDateEdit",) :
+       _displayFormat = 'dd/MM/yyyy'
+       _mObjetQSaisie.setDate(QDate.fromString( __Val, _displayFormat)) 
+    elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
+       _displayFormat = 'dd/MM/yyyy hh:mm:ss'
+       _mObjetQSaisie.setDateTime(QDateTime.fromString( __Val, _displayFormat))       
+    elif _valueObjet['main widget type'] in ("QCheckBox",) :
+       _mObjetQSaisie.setCheckState((Qt.Checked if str(__Val).lower() == 'true' else Qt.Unchecked) if __Val != None else Qt.PartiallyChecked)
+    return
+#Mets à jour la valeur de l'objet en fonction de son type
+#==================================================
 
 #==================================================
 def ifChangeValues(_dict):
@@ -74,7 +238,7 @@ def ifChangeValues(_dict):
               #print([_dict[key]['main widget type'], oldValue, goodValue ])
               break
     return ret
-    
+
 #==================================================
 def listUserParam(self):
     # liste des Paramétres UTILISATEURS
@@ -304,7 +468,6 @@ def saveMetaIhm(self, _schema, _table) :
 def executeSql(pointeur, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
     pointeurBase = pointeur.cursor() 
- 
     try :
       if isinstance(_mKeySql, tuple) :
          pointeurBase.execute(_mKeySql[0], _mKeySql[1])
@@ -349,10 +512,7 @@ def transformeSql(self, mDic, mKeySql) :
 
 #==================================================
 def updateUriWithPassword(self, mUri) :
-        print(mUri.password())
-        print(os.environ.get('PGPASSWORD'))
         nameBase = mUri.database()
-        print(nameBase)
         #===========================
         if returnSiVersionQgisSuperieureOuEgale("3.10") : 
            #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
@@ -431,8 +591,8 @@ def dialogueMessageError(mTypeErreur, zMessError_Erreur):
 #==================================================
 def resizeIhm(self, l_Dialog, h_Dialog) :
     #----
-    x, y = 10, 25
-    larg, haut =  self.Dialog.width() -20, (self.Dialog.height() - 40 )
+    x, y = 10, 45
+    larg, haut =  self.Dialog.width() -20, (self.Dialog.height() - 60 )
     self.tabWidget.setGeometry(QtCore.QRect(x, y, larg , haut))
     #----
     x, y = 0, 0 
@@ -451,19 +611,24 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
 #==================================================
 #Lecture du fichier ini pour click before open IHM
 #==================================================
-def saveinitializingDisplay(mAction, layerBeforeClicked = None) :
+def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mBrowser = "") :
     mSettings = QgsSettings()
     mDicAutre = {}
     mSettings.beginGroup("PLUME")
     mSettings.beginGroup("Generale")
     if mAction == "write" : 
-       mDicAutre["layerBeforeClicked"]     = layerBeforeClicked[0]
-       mDicAutre["layerBeforeClickedWho"]  = layerBeforeClicked[1]
-       for key, value in mDicAutre.items():
-           mSettings.setValue(key, value)
+       if layerBeforeClicked[0] != None and layerBeforeClicked[0] != "" :
+          #mDicAutre["layerBeforeClicked"] = layerBeforeClicked[0].id() if layerBeforeClicked[1] == "qgis" else layerBeforeClicked[0] 
+          mDicAutre["layerBeforeClicked"]         = layerBeforeClicked[0].id() if layerBeforeClicked[1] == "qgis" else mItem if mItem != None else layerBeforeClicked[0]
+          #print("mitem " + str(mItem) + " " + str(mDicAutre["layerBeforeClicked"] ))
+          mDicAutre["layerBeforeClickedWho"]      = layerBeforeClicked[1]
+          mDicAutre["layerBeforeClickedBrowser"]  = mBrowser
+          for key, value in mDicAutre.items():
+              mSettings.setValue(key, value)
     elif mAction == "read" : 
-       mDicAutre["layerBeforeClicked"]     = ""
-       mDicAutre["layerBeforeClickedWho"]  = ""
+       mDicAutre["layerBeforeClicked"]         = ""
+       mDicAutre["layerBeforeClickedWho"]      = ""
+       mDicAutre["layerBeforeClickedBrowser"]  = ""
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
               mSettings.setValue(key, value)
@@ -500,6 +665,7 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautToolBarDialog = "picture"
        valueDefautLayerBeforeClicked    = ""
        valueDefautLayerBeforeClickedWho = ""
+       valueDefautLayerBeforeClickedBrowser = ""
        valueDefautVersion = ""
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
@@ -510,8 +676,10 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
-       mDicAutre["layerBeforeClicked"]    = valueDefautLayerBeforeClicked
-       mDicAutre["layerBeforeClickedWho"] = valueDefautLayerBeforeClickedWho
+       mDicAutre["layerBeforeClicked"]        = valueDefautLayerBeforeClicked
+       mDicAutre["layerBeforeClickedWho"]     = valueDefautLayerBeforeClickedWho
+       mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
+
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
 
        for key, value in mDicAutre.items():
