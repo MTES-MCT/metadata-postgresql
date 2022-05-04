@@ -175,12 +175,10 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if _valueObjet['main widget type'] in ("QLineEdit") :
           #Valeur 
           bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-          #_mObjetQSaisie.setText(_valueObjet['value'])
        elif _valueObjet['main widget type'] in ("QTextEdit") :
           #Valeur  
           _mObjetQSaisie.setAcceptRichText(True)                      
           bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-          #_mObjetQSaisie.setPlainText(_valueObjet['value'])
 
        if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
           #Lecture seule                        
@@ -221,7 +219,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           _thesaurus = _valueObjet['thesaurus values']                                                           
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
           bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-          #_mObjetQSaisie.setCurrentText(_valueObjet['value']) 
           _mObjetQSaisie.setEditable(True)
           #-
           mCompleter = QCompleter(_thesaurus, self)
@@ -250,7 +247,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan)
        #Valeur                        
        bibli_plume.majObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-       #_mObjetQLabel.setText(_valueObjet['value']) 
        #Tooltip                        
        if valueExiste('help text', _valueObjet) : _mObjetQLabel.setToolTip(_valueObjet['help text'])
        #--                        
@@ -281,11 +277,9 @@ def generationObjets(self, _keyObjet, _valueObjet) :
         #Valeur 
        if valueExiste('value', _valueObjet) :
            bibli_plume.majObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-           #_mObjetQDateEdit.setDate(QDate.fromString( _valueObjet['value'], _displayFormat)) 
        else :
            _mObjetQDateEdit.clear()
            bibli_plume.majObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-          #_mObjetQDateEdit.setDate(QDate.fromString( None, _displayFormat))
        #Lecture seule                        
        _mObjetQDateEdit.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -314,7 +308,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #-- Trois états                        
        _mObjetQCheckBox.setTristate(True)
        bibli_plume.majObjetWithValue(_mObjetQCheckBox, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-       #_mObjetQCheckBox.setCheckState((Qt.Checked if str(_valueObjet['value']).lower() == 'true' else Qt.Unchecked) if _valueObjet['value'] != None else Qt.PartiallyChecked)
 
        #Lecture seule                        
        _mObjetQCheckBox.setEnabled(False if _valueObjet['read only'] else True)
@@ -352,7 +345,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        else :
           _mObjetQDateTime.clear()
           bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-          #_mObjetQDateTime.setDate(QDate.fromString( None, _displayFormat))
        #Lecture seule                        
        _mObjetQDateTime.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -553,7 +545,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QTOOLBUTTON  UNITS
     #---------------------------
 
-
     #---------------------------
     # == QTOOLBUTTON  GEO TOOLS
     if _valueObjet['geo tools'] :
@@ -745,15 +736,6 @@ def action_mObjetQToolButtonUnits(self, __keyObjet, __valueObjet):
     #---------------------------------------------
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet)
-    """          
-    #- Masquer
-    for elem in ret['widgets to hide'] : 
-        elem.setVisible(False)
-    #---------------------------------------------
-    #- Regénération du Menu 
-    regenerationMenuUnit(self, ret['unit menu to update'], __valueObjet)
-    """          
-
     return  
 
 #==================================================
@@ -762,20 +744,12 @@ def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, 
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['language menu'].sender()
     #maj Source 
     ret = self.mDicObjetsInstancies.change_language(__keyObjet,  _selectItem.text() )
+
     #---------------------------------------------
     self.mDicObjetsInstancies[__keyObjet]['language widget'].setText(__valueObjet['language value']) 
     #---------------------------------------------
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
-    """          
-    #- Masquer          
-    for elem in ret['widgets to hide'] : 
-        elem.setVisible(False)
-    #---------------------------------------------
-    #- Regénération du Menu 
-    regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
-    """          
-
     #maj apparence QToolButton 
     #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
     return  
@@ -788,31 +762,6 @@ def action_mObjetQToolButton_Minus(self, __keyObjet, __valueObjet, _language, _l
 
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
-    """
-    #- Supprimer Widget        
-    for elem in ret['widgets to delete'] :
-        self.mDicObjetsInstancies.parent_grid(__keyObjet).removeWidget(elem)
-        elem.deleteLater()
-    #- Supprimer Menu        
-    for elem in ret['menus to delete'] :
-        elem.deleteLater()
-    #- Supprimer Actions        
-    for elem in ret['actions to delete'] :
-        elem.deleteLater()
-    #- Afficher          
-    for elem in ret['widgets to show'] :
-        elem.setVisible(True)
-    #- Masquer          
-    for elem in ret['widgets to hide'] : 
-        elem.setVisible(False)
-    #- Déplacer 
-    for elem in ret['widgets to move'] :
-        elem[0].removeWidget(elem[1])
-        #-- 
-        elem[0].addWidget(elem[1], elem[2], elem[3], elem[4], elem[5])
-    #- Regénération du menu des langues          
-    regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
-    """
     return  
 
 #==================================================
@@ -823,32 +772,6 @@ def action_mObjetQToolButton_Plus_translation(self, __keyObjet, __valueObjet, _l
     
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
-    """
-    #- Nouveaux objets à créer avec les nouvelles clefs          
-    for key in ret['new keys'] :
-        mParent, self.mFirst = self.mDicObjetsInstancies.parent_grid(key), False
-        self.mFirst = False
-        value = self.mDicObjetsInstancies[key]
-        if value['main widget type'] != None :
-           generationObjets(self, key, value)
-        else :
-           pass
-
-    #- Afficher          
-    for elem in ret['widgets to show'] :
-        elem.setVisible(True)
-    #- Masquer          
-    for elem in ret['widgets to hide'] : 
-        elem.setVisible(False)
-    #- Déplacer 
-    for elem in ret['widgets to move'] :
-        elem[0].removeWidget(elem[1])
-        #--
-        elem[0].addWidget(elem[1], elem[2], elem[3], elem[4], elem[5])
-    #---------------------------------------------
-    #- Regénération du Menu 
-    regenerationMenu(self, ret['language menu to update'], __valueObjet, _language, _langList)
-    """
     return
 
 #==================================================
@@ -857,69 +780,9 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['switch source menu'].sender()
     #maj Source 
     ret = self.mDicObjetsInstancies.change_source(__keyObjet, _selectItem.text() )
-    #---------------------------------------------
-    """
-    #- Maj de la valeur          
-    for elem in ret['value to update'] :
-        __valueObjet = self.mDicObjetsInstancies[elem]
-        bibli_plume.majObjetWithValue(__valueObjet['main widget'], __valueObjet['value'])  #Mets à jour la valeur de l'objet en fonction de son type                       
-        #__valueObjet['main widget'].setText(__valueObjet['value'])
-    """
 
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _selectItem = _selectItem, _iconSources = _iconSources, _iconSourcesSelect = _iconSourcesSelect, _iconSourcesVierge = _iconSourcesVierge)
-    """
-    #- Afficher          
-    for elem in ret['widgets to show'] : 
-        elem.setVisible(True)
-    #- Masquer          
-    for elem in ret['widgets to hide'] : 
-        elem.setVisible(False)
-    #- Maj QComboBox
-    for elem in ret['concepts list to update'] : 
-        __valueObjet = self.mDicObjetsInstancies[elem]
-        _thesaurus = __valueObjet['thesaurus values']
-        __valueObjet['main widget'].clear()
-        __valueObjet['main widget'].addItems(_thesaurus)
-
-    #---------------------------------------------
-    #- Regénération du Menu 
-    mListeKeyQMenuUpdate = ret['switch source menu to update'] 
-    
-    for mKeyQMenuUpdate in mListeKeyQMenuUpdate : 
-       #Nouveau __valueObjet en fonction nouvelle clef                        
-       __valueObjet  = self.mDicObjetsInstancies[mKeyQMenuUpdate]     
-       #MenuQToolButton                        
-       for act in __valueObjet['switch source menu'].actions() :
-           __valueObjet['switch source menu'].removeAction(act)
-       #--    
-       _mObjetQMenu = __valueObjet['switch source menu']
-       #------------
-       _mListActions = []
-       for elemQMenuItem in __valueObjet['sources'] :
-           _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
-           _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
-
-           if elemQMenuItem == _selectItem.text() : 
-              _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
-           else :                 
-              _mObjetQMenuIcon = QIcon(_iconSourcesVierge)
-           _mObjetQMenuItem.setText(elemQMenuItem)
-           _mObjetQMenuItem.setIcon(_mObjetQMenuIcon)
-
-           _mObjetQMenu.addAction(_mObjetQMenuItem)
-           #- Actions
-           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, mKeyQMenuUpdate, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language))
-           _mListActions.append(_mObjetQMenuItem)
-    
-       __valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].MenuButtonPopup)
-       __valueObjet['switch source widget'].setMenu(_mObjetQMenu)
-
-       #Dict des objets instanciés
-       __valueObjet.update({'switch source actions' : _mListActions}) 
-    #maj apparence QToolButton 
-    #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
-    """
     return  
 
 #==================================================

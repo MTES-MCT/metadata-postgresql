@@ -357,7 +357,6 @@ class Ui_Dialog_plume(object):
 
         if _mContinue : 
            if mItemTemplates == "Aucun" :
-              #self.template, self.templateTabs = None, None
               self.template = None
            else : 
               #-
