@@ -717,7 +717,9 @@ class WidgetsDict(dict):
               à masquer. Il s'agit a priori de widgets antérieurement visibles, mais
               ce n'est pas une règle absolue.
             * ``widgets to delete`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
-              à détruire, incluant les grilles (:py:class:`QtWidgets.QGridLayout`).
+              à détruire.
+            * ``grids to delete`` : liste de grilles (:py:class:`QtWidgets.QGridLayout`)
+              à détruire.
             * ``actions to delete`` : liste d'actions (:py:class:`QtGui.QAction`) à
               détruire.
             * ``menus to delete`` : liste de menus (:py:class:`QtWidgets.QMenu`) à
@@ -756,8 +758,8 @@ class WidgetsDict(dict):
         
         """
         d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
-            'widgets to delete', 'actions to delete', 'menus to delete',
-            'language menu to update', 'switch source menu to update',
+            'widgets to delete', 'grids to delete', 'actions to delete',
+            'menus to delete', 'language menu to update', 'switch source menu to update',
             'unit menu to update', 'concepts list to update', 'widgets to empty',
             'widgets to move', 'value to update')}
         
@@ -796,7 +798,7 @@ class WidgetsDict(dict):
             d['widgets to delete'] += self.list_widgets(widgetkey)
             w = self[widgetkey]['grid widget']
             if w:
-                d['widgets to delete'].append(w)
+                d['grids to delete'].append(w)
             m = self[widgetkey]['language menu']
             if m:
                 d['menus to delete'].append(m)
