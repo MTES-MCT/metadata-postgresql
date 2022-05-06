@@ -26,6 +26,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     _iconSourcesSelect         = _pathIcons + "/source_button.png"
     _iconSourcesVierge         = _pathIcons + "/vierge.png"
     _iconPlus                  = _pathIcons + "/plus_button.svg"
+    _iconComputeButton         = _pathIcons + "/compute_button.svg"
     _iconPlusTempGoProperties  = _pathIconsUser + "/color_button_Plus_GoProperties.svg"
     _iconPlusTempGoValues      = _pathIconsUser + "/color_button_Plus_GoValues.svg"
     _iconPlusTempTgroup        = _pathIconsUser + "/color_button_Plus_Tgroup.svg"
@@ -83,6 +84,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     else :
        _mParentEnCours = self.mDicObjetsInstancies.parent_grid(_keyObjet)
 
+    #*****************************
+    # ** BEFORE SAISIE ** Mode automatique calcul des Métadonnées
+    # Lorsque la clé correspond à un widget de saisie, le calcul doit avoir lieu avant la saisie de la valeur dans le widget
+    if _valueObjet['auto compute'] :
+       #
+       action_mObjetQToolButton_ComputeButton(self, _keyObjet, _valueObjet, "BEFORE")
+       # 
+    #*****************************
+    
     #---------------------------
     # == QGROUPBOX
     if _valueObjet['main widget type'] == "QGroupBox" :
@@ -341,7 +351,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #Valeur
        if valueExiste('value', _valueObjet) :  
           bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
-          #_mObjetQDateTime.setDateTime(QDateTime.fromString( _valueObjet['value'], _displayFormat))       
        else :
           _mObjetQDateTime.clear()
           bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
@@ -391,6 +400,33 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QLABEL
     _mObjetQLabelEtiquette = generationLabel(self, _keyObjet, _valueObjet, _mParentEnCours)
     # == QLABEL
+    #---------------------------
+    #---------------------------
+    # == QTOOLBUTTON   COMPUTE BUTTON  Métadonnées calculées
+    if _valueObjet['has compute button'] :
+       #--
+       _mObjetQToolButton = QtWidgets.QToolButton()
+       _mObjetQToolButton.setObjectName(str(_keyObjet))
+
+       # == QICON
+       _mObjetQToolButton.setIcon(QIcon(_iconComputeButton ))
+       # == QICON
+              
+       #- Actions
+       _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButton_ComputeButton(self, _keyObjet, _valueObjet))
+       #--                        
+       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'compute widget')
+       _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
+       #Tooltip 
+       _help_text = self.mDicObjetsInstancies[_keyObjet]['compute method'].description                       
+       _mObjetQToolButton.setToolTip(_help_text)
+       #Masqué /Visible Générale                               
+       if (_valueObjet['hidden']) : _mObjetQToolButton.setVisible(False)
+
+       #Dict des objets instanciés
+       self.mDicObjetsInstancies[_keyObjet].update({'compute widget' : _mObjetQToolButton})
+    # == QTOOLBUTTON   COMPUTE BUTTON
+    #---------------------------
 
     #---------------------------
     # == QTOOLBUTTON   Button MOINS
@@ -419,6 +455,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        self.mDicObjetsInstancies[_keyObjet].update({'minus widget'  : _mObjetQToolButton}) 
     # == QTOOLBUTTON   Button MOINS
     #---------------------------
+
     #---------------------------
     # == QTOOLBUTTON  MULTIPLE SOURCES
     if _valueObjet['multiple sources'] :
@@ -465,6 +502,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #apparence_mObjetQToolButton(self, _keyObjet, _iconSources, _valueObjet['current source'])
     # == QTOOLBUTTON  MULTIPLE SOURCES
     #---------------------------
+
     #---------------------------
     # == QTOOLBUTTON  AUTHORIZED LANGUAGES
     if _valueObjet['authorized languages'] :
@@ -505,6 +543,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #apparence_mObjetQToolButton(self, _keyObjet, _iconSources, _valueObjet['current source'])
     # == QTOOLBUTTON  AUTHORIZED LANGUAGES
     #---------------------------
+
     #---------------------------
     # == QTOOLBUTTON  UNITS
     if _valueObjet['units'] :
@@ -630,6 +669,37 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     return  
 
 #==================================================
+# Traitement action sur QToolButton avec COMPUTE BUTTON
+def action_mObjetQToolButton_ComputeButton(self, __keyObjet, __valueObjet, beforeAfter = None):
+    # existence extensions 
+    dependances = self.mDicObjetsInstancies[__keyObjet]['compute method'].dependances
+    _messDependances = ""
+    dependances_ok = True
+
+    if dependances:
+       for extension in dependances :
+           mKeySql = (queries.query_exists_extension(), (extension,))
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+           dependances_ok = dependances_ok and r
+           if not dependances_ok:
+              _messDependances = extension
+              zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+              zMess  = QtWidgets.QApplication.translate("plume_ui", "Au minimum, absence de l'extension : ", None) +  + _messDependances
+              bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+              break
+
+    # existence extensions
+    if dependances_ok :
+       mKeySql = (self.mDicObjetsInstancies.computing_query(__keyObjet, self.schema, self.table))
+       result , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+       ret = self.mDicObjetsInstancies.computing_update(__keyObjet, result)
+       if beforeAfter != "BEFORE" :
+          #---------------------------------------------
+          #- regénération et matérialisation en fonction de la structure du dictionnaire
+          regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet)
+    return  
+
+#==================================================
 # Traitement action sur QToolButton Geo Visualisation
 def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, __valueObjet):
     # If suppression d'une couche active pour les métadonnées affichées
@@ -731,9 +801,7 @@ def action_mObjetQToolButtonUnits(self, __keyObjet, __valueObjet):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['unit menu'].sender()
     #maj Source 
     ret = self.mDicObjetsInstancies.change_unit(__keyObjet,  _selectItem.text() )
-    #---------------------------------------------
-    self.mDicObjetsInstancies[__keyObjet]['unit widget'].setText(__valueObjet['current unit']) 
-    #---------------------------------------------
+
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet)
     return  
@@ -745,9 +813,6 @@ def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, 
     #maj Source 
     ret = self.mDicObjetsInstancies.change_language(__keyObjet,  _selectItem.text() )
 
-    #---------------------------------------------
-    self.mDicObjetsInstancies[__keyObjet]['language widget'].setText(__valueObjet['language value']) 
-    #---------------------------------------------
     #- regénération et matérialisation en fonction de la structure du dictionnaire
     regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
     #maj apparence QToolButton 
@@ -791,7 +856,6 @@ def action_mObjetQToolButton(self, __keyObjet, __valueObjet, _iconSources, _icon
 # indépendante de la méthode exécutée. Ainsi, il est possible (et certainement préférable) de prévoir 
 # des mécanismes de matérialisation eux-mêmes indépendants de la nature de l'action initialement effectuée par l'utilisateur.
 def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _language = None, _langList = None, _selectItem = None, _iconSources = None, _iconSourcesSelect = None, _iconSourcesVierge = None) :
-    print(_selectItem.text() if _selectItem != None else _selectItem)
     #- Nouveaux objets à créer avec les nouvelles clefs          
     for key in _ret['new keys'] :
         mParent, self.mFirst = self.mDicObjetsInstancies.parent_grid(key), False
@@ -823,13 +887,13 @@ def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _
         elem.deleteLater()
     #---------------------------------------------
     #- Regénération du Menu Languages, Sources, Translation, Moins, Plus
-    if _language != None : regenerationMenu(self, _ret['language menu to update'], __valueObjet, _language, _langList)
+    if _ret['language menu to update'] != "" : regenerationMenu(self, _ret['language menu to update'], _language, _langList)
     #---------------------------------------------        
     #- Regénération du Menu des QToolButton 
-    if _selectItem != None : regenerationMenuQToolButton(self, _ret['switch source menu to update'], __valueObjet, _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge)
+    if  _ret['switch source menu to update'] != "" : regenerationMenuQToolButton(self, _ret['switch source menu to update'], _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge)
     #---------------------------------------------
     #- Regénération du Menu Unit 
-    regenerationMenuUnit(self, _ret['unit menu to update'], __valueObjet)
+    if  _ret['unit menu to update'] != "" : regenerationMenuUnit(self, _ret['unit menu to update'])
     #---------------------------------------------
     #- Maj QComboBox
     for elem in _ret['concepts list to update'] : 
@@ -845,20 +909,25 @@ def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _
     #- Maj de la valeur          
     for elem in _ret['value to update'] :
         __valueObjet = self.mDicObjetsInstancies[elem]
-        bibli_plume.majObjetWithValue(__valueObjet['main widget'], __valueObjet['value'])  #Mets à jour la valeur de l'objet en fonction de son type                       
-        #__valueObjet['main widget'].setText(__valueObjet['value'])
+        bibli_plume.majObjetWithValue(__valueObjet['main widget'], __valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
     return
 
 #==================================================
 # Traitement Regénération du menu Unités avec la clé "unit menu to update" 
-# Pour le moment ne fait rien, en attente si utilisation nécessaire de la clé "unit menu to update")
-def regenerationMenuUnit(self, _ret, __valueObjet) :
-    pass
+# Pour le moment ne fait que mettre à jour le texte, en attente si utilisation nécessaire de la clé "unit menu to update")
+def regenerationMenuUnit(self, _ret) :
+    mListeKeyQMenuUpdate = _ret
+    
+    for mKeyQMenuUpdate in mListeKeyQMenuUpdate :
+       #Nouveau __valueObjet en fonction nouvelle clef                        
+       __valueObjet  = self.mDicObjetsInstancies[mKeyQMenuUpdate]     
+       __valueObjet['unit widget'].setText(__valueObjet['current unit'])  
+       #MenuQToolButton                        
     return
 
 #==================================================
 # Traitement Regénération du menu des QToolButton 
-def regenerationMenuQToolButton(self, _ret, __valueObjet, _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge) :
+def regenerationMenuQToolButton(self, _ret, _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge) :
     #---------------------------------------------
     #- Regénération du Menu 
     mListeKeyQMenuUpdate = _ret 
@@ -876,7 +945,6 @@ def regenerationMenuQToolButton(self, _ret, __valueObjet, _language, _selectItem
        for elemQMenuItem in __valueObjet['sources'] :
            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
-           print([ elemQMenuItem, _selectItem.text() ]) 
 
            if elemQMenuItem == _selectItem.text() : 
               _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
@@ -904,13 +972,14 @@ def regenerationMenuQToolButton(self, _ret, __valueObjet, _language, _selectItem
 # Traitement Regénération du menu avec la clé "language menu to update" 
 # contient une liste de clés du dictionnaire de widgets (et non directement des widgets),
 # pour lesquelles le menu des langues doit être régénéré
-def regenerationMenu(self, _ret, __valueObjet, _language, _langList) :
+def regenerationMenu(self, _ret, _language, _langList) :
     # pour infos    _ret = ret['language menu to update']
     mListeKeyQMenuUpdate = _ret
     
-    for mKeyQMenuUpdate in mListeKeyQMenuUpdate : 
+    for mKeyQMenuUpdate in mListeKeyQMenuUpdate :
        #Nouveau __valueObjet en fonction nouvelle clef                        
        __valueObjet  = self.mDicObjetsInstancies[mKeyQMenuUpdate]     
+       __valueObjet['language widget'].setText(__valueObjet['language value'])  
        #MenuQToolButton                        
        for act in __valueObjet['language menu'].actions() :
            __valueObjet['language menu'].removeAction(act)

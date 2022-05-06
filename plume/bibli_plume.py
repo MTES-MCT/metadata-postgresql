@@ -185,18 +185,16 @@ def returnIfExisteInBrowser(self, _ItemLayerBeforeClick) :
 #==================================================
 #Mets à jour la valeur de l'objet en fonction de son type
 def majObjetWithValue(_mObjetQSaisie, _valueObjet) : 
-    #if _valueObjet['main widget type'] != None :
-    if _valueObjet == None : return
-    __Val = _valueObjet['value'] if _valueObjet['value'] != None else None
+    __Val = _valueObjet['value']
 
     if _valueObjet['main widget type'] in ("QLineEdit",) :
-       _mObjetQSaisie.setText(__Val)  
+       _mObjetQSaisie.setText(__Val if __Val != None else "")  
     elif _valueObjet['main widget type'] in ("QTextEdit",) :
-       _mObjetQSaisie.setPlainText(__Val)  
+       _mObjetQSaisie.setPlainText(__Val if __Val != None else "")  
     elif _valueObjet['main widget type'] in ("QComboBox",) :
-       _mObjetQSaisie.setCurrentText(__Val)  
+       _mObjetQSaisie.setCurrentText(__Val if __Val != None else "")  
     elif _valueObjet['main widget type'] in ("QLabel",) :
-       _mObjetQSaisie.setText(__Val)  
+       _mObjetQSaisie.setText(__Val if __Val != None else "")  
     elif _valueObjet['main widget type'] in ("QDateEdit",) :
        _displayFormat = 'dd/MM/yyyy'
        _mObjetQSaisie.setDate(QDate.fromString( __Val, _displayFormat)) 
@@ -470,7 +468,7 @@ def executeSql(pointeur, _mKeySql, optionRetour = None) :
     pointeurBase = pointeur.cursor() 
     try :
       if isinstance(_mKeySql, tuple) :
-         pointeurBase.execute(_mKeySql[0], _mKeySql[1])
+         pointeurBase.execute(*_mKeySql)
       else :
          pointeurBase.execute(_mKeySql)
       #--
