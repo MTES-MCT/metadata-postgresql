@@ -35,7 +35,7 @@ from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
 from plume.rdf.thesaurus import Thesaurus
 from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, GSP, RDFS
 from plume.rdf.properties import PlumeProperty, class_properties
-from plume.pg.computer import computation_method
+from plume.pg.computer import computation_method, has_computation_method
 
 class WidgetsDict(dict):
     """Classe pour les dictionnaires de widgets.
@@ -355,10 +355,21 @@ class WidgetsDict(dict):
 
             # ------ Principales variables ------
             kind = prop_dict.get('kind', SH.Literal)
+            computable = any(str(x) != 'manual'
+                and (str(x) != 'new' or self._was_empty)
+                for x in (prop_dict.get('compute') or [])) \
+                and has_computation_method(prop)
+                # laisse échapper quelques cas où le calcul n'aura
+                # finalement pas lieu, mais la seule conséquence
+                # sera de laisser parfois une catégorie en trop
+                # dans le formulaire, ou faire apparaître un
+                # groupe de valeurs sur une mono-valeur en
+                # lecture seule.
             multilingual = bool(prop_dict.get('unilang')) \
                 and prop_dict.get('datatype') == RDF.langString \
                 and self.translation
-            multiple = bool(prop_dict.get('is_multiple')) and self.edit \
+            multiple = bool(prop_dict.get('is_multiple')) \
+                and (self.edit or computable) \
                 and not bool(prop_dict.get('unilang'))
 
             # ------ Exclusion ------
@@ -368,11 +379,13 @@ class WidgetsDict(dict):
             # Les catégories obligatoires de shape sont affichées
             # quoi qu'il arrive en mode édition.
             # Les catégories sans valeur sont éliminées indépendamment
-            # du modèle quand hideBlank vaut True.
-            if values == [None] and (self.hideBlank or prop.unlisted) \
+            # du modèle quand hideBlank vaut True et qu'il n'est pas
+            # prévu de calcul automatique.
+            if (values == [None]) \
+                and (prop.unlisted or (self.hideBlank and not computable)) \
                 and not (self.edit and prop_dict.get('is_mandatory')):
                 continue
-            
+
             # ------ Fantômisation ------
             # s'il y a une valeur, mais que hideUnlisted vaut True
             # et que la catégorie n'est pas prévue par le modèle, on
