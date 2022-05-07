@@ -50,6 +50,10 @@ Les trois modes de calcul automatique opèrent comme suit :
 
 Si plusieurs de ces modes sont spécifiés simultanément, `'auto'` prévaut sur `'empty'`, qui prévaut sur `'new'`.
 
+Les boutons de calcul ne sont présents qu'en mode édition, par contre le calcul automatique opère aussi bien en mode édition qu'en mode lecture. Une catégorie sur laquelle une fonctionnalité de calcul automatique est définie apparaîtra toujours dans le formulaire, même lorsque le calcul ne renvoie aucune valeur et que le paramétrage prévoit que les catégories sans valeur ne soient pas affichées (comportement par défaut en mode lecture[^hideblank]).
+
+[^hideblank]: Cf. `readHideBlank` dans la [liste des paramètres utilisateur](./parametres_utilisateur.md).
+
 ## Processus de calcul
 
 Le calcul consiste en quatre opérations successives :
