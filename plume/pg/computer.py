@@ -8,6 +8,8 @@ from datetime import datetime
 from plume.rdf.rdflib import URIRef
 from plume.rdf.utils import crs_ns
 from plume.rdf.namespaces import DCT
+from plume.rdf.properties import PlumeProperty
+from plume.rdf.widgetkey import WidgetKey
 from plume.pg.queries import query_get_srid_list, query_get_comment_fragments, \
     query_get_creation_date, query_get_modification_date
 
@@ -216,7 +218,7 @@ def crs_parser(crs_auth, crs_code):
     value = URIRef('{}{}'.format(crs_ns[crs_auth], crs_code))
     return ComputationResult(value=value)
 
-methods = {
+METHODS = {
     DCT.conformsTo : ComputationMethod(
         query_builder=query_get_srid_list,
         dependances=['postgis'],
@@ -271,5 +273,27 @@ def computation_method(path):
     ComputationMethod or None
     
     """
-    return methods.get(path)
+    return METHODS.get(path)
+
+def has_computation_method(path):
+    """Détermine si une méthode de calcul est disponible pour la catégorie de métadonnées considérée.
+
+    Parameters
+    ----------
+    path : rdflib.paths.SequencePath
+        Le chemin de la catégorie. Les clés de dictionnaire de
+        widget (plume.rdf.widgetkey.WidgetKey) et les propriétés
+        (plume.rdf.properties.PlumeProperty) sont également
+        acceptées.
+
+    Returns
+    -------
+    bool
+
+    """
+    if isinstance(path, (WidgetKey, PlumeProperty)):
+        path = getattr(path, 'path', None)
+    if path:
+        return path in METHODS
+    return False
 
