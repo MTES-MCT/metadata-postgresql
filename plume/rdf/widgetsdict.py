@@ -1510,8 +1510,45 @@ class WidgetsDict(dict):
             'translation group'):
             return obj
             
-        raise RuntimeError("Unknown group kind for key {}.".format(key))
+        raise RuntimeError("Unknown group kind for key {}.".format(widgetkey))
     
+    def items_to_compute(self):
+        """Générateur sur les clés à calculer avant la matérialisation du formulaire.
+        
+        Similaire à :py:meth:`WidgetsDict.items`, si ce n'est que ce
+        générateur travaille sur une copie du dictionnaire et ne s'intéresse
+        qu'aux clés sur lesquelles un calcul automatique côté serveur a été
+        configuré.
+
+        La syntaxe d'appel est identique :
+
+            >>> widgetkey, internaldict in widgetsdict.items_to_compute():
+
+        Yields
+        ------
+        tuple
+            Le premier élément est la clé du dictionnaire de widgets,
+            qui peut être soit un groupe de valeurs 
+            (:py:class:`plume.rdf.widgetkey.GroupOfValuesKey`), soit
+            une clé-valeur (:py:class:`plume.rdf.widgetkey.ValueKey`).
+            Le second élément du tuple est le dictionnaire interne
+            associé à cette clé (:py:class:`plume.rdf.internaldict.InternalDict`).        
+
+        Notes
+        -----
+        Utiliser une copie du dictionnaire permet de faire appel à ce
+        générateur pour ajouter ou supprimer des clés du dictionnaire
+        d'origine, ce qui peut être nécessaire lorsque le calcul est
+        configuré sur un groupe de valeur. Ceci n'est viable que parce
+        que les clés ajoutées ne peuvent être que des clés-valeurs
+        sans calcul (cf. :py:attr`plume.rdf.widgetkey.ValueKey.compute`,
+        qui vaut toujours `None` dans un groupe de valeurs).
+
+        """
+        for widgetkey, internaldict in self.copy().items():
+            if internaldict['auto compute']:
+                yield widgetkey, internaldict
+
     def print(self):
         """Visualisateur très sommaire du contenu du dictionnaire de widgets.
         
