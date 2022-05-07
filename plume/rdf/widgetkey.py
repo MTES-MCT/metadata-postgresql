@@ -491,11 +491,12 @@ class WidgetKey:
         -----
         Cette propriété est en lecture seule. Elle est définie sur la
         classe :py:class:`WidgetKey` pour simplifier les tests de visibilité,
-        mais elle vaut toujours ``False`` quand la clé n'est pas un bouton
-        de traduction.
+        mais elle vaut toujours ``False`` quand la clé n'est pas un bouton.
         
         See Also
         --------
+        PlusButtonKey.is_hidden_b :
+            Réécriture de la propriété pour un bouton plus.
         TranslationButtonKey.is_hidden_b :
             Réécriture de la propriété pour un bouton de traduction.
         
@@ -3079,8 +3080,8 @@ class GroupOfValuesKey(GroupKey):
         parent est en lecture seule ou si la clé elle-même est
         paramétrée comme telle.
         
-        La création de bouton plus est inhibée dans un groupe de valeurs
-        en lecture seule.
+        Un bouton plus dans un groupe de valeurs en lecture seule
+        sera toujours masqué.
         
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
@@ -3478,8 +3479,8 @@ class GroupOfValuesKey(GroupKey):
             length = 1
         old_children = self.children.copy()
         n = length
-        l = []
-        d = []
+        l = [] # clés pour futur stockage des valeurs
+        d = [] # clés à supprimer
         for child in self.real_children():
             if isinstance(child, GroupOfPropertiesKey):
                 continue
@@ -4930,8 +4931,7 @@ class PlusButtonKey(WidgetKey):
     def __new__(cls, **kwargs):
         parent = kwargs.get('parent')
         if kwargs.get('is_ghost', False) or not parent \
-            or not isinstance(parent, GroupOfValuesKey) \
-            or parent.is_read_only:
+            or not isinstance(parent, GroupOfValuesKey):
             return
         return super().__new__(cls)
 
@@ -4976,6 +4976,25 @@ class PlusButtonKey(WidgetKey):
         """
         return self.parent.path
     
+    @property
+    def is_hidden_b(self):
+        """bool: La clé est-elle un bouton masqué ?
+        
+        Un bouton plus est toujours masqué dans un groupe de valeurs
+        en lecture seule.
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.is_hidden_b`.
+        
+        See Also
+        --------
+        TranslationButtonKey.is_hidden_b :
+            Réécriture de la propriété pour un bouton de traduction.
+
+        """
+        return self.parent.is_read_only
+
     @property
     def placement(self):
         """tuple(int): Placement du widget principal de la clé dans la grille, le cas échéant.
@@ -5028,15 +5047,7 @@ class PlusButtonKey(WidgetKey):
             Le carnet d'actions qui permettra de matérialiser
             la création de la clé.
         
-        Notes
-        -----
-        Utiliser cette méthode sur un bouton masqué n'a pas d'effet,
-        et le carnet d'actions renvoyé est vide. Il en irait de même
-        sur un groupe ne contenant aucune clé non fantôme.
-        
         """
-        if self.is_hidden:
-            return ActionsBook()
         if not append_book:
             WidgetKey.clear_actionsbook()
         for child in self.parent.real_children():
@@ -5072,10 +5083,9 @@ class TranslationButtonKey(PlusButtonKey):
     
     def __new__(cls, **kwargs):
         parent = kwargs.get('parent')
-        if kwargs.get('is_ghost', False) or not parent \
-            or parent.is_read_only:
+        if kwargs.get('is_ghost', False) or not parent:
             # inhibe la création de boutons fantômes ou sans
-            # parent ou dans un groupe en lecture seule
+            # parent
             return
         if not isinstance(parent, TranslationGroupKey):
             return PlusButtonKey.__call__(**kwargs)
@@ -5104,12 +5114,14 @@ class TranslationButtonKey(PlusButtonKey):
         
         Notes
         -----
+        Réécriture de la propriété :py:attr:`WidgetKey.is_hidden_b`.
+
         Cette propriété est en lecture seule. Elle est déduite dynamiquement
         de la propriété :py:attr:`TranslationGroupKey.available_languages`
         du groupe parent.
         
         """
-        return not self.parent.available_languages
+        return self.parent.is_read_only or not self.parent.available_languages
 
     def _validate_parent(self, parent):
         return isinstance(parent, TranslationGroupKey)
