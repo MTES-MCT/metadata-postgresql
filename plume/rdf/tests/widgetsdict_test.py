@@ -21,7 +21,7 @@ from plume.rdf.exceptions import ForbiddenOperation
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs, query_exists_extension
 from plume.pg.template import TemplateDict, LocalTemplatesCollection
-from plume.pg.computer import methods, ComputationMethod, default_parser
+from plume.pg.computer import METHODS, ComputationMethod, default_parser
 
 class WidgetsDictTestCase(unittest.TestCase):
 
@@ -2178,8 +2178,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
             """
         metagraph = Metagraph().parse(data=metadata)
-        m = methods.get(DCT.created)
-        methods[DCT.created] = ComputationMethod(query_builder=None,
+        m = METHODS.get(DCT.created)
+        METHODS[DCT.created] = ComputationMethod(query_builder=None,
             parser=default_parser)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
         c = widgetsdict.root.search_from_path(DCT.created)
@@ -2192,9 +2192,9 @@ class WidgetsDictTestCase(unittest.TestCase):
                 if not a in ('value to update',):
                     self.assertFalse(l)
         if m:
-            methods[DCT.created] = m
+            METHODS[DCT.created] = m
         else:
-            del methods[DCT.created]
+            del METHODS[DCT.created]
 
     def test_compute_conformsto(self):
         """Processus complet de calcul des métadonnées pour dct:conformsTo.
@@ -2893,8 +2893,9 @@ class WidgetsDictTestCase(unittest.TestCase):
             """
         metagraph = Metagraph().parse(data=metadata)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
-            translation=True)
-        widgetsdict_witness = WidgetsDict(metagraph=metagraph, translation=True)
+            translation=True, langList=('fr', 'en', 'it'))
+        widgetsdict_witness = WidgetsDict(metagraph=metagraph, translation=True,
+            langList=('fr', 'en', 'it'))
         # dcat:keyword (groupe de valeurs)
         w = widgetsdict.root.search_from_path(DCAT.keyword)
         ww = widgetsdict_witness.root.search_from_path(DCAT.keyword)
@@ -2902,8 +2903,12 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(ww.is_read_only)
         self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
         self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
-        self.assertIsNone(w.button)
+        self.assertTrue(w.button)
+        self.assertTrue(w.button.is_hidden_b)
+        self.assertTrue(widgetsdict[w.button]['hidden'])
         self.assertTrue(ww.button)
+        self.assertFalse(ww.button.is_hidden_b)
+        self.assertFalse(widgetsdict_witness[ww.button]['hidden'])
         self.assertTrue(not any(widgetsdict[c]['has minus button'] for c in w.children))
         self.assertTrue(all(widgetsdict_witness[c]['has minus button'] for c in ww.children))
         # dct:conformsTo (bouton de calcul)
@@ -2913,8 +2918,12 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(ww.is_read_only)
         self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
         self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
-        self.assertIsNone(w.button)
+        self.assertTrue(w.button)
+        self.assertTrue(w.button.is_hidden_b)
+        self.assertTrue(widgetsdict[w.button]['hidden'])
         self.assertTrue(ww.button)
+        self.assertFalse(ww.button.is_hidden_b)
+        self.assertFalse(widgetsdict_witness[ww.button]['hidden'])
         self.assertTrue(not any(widgetsdict[c]['has minus button'] for c in w.children))
         self.assertTrue(all(widgetsdict_witness[c]['has minus button'] for c in ww.children))
         self.assertFalse(widgetsdict[w]['has compute button'])
@@ -2926,8 +2935,12 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(ww.is_read_only)
         self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
         self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
-        self.assertIsNone(w.button)
+        self.assertTrue(w.button)
+        self.assertTrue(w.button.is_hidden_b)
+        self.assertTrue(widgetsdict[w.button]['hidden'])
         self.assertTrue(ww.button)
+        self.assertFalse(ww.button.is_hidden_b)
+        self.assertFalse(widgetsdict_witness[ww.button]['hidden'])
         self.assertTrue(not any(widgetsdict[c]['multiple sources'] for c in w.children))
         self.assertTrue(all(widgetsdict_witness[c]['multiple sources'] for c in ww.children))
         # dct:title (groupe de traduction)
@@ -2937,8 +2950,12 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertFalse(ww.is_read_only)
         self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
         self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
-        self.assertIsNone(w.button)
+        self.assertTrue(w.button)
+        self.assertTrue(w.button.is_hidden_b)
+        self.assertTrue(widgetsdict[w.button]['hidden'])
         self.assertTrue(ww.button)
+        self.assertFalse(ww.button.is_hidden_b)
+        self.assertFalse(widgetsdict_witness[ww.button]['hidden'])
         self.assertTrue(not any(widgetsdict[c]['authorized languages'] for c in w.children))
         self.assertTrue(all(widgetsdict_witness[c]['authorized languages'] for c in ww.children))
         self.assertTrue(not any(widgetsdict[c]['has minus button'] for c in w.children))
@@ -3066,6 +3083,112 @@ class WidgetsDictTestCase(unittest.TestCase):
             in [widgetsdict[c]['value'] for c in b.children])
         self.assertTrue('EPSG 4326 : WGS 84'
             in [widgetsdict[c]['value'] for c in b.children])
+
+    def test_items_to_compute_read(self):
+        """Générateur sur les clés avec calcul automatique, simulation en mode lecture.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:accessRights [ a dct:RightsStatement ;
+                    rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                uuid:218c1245-6ba7-4163-841e-476e0d5582af "À mettre à jour !"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+
+        # --- préparation d'un modèle avec calcul auto ---
+        connection_string = ConnectionString()
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_template (tpl_label) VALUES
+                        ('Calcul') ;
+                    INSERT INTO z_plume.meta_template_categories
+                        (tpl_label, shrcat_path, compute, compute_params) VALUES
+                        ('Calcul', 'dct:title', ARRAY['manual', 'empty'],
+                            '{"pattern": "^[^.]+"}'::jsonb),
+                        ('Calcul', 'dct:description', ARRAY['manual', 'empty'], NULL),
+                        ('Calcul', 'dct:conformsTo', ARRAY['manual', 'auto'], NULL),
+                        ('Calcul', 'dct:created', ARRAY['manual', 'new'], NULL),
+                        ('Calcul', 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Calcul',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_template CASCADE ;
+                    ''')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
+            mode='read')
+        self.assertIsNone(widgetsdict.root.search_from_path(DCT.created))
+        # car 'new' sur une fiche non vide
+        self.assertIsNotNone(widgetsdict.root.search_from_path(DCT.modified))
+        self.assertIsNotNone(widgetsdict.root.search_from_path(DCT.conformsTo))
+        self.assertIsNotNone(widgetsdict.root.search_from_path(DCT.title))
+
+        # --- préparation des objets ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+                    CREATE TABLE z_plume.test_multigeom (
+                        id serial PRIMARY KEY,
+                        geom_2154 geometry(multipolygon, 2154),
+                        geom_4326 geometry(multipolygon, 4326)
+                    ) ;
+                    COMMENT ON TABLE z_plume.test_multigeom IS 'Table multi-géométries. ...' ;
+                    ''')
+        conn.close()
+
+        # --- exécution du calcul ---
+        for widgetkey, internaldict in widgetsdict.items_to_compute():
+            query = widgetsdict.computing_query(widgetkey, 'z_plume', 'test_multigeom')
+            conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(*query)
+                    result = cur.fetchall()
+            conn.close()
+            widgetsdict.computing_update(widgetkey, result)
+
+        # --- nettoyage des objets ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    DROP TABLE z_plume.test_multigeom ;
+                    TRUNCATE z_plume.stamp_timestamp ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
+                    ''')
+        conn.close()
+
+        # --- contrôle du résultat ---
+        a = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(widgetsdict[a]['value'], 'Table multi-géométries')
+        b = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertEqual(len(b.children), 2)
+        self.assertTrue('<a href="http://www.opengis.net/def/crs/EPSG/0/2154">' \
+            'EPSG 2154 : RGF93 / Lambert-93 (France métropolitaine)</a>'
+            in [widgetsdict[c]['value'] for c in b.children])
+        self.assertTrue('<a href="http://www.opengis.net/def/crs/EPSG/0/4326">' \
+            'EPSG 4326 : WGS 84</a>' in [widgetsdict[c]['value'] for c in b.children])
+
 
 if __name__ == '__main__':
     unittest.main()
