@@ -131,6 +131,29 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertFalse(a.create)
         self.assertListEqual(a.hide, [p1])
 
+    def test_shrink_expend_read_only(self):
+        """Préparation d'un groupe de valeurs en lecture seule en vue d'un import massif.
+        
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(parent=t, predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard, sources=[
+            URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')],
+            is_read_only=True)
+        b = PlusButtonKey(parent=g)
+        self.assertTrue(b.is_hidden_b)
+        p1 = GroupOfPropertiesKey(parent=g)
+        v1 = ValueKey(parent=g, m_twin=p1, is_hidden_m=False,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        WidgetKey.clear_actionsbook()
+        l = g.shrink_expend(2, sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')])
+        a = WidgetKey.unload_actionsbook()
+        self.assertEqual(len(l), 2)
+        self.assertEqual(len(a.create), 2)
+        self.assertEqual(a.create[0].m_twin, a.create[1])
+
     def test_get_all_attributes(self):
         """Vérifie que tous les attributs et propriétés peuvent être évalués sans erreur.
         
