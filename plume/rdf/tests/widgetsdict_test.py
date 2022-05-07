@@ -1159,12 +1159,11 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict[a]['current source'], 'Thème de données (UE)')
         self.assertEqual(actionsdict['switch source menu to update'], [a])
         self.assertEqual(actionsdict['concepts list to update'], [a])
-        self.assertEqual(actionsdict['widgets to empty'], ['<A QComboBox dcat:theme>'])
         self.assertEqual(actionsdict['value to update'], [a])
         self.assertTrue('Régions et villes' in widgetsdict[a]['thesaurus values'])
         for k in actionsdict.keys():
             if not k in ('switch source menu to update', 'concepts list to update',
-                'widgets to empty', 'value to update'):
+                'value to update'):
                 self.assertFalse(actionsdict[k])
         self.assertIsNone(widgetsdict.check_grids())
 
@@ -1201,12 +1200,10 @@ class WidgetsDictTestCase(unittest.TestCase):
             '<B1 QGroupBox rdfs:label>'])
         self.assertEqual(actionsdict['switch source menu to update'], [b2])
         self.assertEqual(actionsdict['concepts list to update'], [b2])
-        self.assertEqual(actionsdict['widgets to empty'], ['<B2 QComboBox dct:accessRights>'])
         self.assertEqual(actionsdict['value to update'], [b2])
         for k in actionsdict.keys():
             if not k in ('switch source menu to update', 'concepts list to update',
-                'widgets to show', 'widgets to hide', 'widgets to empty',
-                'value to update'):
+                'widgets to show', 'widgets to hide',  'value to update'):
                 self.assertFalse(actionsdict[k])
         self.assertIsNone(widgetsdict.check_grids())
 
