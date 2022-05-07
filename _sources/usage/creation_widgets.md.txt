@@ -244,8 +244,6 @@ widgetsdict[widgetkey]['value']
 
 ```
 
-**Important !** Lorsque la métadonnée est supposée être calculée automatique, c'est-à-dire quand la clé `'auto compute'` du dictionnaire interne vaut `True`, le calcul doit être réalisé avant d'intégrer le contenu de la clé `'value'` dans le widget de saisie, afin de bien afficher la valeur à jour. Pour plus de détails, on se référera à [Métadonnées calculées](./metadonnees_calculees.md#implémentation-du-calcul-automatique).
-
 - Si la clé `'read only'` vaut `True`, le widget doit être visible mais désactivé, pour empêcher les modifications manuelles par l'utilisateur.
 
 ```python
