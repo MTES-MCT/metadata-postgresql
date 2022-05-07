@@ -750,8 +750,6 @@ class WidgetsDict(dict):
               (:py:class:`plume.rdf.widgetkey.WidgetKey`) tel que le widget principal
               est un widget ``QComboBox`` dont la liste de termes doit être
               régénérée.
-            * ``widgets to empty`` : liste de widgets (:py:class:`QtWidgets.QWidget`)
-              dont le texte doit être effacé.
             * ``widgets to move`` : liste de tuples contenant les informations relatives
               à des widgets dont - parce qu'on a supprimé un widget antérieurement
               positionné au-dessus d'eux dans la grille - il faut à présent modifier
@@ -773,7 +771,7 @@ class WidgetsDict(dict):
         d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
             'widgets to delete', 'grids to delete', 'actions to delete',
             'menus to delete', 'language menu to update', 'switch source menu to update',
-            'unit menu to update', 'concepts list to update', 'widgets to empty',
+            'unit menu to update', 'concepts list to update',
             'widgets to move', 'value to update')}
         
         if not actionsbook:
@@ -838,14 +836,6 @@ class WidgetsDict(dict):
                 d['actions to delete'] += a
             
             del self[widgetkey]
-        
-        # à supprimer dès que possible (ainsi que la
-        # clé qui va avec) !
-        for widgetkey in actionsbook.update:
-            if self[widgetkey]['value'] is None:
-                w = self[widgetkey]['main widget']
-                if w:
-                    d['widgets to empty'].append(w)
         
         for widgetkey in actionsbook.move:
             g = self.parent_grid(widgetkey)
