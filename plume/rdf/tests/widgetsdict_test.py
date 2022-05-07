@@ -2983,6 +2983,90 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(all(widgetsdict[c]['read only'] for c in w.children))
         self.assertTrue(not any(widgetsdict_witness[c]['read only'] for c in ww.children))
 
+    def test_items_to_compute(self):
+        """Générateur sur les clés avec calcul automatique.
+        
+        """
+        # --- préparation d'un modèle avec calcul auto ---
+        connection_string = ConnectionString()
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_template (tpl_label) VALUES
+                        ('Calcul') ;
+                    INSERT INTO z_plume.meta_template_categories
+                        (tpl_label, shrcat_path, compute, compute_params) VALUES
+                        ('Calcul', 'dct:title', ARRAY['manual', 'empty'],
+                            '{"pattern": "^[^.]+"}'::jsonb),
+                        ('Calcul', 'dct:description', ARRAY['manual', 'empty'], NULL),
+                        ('Calcul', 'dct:conformsTo', ARRAY['manual', 'auto'], NULL),
+                        ('Calcul', 'dct:created', ARRAY['manual', 'new'], NULL),
+                        ('Calcul', 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
+                    ''')
+                cur.execute(
+                    query_get_categories(),
+                    ('Calcul',)
+                    )
+                categories = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_template CASCADE ;
+                    ''')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(template=template)
+
+        # --- préparation des objets ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+                    CREATE TABLE z_plume.test_multigeom (
+                        id serial PRIMARY KEY,
+                        geom_2154 geometry(multipolygon, 2154),
+                        geom_4326 geometry(multipolygon, 4326)
+                    ) ;
+                    COMMENT ON TABLE z_plume.test_multigeom IS 'Table multi-géométries. ...' ;
+                    ''')
+        conn.close()
+
+        # --- exécution du calcul ---
+        for widgetkey, internaldict in widgetsdict.items_to_compute():
+            query = widgetsdict.computing_query(widgetkey, 'z_plume', 'test_multigeom')
+            conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(*query)
+                    result = cur.fetchall()
+            conn.close()
+            widgetsdict.computing_update(widgetkey, result)
+
+        # --- nettoyage des objets ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    DROP TABLE z_plume.test_multigeom ;
+                    TRUNCATE z_plume.stamp_timestamp ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
+                    ''')
+        conn.close()
+
+        # --- contrôle du résultat ---
+        a = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(widgetsdict[a]['value'], 'Table multi-géométries')
+        b = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertEqual(len(b.children), 2)
+        self.assertTrue('EPSG 2154 : RGF93 / Lambert-93 (France métropolitaine)'
+            in [widgetsdict[c]['value'] for c in b.children])
+        self.assertTrue('EPSG 4326 : WGS 84'
+            in [widgetsdict[c]['value'] for c in b.children])
+
 if __name__ == '__main__':
     unittest.main()
 
