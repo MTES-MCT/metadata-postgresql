@@ -15,16 +15,16 @@ Les catégories pour lesquelles le calcul est proposé sont, à ce stade :
 | Chemin de la catégorie | Information calculée | Paramètres optionnels | Dépendances |
 | --- | --- | --- | --- |
 | `dct:conformsTo` | Tous les référentiels de coordonnées déclarés pour les géométries de la table ou vue. | Aucun. | L'extension PostGIS doit être active sur la base. |
-| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. | L'extension *PlumePg* doit être active sur la base. |
+| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. `pattern` et `flags` correspondent précisément aux paramètres de même nom de la fonction ` regexp_matches(text, text, text)` de PostgreSQL, qui est en fait utilisée pour l'opération. | L'extension *PlumePg* doit être active sur la base. |
 | `dct:title` | Idem `dct:description`. | Idem. | Idem. |
 | `dct:created` | La date de création de la table si l'information est présente dans la table `z_plume.stamp.timestamp`. | Aucun. | L'extension *PlumePg* doit être active sur la base[^activation-suivi-dates]. |
 | `dct:modified` | La date de dernière modification de la table si l'information est présente dans la table `z_plume.stamp.timestamp`. | Aucun. | L'extension *PlumePg* doit être active sur la base[^activation-suivi-dates]. |
 
 [^extrait-descriptif]: Si des métadonnées ont déjà été saisies pour la table, seule la partie du descriptif qui précède la balise `<METADATA>` sera considérée.
 
-[^doc-pattern]: Pour plus de détails, on se reportera à la documentation de PostgreSQL. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.
+[^doc-pattern]: Pour plus de détails, on se reportera à la documentation de PostgreSQL sur les expressions régulières. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.
 
-[^doc-flags]: Les valeurs acceptées sont les mêmes que pour les arguments `flags` des fonctions d'expression régulière de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.
+[^doc-flags]: Les valeurs acceptées sont les mêmes que pour les arguments `flags` des fonctions d'expressions régulières de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.
 
 [^activation-suivi-dates]: Il est également recommandé d'avoir [activé les fonctionnalités d'enregistrement des dates](#activation-de-lenregistrement-des-dates), sans quoi le calcul ne renverra jamais rien.
 
@@ -35,9 +35,9 @@ Par exemple :
 ```sql
 
 UPDATE z_plume.meta_categorie
-	SET compute = ARRAY['new']::z_plume.meta_compute[],
-		compute_params = '{"pattern": "^(?:\\w+\\s*)+"}'::jsonb
-	WHERE path = 'dct:title' ;
+    SET compute = ARRAY['new'],
+        compute_params = '{"pattern": "^[\\w\\s]+"}'::jsonb
+    WHERE path = 'dct:title' ;
 
 ```
 
@@ -126,18 +126,20 @@ Pour ce faire, `WidgetsDict.computing_update` renvoie, comme toutes les méthode
 
 ## Implémentation du calcul automatique
 
-Le calcul automatique est effectué pendant la génération des widgets (cf. [Création d'un nouveau widget](./creation_widgets.md)) lorsque la valeur de la clé `'auto compute'` du dictionnaire interne est `True`. Ceci peut se produire pour un widget de saisie, mais aussi pour un groupe de valeurs.
+Le calcul automatique est la première étape de la matérialisation d'un formulaire, juste avant la [génération des widgets](./creation_widgets.md).
+
+Il s'agit là aussi de boucler sur les clés du dictionnaire de widgets pour exécuter les calculs, mais on utilisera pour ce faire un générateur spécifique, `plume.rdf.widgetsdict.WidgetsDict.items_to_compute` au lieu de `dict.items`. Ce générateur ne considère que les clés nécessitant un calcul (la clé `'auto compute'` de leur dictionnaire interne vaut `True`) et utilise une copie du dictionnaire de widgets, afin d'autoriser l'ajout ou la suppression de clés dans le dictionnaire d'origine au cours du traitement.
 
 ```python
 
-if widgetsdict[widgetkey]['auto compute']:
+for widgetkey, internaldict in widgetsdict.items_to_compute():
     ...
 
 ```
 
-On suivra les étapes du [processus de calcul](#processus-de-calcul) décrit précédemment avec deux points d'attention :
-- Lorsque la clé correspond à un widget de saisie, le calcul doit avoir lieu **avant la saisie de la valeur dans le widget**.
-- Le dictionnaire renvoyé par la méthode `plume.rdf.widgetsdict.WidgetsDict.computing_update` **ne doit pas être considéré**, car les modifications résultant du calcul concernent des clés qui seront traitées ensuite.
+*`internaldict` est le dictionnaire interne de la clé `widgetkey`, soit `widgetsdict[widgetkey]`.*
+
+À chaque itération, on suivra toutes les étapes du [processus de calcul](#processus-de-calcul) **à l'exception de [la dernière](#modification-des-widgets-en-conséquence)**. Le dictionnaire renvoyé par la méthode `plume.rdf.widgetsdict.WidgetsDict.computing_update` est inutile ici puisque le formulaire n'a pas encore été matérialisé.
 
 ## Implémentation du calcul à déclenchement manuel
 
