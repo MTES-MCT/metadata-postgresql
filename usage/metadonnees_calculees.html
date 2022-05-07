@@ -302,7 +302,7 @@
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:description</span></code></p></td>
 <td><p>Importe le contenu du descriptif PostgreSQL de l’objet<a class="footnote-reference brackets" href="#extrait-descriptif" id="id1">1</a>, soit dans son intégralité, soit en utilisant une expression régulière.</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code> est l’expression régulière spécifiant l’extrait du descriptif à importer<a class="footnote-reference brackets" href="#doc-pattern" id="id2">2</a>. Si l’expression renvoie plusieurs fragments, seul le premier est conservé. S’il y a lieu, <code class="docutils literal notranslate"><span class="pre">flags</span></code> contient les paramètres associés à l’expression régulière<a class="footnote-reference brackets" href="#doc-flags" id="id3">3</a>.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code> est l’expression régulière spécifiant l’extrait du descriptif à importer<a class="footnote-reference brackets" href="#doc-pattern" id="id2">2</a>. Si l’expression renvoie plusieurs fragments, seul le premier est conservé. S’il y a lieu, <code class="docutils literal notranslate"><span class="pre">flags</span></code> contient les paramètres associés à l’expression régulière<a class="footnote-reference brackets" href="#doc-flags" id="id3">3</a>. <code class="docutils literal notranslate"><span class="pre">pattern</span></code> et <code class="docutils literal notranslate"><span class="pre">flags</span></code> correspondent précisément aux paramètres de même nom de la fonction <code class="docutils literal notranslate"> <span class="pre">regexp_matches(text,</span> <span class="pre">text,</span> <span class="pre">text)</span></code> de PostgreSQL, qui est en fait utilisée pour l’opération.</p></td>
 <td><p>L’extension <em>PlumePg</em> doit être active sur la base.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:title</span></code></p></td>
@@ -325,9 +325,9 @@
 <p>Les paramètres optionnels sont spécifiés via le champ <code class="docutils literal notranslate"><span class="pre">compute_params</span></code> des tables <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code>. Il s’agit d’un champ de type <code class="docutils literal notranslate"><span class="pre">jsonb</span></code>, qui attend un dictionnaire dont les clés sont les noms des paramètres et les valeurs les valeurs des paramètres.</p>
 <p>Par exemple :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_categorie</span><span class="w"></span>
-<span class="w">	</span><span class="k">SET</span><span class="w"> </span><span class="n">compute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]::</span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_compute</span><span class="p">[],</span><span class="w"></span>
-<span class="w">		</span><span class="n">compute_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{&quot;pattern&quot;: &quot;^(?:\\w+\\s*)+&quot;}&#39;</span><span class="p">::</span><span class="n">jsonb</span><span class="w"></span>
-<span class="w">	</span><span class="k">WHERE</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;dct:title&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">compute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="n">compute_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{&quot;pattern&quot;: &quot;^[\\w\\s]+&quot;}&#39;</span><span class="p">::</span><span class="n">jsonb</span><span class="w"></span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;dct:title&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Les trois modes de calcul automatique opèrent comme suit :</p>
@@ -337,6 +337,7 @@
 <li><p>Avec <code class="docutils literal notranslate"><span class="pre">'new'</span></code>, le calcul n’est effectué que si la fiche de métadonnées est entièrement vide<a class="footnote-reference brackets" href="#quasi-vide" id="id6">5</a>, soit dans le cas d’une table dont le descriptif ne contenait par encore de métadonnées, dans le cas d’une réinitialisation ou encore dans le cas de l’import d’une fiche vide.</p></li>
 </ul>
 <p>Si plusieurs de ces modes sont spécifiés simultanément, <code class="docutils literal notranslate"><span class="pre">'auto'</span></code> prévaut sur <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>, qui prévaut sur <code class="docutils literal notranslate"><span class="pre">'new'</span></code>.</p>
+<p>Les boutons de calcul ne sont présents qu’en mode édition, par contre le calcul automatique opère aussi bien en mode édition qu’en mode lecture. Une catégorie sur laquelle une fonctionnalité de calcul automatique est définie apparaîtra toujours dans le formulaire, même lorsque le calcul ne renvoie aucune valeur et que le paramétrage prévoit que les catégories sans valeur ne soient pas affichées (comportement par défaut en mode lecture<a class="footnote-reference brackets" href="#hideblank" id="id7">6</a>).</p>
 </section>
 <section id="processus-de-calcul">
 <h2>Processus de calcul<a class="headerlink" href="#processus-de-calcul" title="Lien permanent vers ce titre">#</a></h2>
@@ -409,18 +410,16 @@
 </section>
 <section id="implementation-du-calcul-automatique">
 <h2>Implémentation du calcul automatique<a class="headerlink" href="#implementation-du-calcul-automatique" title="Lien permanent vers ce titre">#</a></h2>
-<p>Le calcul automatique est effectué pendant la génération des widgets (cf. <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">Création d’un nouveau widget</span></a>) lorsque la valeur de la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> du dictionnaire interne est <code class="docutils literal notranslate"><span class="pre">True</span></code>. Ceci peut se produire pour un widget de saisie, mais aussi pour un groupe de valeurs.</p>
+<p>Le calcul automatique est la première étape de la matérialisation d’un formulaire, juste avant la <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">génération des widgets</span></a>.</p>
+<p>Il s’agit là aussi de boucler sur les clés du dictionnaire de widgets pour exécuter les calculs, mais on utilisera pour ce faire un générateur spécifique, <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.items_to_compute</span></code> au lieu de <code class="docutils literal notranslate"><span class="pre">dict.items</span></code>. Ce générateur ne considère que les clés nécessitant un calcul (la clé <code class="docutils literal notranslate"><span class="pre">'auto</span> <span class="pre">compute'</span></code> de leur dictionnaire interne vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>) et utilise une copie du dictionnaire de widgets, afin d’autoriser l’ajout ou la suppression de clés dans le dictionnaire d’origine au cours du traitement.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="k">if</span> <span class="n">widgetsdict</span><span class="p">[</span><span class="n">widgetkey</span><span class="p">][</span><span class="s1">&#39;auto compute&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">widgetkey</span><span class="p">,</span> <span class="n">internaldict</span> <span class="ow">in</span> <span class="n">widgetsdict</span><span class="o">.</span><span class="n">items_to_compute</span><span class="p">():</span>
     <span class="o">...</span>
 
 </pre></div>
 </div>
-<p>On suivra les étapes du <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">processus de calcul</span></a> décrit précédemment avec deux points d’attention :</p>
-<ul class="simple">
-<li><p>Lorsque la clé correspond à un widget de saisie, le calcul doit avoir lieu <strong>avant la saisie de la valeur dans le widget</strong>.</p></li>
-<li><p>Le dictionnaire renvoyé par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.computing_update</span></code> <strong>ne doit pas être considéré</strong>, car les modifications résultant du calcul concernent des clés qui seront traitées ensuite.</p></li>
-</ul>
+<p><em><code class="docutils literal notranslate"><span class="pre">internaldict</span></code> est le dictionnaire interne de la clé <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code>, soit <code class="docutils literal notranslate"><span class="pre">widgetsdict[widgetkey]</span></code>.</em></p>
+<p>À chaque itération, on suivra toutes les étapes du <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">processus de calcul</span></a> <strong>à l’exception de <a class="reference internal" href="#modification-des-widgets-en-consequence"><span class="std std-doc">la dernière</span></a></strong>. Le dictionnaire renvoyé par la méthode <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict.computing_update</span></code> est inutile ici puisque le formulaire n’a pas encore été matérialisé.</p>
 </section>
 <section id="implementation-du-calcul-a-declenchement-manuel">
 <h2>Implémentation du calcul à déclenchement manuel<a class="headerlink" href="#implementation-du-calcul-a-declenchement-manuel" title="Lien permanent vers ce titre">#</a></h2>
@@ -432,16 +431,19 @@
 <dd><p>Si des métadonnées ont déjà été saisies pour la table, seule la partie du descriptif qui précède la balise <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> sera considérée.</p>
 </dd>
 <dt class="label" id="doc-pattern"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>Pour plus de détails, on se reportera à la documentation de PostgreSQL. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.</p>
+<dd><p>Pour plus de détails, on se reportera à la documentation de PostgreSQL sur les expressions régulières. Par exemple, pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#FUNCTIONS-POSIX-REGEXP.</p>
 </dd>
 <dt class="label" id="doc-flags"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
-<dd><p>Les valeurs acceptées sont les mêmes que pour les arguments <code class="docutils literal notranslate"><span class="pre">flags</span></code> des fonctions d’expression régulière de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.</p>
+<dd><p>Les valeurs acceptées sont les mêmes que pour les arguments <code class="docutils literal notranslate"><span class="pre">flags</span></code> des fonctions d’expressions régulières de PostgreSQL. Pour PostgreSQL 12 : https://www.postgresql.org/docs/12/functions-matching.html#POSIX-EMBEDDED-OPTIONS-TABLE.</p>
 </dd>
 <dt class="label" id="activation-suivi-dates"><span class="brackets">4</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id5">2</a>)</span></dt>
 <dd><p>Il est également recommandé d’avoir <span class="xref myst">activé les fonctionnalités d’enregistrement des dates</span>, sans quoi le calcul ne renverra jamais rien.</p>
 </dd>
 <dt class="label" id="quasi-vide"><span class="brackets"><a class="fn-backref" href="#id6">5</a></span></dt>
 <dd><p>Incluant les fiches qui ne comportent que les champs mis à jour automatiquement, soit l’identifiant et/ou la date de dernière modification.</p>
+</dd>
+<dt class="label" id="hideblank"><span class="brackets"><a class="fn-backref" href="#id7">6</a></span></dt>
+<dd><p>Cf. <code class="docutils literal notranslate"><span class="pre">readHideBlank</span></code> dans la <a class="reference internal" href="parametres_utilisateur.html"><span class="doc std std-doc">liste des paramètres utilisateur</span></a>.</p>
 </dd>
 </dl>
 </section>

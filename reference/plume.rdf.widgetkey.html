@@ -1464,8 +1464,8 @@ propriétés, mais cela ne présente aucun intérêt.</p>
 sera considérée comme étant en lecture seule si le groupe
 parent est en lecture seule ou si la clé elle-même est
 paramétrée comme telle.</p>
-<p>La création de bouton plus est inhibée dans un groupe de valeurs
-en lecture seule.</p>
+<p>Un bouton plus dans un groupe de valeurs en lecture seule
+sera toujours masqué.</p>
 <p>Il est permis de fournir des valeurs de type <code class="docutils literal notranslate"><span class="pre">rdflib.term.Literal</span></code>,
 qui seront alors automatiquement converties.</p>
 </dd></dl>
@@ -2198,7 +2198,7 @@ fantôme ne produira rien.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden</span></code></dt><dd><p>bool: La clé est-elle masquée ?</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden_b</span></code></dt><dd><p>bool: La clé est-elle un bouton masqué ?</p>
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.PlusButtonKey.is_hidden_b" title="plume.rdf.widgetkey.PlusButtonKey.is_hidden_b"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden_b</span></code></a></dt><dd><p>bool: La clé est-elle un bouton masqué ?</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hidden_m</span></code></dt><dd><p>bool: La clé appartient-elle à une branche masquée ?</p>
 </dd>
@@ -2289,16 +2289,29 @@ la création de la clé.</p>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>Utiliser cette méthode sur un bouton masqué n’a pas d’effet,
-et le carnet d’actions renvoyé est vide. Il en irait de même
-sur un groupe ne contenant aucune clé non fantôme.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="plume.rdf.widgetkey.PlusButtonKey.description">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#plume.rdf.widgetkey.PlusButtonKey.description" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>str: Texte d’aide.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plume.rdf.widgetkey.PlusButtonKey.is_hidden_b">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_hidden_b</span></span><a class="headerlink" href="#plume.rdf.widgetkey.PlusButtonKey.is_hidden_b" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>bool: La clé est-elle un bouton masqué ?</p>
+<p>Un bouton plus est toujours masqué dans un groupe de valeurs
+en lecture seule.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.TranslationButtonKey.is_hidden_b" title="plume.rdf.widgetkey.TranslationButtonKey.is_hidden_b"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TranslationButtonKey.is_hidden_b</span></code></a></dt><dd><p>Réécriture de la propriété pour un bouton de traduction.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Réécriture de la propriété <a class="reference internal" href="#plume.rdf.widgetkey.WidgetKey.is_hidden_b" title="plume.rdf.widgetkey.WidgetKey.is_hidden_b"><code class="xref py py-attr docutils literal notranslate"><span class="pre">WidgetKey.is_hidden_b</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -3228,6 +3241,7 @@ tenter de créer un bouton de traduction fantôme ne produira rien.</p>
 <p>Un bouton de traduction est masqué lorsque le stock
 de langues disponibles pour les traductions est épuisé.</p>
 <p class="rubric">Notes</p>
+<p>Réécriture de la propriété <a class="reference internal" href="#plume.rdf.widgetkey.WidgetKey.is_hidden_b" title="plume.rdf.widgetkey.WidgetKey.is_hidden_b"><code class="xref py py-attr docutils literal notranslate"><span class="pre">WidgetKey.is_hidden_b</span></code></a>.</p>
 <p>Cette propriété est en lecture seule. Elle est déduite dynamiquement
 de la propriété <a class="reference internal" href="#plume.rdf.widgetkey.TranslationGroupKey.available_languages" title="plume.rdf.widgetkey.TranslationGroupKey.available_languages"><code class="xref py py-attr docutils literal notranslate"><span class="pre">TranslationGroupKey.available_languages</span></code></a>
 du groupe parent.</p>
@@ -4833,6 +4847,8 @@ non matérialisées ou non visibles.</p>
 <div class="admonition seealso">
 <p class="admonition-title">Voir aussi</p>
 <dl class="simple">
+<dt><a class="reference internal" href="#plume.rdf.widgetkey.PlusButtonKey.is_hidden_b" title="plume.rdf.widgetkey.PlusButtonKey.is_hidden_b"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlusButtonKey.is_hidden_b</span></code></a></dt><dd><p>Réécriture de la propriété pour un bouton plus.</p>
+</dd>
 <dt><a class="reference internal" href="#plume.rdf.widgetkey.TranslationButtonKey.is_hidden_b" title="plume.rdf.widgetkey.TranslationButtonKey.is_hidden_b"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TranslationButtonKey.is_hidden_b</span></code></a></dt><dd><p>Réécriture de la propriété pour un bouton de traduction.</p>
 </dd>
 </dl>
@@ -4840,8 +4856,7 @@ non matérialisées ou non visibles.</p>
 <p class="rubric">Notes</p>
 <p>Cette propriété est en lecture seule. Elle est définie sur la
 classe <a class="reference internal" href="#plume.rdf.widgetkey.WidgetKey" title="plume.rdf.widgetkey.WidgetKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">WidgetKey</span></code></a> pour simplifier les tests de visibilité,
-mais elle vaut toujours <code class="docutils literal notranslate"><span class="pre">False</span></code> quand la clé n’est pas un bouton
-de traduction.</p>
+mais elle vaut toujours <code class="docutils literal notranslate"><span class="pre">False</span></code> quand la clé n’est pas un bouton.</p>
 </dd></dl>
 
 <dl class="py property">

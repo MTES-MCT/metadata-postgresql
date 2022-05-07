@@ -469,6 +469,17 @@ widget qui sera utilisée.</p>
 </dl>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.pg.computer.METHODS">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">METHODS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/created'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/description'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/modified'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/title'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.METHODS" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.</p>
+<p>Les clés du dictionnaire sont les chemins (<code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.paths.SequencePath</span></code>)
+des catégories de métadonnées. Les valeurs sont des objets <a class="reference internal" href="#plume.pg.computer.ComputationMethod" title="plume.pg.computer.ComputationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationMethod</span></code></a>
+décrivant la méthode de calcul disponible pour la catégorie. N’apparaissent dans
+ce dictionnaire que les catégories qui ont effectivement une méthode de calcul
+associée.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.computer.computation_method">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">computation_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.computation_method" title="Lien permanent vers cette définition">#</a></dt>
@@ -563,15 +574,26 @@ leurs équivalents RDF en appliquant la méthode
 </ul>
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="plume.pg.computer.methods">
-<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://purl.org/dc/terms/conformsTo'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/created'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/description'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/modified'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;,</span> <span class="pre">rdflib.term.URIRef('http://purl.org/dc/terms/title'):</span> <span class="pre">&lt;plume.pg.computer.ComputationMethod</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#plume.pg.computer.methods" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.</p>
-<p>Les clés du dictionnaire sont les chemins (<code class="xref py py-class docutils literal notranslate"><span class="pre">rdflib.paths.SequencePath</span></code>)
-des catégories de métadonnées. Les valeurs sont des objets <a class="reference internal" href="#plume.pg.computer.ComputationMethod" title="plume.pg.computer.ComputationMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationMethod</span></code></a>
-décrivant la méthode de calcul disponible pour la catégorie. N’apparaissent dans
-ce dictionnaire que les catégories qui ont effectivement une méthode de calcul
-associée.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.computer.has_computation_method">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.computer.</span></span><span class="sig-name descname"><span class="pre">has_computation_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.computer.has_computation_method" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Détermine si une méthode de calcul est disponible pour la catégorie de métadonnées considérée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">rdflib.paths.SequencePath</span></dt><dd><p>Le chemin de la catégorie. Les clés de dictionnaire de
+widget (plume.rdf.widgetkey.WidgetKey) et les propriétés
+(plume.rdf.properties.PlumeProperty) sont également
+acceptées.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd></dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
