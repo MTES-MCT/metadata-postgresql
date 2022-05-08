@@ -424,7 +424,7 @@ Cet identifiant est généré par Plume lors de la première saisie de métadonn
 <li><p>Aucun IRI ne peut être sujet d’un triplet hormis l’identifiant du jeu de données. Ainsi, tous les autres sujets sont des noeuds anonymes.
 Concrètement, pour les propriétés pouvant admettre comme objets des IRI et telles que GeoDCAT-AP définit des propriétés explicites pour la classe de l’objet, l’utilisateur de Plume aura la possibilité de choisir entre renseigner un IRI sans aucune propriété attachée (soit en saisie libre, soit choisi dans un thésaurus), ou renseigner manuellement les propriétés attachées sans saisir d’IRI. Le sujet des propriétés sera alors un noeud anonyme. Ceci concerne par exemple la propriété <code class="docutils literal notranslate"><span class="pre">dct:license</span></code> et ses objets <code class="docutils literal notranslate"><span class="pre">dct:LicenseDocument</span></code>.</p></li>
 <li><p>Avec Plume, les propriétés sont identifiées par leur IRI. Dès lors, il n’est pas possible de distinguer des propriétés différentes rattachées à un même IRI comme le fait GeoDCAT-AP avec par exemple les propriétés des services de données (<a class="reference internal" href="#service-de-donnees"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">dcat:DataService</span></code></span></a>) <em>service category</em>, <em>service type</em> et <em>type</em>, toutes trois correspondant à l’IRI <code class="docutils literal notranslate"><span class="pre">dct:type</span></code>, ou encore les propriétés <em>conforms to</em> et <em>reference system</em> des jeux de données (<code class="docutils literal notranslate"><span class="pre">dcat:Dataset</span></code>), dont l’IRI est dans les deux cas <code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code>.</p></li>
-<li><p>Plume ne permet pas de choisir entre plusieurs types de littéral pour une propriété donnée. Dès lors, toutes les géométries sont exprimées comme <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code> (alors que GeoDCAT-AP admet aussi le type <code class="docutils literal notranslate"><span class="pre">gsp:gmlLiteral</span></code>) et toutes les dates soit comme <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code> soit comme <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code>, alors que GeoDCAT-AP permet en principe de mélanger les deux pour une même propriété. Plus généralement, lorsque Plume reçoit une valeur qui n’est pas du type attendu, il tentera de la convertir et, en cas d’échec, l’effacera<a class="footnote-reference brackets" href="#validation" id="id2">2</a>.</p></li>
+<li><p>Plume ne permet pas de choisir entre plusieurs types de valeur littérale pour une propriété donnée. Dès lors, toutes les géométries sont exprimées comme <code class="docutils literal notranslate"><span class="pre">gsp:wktLiteral</span></code> (alors que GeoDCAT-AP admet aussi le type <code class="docutils literal notranslate"><span class="pre">gsp:gmlLiteral</span></code>) et toutes les dates soit comme <code class="docutils literal notranslate"><span class="pre">xsd:date</span></code> soit comme <code class="docutils literal notranslate"><span class="pre">xsd:dateTime</span></code>, alors que GeoDCAT-AP permet en principe de mélanger les deux pour une même propriété. Plus généralement, lorsque Plume reçoit une valeur qui n’est pas du type attendu, il tentera de la convertir et, en cas d’échec, l’effacera<a class="footnote-reference brackets" href="#validation" id="id2">2</a>.</p></li>
 <li><p>De même, la classe de l’objet d’une propriété est fixe et unique avec Plume. Lorsque l’agent est une organisation, GeoDCAT-AP recommande l’usage des classes <code class="docutils literal notranslate"><span class="pre">org:Organization</span></code>, <code class="docutils literal notranslate"><span class="pre">org:OrganizationalUnit</span></code> et <code class="docutils literal notranslate"><span class="pre">org:FormalOrganization</span></code> de l”<a class="reference external" href="https://www.w3.org/TR/vocab-org/">Ontologie des organisations VOCAB-ORG</a> au lieu de <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code>, mais Plume en reste à <a class="reference internal" href="#agent"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code></span></a>. De même, Plume utilise la classe <a class="reference internal" href="#entite"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code></span></a> et non ses sous-classes <code class="docutils literal notranslate"><span class="pre">vcard:Individual</span></code>, <code class="docutils literal notranslate"><span class="pre">vcard:Organization</span></code>, <code class="docutils literal notranslate"><span class="pre">vcard:Location</span></code> et <code class="docutils literal notranslate"><span class="pre">vcard:Group</span></code> pour représenter les entités. Ces sous-classes seront toutefois reconnues à l’import, et Plume leur substituera <code class="docutils literal notranslate"><span class="pre">foaf:Agent</span></code> ou <code class="docutils literal notranslate"><span class="pre">vcard:Kind</span></code> selon le cas.</p></li>
 <li><p>Plume tolère qu’une propriété supposée n’admettre qu’une seule valeur en ait <em>de facto</em> plusieurs. L’utilisateur les verra dans l’interface, pourra les modifier ou les supprimer, mais pas en ajouter d’autres (pas de bouton +). Elles sont sauvegardées normalement.</p></li>
 </ul>
@@ -630,7 +630,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>release date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>status</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">adms:status</span></code></p></td>
@@ -640,7 +640,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>update / modification date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -878,7 +878,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-odd"><td><p><em>creation date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:created</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-even"><td><p><em>identifier</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code></p></td>
@@ -893,7 +893,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>release date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>type</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
@@ -903,7 +903,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>update / modification date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -966,12 +966,12 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>end date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dcat:endDate</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>start date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dcat:startDate</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1110,7 +1110,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>release date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>type</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
@@ -1156,7 +1156,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>creation date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:created</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>reference register</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">skos:inScheme</span></code></p></td>
@@ -1166,12 +1166,12 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>release date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:issued</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>update / modification date</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dct:modified</span></code></p></td>
 <td><p>Restriction des types littéraux acceptés. Avant : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span> <span class="pre">or</span> <span class="pre">xsd:dateTime</span></code>. Après : <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:date</span></code>.</p></td>
-<td><p></p></td>
+<td><p>Il reste possible pour l’administrateur de redéfinir le type en <code class="docutils literal notranslate"><span class="pre">rdfs:Literal</span> <span class="pre">typed</span> <span class="pre">as</span> <span class="pre">xsd:dateTime</span></code> pour certains de ses <span class="xref myst">modèles locaux</span>.</p></td>
 </tr>
 </tbody>
 </table>

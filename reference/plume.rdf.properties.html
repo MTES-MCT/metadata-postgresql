@@ -349,6 +349,15 @@ locales (décrites par un modèle stocké dans des tables PostgreSQL).</p>
 du module n’ont pas vraiment vocation à être utilisées
 directement. La plus utile - et celle qui sert au module
 <a class="reference internal" href="plume.rdf.widgetsdict.html#module-plume.rdf.widgetsdict" title="plume.rdf.widgetsdict"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict</span></code></a> - est <a class="reference internal" href="#plume.rdf.properties.class_properties" title="plume.rdf.properties.class_properties"><code class="xref py py-func docutils literal notranslate"><span class="pre">class_properties()</span></code></a>.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="plume.rdf.properties.DATATYPE_SUB">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.properties.</span></span><span class="sig-name descname"><span class="pre">DATATYPE_SUB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#date'):</span> <span class="pre">(rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'),),</span> <span class="pre">rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'):</span> <span class="pre">(rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#date'),)}</span></em><a class="headerlink" href="#plume.rdf.properties.DATATYPE_SUB" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Substituts autorisés pour les types de valeurs littérales.</p>
+<p>Les clés du dictionnaire sont les types, les valeurs des
+listes de types pouvant leur être substitués par les modèles de
+formulaires. Un type non référencé ne peut pas être modifié.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.rdf.properties.PlumeProperty">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.rdf.properties.</span></span><span class="sig-name descname"><span class="pre">PlumeProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n3_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.properties.PlumeProperty" title="Lien permanent vers cette définition">#</a></dt>
@@ -467,9 +476,13 @@ communes.</p>
 </dl>
 <p class="rubric">Notes</p>
 <p>La fonction ne renvoie rien, elle complète <cite>shape_dict</cite>.</p>
-<p>Les clés <code class="docutils literal notranslate"><span class="pre">predicate</span></code>, <code class="docutils literal notranslate"><span class="pre">kind</span></code>, <code class="docutils literal notranslate"><span class="pre">datatype</span></code>, <code class="docutils literal notranslate"><span class="pre">is_multiple</span></code>
+<p>Les clés <code class="docutils literal notranslate"><span class="pre">predicate</span></code>, <code class="docutils literal notranslate"><span class="pre">kind</span></code>, <code class="docutils literal notranslate"><span class="pre">is_multiple</span></code>
 et <code class="docutils literal notranslate"><span class="pre">unilang</span></code> ne peuvent pas être redéfinies par le modèle,
 leurs valeurs éventuelles seront ignorées.</p>
+<p>La clé <code class="docutils literal notranslate"><span class="pre">datatype</span></code> n’est modifiable que pour quelques cas
+explicitement autorisés (cf. <a class="reference internal" href="#plume.rdf.properties.DATATYPE_SUB" title="plume.rdf.properties.DATATYPE_SUB"><code class="xref py py-data docutils literal notranslate"><span class="pre">DATATYPE_SUB</span></code></a>),
+typiquement l’usage de dates avec heures à la place de dates
+simples et inversement.</p>
 <p>La clé <code class="docutils literal notranslate"><span class="pre">order_idx</span></code> produite par <a class="reference internal" href="#plume.rdf.properties.read_shape_property" title="plume.rdf.properties.read_shape_property"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_shape_property()</span></code></a>
 à partir de l’indice fourni par le schéma SHACL est un tuple
 dont la première valeur est <code class="docutils literal notranslate"><span class="pre">9999</span></code>, et la seconde l’indice.
