@@ -8,7 +8,7 @@ import xml.etree.ElementTree as etree
 
 from plume.rdf.utils import DatasetId, abspath, forbidden_char, \
     owlthing_from_email, owlthing_from_tel
-from plume.rdf.namespaces import DCAT, DCT, FOAF, OWL, RDF, \
+from plume.rdf.namespaces import DCAT, DCT, FOAF, RDF, \
     RDFS, SKOS, VCARD, XSD, GEODCAT
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus

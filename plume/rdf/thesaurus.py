@@ -4,9 +4,8 @@
 
 from locale import strxfrm, setlocale, LC_COLLATE
 
-from plume.rdf.rdflib import Graph, URIRef
 from plume.rdf.exceptions import UnknownSource
-from plume.rdf.namespaces import FOAF, SKOS, PLUME
+from plume.rdf.namespaces import FOAF, SKOS
 from plume.rdf.utils import abspath, pick_translation, graph_from_file
 
 vocabulary = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
@@ -34,7 +33,7 @@ class Thesaurus:
     ----------
     label : str
         Le libellé du thésaurus.
-    iri : URIRef
+    iri : rdflib.term.URIRef
         L'IRI du thésaurus.
     langlist : tuple(str)
         Le tuple de langues pour lequel le thésaurus a été généré.
@@ -168,7 +167,7 @@ class Thesaurus:
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
             L'IRI du concept. Peut être ``None``, si le thésaurus existe
             mais que la chaîne de caractères n'y est pas répertoriée.
         
@@ -211,7 +210,7 @@ class Thesaurus:
             être généré. Lorsque plusieurs traductions sont disponibles,
             les langues qui apparaissent en premier dans le tuple
             seront privilégiées.
-        concept_iri : URIRef
+        concept_iri : rdflib.term.URIRef
             L'IRI d'un terme présumé issu du thésaurus, dont on cherche
             le libellé.
         
@@ -260,12 +259,12 @@ class Thesaurus:
             être généré. Lorsque plusieurs traductions sont disponibles,
             les langues qui apparaissent en premier dans le tuple
             seront privilégiées.
-        concept_iri : URIRef
+        concept_iri : rdflib.term.URIRef
             L'IRI d'un terme présumé issu du thésaurus, dont on cherche le lien.
         
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
             Le lien associé au concept. Peut être ``None``, si le thésaurus
             existe mais que l'IRI n'y est pas répertorié.
         
@@ -298,12 +297,12 @@ class Thesaurus:
         
         Parameters
         ----------
-        concept_iri : URIRef
+        concept_iri : rdflib.term.URIRef
             L'IRI d'un terme présumé issu d'un thésaurus.
 
         Returns
         -------
-        URIRef
+        rdflib.term.URIRef
         
         Notes
         -----
@@ -319,7 +318,7 @@ class Thesaurus:
         
         Parameters
         ----------
-        iri : URIRef
+        iri : rdflib.term.URIRef
             L'IRI du thésaurus considéré.
         langlist : tuple(str)
             Le tuple de langues pour lequel le thésaurus a été généré.

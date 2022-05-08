@@ -2,7 +2,6 @@
 
 """
 
-from uuid import UUID, uuid4
 from pathlib import Path
 from time import strftime, localtime
 

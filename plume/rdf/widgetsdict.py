@@ -16,9 +16,7 @@ descriptifs des champs...
 
 """
 
-import re
-
-from plume.rdf.rdflib import Literal, URIRef, BNode, NamespaceManager
+from plume.rdf.rdflib import Literal, URIRef, BNode
 from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
     owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
     tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration, \
@@ -30,10 +28,9 @@ from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
     PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
 from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
-from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
-    UnknownParameterValue, ForbiddenOperation
+from plume.rdf.exceptions import IntegrityBreach, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, GSP, RDFS
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, RDFS
 from plume.rdf.properties import PlumeProperty, class_properties
 from plume.pg.computer import computation_method, has_computation_method
 

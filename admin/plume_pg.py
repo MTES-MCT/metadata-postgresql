@@ -12,11 +12,8 @@ Cette commande met à jour le fichier ``/plume/pg/data/templates.json``.
 
 """
 
-import re
 from psycopg2 import sql, connect
 from json import dump
-
-from rdflib.term import URIRef
 
 from plume.rdf.namespaces import DCAT, SH, PlumeNamespaceManager
 from plume.rdf.utils import abspath

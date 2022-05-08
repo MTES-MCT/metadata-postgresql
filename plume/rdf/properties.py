@@ -11,7 +11,6 @@ directement. La plus utile - et celle qui sert au module
 
 """
 
-from plume.rdf.rdflib import URIRef
 from plume.rdf.namespaces import SH, PLUME
 from plume.rdf.metagraph import shape
 from plume.rdf.utils import path_n3, path_from_n3
@@ -47,7 +46,7 @@ class PlumeProperty:
         La représentation N3 du chemin de la catégorie, s'il s'agit
         d'une catégorie locale. `n3_path` doit impérativement être
         répertorié dans le modèle s'il est fourni.
-    predicate : URIRef, optional
+    predicate : rdflib.term.URIRef, optional
         L'IRI de la catégorie. À fournir pour les propriétés qui ne
         sont répertoriées ni dans le schéma SHACL ni dans le modèle
         local.
@@ -58,7 +57,7 @@ class PlumeProperty:
         Chemin de la catégorie.
     n3_path : str
         La représentation N3 du chemin de la catégorie.
-    predicate : URIRef
+    predicate : rdflib.term.URIRef
         L'IRI de la catégorie.
     prop_dict : dict
         Paramétrage de la catégorie (à passer à la fonction
@@ -184,7 +183,7 @@ def class_properties(rdfclass, nsm, base_path, template=None):
     
     Parameters
     ----------
-    rdfclass : URIRef
+    rdfclass : rdflib.term.URIRef
         IRI d'une classe présumée décrite dans le schéma SHACL.
     nsm : PlumeNamespaceManager
         Le gestionnaire d'espaces de nommage du dictionnaire de widgets.
@@ -196,7 +195,7 @@ def class_properties(rdfclass, nsm, base_path, template=None):
     
     Returns
     -------
-    tuple(list(PlumeProperty), list(URIRef))
+    tuple(list(PlumeProperty), list(rdflib.term.URIRef))
         Un tuple avec :
         
         * ``[0]`` La liste des propriétés.

@@ -17,7 +17,7 @@ Pour créer l'archive dans un autre répertoire:
 """
 
 from pathlib import Path
-from zipfile import ZipFile, PyZipFile
+from zipfile import ZipFile
 
 from plume.rdf.utils import abspath
 

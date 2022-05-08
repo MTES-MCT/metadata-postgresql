@@ -2,7 +2,7 @@
 
 """
 
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode
 
 
 def getrecordbyid_request(url_csw, file_identifier):

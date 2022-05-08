@@ -25,7 +25,7 @@ package :py:mod:`plume.pg`, ainsi que les tests du module
 
 """
 
-from unittest import TestLoader, TestSuite, TextTestRunner, main
+from unittest import TestLoader, TestSuite, TextTestRunner
 
 from plume.pg.tests import description_test, queries_test, \
     template_test, computer_test
