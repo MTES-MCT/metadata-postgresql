@@ -59,8 +59,8 @@ from json import load, loads, dumps
 
 from plume.rdf.utils import abspath, pick_translation
 from plume.rdf.rdflib import Graph, URIRef
-from plume.rdf.thesaurus import vocabulary
-from plume.rdf.properties import shape
+from plume.rdf.thesaurus import VOCABULARY
+from plume.rdf.metagraph import SHAPE
 from plume.rdf.namespaces import PLUME, SKOS, DCT, SH, \
     RDF, RDFS, PlumeNamespaceManager
 
@@ -410,7 +410,7 @@ class ConceptDefinition(ObjectDefinition):
     ----------
     iri : rdflib.term.URIRef
         L'IRI du concept, présumé référencé dans 
-        :py:data:`plume.rdf.thesaurus.vocabulary`.
+        :py:data:`plume.rdf.thesaurus.VOCABULARY`.
     
     Raises
     ------
@@ -427,17 +427,17 @@ class ConceptDefinition(ObjectDefinition):
             objid = str(iri).replace(str(PLUME), 'plume/')
             s = iri
         else:
-            scheme = vocabulary.value(iri, SKOS.inScheme)
+            scheme = VOCABULARY.value(iri, SKOS.inScheme)
             if not str(scheme).startswith(str(PLUME)):
                 raise ValueError("Le concept '{}' n'appartient pas à un " \
                     'thésaurus créé par Plume.'.format(iri))
-            suffix = vocabulary.value(iri, DCT.identifier) or iri.rsplit('/', 1)[1]
+            suffix = VOCABULARY.value(iri, DCT.identifier) or iri.rsplit('/', 1)[1]
             objid = '{}/{}'.format(str(scheme).replace(str(PLUME), 'plume/'), suffix)
             s = URIRef('{}/{}'.format(scheme, suffix))
             graph.add((s, SKOS.exactMatch, iri))
-        labels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
+        labels = [o for o in VOCABULARY.objects(iri, SKOS.prefLabel)]
         title = str(pick_translation(labels, ('fr', 'en')))
-        for p, o in vocabulary.predicate_objects(iri):
+        for p, o in VOCABULARY.predicate_objects(iri):
             if not p == DCT.identifier:
                 # les DCT.identifier ne sont vraiment là que pour
                 # fournir des identifiants plus acceptables quand
@@ -455,7 +455,7 @@ class ConceptSchemeDefinition(ObjectDefinition):
     ----------
     iri : rdflib.term.URIRef
         L'IRI de l'ensemble de concepts, présumé référencé
-        dans :py:data:`plume.rdf.thesaurus.vocabulary`.
+        dans :py:data:`plume.rdf.thesaurus.VOCABULARY`.
     
     Raises
     ------
@@ -474,12 +474,12 @@ class ConceptSchemeDefinition(ObjectDefinition):
         else:
             raise ValueError("'{}' n'est pas un " \
                 'thésaurus créé par Plume.'.format(iri))
-        labels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
+        labels = [o for o in VOCABULARY.objects(iri, SKOS.prefLabel)]
         title = str(pick_translation(labels, ('fr', 'en')))
         predicate_map = {SKOS.prefLabel : DCT.title}
-        for p, o in vocabulary.predicate_objects(iri):
+        for p, o in VOCABULARY.predicate_objects(iri):
             graph.add((s, predicate_map.get(p, p), o))
-        for o, p in vocabulary.subject_predicates(iri):
+        for o, p in VOCABULARY.subject_predicates(iri):
             graph.add((s, SKOS.hasTopConcept, o))
         super().__init__(objid=objid, objtype='R',
             title=title, graph=graph)
@@ -491,7 +491,7 @@ class PropertyDefinition(ObjectDefinition):
     ----------
     iri : rdflib.term.URIRef
         L'IRI de la propriété, présumée référencée
-        dans :py:data:`plume.rdf.properties.shape`.
+        dans :py:data:`plume.rdf.metagraph.SHAPE`.
     
     Raises
     ------
@@ -520,17 +520,17 @@ class PropertyDefinition(ObjectDefinition):
             raise ValueError("'{}' n'est pas une " \
                 'propriété créée par Plume.'.format(iri))
         graph.add((iri, RDF.type, RDF.Property))
-        for n in shape.subjects(SH.path, iri):
-            labels = [o for o in shape.objects(n, SH.name)]
+        for n in SHAPE.subjects(SH.path, iri):
+            labels = [o for o in SHAPE.objects(n, SH.name)]
             title = str(pick_translation(labels, ('fr', 'en')))
             for o in labels:
                 graph.add((iri, RDFS.label, o))
-            for o in shape.objects(n, SH.description):
+            for o in SHAPE.objects(n, SH.description):
                 graph.add((iri, RDFS.comment, o))
-            o = shape.value(n, SH['class'])
+            o = SHAPE.value(n, SH['class'])
             graph.add((iri, RDFS.range, o or RDFS.Literal))
-            for s in shape.subjects(SH.property, n):
-                o = shape.value(s, SH.targetClass)
+            for s in SHAPE.subjects(SH.property, n):
+                o = SHAPE.value(s, SH.targetClass)
                 graph.add((iri, RDFS.domain, o))  
         super().__init__(objid=objid, objtype='E',
             title=title, graph=graph)
@@ -542,7 +542,7 @@ class ClassDefinition(ObjectDefinition):
     ----------
     iri : rdflib.term.URIRef
         L'IRI de la classe, présumée référencée
-        dans :py:data:`plume.rdf.properties.shape`.
+        dans :py:data:`plume.rdf.metagraph.SHAPE`.
     
     Raises
     ------
@@ -569,12 +569,12 @@ class ClassDefinition(ObjectDefinition):
         else:
             raise ValueError("'{}' n'est pas une " \
                 'classe créée par Plume.'.format(iri))
-        for n in shape.subjects(SH['class'], iri):
-            labels = [o for o in shape.objects(n, SH.name)]
+        for n in SHAPE.subjects(SH['class'], iri):
+            labels = [o for o in SHAPE.objects(n, SH.name)]
             title = str(pick_translation(labels, ('fr', 'en')))
             for o in labels:
                 graph.add((iri, RDFS.label, o))
-            for o in shape.objects(n, SH.description):
+            for o in SHAPE.objects(n, SH.description):
                 graph.add((iri, RDFS.comment, o))
             break
         super().__init__(objid=objid, objtype='E',
@@ -585,9 +585,9 @@ class DefinitionsCollection(dict):
     
     Les objets de cette classe sont initialisés par
     lecture du schéma des métadonnées communes,
-    :py:data:`plume.rdf.properties.shape`,
+    :py:data:`plume.rdf.metagraph.SHAPE`,
     et de la compilation des thésaurus de Plume,
-    :py:data:`plume.rdf.thesaurus.vocabulary`. Sont
+    :py:data:`plume.rdf.thesaurus.VOCABULARY`. Sont
     conservés les propriétés, classes, concepts et
     ensemble de concepts utilisant l'espace de nommage
     de Plume, ainsi que tous les concepts de ensembles
@@ -604,19 +604,19 @@ class DefinitionsCollection(dict):
         self['plume'] = ObjectDefinition(objid='plume', objtype='R',
             title="Registre de l'application Plume (gestion des métadonnées d'un patrimoine PostgreSQL)",
             graph=None)
-        for s, p, iri in shape.triples((None, SH.path, None)):
+        for s, p, iri in SHAPE.triples((None, SH.path, None)):
             if str(iri).startswith(str(PLUME)):
                 od = PropertyDefinition(iri)
                 self[od.objid] = od
-        for s, p, iri in shape.triples((None, SH.targetClass, None)):
+        for s, p, iri in SHAPE.triples((None, SH.targetClass, None)):
             if str(iri).startswith(str(PLUME)): 
                 od = ClassDefinition(iri)
                 self[od.objid] = od
-        for iri, p, s in vocabulary.triples((None, RDF.type, SKOS.ConceptScheme)):
+        for iri, p, s in VOCABULARY.triples((None, RDF.type, SKOS.ConceptScheme)):
             if str(iri).startswith(str(PLUME)): 
                 od = ConceptSchemeDefinition(iri)
                 self[od.objid] = od
-        for iri, p, s in vocabulary.triples((None, SKOS.inScheme, None)):
+        for iri, p, s in VOCABULARY.triples((None, SKOS.inScheme, None)):
             if str(iri).startswith(str(PLUME)) or str(s).startswith(str(PLUME)): 
                 od = ConceptDefinition(iri)
                 self[od.objid] = od

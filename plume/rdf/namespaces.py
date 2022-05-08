@@ -28,7 +28,7 @@ XSD = Namespace('http://www.w3.org/2001/XMLSchema#')
 PLUME = Namespace('http://registre.data.developpement-durable.gouv.fr/plume/')
 LOCAL = Namespace('urn:uuid:')
 
-namespaces = {
+NAMESPACES = {
     'adms': ADMS,
     'cnt': CNT,
     'dcat': DCAT,
@@ -54,7 +54,7 @@ namespaces = {
     'uuid': LOCAL
     }
 
-predicate_map = {
+PREDICATE_MAP = {
     VCARD['organisation-name']: VCARD['organization-name'],
     SDO.endDate: DCAT.endDate,
     SDO.startDate: DCAT.startDate
@@ -67,7 +67,7 @@ des graphes importés de sources externes par la fonction
 
 """
 
-class_map = {
+CLASS_MAP = {
     ORG.Organization: FOAF.Agent,
     FOAF.Organization: FOAF.Agent,
     ORG.OrganizationalUnit: FOAF.Agent,
@@ -96,6 +96,6 @@ class PlumeNamespaceManager(NamespaceManager):
     """
     def __init__(self):
         super().__init__(Graph())
-        for prefix, namespace in namespaces.items():
+        for prefix, namespace in NAMESPACES.items():
             self.bind(prefix, namespace, override=True, replace=True)
 

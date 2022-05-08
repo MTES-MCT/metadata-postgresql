@@ -13,12 +13,58 @@ from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
 from plume.rdf.namespaces import RDF, DCAT, XSD
 
-crs_ns = {
+CRS_NS = {
     'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
     'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
     'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
     }
 """Espaces de nommage des référentiels de coordonnées.
+
+"""
+
+RDFLIB_FORMATS = {
+    'turtle': {
+        'extensions': ['.ttl'],
+        'import': True,
+        'export default': True
+        },
+    'n3': {
+        'extensions': ['.n3'],
+        'import': True,
+        'export default': True
+        },
+    'json-ld': {
+        'extensions': ['.jsonld', '.json'],
+        'import': True,
+        'export default': True
+        },
+    'xml': {
+        'extensions': ['.rdf', '.xml'],
+        'import': True,
+        'export default': False
+        },
+    'pretty-xml': {
+        'extensions': ['.rdf', '.xml'],
+        'import': False,
+        'export default': True
+        },
+    'nt': {
+        'extensions': ['.nt'],
+        'import': True,
+        'export default': True
+        },
+    'trig': {
+        'extensions': ['.trig'],
+        'import': True,
+        'export default': True
+        }
+    }
+"""Formats reconnus par les fonctions de RDFLib.
+
+Si la clé ``import`` vaut ``False``, le format n'est pas reconnu
+à l'import. Si ``export default`` vaut ``True``, il s'agit du
+format d'export privilégié pour les extensions listées
+par la clé ``extension``.
 
 """
 
@@ -960,8 +1006,8 @@ def wkt_with_srid(wkt, srid):
     if not srid or not wkt:
         return wkt
     r = re.match('^([A-Z]+)[:]([a-zA-Z0-9.]+)$', srid)
-    if r and r[1] in crs_ns:
-        return '<{}{}> {}'.format(crs_ns[r[1]], r[2], wkt)
+    if r and r[1] in CRS_NS:
+        return '<{}{}> {}'.format(CRS_NS[r[1]], r[2], wkt)
 
 def split_rdf_wkt(rdf_wkt):
     """Extrait le référentiel et la géométrie d'un littéral WKT.
@@ -1008,7 +1054,7 @@ def split_rdf_wkt(rdf_wkt):
         return
     if not r[1]:
         return (r[2], 'OGC:CRS84')
-    for auth, url in crs_ns.items():
+    for auth, url in CRS_NS.items():
         if r[1].startswith(url):
             code = r[1][len(url):]
             if re.match('^[a-zA-Z0-9.]+$', code):
@@ -1099,7 +1145,7 @@ def import_formats():
         La liste des formats reconnus par RDFLib à l'import.
     
     """
-    return [ k for k, v in rdflib_formats.items() if v['import'] ]
+    return [ k for k, v in RDFLIB_FORMATS.items() if v['import'] ]
 
 def export_formats(no_duplicate=False, format=None):
     """Renvoie la liste de tous les formats disponibles pour l'export.
@@ -1126,11 +1172,11 @@ def export_formats(no_duplicate=False, format=None):
     
     """
     l = []
-    if format and format in rdflib_formats:
+    if format and format in RDFLIB_FORMATS:
         format_ext = export_extension_from_format(format)
     else:
         format_ext = None
-    for k, v in rdflib_formats.items():
+    for k, v in RDFLIB_FORMATS.items():
         if k == format:
             l.insert(0, k)
         elif not no_duplicate or (v['export default']
@@ -1145,7 +1191,7 @@ def import_extensions_from_format(format=None):
     ----------
     format : str, optional
         Un format d'import présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (:py:data:`rdflib_formats`
+        reconnus par les fonctions de RDFLib (:py:data:`RDFLIB_FORMATS`
         avec ``import`` valant ``True``).
     
     Returns
@@ -1164,12 +1210,12 @@ def import_extensions_from_format(format=None):
     """
     if not format:
         l = []
-        for k, d in rdflib_formats.items():
+        for k, d in RDFLIB_FORMATS.items():
             if d['import']:
                 l += d['extensions']
         return l
     
-    d = rdflib_formats.get(format)
+    d = RDFLIB_FORMATS.get(format)
     if d and d['import']:
         return d['extensions']
 
@@ -1180,7 +1226,7 @@ def export_extension_from_format(format):
     ----------
     format : str
         Un format d'export présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (:py:data:`rdflib_formats`).
+        reconnus par les fonctions de RDFLib (:py:data:`RDFLIB_FORMATS`).
     
     Returns
     -------
@@ -1193,7 +1239,7 @@ def export_extension_from_format(format):
     '.rdf'
     
     """
-    d = rdflib_formats.get(format)
+    d = RDFLIB_FORMATS.get(format)
     if d:
         return d['extensions'][0]
 
@@ -1212,7 +1258,7 @@ def import_format_from_extension(extension):
         n'est pas reconnue.
     
     """
-    for k, d in rdflib_formats.items():
+    for k, d in RDFLIB_FORMATS.items():
         if d['import'] and extension in d['extensions']:
             return k
 
@@ -1225,7 +1271,7 @@ def export_format_from_extension(extension, default_format=None):
         Une extension (avec point).
     default_format : str, optional
         Un format d'export présumé inclus dans la liste des formats
-        reconnus par les fonctions de RDFLib (:py:data:`rdflib_formats`).
+        reconnus par les fonctions de RDFLib (:py:data:`RDFLIB_FORMATS`).
         Si renseigné, le format par défaut est utilisé lorsqu'il n'est
         pas possible de déduire un format de l'extension ou lorsque
         plusieurs formats sont possibles pour l'extension (le format
@@ -1242,7 +1288,7 @@ def export_format_from_extension(extension, default_format=None):
     if not default_format in export_formats():
         default_format = None
     rdf_format = default_format
-    for k, d in rdflib_formats.items():
+    for k, d in RDFLIB_FORMATS.items():
         if extension in d['extensions']:
             if k == default_format:
                 return default_format
@@ -1250,49 +1296,4 @@ def export_format_from_extension(extension, default_format=None):
                 rdf_format = k
     return rdf_format
 
-rdflib_formats = {
-    'turtle': {
-        'extensions': ['.ttl'],
-        'import': True,
-        'export default': True
-        },
-    'n3': {
-        'extensions': ['.n3'],
-        'import': True,
-        'export default': True
-        },
-    'json-ld': {
-        'extensions': ['.jsonld', '.json'],
-        'import': True,
-        'export default': True
-        },
-    'xml': {
-        'extensions': ['.rdf', '.xml'],
-        'import': True,
-        'export default': False
-        },
-    'pretty-xml': {
-        'extensions': ['.rdf', '.xml'],
-        'import': False,
-        'export default': True
-        },
-    'nt': {
-        'extensions': ['.nt'],
-        'import': True,
-        'export default': True
-        },
-    'trig': {
-        'extensions': ['.trig'],
-        'import': True,
-        'export default': True
-        }
-    }
-"""Formats reconnus par les fonctions de RDFLib.
-
-Si la clé ``import`` vaut ``False``, le format n'est pas reconnu
-à l'import. Si ``export default`` vaut ``True``, il s'agit du
-format d'export privilégié pour les extensions listées
-par la clé ``extension``.
-
-"""
 

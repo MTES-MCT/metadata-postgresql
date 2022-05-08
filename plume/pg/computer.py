@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 from plume.rdf.rdflib import URIRef
-from plume.rdf.utils import crs_ns
+from plume.rdf.utils import CRS_NS
 from plume.rdf.namespaces import DCT
 from plume.rdf.properties import PlumeProperty
 from plume.rdf.widgetkey import WidgetKey
@@ -212,10 +212,10 @@ def crs_parser(crs_auth, crs_code):
     ComputationResult
     
     """
-    if not crs_auth in crs_ns or not crs_code or \
+    if not crs_auth in CRS_NS or not crs_code or \
         not re.match('^[a-zA-Z0-9.]+$', crs_code):
         return
-    value = URIRef('{}{}'.format(crs_ns[crs_auth], crs_code))
+    value = URIRef('{}{}'.format(CRS_NS[crs_auth], crs_code))
     return ComputationResult(value=value)
 
 METHODS = {

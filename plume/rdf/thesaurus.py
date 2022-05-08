@@ -8,7 +8,7 @@ from plume.rdf.exceptions import UnknownSource
 from plume.rdf.namespaces import FOAF, SKOS
 from plume.rdf.utils import abspath, pick_translation, graph_from_file
 
-vocabulary = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
+VOCABULARY = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
 """Graphe contenant le vocabulaire de tous les thésaurus.
 
 """
@@ -66,7 +66,7 @@ class Thesaurus:
         
         Autant que possible, cette méthode va chercher les termes dans le
         répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
+        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -87,7 +87,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`vocabulary`.
+            mais n'existe même pas dans :py:data:`VOCABULARY`.
         
         Examples
         --------
@@ -109,7 +109,7 @@ class Thesaurus:
         
         Autant que possible, cette méthode va chercher le libellé dans le
         répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
+        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -129,7 +129,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`vocabulary`.
+            mais n'existe même pas dans :py:data:`VOCABULARY`.
         
         Examples
         --------
@@ -151,7 +151,7 @@ class Thesaurus:
         
         Autant que possible, cette méthode va chercher l'IRI dans le
         répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
+        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -175,7 +175,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`vocabulary`.
+            mais n'existe même pas dans :py:data:`VOCABULARY`.
         
         Examples
         --------
@@ -200,7 +200,7 @@ class Thesaurus:
         
         Autant que possible, cette méthode va chercher le libellé dans le
         répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
+        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -224,7 +224,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`vocabulary`.
+            mais n'existe même pas dans :py:data:`VOCABULARY`.
         
         Examples
         --------
@@ -249,7 +249,7 @@ class Thesaurus:
         
         Autant que possible, cette méthode va chercher le lien dans le
         répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`vocabulary`.
+        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -272,7 +272,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`vocabulary`.
+            mais n'existe même pas dans :py:data:`VOCABULARY`.
         
         Examples
         --------
@@ -306,11 +306,11 @@ class Thesaurus:
         
         Notes
         -----
-        Cette méthode se borne à interroger :py:data:`vocabulary`.
+        Cette méthode se borne à interroger :py:data:`VOCABULARY`.
         Elle n'exploite pas le répertoire des thésaurus.
         
         """
-        return vocabulary.value(concept_iri, SKOS.inScheme)
+        return VOCABULARY.value(concept_iri, SKOS.inScheme)
     
     @classmethod
     def add(cls, iri, langlist, thesaurus):
@@ -336,24 +336,24 @@ class Thesaurus:
         self.str_from_iri = {}
         self.links_from_iri = {}
         
-        slabels = [o for o in vocabulary.objects(iri, SKOS.prefLabel)]
+        slabels = [o for o in VOCABULARY.objects(iri, SKOS.prefLabel)]
         if slabels:
             t = pick_translation(slabels, langlist)
             self.label = str(t)
         else:
             raise UnknownSource(iri)
         
-        concepts = [c for c in vocabulary.subjects(SKOS.inScheme, iri)] 
+        concepts = [c for c in VOCABULARY.subjects(SKOS.inScheme, iri)] 
 
         if concepts:
             for c in concepts:
-                clabels = [o for o in vocabulary.objects(c, SKOS.prefLabel)]
+                clabels = [o for o in VOCABULARY.objects(c, SKOS.prefLabel)]
                 if clabels:
                     t = pick_translation(clabels, langlist)
                     self.values.append(str(t))
                     self.iri_from_str.update({str(t): c})
                     self.str_from_iri.update({c: str(t)})
-                    page = vocabulary.value(c, FOAF.page)
+                    page = VOCABULARY.value(c, FOAF.page)
                     self.links_from_iri.update({c: page or c})
 
             if self.values:

@@ -7,14 +7,14 @@ from time import strftime, localtime
 
 from plume.rdf.rdflib import Graph, URIRef, BNode, Literal
 from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
-    LOCAL, PLUME, DCT, FOAF, XSD, predicate_map, class_map
+    LOCAL, PLUME, DCT, FOAF, XSD, PREDICATE_MAP, CLASS_MAP
 from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
     export_extension_from_format, export_format_from_extension, export_formats, \
     forbidden_char
 from plume.iso.map import IsoToDcat
 
 
-shape = graph_from_file(abspath('rdf/data/shape.ttl'))
+SHAPE = graph_from_file(abspath('rdf/data/shape.ttl'))
 """Schéma SHACL définissant la structure des métadonnées communes.
 
 """
@@ -300,12 +300,12 @@ class Metagraph(Graph):
         
         if l:
             raw_rdfclass = raw_metagraph.value(raw_subject, RDF.type)
-            rdfclass = class_map.get(raw_rdfclass, raw_rdfclass)
+            rdfclass = CLASS_MAP.get(raw_rdfclass, raw_rdfclass)
             # s'il n'y a pas de classe, ou que la classe n'est pas décrite
-            # dans shape, un IRI ou Literal sera écrit tel quel,
+            # dans SHAPE, un IRI ou Literal sera écrit tel quel,
             # sans ses descendants, un BNode est effacé
             if not rdfclass or \
-                not (None, SH.targetClass, rdfclass) in shape:
+                not (None, SH.targetClass, rdfclass) in SHAPE:
                 l = []
                 if isinstance(raw_subject, BNode):
                     return
@@ -328,7 +328,7 @@ class Metagraph(Graph):
         for p, o in l:
             if not (raw_subject, p, o) in memory:
                 memory.add((raw_subject, p, o))
-                triple = (subject, predicate_map.get(p, p), o)
+                triple = (subject, PREDICATE_MAP.get(p, p), o)
                 self._clean_metagraph(raw_metagraph, o, triple, memory)
 
     def merge(self, alt_metagraph, replace=False):
@@ -540,7 +540,7 @@ def clean_metagraph(raw_graph, old_metagraph=None):
     # memory stockera les triples déjà traités de raw_graph,
     # il sert à éviter les boucles
     for p, o in raw_graph.predicate_objects(raw_datasetid):
-        triple = (datasetid, predicate_map.get(p, p), o)
+        triple = (datasetid, PREDICATE_MAP.get(p, p), o)
         metagraph._clean_metagraph(raw_graph, o, triple, memory)
     return metagraph
 

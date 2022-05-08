@@ -14,7 +14,7 @@ from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
 
 
-ns = {
+ISO_NS = {
     'csw': 'http://www.opengis.net/cat/csw/2.0.2',
     'apiso': 'http://www.opengis.net/cat/csw/apiso/1.0',
     'dc': 'http://purl.org/dc/elements/1.1/',
@@ -86,7 +86,7 @@ class IsoToDcat:
     def __init__(self, raw_xml, datasetid=None):
         try:
             root = etree.fromstring(raw_xml)
-            self.isoxml = root.find('./gmd:MD_Metadata', ns) \
+            self.isoxml = root.find('./gmd:MD_Metadata', ISO_NS) \
                 or etree.Element(wns('gmd:MD_Metadata'))
         except:
             self.isoxml = etree.Element(wns('gmd:MD_Metadata'))
@@ -118,10 +118,10 @@ class IsoToDcat:
         
         """
         code = self.isoxml.findtext('./gmd:language/gmd:LanguageCode',
-            namespaces=ns)
+            namespaces=ISO_NS)
         if not code:
             code = self.isoxml.findtext('./gmd:language/gco:CharacterString',
-                namespaces=ns)
+                namespaces=ISO_NS)
         if not code or len(code) > 3:
             return
         if code in ('fre', 'fra'):
@@ -174,13 +174,13 @@ class IsoToDcat:
         l = []
         for elem in self.isoxml.findall('./gmd:referenceSystemInfo/'
             'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
-            'gmd:RS_Identifier/gmd:code', namespaces=ns):
+            'gmd:RS_Identifier/gmd:code', namespaces=ISO_NS):
             epsg = None
             epsg_txt = elem.findtext('./gmx:Anchor',
-                namespaces=ns)
+                namespaces=ISO_NS)
             if not epsg_txt:
                 epsg_txt = elem.findtext('./gco:CharacterString',
-                    namespaces=ns)
+                    namespaces=ISO_NS)
             if not epsg_txt:
                 continue
             if epsg_txt.isdigit():
@@ -216,9 +216,9 @@ class IsoToDcat:
             }
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/'
-            'gmd:date', namespaces=ns):
+            'gmd:date', namespaces=ISO_NS):
             c = elem.find('./gmd:CI_Date/gmd:dateType/'
-                'gmd:CI_DateTypeCode', namespaces=ns)
+                'gmd:CI_DateTypeCode', namespaces=ISO_NS)
             if c is None:
                 continue
             code = c.text or c.get('codeListValue')
@@ -241,14 +241,14 @@ class IsoToDcat:
         l = []
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:descriptiveKeywords',
-            namespaces=ns):
+            namespaces=ISO_NS):
             t = elem.findtext('./gmd:MD_Keywords/gmd:thesaurusName/'
                 'gmd:CI_Citation/gmd:title/gco:CharacterString',
-                namespaces=ns)
+                namespaces=ISO_NS)
             for subelem in elem.findall('./gmd:MD_Keywords/gmd:keyword',
-                namespaces=ns):
+                namespaces=ISO_NS):
                 keyword = subelem.findtext('./gco:CharacterString',
-                    namespaces=ns)
+                    namespaces=ISO_NS)
                 if t and 'INSPIRE themes' in t:
                     keyword_iri = Thesaurus.concept_iri((
                         URIRef('https://inspire.ec.europa.eu/theme'),
@@ -274,9 +274,9 @@ class IsoToDcat:
         l = []
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
             'gmd:MD_DataIdentification/gmd:topicCategory',
-            namespaces=ns):
+            namespaces=ISO_NS):
             code = elem.findtext('./gmd:MD_TopicCategoryCode',
-                namespaces=ns)
+                namespaces=ISO_NS)
             if not code:
                 continue
             iri = URIRef('http://inspire.ec.europa.eu/metadata-codelist/'
@@ -333,9 +333,9 @@ class IsoToDcat:
             'pointOfContact': DCAT.contactPoint
             }
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
-            'gmd:MD_DataIdentification/gmd:pointOfContact', ns):
+            'gmd:MD_DataIdentification/gmd:pointOfContact', ISO_NS):
             r = elem.find('./gmd:CI_ResponsibleParty/'
-                'gmd:role/gmd:CI_RoleCode', namespaces=ns)
+                'gmd:role/gmd:CI_RoleCode', namespaces=ISO_NS)
             if r is None:
                 continue
             role = r.text or r.get('codeListValue')
@@ -422,7 +422,7 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
     
     """
     l = []
-    for sub in elem.findall(path, namespaces=ns):
+    for sub in elem.findall(path, namespaces=ISO_NS):
         value = sub.text
         if not value:
             continue
@@ -473,7 +473,7 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
     
     """
     l = []
-    for sub in elem.findall(path, namespaces=ns):
+    for sub in elem.findall(path, namespaces=ISO_NS):
         value = sub.text
         if not value or forbidden_char(value):
             continue
@@ -509,9 +509,9 @@ def wns(tag):
     
     """
     l = tag.split(':', maxsplit=1)
-    if not len(l) == 2 or not l[0] in ns:
+    if not len(l) == 2 or not l[0] in ISO_NS:
         return tag
-    return '{{{}}}{}'.format(ns[l[0]], l[1])    
+    return '{{{}}}{}'.format(ISO_NS[l[0]], l[1])    
 
 
 

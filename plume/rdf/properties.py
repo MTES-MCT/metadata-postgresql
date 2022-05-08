@@ -12,7 +12,7 @@ directement. La plus utile - et celle qui sert au module
 """
 
 from plume.rdf.namespaces import SH, PLUME
-from plume.rdf.metagraph import shape
+from plume.rdf.metagraph import SHAPE
 from plume.rdf.utils import path_n3, path_from_n3
 
 
@@ -205,7 +205,7 @@ def class_properties(rdfclass, nsm, base_path, template=None):
     """
     # IRI de la forme décrivant la classe
     shape_iri = None
-    for s in shape.subjects(SH.targetClass, rdfclass):
+    for s in SHAPE.subjects(SH.targetClass, rdfclass):
         shape_iri = s
         break
     if not shape_iri:
@@ -214,7 +214,7 @@ def class_properties(rdfclass, nsm, base_path, template=None):
     properties = []
     predicates = []
     # propriétés associées
-    for property_node in shape.objects(shape_iri, SH['property']):
+    for property_node in SHAPE.objects(shape_iri, SH['property']):
         p = PlumeProperty(origin='shared', nsm=nsm,
             property_node=property_node, base_path=base_path,
             template=template)
@@ -262,7 +262,7 @@ def read_shape_property(shape_node):
         # le booléen indique si la propriété
         # peut prendre des valeurs multiples
     p = {}
-    for a, b in shape.predicate_objects(shape_node):
+    for a, b in SHAPE.predicate_objects(shape_node):
         if a in prop_map:
             if prop_map[a][1]:
                 p[prop_map[a][0]] = p.get(prop_map[a][0], []) + [b]
