@@ -383,7 +383,7 @@ communes.</p>
 d’une catégorie locale. <cite>n3_path</cite> doit impérativement être
 répertorié dans le modèle s’il est fourni.</p>
 </dd>
-<dt><strong>predicate</strong><span class="classifier">URIRef, optional</span></dt><dd><p>L’IRI de la catégorie. À fournir pour les propriétés qui ne
+<dt><strong>predicate</strong><span class="classifier">rdflib.term.URIRef, optional</span></dt><dd><p>L’IRI de la catégorie. À fournir pour les propriétés qui ne
 sont répertoriées ni dans le schéma SHACL ni dans le modèle
 local.</p>
 </dd>
@@ -402,7 +402,7 @@ n’ont pas été fournis.</p>
 </dd>
 <dt><strong>n3_path</strong><span class="classifier">str</span></dt><dd><p>La représentation N3 du chemin de la catégorie.</p>
 </dd>
-<dt><strong>predicate</strong><span class="classifier">URIRef</span></dt><dd><p>L’IRI de la catégorie.</p>
+<dt><strong>predicate</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>L’IRI de la catégorie.</p>
 </dd>
 <dt><strong>prop_dict</strong><span class="classifier">dict</span></dt><dd><p>Paramétrage de la catégorie (à passer à la fonction
 d’initialisation des futures clés).</p>
@@ -424,7 +424,7 @@ Vaut toujours <code class="docutils literal notranslate"><span class="pre">False
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>rdfclass</strong><span class="classifier">URIRef</span></dt><dd><p>IRI d’une classe présumée décrite dans le schéma SHACL.</p>
+<dt><strong>rdfclass</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>IRI d’une classe présumée décrite dans le schéma SHACL.</p>
 </dd>
 <dt><strong>nsm</strong><span class="classifier">PlumeNamespaceManager</span></dt><dd><p>Le gestionnaire d’espaces de nommage du dictionnaire de widgets.</p>
 </dd>
@@ -437,7 +437,7 @@ de premier niveau.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>tuple(list(PlumeProperty), list(URIRef))</dt><dd><p>Un tuple avec :</p>
+<dt>tuple(list(PlumeProperty), list(rdflib.term.URIRef))</dt><dd><p>Un tuple avec :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[0]</span></code> La liste des propriétés.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">[1]</span></code> La liste des IRI des propriétés (prédicats des
