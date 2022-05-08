@@ -11,9 +11,22 @@ directement. La plus utile - et celle qui sert au module
 
 """
 
-from plume.rdf.namespaces import SH, PLUME
+from plume.rdf.namespaces import SH, PLUME, XSD
 from plume.rdf.metagraph import SHAPE
 from plume.rdf.utils import path_n3, path_from_n3
+
+
+DATATYPE_SUB = {
+    XSD.date : (XSD.dateTime,),
+    XSD.dateTime : (XSD.date,)
+}
+"""Substituts autorisés pour les types de valeurs littérales.
+
+Les clés du dictionnaire sont les types, les valeurs des
+listes de types pouvant leur être substitués par les modèles de
+formulaires. Un type non référencé ne peut pas être modifié.
+
+"""
 
 
 class PlumeProperty:
@@ -130,9 +143,14 @@ def merge_property_dict(shape_dict, template_dict):
     -----
     La fonction ne renvoie rien, elle complète `shape_dict`.
     
-    Les clés ``predicate``, ``kind``, ``datatype``, ``is_multiple``
+    Les clés ``predicate``, ``kind``, ``is_multiple``
     et ``unilang`` ne peuvent pas être redéfinies par le modèle,
     leurs valeurs éventuelles seront ignorées.
+
+    La clé ``datatype`` n'est modifiable que pour quelques cas
+    explicitement autorisés (cf. :py:data:`DATATYPE_SUB`),
+    typiquement l'usage de dates avec heures à la place de dates
+    simples et inversement.
     
     La clé ``order_idx`` produite par :py:func:`read_shape_property`
     à partir de l'indice fourni par le schéma SHACL est un tuple
@@ -177,6 +195,13 @@ def merge_property_dict(shape_dict, template_dict):
             shape_dict['sources'] = sources
     if template_dict.get('is_mandatory') and not shape_dict.get('is_mandatory'):
         shape_dict['is_mandatory'] = True
+    # remplacement du type par celui du modèle, mais uniquement pour les
+    # rares substitution admises :
+    if shape_dict.get('datatype') and shape_dict['datatype'] in DATATYPE_SUB \
+        and template_dict.get('datatype') \
+        and template_dict['datatype'] in DATATYPE_SUB[shape_dict['datatype']] :
+        shape_dict['datatype'] = template_dict['datatype']
+
 
 def class_properties(rdfclass, nsm, base_path, template=None):
     """Renvoie la liste des propriétés communes d'une classe.
