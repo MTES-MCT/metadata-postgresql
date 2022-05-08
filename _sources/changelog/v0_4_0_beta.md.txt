@@ -98,6 +98,8 @@ Il est désormais possible de sélectionner et copier du texte dans les fiches d
 
 Le nom du modèle courant est dorénavant explicitement affiché dans la barre d'outils de Plume. *Références : [issue #55](https://github.com/MTES-MCT/metadata-postgresql/issues/55).*
 
+Il est maintenant possible de spécifier via un modèle qu'une catégorie commune prenant pour valeur des dates simples utilise à la place des dates avec heures, ou réciproquement. Jusqu'ici, les modèles pouvaient seulement changer le type de valeur pour les catégories locales.
+
 Complément sur la traduction anglaise des textes de l'interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. *Référence : [issue #50](https://github.com/MTES-MCT/metadata-postgresql/issues/50).*
 
 
