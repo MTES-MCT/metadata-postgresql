@@ -11,7 +11,7 @@ import unittest, psycopg2
 
 from plume.rdf.rdflib import URIRef, Literal, from_n3
 from plume.rdf.properties import class_properties, PlumeProperty
-from plume.rdf.namespaces import RDF, DCAT, LOCAL, DCT, PlumeNamespaceManager
+from plume.rdf.namespaces import XSD, RDF, DCAT, LOCAL, DCT, PlumeNamespaceManager
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs
 from plume.pg.template import TemplateDict
@@ -77,6 +77,12 @@ class PlumePropertyTestCase(unittest.TestCase):
                             is_read_only = True,
                             is_mandatory = True
                         WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'owl:versionInfo' ;
+                    UPDATE z_plume.meta_template_categories
+                        SET datatype = 'xsd:dateTime'
+                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:temporal / dcat:startDate' ;
+                    UPDATE z_plume.meta_template_categories
+                        SET datatype = 'xsd:string'
+                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:temporal / dcat:endDate' ;
                     INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path, tab) (
                         SELECT 'Mon formulaire', path, 'Secondaire'
                             FROM z_plume.meta_categorie
@@ -177,7 +183,13 @@ class PlumePropertyTestCase(unittest.TestCase):
                 self.assertFalse(p.unlisted)
                 self.assertEqual(p.predicate, DCAT.startDate)
                 self.assertEqual(p.prop_dict['label'], 'Date de début')
-        self.assertEqual(t, 1)
+                self.assertEqual(p.prop_dict['datatype'], XSD.dateTime)
+                # changement de type licite
+            if p.n3_path == 'dct:temporal / dcat:endDate':
+                t += 1
+                self.assertEqual(p.prop_dict['datatype'], XSD.date)
+                # changement de type illicite ignoré
+        self.assertEqual(t, 2)
         properties, predicates = class_properties(rdfclass=DCT.Location,
             nsm=nsm, base_path=DCT.spatial, template=template)
         t = 0
