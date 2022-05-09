@@ -277,11 +277,6 @@
   <section id="metadonnees-calculees">
 <h1>Métadonnées calculées<a class="headerlink" href="#metadonnees-calculees" title="Lien permanent vers ce titre">#</a></h1>
 <p><a class="reference internal" href="#principe"><span class="std std-doc">Principe</span></a> • <a class="reference internal" href="#processus-de-calcul"><span class="std std-doc">Processus de calcul</span></a> • <a class="reference internal" href="#implementation-du-calcul-automatique"><span class="std std-doc">Implémentation du calcul automatique</span></a> • <a class="reference internal" href="#implementation-du-calcul-a-declenchement-manuel"><span class="std std-doc">Implémentation du calcul à déclenchement manuel</span></a></p>
-<p>Dans la suite, on considère :</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">Génération du dictionnaire des widgets</span></a>), objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>.</p></li>
-</ul>
 <section id="principe">
 <h2>Principe<a class="headerlink" href="#principe" title="Lien permanent vers ce titre">#</a></h2>
 <p>Plume permet à l’administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (options <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, <code class="docutils literal notranslate"><span class="pre">'new'</span></code> ou <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>), soit à la demande de l’utilisateur (option <code class="docutils literal notranslate"><span class="pre">'manual'</span></code>).</p>
@@ -337,6 +332,7 @@
 <li><p>Avec <code class="docutils literal notranslate"><span class="pre">'new'</span></code>, le calcul n’est effectué que si la fiche de métadonnées est entièrement vide<a class="footnote-reference brackets" href="#quasi-vide" id="id6">5</a>, soit dans le cas d’une table dont le descriptif ne contenait par encore de métadonnées, dans le cas d’une réinitialisation ou encore dans le cas de l’import d’une fiche vide.</p></li>
 </ul>
 <p>Si plusieurs de ces modes sont spécifiés simultanément, <code class="docutils literal notranslate"><span class="pre">'auto'</span></code> prévaut sur <code class="docutils literal notranslate"><span class="pre">'empty'</span></code>, qui prévaut sur <code class="docutils literal notranslate"><span class="pre">'new'</span></code>.</p>
+<p>Avec <code class="docutils literal notranslate"><span class="pre">'manual'</span></code>, un bouton de calcul <img alt="compute_button.svg" src="../_images/compute_button.svg" /> apparaîtra à droite du champ de saisie de la métadonnées dans le formulaire. Cliquer sur ce bouton importe les informations désirées du serveur. Pour les catégories admettant plusieurs valeurs, le bouton porte sur l’ensemble du groupe.</p>
 <p>Les boutons de calcul ne sont présents qu’en mode édition, par contre le calcul automatique opère aussi bien en mode édition qu’en mode lecture. Une catégorie sur laquelle une fonctionnalité de calcul automatique est définie apparaîtra toujours dans le formulaire, même lorsque le calcul ne renvoie aucune valeur et que le paramétrage prévoit que les catégories sans valeur ne soient pas affichées (comportement par défaut en mode lecture<a class="footnote-reference brackets" href="#hideblank" id="id7">6</a>).</p>
 </section>
 <section id="processus-de-calcul">
@@ -347,6 +343,11 @@
 <li><p>générer la requête permettant d’obtenir les informations désirées et l’envoyer au serveur PostgreSQL ;</p></li>
 <li><p>intégrer le résultat dans le dictionnaire de widgets ;</p></li>
 <li><p>(selon les cas) répercuter les modifications sur les widgets.</p></li>
+</ul>
+<p>Dans la suite, on considère :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">widgetsdict</span></code> le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">Génération du dictionnaire des widgets</span></a>), objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetkey.WidgetKey</span></code>.</p></li>
 </ul>
 <section id="controle-des-extensions-disponibles">
 <h3>Contrôle des extensions disponibles<a class="headerlink" href="#controle-des-extensions-disponibles" title="Lien permanent vers ce titre">#</a></h3>

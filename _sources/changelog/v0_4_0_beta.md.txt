@@ -4,14 +4,30 @@
 
 *Sur GitHub : à venir.*
 
-La version 0.4 apporte notamment plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.
+La version 0.4 met en service les fonctionnalités de calcul de métadonnées côté serveur. Elle apporte également plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.
 
+## Calcul des métadonnées côté serveur
+
+Plume permet désormais de générer des métadonnées à partir d'informations disponibles côté serveur :
+- soit automatiquement à l'ouverture de la fiche de métadonnées ;
+- soit à la demande de l'utilisateur, lorsque celui-ci clique sur le bouton ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) placé à droite du champ de saisie dans le formulaire.
+
+L'activation des fonctionnalités de calcul est contrôlée par les modèles. Elle n'est évidemment possible que pour les catégories pour lesquelles une méthode de calcul est d'ores-et-déjà définie dans Plume (essentiellement, il s'agit une requête SQL à envoyer au serveur).
+
+Dans cette version, cela concerne :
+- le titre et la description du jeu de données, qui peuvent être extraits du descriptif PostgreSQL de la table à l'aide d'une expression régulière ;
+- les dates de création et de dernière modification, si elles ont été [enregistrées](#enregistrement-des-dates-de-création-et-dernière-modification-des-tables) ;
+- les référentiels de coordonnées déclarés pour les champs de la table.
+
+Cf. [Métadonnées calculées](../usage/metadonnees_calculees.md) pour plus de précisions.
+
+*Réferences : [issue #23](https://github.com/MTES-MCT/metadata-postgresql/issues/23) (prérequis : [issue #22](https://github.com/MTES-MCT/metadata-postgresql/issues/23)), [issue #42](https://github.com/MTES-MCT/metadata-postgresql/issues/42).*
 
 ## Amélioration de la navigation
 
 ### Verrouillage de l'affichage sur la fiche courante
 
-La version 0.4 ajoute à la barre d'outil de Plume un bouton en forme de cadenas qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
+La version 0.4 ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../../plume/icons/buttons/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
 
 En mode lecture, ce bouton est désactivé par défaut. Quand l'utilisateur sélectionne une nouvelle couche PostgreSQL dans l'explorateur ou le panneau, les métadonnées de cette couche s'affichent dans le panneau de Plume. Lorsqu'il sélectionne une couche dont le fournisseur n'est pas un serveur PostgreSQL, Plume revient à son écran d'accueil.
 
@@ -102,4 +118,4 @@ Il est maintenant possible de spécifier via un modèle qu'une catégorie commun
 
 Complément sur la traduction anglaise des textes de l'interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. *Référence : [issue #50](https://github.com/MTES-MCT/metadata-postgresql/issues/50).*
 
-
+Plume vérifie désormais la compatibilité des versions de Plume et PlumePg avant de tenter d'utiliser cette dernière pour importer des modèles. En cas de non compatibilité, seuls les modèles locaux sont disponibles, comme dans le cas où PlumePg n'est pas installée sur la base. *Référence : [issue #49](https://github.com/MTES-MCT/metadata-postgresql/issues/49).*

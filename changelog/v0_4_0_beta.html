@@ -172,6 +172,11 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#calcul-des-metadonnees-cote-serveur">
+   Calcul des métadonnées côté serveur
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#amelioration-de-la-navigation">
    Amélioration de la navigation
   </a>
@@ -260,12 +265,29 @@
 <h1>Version 0.4.0 bêta (<em>en cours de développement</em>)<a class="headerlink" href="#version-0-4-0-beta-en-cours-de-developpement" title="Lien permanent vers ce titre">#</a></h1>
 <p><em>Date de publication : à venir.</em></p>
 <p><em>Sur GitHub : à venir.</em></p>
-<p>La version 0.4 apporte notamment plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.</p>
+<p>La version 0.4 met en service les fonctionnalités de calcul de métadonnées côté serveur. Elle apporte également plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.</p>
+<section id="calcul-des-metadonnees-cote-serveur">
+<h2>Calcul des métadonnées côté serveur<a class="headerlink" href="#calcul-des-metadonnees-cote-serveur" title="Lien permanent vers ce titre">#</a></h2>
+<p>Plume permet désormais de générer des métadonnées à partir d’informations disponibles côté serveur :</p>
+<ul class="simple">
+<li><p>soit automatiquement à l’ouverture de la fiche de métadonnées ;</p></li>
+<li><p>soit à la demande de l’utilisateur, lorsque celui-ci clique sur le bouton <img alt="compute_button.svg" src="../_images/compute_button.svg" /> placé à droite du champ de saisie dans le formulaire.</p></li>
+</ul>
+<p>L’activation des fonctionnalités de calcul est contrôlée par les modèles. Elle n’est évidemment possible que pour les catégories pour lesquelles une méthode de calcul est d’ores-et-déjà définie dans Plume (essentiellement, il s’agit une requête SQL à envoyer au serveur).</p>
+<p>Dans cette version, cela concerne :</p>
+<ul class="simple">
+<li><p>le titre et la description du jeu de données, qui peuvent être extraits du descriptif PostgreSQL de la table à l’aide d’une expression régulière ;</p></li>
+<li><p>les dates de création et de dernière modification, si elles ont été <a class="reference internal" href="#enregistrement-des-dates-de-creation-et-derniere-modification-des-tables"><span class="std std-doc">enregistrées</span></a> ;</p></li>
+<li><p>les référentiels de coordonnées déclarés pour les champs de la table.</p></li>
+</ul>
+<p>Cf. <a class="reference internal" href="../usage/metadonnees_calculees.html"><span class="doc std std-doc">Métadonnées calculées</span></a> pour plus de précisions.</p>
+<p><em>Réferences : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/23">issue #23</a> (prérequis : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/23">issue #22</a>), <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/42">issue #42</a>.</em></p>
+</section>
 <section id="amelioration-de-la-navigation">
 <h2>Amélioration de la navigation<a class="headerlink" href="#amelioration-de-la-navigation" title="Lien permanent vers ce titre">#</a></h2>
 <section id="verrouillage-de-l-affichage-sur-la-fiche-courante">
 <h3>Verrouillage de l’affichage sur la fiche courante<a class="headerlink" href="#verrouillage-de-l-affichage-sur-la-fiche-courante" title="Lien permanent vers ce titre">#</a></h3>
-<p>La version 0.4 ajoute à la barre d’outil de Plume un bouton en forme de cadenas qui permet de verrouiller l’affichage sur la fiche de métadonnées courante.</p>
+<p>La version 0.4 ajoute à la barre d’outil de Plume un bouton en forme de cadenas <img alt="verrou.svg" src="../../plume/icons/buttons/verrou.svg" /> qui permet de verrouiller l’affichage sur la fiche de métadonnées courante.</p>
 <p>En mode lecture, ce bouton est désactivé par défaut. Quand l’utilisateur sélectionne une nouvelle couche PostgreSQL dans l’explorateur ou le panneau, les métadonnées de cette couche s’affichent dans le panneau de Plume. Lorsqu’il sélectionne une couche dont le fournisseur n’est pas un serveur PostgreSQL, Plume revient à son écran d’accueil.</p>
 <p>Si l’utilisateur actionne le bouton de verrouillage, la fiche de métadonnées courante restera affichée dans le panneau de Plume quelles que soient les manipulations réalisées par l’utilisateur dans l’explorateur et le panneau des couches.</p>
 <p>En mode édition, ce bouton est activé par défaut et ne peut pas être désactivé. Ceci permet d’éviter à l’utilisateur de perdre accidentellement ses modifications à cause d’un clic malencontreux sur une autre couche.</p>
@@ -338,6 +360,7 @@
 <p>Le nom du modèle courant est dorénavant explicitement affiché dans la barre d’outils de Plume. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/55">issue #55</a>.</em></p>
 <p>Il est maintenant possible de spécifier via un modèle qu’une catégorie commune prenant pour valeur des dates simples utilise à la place des dates avec heures, ou réciproquement. Jusqu’ici, les modèles pouvaient seulement changer le type de valeur pour les catégories locales.</p>
 <p>Complément sur la traduction anglaise des textes de l’interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/50">issue #50</a>.</em></p>
+<p>Plume vérifie désormais la compatibilité des versions de Plume et PlumePg avant de tenter d’utiliser cette dernière pour importer des modèles. En cas de non compatibilité, seuls les modèles locaux sont disponibles, comme dans le cas où PlumePg n’est pas installée sur la base. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/49">issue #49</a>.</em></p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="isreadonly"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
