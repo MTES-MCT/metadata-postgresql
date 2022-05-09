@@ -2,10 +2,6 @@
 
 [Principe](#principe) • [Processus de calcul](#processus-de-calcul) • [Implémentation du calcul automatique](#implémentation-du-calcul-automatique) • [Implémentation du calcul à déclenchement manuel](#implémentation-du-calcul-à-déclenchement-manuel) 
 
-Dans la suite, on considère :
-- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](./generation_dictionnaire_widgets.md)), objet de classe `plume.rdf.widgetsdict.WidgetsDict`.
-- `widgetkey` la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe `plume.rdf.widgetkey.WidgetKey`.
-
 ## Principe
 
 Plume permet à l'administrateur de demander via ses modèles de formulaires à ce que certaines catégories de métadonnées puissent être mises à jour par un calcul côté serveur en plus de la saisie manuelle ordinaire. Ce calcul peut soit être exécuté automatiquement au chargement de la fiche de métadonnées (options `'auto'`, `'new'` ou `'empty'`), soit à la demande de l'utilisateur (option `'manual'`).
@@ -50,6 +46,8 @@ Les trois modes de calcul automatique opèrent comme suit :
 
 Si plusieurs de ces modes sont spécifiés simultanément, `'auto'` prévaut sur `'empty'`, qui prévaut sur `'new'`.
 
+Avec ``'manual'``, un bouton de calcul ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) apparaîtra à droite du champ de saisie de la métadonnées dans le formulaire. Cliquer sur ce bouton importe les informations désirées du serveur. Pour les catégories admettant plusieurs valeurs, le bouton porte sur l'ensemble du groupe.
+
 Les boutons de calcul ne sont présents qu'en mode édition, par contre le calcul automatique opère aussi bien en mode édition qu'en mode lecture. Une catégorie sur laquelle une fonctionnalité de calcul automatique est définie apparaîtra toujours dans le formulaire, même lorsque le calcul ne renvoie aucune valeur et que le paramétrage prévoit que les catégories sans valeur ne soient pas affichées (comportement par défaut en mode lecture[^hideblank]).
 
 [^hideblank]: Cf. `readHideBlank` dans la [liste des paramètres utilisateur](./parametres_utilisateur.md).
@@ -61,6 +59,10 @@ Le calcul consiste en quatre opérations successives :
 - générer la requête permettant d'obtenir les informations désirées et l'envoyer au serveur PostgreSQL ;
 - intégrer le résultat dans le dictionnaire de widgets ;
 - (selon les cas) répercuter les modifications sur les widgets.
+
+Dans la suite, on considère :
+- `widgetsdict` le dictionnaire contenant tous les widgets et leurs informations de paramétrage (cf. [Génération du dictionnaire des widgets](./generation_dictionnaire_widgets.md)), objet de classe `plume.rdf.widgetsdict.WidgetsDict`.
+- `widgetkey` la clé de ce dictionnaire pour laquelle un calcul doit être réalisé, objet de classe `plume.rdf.widgetkey.WidgetKey`.
 
 ### Contrôle des extensions disponibles
 
