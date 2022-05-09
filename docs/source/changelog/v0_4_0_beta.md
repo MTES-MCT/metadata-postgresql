@@ -27,7 +27,7 @@ Cf. [Métadonnées calculées](../usage/metadonnees_calculees.md) pour plus de p
 
 ### Verrouillage de l'affichage sur la fiche courante
 
-La version 0.4 ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../../plume/icons/buttons/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
+La version 0.4 ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../../plume/icons/general/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
 
 En mode lecture, ce bouton est désactivé par défaut. Quand l'utilisateur sélectionne une nouvelle couche PostgreSQL dans l'explorateur ou le panneau, les métadonnées de cette couche s'affichent dans le panneau de Plume. Lorsqu'il sélectionne une couche dont le fournisseur n'est pas un serveur PostgreSQL, Plume revient à son écran d'accueil.
 
