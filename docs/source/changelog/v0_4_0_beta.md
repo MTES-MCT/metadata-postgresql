@@ -106,7 +106,7 @@ En pratique, l'utilisateur pourra constater les changements suivants :
 *Référence : [issue #51](https://github.com/MTES-MCT/metadata-postgresql/issues/51), [issue #53](https://github.com/MTES-MCT/metadata-postgresql/issues/53).*
 
 
-## Divers
+## Anomalies et divers
 
 Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT. *Références : [issue #34](https://github.com/MTES-MCT/metadata-postgresql/issues/34).*
 
@@ -119,3 +119,9 @@ Il est maintenant possible de spécifier via un modèle qu'une catégorie commun
 Complément sur la traduction anglaise des textes de l'interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. *Référence : [issue #50](https://github.com/MTES-MCT/metadata-postgresql/issues/50).*
 
 Plume vérifie désormais la compatibilité des versions de Plume et PlumePg avant de tenter d'utiliser cette dernière pour importer des modèles. En cas de non compatibilité, seuls les modèles locaux sont disponibles, comme dans le cas où PlumePg n'est pas installée sur la base. *Référence : [issue #49](https://github.com/MTES-MCT/metadata-postgresql/issues/49).*
+
+Correction d'une anomalie qui empêchait d'importer des fiches de métadonnées depuis certains CSW, notamment celui de GéoIDE. *Référence : [issue #65](https://github.com/MTES-MCT/metadata-postgresql/issues/65).*
+
+La version précédente ne référençait pas le bon point de moissonnage pour le CSW de GéoIDE. Cette information étant stockée dans les fichiers de configuration, **la correction requiert une intervention manuelle** pour remplacer `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset` par `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable` dans le fichier `QGIS3.ini`[^qgis3ini]. Il est possible de simplement supprimer les paramètres `CSW\urlCswDefaut` et `CSW\urlCsw` de la section `[PLUME]`, ils seront recréés par Plume avec leurs nouvelles valeurs par défaut.
+
+[^qgis3ini]: Sur Windows, à chercher dans le répertoire `C:\Users\%username%\AppData\Roaming\QGIS\QGIS3\profiles\default\QGIS\QGIS3.ini`, en remplaçant `default` par le nom du profil QGIS utilisé s'il ne s'agit pas du profil par défaut.
