@@ -236,8 +236,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#divers">
-   Divers
+  <a class="reference internal nav-link" href="#anomalies-et-divers">
+   Anomalies et divers
   </a>
  </li>
 </ul>
@@ -353,18 +353,23 @@
 </ul>
 <p><em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/51">issue #51</a>, <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/53">issue #53</a>.</em></p>
 </section>
-<section id="divers">
-<h2>Divers<a class="headerlink" href="#divers" title="Lien permanent vers ce titre">#</a></h2>
+<section id="anomalies-et-divers">
+<h2>Anomalies et divers<a class="headerlink" href="#anomalies-et-divers" title="Lien permanent vers ce titre">#</a></h2>
 <p>Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/34">issue #34</a>.</em></p>
 <p>Il est désormais possible de sélectionner et copier du texte dans les fiches de métadonnées ouvertes en mode lecture. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/56">issue #56</a>.</em></p>
 <p>Le nom du modèle courant est dorénavant explicitement affiché dans la barre d’outils de Plume. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/55">issue #55</a>.</em></p>
 <p>Il est maintenant possible de spécifier via un modèle qu’une catégorie commune prenant pour valeur des dates simples utilise à la place des dates avec heures, ou réciproquement. Jusqu’ici, les modèles pouvaient seulement changer le type de valeur pour les catégories locales.</p>
 <p>Complément sur la traduction anglaise des textes de l’interface du plugin QGIS, hors éléments inclus dans les fiches de métadonnées. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/50">issue #50</a>.</em></p>
 <p>Plume vérifie désormais la compatibilité des versions de Plume et PlumePg avant de tenter d’utiliser cette dernière pour importer des modèles. En cas de non compatibilité, seuls les modèles locaux sont disponibles, comme dans le cas où PlumePg n’est pas installée sur la base. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/49">issue #49</a>.</em></p>
+<p>Correction d’une anomalie qui empêchait d’importer des fiches de métadonnées depuis certains CSW, notamment celui de GéoIDE. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/65">issue #65</a>.</em></p>
+<p>La version précédente ne référençait pas le bon point de moissonnage pour le CSW de GéoIDE. Cette information étant stockée dans les fichiers de configuration, <strong>la correction requiert une intervention manuelle</strong> pour remplacer <code class="docutils literal notranslate"><span class="pre">http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset</span></code> par <code class="docutils literal notranslate"><span class="pre">http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable</span></code> dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code><a class="footnote-reference brackets" href="#qgis3ini" id="id2">2</a>. Il est possible de simplement supprimer les paramètres <code class="docutils literal notranslate"><span class="pre">CSW\urlCswDefaut</span></code> et <code class="docutils literal notranslate"><span class="pre">CSW\urlCsw</span></code> de la section <code class="docutils literal notranslate"><span class="pre">[PLUME]</span></code>, ils seront recréés par Plume avec leurs nouvelles valeurs par défaut.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="isreadonly"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Une catégorie peut être déclarée comme étant « en lecture seule » (non éditable) par un modèle de fiche défini avec <em>PlumePg</em>. On indiquera <code class="docutils literal notranslate"><span class="pre">True</span></code> dans le champ <code class="docutils literal notranslate"><span class="pre">is_read_only</span></code> de la table <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code> pour le modèle et la catégorie considérés.</p>
+</dd>
+<dt class="label" id="qgis3ini"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Sur Windows, à chercher dans le répertoire <code class="docutils literal notranslate"><span class="pre">C:\Users\%username%\AppData\Roaming\QGIS\QGIS3\profiles\default\QGIS\QGIS3.ini</span></code>, en remplaçant <code class="docutils literal notranslate"><span class="pre">default</span></code> par le nom du profil QGIS utilisé s’il ne s’agit pas du profil par défaut.</p>
 </dd>
 </dl>
 </section>
