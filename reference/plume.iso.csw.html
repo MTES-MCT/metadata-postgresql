@@ -359,9 +359,13 @@
 </dl>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>La requête n’est pas en encodage-pourcent, car elle a vocation à être
+passée au constructeur de la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QUrl</span></code> qui
+s’en chargera.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">getcapabilities_request</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset&#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable&#39;</span>
 <span class="gp">... </span>    <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
@@ -391,9 +395,13 @@ des fiches ISO 19139.</p>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>La requête n’est pas en encodage-pourcent, car elle a vocation à être
+passée au constructeur de la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QUrl</span></code> qui
+s’en chargera.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">getrecordbyid_request</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset&#39;</span><span class="p">,</span> 
+<span class="gp">... </span>    <span class="s1">&#39;http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable&#39;</span><span class="p">,</span> 
 <span class="gp">... </span>    <span class="s1">&#39;fr-120066022-jdd-d3d794eb-76ba-450a-9f03-6eb84662f297&#39;</span>
 <span class="gp">... </span>    <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
