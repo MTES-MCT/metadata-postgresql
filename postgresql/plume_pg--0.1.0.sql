@@ -1838,7 +1838,7 @@ COMMENT ON FUNCTION z_plume.stamp_table_drop() IS 'Fonction exécutée par le d�
 -- Event trigger: plume_stamp_table_drop
 
 CREATE EVENT TRIGGER plume_stamp_table_drop ON sql_drop
-    WHEN TAG IN ('DROP TABLE', 'DROP SCHEMA')
+    WHEN TAG IN ('DROP TABLE', 'DROP SCHEMA', 'DROP OWNED')
     EXECUTE PROCEDURE z_plume.stamp_table_drop() ;
 
 ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
