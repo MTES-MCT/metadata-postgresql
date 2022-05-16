@@ -1331,6 +1331,7 @@ BEGIN
 
     RESET ROLE ;
     DROP SCHEMA c_bibliotheque CASCADE ;
+    TRUNCATE z_plume.stamp_timestamp ;
     DROP ROLE g_stamp_edit ;
     
     RETURN True ;
@@ -1348,3 +1349,50 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t015() IS 'PlumePg (recette). TEST : Enregistrement des tampons de dates dans les fiches de métadonnées.' ;
 
+
+-- Function: z_plume_recette.t016()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t016()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+BEGIN
+
+    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+
+    CREATE ROLE g_stamp_test ;
+    CREATE SCHEMA c_bibliotheque AUTHORIZATION g_stamp_test ;
+    CREATE TABLE c_bibliotheque.test_owned () ;
+
+    ASSERT (SELECT count(*) FROM z_plume.stamp_timestamp
+        WHERE relid = 'c_bibliotheque.test_owned'::regclass::oid) = 1,
+        'échec assertion #1' ;
+
+    DROP OWNED BY g_stamp_test CASCADE ;
+
+    ASSERT (SELECT count(*) FROM z_plume.stamp_timestamp) = 0, 'échec assertion #2' ;
+
+    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+    DROP ROLE g_stamp_test ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t016() IS 'PlumePg (recette). TEST : Tampons de date et DROP OWNED.' ;
