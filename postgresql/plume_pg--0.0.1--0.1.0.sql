@@ -779,6 +779,12 @@ CREATE OR REPLACE FUNCTION z_plume.stamp_timestamp_access_control()
     niveau ligne, celles-ci n'étant pas correctement prises en
     charge par PostgreSQL dans les extensions à ce stade.
 
+    Raises
+    ------
+    insufficient_privilege
+        Lorsque le rôle courant n'est pas habilité à modifier
+        l'enregistrement considéré de stamp_timestamp.
+
 */
 BEGIN
 
@@ -786,7 +792,8 @@ BEGIN
     THEN
         IF NOT z_plume.is_relowner(OLD.relid)
         THEN
-            RAISE insufficient_privilege ;
+            RAISE EXCEPTION 'Opération interdite. Seul le propriétaire de la table est habilité à modifier ou supprimer l''enregistrement qui la concerne.'
+                USING ERRCODE = 'insufficient_privilege' ;
         END IF ;
     END IF ;
     
@@ -794,7 +801,8 @@ BEGIN
     THEN
         IF NOT z_plume.is_relowner(NEW.relid)
         THEN
-            RAISE insufficient_privilege ;
+            RAISE EXCEPTION 'Opération interdite. Seul le propriétaire de la table est habilité à modifier ou supprimer l''enregistrement qui la concerne.'
+                USING ERRCODE = 'insufficient_privilege' ;
         END IF ;
     END IF ;
 
@@ -826,16 +834,29 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE z_plume.stamp_timestamp TO public 
 -- Function: z_plume.stamp_timestamp_to_metadata()
 
 CREATE OR REPLACE FUNCTION z_plume.stamp_timestamp_to_metadata()
-    RETURNS TRIGGER
+    RETURNS trigger
     LANGUAGE plpgsql
     SECURITY DEFINER
     AS $BODY$
 /* Fonction exécutée par le déclencheur stamp_timestamp_to_metadata qui met à jour la date de dernière modification dans les métadonnées de la table concernée.
     
-    Cette fonction ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification. Elle
-    n'aura pas d'effet si le descriptif de la table ne
-    contient pas encore de fiche de métadonnées.
+    Cette fonction ne provoque pas d'erreur, sauf si elle est
+    appelée par un autre déclencheur que stamp_timestamp_to_metadata.
+    En cas d'échec, elle se contente d'un message de notification. Elle
+    n'aura pas d'effet si le descriptif de la table ne contient pas encore
+    de fiche de métadonnées.
+
+    Pour qu'elle fonctionne de manière optimale, il faut que le 
+    propriétaire de la fonction (vraisemblablement le rôle qui a
+    installé l'extension) soit un super-utilisateur ou qu'il soit 
+    membre des rôles propriétaires de toutes les tables - comme c'est
+    le cas avec le rôle g_admin d'Asgard.
+
+    Raises
+    ------
+    trigger_protocol_violated
+        Lorsque la fonction est utilisée dans un contexte
+        autre que celui prévu par Plume.
 
 */
 DECLARE
@@ -847,67 +868,76 @@ DECLARE
     e_detl text ;
 BEGIN
 
-    old_metadata := z_plume.meta_description(NEW.relid, 'pg_class') ;
-    
-    IF old_metadata IS NULL
+    -- comme il s'agit d'une fonction SECURITY DEFINER, on s'assure qu'elle
+    -- est bien appelée dans le seul contexte autorisé, à savoir par un trigger
+    -- stamp_timestamp_to_metadata défini sur la table z_plume.stamp_timestamp.
+    IF NOT TG_TABLE_NAME = 'stamp_timestamp' OR NOT TG_TABLE_SCHEMA = 'z_plume'
+        OR NOT TG_NAME = 'stamp_timestamp_to_metadata'
     THEN
-        RETURN NULL ;
+        RAISE EXCEPTION 'Opération interdite. La fonction stamp_timestamp_to_metadata() ne peut être appelée que par le déclencheur stamp_timestamp_to_metadata défini sur la table z_plume.stamp_timestamp.'
+            USING ERRCODE = 'trigger_protocol_violated' ;
     END IF ;
-    
-    -- boucle sur les éléments de premier niveau du JSON-LD
-    FOR r IN (
-        SELECT 
-            item
-            FROM jsonb_array_elements(old_metadata) AS t (item)
-        )
-    LOOP
-    
-        IF r.item @> '{"@type": ["http://www.w3.org/ns/dcat#Dataset"]}'
+
+    BEGIN 
+        old_metadata := z_plume.meta_description(NEW.relid, 'pg_class') ;
+        
+        IF old_metadata IS NULL
         THEN
-            new_metadata := new_metadata || jsonb_build_array(jsonb_set(
-                r.item, '{http://purl.org/dc/terms/modified}',
-                jsonb_build_array(jsonb_build_object('@type',
-                    'http://www.w3.org/2001/XMLSchema#dateTime',
-                    '@value', NEW.modified)),
-                create_if_missing := True
-                )) ;
-        ELSE
-            new_metadata := new_metadata || jsonb_build_array(r.item) ;
+            RETURN NULL ;
         END IF ;
         
-    END LOOP ;
-    
-    EXECUTE format(
-        'COMMENT ON TABLE %s IS %L ;',
-        NEW.relid::regclass,
-        regexp_replace(
-            obj_description(NEW.relid, 'pg_class'),
-            '\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}',
-            format(
-                '
+        -- boucle sur les éléments de premier niveau du JSON-LD
+        FOR r IN (
+            SELECT 
+                item
+                FROM jsonb_array_elements(old_metadata) AS t (item)
+            )
+        LOOP
+        
+            IF r.item @> '{"@type": ["http://www.w3.org/ns/dcat#Dataset"]}'
+            THEN
+                new_metadata := new_metadata || jsonb_build_array(jsonb_set(
+                    r.item, '{http://purl.org/dc/terms/modified}',
+                    jsonb_build_array(jsonb_build_object('@type',
+                        'http://www.w3.org/2001/XMLSchema#dateTime',
+                        '@value', NEW.modified)),
+                    create_if_missing := True
+                    )) ;
+            ELSE
+                new_metadata := new_metadata || jsonb_build_array(r.item) ;
+            END IF ;
+            
+        END LOOP ;
+        
+        EXECUTE format(
+            'COMMENT ON TABLE %s IS %L ;',
+            NEW.relid::regclass,
+            regexp_replace(
+                obj_description(NEW.relid, 'pg_class'),
+                '\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}',
+                format('
 
 <METADATA>
 %s
 </METADATA>
 ',
-                jsonb_pretty(new_metadata)
+                    jsonb_pretty(new_metadata)
+                    )
                 )
-            )
-        ) ;
-    
-    RETURN NULL ;
+            ) ;
 
-EXCEPTION WHEN OTHERS THEN
+    EXCEPTION WHEN OTHERS THEN
 
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
-        
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ;
-    
+        GET STACKED DIAGNOSTICS
+            e_mssg = MESSAGE_TEXT,
+            e_hint = PG_EXCEPTION_HINT,
+            e_detl = PG_EXCEPTION_DETAIL ;
+            
+        RAISE NOTICE '%', e_mssg
+            USING DETAIL = e_detl,
+                HINT = e_hint ;
+    END ;
+
     RETURN NULL ;
 
 END
@@ -935,7 +965,7 @@ ALTER TABLE z_plume.stamp_timestamp DISABLE TRIGGER stamp_timestamp_to_metadata 
 -- Function: z_plume.stamp_data_edit()
 
 CREATE OR REPLACE FUNCTION z_plume.stamp_data_edit()
-    RETURNS TRIGGER
+    RETURNS trigger
     LANGUAGE plpgsql
     SECURITY DEFINER
     AS $BODY$
@@ -944,8 +974,15 @@ CREATE OR REPLACE FUNCTION z_plume.stamp_data_edit()
     Elle enregistre la nouvelle date de dernière modification
     de la table dans la table stamp_timestamp.
     
-    Cette fonction ne provoque pas d'erreur. En cas d'échec,
-    elle se contente d'un message de notification.
+    Cette fonction ne provoque pas d'erreur, sauf si elle est
+    appelée par un autre déclencheur que plume_stamp_data_edit.
+    En cas d'échec, elle se contente d'un message de notification.
+
+    Raises
+    ------
+    trigger_protocol_violated
+        Lorsque la fonction est utilisée dans un contexte
+        autre que celui prévu par Plume.
 
 */
 DECLARE
@@ -954,29 +991,38 @@ DECLARE
     e_detl text ;
 BEGIN
 
-    UPDATE z_plume.stamp_timestamp
-        SET modified = now()
-        WHERE relid = TG_RELID ;
-    
-    IF NOT FOUND
+    -- comme il s'agit d'une fonction SECURITY DEFINER, on s'assure qu'elle
+    -- est bien appelée dans le seul contexte autorisé, à savoir par un trigger
+    -- plume_stamp_data_edit.
+    IF NOT TG_NAME = 'plume_stamp_data_edit'
     THEN
-        INSERT INTO z_plume.stamp_timestamp (relid, modified)
-            VALUES (TG_RELID, now()) ;
+        RAISE EXCEPTION 'Opération interdite. La fonction stamp_data_edit() ne peut être appelée que par un déclencheur plume_stamp_data_edit.'
+            USING ERRCODE = 'trigger_protocol_violated' ;
     END IF ;
-    
-    RETURN NULL ;
 
-EXCEPTION WHEN OTHERS THEN
-
-    GET STACKED DIAGNOSTICS
-        e_mssg = MESSAGE_TEXT,
-        e_hint = PG_EXCEPTION_HINT,
-        e_detl = PG_EXCEPTION_DETAIL ;
+    BEGIN
+        UPDATE z_plume.stamp_timestamp
+            SET modified = now()
+            WHERE relid = TG_RELID ;
         
-    RAISE NOTICE '%', e_mssg
-        USING DETAIL = e_detl,
-            HINT = e_hint ;
-    
+        IF NOT FOUND
+        THEN
+            INSERT INTO z_plume.stamp_timestamp (relid, modified)
+                VALUES (TG_RELID, now()) ;
+        END IF ;
+
+    EXCEPTION WHEN OTHERS THEN
+
+        GET STACKED DIAGNOSTICS
+            e_mssg = MESSAGE_TEXT,
+            e_hint = PG_EXCEPTION_HINT,
+            e_detl = PG_EXCEPTION_DETAIL ;
+            
+        RAISE NOTICE '%', e_mssg
+            USING DETAIL = e_detl,
+                HINT = e_hint ;     
+    END ;
+
     RETURN NULL ;
 
 END
