@@ -965,7 +965,10 @@ pour transformer en fantôme une clé qui ne l’était pas,
 si les conditions suivantes sont réunies :
 * le groupe de propriétés a au moins un enfant ;
 * tous les enfants du groupe sont des fantômes ;
-* la clé n’a pas de jumelle.</p>
+* la clé n’a pas de jumelle ou est la jumelle principale.</p>
+<blockquote>
+<div><p>Dans ce cas, la clé-valeur jumelle sera supprimée.</p>
+</div></blockquote>
 <p><a class="reference internal" href="#plume.rdf.widgetkey.GroupOfPropertiesKey.is_ghost" title="plume.rdf.widgetkey.GroupOfPropertiesKey.is_ghost"><code class="xref py py-attr docutils literal notranslate"><span class="pre">is_ghost</span></code></a> définit la valeur booléenne de la clé :
 <code class="docutils literal notranslate"><span class="pre">bool(widgetkey)</span></code> vaut <code class="docutils literal notranslate"><span class="pre">False</span></code> si <code class="docutils literal notranslate"><span class="pre">widgetkey</span></code> est une
 clé fantôme.</p>
