@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QDialog, QTreeWidgetItemIterator
 from qgis.core import *
 
 from .importcsw import Ui_Dialog_ImportCSW
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 
 class Dialog(QDialog, Ui_Dialog_ImportCSW):
       def __init__(self, Dialog):
@@ -34,10 +35,11 @@ class Dialog(QDialog, Ui_Dialog_ImportCSW):
           _mListCSW = []
           while iterator.value() :
              itemValueText = iterator.value().text(0)
-             if str(self.urlCswDefaut) != itemValueText :
+             if itemValueText not in URLCSWDEFAUT and itemValueText != self.mTreeCSW.mLibNodeUrlDefaut : 
                 _mListCSW.append(itemValueText)
              iterator += 1
           mDicCSW["urlCsw"] =  ",".join(_mListCSW)
+          
           #----
           for key, value in mDicCSW.items():
               mSettings.setValue(key, value)

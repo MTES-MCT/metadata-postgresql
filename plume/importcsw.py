@@ -18,6 +18,7 @@ from plume.iso import csw
 from qgis.core import QgsNetworkContentFetcher
 #
 from qgis.core import  QgsSettings
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 
 class Ui_Dialog_ImportCSW(object):
     def setupUiImportCSW(self, DialogImportCSW, Dialog):
@@ -76,10 +77,15 @@ class Ui_Dialog_ImportCSW(object):
         ordonneeLabelSaisie           = 100
         deltaLabelSaisie              = hauteurLabel + 8
         hauteurListeUrl               = 200
-        #------ 
-        self.urlCswDefaut = Dialog.urlCswDefaut
+        #------
+        self.urlCswDefautGEOIDE, self.urlCswDefautIGN, self.urlCswIdDefautGEOIDE = "", "", ""
+        if Dialog.urlCswDefaut.split(",")[0]   != "" : self.urlCswDefautGEOIDE   = Dialog.urlCswDefaut.split(",")[0]
+        if Dialog.urlCswDefaut.split(",")[1]   != "" : self.urlCswDefautIGN      = Dialog.urlCswDefaut.split(",")[1]
+        if Dialog.urlCswIdDefaut.split(",")[0] != "" : self.urlCswIdDefautGEOIDE = Dialog.urlCswIdDefaut.split(",")[0]
+
         mListurlCsw = Dialog.urlCsw.split(",")
         self.urlCsw = Dialog.urlCsw
+
         #------
         #Liste URL / ID 
         abscisse, ordonnee, largeur, hauteur = abscisseLabel , ordonneeLabelSaisie, largeurLabel + largeurSaisie + 10, hauteurListeUrl
@@ -98,9 +104,8 @@ class Ui_Dialog_ImportCSW(object):
         self.mTreeCSW.clear()
         
         mListurlCswtemp = list(reversed(mListurlCsw))
-        mListurlCswtemp.append(Dialog.urlCswDefaut)
         self.mTreeCSW.afficheCSW(DialogImportCSW, mListurlCswtemp)
-        #Liste URL / ID 
+       #Liste URL / ID 
         #------ 
 
         #------ 
@@ -120,7 +125,7 @@ class Ui_Dialog_ImportCSW(object):
         mZoneUrl.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, largeurSaisie - 50, hauteurSaisie))
         mZoneUrl.setObjectName("mZoneUrl")
         mZoneUrl.setToolTip(mLabelUrlToolTip)
-        mZoneUrl.setPlaceholderText(Dialog.urlCswDefaut)
+        mZoneUrl.setPlaceholderText(self.urlCswDefautGEOIDE)
         mZoneUrl.setText("")
         self.mZoneUrl = mZoneUrl
         #------ 
@@ -140,7 +145,7 @@ class Ui_Dialog_ImportCSW(object):
         mZoneUrlId.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, largeurSaisie - 50, hauteurSaisie))
         mZoneUrlId.setObjectName("mZoneUrlId")
         mZoneUrlId.setToolTip(mLabelUrlIdToolTip)
-        mZoneUrlId.setPlaceholderText(Dialog.urlCswIdDefaut)
+        mZoneUrlId.setPlaceholderText(self.urlCswIdDefautGEOIDE)
         mZoneUrlId.setText("")
         self.mZoneUrlId = mZoneUrlId
         #------
@@ -258,7 +263,7 @@ class Ui_Dialog_ImportCSW(object):
 
           #For test
           #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr","fr-120066022-jdd-1c02c1c1-cd81-4cd5-902e-acbd3d4e5527"
-          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset","fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab"
+          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable","fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab"
           #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-9618cc78-9b28-4562-8bbe-bede9bee2e9f"
           #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef"
           #
@@ -333,17 +338,35 @@ class TREEVIEWCSW(QTreeWidget):
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
+        # Url User
+        self.mLibNodeUrlDefaut = "URL des CSW par défaut"
         i = 0
         while i in range(len(listeUrlCSW)) :
            self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ str(listeUrlCSW[i]) ] ) ] )
            root = self.topLevelItem( 0 )
            root.setIcon(0, iconGestion)
-           if str(listeUrlCSW[i]) != self.DialogImportCSW.urlCswDefaut : 
+           if str(listeUrlCSW[i]) not in URLCSWDEFAUT :  
               root.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
            i += 1
+        # Url User
+
+        # Url par défaut
+        self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlDefaut ] ) ] )
+        nodeBlocs = self.topLevelItem( 0 )
+        mListUrlDefaut = URLCSWDEFAUT.split(",")
+        iListUrlDefaut = 0
+            
+        while iListUrlDefaut in range(len(mListUrlDefaut)) :
+           mUrlDefaut = mListUrlDefaut[iListUrlDefaut]
+           nodeUrlDefaut = QTreeWidgetItem(None, [ mUrlDefaut ])
+           nodeBlocs.addChild( nodeUrlDefaut )
+           iListUrlDefaut += 1
+        # Url par défaut
+
         self.itemClicked.connect( self.ihmsPlumeCSW ) 
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelPlumeCSW)
+        self.expandAll()
         return
 
     #===============================              
@@ -356,7 +379,10 @@ class TREEVIEWCSW(QTreeWidget):
         
         if event.mimeData().hasFormat('text/plain'):
            self.mDepart = mItemWidget
-           event.accept()
+           if self.mDepart not in URLCSWDEFAUT and self.mDepart != self.mLibNodeUrlDefaut : 
+              event.accept()
+           else :   
+              event.ignore()
         return
 
     #===============================              
@@ -366,7 +392,11 @@ class TREEVIEWCSW(QTreeWidget):
         try :
            r = self.itemFromIndex(index).text(0)
            mParentItem = self.itemFromIndex(index).parent()
-           if mParentItem == None :
+           if self.mDepart in URLCSWDEFAUT or self.mDepart == self.mLibNodeUrlDefaut : 
+              event.ignore()
+           elif r == self.mLibNodeUrlDefaut :
+              event.ignore()
+           elif mParentItem == None :
               event.accept()
            else :
               event.ignore()
@@ -405,7 +435,7 @@ class TREEVIEWCSW(QTreeWidget):
            return
         
         #-------
-        if index.data(0) != self.DialogImportCSW.urlCswDefaut : 
+        if index.data(0) not in URLCSWDEFAUT and index.data(0) != self.mLibNodeUrlDefaut : 
            self.treeMenu = QMenu(self)
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
            self.treeActionCSW_del = QAction(QIcon(menuIcon), "Supprimer l'URL CSW", self.treeMenu)
@@ -419,7 +449,8 @@ class TREEVIEWCSW(QTreeWidget):
     #===============================              
     def ihmsPlumeCSW(self, item, column): 
         mItemClicUrlCsw = item.data(0, Qt.DisplayRole)
-        self.DialogImportCSW.mZoneUrl.setText(mItemClicUrlCsw)
+        if mItemClicUrlCsw != self.mLibNodeUrlDefaut :
+           self.DialogImportCSW.mZoneUrl.setText(mItemClicUrlCsw)
         return
 
     #===============================              

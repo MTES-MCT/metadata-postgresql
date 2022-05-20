@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QToolBar, QApplication, 
                              QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle, QToolBar)
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
+from html import escape
 
 from . import bibli_plume
 from .bibli_plume import *
@@ -33,30 +34,72 @@ import subprocess
 import time
 import sys
 
+from contextlib import contextmanager
 import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
 from plume.pg.template import LocalTemplatesCollection
 from plume.bibli_install import manageLibrary
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+
 
 class Ui_Dialog_plume(object):
     def __init__(self):
-        self.iface = qgis.utils.iface                         
+        self.iface = qgis.utils.iface                                                          
         self.firstOpen = True                                 
         self.firstOpenConnect = True
-    
+
+    @contextmanager
+    def safe_pg_connection(self) :
+        if not getattr(self, 'mConnectEnCours', False) or self.mConnectEnCours.closed:
+           self.getAllFromUri()
+        try:
+           yield
+           
+        except psycopg2.Error as err :
+           self.layerBeforeClicked = ("", "")
+           saveinitializingDisplay("write", self.layerBeforeClicked)
+           bibli_plume.breakExecuteSql(self)
+
+           if err.diag:
+              zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+              zMess  = err.diag.message_primary  
+              displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+
+        except NoReturnSql as err_NoReturnSql :
+           self.layerBeforeClicked = ("", "")
+           saveinitializingDisplay("write", self.layerBeforeClicked)
+           bibli_plume.breakExecuteSql(self)
+
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+           zMess  = str(err_NoReturnSql.mMess) 
+           displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+
+        except Exception as err_Exception :
+           self.layerBeforeClicked = ("", "")
+           saveinitializingDisplay("write", self.layerBeforeClicked)
+           bibli_plume.breakExecuteSql(self)
+
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+           zMess  = str(err_Exception) 
+           displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+        
+        finally:
+           if getattr(self, 'mConnectEnCours', False) : self.mConnectEnCours.close()
+                
     def setupUi(self, Dialog):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
+        self.zMessError_Transaction = "FIN TRANSACTION"
         #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
-
+        #--
         self.lScreenDialog, self.hScreenDialog = int(self.mDic_LH["dialogLargeur"]), int(self.mDic_LH["dialogHauteur"])
         self.displayMessage    = False if self.mDic_LH["displayMessage"] == 'dialogTitle' else True #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
-        self.fileHelp          = self.mDic_LH["fileHelp"]      #Type Fichier Help
-        self.fileHelpPdf       = self.mDic_LH["fileHelpPdf"]   #Fichier Help  PDF
-        self.fileHelpHtml      = self.mDic_LH["fileHelpHtml"]  #Fichier Help  HTML
+        self.fileHelp          = VALUEDEFAUTFILEHELP      #Type Fichier Help
+        self.fileHelpPdf       = VALUEDEFAUTFILEHELPPDF   #Fichier Help  PDF
+        self.fileHelpHtml      = VALUEDEFAUTFILEHELPHTML  #Fichier Help  HTML
         self.durationBarInfo   = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
         self.ihm               = self.mDic_LH["ihm"]  #window/dock
         self.toolBarDialog     = self.mDic_LH["toolBarDialog"]    #toolBarDialog
@@ -76,9 +119,9 @@ class Ui_Dialog_plume(object):
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]    #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
         #---
-        self.urlCswDefaut     = self.mDic_LH["urlCswDefaut"]       #l'Url par defaut
-        self.urlCswIdDefaut   = self.mDic_LH["urlCswIdDefaut"]     #l'Id de l'Url par defaut
-        self.urlCsw           = self.mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées
+        self.urlCswDefaut      = URLCSWDEFAUT       #l'Url par defaut
+        self.urlCswIdDefaut    = URLCSWIDDEFAUT     #l'Id de l'Url par defaut
+        self.urlCsw            = self.mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées
         # for geometry
         self.geomColor       = self.mDic_LH["geomColor"]       
         self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
@@ -101,15 +144,12 @@ class Ui_Dialog_plume(object):
         #Management Click before open IHM 
         if self.mDic_LH["layerBeforeClickedWho"] == "qgis" : 
            self.layerBeforeClicked = (bibli_plume.returnIfExisteInLegendeInterface(self, self.mDic_LH["layerBeforeClicked"]), self.mDic_LH["layerBeforeClickedWho"], self.mDic_LH["layerBeforeClickedBrowser"]) # Couche mémorisée avant ouverture et de l'origine
-        else :    
+        elif self.mDic_LH["layerBeforeClickedWho"] == "postgres" : 
            self.layerBeforeClicked = (bibli_plume.returnIfExisteInBrowser(self, self.mDic_LH["layerBeforeClicked"]), self.mDic_LH["layerBeforeClickedWho"], self.mDic_LH["layerBeforeClickedBrowser"]) # Couche mémorisée avant ouverture et de l'origine
+        else :
+           self.layerBeforeClicked = ('', '') 
         #Cas ou l'instance sauvegardé dans le QGIS3.INI n'a plus de correspondance 
-        if (self.layerBeforeClicked[0] != "" and self.layerBeforeClicked[0] != None) :
-           try : 
-              if self.layerBeforeClicked[0].type() != QgsMapLayer.VectorLayer : 
-                 self.layerBeforeClicked = ("", "")
-           except : 
-              self.layerBeforeClicked = ("", "")
+        if self.layerBeforeClicked[0] is None : self.layerBeforeClicked = ('', '')
         #Cas ou l'instance sauvegardé dans le QGIS3.INI n'a plus de correspondance 
            
         # for geometry
@@ -225,103 +265,102 @@ class Ui_Dialog_plume(object):
               self.retrieveInfoLayerQgis(self.layerBeforeClicked[0])
         #Management Click before open IHM 
            
-        self.displayToolBar(*self.listIconToolBar)
+        # == Gestion Context ==
+        with self.safe_pg_connection() :
+           self.displayToolBar(*self.listIconToolBar)
     #= Fin setupUi
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
     def clickButtonsActions(self):
-        if not hasattr(self, 'mConnectEnCours') :
-           bibli_plume.afficheNoConnections(self, "show")
-           return
+        # == Gestion Context ==
+        with self.safe_pg_connection() :
+           # If suppression d'une couche active pour les métadonnées affichées
+           if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
+           # If suppression d'une couche active pour les métadonnées affichées
 
-        # If suppression d'une couche active pour les métadonnées affichées
-        if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
-        # If suppression d'une couche active pour les métadonnées affichées
-
-        mItem = self.mMenuBarDialog.sender().objectName()
-        #**********************
-        if mItem == "Edition" :
-           #Interroge l'utilisateur si modifications
-           if self.mode == "edit" and self.zoneConfirmMessage :
-              if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
-                 if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
-                 #Si vous poursuivez, les modifications non enregistrées seront perdues.
+           mItem = self.mMenuBarDialog.sender().objectName()
+           #**********************
+           if mItem == "Edition" :
+              #Interroge l'utilisateur si modifications
+              if self.mode == "edit" and self.zoneConfirmMessage :
+                 if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
+                    if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+                    #Si vous poursuivez, les modifications non enregistrées seront perdues.
         
-           if self.mode == None or self.mode == "read" : 
-              self.mode = "edit"
-           elif self.mode == "edit" : 
-              self.mode = "read"
-           else  : 
-              self.mode = "read"
-           #-   
-           if self.saveMetaGraph :
-              self.oldMetagraph  = self.metagraph
-           else :   
-              self.metagraph     = self.oldMetagraph
-           self.saveMetaGraph = False
-           # For mode Edit
-           if self.mode == "edit" : 
-              if self.nameVerrouLayer == None  : self.nameVerrouLayer = self.layer 
-              self.verrouLayer = True
-           else :
-              self.iface.setActiveLayer(self.nameVerrouLayer)
-              self.nameVerrouLayer = None 
-              self.verrouLayer = False
-        #**********************
-        elif mItem == "Save" :                                            
-           bibli_plume.saveMetaIhm(self, self.schema, self.table) 
-           self.saveMetaGraph = True
-        #**********************
-        elif mItem == "Empty" :
-           if self.saveMetaGraph :
-              self.oldMetagraph  = self.metagraph
-           else :   
-              self.metagraph     = self.oldMetagraph
-           self.saveMetaGraph = False
-           #-   
-           old_metagraph = self.metagraph
-           self.metagraph = copy_metagraph(None, old_metagraph)
-        #**********************
-        elif mItem == "Copy" :
-           self.copyMetagraph = self.metagraph
-           if self.copyMetagraph !=  None :
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the metadata card of ") + "<b>" + str(self.schema) + "." + str(self.table) + "</b>" 
-           else :    
-              mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the saved metadata card.")    
-           self.copyMetagraphTooltip = mTextToolTip
-           self.plumePaste.setToolTip(mTextToolTip)
-        #**********************
-        elif mItem == "Paste" :
-           if self.copyMetagraph != None :
-              src_metagraph, old_metagraph = self.copyMetagraph, self.metagraph
-              _metagraph = copy_metagraph(src_metagraph, old_metagraph)
-              self.metagraph = _metagraph
-        #**********************
-        elif mItem == "plumeImportFile" :
-           if self.saveMetaGraph :
-              self.oldMetagraph  = self.metagraph
-           else :   
-              self.metagraph     = self.oldMetagraph
-           self.saveMetaGraph = False
-           #-   
-           metagraph  = bibli_plume.importObjetMetagraph(self)
-           if metagraph != None : self.metagraph = metagraph
-        #**********************
-        elif mItem == "Traduction" :
-           self.translation = (False if self.translation else True) 
-        elif QtWidgets.QApplication.translate("plume_ui", mItem) == "Verrouillage" :
-           self.verrouLayer = (False if self.verrouLayer else True) 
-           self.nameVerrouLayer = (self.layer if self.verrouLayer else None) 
+              if self.mode == None or self.mode == "read" : 
+                 self.mode = "edit"
+              elif self.mode == "edit" : 
+                 self.mode = "read"
+              else  : 
+                 self.mode = "read"
+              #-   
+              if self.saveMetaGraph :
+                 self.oldMetagraph  = self.metagraph
+              else :   
+                 self.metagraph     = self.oldMetagraph
+              self.saveMetaGraph = False
+              # For mode Edit
+              if self.mode == "edit" : 
+                 if self.nameVerrouLayer == None  : self.nameVerrouLayer = self.layer 
+                 self.verrouLayer = True
+              else :
+                 self.iface.setActiveLayer(self.nameVerrouLayer)
+                 self.nameVerrouLayer = None 
+                 self.verrouLayer = False
+           #**********************
+           elif mItem == "Save" :                                            
+              bibli_plume.saveMetaIhm(self, self.schema, self.table) 
+              self.saveMetaGraph = True
+           #**********************
+           elif mItem == "Empty" :
+              if self.saveMetaGraph :
+                 self.oldMetagraph  = self.metagraph
+              else :   
+                 self.metagraph     = self.oldMetagraph
+              self.saveMetaGraph = False
+              #-   
+              old_metagraph = self.metagraph
+              self.metagraph = copy_metagraph(None, old_metagraph)
+           #**********************
+           elif mItem == "Copy" :
+              self.copyMetagraph = self.metagraph
+              if self.copyMetagraph !=  None :
+                 mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the metadata card of ") + "<b>" + str(self.schema) + "." + str(self.table) + "</b>" 
+              else :    
+                 mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the saved metadata card.")    
+              self.copyMetagraphTooltip = mTextToolTip
+              self.plumePaste.setToolTip(mTextToolTip)
+           #**********************
+           elif mItem == "Paste" :
+              if self.copyMetagraph != None :
+                 src_metagraph, old_metagraph = self.copyMetagraph, self.metagraph
+                 _metagraph = copy_metagraph(src_metagraph, old_metagraph)
+                 self.metagraph = _metagraph
+           #**********************
+           elif mItem == "plumeImportFile" :
+              if self.saveMetaGraph :
+                 self.oldMetagraph  = self.metagraph
+              else :   
+                 self.metagraph     = self.oldMetagraph
+              self.saveMetaGraph = False
+              #-   
+              metagraph  = bibli_plume.importObjetMetagraph(self)
+              if metagraph != None : self.metagraph = metagraph
+           #**********************
+           elif mItem == "Traduction" :
+              self.translation = (False if self.translation else True) 
+           elif QtWidgets.QApplication.translate("plume_ui", mItem) == "Verrouillage" :
+              self.verrouLayer = (False if self.verrouLayer else True) 
+              self.nameVerrouLayer = (self.layer if self.verrouLayer else None) 
 
-        #**********************
-        #*** commun
-        if mItem in ["Edition", "Save", "Empty", "plumeImportFile", "Paste", "Traduction"] :
-           bibli_plume.saveObjetTranslation(self.translation)
-           self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
-        #-
-        #self.verrouLayer = (True if self.mode == "Edit" else False) 
-        self.displayToolBar(*self.listIconToolBar)
+           #**********************
+           #*** commun
+           if mItem in ["Edition", "Save", "Empty", "plumeImportFile", "Paste", "Traduction"] :
+              bibli_plume.saveObjetTranslation(self.translation)
+              self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+           #-
+           self.displayToolBar(*self.listIconToolBar)
         return
     # == Gestion des actions de boutons de la barre de menu
     #==========================
@@ -334,7 +373,6 @@ class Ui_Dialog_plume(object):
         # If suppression d'une couche active pour les métadonnées affichées
 
         mItemExport = self.mMenuBarDialog.sender().objectName()
-        #exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.mListExtensionFormat)
         exportObjetMetagraph(self, self.schema, self.table, mItemExport, self.metagraph.available_export_formats(no_duplicate=True, format=mItemExport))        
         
         return
@@ -344,18 +382,21 @@ class Ui_Dialog_plume(object):
     #==========================
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
     def clickButtonsTemplateActions(self):
-        # If suppression d'une couche active pour les métadonnées affichées
-        if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
-        # If suppression d'une couche active pour les métadonnées affichées
+        # == Gestion Context ==
+        with self.safe_pg_connection() :
+           # If suppression d'une couche active pour les métadonnées affichées
+           if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
+           # If suppression d'une couche active pour les métadonnées affichées
 
-        mItemTemplates = self.mMenuBarDialog.sender().objectName()
+           mItemTemplates = self.mMenuBarDialog.sender().objectName()
 
-        #Lecture existence Extension METADATA
-        _mContinue = True
-        if not hasattr(self, 'mConnectEnCours') :
-           if not self.instalMetadata : _mContinue = False
+           """
+           #Lecture existence Extension METADATA
+           _mContinue = True
+           #if not hasattr(self, 'mConnectEnCours') :
+           #   if not self.instalMetadata : _mContinue = False
+           """
 
-        if _mContinue : 
            if mItemTemplates == "Aucun" :
               self.template = None
            else : 
@@ -374,7 +415,6 @@ class Ui_Dialog_plume(object):
            #
            self.majButtonTemplate(self.plumeTemplate, mItemTemplates, int(len(mItemTemplates)))
            # MAJ ICON FLAGS
-           
         return
     # == Gestion des actions du bouton TEMPLATE de la barre de menu
     #==========================
@@ -382,37 +422,39 @@ class Ui_Dialog_plume(object):
     #==========================
     # == Gestion des actions du bouton Changement des langues
     def  clickButtonsChoiceLanguages(self):
-        # If suppression d'une couche active pour les métadonnées affichées
-        if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
-        # If suppression d'une couche active pour les métadonnées affichées
+        # == Gestion Context ==
+        with self.safe_pg_connection() :
+           # If suppression d'une couche active pour les métadonnées affichées
+           if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
+           # If suppression d'une couche active pour les métadonnées affichées
 
-        mItem = self.mMenuBarDialog.sender().objectName()
-        #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
-        if mItem == "" : 
-           self.language, mItem = "fr", "fr" 
-        else:
-            self.language = mItem
-        if mItem not in self.langList : self.langList.append(mItem)  
-        #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
-        self.plumeChoiceLang.setText(mItem)
-        mDicUserSettings        = {}
-        mSettings = QgsSettings()
-        mSettings.beginGroup("PLUME")
-        mSettings.beginGroup("UserSettings")
-        #Ajouter si autre param
-        mDicUserSettings["language"] = mItem
-        mDicUserSettings["langList"] = self.langList
-        #----
-        for key, value in mDicUserSettings.items():
-            mSettings.setValue(key, value)
-        #======================
-        mSettings.endGroup()
-        mSettings.endGroup()
-        #----
-        #Regénération du dictionnaire    
-        self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
-        #-
-        self.displayToolBar(*self.listIconToolBar)
+           mItem = self.mMenuBarDialog.sender().objectName()
+           #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+           if mItem == "" : 
+              self.language, mItem = "fr", "fr" 
+           else:
+               self.language = mItem
+           if mItem not in self.langList : self.langList.append(mItem)  
+           #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+           self.plumeChoiceLang.setText(mItem)
+           mDicUserSettings        = {}
+           mSettings = QgsSettings()
+           mSettings.beginGroup("PLUME")
+           mSettings.beginGroup("UserSettings")
+           #Ajouter si autre param
+           mDicUserSettings["language"] = mItem
+           mDicUserSettings["langList"] = self.langList
+           #----
+           for key, value in mDicUserSettings.items():
+               mSettings.setValue(key, value)
+           #======================
+           mSettings.endGroup()
+           mSettings.endGroup()
+           #----
+           #Regénération du dictionnaire    
+           self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+           #-
+           self.displayToolBar(*self.listIconToolBar)
         return
     # == Gestion des actions du bouton Changement des langues
     #==========================
@@ -479,6 +521,15 @@ class Ui_Dialog_plume(object):
            pass        
         #Supprime si l'objet existe l'affichage du rubberBand
         self.dic_objetMap     = {} # For visualisation sur BBOX, Centroid and geometry
+
+        #*****************************
+        # ** BEFORE SAISIE ** Mode automatique calcul des Métadonnées
+        # Lorsque la clé correspond à un widget de saisie, le calcul doit avoir lieu avant la saisie de la valeur dans le widget
+        # Il s’agit là aussi de boucler sur les clés du dictionnaire de widgets pour exécuter les calculs
+        for key, value in _dict.items_to_compute():
+            action_mObjetQToolButton_ComputeButton(self, key, value, 'BEFORE')
+        #*****************************
+                    
         #--
         for key, value in _dict.items() :
             if _dict[key]['main widget type'] != None :
@@ -540,52 +591,53 @@ class Ui_Dialog_plume(object):
         #-
         if self.layer:
            if self.layer.dataProvider().name() == 'postgres':
-              self.getAllFromUri()
-              self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
-              #--                                                                          
-              if self.connectBaseOKorKO[0] :
-                 bibli_plume.afficheNoConnections(self, "hide")
-                 #-
-                 self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
-                 self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
-                 self.oldMetagraph  = self.metagraph
-                 self.saveMetaGraph = False
-                 self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
-                 self.data       = bibli_plume.returnObjetData(self)
-                 self.mode = "read"
-                 self.loadLayer = self.ifLayerLoad(self.layer)
-                 #-
-                 self.displayToolBar(*self.listIconToolBar)
-                 #-
-                 if self.instalMetadata :
-                    #-
-                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, None)
-                    if tpl_labelDefaut :
-                       self.template     = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
-                    else :
-                       self.template     = None
-                 else :
-                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, "LOCAL")
-                    self.template        = self.templates_collection[tpl_labelDefaut] if tpl_labelDefaut else None
-                 #-
-                 self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
-                 self.majQmenuModeleIconFlag(tpl_labelDefaut)
-                 #
-                 self.majButtonTemplate(self.plumeTemplate, "Aucun" if tpl_labelDefaut == None else tpl_labelDefaut, int(len("Aucun" if tpl_labelDefaut == None else tpl_labelDefaut)))
-                 #-
-                 self.layerQgisBrowserOther = "QGIS"
-                 #-
-                 self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
-                 #-
-                 self.layerBeforeClicked = (self.layer, "qgis")
-                 #self.layerBeforeClicked = (self.layer, self.layerBeforeClicked[1])
-                 bibli_plume.saveinitializingDisplay("write", self.layerBeforeClicked)                 
+              # == Gestion Context ==
+              with self.safe_pg_connection() :
+                #self.getAllFromUri()
+                self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
+                #--                                                                          
+                bibli_plume.afficheNoConnections(self, "hide")
+                #-
+                self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
+                self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
+                self.oldMetagraph  = self.metagraph
+                self.saveMetaGraph = False
+                self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+                self.data       = bibli_plume.returnObjetData(self)
+                self.mode = "read"
+                self.loadLayer = self.ifLayerLoad(self.layer)
+                #-
+                self.displayToolBar(*self.listIconToolBar)
+                #-
+                if self.instalMetadata :
+                   #-
+                   tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, None)
+                   if tpl_labelDefaut :
+                      self.template     = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                   else :
+                      self.template     = None
+                else :
+                   tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, "LOCAL")
+                   self.template        = self.templates_collection[tpl_labelDefaut] if tpl_labelDefaut else None
+                #-
+                self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                self.majQmenuModeleIconFlag(tpl_labelDefaut)
+                #
+                self.majButtonTemplate(self.plumeTemplate, "Aucun" if tpl_labelDefaut == None else tpl_labelDefaut, int(len("Aucun" if tpl_labelDefaut == None else tpl_labelDefaut)))
+                #-
+                self.layerQgisBrowserOther = "QGIS"
+                #-
+                self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+                #-
+                self.layerBeforeClicked = (self.layer, "qgis")
+                bibli_plume.saveinitializingDisplay("write", self.layerBeforeClicked)                 
            else :
               if not self.verrouLayer : bibli_plume.initIhmNoConnection(self)
         return
 
     #---------------------------
     def retrieveInfoLayerBrowser(self, index):
+        #-
         mNav = self.sender().objectName()
         # DL
         #issu code JD Lomenede
@@ -598,51 +650,50 @@ class Ui_Dialog_plume(object):
         #issu code JD Lomenede
         if isinstance(item, QgsLayerItem) :
            if self.ifVectorPostgres(item) :
-
               if self.verrouLayer :
                  return
               else :
                  self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
-                 self.getAllFromUri()
-                 self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
-              
-              #--
-              if self.connectBaseOKorKO[0] :
-                 bibli_plume.afficheNoConnections(self, "hide")
-                 #-
-                 self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
-                 self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
-                 self.oldMetagraph  = self.metagraph
-                 self.saveMetaGraph = False
-                 self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
-                 self.data       = bibli_plume.returnObjetData(self)
-                 self.mode = "read"
-                 self.loadLayer = self.ifLayerLoad(self.layer)
-                 #-
-                 self.displayToolBar(*self.listIconToolBar)
-                 #-
-                 if self.instalMetadata :
+                 # == Gestion Context ==
+                 with self.safe_pg_connection() :
+                    #self.getAllFromUri()
+                    self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
+                    #--
+                    bibli_plume.afficheNoConnections(self, "hide")
                     #-
-                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, None)
-                    if tpl_labelDefaut :
-                       self.template     = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                    self.comment    = bibli_plume.returnObjetComment(self, self.schema, self.table)
+                    self.metagraph  = bibli_plume.returnObjetMetagraph(self, self.comment)
+                    self.oldMetagraph  = self.metagraph
+                    self.saveMetaGraph = False
+                    self.columns    = bibli_plume.returnObjetColumns(self, self.schema, self.table)
+                    self.data       = bibli_plume.returnObjetData(self)
+                    self.mode = "read"
+                    self.loadLayer = self.ifLayerLoad(self.layer)
+                    #-
+                    self.displayToolBar(*self.listIconToolBar)
+                    #-
+                    if self.instalMetadata :
+                       #-
+                       tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, None)
+                       if tpl_labelDefaut :
+                          self.template     = bibli_plume.generationTemplateAndTabs(self, tpl_labelDefaut)
+                       else :
+                          self.template     = None
                     else :
-                       self.template     = None
-                 else :
-                    tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, "LOCAL")
-                    self.template        = self.templates_collection[tpl_labelDefaut] if tpl_labelDefaut else None
-                 #-
-                 self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
-                 self.majQmenuModeleIconFlag(tpl_labelDefaut)
-                 #
-                 self.majButtonTemplate(self.plumeTemplate, "Aucun" if tpl_labelDefaut == None else tpl_labelDefaut, int(len("Aucun" if tpl_labelDefaut == None else tpl_labelDefaut)))
-                 #-
-                 self.layerQgisBrowserOther = "BROWSER"
-                 #-
-                 self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
-                 #-
-                 self.layerBeforeClicked = (self.layer, "postgres")
-                 bibli_plume.saveinitializingDisplay("write", self.layerBeforeClicked, index, mNav)                 
+                       tpl_labelDefaut      = bibli_plume.returnObjetTpl_label(self, "LOCAL")
+                       self.template        = self.templates_collection[tpl_labelDefaut] if tpl_labelDefaut else None
+                    #-
+                    self.createQmenuModele(self._mObjetQMenu, self.templateLabels)
+                    self.majQmenuModeleIconFlag(tpl_labelDefaut)
+                    #
+                    self.majButtonTemplate(self.plumeTemplate, "Aucun" if tpl_labelDefaut == None else tpl_labelDefaut, int(len("Aucun" if tpl_labelDefaut == None else tpl_labelDefaut)))
+                    #-
+                    self.layerQgisBrowserOther = "BROWSER"
+                    #-
+                    self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
+                    #-
+                    self.layerBeforeClicked = (self.layer, "postgres")
+                    bibli_plume.saveinitializingDisplay("write", self.layerBeforeClicked, index, mNav)                 
            else :
               if not self.verrouLayer : bibli_plume.initIhmNoConnection(self)
         else :
@@ -651,6 +702,14 @@ class Ui_Dialog_plume(object):
 
     #---------------------------
     def getAllFromUri(self):
+        # ex : Projet fermé
+        try : 
+           if not getattr(self, 'layer', False) : 
+              bibli_plume.breakExecuteSql(self)
+              return
+        except :       
+           bibli_plume.breakExecuteSql(self)
+           return
         uri = QgsDataSourceUri(self.layer.source())
         self.schema, self.table, self.geom = uri.schema(), uri.table(), uri.geometryColumn()
         #-
@@ -724,11 +783,6 @@ class Ui_Dialog_plume(object):
 
     #==========================
     def closeEvent(self, event):
-        try :
-           if hasattr(self, 'mConnectEnCours') :
-              self.mConnectEnCours.close()
-        except:
-           pass
 
         try :
            self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)
@@ -798,7 +852,7 @@ class Ui_Dialog_plume(object):
     #==========================
     def if_postgis_exists(self) :
         mKeySql = (queries.query_exists_extension(), ('postgis',))
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
         return r
 
     #==========================
@@ -825,7 +879,8 @@ class Ui_Dialog_plume(object):
            self.plumeTemplate.setObjectName("Template")
            #Lecture existence Extension METADATA            
            mKeySql = queries.query_plume_pg_check()
-           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+
            result = r[0]
            self.instalMetadata = False
            #Information si not installe
@@ -862,7 +917,7 @@ class Ui_Dialog_plume(object):
 
               self.plumeTemplate.setEnabled(False)
               mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")  
-              mTextToolTip += "<br><br><i>NB : Vous n'avez accès qu'aux modèles pré-configurés standards. " + pb + "</i>"
+              mTextToolTip += "<br><br><i>NB : Vous n'avez accès qu'aux modèles pré-configurés standards. " + escape(pb) + "</i>"
 
            self.plumeTemplate.setToolTip(mTextToolTip)
         #--QToolButton TEMPLATE                                               
@@ -874,7 +929,8 @@ class Ui_Dialog_plume(object):
            self.majQmenuExportIconFlag()
            #-
            mKeySql = (queries.query_is_relation_owner(), (self.schema, self.table))
-           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+           
            #-- Activation ou pas 
            self.plumeEdit.setEnabled(r)
            self.plumeSave.setEnabled(r)
@@ -996,6 +1052,7 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setPopupMode(self.plumeExport.MenuButtonPopup)
         self.plumeExport.setMenu(self._mObjetQMenuExport)
         return
+
     #==========================
     def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ):
         #Menu Dialog  
@@ -1290,12 +1347,6 @@ class MONDOCK(QDockWidget):
 
     #==========================
     def closeEvent(self, event):
-
-        try :
-           if hasattr(self, 'mConnectEnCours') :
-              self.mConnectEnCours.close()
-        except:
-           pass
 
         try :
            self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)

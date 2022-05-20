@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QWidget) 
+from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit, QMainWindow, QWidget, QDockWidget, QTreeView) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -107,15 +107,7 @@ def afficheNoConnections(self, action = ""):
 def gestionErreurExisteLegendeInterface(self, _first = False) :
     ret = True
     try : 
-       if not ifExisteInLegendeInterface(self, self.layerBeforeClicked) :
-          if not _first : 
-             zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-             zMess  = QtWidgets.QApplication.translate("plume_ui", "The layer corresponding to the metadata in Plume no longer exists.") + "\n" + QtWidgets.QApplication.translate("plume_ui", "Please reselect in the layer panel or in the explorer.", None)  
-             displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-          self.layerBeforeClicked = ("", "")
-          saveinitializingDisplay("write", self.layerBeforeClicked)
-          initIhmNoConnection(self)
-          ret = False
+       self.layerBeforeClicked[0].id()
     except :
        if not _first : 
           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
@@ -146,11 +138,8 @@ def ifExisteInLegendeInterface(self, _layerBeforeClick) :
 #==========================
 #Retounre si l'objet de type QgsVectorlayer en fonction de l'id
 def returnIfExisteInLegendeInterface(self, _IdLayerBeforeClick) :
-    ret = None
     layers = QgsProject.instance().mapLayers()
-    for layer_id, layer in layers.items() :
-        if _IdLayerBeforeClick == layer_id : ret = layer
-    return ret   
+    return layers.get(_IdLayerBeforeClick)
 
 #==========================
 #Retounre si l'objet de type QgsVectorlayer en fonction de l'id
@@ -170,7 +159,7 @@ def returnIfExisteInBrowser(self, _ItemLayerBeforeClick) :
     self.naviTreeView2.setObjectName(mNav2)
 
     mNav = self.iface.sender().objectName()
-    self.proxy_model = self.naviTreeView.model() if self.mDic_LH["layerBeforeClickedBrowser"] == mNav1 else self.navTreeView2.model()
+    self.proxy_model = self.naviTreeView.model() if self.mDic_LH["layerBeforeClickedBrowser"] == mNav1 else self.naviTreeView2.model()
 
     self.modelDefaut = iface.browserModel() 
     self.model = iface.browserModel()
@@ -184,7 +173,7 @@ def returnIfExisteInBrowser(self, _ItemLayerBeforeClick) :
 
 #==================================================
 #Mets à jour la valeur de l'objet en fonction de son type
-def majObjetWithValue(_mObjetQSaisie, _valueObjet) : 
+def updateObjetWithValue(_mObjetQSaisie, _valueObjet) : 
     __Val = _valueObjet['value']
 
     if _valueObjet['main widget type'] in ("QLineEdit",) :
@@ -326,7 +315,7 @@ def returnObjetTpl_label(self, option = None) : #None = Pas local et "LOCAL" = l
        mKeySql = queries.query_evaluate_local_templates(self.templates_collection, self.schema, self.table)
     else :   
        mKeySql = (queries.query_list_templates(), (self.schema, self.table))
-    self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+    self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
 
     # Sélection automatique du modèle
@@ -346,11 +335,11 @@ def returnObjetTpl_label(self, option = None) : #None = Pas local et "LOCAL" = l
 def generationTemplateAndTabs(self, tpl_label):
     # Récupération des CATEGORIES associées au modèle retenu
     mKeySql = (queries.query_get_categories(), (tpl_label,))
-    categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+    categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         
-    # Récupération des TEMPLATES associés au modèle retenu
+    # Récupération des ONGLETS associés au modèle retenu
     mKeySql = (queries.query_template_tabs(), (tpl_label,))
-    tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+    tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
            
     # Génération de template
     self.template = TemplateDict(categories, tabs)
@@ -361,7 +350,7 @@ def returnObjetColumns(self, _schema, _table) :
     #**********************
     # liste des champs de la table
     mKeySql = queries.query_get_columns(_schema, _table)
-    columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+    columns, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     return columns 
 
 #==================================================
@@ -396,7 +385,7 @@ def returnObjetComment(self, _schema, _table) :
     #**********************
     # Récupération champ commentaire
     mKeySql = queries.query_get_table_comment(_schema, _table)
-    old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     return PgDescription(old_description)
 
 #==================================================
@@ -448,24 +437,43 @@ def saveMetaIhm(self, _schema, _table) :
     new_pg_description = str(self.comment)
     # une requête de mise à jour du descriptif.
     mKeySql = queries.query_get_relation_kind(_schema, _table) 
-    kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     #-    
     mKeySql = (queries.query_update_table_comment(_schema, _table, relation_kind=kind[0]), (new_pg_description,)) 
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = None)
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #-
     #Mettre à jour les descriptifs des champs de la table.    
     mKeySql = queries.query_update_columns_comments(_schema, _table, self.mDicObjetsInstancies)
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = None)
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #- Mettre à jour les descriptifs de la variable columns pour réaffichage
     self.columns = returnObjetColumns(self, self.schema, self.table)
     return  
     
 #==================================================
-def executeSql(pointeur, _mKeySql, optionRetour = None) :
+#Généralisation erreur si fin de transaction PostgreSLQ quel que soit le motif
+def breakExecuteSql(self) :
+    initIhmNoConnection(self)
+    self.verrouLayer     = False   #Verrouillage de la couche 
+    self.nameVerrouLayer = None    #Couche verrouillée
+    return
+
+#==================================================
+# class pour gérer les erreur autre  que PostgreSLQ qui ne retourne pas de valeurs
+#==================================================
+class NoReturnSql(Exception) :
+    def __init__(self, _mMess) :
+        self.mMess = _mMess
+        return
+#==================================================
+#==================================================
+        
+#==================================================
+def executeSql(self, pointeur, _mKeySql, optionRetour = None) : 
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
     pointeurBase = pointeur.cursor() 
+       
     try :
       if isinstance(_mKeySql, tuple) :
          pointeurBase.execute(*_mKeySql)
@@ -475,24 +483,19 @@ def executeSql(pointeur, _mKeySql, optionRetour = None) :
       if optionRetour == None :
          result = None
       elif optionRetour == "fetchone" :
-         result = pointeurBase.fetchone()[0]
+         resultTemp = pointeurBase.fetchone() 
+         if resultTemp == None :
+            raise NoReturnSql("Plume n'a pas obtenu les valeurs attendues au travers de la requête\n\n" + str(_mKeySql))  
+         else :   
+            result = resultTemp[0]
       elif optionRetour == "fetchall" :
          result = pointeurBase.fetchall()
       else :   
          result = pointeurBase.fetchall()
           
-    except Exception as err:
-      result = None
-      zMessError_Code   = (str(err.pgcode) if hasattr(err, 'pgcode') else '')
-      zMessError_Erreur = (str(err.pgerror) if hasattr(err, 'pgerror') else '')
-      print("err.pgcode = %s" %(zMessError_Code))
-      print("err.pgerror = %s" %(zMessError_Erreur))
-      zMessError_Erreur = cleanMessError(zMessError_Erreur)
-      mTypeErreur = "plume"
-      dialogueMessageError(mTypeErreur, zMessError_Erreur )
+    finally :
       pointeurBase.close()   
       #-------------
-    pointeurBase.close()   
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
 
 #==================================================
@@ -574,10 +577,8 @@ def cleanMessError(mMess) :
     mErreur  = "ERREUR:"  
     mHint    = "HINT:"  
     mDetail  = "DETAIL:"
-    mMess = mMess[0:mMess.find(mContext)].lstrip() if mMess.find(mContext) != -1 else mMess
-    mMess = mMess[0:mMess.find(mErreur)].lstrip() + mMess[mMess.find(mErreur) + len(mErreur):].lstrip() if mMess.find(mErreur) != -1 else mMess
-    mMess = mMess[0:mMess.find(mHint)].lstrip() + "<br><br>" + mMess[mMess.find(mHint) + len(mHint):].lstrip() if mMess.find(mHint) != -1 else mMess
-    mMess = mMess[0:mMess.find(mDetail)].lstrip() + "<br><br>" + mMess[mMess.find(mDetail) + len(mDetail):].lstrip() if mMess.find(mDetail) != -1 else mMess
+
+    mMess = mMess.replace(mContext, "").replace(mErreur, "").replace(mHint, "<br><br>").replace(mDetail, "<br><br>")
     return mMess 
  
 #==================================================
@@ -655,9 +656,6 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautL = 810
        valueDefautH = 640
        valueDefautDisplayMessage = "dialogBox"
-       valueDefautFileHelp  = "html"
-       valueDefautFileHelpPdf   = "https://snum.scenari-community.org/Asgard/PDF/GuideAsgardManager"
-       valueDefautFileHelpHtml  = "https://snum.scenari-community.org/Plume/Documentation"
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "dockFalse"
        valueDefautToolBarDialog = "picture"
@@ -668,16 +666,12 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
-       mDicAutre["fileHelp"]        = valueDefautFileHelp
-       mDicAutre["fileHelpPdf"]     = valueDefautFileHelpPdf
-       mDicAutre["fileHelpHtml"]    = valueDefautFileHelpHtml
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
        mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
        mDicAutre["layerBeforeClicked"]        = valueDefautLayerBeforeClicked
        mDicAutre["layerBeforeClickedWho"]     = valueDefautLayerBeforeClickedWho
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
-
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
 
        for key, value in mDicAutre.items():
@@ -774,9 +768,7 @@ def returnAndSaveDialogParam(self, mAction):
        mSettings.endGroup()
        mSettings.beginGroup("CSW")
        #Ajouter si autre param
-       mDicCSW["urlCswDefaut"]   =  'http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset'
-       mDicCSW["urlCswIdDefaut"] =  'fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab'
-       mDicCSW["urlCsw"]         =  ''
+       mDicCSW["urlCsw"]            =  ""
        #----
        for key, value in mDicCSW.items():
            if not mSettings.contains(key) :

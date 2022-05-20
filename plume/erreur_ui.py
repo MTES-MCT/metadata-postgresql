@@ -118,7 +118,7 @@ class Ui_Dialog(object):
         MonHtml += MonHtml1
         MonHtml += "</span>" 
         MonHtml2 = "<br>"
-        MonHtml2 += self.zMessError_Erreur
+        MonHtml2 += self.zMessError_Erreur.replace("\n","<br>").strip()
         MonHtml += MonHtml2
         MonHtml += "</i></p></body></html>"
         Dialog.setWindowTitle("plume - (" + str(bibli_plume.returnVersion()) + ")")

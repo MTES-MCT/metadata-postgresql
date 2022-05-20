@@ -84,15 +84,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     else :
        _mParentEnCours = self.mDicObjetsInstancies.parent_grid(_keyObjet)
 
-    #*****************************
-    # ** BEFORE SAISIE ** Mode automatique calcul des Métadonnées
-    # Lorsque la clé correspond à un widget de saisie, le calcul doit avoir lieu avant la saisie de la valeur dans le widget
-    if _valueObjet['auto compute'] :
-       #
-       action_mObjetQToolButton_ComputeButton(self, _keyObjet, _valueObjet, "BEFORE")
-       # 
-    #*****************************
-    
     #---------------------------
     # == QGROUPBOX
     if _valueObjet['main widget type'] == "QGroupBox" :
@@ -184,11 +175,11 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 
        if _valueObjet['main widget type'] in ("QLineEdit") :
           #Valeur 
-          bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          bibli_plume.updateObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        elif _valueObjet['main widget type'] in ("QTextEdit") :
           #Valeur  
           _mObjetQSaisie.setAcceptRichText(True)                      
-          bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          bibli_plume.updateObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
 
        if _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit") :
           #Lecture seule                        
@@ -228,7 +219,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if _valueObjet['main widget type'] in ("QComboBox") :
           _thesaurus = _valueObjet['thesaurus values']                                                           
           if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
-          bibli_plume.majObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          bibli_plume.updateObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
           _mObjetQSaisie.setEditable(True)
           #-
           mCompleter = QCompleter(_thesaurus, self)
@@ -256,7 +247,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan)
        #Valeur                        
-       bibli_plume.majObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+       bibli_plume.updateObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        #Tooltip                        
        if valueExiste('help text', _valueObjet) : _mObjetQLabel.setToolTip(_valueObjet['help text'])
        #--                        
@@ -286,10 +277,10 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignLeft)
         #Valeur 
        if valueExiste('value', _valueObjet) :
-           bibli_plume.majObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+           bibli_plume.updateObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        else :
            _mObjetQDateEdit.clear()
-           bibli_plume.majObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+           bibli_plume.updateObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        #Lecture seule                        
        _mObjetQDateEdit.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -317,7 +308,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 
        #-- Trois états                        
        _mObjetQCheckBox.setTristate(True)
-       bibli_plume.majObjetWithValue(_mObjetQCheckBox, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+       bibli_plume.updateObjetWithValue(_mObjetQCheckBox, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
 
        #Lecture seule                        
        _mObjetQCheckBox.setEnabled(False if _valueObjet['read only'] else True)
@@ -350,10 +341,10 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mParentEnCours.addWidget(_mObjetQDateTime, row, column, rowSpan, columnSpan, Qt.AlignLeft)
        #Valeur
        if valueExiste('value', _valueObjet) :  
-          bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          bibli_plume.updateObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        else :
           _mObjetQDateTime.clear()
-          bibli_plume.majObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+          bibli_plume.updateObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        #Lecture seule                        
        _mObjetQDateTime.setEnabled(False if _valueObjet['read only'] else True)
        #Masque valeur fictive                        
@@ -413,7 +404,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        # == QICON
               
        #- Actions
-       _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButton_ComputeButton(self, _keyObjet, _valueObjet))
+       _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButton_ComputeButton_with_safe_pg_connection(self, _keyObjet, _valueObjet))
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'compute widget')
        _mParentEnCours.addWidget(_mObjetQToolButton, row, column, rowSpan, columnSpan)
@@ -670,6 +661,14 @@ def generationObjets(self, _keyObjet, _valueObjet) :
 
 #==================================================
 # Traitement action sur QToolButton avec COMPUTE BUTTON
+def action_mObjetQToolButton_ComputeButton_with_safe_pg_connection(self, __keyObjet, __valueObjet, beforeAfter = None) :
+    # == Gestion Context ==
+    with self.safe_pg_connection() :
+       action_mObjetQToolButton_ComputeButton(self, __keyObjet, __valueObjet, beforeAfter)
+    return
+    
+#==================================================
+# Traitement action sur QToolButton avec COMPUTE BUTTON
 def action_mObjetQToolButton_ComputeButton(self, __keyObjet, __valueObjet, beforeAfter = None):
     # existence extensions 
     dependances = self.mDicObjetsInstancies[__keyObjet]['compute method'].dependances
@@ -678,20 +677,20 @@ def action_mObjetQToolButton_ComputeButton(self, __keyObjet, __valueObjet, befor
 
     if dependances:
        for extension in dependances :
-           mKeySql = (queries.query_exists_extension(), (extension,))
-           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-           dependances_ok = dependances_ok and r
-           if not dependances_ok:
-              _messDependances = extension
-              zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-              zMess  = QtWidgets.QApplication.translate("plume_ui", "Au minimum, absence de l'extension : ", None) +  + _messDependances
-              bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-              break
+          mKeySql = (queries.query_exists_extension(), (extension,))
+          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          dependances_ok = dependances_ok and r
+          if not dependances_ok:
+             _messDependances = extension
+             zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+             zMess  = QtWidgets.QApplication.translate("plume_ui", "Au minimum, absence de l'extension : ", None) +  + _messDependances
+             bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+             break
 
     # existence extensions
     if dependances_ok :
        mKeySql = (self.mDicObjetsInstancies.computing_query(__keyObjet, self.schema, self.table))
-       result , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+       result , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
        ret = self.mDicObjetsInstancies.computing_update(__keyObjet, result)
        if beforeAfter != "BEFORE" :
           #---------------------------------------------
@@ -739,60 +738,61 @@ def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, 
 #==================================================
 # Traitement action sur QToolButton Geo Actions
 def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __valueObjet):
-    # If suppression d'une couche active pour les métadonnées affichées
-    if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
-    # If suppression d'une couche active pour les métadonnées affichées
+    # == Gestion Context ==
+    with self.safe_pg_connection() :
+       # If suppression d'une couche active pour les métadonnées affichées
+       if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
+       # If suppression d'une couche active pour les métadonnées affichées
 
-    _selectItem = self.mDicObjetsInstancies[__keyObjet]['geo menu'].sender()
-    self.dic_geoToolsShow[__keyObjet] = False  # Param for display BBOX ou no
-    #-
-    for k, v in self._dicGeoTools.items() :
-        if _selectItem.text() == self._dicGeoTools[k]['libelle'] :
-           mAction = k
-           break 
-    #-
-    mCanvas      = qgis.utils.iface.mapCanvas()
-    srid         = mCanvas.mapSettings().destinationCrs().authid()
-    mObjet       = self.mDicObjetsInstancies[__keyObjet]['main widget']
-    #-
+       _selectItem = self.mDicObjetsInstancies[__keyObjet]['geo menu'].sender()
+       self.dic_geoToolsShow[__keyObjet] = False  # Param for display BBOX ou no
+       #-
+       for k, v in self._dicGeoTools.items() :
+           if _selectItem.text() == self._dicGeoTools[k]['libelle'] :
+              mAction = k
+              break 
+       #-
+       mCanvas      = qgis.utils.iface.mapCanvas()
+       srid         = mCanvas.mapSettings().destinationCrs().authid()
+       mObjet       = self.mDicObjetsInstancies[__keyObjet]['main widget']
+       #-
 
-    majVisuButton(self, self, __mObjetQToolButton, self.dic_geoToolsShow, __keyObjet, __valueObjet) 
-    eraseRubberBand(self, self.dic_objetMap, __keyObjet)
+       majVisuButton(self, self, __mObjetQToolButton, self.dic_geoToolsShow, __keyObjet, __valueObjet) 
+       eraseRubberBand(self, self.dic_objetMap, __keyObjet)
     
-    if mAction in ["rectangle", "point", "polygon", "linestring", "circle"] : 
-       self.dic_objetMap[__keyObjet] = GeometryMapTool(self, mAction, __mObjetQToolButton, __keyObjet, mCanvas, srid, self.dic_geoToolsShow[__keyObjet])
-       qgis.utils.iface.mapCanvas().setMapTool(self.dic_objetMap[__keyObjet])
-    elif mAction in ["bboxpg",] :
-       mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
-       srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-       #-
-       mKeySql = queries.query_get_geom_extent(self.schema, self.table, self.geom)
-       geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-       try : 
-          geom_wkt = QgsGeometry.fromWkt(geom_wkt).asWkt(self.Dialog.geomPrecision)
-       except :
-          pass
-    elif mAction in ["centroidpg",] : 
-       mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
-       srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-       #-
-       mKeySql = queries.query_get_geom_centroid(self.schema, self.table, self.geom)
-       geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-       try : 
-          geom_wkt = QgsGeometry.fromWkt(geom_wkt).asWkt(self.Dialog.geomPrecision)
-       except :
-          pass
-    elif mAction in ["bboxqgis",] :
-       srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
-       geom_wkt = QgsGeometry.fromRect(self.layer.extent()).asWkt(self.Dialog.geomPrecision)
-    elif mAction in ["centroidqgis",] : 
-       srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
-       geom_wkt = QgsGeometry.fromPointXY(self.layer.extent().center()).asWkt(self.Dialog.geomPrecision)
-    #------
-    if mAction in ["bboxpg", "centroidpg", "bboxqgis", "centroidqgis"] :
-       rdf_wkt = wkt_with_srid(geom_wkt, srid)
-       mObjet.setPlainText(rdf_wkt)
-
+       if mAction in ["rectangle", "point", "polygon", "linestring", "circle"] : 
+          self.dic_objetMap[__keyObjet] = GeometryMapTool(self, mAction, __mObjetQToolButton, __keyObjet, mCanvas, srid, self.dic_geoToolsShow[__keyObjet])
+          qgis.utils.iface.mapCanvas().setMapTool(self.dic_objetMap[__keyObjet])
+       elif mAction in ["bboxpg",] :
+          mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
+          srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          #-
+          mKeySql = queries.query_get_geom_extent(self.schema, self.table, self.geom)
+          geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          try : 
+             geom_wkt = QgsGeometry.fromWkt(geom_wkt).asWkt(self.Dialog.geomPrecision)
+          except :
+             pass
+       elif mAction in ["centroidpg",] : 
+          mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
+          srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          #-
+          mKeySql = queries.query_get_geom_centroid(self.schema, self.table, self.geom)
+          geom_wkt, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          try : 
+             geom_wkt = QgsGeometry.fromWkt(geom_wkt).asWkt(self.Dialog.geomPrecision)
+          except :
+             pass
+       elif mAction in ["bboxqgis",] :
+          srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
+          geom_wkt = QgsGeometry.fromRect(self.layer.extent()).asWkt(self.Dialog.geomPrecision)
+       elif mAction in ["centroidqgis",] : 
+          srid     = self.layer.crs().authid()  # Attention Chgt de srid pour Qgis, on prend la couche active
+          geom_wkt = QgsGeometry.fromPointXY(self.layer.extent().center()).asWkt(self.Dialog.geomPrecision)
+       #------
+       if mAction in ["bboxpg", "centroidpg", "bboxqgis", "centroidqgis"] :
+          rdf_wkt = wkt_with_srid(geom_wkt, srid)
+          mObjet.setPlainText(rdf_wkt)
     return  
 
 #==================================================
@@ -909,7 +909,7 @@ def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _
     #- Maj de la valeur          
     for elem in _ret['value to update'] :
         __valueObjet = self.mDicObjetsInstancies[elem]
-        bibli_plume.majObjetWithValue(__valueObjet['main widget'], __valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
+        bibli_plume.updateObjetWithValue(__valueObjet['main widget'], __valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
     return
 
 #==================================================

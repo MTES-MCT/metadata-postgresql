@@ -4,6 +4,7 @@ import os.path
 import subprocess
 import logging
 from qgis.core import QgsSettings
+from PyQt5 import QtWidgets
 
 #==================================================
 def manageLibrary(mVersionPlume, mVersionPlumeBibli) :
