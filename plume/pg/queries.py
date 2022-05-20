@@ -523,6 +523,7 @@ def query_get_columns(schema_name, table_name):
             col_description('{attrelid}'::regclass, attnum)
             FROM pg_catalog.pg_attribute
             WHERE attrelid = '{attrelid}'::regclass AND attnum >= 1
+                AND NOT attisdropped
             ORDER BY attnum
         """
         ).format(
