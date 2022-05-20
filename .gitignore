@@ -4,8 +4,7 @@ __archives__/
 __log__/
 admin/local
 docs/build
-TO_DO.txt
 *.zip
-test_export_*
 docs/make.bat
-tests/export/*.ttl
+plume/rdf/tests/export/
+!readme.md
