@@ -25,7 +25,7 @@ from psycopg2.extras import Json
 
 from plume.rdf.exceptions import UnknownParameterValue
 from plume.rdf.namespaces import PLUME
-from plume.pg.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
+from plume.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
 
 
 def query_is_relation_owner():
