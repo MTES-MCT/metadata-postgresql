@@ -366,6 +366,88 @@ des fonctions.</p>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Lien permanent vers ce titre">#</a></h2>
 <p><a class="reference external" href="https://www.psycopg.org">https://www.psycopg.org</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plume.pg.queries.PgQueryWithArgs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">PgQueryWithArgs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.PgQueryWithArgs" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Requête PostgreSQL prête à l’emploi.</p>
+<p>Prend la forme d’un tuple à un ou deux éléments. Le premier
+élément est la requête SQL, soit un objet de classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">psycopg2.sql.Composed</span></code> ou <code class="xref py py-class docutils literal notranslate"><span class="pre">psycopg2.sql.SQL</span></code>.
+Le second élément correspond aux paramètres de la requête, et
+peut prendre la forme d’un tuple ou d’un dictionnaire selon les
+cas. Il n’est présent que si la requête admet des paramètres.</p>
+<p>D’une manière générale, il n’est pas utile de contrôler la présence
+du second élément. Une requête <code class="docutils literal notranslate"><span class="pre">query</span></code> peut toujours être passée
+en argument de <code class="xref py py-meth docutils literal notranslate"><span class="pre">psycopg2.cursor.execute()</span></code> de la manière
+suivante :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>query</strong><span class="classifier">psycopg2.sql.SQL or psycopg2.sql.Composed</span></dt><dd><p>La requête.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">tuple or dict, optional</span></dt><dd><p>Les paramètres de la requête.</p>
+</dd>
+<dt><strong>expecting</strong><span class="classifier">{“some rows”, “one row”, “one value”, “nothing”}, optional</span></dt><dd><p>Décrit le résultat attendu, le cas échéant.</p>
+</dd>
+<dt><strong>allow_none</strong><span class="classifier">bool, default True</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> s’il est admis que la requête ne renvoie aucun
+enregistrement. Si <code class="docutils literal notranslate"><span class="pre">False</span></code>, une erreur devra être émise
+en l’absence de résultat.</p>
+</dd>
+<dt><strong>context_mssg</strong><span class="classifier">str, default “”</span></dt><dd><p>En cas d’erreur, cette phrase pourra précéder le message
+d’erreur issu de PostgreSQL ou <cite>missing_mssg</cite> ci-après.
+Elle décrit le contexte de l’erreur.</p>
+</dd>
+<dt><strong>missing_mssg</strong><span class="classifier">str, optional</span></dt><dd><p>Le message d’erreur à présenter lorsque la requête ne renvoie
+pas de résultat. Ce paramètre est ignoré lorsque <cite>allow_none</cite>
+vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>query</strong><span class="classifier">psycopg2.sql.SQL or psycopg2.sql.Composed</span></dt><dd><p>La requête à proprement parler.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">tuple or dict or None</span></dt><dd><p>Les paramètres de la requête. Il s’agira d’un tuple vide
+si la requête ne prend pas de paramètre.</p>
+</dd>
+<dt><strong>expecting</strong><span class="classifier">{“some rows”, “one row”, “one value”, “nothing”}</span></dt><dd><p>Décrit le résultat attendu, le cas échéant.</p>
+</dd>
+<dt><strong>allow_none</strong><span class="classifier">bool</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> s’il est admis que la requête ne renvoie aucun
+enregistrement. Si <code class="docutils literal notranslate"><span class="pre">False</span></code>, une erreur devra être émise
+en l’absence de résultat.</p>
+</dd>
+<dt><strong>error_mssg</strong><span class="classifier">str</span></dt><dd><p>En cas d’erreur, cette phrase pourra précéder le message
+d’erreur issu de PostgreSQL ou <cite>missing_mssg</cite> ci-après.
+Elle décrit le contexte de l’erreur.</p>
+</dd>
+<dt><strong>missing_mssg</strong><span class="classifier">str or None</span></dt><dd><p>Le message d’erreur à présenter lorsque la requête ne renvoie
+pas de résultat. Vaut toujours <code class="docutils literal notranslate"><span class="pre">None</span></code> lorsque <cite>allow_none</cite>
+vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
+<td><p>Return number of occurrences of value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
+<td><p>Return first index of value.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_evaluate_local_templates">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_evaluate_local_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates_collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_evaluate_local_templates" title="Lien permanent vers cette définition">#</a></dt>
