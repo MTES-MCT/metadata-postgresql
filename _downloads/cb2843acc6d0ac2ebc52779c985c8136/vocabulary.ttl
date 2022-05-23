@@ -1864,74 +1864,74 @@
 
 
 <http://publications.europa.eu/resource/authority/dataset-type/CODE_LIST> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Code list"@en,
-		"Liste de codes"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Code list"@en,
+        "Liste de codes"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/DIRECTORY> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Directory"@en,
-		"Annuaire"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Directory"@en,
+        "Annuaire"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/GEOSPATIAL> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Geospatial data"@en,
-		"Données géospatiales"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Geospatial data"@en,
+        "Données géospatiales"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/GLOSSARY> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Glossary"@en,
-		"Glossaire"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Glossary"@en,
+        "Glossaire"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/MAPPING> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Mapping"@en,
-		"Table de correspondance"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Mapping"@en,
+        "Table de correspondance"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/ONTOLOGY> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Ontology"@en,
-		"Ontologie"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Ontology"@en,
+        "Ontologie"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/STATISTICAL> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Statistical data"@en,
-		"Données statistiques"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Statistical data"@en,
+        "Données statistiques"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/SCHEMA> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Schema"@en,
-		"Schéma ou gabarit"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Schema"@en,
+        "Schéma ou gabarit"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/STYLES> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Style sheets"@en,
-		"Feuille de style"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Style sheets"@en,
+        "Feuille de style"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Synthetic data"@en,
-		"Données fictives"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Synthetic data"@en,
+        "Données fictives"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/TAXONOMY> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Taxonomy"@en,
-		"Taxonomie"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Taxonomy"@en,
+        "Taxonomie"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/TEST_DATA> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Test data"@en,
-		"Données de test"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Test data"@en,
+        "Données de test"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/THESAURUS> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Thesaurus"@en,
-		"Thésaurus"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Thesaurus"@en,
+        "Thésaurus"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type/APROF> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
-	skos:prefLabel "Application profile"@en,
-		"Profil d'application"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
+    skos:prefLabel "Application profile"@en,
+        "Profil d'application"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-type> a skos:ConceptScheme ;
     skos:prefLabel "Types de jeux de données (UE)"@fr,
@@ -1939,24 +1939,24 @@
 
 
 <http://publications.europa.eu/resource/authority/data-service-type/API> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
-	skos:prefLabel "API"@en,
-		"API"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "API"@en,
+        "API"@fr .
 
 <http://publications.europa.eu/resource/authority/data-service-type/DOWNLOAD> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
-	skos:prefLabel "Download"@en,
-		"Téléchargement"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "Download"@en,
+        "Téléchargement"@fr .
 
 <http://publications.europa.eu/resource/authority/data-service-type/HUMAN_INTERACTION> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
-	skos:prefLabel "Human interaction service"@en,
-		"Service avec interface utilisateur de requête"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "Human interaction service"@en,
+        "Service avec interface utilisateur de requête"@fr .
 
 <http://publications.europa.eu/resource/authority/data-service-type/SPARQL_ENDPOINT> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
-	skos:prefLabel "SPARQL endpoint"@en,
-		"Point d'accès SPARQL"@fr .
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "SPARQL endpoint"@en,
+        "Point d'accès SPARQL"@fr .
 
 <http://publications.europa.eu/resource/authority/data-service-type> a skos:ConceptScheme ;
     skos:prefLabel "Types de services de données (UE)"@fr,
@@ -1964,64 +1964,64 @@
 
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/annually> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Annually"@en,
-		"Annuelle"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Annually"@en,
+        "Annuelle"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/asNeeded> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "As needed"@en,
-		"D'autant que de besoin"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "As needed"@en,
+        "D'autant que de besoin"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/biannually> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Biannually"@en,
-		"Deux fois par an"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Biannually"@en,
+        "Deux fois par an"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/continual> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Continual"@en,
-		"Continue"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Continual"@en,
+        "Continue"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/daily> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Daily"@en,
-		"Quotidienne"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Daily"@en,
+        "Quotidienne"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/fortnightly> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Fortnightly"@en,
-		"Deux fois par mois"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Fortnightly"@en,
+        "Deux fois par mois"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/irregular> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Irregular"@en,
-		"Irrégulière"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Irregular"@en,
+        "Irrégulière"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/monthly> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Monthly"@en,
-		"Mensuelle"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Monthly"@en,
+        "Mensuelle"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/notPlanned> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Not planned"@en,
-		"Non planifiée"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Not planned"@en,
+        "Non planifiée"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/quarterly> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Quarterly"@en,
-		"Trimestrielle"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Quarterly"@en,
+        "Trimestrielle"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/unknown> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Unknown"@en,
-		"Indéterminée"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Unknown"@en,
+        "Indéterminée"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/weekly> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
-	skos:prefLabel "Weekly"@en,
-		"Hebdomadaire"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Weekly"@en,
+        "Hebdomadaire"@fr .
 
 <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> a skos:ConceptScheme ;
     skos:prefLabel "Fréquence d'actualisation (INSPIRE)"@fr,
@@ -2029,28 +2029,28 @@
 
 
 <http://publications.europa.eu/resource/authority/planned-availability/STABLE> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
     skos:definition "Data will remain available in the long term."@en ;
-	skos:prefLabel "stable"@en,
-		"stable"@fr .
+    skos:prefLabel "stable"@en,
+        "stable"@fr .
 
 <http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
     skos:definition "Data is available for a few years, medium term planning."@en ;
-	skos:prefLabel "available"@en,
-		"disponible"@fr .
+    skos:prefLabel "available"@en,
+        "disponible"@fr .
 
 <http://publications.europa.eu/resource/authority/planned-availability/EXPERIMENTAL> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
     skos:definition "Data is available on a trial basis for a short period, short term planning."@en ;
-	skos:prefLabel "experimental"@en,
-		"expérimental"@fr .
+    skos:prefLabel "experimental"@en,
+        "expérimental"@fr .
 
 <http://publications.europa.eu/resource/authority/planned-availability/TEMPORARY> a skos:Concept ;
-	skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
     skos:definition "Data can disappear at any time, no planning."@en ;
-	skos:prefLabel "temporary"@en,
-		"temporaire"@fr .
+    skos:prefLabel "temporary"@en,
+        "temporaire"@fr .
 
 <http://publications.europa.eu/resource/authority/planned-availability> a skos:ConceptScheme ;
     skos:prefLabel "Disponibilité prévue (UE)"@fr,
@@ -2058,99 +2058,99 @@
 
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/farming> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Farming"@en,
-		"Agriculture"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Farming"@en,
+        "Agriculture"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/elevation> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Elevation"@en,
-		"Altitude"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Elevation"@en,
+        "Altitude"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/biota> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Biota"@en,
-		"Biote"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Biota"@en,
+        "Biote"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/climatologyMeteorologyAtmosphere> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Climatology / Meteorology / Atmosphere"@en,
-		"Climatologie/Météorologie/Atmosphère"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Climatology / Meteorology / Atmosphere"@en,
+        "Climatologie/Météorologie/Atmosphère"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/inlandWaters> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Inland Waters"@en,
-		"Eaux intérieures"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Inland Waters"@en,
+        "Eaux intérieures"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/environment> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Environment"@en,
-		"Environnement"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Environment"@en,
+        "Environnement"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/imageryBaseMapsEarthCover> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Imagery / Base Maps / Earth Cover"@en,
-		"Imagerie/Cartes de base/Occupation des terres"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Imagery / Base Maps / Earth Cover"@en,
+        "Imagerie/Cartes de base/Occupation des terres"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/geoscientificInformation> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Geoscientific Information"@en,
-		"Informations géoscientifiques"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Geoscientific Information"@en,
+        "Informations géoscientifiques"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/boundaries> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Boundaries"@en,
-		"Limites"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Boundaries"@en,
+        "Limites"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/location> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Location"@en,
-		"Localisation"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Location"@en,
+        "Localisation"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/oceans> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Oceans"@en,
-		"Océans"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Oceans"@en,
+        "Océans"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/planningCadastre> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Planning / Cadastre"@en,
-		"Planification/Cadastre"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Planning / Cadastre"@en,
+        "Planification/Cadastre"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/intelligenceMilitary> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Intelligence / Military"@en,
-		"Renseignement/Secteur militaire"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Intelligence / Military"@en,
+        "Renseignement/Secteur militaire"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/health> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Health"@en,
-		"Santé"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Health"@en,
+        "Santé"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/utilitiesCommunication> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Utilities / Communication"@en,
-		"Services d’utilité publique/Communication"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Utilities / Communication"@en,
+        "Services d’utilité publique/Communication"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/society> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Society"@en,
-		"Société"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Society"@en,
+        "Société"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/structure> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Structure"@en,
-		"Structure"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Structure"@en,
+        "Structure"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/transportation> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Transportation"@en,
-		"Transport"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Transportation"@en,
+        "Transport"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/economy> a skos:Concept ;
-	skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-	skos:prefLabel "Economy"@en,
-		"Économie"@fr .
+    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:prefLabel "Economy"@en,
+        "Économie"@fr .
 
 <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> a skos:ConceptScheme ;
     skos:prefLabel "Catégories thématiques ISO 19115 (INSPIRE)"@fr,
