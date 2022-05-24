@@ -1296,11 +1296,16 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
             uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
                 dct:accessRights <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> ;
+                dct:conformsTo [ a dct:Standard ;
+                    skos:inScheme <http://www.opengis.net/def/crs/EPSG/0> ;
+                    dct:identifier "4326" ],
+                    <http://www.opengis.net/def/crs/EPSG/0/2154> ;
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
             """
         metagraph = Metagraph().parse(data=metadata)
@@ -1308,6 +1313,10 @@ class WidgetsDictTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute('''
+                    INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path)
+                        VALUES ('Basique', 'dct:conformsTo')
+                    ''')
                 cur.execute(
                     query_get_categories(),
                     ('Basique',)
@@ -1318,16 +1327,52 @@ class WidgetsDictTestCase(unittest.TestCase):
                     ('Basique',)
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('TRUNCATE z_plume.meta_template CASCADE')
         conn.close()
         template = TemplateDict(categories, tabs)
+
+        # --- non création du groupe de propriétés masqué hors modèle ---
+        # et il n'y a même pas de clé dans l'arbre pour ce groupe
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        self.assertIsNone(widgetsdict.check_grids())
         g = widgetsdict.root.search_from_path(DCT.accessRights)
         self.assertEqual(len(g.children), 1)
         c = g.children[0]
         self.assertIsNone(c.m_twin)
-        self.assertFalse('< manuel >' in widgetsdict[c]['sources'])   
-        self.assertIsNone(widgetsdict.check_grids())        
+        self.assertFalse('< manuel >' in widgetsdict[c]['sources'])
+
+        g = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertEqual(len(g.children), 3)
+        c = g.children[0]
+        self.assertTrue(c.m_twin)
+        self.assertTrue("Registre EPSG de l'OGC (systèmes de coordonnées)" in widgetsdict[c]['sources'])
+        self.assertTrue(widgetsdict[c]['multiple sources'])
+        # on pourrait aussi ne pas avoir de clé-valeur jumelle dans
+        # ce cas. Les deux tests précédents servent seulement à confirmer
+        # ce comportement, même s'il pourrait être remis en question.
+        self.assertTrue(len(c.children), 2)
+        self.assertTrue(all(x in widgetsdict for x in g.children))
+        self.assertTrue(all(x in widgetsdict for x in c.children))
+
+        # --- non création du groupe de propriétés non masqué hors modèle ---
+        # ce groupe est un fantôme et la clé-valeur jumelle éventuelle a été supprimée
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template, mode='read')
+        self.assertIsNone(widgetsdict.check_grids())
+        g = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertEqual(len(g.children), 2)
+        c = g.children[0]
+        self.assertTrue(c.is_ghost)
+        self.assertIsNone(c.m_twin)
+        self.assertFalse(c.is_hidden_m)
+        self.assertFalse(c.is_main_twin)
+        self.assertFalse(c in widgetsdict)
+        self.assertEqual(len(c.children), 2)
+        self.assertTrue(not any(x in widgetsdict for x in c.children))
+        c = g.children[1]
+        self.assertTrue(c in widgetsdict)
+        self.assertEqual(c.row, 0)
+        self.assertFalse(c.is_ghost)
+
 
     def test_translation_actions(self):
         """Changement de langue courante pour une clé.

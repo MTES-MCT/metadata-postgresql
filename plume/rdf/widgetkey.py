@@ -1575,7 +1575,7 @@ class ObjectKey(WidgetKey):
             # pour une clé dont le jumeau est défini a posteriori,
             # il faut s'assurer de la cohérence des attributs partagés
             self.is_hidden_m = self.is_hidden_m
-            # NB: assure la mise à jour de is_main_twin
+            # NB: assure aussi la mise à jour de is_main_twin
             self.predicate = self.predicate
             self.rdfclass = self.rdfclass
             # emporte la mise en cohérence de ValueKey.datatype (None), et
@@ -1624,6 +1624,8 @@ class ObjectKey(WidgetKey):
     @is_hidden_m.setter
     def is_hidden_m(self, value):
         if not self or self.parent.is_hidden_m or not self.m_twin:
+            if not self._is_unborn:
+                self.is_main_twin = self.is_main_twin
             return
             # pas besoin de retoucher à la valeur définie à
             # l'initialisation ou héritée du parent
@@ -2435,7 +2437,8 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
         si les conditions suivantes sont réunies :
         * le groupe de propriétés a au moins un enfant ;
         * tous les enfants du groupe sont des fantômes ;
-        * la clé n'a pas de jumelle.
+        * la clé n'a pas de jumelle ou est la jumelle principale.
+          Dans ce cas, la clé-valeur jumelle sera supprimée.
         
         :py:attr:`is_ghost` définit la valeur booléenne de la clé :
         ``bool(widgetkey)`` vaut ``False`` si ``widgetkey`` est une
@@ -2446,8 +2449,14 @@ class GroupOfPropertiesKey(GroupKey, ObjectKey):
 
     @is_ghost.setter
     def is_ghost(self, value):
-        if value and self and not self.m_twin and self.children \
-            and not self.has_real_children:
+        if value and self and (not self.m_twin or self.is_main_twin) \
+            and self.children and not self.has_real_children:
+            if self.is_main_twin:
+                # NB: en pratique, cette condition sera toujours remplie
+                # à l'initialisation du dictionnaire de widgets, car c'est
+                # la jumelle principale qui contient les données du graphe,
+                # et qui dit fantôme dit données à préserver
+                self.m_twin.kill(preserve_twin=True)
             self._is_ghost = True
             if not WidgetKey.no_computation:
                 self.parent.compute_rows()

@@ -122,6 +122,14 @@ Plume vérifie désormais la compatibilité des versions de Plume et PlumePg ava
 
 Correction d'une anomalie qui empêchait d'importer des fiches de métadonnées depuis certains CSW, notamment celui de GéoIDE. *Référence : [issue #65](https://github.com/MTES-MCT/metadata-postgresql/issues/65).*
 
-La version précédente ne référençait pas le bon point de moissonnage pour le CSW de GéoIDE. Cette information étant stockée dans les fichiers de configuration, **la correction requiert une intervention manuelle** pour remplacer `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset` par `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable` dans le fichier `QGIS3.ini`[^qgis3ini]. Il est possible de simplement supprimer les paramètres `CSW\urlCswDefaut` et `CSW\urlCsw` de la section `[PLUME]`, ils seront recréés par Plume avec leurs nouvelles valeurs par défaut.
+Correction du point de moissonnage pour le CSW de GéoIDE : `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset` est remplacé par `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable`. Les points de moissonnages pré-configurés ne sont désormais plus référencés dans le `QGIS3.ini`, afin de faciliter leur maintenance. Plus généralement tous les paramètres de configuration qui n'ont pas vocation à être personnalisés par l'utilisateur ou selon l'environnement sortent du fichier `QGIS3.ini`. Ils sont maintenant définis par un fichier interne au code de Plume, `config.py`.
 
-[^qgis3ini]: Sur Windows, à chercher dans le répertoire `C:\Users\%username%\AppData\Roaming\QGIS\QGIS3\profiles\default\QGIS\QGIS3.ini`, en remplaçant `default` par le nom du profil QGIS utilisé s'il ne s'agit pas du profil par défaut.
+Consolidation de la gestion des connexions au serveur PostgreSQL et des erreurs induites par les suppressions d'objets pendant l'édition des métadonnées, tant dans QGIS que côté serveur.
+
+Les champs supprimés n'apparaissent plus dans l'onglet *Champs* des fiches de métadonnées, ce qui - en plus de n'être pas pertinent - provoquait une erreur lors de l'enregistrement.
+
+Correction d'une anomalie (ou du moins révision d'un comportement intentionnel mais sous optimal) qui faisait apparaître des blocs vides dans fiches de métadonnées dans les conditions suivantes :
+- En mode lecture.
+- Catégorie autorisant à la fois des valeurs issues d'un thésaurus et des valeurs décrites manuellement.
+- Toutes les propriétés servant à la description manuelle sont hors modèle, seules les valeurs issues d'un thésaurus sont donc supposées être affichées.
+- La description manuelle avait servi pour une valeur (au moins une propriété préalablement renseignée). C'est le bloc correspond à cette valeur qui apparaissait vide au lieu de ne pas apparaître du tout.

@@ -25,7 +25,83 @@ from psycopg2.extras import Json
 
 from plume.rdf.exceptions import UnknownParameterValue
 from plume.rdf.namespaces import PLUME
-from plume.pg.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
+from plume.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
+
+
+class PgQueryWithArgs(tuple):
+    """Requête PostgreSQL prête à l'emploi.
+
+    Prend la forme d'un tuple à un ou deux éléments. Le premier
+    élément est la requête SQL, soit un objet de classe
+    :py:class:`psycopg2.sql.Composed` ou :py:class:`psycopg2.sql.SQL`.
+    Le second élément correspond aux paramètres de la requête, et
+    peut prendre la forme d'un tuple ou d'un dictionnaire selon les
+    cas. Il n'est présent que si la requête admet des paramètres.
+
+    D'une manière générale, il n'est pas utile de contrôler la présence
+    du second élément. Une requête ``query`` peut toujours être passée
+    en argument de :py:meth:`psycopg2.cursor.execute` de la manière
+    suivante :
+
+        >>> cur.execute(*query)
+
+    Attributes
+    ----------
+    query : psycopg2.sql.SQL or psycopg2.sql.Composed
+        La requête à proprement parler.
+    args : tuple or dict or None
+        Les paramètres de la requête. Il s'agira d'un tuple vide
+        si la requête ne prend pas de paramètre.
+    expecting : {'some rows', 'one row', 'one value', 'nothing'}
+        Décrit le résultat attendu, le cas échéant.
+    allow_none : bool
+        ``True`` s'il est admis que la requête ne renvoie aucun
+        enregistrement. Si ``False``, une erreur devra être émise
+        en l'absence de résultat.
+    error_mssg : str
+        En cas d'erreur, cette phrase pourra précéder le message
+        d'erreur issu de PostgreSQL ou `missing_mssg` ci-après.
+        Elle décrit le contexte de l'erreur.
+    missing_mssg : str or None
+        Le message d'erreur à présenter lorsque la requête ne renvoie
+        pas de résultat. Vaut toujours ``None`` lorsque `allow_none`
+        vaut ``True``.
+    
+    Parameters
+    ----------
+    query : psycopg2.sql.SQL or psycopg2.sql.Composed
+        La requête.
+    args : tuple or dict, optional
+        Les paramètres de la requête.
+    expecting : {'some rows', 'one row', 'one value', 'nothing'}, optional
+        Décrit le résultat attendu, le cas échéant.
+    allow_none : bool, default True
+        ``True`` s'il est admis que la requête ne renvoie aucun
+        enregistrement. Si ``False``, une erreur devra être émise
+        en l'absence de résultat.
+    context_mssg : str, default ''
+        En cas d'erreur, cette phrase pourra précéder le message
+        d'erreur issu de PostgreSQL ou `missing_mssg` ci-après.
+        Elle décrit le contexte de l'erreur.
+    missing_mssg : str, optional
+        Le message d'erreur à présenter lorsque la requête ne renvoie
+        pas de résultat. Ce paramètre est ignoré lorsque `allow_none`
+        vaut ``True``.
+
+    """
+
+    def __new__(cls, query, args=None, **kwargs):
+        if args:
+            return super().__new__(cls, (query, args))
+        else:
+            return super().__new__(cls, (query,))
+
+    def __init__(self, query, args=None, expecting=None,
+        allow_none=True, context_mssg=None, missing_mssg=None):
+        self.expecting = expecting or 'some rows'
+        self.allow_none = bool(allow_none)
+        self.context_mssg = context_mssg or ''
+        self.missing_mssg = None if self.allow_none else missing_mssg or ''
 
 
 def query_is_relation_owner():
@@ -523,6 +599,7 @@ def query_get_columns(schema_name, table_name):
             col_description('{attrelid}'::regclass, attnum)
             FROM pg_catalog.pg_attribute
             WHERE attrelid = '{attrelid}'::regclass AND attnum >= 1
+                AND NOT attisdropped
             ORDER BY attnum
         """
         ).format(
