@@ -350,6 +350,7 @@ class Ui_Dialog_plume(object):
            #**********************
            elif mItem == "Traduction" :
               self.translation = (False if self.translation else True) 
+           #**********************
            elif QtWidgets.QApplication.translate("plume_ui", mItem) == "Verrouillage" :
               self.verrouLayer = (False if self.verrouLayer else True) 
               self.nameVerrouLayer = (self.layer if self.verrouLayer else None) 

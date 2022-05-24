@@ -64,6 +64,16 @@ def initIhmNoConnection(self) :
     self.plumeTranslation.setEnabled(False)
     self.plumeChoiceLang.setEnabled(False)
     self.plumeVerrou.setEnabled(False)
+    #-
+    self.mode            = "read"  #Intiialise les autres instances  
+    self.verrouLayer     = False   #Verrouillage de la couche 
+    self.nameVerrouLayer = None    #Couche verrouillée 
+    #-
+    if self.toolBarDialog == "picture" :
+       _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
+       self.plumeEdit.setStyleSheet(  "QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
+       self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
+    #-
     afficheNoConnections(self, "show")
     self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(returnVersion()) + ")" 
     self.Dialog.setWindowTitle(self.messWindowTitle)   
@@ -99,6 +109,13 @@ def afficheNoConnections(self, action = ""):
     if hasattr(self, "plumeTemplate") : self.plumeTemplate.setFixedSize(QSize(30, 18))
     return
 
+#==================================================
+#Généralisation erreur si fin de transaction PostgreSLQ quel que soit le motif
+def breakExecuteSql(self) :
+    initIhmNoConnection(self)
+    self.verrouLayer     = False   #Verrouillage de la couche 
+    self.nameVerrouLayer = None    #Couche verrouillée
+    return
 
 #==========================
 # If suppression d'une couche active pour les métadonnées affichées
@@ -450,14 +467,6 @@ def saveMetaIhm(self, _schema, _table) :
     #- Mettre à jour les descriptifs de la variable columns pour réaffichage
     self.columns = returnObjetColumns(self, self.schema, self.table)
     return  
-    
-#==================================================
-#Généralisation erreur si fin de transaction PostgreSLQ quel que soit le motif
-def breakExecuteSql(self) :
-    initIhmNoConnection(self)
-    self.verrouLayer     = False   #Verrouillage de la couche 
-    self.nameVerrouLayer = None    #Couche verrouillée
-    return
 
 #==================================================
 # class pour gérer les erreur autre  que PostgreSLQ qui ne retourne pas de valeurs
