@@ -153,17 +153,18 @@ def store_sample_templates():
             cur.execute('SELECT array_agg(tpl_label ORDER BY tpl_label) FROM z_plume.meta_template')
             labels = cur.fetchone()[0]
             for label in labels:
-                cur.execute('SELECT * FROM z_plume.meta_template WHERE tpl_label = %s',
+                cur.execute('''
+                    SELECT tpl_label, sql_filter, md_conditions, priority, comment
+                        FROM z_plume.meta_template WHERE tpl_label = %s
+                    ''',
                     (label,))
                 conditions = cur.fetchone()
                 cur.execute(
-                    query_get_categories(),
-                    (label,)
+                    *query_get_categories(label)
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    (label,)
+                    *query_template_tabs(label)
                     )
                 tabs = cur.fetchall()
                 data[label] = {'categories': categories, 'tabs': tabs, 'conditions': conditions}
