@@ -174,10 +174,10 @@ class WidgetsDictTestCase(unittest.TestCase):
                 if not k in d:
                     self.assertFalse(v)
         # widget de saisie avec une seule source
-        key = widgetsdict.root.search_from_path(DCT.subject).children[0]
+        key = widgetsdict.root.search_from_path(DCT.language).children[0]
         d = {
             'main widget type': 'QComboBox',
-            'help text': "Classification thématique du jeu données selon la nomenclature du standard ISO 19115.",
+            'help text': "Langue·s des données.",
             'has label': False,
             'has minus button': True,
             'hide minus button': True,
@@ -190,7 +190,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             with self.subTest(internalkey = k):
                 if not k in d and not k == 'thesaurus values':
                     self.assertFalse(v)
-        self.assertTrue("Agriculture"
+        self.assertTrue("islandais"
             in widgetsdict[key]['thesaurus values'])
         self.assertTrue('' in widgetsdict[key]['thesaurus values'])
         # widget de saisie avec unités
@@ -384,13 +384,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -524,13 +522,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -731,13 +727,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -846,13 +840,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -1136,13 +1128,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Classique',)
+                    *query_template_tabs('Classique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -1318,13 +1308,11 @@ class WidgetsDictTestCase(unittest.TestCase):
                         VALUES ('Basique', 'dct:conformsTo')
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('TRUNCATE z_plume.meta_template CASCADE')
@@ -1411,13 +1399,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -1622,13 +1608,11 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -1711,13 +1695,11 @@ class WidgetsDictTestCase(unittest.TestCase):
                             ('Classique', 'uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9') ;
                     """)
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Classique',)
+                    *query_template_tabs('Classique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -1909,8 +1891,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         (SELECT 'Datatype', path FROM z_plume.meta_categorie WHERE label ~ 'test.datatype') ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Datatype',)
+                    *query_get_categories('Datatype')
                     )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -2200,8 +2181,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         WHERE path = 'dct:created' ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -2252,8 +2232,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         WHERE path = 'dct:conformsTo' ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -2273,7 +2252,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn:
                 with conn.cursor() as cur:
                     for extension in dependances:
-                        cur.execute(query_exists_extension(), (extension,))
+                        cur.execute(*query_exists_extension(extension))
                         dependances_ok = dependances_ok and cur.fetchone()[0]
                         if not dependances_ok:
                             break
@@ -2427,8 +2406,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         WHERE path = 'dct:description' ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -2448,7 +2426,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn:
                 with conn.cursor() as cur:
                     for extension in dependances:
-                        cur.execute(query_exists_extension(), (extension,))
+                        cur.execute(*query_exists_extension(extension))
                         dependances_ok = dependances_ok and cur.fetchone()[0]
                         if not dependances_ok:
                             break
@@ -2546,8 +2524,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         WHERE path = 'dct:title' ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -2567,7 +2544,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn:
                 with conn.cursor() as cur:
                     for extension in dependances:
-                        cur.execute(query_exists_extension(), (extension,))
+                        cur.execute(*query_exists_extension(extension))
                         dependances_ok = dependances_ok and cur.fetchone()[0]
                         if not dependances_ok:
                             break
@@ -2695,8 +2672,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         WHERE path = 'dct:created' ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute('''
@@ -2723,7 +2699,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn:
                 with conn.cursor() as cur:
                     for extension in dependances:
-                        cur.execute(query_exists_extension(), (extension,))
+                        cur.execute(*query_exists_extension(extension))
                         dependances_ok = dependances_ok and cur.fetchone()[0]
                         if not dependances_ok:
                             break
@@ -2899,8 +2875,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                                 'dct:conformsTo') ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Donnée externe',)
+                    *query_get_categories('Donnée externe')
                     )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -3064,8 +3039,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         ('Calcul', 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Calcul',)
+                    *query_get_categories('Calcul')
                     )
                 categories = cur.fetchall()
                 cur.execute('''
@@ -3162,8 +3136,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                         ('Calcul', 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
                     ''')
                 cur.execute(
-                    query_get_categories(),
-                    ('Calcul',)
+                    *query_get_categories('Calcul')
                     )
                 categories = cur.fetchall()
                 cur.execute('''
