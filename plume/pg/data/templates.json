@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-04-06 à 18:41:20."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-06-06 à 19:06:24."
         ]
     },
     "Classique": {
@@ -408,7 +408,7 @@
                 "dcat:theme",
                 "shared",
                 "Thèmes",
-                "Classification thématique du jeu de données selon la nomenclature généraliste du portail opendata européen et/ou, s'il y a lieu, la nomemclature INSPIRE.",
+                "Classification thématique du jeu de données.",
                 "url",
                 false,
                 null,
@@ -421,7 +421,8 @@
                 false,
                 [
                     "http://publications.europa.eu/resource/authority/data-theme",
-                    "https://inspire.ec.europa.eu/theme"
+                    "https://inspire.ec.europa.eu/theme",
+                    "https://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
                 ],
                 null,
                 null,
@@ -525,7 +526,9 @@
                     "http://www.opengis.net/def/crs/EPSG/0"
                 ],
                 null,
-                null,
+                [
+                    "manual"
+                ],
                 22,
                 null,
                 null,
@@ -879,31 +882,6 @@
                 null
             ],
             [
-                "dct:subject",
-                "shared",
-                "Catégories thématiques",
-                "Classification thématique du jeu données selon la nomenclature du standard ISO 19115.",
-                "url",
-                false,
-                null,
-                false,
-                null,
-                null,
-                null,
-                true,
-                "false",
-                false,
-                [
-                    "https://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
-                ],
-                null,
-                null,
-                5,
-                null,
-                null,
-                null
-            ],
-            [
                 "dct:temporal",
                 "shared",
                 "Couverture temporelle",
@@ -1071,7 +1049,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-04-06 à 18:41:20."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-06-06 à 19:06:24."
         ]
     },
     "Donnée externe": {
@@ -1405,7 +1383,7 @@
                 "dcat:theme",
                 "shared",
                 "Thèmes",
-                "Classification thématique du jeu de données selon la nomenclature généraliste du portail opendata européen et/ou, s'il y a lieu, la nomemclature INSPIRE.",
+                "Classification thématique du jeu de données.",
                 "url",
                 false,
                 null,
@@ -1418,7 +1396,8 @@
                 false,
                 [
                     "http://publications.europa.eu/resource/authority/data-theme",
-                    "https://inspire.ec.europa.eu/theme"
+                    "https://inspire.ec.europa.eu/theme",
+                    "https://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
                 ],
                 null,
                 null,
@@ -1736,31 +1715,6 @@
                 null
             ],
             [
-                "dct:subject",
-                "shared",
-                "Catégories thématiques",
-                "Classification thématique du jeu données selon la nomenclature du standard ISO 19115.",
-                "url",
-                false,
-                null,
-                false,
-                null,
-                null,
-                null,
-                true,
-                "false",
-                false,
-                [
-                    "https://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
-                ],
-                null,
-                null,
-                5,
-                null,
-                null,
-                null
-            ],
-            [
                 "dct:temporal",
                 "shared",
                 "Couverture temporelle",
@@ -1932,7 +1886,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-04-06 à 18:41:20."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-06-06 à 19:06:24."
         ]
     }
 }
