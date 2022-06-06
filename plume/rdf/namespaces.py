@@ -57,11 +57,14 @@ NAMESPACES = {
 PREDICATE_MAP = {
     VCARD['organisation-name']: VCARD['organization-name'],
     SDO.endDate: DCAT.endDate,
-    SDO.startDate: DCAT.startDate
+    SDO.startDate: DCAT.startDate,
+    DCT.subject: DCAT.theme,
+    DCAT.mediaType: DCT['format']
     }
-"""Mapping de prédicats qui ont notoirement tendance à être mal écrits.
+"""Mapping de prédicats.
 
-Coquilles, formes obsolètes... Ce dictionnaire sert notamment au nettoyage
+Coquilles, formes obsolètes, mapping de propriétés non prises
+en charge par Plume... Ce dictionnaire sert notamment au nettoyage
 des graphes importés de sources externes par la fonction 
 :py:func:`plume.rdf.metagraph.clean_metagraph`.
 
