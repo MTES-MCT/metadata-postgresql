@@ -130,7 +130,7 @@ Correction d'une anomalie qui empêchait d'importer des fiches de métadonnées 
 
 Correction du point de moissonnage pour le CSW de GéoIDE : `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/harvestable-dataset` est remplacé par `http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable`. Les points de moissonnages pré-configurés ne sont désormais plus référencés dans le `QGIS3.ini`, afin de faciliter leur maintenance. Plus généralement tous les paramètres de configuration qui n'ont pas vocation à être personnalisés par l'utilisateur ou selon l'environnement sortent du fichier `QGIS3.ini`. Ils sont maintenant définis par un fichier interne au code de Plume, `config.py`.
 
-Consolidation de la gestion des connexions au serveur PostgreSQL et des erreurs induites par les suppressions d'objets pendant l'édition des métadonnées, tant dans QGIS que côté serveur.
+Consolidation de la gestion des connexions au serveur PostgreSQL et des erreurs induites par les suppressions d'objets pendant l'édition des métadonnées, tant dans QGIS que côté serveur. *Référence : [issue #59](https://github.com/MTES-MCT/metadata-postgresql/issues/59) et [issue #63](https://github.com/MTES-MCT/metadata-postgresql/issues/63).*
 
 Les champs supprimés n'apparaissent plus dans l'onglet *Champs* des fiches de métadonnées, ce qui - en plus de n'être pas pertinent - provoquait une erreur lors de l'enregistrement.
 
