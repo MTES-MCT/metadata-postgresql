@@ -69,21 +69,13 @@ plume:DatasetShape
     sh:property [
         sh:path dcat:theme ;
         sh:name "Thèmes"@fr ;
-        sh:description "Classification thématique du jeu de données selon la nomenclature généraliste du portail opendata européen et/ou, s'il y a lieu, la nomemclature INSPIRE."@fr ;
+        sh:description "Classification thématique du jeu de données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         plume:ontology <http://publications.europa.eu/resource/authority/data-theme>,
-            <https://inspire.ec.europa.eu/theme> ;
+            <https://inspire.ec.europa.eu/theme>,
+            <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
         sh:order 4 ;
-    ] ;
-    sh:property [
-        sh:path dct:subject ;
-        sh:name "Catégories thématiques"@fr ;
-        sh:description "Classification thématique du jeu données selon la nomenclature du standard ISO 19115."@fr ;
-        sh:nodeKind sh:IRI ;
-        sh:class skos:Concept ;
-        plume:ontology <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
-        sh:order 5 ;
     ] ;
     sh:property [
         sh:path dcat:keyword ;

@@ -79,7 +79,7 @@ with conn:
     with conn.cursor() as cur:
     
         query = queries.query_get_table_comment(schema_name, table_name)
-        cur.execute(query)
+        cur.execute(*query)
         raw_pg_description = cur.fetchone()[0]
 
 conn.close()
@@ -142,7 +142,7 @@ with conn:
     with conn.cursor() as cur:
     
         query = queries.query_get_columns(schema_name, table_name)
-        cur.execute(query)
+        cur.execute(*query)
         columns = cur.fetchall()
 
 conn.close()

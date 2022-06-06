@@ -567,7 +567,7 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tbody>
 <tr class="row-even"><td><p><em>media type</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">dcat:mediaType</span></code></p></td>
-<td><p>La différence avec le format (<code class="docutils literal notranslate"><span class="pre">dct:format</span></code>) est difficile à rendre intelligible. Pour les données mises à disposition via des services (incluant les flux Atom, etc.), on exprimera plutôt ces informations via les propriétés du service, lui-même introduit par <code class="docutils literal notranslate"><span class="pre">dcat:accessService</span></code>.</p></td>
+<td><p>La différence avec le format (<code class="docutils literal notranslate"><span class="pre">dct:format</span></code>) est difficile à rendre intelligible dans le contexte de Plume. Pour les données mises à disposition via des services (incluant les flux Atom, etc.), on exprimera plutôt ces informations via les propriétés du service, lui-même introduit par <code class="docutils literal notranslate"><span class="pre">dcat:accessService</span></code>. Si cette propriété est présente dans des métadonnées importées, elle est mappée vers <code class="docutils literal notranslate"><span class="pre">dct:format</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>checksum</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">spdx:checksum</span></code></p></td>
@@ -857,6 +857,10 @@ Concrètement, pour les propriétés pouvant admettre comme objets des IRI et te
 <tr class="row-even"><td><p><em>was used by</em></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">prov:wasUsedBy</span></code></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>topic category</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dct:subject</span></code></p></td>
+<td><p>À l’import, mappé vers <code class="docutils literal notranslate"><span class="pre">dcat:theme</span></code> qui - par souci de simplicité - est donc utilisé pour toutes les nomenclatures thématiques.</p></td>
 </tr>
 </tbody>
 </table>

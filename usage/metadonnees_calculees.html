@@ -365,7 +365,7 @@
     <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">dependances</span><span class="p">:</span>
-                <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">(),</span> <span class="p">(</span><span class="n">extension</span><span class="p">,))</span>
+                <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">))</span>
                 <span class="n">dependances_ok</span> <span class="o">=</span> <span class="n">dependances_ok</span> <span class="ow">and</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">dependances_ok</span><span class="p">:</span>
                     <span class="k">break</span>

@@ -83,7 +83,7 @@ if dependances:
     with conn:
         with conn.cursor() as cur:
             for extension in dependances:
-                cur.execute(queries.query_exists_extension(), (extension,))
+                cur.execute(*queries.query_exists_extension(extension))
                 dependances_ok = dependances_ok and cur.fetchone()[0]
                 if not dependances_ok:
                     break

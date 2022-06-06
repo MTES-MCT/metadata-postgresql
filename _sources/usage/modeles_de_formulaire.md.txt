@@ -320,7 +320,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        cur.execute(queries.query_list_templates(), (schema_name, table_name))
+        cur.execute(*queries.query_list_templates(schema_name, table_name))
         templates = cur.fetchall()
 
 conn.close()
@@ -376,7 +376,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        cur.execute(queries.query_get_categories(), (tpl_label,))
+        cur.execute(*queries.query_get_categories(tpl_label))
         categories = cur.fetchall()
 
 conn.close()
@@ -397,7 +397,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        cur.execute(queries.query_template_tabs(), (tpl_label,))
+        cur.execute(*queries.query_template_tabs(tpl_label))
         tabs = cur.fetchall()
 
 conn.close()

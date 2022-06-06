@@ -379,7 +379,7 @@
 <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
     
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">(),</span> <span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">,))</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">queries</span><span class="o">.</span><span class="n">query_exists_extension</span><span class="p">(</span><span class="s1">&#39;postgis&#39;</span><span class="p">))</span>
         <span class="n">postgis_exists</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -428,15 +428,14 @@
 <span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
     
-        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_get_geom_srid</span><span class="p">()</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span>
-            <span class="n">geom_name</span><span class="p">))</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_get_geom_srid</span><span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span>
+            <span class="n">geom_name</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
         <span class="n">srid</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         
         <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="o">.</span><span class="n">query_get_geom_extent</span><span class="p">(</span><span class="n">schema_name</span><span class="p">,</span>
             <span class="n">table_name</span><span class="p">,</span> <span class="n">geom_name</span><span class="p">)</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
         <span class="n">geom_wkt</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

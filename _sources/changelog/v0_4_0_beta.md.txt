@@ -106,6 +106,12 @@ En pratique, l'utilisateur pourra constater les changements suivants :
 *Référence : [issue #51](https://github.com/MTES-MCT/metadata-postgresql/issues/51), [issue #53](https://github.com/MTES-MCT/metadata-postgresql/issues/53).*
 
 
+## Modification du modèle de métadonnées
+
+La métadonnée commune `dct:subject` (*catégorie thématique*, ajout de GeoDCAT-AP) est supprimée. La nomenclature ISO qu'elle utilisait est désormais l'un des thésaurus utilisables pour la propriété `dcat:theme` (thème). Si elle est présente dans des métadonnées importées, elle sera désormais automatiquement transformée en `dcat:theme`.
+
+La version 0.1.0 de PlumePg fait disparaître en conséquence cette catégorie de toutes les tables où elle aurait pu apparaître.
+
 ## Anomalies et divers
 
 Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT. *Références : [issue #34](https://github.com/MTES-MCT/metadata-postgresql/issues/34).*
@@ -133,3 +139,6 @@ Correction d'une anomalie (ou du moins révision d'un comportement intentionnel 
 - Catégorie autorisant à la fois des valeurs issues d'un thésaurus et des valeurs décrites manuellement.
 - Toutes les propriétés servant à la description manuelle sont hors modèle, seules les valeurs issues d'un thésaurus sont donc supposées être affichées.
 - La description manuelle avait servi pour une valeur (au moins une propriété préalablement renseignée). C'est le bloc correspond à cette valeur qui apparaissait vide au lieu de ne pas apparaître du tout.
+
+Correction d'une coquille qui affectait la suppression de sources de vocabulaire contrôlé via les modèles.
+

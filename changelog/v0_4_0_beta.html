@@ -236,6 +236,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#modification-du-modele-de-metadonnees">
+   Modification du modèle de métadonnées
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#anomalies-et-divers">
    Anomalies et divers
   </a>
@@ -353,6 +358,11 @@
 </ul>
 <p><em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/51">issue #51</a>, <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/53">issue #53</a>.</em></p>
 </section>
+<section id="modification-du-modele-de-metadonnees">
+<h2>Modification du modèle de métadonnées<a class="headerlink" href="#modification-du-modele-de-metadonnees" title="Lien permanent vers ce titre">#</a></h2>
+<p>La métadonnée commune <code class="docutils literal notranslate"><span class="pre">dct:subject</span></code> (<em>catégorie thématique</em>, ajout de GeoDCAT-AP) est supprimée. La nomenclature ISO qu’elle utilisait est désormais l’un des thésaurus utilisables pour la propriété <code class="docutils literal notranslate"><span class="pre">dcat:theme</span></code> (thème). Si elle est présente dans des métadonnées importées, elle sera désormais automatiquement transformée en <code class="docutils literal notranslate"><span class="pre">dcat:theme</span></code>.</p>
+<p>La version 0.1.0 de PlumePg fait disparaître en conséquence cette catégorie de toutes les tables où elle aurait pu apparaître.</p>
+</section>
 <section id="anomalies-et-divers">
 <h2>Anomalies et divers<a class="headerlink" href="#anomalies-et-divers" title="Lien permanent vers ce titre">#</a></h2>
 <p>Les fonctionnalités de visualisation des métadonnées géométriques prennent désormais en charge tous les types géométriques dont QGIS sait interpréter la représentation WKT. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/34">issue #34</a>.</em></p>
@@ -372,6 +382,7 @@
 <li><p>Toutes les propriétés servant à la description manuelle sont hors modèle, seules les valeurs issues d’un thésaurus sont donc supposées être affichées.</p></li>
 <li><p>La description manuelle avait servi pour une valeur (au moins une propriété préalablement renseignée). C’est le bloc correspond à cette valeur qui apparaissait vide au lieu de ne pas apparaître du tout.</p></li>
 </ul>
+<p>Correction d’une coquille qui affectait la suppression de sources de vocabulaire contrôlé via les modèles.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="isreadonly"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>

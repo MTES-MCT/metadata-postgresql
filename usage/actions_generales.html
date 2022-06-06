@@ -489,8 +489,7 @@
 	<span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
 	
 		<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-			<span class="n">queries</span><span class="o">.</span><span class="n">query_is_relation_owner</span><span class="p">(),</span>
-			<span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
+			<span class="o">*</span><span class="n">queries</span><span class="o">.</span><span class="n">query_is_relation_owner</span><span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
 			<span class="p">)</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
 		<span class="n">is_owner</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">res</span> <span class="k">else</span> <span class="kc">False</span>
@@ -545,7 +544,7 @@
 <li><p>Envoyer au serveur PostgreSQL une requête de mise à jour du descriptif.</p></li>
 </ol>
 <p>On utilisera la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">query_update_table_comment</span></code> du module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code>. À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec <code class="docutils literal notranslate"><span class="pre">query_get_relation_kind</span></code>.</p>
-<p>La requête doit être appliquée à <code class="docutils literal notranslate"><span class="pre">str(pg_description)</span></code>, qui renvoie une représentation sous forme de chaîne de caractères de <code class="docutils literal notranslate"><span class="pre">pg_description</span></code>.</p>
+<p>Pour le descriptif, on s’assurera d’utiliser <code class="docutils literal notranslate"><span class="pre">str(pg_description)</span></code>, qui renvoie une représentation sous forme de chaîne de caractères de <code class="docutils literal notranslate"><span class="pre">pg_description</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
@@ -556,16 +555,17 @@
     <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
 
         <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="n">pg_queries</span><span class="o">.</span><span class="n">query_get_relation_kind</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">pg_queries</span><span class="o">.</span><span class="n">query_get_relation_kind</span><span class="p">(</span>
                 <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="n">kind</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
         
         <span class="n">query</span> <span class="o">=</span> <span class="n">pg_queries</span><span class="o">.</span><span class="n">query_update_table_comment</span><span class="p">(</span>
-            <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">relation_kind</span><span class="o">=</span><span class="n">kind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">relation_kind</span><span class="o">=</span><span class="n">kind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">pg_description</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pg_description</span><span class="p">),))</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
 
 <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
@@ -590,7 +590,7 @@
             <span class="p">)</span>
         
         <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
-            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
 
 <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 

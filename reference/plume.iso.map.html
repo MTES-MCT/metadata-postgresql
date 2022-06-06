@@ -417,6 +417,15 @@ objet, grâce à la méthode <a class="reference internal" href="#plume.iso.map.
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_categories">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_categories</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_categories" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>list of tuples: Triples contenant la ou les catégories ISO 19115.</p>
+<p>Cette propriété est recalculée à chaque interrogation à partir
+du XML. Si l’information n’était pas disponible dans le XML,
+une liste vide est renvoyée.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_dates">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_dates</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_dates" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant les dates du jeu de données.</p>
@@ -465,15 +474,6 @@ une liste vide est renvoyée.</p>
 <dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_provenance">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_provenance</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_provenance" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>list of tuples: Triples contenant la généalogie des données.</p>
-<p>Cette propriété est recalculée à chaque interrogation à partir
-du XML. Si l’information n’était pas disponible dans le XML,
-une liste vide est renvoyée.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.map_subjects">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_subjects</span></span><a class="headerlink" href="#plume.iso.map.IsoToDcat.map_subjects" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>list of tuples: Triples contenant la ou les catégories ISO 19115.</p>
 <p>Cette propriété est recalculée à chaque interrogation à partir
 du XML. Si l’information n’était pas disponible dans le XML,
 une liste vide est renvoyée.</p>
