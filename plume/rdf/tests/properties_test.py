@@ -54,7 +54,7 @@ class PlumePropertyTestCase(unittest.TestCase):
                         ('Mon formulaire', 'owl:versionInfo', 'Principal', 2),
                         ('Mon formulaire', 'dct:spatial / locn:geometry', 'Secondaire', 10),
                         ('Mon formulaire', 'dcat:theme', 'Secondaire', 5),
-                        ('Mon formulaire', 'dct:subject', 'Secondaire', 6) ;
+                        ('Mon formulaire', 'dct:language', 'Secondaire', 6) ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['http://publications.europa.eu/resource/authority/data-theme']
                         WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dcat:theme' ;
@@ -63,7 +63,7 @@ class PlumePropertyTestCase(unittest.TestCase):
                         WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:spatial / locn:geometry' ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['https://source-inconnue']
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:subject' ;
+                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:language' ;
                     UPDATE z_plume.meta_template_categories
                         SET datatype = 'xsd:string',
                             label = 'Nom'
@@ -90,13 +90,11 @@ class PlumePropertyTestCase(unittest.TestCase):
                         ) ;
                     """)
                 cur.execute(
-                    query_get_categories(),
-                    ('Mon formulaire',)
+                    *query_get_categories('Mon formulaire')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Mon formulaire',)
+                    *query_template_tabs('Mon formulaire')
                     )
                 tabs = cur.fetchall()
                 cur.execute("""
@@ -121,10 +119,10 @@ class PlumePropertyTestCase(unittest.TestCase):
                 self.assertEqual(p.prop_dict['sources'],
                     [URIRef('http://publications.europa.eu/resource/authority/data-theme')]),
                 self.assertEqual(p.prop_dict['order_idx'], (5,4))
-            if p.n3_path == 'dct:subject':
+            if p.n3_path == 'dct:language':
                 t += 1
                 self.assertEqual(p.prop_dict['sources'],
-                    [URIRef('https://inspire.ec.europa.eu/metadata-codelist/TopicCategory')])
+                    [URIRef('http://publications.europa.eu/resource/authority/language')])
                 self.assertEqual(p.prop_dict['tab'], 'Secondaire')
             if p.n3_path == 'dct:title':
                 t += 1
