@@ -263,7 +263,7 @@ class IsoToDcat:
         return l
 
     @property
-    def map_subjects(self):
+    def map_categories(self):
         """list of tuples: Triples contenant la ou les catégories ISO 19115.
         
         Cette propriété est recalculée à chaque interrogation à partir
@@ -288,7 +288,7 @@ class IsoToDcat:
                 # on ne conserve que les codes qui existent dans le
                 # thésaurus
                 continue
-            l.append((self.datasetid, DCT.subject, iri))
+            l.append((self.datasetid, DCAT.theme, iri))
         return l
 
     @property

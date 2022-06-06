@@ -6,8 +6,7 @@
 | `owl:versionInfo` | Version | Numéro de version ou millésime du jeu de données. |  |
 | `dct:description` | Description | Description du jeu de données. |  |
 | `plume:isExternal` | Donnée externe | Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe. |  |
-| `dcat:theme` | Thèmes | Classification thématique du jeu de données selon la nomenclature généraliste du portail opendata européen et/ou, s'il y a lieu, la nomemclature INSPIRE. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](https://inspire.ec.europa.eu/theme) |
-| `dct:subject` | Catégories thématiques | Classification thématique du jeu données selon la nomenclature du standard ISO 19115. | [Catégories thématiques ISO 19115 (INSPIRE)](https://inspire.ec.europa.eu/metadata-codelist/TopicCategory) |
+| `dcat:theme` | Thèmes | Classification thématique du jeu de données. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](https://inspire.ec.europa.eu/theme), [Catégories thématiques ISO 19115 (INSPIRE)](https://inspire.ec.europa.eu/metadata-codelist/TopicCategory) |
 | `dcat:keyword` | Mots-clés libres | Mots ou très brèves expressions représentatives du jeu de données, à l'usage des moteurs de recherche. |  |
 | `dct:spatial` | Couverture géographique | Territoire·s décrit·s par le jeu de données. |  |
 | `dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex) |

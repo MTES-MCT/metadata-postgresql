@@ -113,7 +113,7 @@ ALTER TYPE z_plume.meta_compute ADD VALUE 'empty' AFTER 'auto' ;
 ALTER TYPE z_plume.meta_compute ADD VALUE 'new' AFTER 'empty' ;
 
 
---Table: z_plume.meta_categorie
+-- Table: z_plume.meta_categorie
 
 ALTER TABLE z_plume.meta_categorie
     ADD COLUMN compute_params jsonb ;
@@ -128,6 +128,11 @@ COMMENT ON COLUMN z_plume.meta_categorie.compute_params IS 'Paramètres des fonc
 GRANT SELECT ON TABLE z_plume.meta_shared_categorie TO public ;
 
 COMMENT ON COLUMN z_plume.meta_shared_categorie.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres.' ;
+
+-- prise en compte des évolutions du schéma des mtadonnées communes
+-- (sera répercuté en cascade sur z_plume.meta_template_categories)
+DELETE FROM z_plume.meta_shared_categorie WHERE path = 'dct:subject' ;
+
 
 -- Function: z_plume.meta_shared_categorie_before_insert()
 
@@ -198,6 +203,7 @@ ALTER TABLE z_plume.meta_template_categories
 GRANT SELECT ON TABLE z_plume.meta_template_categories TO public ;
 
 COMMENT ON COLUMN z_plume.meta_template_categories.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
+
 
 -- View: z_plume.meta_template_categories_full
 
@@ -397,7 +403,6 @@ BEGIN
                 ('Classique', 'dct:spatial / dct:identifier'),
                 ('Classique', 'dct:spatial / skos:inScheme'),
                 ('Classique', 'dct:spatial / skos:prefLabel'),
-                ('Classique', 'dct:subject'),
                 ('Classique', 'dct:temporal'),
                 ('Classique', 'dct:temporal / dcat:startDate'),
                 ('Classique', 'dct:temporal / dcat:endDate'),
@@ -438,7 +443,6 @@ BEGIN
                 ('Donnée externe', 'dct:spatial / dct:identifier'),
                 ('Donnée externe', 'dct:spatial / skos:inScheme'),
                 ('Donnée externe', 'dct:spatial / skos:prefLabel'),
-                ('Donnée externe', 'dct:subject'),
                 ('Donnée externe', 'foaf:page'),
                 ('Donnée externe', 'owl:versionInfo'),
                 ('Donnée externe', 'plume:isExternal')
