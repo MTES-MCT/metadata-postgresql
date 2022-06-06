@@ -51,7 +51,7 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        cur.execute(queries.query_exists_extension(), ('postgis',))
+        cur.execute(*queries.query_exists_extension('postgis'))
         postgis_exists = cur.fetchone()[0]
 
 conn.close()
@@ -87,15 +87,14 @@ conn = psycopg2.connect(connection_string)
 with conn:
     with conn.cursor() as cur:
     
-        query = queries.query_get_geom_srid()
-        cur.execute(query, (schema_name, table_name
-            geom_name))
-        cur.execute(query)
+        query = queries.query_get_geom_srid(schema_name, table_name
+            geom_name)
+        cur.execute(*query)
         srid = cur.fetchone()[0]
         
         query = queries.query_get_geom_extent(schema_name,
             table_name, geom_name)
-        cur.execute(query)
+        cur.execute(*query)
         geom_wkt = cur.fetchone()[0]
 
 conn.close()

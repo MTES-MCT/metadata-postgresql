@@ -58,10 +58,6 @@ class PgQueryWithArgs(tuple):
         ``True`` s'il est admis que la requête ne renvoie aucun
         enregistrement. Si ``False``, une erreur devra être émise
         en l'absence de résultat.
-    error_mssg : str
-        En cas d'erreur, cette phrase pourra précéder le message
-        d'erreur issu de PostgreSQL ou `missing_mssg` ci-après.
-        Elle décrit le contexte de l'erreur.
     missing_mssg : str or None
         Le message d'erreur à présenter lorsque la requête ne renvoie
         pas de résultat. Vaut toujours ``None`` lorsque `allow_none`
@@ -79,10 +75,6 @@ class PgQueryWithArgs(tuple):
         ``True`` s'il est admis que la requête ne renvoie aucun
         enregistrement. Si ``False``, une erreur devra être émise
         en l'absence de résultat.
-    context_mssg : str, default ''
-        En cas d'erreur, cette phrase pourra précéder le message
-        d'erreur issu de PostgreSQL ou `missing_mssg` ci-après.
-        Elle décrit le contexte de l'erreur.
     missing_mssg : str, optional
         Le message d'erreur à présenter lorsque la requête ne renvoie
         pas de résultat. Ce paramètre est ignoré lorsque `allow_none`
@@ -97,64 +89,92 @@ class PgQueryWithArgs(tuple):
             return super().__new__(cls, (query,))
 
     def __init__(self, query, args=None, expecting=None,
-        allow_none=True, context_mssg=None, missing_mssg=None):
+        allow_none=True, missing_mssg=None):
         self.expecting = expecting or 'some rows'
         self.allow_none = bool(allow_none)
-        self.context_mssg = context_mssg or ''
         self.missing_mssg = None if self.allow_none else missing_mssg or ''
 
 
-def query_is_relation_owner():
+def query_is_relation_owner(schema_name, table_name):
     """Requête qui vérifie que le rôle courant est membre du propriétaire d'une relation (table, etc.).
     
     À utiliser comme suit :
     
-        >>> query = query_is_relation_owner()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> query = query_is_relation_owner('nom du schéma', 'nom de la relation')
+        >>> cur.execute(*query)
         >>> res = cur.fetchone()
-		>>> is_owner = res[0] if res else False
+        >>> is_owner = res[0] if res else False
     
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+
     Returns
     -------
-    psycopg2.sql.SQL
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return sql.SQL("""
+    query = sql.SQL("""
         SELECT pg_has_role(relowner, 'USAGE')
             FROM pg_catalog.pg_class
             WHERE relnamespace = quote_ident(%s)::regnamespace
                 AND relname = %s
         """)
+    return PgQueryWithArgs(
+        query=query,
+        args=(schema_name, table_name),
+        expecting='one value',
+        allow_none=False,
+        missing_mssg="Plume n'a pas pu confirmer si le rôle de" \
+            ' connexion courant est habilité à modifier le descriptif' \
+            ' de la table ou vue "{}"."{}". Elle a vraisemblablement' \
+            ' été supprimée entre temps.'.format(schema_name, table_name)
+        )
 
-def query_exists_extension():
+def query_exists_extension(extension):
     """Requête qui vérifie qu'une extension est installée sur la base PostgreSQL cible.
     
     À utiliser comme suit :
     
-        >>> query = query_exists_extension()
-        >>> cur.execute(query, ('nom de l'extension',))
+        >>> query = query_exists_extension('nom de l'extension')
+        >>> cur.execute(*query)
         >>> extension_exists = cur.fetchone()[0]
     
-    Cette requête renverra :
+    Le résultat est :
     
     * ``True`` si l'extension est installée ;
     * ``False`` si elle est disponible dans le répertoire des
-      extension du serveur mais non installée ;
-    * ``NULL`` si elle n'est pas disponible sur le serveur.
+      extensions du serveur mais non installée ;
+    * ``None`` si elle n'est pas disponible sur le serveur.
     
+    Parameters
+    ----------
+    extension : str
+        Nom de l'extension.
+
     Returns
     -------
-    psycopg2.sql.SQL
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return sql.SQL("""
-        SELECT count(*) = 1
+    query = sql.SQL("""
+        SELECT (SELECT installed_version IS NOT NULL
             FROM pg_available_extensions
-            WHERE name = %s
-                AND installed_version IS NOT NULL
+            WHERE name = %s)
         """)
+    return PgQueryWithArgs(
+        query=query,
+        args=(extension,),
+        expecting='one value',
+        allow_none=False, # n'arrivera jamais
+        missing_mssg="Plume n'a pas pu confirmer si l'extension'" \
+            ' "{}" est installée sur la base.'.format(extension)
+        )
 
 def query_plume_pg_check(min_version=PLUME_PG_MIN_VERSION,
     max_version=PLUME_PG_MAX_VERSION):
@@ -214,7 +234,7 @@ def query_plume_pg_check(min_version=PLUME_PG_MIN_VERSION,
     
     Returns
     -------
-    tuple(psycopg2.sql.SQL, tuple(str, str))
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL
         et son tuple de paramètres.
     
@@ -238,50 +258,57 @@ def query_plume_pg_check(min_version=PLUME_PG_MIN_VERSION,
     else:
         l_max = [9999, 0, 0]
         
-    return (sql.SQL("""
-        WITH check_plumepg AS (
-        SELECT
-            regexp_split_to_array(installed_version, '[.]')::int[] >= %(l_min)s
-                AND regexp_split_to_array(installed_version, '[.]')::int[] < %(l_max)s
-                AS plumepg_ok,
-            installed_version,
-            default_version
-            FROM pg_available_extensions WHERE name = 'plume_pg'
-        ),
-        check_schema AS (
-        SELECT
-            n_schema,
-            CASE WHEN plumepg_ok
-                THEN has_schema_privilege(n_schema, 'USAGE') END
-                AS schema_ok
-            FROM check_plumepg, unnest(ARRAY['z_plume'])
-                AS p_schemas (n_schema)
-        ),
-        check_relation AS (
-        SELECT
-            n_table,
-            CASE WHEN plumepg_ok and (SELECT bool_and(schema_ok) FROM check_schema)
-                THEN has_table_privilege(n_table, 'SELECT') END
-                AS table_ok
-            FROM check_plumepg, unnest(ARRAY['z_plume.meta_template',
-                'z_plume.meta_categorie', 'z_plume.meta_tab',
-                'z_plume.meta_template_categories',
-                'z_plume.meta_template_categories_full'])
-                AS p_tables (n_table)
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            WITH check_plumepg AS (
+            SELECT
+                regexp_split_to_array(installed_version, '[.]')::int[] >= %(l_min)s
+                    AND regexp_split_to_array(installed_version, '[.]')::int[] < %(l_max)s
+                    AS plumepg_ok,
+                installed_version,
+                default_version
+                FROM pg_available_extensions WHERE name = 'plume_pg'
+            ),
+            check_schema AS (
+            SELECT
+                n_schema,
+                CASE WHEN plumepg_ok
+                    THEN has_schema_privilege(n_schema, 'USAGE') END
+                    AS schema_ok
+                FROM check_plumepg, unnest(ARRAY['z_plume'])
+                    AS p_schemas (n_schema)
+            ),
+            check_relation AS (
+            SELECT
+                n_table,
+                CASE WHEN plumepg_ok and (SELECT bool_and(schema_ok) FROM check_schema)
+                    THEN has_table_privilege(n_table, 'SELECT') END
+                    AS table_ok
+                FROM check_plumepg, unnest(ARRAY['z_plume.meta_template',
+                    'z_plume.meta_categorie', 'z_plume.meta_tab',
+                    'z_plume.meta_template_categories',
+                    'z_plume.meta_template_categories_full'])
+                    AS p_tables (n_table)
+            )
+            SELECT
+                coalesce(plumepg_ok AND bool_and(schema_ok) AND bool_and(table_ok), False),
+                ARRAY[%(min_version)s, %(max_version)s],
+                installed_version,
+                default_version,
+                coalesce(array_agg(DISTINCT n_schema ORDER BY n_schema)
+                    FILTER (WHERE NOT schema_ok), ARRAY[]::text[]),
+                coalesce(array_agg(DISTINCT n_table ORDER BY n_table)
+                    FILTER (WHERE NOT table_ok), ARRAY[]::text[])
+                FROM check_plumepg, check_relation, check_schema
+                GROUP BY plumepg_ok, installed_version, default_version
+            """),
+        args={'min_version': min_version, 'l_min': l_min,
+            'max_version': max_version, 'l_max': l_max},
+        expecting='one row',
+        allow_none=False,
+        missing_mssg="Plume n'a pas pu confirmer si l'extension PlumePg " \
+            'est disponible sur la base cible dans une version compatible.'
         )
-        SELECT
-            coalesce(plumepg_ok AND bool_and(schema_ok) AND bool_and(table_ok), False),
-            ARRAY[%(min_version)s, %(max_version)s],
-            installed_version,
-            default_version,
-            coalesce(array_agg(DISTINCT n_schema ORDER BY n_schema)
-                FILTER (WHERE NOT schema_ok), ARRAY[]::text[]),
-            coalesce(array_agg(DISTINCT n_table ORDER BY n_table)
-                FILTER (WHERE NOT table_ok), ARRAY[]::text[])
-            FROM check_plumepg, check_relation, check_schema
-            GROUP BY plumepg_ok, installed_version, default_version
-        """), {'min_version': min_version, 'l_min': l_min,
-            'max_version': max_version, 'l_max': l_max})
 
 def query_get_relation_kind(schema_name, table_name):
     """Requête qui récupère le type d'une relation PostgreSQL.
@@ -290,7 +317,7 @@ def query_get_relation_kind(schema_name, table_name):
     
         >>> query = query_get_relation_kind('nom du schéma',
         ...     'nom de la relation')
-        >>> cur.execute(query)
+        >>> cur.execute(*query)
         >>> relkind = cur.fetchone()[0]
     
     Parameters
@@ -302,25 +329,33 @@ def query_get_relation_kind(schema_name, table_name):
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return sql.SQL("""
-        SELECT relkind FROM pg_catalog.pg_class
-            WHERE pg_class.oid = '{}'::regclass
-        """).format(
-            sql.Identifier(schema_name, table_name)
-            )
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT relkind FROM pg_catalog.pg_class
+                WHERE pg_class.oid = '{}'::regclass
+            """).format(
+                sql.Identifier(schema_name, table_name)
+                ),
+        expecting='one value',
+        allow_none=False, # impossible
+        missing_mssg="Plume n'a pas pu déterminer la nature de la relation" \
+            ' "{}"."{}".'.format(schema_name, table_name)
+        )
 
-def query_update_table_comment(schema_name, table_name, relation_kind='r'):
+def query_update_table_comment(schema_name, table_name, relation_kind='r',
+    description=''):
     """Requête de mise à jour du descriptif d'une table ou vue.
     
     À utiliser comme suit :
     
         >>> query = query_update_table_comment('nom du schéma',
-        ...     'nom de la relation', 'type de relation')
-        >>> cur.execute(query, ('Nouveau descriptif',)
+        ...     'nom de la relation', 'type de relation',
+        ...     'Nouveau descriptif')
+        >>> cur.execute(*query)
     
     Parameters
     ----------
@@ -331,10 +366,12 @@ def query_update_table_comment(schema_name, table_name, relation_kind='r'):
     relation_kind : {'r', 'v', 'm', 'f', 'p'}, optional
         Le type de relation. ``'r'`` par défaut, ce qui
         correspond à une table simple.
+    description : str, optional
+        Le nouveau descriptif.
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
 
     Raises
@@ -350,12 +387,16 @@ def query_update_table_comment(schema_name, table_name, relation_kind='r'):
     if not relation_kind in d:
         raise UnknownParameterValue('relation_kind', relation_kind)
     
-    return sql.SQL(
-        "COMMENT ON {} {} IS %s"
-        ).format(
-            sql.SQL(d[relation_kind]),
-            sql.Identifier(schema_name, table_name)
-            )
+    return PgQueryWithArgs(
+        query=sql.SQL(
+            "COMMENT ON {} {} IS %s"
+            ).format(
+                sql.SQL(d[relation_kind]),
+                sql.Identifier(schema_name, table_name)
+                ),
+        args=(description,),
+        expecting='nothing'
+        )
 
 def query_get_table_comment(schema_name, table_name):
     """Requête de récupération du descriptif d'une table ou vue.
@@ -364,7 +405,7 @@ def query_get_table_comment(schema_name, table_name):
     
         >>> query = query_get_table_comment('nom du schéma',
         ...     'nom de la relation')
-        >>> cur.execute(query)
+        >>> cur.execute(*query)
         >>> old_description = cur.fetchone()[0]
     
     Parameters
@@ -376,28 +417,41 @@ def query_get_table_comment(schema_name, table_name):
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return sql.SQL(
-        "SELECT obj_description('{}'::regclass, 'pg_class')"
-        ).format(
-            sql.Identifier(schema_name, table_name)
-            )
+    return PgQueryWithArgs(
+        query=sql.SQL(
+            "SELECT obj_description('{}'::regclass, 'pg_class')"
+            ).format(
+                sql.Identifier(schema_name, table_name)
+                ),
+        expecting='one value',
+        allow_none=False, # impossible
+        missing_mssg="Plume n'a pas pu importer le desriptif de la relation" \
+            ' "{}"."{}".'.format(schema_name, table_name)
+        )
 
-def query_list_templates():
+def query_list_templates(schema_name, table_name):
     """Requête d'import de la liste des modèles disponibles.
     
     À utiliser comme suit :
     
-        >>> query = query_list_templates()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'))
+        >>> query = query_list_templates('nom du schéma', 'nom de la relation')
+        >>> cur.execute(*query)
         >>> templates = cur.fetchall()
     
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+
     Returns
     -------
-    psycopg2.sql.SQL
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     Notes
@@ -409,16 +463,21 @@ def query_list_templates():
     condition qu'il spécifie est remplie.
     
     """
-    return sql.SQL("""
-        SELECT
-            tpl_label,
-            z_plume.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
-            md_conditions,
-            priority
-            FROM z_plume.meta_template
-            WHERE enabled
-            ORDER BY tpl_label
-        """)
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT
+                tpl_label,
+                z_plume.meta_execute_sql_filter(sql_filter, %s, %s) AS check_sql_filter,
+                md_conditions,
+                priority
+                FROM z_plume.meta_template
+                WHERE enabled
+                ORDER BY tpl_label
+            """),
+        args=(schema_name, table_name),
+        expecting='some rows',
+        allow_none=True
+        )
 
 def query_evaluate_local_templates(templates_collection, schema_name, table_name):
     """Requête qui évalue côté serveur les conditions d'application des modèles locaux.
@@ -443,8 +502,8 @@ def query_evaluate_local_templates(templates_collection, schema_name, table_name
     
     Returns
     -------
-    tuple(psycopg2.sql.Composed, dict)
-        Une requête prête à être envoyée au serveur PostgreSQL et
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL, incluant
         son dictionnaire de paramètres.
     
     Notes
@@ -456,118 +515,144 @@ def query_evaluate_local_templates(templates_collection, schema_name, table_name
     nom du modèle à appliquer.
     
     """
-    return (sql.SQL('''
-        WITH meta_template (tpl_label, check_sql_filter, md_conditions, priority, comment) AS (VALUES {})
-        SELECT
-            tpl_label,
-            check_sql_filter,
-            md_conditions::jsonb,
-            priority
-            FROM meta_template
-            ORDER BY tpl_label
-        ''').format(
-            sql.SQL(', ').join(
-                sql.SQL('({})').format(sql.SQL(', ').join((
-                    sql.Literal(tpl_label),
-                    sql.SQL(sql_filter.replace('$1', '%(schema_name)s').replace('$2', '%(table_name)s')) if sql_filter else sql.Literal(None),
-                    sql.Literal(Json(md_conditions)),
-                    sql.Literal(priority),
-                    sql.Literal(comment)
-                    ))) for tpl_label, sql_filter, md_conditions, priority, comment in templates_collection.conditions
-                )
-            ), {'schema_name': schema_name, 'table_name' : table_name})  
+    return PgQueryWithArgs(
+        query=sql.SQL('''
+            WITH meta_template (tpl_label, check_sql_filter, md_conditions, priority, comment) AS (VALUES {})
+            SELECT
+                tpl_label,
+                check_sql_filter,
+                md_conditions::jsonb,
+                priority
+                FROM meta_template
+                ORDER BY tpl_label
+            ''').format(
+                sql.SQL(', ').join(
+                    sql.SQL('({})').format(sql.SQL(', ').join((
+                        sql.Literal(tpl_label),
+                        sql.SQL(sql_filter.replace('$1', '%(schema_name)s').replace('$2', '%(table_name)s')) if sql_filter else sql.Literal(None),
+                        sql.Literal(Json(md_conditions)),
+                        sql.Literal(priority),
+                        sql.Literal(comment)
+                        ))) for tpl_label, sql_filter, md_conditions, priority, comment in templates_collection.conditions
+                    )),
+        args={'schema_name': schema_name, 'table_name' : table_name},
+        expecting='some rows',
+        allow_none=True
+        )  
 
-def query_get_categories():
+def query_get_categories(tpl_label):
     """Requête d'import des catégories à afficher dans un modèle donné.
     
     À utiliser comme suit :
     
-        >>> query = query_get_categories()
-        >>> cur.execute(query, ('nom du modèle',))
+        >>> query = query_get_categories('nom du modèle')
+        >>> cur.execute(*query)
         >>> categories = cur.fetchall()
     
+    Parameters
+    ----------
+    tpl_label : str
+        Nom du modèle choisi.
+
     Returns
     -------
-    psycopg2.sql.SQL
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     Notes
     -----
     La requête interroge la vue ``z_plume.meta_template_categories_full``
-    créée par l'extension PlumePg.
+    créée par l'extension PlumePg. Elle ne doit donc être exécutée qu'après
+    contrôle de l'existence de l'extension.
     
     """
-    return sql.SQL("""
-        SELECT 
-            path,
-            origin,
-            label,
-            description,
-            special::text,
-            is_node,
-            datatype::text,
-            is_long_text,
-            rowspan,
-            placeholder,
-            input_mask,
-            is_multiple,
-            unilang,
-            is_mandatory,
-            sources,
-            geo_tools::text[],
-            compute::text[],
-            template_order,
-            is_read_only,
-            tab,
-            compute_params
-            FROM z_plume.meta_template_categories_full
-            WHERE tpl_label = %s
-        """)
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT 
+                path,
+                origin,
+                label,
+                description,
+                special::text,
+                is_node,
+                datatype::text,
+                is_long_text,
+                rowspan,
+                placeholder,
+                input_mask,
+                is_multiple,
+                unilang,
+                is_mandatory,
+                sources,
+                geo_tools::text[],
+                compute::text[],
+                template_order,
+                is_read_only,
+                tab,
+                compute_params
+                FROM z_plume.meta_template_categories_full
+                WHERE tpl_label = %s
+            """),
+        args=(tpl_label,),
+        expecting='some rows',
+        allow_none=True
+        )
 
-def query_template_tabs():
+def query_template_tabs(tpl_label):
     """Requête d'import des onglets utilisés par un modèle.
     
     À utiliser comme suit :
     
-        >>> query = query_template_tabs()
-        >>> cur.execute(query, ('nom du modèle',))
+        >>> query = query_template_tabs('nom du modèle')
+        >>> cur.execute(*query)
         >>> tabs = cur.fetchall()
     
+    Parameters
+    ----------
+    tpl_label : str
+        Nom du modèle choisi.
+
     Returns
     -------
-    psycopg2.sql.SQL
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     Notes
     -----
     La requête interroge les tables ``z_plume.meta_tab`` et
     ``z_plume.meta_template_categories`` créées par l'extension
-    PlumePg.
+    PlumePg. Elle ne doit donc être exécutée qu'après
+    contrôle de l'existence de l'extension.
     
     L'ordre de la liste résultant de l'exécution de la requête
     est l'ordre dans lequel le modèle prévoit que les onglets
     soient présentés à l'utilisateur.
 
     """
-    return sql.SQL("""
-        SELECT
-            meta_tab.tab
-            FROM z_plume.meta_tab
-                LEFT JOIN z_plume.meta_template_categories
-                    ON meta_tab.tab = meta_template_categories.tab
-            WHERE meta_template_categories.tpl_label = %s
-                AND (
-                    meta_template_categories.shrcat_path IS NOT NULL
-                        AND meta_template_categories.shrcat_path ~ '^[a-z]{1,10}[:][a-z0-9-]{1,100}$'
-                    OR meta_template_categories.shrcat_path IS NULL
-                        AND meta_template_categories.loccat_path ~ ANY(ARRAY[
-                            '^[a-z]{1,10}[:][a-z0-9-]{1,100}$',
-                            '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
-                            ])
-                    )
-            GROUP BY meta_tab.tab, meta_tab.tab_num
-            ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab
-        """)
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT
+                meta_tab.tab
+                FROM z_plume.meta_tab
+                    LEFT JOIN z_plume.meta_template_categories
+                        ON meta_tab.tab = meta_template_categories.tab
+                WHERE meta_template_categories.tpl_label = %s
+                    AND (
+                        meta_template_categories.shrcat_path IS NOT NULL
+                            AND meta_template_categories.shrcat_path ~ '^[a-z]{1,10}[:][a-z0-9-]{1,100}$'
+                        OR meta_template_categories.shrcat_path IS NULL
+                            AND meta_template_categories.loccat_path ~ ANY(ARRAY[
+                                '^[a-z]{1,10}[:][a-z0-9-]{1,100}$',
+                                '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
+                                ])
+                        )
+                GROUP BY meta_tab.tab, meta_tab.tab_num
+                ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab
+            """),
+        args=(tpl_label,),
+        expecting='some rows',
+        allow_none=True
+        )
 
 def query_get_columns(schema_name, table_name):
     """Requête de récupération des descriptifs des champs d'une table ou vue.
@@ -576,7 +661,7 @@ def query_get_columns(schema_name, table_name):
     
         >>> query = query_get_columns('nom du schéma',
         ...     'nom de la relation')
-        >>> cur.execute(query)
+        >>> cur.execute(*query)
         >>> columns = cur.fetchall()
     
     Parameters
@@ -588,32 +673,37 @@ def query_get_columns(schema_name, table_name):
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
 
     """
-    return sql.SQL(
-        """
-        SELECT
-            attname,
-            col_description('{attrelid}'::regclass, attnum)
-            FROM pg_catalog.pg_attribute
-            WHERE attrelid = '{attrelid}'::regclass AND attnum >= 1
-                AND NOT attisdropped
-            ORDER BY attnum
-        """
-        ).format(
-            attrelid=sql.Identifier(schema_name, table_name)
-            )
+    return PgQueryWithArgs(
+        query=sql.SQL(
+            """
+            SELECT
+                attname,
+                col_description('{attrelid}'::regclass, attnum)
+                FROM pg_catalog.pg_attribute
+                WHERE attrelid = '{attrelid}'::regclass AND attnum >= 1
+                    AND NOT attisdropped
+                ORDER BY attnum
+            """
+            ).format(
+                attrelid=sql.Identifier(schema_name, table_name)
+                ),
+        expecting='some rows',
+        allow_none=True
+    )
 
-def query_update_column_comment(schema_name, table_name, column_name):
+def query_update_column_comment(schema_name, table_name, column_name, description=''):
     """Requête de mise à jour du descriptif d'un champ.
     
     À utiliser comme suit :
     
         >>> query = query_update_column_comment('nom du schéma',
-        ...     'nom de la relation', 'nom du champ')
-        >>> cur.execute(query, ('Nouveau descriptif du champ',)
+        ...     'nom de la relation', 'nom du champ',
+        ...     'Nouveau descriptif du champ')
+        >>> cur.execute(*query)
     
     Parameters
     ----------
@@ -623,18 +713,24 @@ def query_update_column_comment(schema_name, table_name, column_name):
         Nom de la relation (table, vue...).
     column_name : str
         Nom du champ.
+    description : str, optional
+        Le nouveau descriptif du champ.
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     """
-    return sql.SQL(
+    return PgQueryWithArgs(
+        query=sql.SQL(
         "COMMENT ON COLUMN {} IS %s"
         ).format(
             sql.Identifier(schema_name, table_name, column_name)
-            )
+            ),
+        args=(description,),
+        expecting='nothing'
+        )
 
 def query_update_columns_comments(schema_name, table_name, widgetsdict):
     """Requête de mise à jour des descriptifs des champs d'une table.
@@ -644,7 +740,7 @@ def query_update_columns_comments(schema_name, table_name, widgetsdict):
         >>> query = query_update_columns_comments('nom du schéma',
         ...     'nom de la relation', widgetsdict)
         >>> if query:
-        ...     cur.execute(query)
+        ...     cur.execute(*query)
     
     Parameters
     ----------
@@ -658,48 +754,59 @@ def query_update_columns_comments(schema_name, table_name, widgetsdict):
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs or None
         Une requête prête à être envoyée au serveur PostgreSQL.
+        La fonction renvoie ``None`` si elle ne trouve aucun descriptif
+        de champ dans le dictionnaire de widgets.
     
     Notes
     -----    
     À noter que cette requête pourrait échouer si des champs ont été
     supprimés ou renommés entre temps.
     
-    La fonction renvoie ``None`` si elle ne trouve aucun descriptif
-    de champ dans le dictionnaire de widgets.
-    
     """
     updated_columns = []
-    for k, v in widgetsdict.items():
+    for k in widgetsdict:
         if k.path == PLUME.column:
             updated_columns.append((k.label, str(k.value or '')))   
     if updated_columns:
-        return sql.SQL(' ; ').join([
-            sql.SQL(
-                "COMMENT ON COLUMN {} IS {}"
-                ).format(
-                    sql.Identifier(schema_name, table_name, colname),
-                    sql.Literal(coldescr)
-                    )
-            for colname, coldescr in updated_columns
-            ])
+        return PgQueryWithArgs(
+            query=sql.SQL(' ; ').join([
+                sql.SQL(
+                    "COMMENT ON COLUMN {} IS {}"
+                    ).format(
+                        sql.Identifier(schema_name, table_name, colname),
+                        sql.Literal(coldescr)
+                        )
+                for colname, coldescr in updated_columns
+                ]),
+            expecting='nothing'
+            )
 
-def query_get_geom_srid():
+def query_get_geom_srid(schema_name, table_name, geom_name):
     """Requête de récupération du référentiel de coordonnées d'une couche.
     
     À utiliser comme suit :
     
-        >>> query = query_get_geom_srid()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
-        ...     'nom du champ de géométrie'))
+        >>> query = query_get_geom_srid('nom du schéma', 'nom de la relation'
+        ...     'nom du champ de géométrie')
+        >>> cur.execute(*query)
         >>> srid = cur.fetchone()[0]
     
     Le référentiel ainsi obtenu est de la forme ``'Autorité:Code'``.
     
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    geom_name : str
+        Nom du champ de géométrie à considérer.
+
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     Warnings
@@ -708,23 +815,31 @@ def query_get_geom_srid():
     base. Il est donc fortement recommandé de vérifier d'abord
     la présence de PostGIS avec :py:func:`query_exists_extension` :
     
-        >>> query = query_exists_extension()
-        >>> cur.execute(query, ('postgis',))
+        >>> query = query_exists_extension('postgis')
+        >>> cur.execute(*query)
         >>> postgis_exists = cur.fetchone()[0]
     
     """
-    return sql.SQL("""
-        SELECT
-            auth_name || ':' || auth_srid
-            FROM geometry_columns
-                LEFT JOIN spatial_ref_sys
-                    ON geometry_columns.srid = spatial_ref_sys.srid
-            WHERE f_table_schema = %s
-                AND f_table_name = %s
-                AND f_geometry_column = %s
-                AND auth_name ~ '^[A-Z]+$'
-                AND auth_srid IS NOT NULL
-        """)
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT
+                auth_name || ':' || auth_srid
+                FROM geometry_columns
+                    LEFT JOIN spatial_ref_sys
+                        ON geometry_columns.srid = spatial_ref_sys.srid
+                WHERE f_table_schema = %s
+                    AND f_table_name = %s
+                    AND f_geometry_column = %s
+                    AND auth_name ~ '^[A-Z]+$'
+                    AND auth_srid IS NOT NULL
+            """),
+        args=(schema_name, table_name, geom_name),
+        expecting='one value',
+        allow_none=False,
+        missing_mssg="Plume n'a pas pu déterminer le référentiel du " \
+            'champ "{}" de la relation "{}"."{}".'.format(
+            geom_name, schema_name, table_name)
+        )
 
 def query_get_srid_list(schema_name, table_name, **kwargs):
     """Requête de récupération de la liste des référentiels de coordonnées utilisés par les géométries d'une relation.
@@ -756,9 +871,9 @@ def query_get_srid_list(schema_name, table_name, **kwargs):
     
     Returns
     -------
-    tuple(psycopg2.sql.SQL, tuple(str, str))
-        Une requête prête à être envoyée au serveur PostgreSQL
-        et son tuple de paramètres.
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL, incluant
+        son tuple de paramètres.
     
     Warnings
     --------
@@ -766,8 +881,8 @@ def query_get_srid_list(schema_name, table_name, **kwargs):
     base. Il est donc fortement recommandé de vérifier d'abord
     la présence de PostGIS avec :py:func:`query_exists_extension` :
     
-        >>> query = query_exists_extension()
-        >>> cur.execute(query, ('postgis',))
+        >>> query = query_exists_extension('postgis')
+        >>> cur.execute(*query)
         >>> postgis_exists = cur.fetchone()[0]
     
     Notes
@@ -776,18 +891,22 @@ def query_get_srid_list(schema_name, table_name, **kwargs):
     :py:mod:`plume.pg.computer`.
     
     """
-    return (sql.SQL("""
-        SELECT
-            DISTINCT auth_name, auth_srid::text
-            FROM geometry_columns
-                LEFT JOIN spatial_ref_sys
-                    ON geometry_columns.srid = spatial_ref_sys.srid
-            WHERE f_table_schema = %s
-                AND f_table_name = %s
-                AND auth_name ~ '^[A-Z]+$'
-                AND auth_srid IS NOT NULL
-            ORDER BY auth_name, auth_srid
-        """), (schema_name, table_name))
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT
+                DISTINCT auth_name, auth_srid::text
+                FROM geometry_columns
+                    LEFT JOIN spatial_ref_sys
+                        ON geometry_columns.srid = spatial_ref_sys.srid
+                WHERE f_table_schema = %s
+                    AND f_table_name = %s
+                    AND auth_name ~ '^[A-Z]+$'
+                    AND auth_srid IS NOT NULL
+                ORDER BY auth_name, auth_srid
+            """),
+        args=(schema_name, table_name),
+        expecting='some rows',
+        allow_none=True)
 
 def query_get_geom_extent(schema_name, table_name, geom_name):
     """Requête de calcul côté serveur du rectangle d'emprise d'une couche.
@@ -796,7 +915,7 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     
         >>> query = query_get_geom_extent('nom du schéma',
         ...     'nom de la relation', 'nom du champ de géométrie')
-        >>> cur.execute(query)
+        >>> cur.execute(*query)
         >>> bbox_geom = cur.fetchone()[0]
     
     À noter que le résultat est une géométrie dont le
@@ -807,9 +926,9 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     attendue en RDF :
     
         >>> from plume.rdf.utils import wkt_with_srid
-        >>> query = query_get_geom_srid()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
-        ...     'nom du champ de géométrie'))
+        >>> query = query_get_geom_srid('nom du schéma', 'nom de la relation'
+        ...     'nom du champ de géométrie')
+        >>> cur.execute(*query)
         >>> srid = cur.fetchone()[0]
         >>> bbox = wkt_with_srid(bbox_geom, srid)
     
@@ -824,7 +943,7 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     Warnings
@@ -833,19 +952,26 @@ def query_get_geom_extent(schema_name, table_name, geom_name):
     base. Il est donc fortement recommandé de vérifier d'abord
     la présence de PostGIS avec :py:func:`query_exists_extension` :
     
-        >>> query = query_exists_extension()
-        >>> cur.execute(query, ('postgis',))
+        >>> query = query_exists_extension('postgis')
+        >>> cur.execute(*query)
         >>> postgis_exists = cur.fetchone()[0]
     
     """
-    return sql.SQL("""
-        SELECT
-            ST_AsText(ST_Extent({geom}))
-            FROM {relation}
-        """).format(
-            relation=sql.Identifier(schema_name, table_name),
-            geom=sql.Identifier(geom_name)
-            )
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT
+                ST_AsText(ST_Extent({geom}))
+                FROM {relation}
+            """).format(
+                relation=sql.Identifier(schema_name, table_name),
+                geom=sql.Identifier(geom_name)
+                ),
+        expecting='one row',
+        allow_none=False, # ne devrait pas arriver
+        missing_mssg="Plume n'a pas pu déterminer l'emprise des géométries du " \
+            'champ "{}" de la relation "{}"."{}".'.format(
+            geom_name, schema_name, table_name)
+        )
 
 def query_get_geom_centroid(schema_name, table_name, geom_name):
     """Requête de calcul côté serveur du centre du rectangle d'emprise d'une couche.
@@ -854,7 +980,7 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     
         >>> query = query_get_geom_centroid('nom du schéma',
         ...     'nom de la relation', 'nom du champ de géométrie')
-        >>> cur.execute(query)
+        >>> cur.execute(*query)
         >>> centroid_geom = cur.fetchone()[0]
     
     À noter que le résultat est une géométrie dont le
@@ -864,9 +990,9 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     pour obtenir la représention du centroïde attendue en RDF :
     
         >>> from plume.rdf.utils import wkt_with_srid
-        >>> query = query_get_geom_srid()
-        >>> cur.execute(query, ('nom du schéma', 'nom de la relation'
-        ...     'nom du champ de géométrie'))
+        >>> query = query_get_geom_srid('nom du schéma', 'nom de la relation'
+        ...     'nom du champ de géométrie')
+        >>> cur.execute(*query)
         >>> srid = cur.fetchone()[0]
         >>> centroid = wkt_with_srid(centroid_geom, srid)
     
@@ -881,7 +1007,7 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     
     Returns
     -------
-    psycopg2.sql.Composed
+    PgQueryWithArgs
         Une requête prête à être envoyée au serveur PostgreSQL.
     
     Warnings
@@ -890,19 +1016,26 @@ def query_get_geom_centroid(schema_name, table_name, geom_name):
     base. Il est donc fortement recommandé de vérifier d'abord
     la présence de PostGIS avec :py:func:`query_exists_extension` :
     
-        >>> query = query_exists_extension()
-        >>> cur.execute(query, ('postgis',))
+        >>> query = query_exists_extension('postgis')
+        >>> cur.execute(*query)
         >>> postgis_exists = cur.fetchone()[0]
     
     """
-    return sql.SQL("""
-        SELECT
-            ST_AsText(ST_Centroid(ST_Extent({geom})))
-            FROM {relation}
-        """).format(
-            relation=sql.Identifier(schema_name, table_name),
-            geom=sql.Identifier(geom_name)
-            )
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT
+                ST_AsText(ST_Centroid(ST_Extent({geom})))
+                FROM {relation}
+            """).format(
+                relation=sql.Identifier(schema_name, table_name),
+                geom=sql.Identifier(geom_name)
+                ),
+        expecting='one row',
+        allow_none=False, # ne devrait pas arriver
+        missing_mssg="Plume n'a pas pu déterminer le centroïde des géométries du " \
+            'champ "{}" de la relation "{}"."{}".'.format(
+            geom_name, schema_name, table_name)
+        )
 
 def query_get_comment_fragments(schema_name, table_name, pattern=None,
     flags=None, **kwargs):
@@ -951,9 +1084,9 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
     
     Returns
     -------
-    tuple(psycopg2.sql.SQL, tuple(str,))
-        Une requête prête à être envoyée au serveur PostgreSQL
-        et son tuple de paramètres.
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL, incluant
+        son tuple de paramètres.
     
     Warnings
     --------
@@ -967,16 +1100,18 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
     
     """
     if not pattern:
-        return (
-            sql.SQL("""
+        return PgQueryWithArgs(
+            query=sql.SQL("""
                 SELECT z_plume.meta_ante_post_description('{}'::regclass, 'pg_class')
                 """
                 ).format(
                     sql.Identifier(schema_name, table_name)
                     ),
+            expecting='some rows',
+            allow_none=True # n'arrivera pas, quoi qu'il en soit
             )
-    return (
-        sql.SQL(
+    return PgQueryWithArgs(
+        query=sql.SQL(
             """
             SELECT z_plume.meta_regexp_matches(
                 z_plume.meta_ante_post_description(
@@ -986,7 +1121,9 @@ def query_get_comment_fragments(schema_name, table_name, pattern=None,
             ).format(
                 sql.Identifier(schema_name, table_name)
                 ),
-        (pattern, flags)
+        args=(pattern, flags),
+        expecting='some rows',
+        allow_none=True # n'arrivera pas, quoi qu'il en soit
         )
 
 def query_get_modification_date(schema_name, table_name, **kwargs):
@@ -1020,9 +1157,9 @@ def query_get_modification_date(schema_name, table_name, **kwargs):
     
     Returns
     -------
-    tuple(psycopg2.sql.SQL, tuple(str, str))
-        Une requête prête à être envoyée au serveur PostgreSQL
-        et son tuple de paramètres.
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL,
+        incluant son tuple de paramètres.
     
     Warnings
     --------
@@ -1036,13 +1173,18 @@ def query_get_modification_date(schema_name, table_name, **kwargs):
     :py:mod:`plume.pg.computer`.
     
     """
-    return (sql.SQL("""
-        SELECT modified FROM z_plume.stamp_timestamp
-            WHERE relid = '{}'::regclass
-        """
-        ).format(
-            sql.Identifier(schema_name, table_name)
-            ), )
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT modified FROM z_plume.stamp_timestamp
+                WHERE relid = '{}'::regclass
+            """
+            ).format(
+                sql.Identifier(schema_name, table_name)
+                ),
+        expecting='one value',
+        allow_none=True # quand l'enregistrement des dates
+        # n'est pas actif sur la table
+        )
 
 
 def query_get_creation_date(schema_name, table_name, **kwargs):
@@ -1076,9 +1218,9 @@ def query_get_creation_date(schema_name, table_name, **kwargs):
     
     Returns
     -------
-    tuple(psycopg2.sql.SQL, tuple(str, str))
-        Une requête prête à être envoyée au serveur PostgreSQL
-        et son tuple de paramètres.
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL,
+        incluant son tuple de paramètres.
     
     Warnings
     --------
@@ -1092,11 +1234,16 @@ def query_get_creation_date(schema_name, table_name, **kwargs):
     :py:mod:`plume.pg.computer`.
     
     """
-    return (sql.SQL("""
-        SELECT created FROM z_plume.stamp_timestamp
-            WHERE relid = '{}'::regclass
-        """
-        ).format(
-            sql.Identifier(schema_name, table_name)
-            ), )
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT created FROM z_plume.stamp_timestamp
+                WHERE relid = '{}'::regclass
+            """
+            ).format(
+                sql.Identifier(schema_name, table_name)
+                ),
+        expecting='one value',
+        allow_none=True # quand l'enregistrement des dates
+        # n'est pas actif sur la table        
+        )
 

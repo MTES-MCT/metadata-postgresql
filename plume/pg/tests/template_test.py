@@ -110,7 +110,7 @@ class TemplateTestCase(unittest.TestCase):
             )
 
     def test_search_template_sample_templates(self):
-        """Sélection automatisée du modèle à utiliser parmi les modèles pré-configuré.
+        """Sélection automatisée du modèle à utiliser parmi les modèles pré-configurés.
 
         Ce test charge les modèles pré-configurés sur
         le serveur PostgreSQL, en importe la liste, et
@@ -124,18 +124,15 @@ class TemplateTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_list_templates(),
-                    ('s_schema', 'table')
+                    *query_list_templates('s_schema', 'table')
                     )
                 templates_a = cur.fetchall()
                 cur.execute(
-                    query_list_templates(),
-                    ('r_admin_express', 'departement_2154')
+                    *query_list_templates('r_admin_express', 'departement_2154')
                     )
                 templates_b = cur.fetchall()
                 cur.execute(
-                    query_list_templates(),
-                    ('c_amgt_urb_zon_amgt', 'l_zac_075')
+                    *query_list_templates('c_amgt_urb_zon_amgt', 'l_zac_075')
                     )
                 templates_c = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -167,19 +164,17 @@ class TemplateTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute(
-                    query_get_categories(),
-                    ('Classique',)
+                    *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Classique',)
+                    *query_template_tabs('Classique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
         conn.close()
         template = TemplateDict(categories, tabs)
-        self.assertEqual(len(template.shared), 38)
+        self.assertEqual(len(template.shared), 37)
         self.assertEqual(template.local, {})
         d = {k: False for k in template.shared['dct:title'].keys()}
         # on vérifie que chaque caractéristique prend une valeur
@@ -193,7 +188,7 @@ class TemplateTestCase(unittest.TestCase):
                 if not d:
                     break
         self.assertEqual(d, {'is_read_only': False, 'tab': False,
-            'geo_tools': False, 'compute': False, 'compute_params': False})
+            'geo_tools': False, 'compute_params': False})
 
     def test_templatedict_homemade_template(self):
         """Génération d'un modèle avec onglets et catégories locales.
@@ -227,13 +222,11 @@ class TemplateTestCase(unittest.TestCase):
                         ) ;
                     """)
                 cur.execute(
-                    query_get_categories(),
-                    ('Mon formulaire',)
+                    *query_get_categories('Mon formulaire')
                     )
                 categories = cur.fetchall()
                 cur.execute(
-                    query_template_tabs(),
-                    ('Mon formulaire',)
+                    *query_template_tabs('Mon formulaire')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')

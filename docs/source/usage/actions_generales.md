@@ -63,8 +63,7 @@ with conn:
 	with conn.cursor() as cur:
 	
 		cur.execute(
-			queries.query_is_relation_owner(),
-			(schema_name, table_name)
+			*queries.query_is_relation_owner(schema_name, table_name)
 			)
 		res = cur.fetchone()
 		is_owner = res[0] if res else False
@@ -125,7 +124,7 @@ pg_description.metagraph = new_metagraph
 
 On utilisera la requête définie par la fonction `query_update_table_comment` du module `plume.pg.queries`. À noter que, dans la mesure où les commandes diffèrent selon le type de relation, il est nécessaire de commencer par récupérer cette information avec `query_get_relation_kind`.
 
-La requête doit être appliquée à `str(pg_description)`, qui renvoie une représentation sous forme de chaîne de caractères de `pg_description`.
+Pour le descriptif, on s'assurera d'utiliser `str(pg_description)`, qui renvoie une représentation sous forme de chaîne de caractères de `pg_description`.
 
 ```python
 
@@ -138,16 +137,17 @@ with conn:
     with conn.cursor() as cur:
 
         cur.execute(
-            pg_queries.query_get_relation_kind(
+            *pg_queries.query_get_relation_kind(
                 schema_name, table_name
                 )
             )
         kind = cur.fetchone()
         
         query = pg_queries.query_update_table_comment(
-            schema_name, table_name, relation_kind=kind[0]
+            schema_name, table_name, relation_kind=kind[0],
+            str(pg_description)
             )
-        cur.execute(query, (str(pg_description),))
+        cur.execute(*query)
 
 conn.close()
 
@@ -174,7 +174,7 @@ with conn:
             )
         
         if query:
-            cur.execute(query)
+            cur.execute(*query)
 
 conn.close()
 

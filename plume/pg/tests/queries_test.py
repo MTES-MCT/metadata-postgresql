@@ -77,10 +77,8 @@ class QueriesTestCase(unittest.TestCase):
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    query_is_relation_owner(),
-                    ('z_plume', 'meta_categorie')
-                    )
+                query = query_is_relation_owner('z_plume', 'meta_categorie')
+                cur.execute(*query)
                 res = cur.fetchone()
         conn.close()
         self.assertTrue(res[0])
@@ -95,13 +93,17 @@ class QueriesTestCase(unittest.TestCase):
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    query_exists_extension(),
-                    ('plume_pg',)
-                    )
-                res = cur.fetchone()
+                cur.execute(*query_exists_extension('plume_pg'))
+                res0 = cur.fetchone()[0]
+                cur.execute(*query_exists_extension('bidule'))
+                res1 = cur.fetchone()[0]
+                cur.execute(*query_exists_extension('asgard'))
+                res2 = cur.fetchone()[0]
         conn.close()
-        self.assertTrue(res[0])
+        self.assertTrue(res0)
+        self.assertIsNone(res1)
+        self.assertFalse(res2)
+        self.assertIsNotNone(res2)
 
     def test_query_get_relation_kind(self):
         """Requête qui identifie la nature de la relation considérée.
@@ -115,19 +117,19 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    query_get_relation_kind(
+                    *query_get_relation_kind(
                         'z_plume', 'meta_local_categorie'
                         )
                     )
                 kind_r = cur.fetchone()
                 cur.execute(
-                    query_get_relation_kind(
+                    *query_get_relation_kind(
                         'z_plume', 'meta_categorie'
                         )
                     )
                 kind_p = cur.fetchone()
                 cur.execute(
-                    query_get_relation_kind(
+                    *query_get_relation_kind(
                         'z_plume', 'meta_template_categories_full'
                         )
                     )
@@ -135,7 +137,7 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute("""CREATE MATERIALIZED VIEW z_plume.m_test AS (
                     SELECT * FROM z_plume.meta_categorie)""")
                 cur.execute(
-                    query_get_relation_kind(
+                    *query_get_relation_kind(
                         'z_plume', 'm_test'
                         )
                     )
@@ -156,7 +158,7 @@ class QueriesTestCase(unittest.TestCase):
                         OPTIONS (schema_name 'schema_bidon', table_name 'table_bidon') ;
                     """)
                 cur.execute(
-                    query_get_relation_kind(
+                    *query_get_relation_kind(
                         'z_plume', 'f_test'
                         )
                     )
@@ -186,7 +188,7 @@ class QueriesTestCase(unittest.TestCase):
                     )
                 # création d'une table de test avec descriptif
                 cur.execute(
-                    query_get_table_comment(
+                    *query_get_table_comment(
                         'z_plume', 'table_test'
                         )
                     )
@@ -238,20 +240,18 @@ class QueriesTestCase(unittest.TestCase):
                        'p_test': None, 'f_test': None}
                 for k in res.keys():
                     cur.execute(
-                        query_get_relation_kind(
+                        *query_get_relation_kind(
                             'z_plume', k
                             )
                         )
                     kind = cur.fetchone()[0]
                     query = query_update_table_comment(
-                        'z_plume', k, relation_kind=kind
+                        'z_plume', k, relation_kind=kind,
+                        description='Nouvelle description'
                         )
+                    cur.execute(*query)
                     cur.execute(
-                        query,
-                        ('Nouvelle description',)
-                        )
-                    cur.execute(
-                        query_get_table_comment(
+                        *query_get_table_comment(
                             'z_plume', k
                             )
                         )
@@ -284,8 +284,7 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 # import des modèles pré-configurés
                 cur.execute(
-                    query_list_templates(),
-                    ('r_schema', 'table')
+                    *query_list_templates('r_schema', 'table')
                     )
                 templates = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -329,8 +328,7 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 # import des modèles pré-configurés
                 cur.execute(
-                    query_get_categories(),
-                    ('Basique',)
+                    *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
                 cur.execute('DELETE FROM z_plume.meta_template')
@@ -369,8 +367,7 @@ class QueriesTestCase(unittest.TestCase):
                         WHERE shrcat_path = 'dct:temporal' AND tpl_label = 'Basique' ;
                     """)
                 cur.execute(
-                    query_template_tabs(),
-                    ('Basique',)
+                    *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -411,8 +408,7 @@ class QueriesTestCase(unittest.TestCase):
                         ('O4', 'dcat:distribution / dct:issued', NULL, 'Template test') ;
                     """)
                 cur.execute(
-                    query_template_tabs(),
-                    ('Template test',)
+                    *query_template_tabs('Template test')
                     )
                 tabs = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
@@ -429,7 +425,7 @@ class QueriesTestCase(unittest.TestCase):
             with conn.cursor() as cur:
             
                 cur.execute(
-                    query_get_columns(
+                    *query_get_columns(
                         'z_plume',
                         'meta_categorie'
                         )
@@ -452,7 +448,7 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('CREATE TABLE z_plume.table_test ()')
                 # création d'une table de test
                 cur.execute(
-                    query_get_columns(
+                    *query_get_columns(
                         'z_plume',
                         'table_test'
                         )
@@ -473,12 +469,10 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('CREATE TABLE z_plume.table_test (num int)')
                 # création d'une table de test
                 query = query_update_column_comment(
-                    'z_plume', 'table_test', 'num'
+                    'z_plume', 'table_test', 'num',
+                    'Nouvelle description'
                     )
-                cur.execute(
-                    query,
-                    ('Nouvelle description',)
-                    )
+                cur.execute(*query)
                 cur.execute(
                     "SELECT col_description('z_plume.table_test'::regclass, 1)"
                     )
@@ -510,7 +504,7 @@ class QueriesTestCase(unittest.TestCase):
                 query = query_update_columns_comments(
                     'z_plume', 'table_test', d
                     )
-                cur.execute(query)
+                cur.execute(*query)
                 cur.execute("""
                     SELECT
                         col_description('z_plume.table_test'::regclass, 1),
@@ -555,12 +549,12 @@ class QueriesTestCase(unittest.TestCase):
                 query = query_get_geom_extent(
                     'z_plume', 'table_test', 'geom1'
                     )
-                cur.execute(query)
+                cur.execute(*query)
                 bbox_geom1 = cur.fetchone()[0]
                 query = query_get_geom_extent(
                     'z_plume', 'table_test', 'GEOM 2'
                     )
-                cur.execute(query)
+                cur.execute(*query)
                 bbox_geom2 = cur.fetchone()[0]
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
@@ -588,12 +582,12 @@ class QueriesTestCase(unittest.TestCase):
                 query = query_get_geom_centroid(
                     'z_plume', 'table_test', 'geom1'
                     )
-                cur.execute(query)
+                cur.execute(*query)
                 centroid_geom1 = cur.fetchone()[0]
                 query = query_get_geom_centroid(
                     'z_plume', 'table_test', 'GEOM 2'
                     )
-                cur.execute(query)
+                cur.execute(*query)
                 centroid_geom2 = cur.fetchone()[0]
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
@@ -617,21 +611,17 @@ class QueriesTestCase(unittest.TestCase):
                         geom4 text
                         ) ;
                     ''')
-                query = query_get_geom_srid()
-                cur.execute(query, 
-                    ('z_plume', 'table_test', 'geom1'))
+                query = query_get_geom_srid('z_plume', 'table_test', 'geom1')
+                cur.execute(*query)
                 srid_geom1 = cur.fetchone()[0]
-                query = query_get_geom_srid()
-                cur.execute(query,
-                    ('z_plume', 'table_test', 'GEOM 2'))
+                query = query_get_geom_srid('z_plume', 'table_test', 'GEOM 2')
+                cur.execute(*query)
                 srid_geom2 = cur.fetchone()[0]
-                query = query_get_geom_srid()
-                cur.execute(query,
-                    ('z_plume', 'table_test', 'geom3'))
+                query = query_get_geom_srid('z_plume', 'table_test', 'geom3')
+                cur.execute(*query)
                 l_srid_geom3 = cur.fetchone()
-                query = query_get_geom_srid()
-                cur.execute(query,
-                    ('z_plume', 'table_test', 'geom4'))
+                query = query_get_geom_srid('z_plume', 'table_test', 'geom4')
+                cur.execute(*query)
                 l_srid_geom4 = cur.fetchone()
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
