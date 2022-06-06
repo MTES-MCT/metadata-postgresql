@@ -188,7 +188,7 @@ def merge_property_dict(shape_dict, template_dict):
         shape_dict['order_idx'] = (template_dict['order_idx'][0], shape_dict['order_idx'][1])
     if shape_dict.get('sources') and template_dict.get('sources'):
         sources = shape_dict['sources'].copy()
-        for s in sources:
+        for s in sources.copy():
             if not s in template_dict['sources']:
                 sources.remove(s)
         if sources:
