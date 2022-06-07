@@ -852,7 +852,7 @@ class Ui_Dialog_plume(object):
         
     #==========================
     def if_postgis_exists(self) :
-        mKeySql = (queries.query_exists_extension(), ('postgis',))
+        mKeySql = queries.query_exists_extension('postgis')
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
         return r
 
@@ -929,7 +929,7 @@ class Ui_Dialog_plume(object):
            #--QToolButton EXPORT                                               
            self.majQmenuExportIconFlag()
            #-
-           mKeySql = (queries.query_is_relation_owner(), (self.schema, self.table))
+           mKeySql = queries.query_is_relation_owner(self.schema, self.table)
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
            
            #-- Activation ou pas 

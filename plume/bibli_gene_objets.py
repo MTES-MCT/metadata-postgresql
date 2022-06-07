@@ -677,7 +677,7 @@ def action_mObjetQToolButton_ComputeButton(self, __keyObjet, __valueObjet, befor
 
     if dependances:
        for extension in dependances :
-          mKeySql = (queries.query_exists_extension(), (extension,))
+          mKeySql = queries.query_exists_extension(extension)
           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
           dependances_ok = dependances_ok and r
           if not dependances_ok:
@@ -764,7 +764,7 @@ def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __va
           self.dic_objetMap[__keyObjet] = GeometryMapTool(self, mAction, __mObjetQToolButton, __keyObjet, mCanvas, srid, self.dic_geoToolsShow[__keyObjet])
           qgis.utils.iface.mapCanvas().setMapTool(self.dic_objetMap[__keyObjet])
        elif mAction in ["bboxpg",] :
-          mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
+          mKeySql = queries.query_get_geom_srid(self.schema, self.table, self.geom)
           srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
           #-
           mKeySql = queries.query_get_geom_extent(self.schema, self.table, self.geom)
@@ -774,7 +774,7 @@ def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __va
           except :
              pass
        elif mAction in ["centroidpg",] : 
-          mKeySql = (queries.query_get_geom_srid(), (self.schema, self.table, self.geom))
+          mKeySql = queries.query_get_geom_srid(self.schema, self.table, self.geom)
           srid, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
           #-
           mKeySql = queries.query_get_geom_centroid(self.schema, self.table, self.geom)

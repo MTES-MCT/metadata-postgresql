@@ -12,9 +12,11 @@ from qgis.utils import iface
 
 from importlib.util import find_spec
 
+from plume.config import (PLUME_VERSION)  
+
 #==================================================
 #==================================================
-def returnVersion() : return "v0.4 bêta"
+def returnVersion() : return PLUME_VERSION
 #==================================================
 # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
 if find_spec('rdflib') ==  None :
@@ -331,7 +333,7 @@ def returnObjetTpl_label(self, option = None) : #None = Pas local et "LOCAL" = l
     if option == "LOCAL" :
        mKeySql = queries.query_evaluate_local_templates(self.templates_collection, self.schema, self.table)
     else :   
-       mKeySql = (queries.query_list_templates(), (self.schema, self.table))
+       mKeySql = queries.query_list_templates(self.schema, self.table)
     self.templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
     self.templateLabels = [t[0] for t in self.templates]    # templateLabels ne contient que les libellés des templates
 
@@ -351,11 +353,11 @@ def returnObjetTpl_label(self, option = None) : #None = Pas local et "LOCAL" = l
 # == Génération des CATEGORIES, TEMPLATE, TABS
 def generationTemplateAndTabs(self, tpl_label):
     # Récupération des CATEGORIES associées au modèle retenu
-    mKeySql = (queries.query_get_categories(), (tpl_label,))
+    mKeySql = queries.query_get_categories(tpl_label)
     categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         
     # Récupération des ONGLETS associés au modèle retenu
-    mKeySql = (queries.query_template_tabs(), (tpl_label,))
+    mKeySql = queries.query_template_tabs(tpl_label)
     tabs , zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
            
     # Génération de template
@@ -456,7 +458,7 @@ def saveMetaIhm(self, _schema, _table) :
     mKeySql = queries.query_get_relation_kind(_schema, _table) 
     kind, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     #-    
-    mKeySql = (queries.query_update_table_comment(_schema, _table, relation_kind=kind[0]), (new_pg_description,)) 
+    mKeySql = queries.query_update_table_comment(_schema, _table, relation_kind = kind[0], description = new_pg_description) 
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = None)
     self.mConnectEnCours.commit()
     #-
@@ -487,14 +489,14 @@ def executeSql(self, pointeur, _mKeySql, optionRetour = None) :
       if isinstance(_mKeySql, tuple) :
          pointeurBase.execute(*_mKeySql)
       else :
-         pointeurBase.execute(_mKeySql)
+         pointeurBase.execute(*_mKeySql)
       #--
       if optionRetour == None :
          result = None
       elif optionRetour == "fetchone" :
          resultTemp = pointeurBase.fetchone() 
          if resultTemp == None :
-            raise NoReturnSql("Plume n'a pas obtenu les valeurs attendues au travers de la requête\n\n" + str(_mKeySql))  
+            raise NoReturnSql(_mKeySql.missing_mssg)  
          else :   
             result = resultTemp[0]
       elif optionRetour == "fetchall" :
