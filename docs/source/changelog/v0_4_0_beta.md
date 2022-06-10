@@ -1,10 +1,12 @@
-# Version 0.4.0 bêta (*en cours de développement*)
+# Version 0.4.0 bêta
 
-*Date de publication : à venir.*
+*Date de publication : 10 juin 2022.*
 
-*Sur GitHub : à venir.*
+*Sur GitHub : [https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.4-beta](https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.4-beta).*
 
-La version 0.4 met en service les fonctionnalités de calcul de métadonnées côté serveur. Elle apporte également plusieurs petites évolutions fonctionnelles visant à fluidifier et sécuriser la navigation.
+Plume 0.4 bêta met en service les fonctionnalités de calcul de métadonnées côté serveur. Elle apporte également diverses petites évolutions fonctionnelles visant notamment à fluidifier et sécuriser la navigation.
+
+Il est fortement recommandé de mettre à jour l'extension PostgreSQL PlumePg en parallèle (version 0.1.0). La version 0.0.1 n'est plus reconnue par cette nouvelle version de Plume. 
 
 ## Calcul des métadonnées côté serveur
 
@@ -12,7 +14,7 @@ Plume permet désormais de générer des métadonnées à partir d'informations 
 - soit automatiquement à l'ouverture de la fiche de métadonnées ;
 - soit à la demande de l'utilisateur, lorsque celui-ci clique sur le bouton ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) placé à droite du champ de saisie dans le formulaire.
 
-L'activation des fonctionnalités de calcul est contrôlée par les modèles. Elle n'est évidemment possible que pour les catégories pour lesquelles une méthode de calcul est d'ores-et-déjà définie dans Plume (essentiellement, il s'agit une requête SQL à envoyer au serveur).
+L'activation des fonctionnalités de calcul est contrôlée par les modèles. Elle n'est évidemment possible que pour les catégories pour lesquelles une méthode de calcul est d'ores-et-déjà définie dans Plume (essentiellement, il s'agit une requête SQL à envoyer au serveur). Certaines méthodes de calcul ne sont disponible que si l'extension PlumePg est installée sur la base PostgreSQL cible.
 
 Dans cette version, cela concerne :
 - le titre et la description du jeu de données, qui peuvent être extraits du descriptif PostgreSQL de la table à l'aide d'une expression régulière ;
@@ -27,7 +29,7 @@ Cf. [Métadonnées calculées](../usage/metadonnees_calculees.md) pour plus de p
 
 ### Verrouillage de l'affichage sur la fiche courante
 
-La version 0.4 ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../../plume/icons/general/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
+Plume 0.4 bêta ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../../plume/icons/general/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
 
 En mode lecture, ce bouton est désactivé par défaut. Quand l'utilisateur sélectionne une nouvelle couche PostgreSQL dans l'explorateur ou le panneau, les métadonnées de cette couche s'affichent dans le panneau de Plume. Lorsqu'il sélectionne une couche dont le fournisseur n'est pas un serveur PostgreSQL, Plume revient à son écran d'accueil.
 
@@ -64,7 +66,7 @@ Les champs `compute` des tables `meta_categorie` et `meta_template_categories` a
 - `empty` indique que le calcul automatique doit avoir lieu si et seulement si aucune valeur n'est encore renseignée pour la métadonnée considérée.
 - `new` signale que le calcul doit s'exécuter si et seulement si la fiche de métadonnées est vierge.
 
-Les tables `meta_categorie` et `meta_template_categories`, ainsi que la vue `meta_template_categories_full` présentent maintenant un champ supplémentaire de type `jsonb` qui permet de paramétrer la méthode de calcul des métadonnées définie pour la catégorie, lorsque la méthode le prévoit.
+Les tables `meta_categorie` et `meta_template_categories`, ainsi que la vue `meta_template_categories_full` présentent maintenant un champ supplémentaire `compute_params` de type `jsonb` qui permet de paramétrer la méthode de calcul des métadonnées définie pour la catégorie, lorsque la méthode le prévoit.
 
 ### Désactivation d'un modèle
 
@@ -83,18 +85,18 @@ Pour faciliter la gestion des droits sur l'extension, PlumePg confère désormai
 
 ## Amélioration de la gestion des métadonnées en lecture seule
 
-La version 0.4 assure que les métadonnées en lecture seule[^isreadonly] en mode édition ne sont plus accompagnées d'aucun bouton permettant d'en altérer la valeur. Les groupes de valeurs en lecture seule n'ont plus de bouton plus.
+Plume 0.4 bêta assure que les métadonnées en lecture seule[^isreadonly] en mode édition ne sont plus accompagnées d'aucun bouton permettant d'en altérer la valeur. Les groupes de valeurs en lecture seule n'ont plus de bouton plus.
 
 La lecture seule est désormais une caractéristique héritable. Ainsi, si le modèle indique par exemple que la métadonnée `dct:temporal` est en lecture seule, `dct:temporal / dcat:startDate` le sera également même si ce n'est pas explicitement spécifié dans le modèle.
 
-[^isreadonly]: Une catégorie peut être déclarée comme étant "en lecture seule" (non éditable) par un modèle de fiche défini avec *PlumePg*. On indiquera `True` dans le champ `is_read_only` de la table `z_plume.meta_template_categories` pour le modèle et la catégorie considérés.
+[^isreadonly]: Une catégorie peut être déclarée comme étant "en lecture seule" (non éditable) par un modèle de fiche défini avec *PlumePg*, en indiquant `True` dans le champ `is_read_only` de la table `z_plume.meta_template_categories` pour le modèle et la catégorie considérés.
 
 *Référence : [issue #48](https://github.com/MTES-MCT/metadata-postgresql/issues/48).*
 
 
-## Gestion des dépendances
+## Gestion des dépendances Python
 
-La version 0.4 met en place un nouveau système de gestion des bibliothèques python requises pour le fonctionnement de Plume, qui permettra de les mettre à jour en parallèle des mises à jour de Plume et allège leur processus d'installation.
+Plume 0.4 bêta met en place un nouveau système de gestion des bibliothèques Python requises pour le fonctionnement de Plume, qui permettra de les mettre à jour en parallèle des mises à jour de Plume et allège leur processus d'installation.
 
 Elles restent incorporées dans le plugin (installateurs dans le répertoire [/plume/bibli_install](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/bibli_install)), mais sont maintenant référencées par un fichier de dépendances [`/plume/requirements.txt`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt).
 
@@ -108,9 +110,9 @@ En pratique, l'utilisateur pourra constater les changements suivants :
 
 ## Modification du modèle de métadonnées
 
-La métadonnée commune `dct:subject` (*catégorie thématique*, ajout de GeoDCAT-AP) est supprimée. La nomenclature ISO qu'elle utilisait est désormais l'un des thésaurus utilisables pour la propriété `dcat:theme` (thème). Si elle est présente dans des métadonnées importées, elle sera désormais automatiquement transformée en `dcat:theme`.
+La métadonnée commune `dct:subject` (*catégorie thématique*) est supprimée. Cette métadonnée était un ajout de GeoDCAT-AP par rapport à DCAT et DCAT-AP. La nomenclature ISO qu'elle utilisait est désormais l'un des thésaurus utilisables pour la propriété `dcat:theme` (thème), qui devient donc l'unique métadonnée relative aux thèmes catégorisés. Si elle est présente dans des métadonnées importées, elle sera désormais automatiquement transformée en `dcat:theme`.
 
-La version 0.1.0 de PlumePg fait disparaître en conséquence cette catégorie de toutes les tables où elle aurait pu apparaître.
+La version 0.1.0 de PlumePg fait disparaître en conséquence cette métadonnée de la liste des catégories communes disponibles, ce qui provoquera en cascade sa suppression des modèles. S'il y a lieu de la remplacer (par exemple par `dcat:theme`), cette opération devra être réalisée manuellement.
 
 ## Anomalies et divers
 
