@@ -1461,3 +1461,105 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t017() IS 'PlumePg (recette). TEST : Usage douteux des fonctions déclencheurs.' ;
 
+
+-- Function: z_plume_recette.t018()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t018()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    cat_list_ref text[] ;
+    mod_list_ref text[] ;
+BEGIN
+
+    -- installation directe
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg ;
+
+    SELECT
+        array_agg(path ORDER BY path)
+        INTO cat_list_ref
+        FROM z_plume.meta_shared_categorie ;
+
+    PERFORM z_plume.meta_import_sample_template() ;
+
+    SELECT
+        array_agg(shrcat_path ORDER BY tpl_label, shrcat_path)
+        INTO mod_list_ref
+        FROM z_plume.meta_template_categories ;
+
+    -- installation par montée de version
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg VERSION '0.0.1' ;
+    PERFORM z_plume.meta_import_sample_template() ;
+    ALTER EXTENSION plume_pg UPDATE ;
+
+    -- mêmes chemins dans la table des catégories communes ?
+    ASSERT cat_list_ref = (SELECT array_agg(path ORDER BY path)
+        FROM z_plume.meta_shared_categorie), 'échec assertion #1 (liste des catégories)' ;
+
+    -- modèles pré-configurés correctement mis à jour ?
+    ASSERT mod_list_ref = (SELECT array_agg(shrcat_path ORDER BY tpl_label, shrcat_path)
+        FROM z_plume.meta_template_categories), 'échec assertion #2 (modèles préconfigurés)' ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t018() IS 'PlumePg (recette). TEST : Identicité de la liste des catégories communes lors d''une installation directe ou par montée de version.' ;
+
+-- Function: z_plume_recette.t019()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t019()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    proc_def_ref text[] ;
+BEGIN
+
+    -- installation directe
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg ;
+
+    SELECT array_agg(pg_get_functiondef(oid) ORDER BY oid::regprocedure::text)
+        INTO proc_def_ref
+        FROM pg_proc WHERE pronamespace = 'z_plume'::regnamespace ;
+
+    -- installation par montée de version
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg VERSION '0.0.1' ;
+    ALTER EXTENSION plume_pg UPDATE ;
+
+    ASSERT proc_def_ref = (SELECT array_agg(pg_get_functiondef(oid) ORDER BY oid::regprocedure::text)
+        FROM pg_proc WHERE pronamespace = 'z_plume'::regnamespace), 'échec assertion #1' ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t019() IS 'PlumePg (recette). TEST : Identicité des fonctions lors d''une installation directe ou par montée de version.' ;
+
