@@ -36,7 +36,7 @@ Pour la liste complète, on se réfèrera au fichier [plume/requirements.txt](/p
 
 ### Manuellement
 
-Il est également possible de télécharger une archive ZIP du code du plugin sur [GitHub](https://github.com/MTES-MCT/metadata-postgresql) et d'utiliser la fonctionnalité `Extension > Installer / Gérer les extensions > Installer depuis un zip`.
+Il est également possible de télécharger une [archive ZIP du code du plugin](https://github.com/MTES-MCT/metadata-postgresql/releases) et d'utiliser la fonctionnalité `Extension > Installer / Gérer les extensions > Installer depuis un zip`.
 
 ![Boîte de dialogue 'Installer depuis un zip'](plume/flyers/installe_zip.png)
 
