@@ -35,6 +35,8 @@ Le nouveau texte descriptif est simplement :
 
 import re
 from plume.rdf.metagraph import Metagraph
+from plume.rdf.namespaces import DCT
+from plume.rdf.utils import pick_translation
 
 
 class PgDescription:
@@ -47,6 +49,15 @@ class PgDescription:
         PostgreSQL. Peut être ``None``, qui sera alors
         automatiquement transformé en chaîne de caractères
         vide (idem si l'argument n'est pas fourni).
+    do_not_parse : bool, default False
+        Si ``True``, aucune tentative ne sera faite pour lire les
+        éventuelles métadonnées contenues entre les balises
+        ``<METADATA>``. Dans ce cas, la propriété
+        :py:attr:`PgDescription.metagraph` sera toujours un graphe
+        vide et il n'est pas assuré que :py:attr:`PgDescription.jsonld`
+        soit un JSON-LD valide. Faire usage de ce paramètre est
+        recommandé lorsqu'il n'est pas prévu d'exploiter les
+        métadonnées, afin de réduire le temps de calcul.
     
     Attributes
     ----------
@@ -66,7 +77,7 @@ class PgDescription:
     
     """
     
-    def __init__(self, raw=None):
+    def __init__(self, raw=None, do_not_parse=False):
         raw = raw or ''
         self._ante = ''
         self._post = ''
@@ -79,10 +90,11 @@ class PgDescription:
             else:
                 self._ante, jsonld, self._post = r
                 self._jsonld = jsonld.strip('\n')
-                try:
-                    self._metagraph.parse(data=self._jsonld, format='json-ld')
-                except:
-                    self._jsonld = ''
+                if not do_not_parse:
+                    try:
+                        self._metagraph.parse(data=self._jsonld, format='json-ld')
+                    except:
+                        self._jsonld = ''
     
     def __str__(self):
         jsonld = '\n\n<METADATA>\n{}\n</METADATA>\n'.format(self._jsonld) \
@@ -150,3 +162,46 @@ class PgDescription:
         """
         return self._post
     
+
+def truncate_metadata(text, with_title=False, langlist=('fr', 'en')):
+    """Supprime les métadonnées d'un texte présumé contenir un descriptif PostgreSQL.
+
+    Parameters
+    ----------
+    text : str
+        Le texte à nettoyer.
+    with_title : bool, default False
+        Si ``True``, la fonction tentera d'extraire des métadonnées
+        le libellé de la table ou vue, et le substituera aux
+        métadonnées. Si ``False``, les métadonnées sont seulement
+        supprimées sans que rien n'apparaisse à leur place.
+    langlist : list(str) or tuple(str) or str, default ('fr', 'en')
+        Priorisation des langues pour le libellé, si plusieurs
+        traductions sont disponibles. N'est considéré que si
+        `with_title` vaut ``True``.
+
+    Returns
+    -------
+    tuple(str, bool)
+        Un tuple dont le premier élément est le texte nettoyé, le
+        second un booléen valant ``True`` si et seulement si le
+        texte contenait des métadonnées.   
+
+    """
+    title = None
+    info = ''
+    if with_title:
+        descr = PgDescription(raw=text)
+        if descr.metagraph:
+            info = '\n\nDes métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.'
+            titles = [o for o in descr.metagraph.objects(descr.metagraph.datasetid, DCT.title)]
+            if titles:
+                t = pick_translation(titles, langlist)
+                title = str(t)
+    else:
+        descr = PgDescription(raw=text, do_not_parse=True)
+        if descr.jsonld:
+            info = '\n\nDes métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.'
+    nt = '\n\n{}\n\n'.format(title) if title else '\n' if descr.post else ''
+    return ('{}{}{}{}'.format(descr.ante.rstrip('\n'), nt, descr.post.strip('\n'), info), bool(info))
+
