@@ -2,7 +2,7 @@
 import unittest
 
 from plume.rdf.rdflib import isomorphic
-from plume.pg.description import PgDescription
+from plume.pg.description import PgDescription, truncate_metadata
 from plume.rdf.utils import abspath, data_from_file
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.metagraph import Metagraph
@@ -120,6 +120,67 @@ Après"""
         pgdescr.metagraph = metagraph
         self.assertEqual(str(pgdescr), new_comment.format(
             str(metagraph.datasetid), str(metagraph.datasetid.uuid)))
+
+    def test_truncate_metadata(self):
+        """Quelques tests de suppression des métadonnées dans un texte.
+
+        """
+        # avec métadonnées contenant un libellé
+        text = pg_description_1 + '\ntable\ngeom MultiPolygon (srid 2154)\n'
+        self.assertEqual(truncate_metadata(text), (
+'''IGN Admin Express. Départements 2021-01.
+table
+geom MultiPolygon (srid 2154)
+
+Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+        self.assertEqual(truncate_metadata(text, with_title=True), (
+'''IGN Admin Express. Départements 2021-01.
+
+ADMIN EXPRESS - Départements de métropole
+
+table
+geom MultiPolygon (srid 2154)
+
+Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+
+        # sans métadonnées
+        self.assertEqual(truncate_metadata('table\ngeom MultiPolygon (srid 2154)\n'),
+            ('table\ngeom MultiPolygon (srid 2154)', False))
+        self.assertEqual(truncate_metadata('table\ngeom MultiPolygon (srid 2154)\n',
+            with_title=True), ('table\ngeom MultiPolygon (srid 2154)', False))
+        self.assertEqual(truncate_metadata(''), ('', False))
+        self.assertEqual(truncate_metadata('', with_title=True), ('', False))
+
+        # avec métadonnées, mais sans libellé
+        text ="""Avant
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ]
+  }
+]
+</METADATA>
+Après"""
+        self.assertEqual(truncate_metadata(text, with_title=True), (
+'''Avant
+Après
+
+Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+        self.assertEqual(truncate_metadata(text, with_title=False), (
+'''Avant
+Après
+
+Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+
 
 if __name__ == '__main__':
     unittest.main()
