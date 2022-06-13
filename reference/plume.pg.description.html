@@ -392,7 +392,7 @@ propriété <a class="reference internal" href="#plume.pg.description.PgDescript
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_not_parse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Descriptif PostgreSQL.</p>
 <dl class="field-list simple">
@@ -402,6 +402,15 @@ propriété <a class="reference internal" href="#plume.pg.description.PgDescript
 PostgreSQL. Peut être <code class="docutils literal notranslate"><span class="pre">None</span></code>, qui sera alors
 automatiquement transformé en chaîne de caractères
 vide (idem si l’argument n’est pas fourni).</p>
+</dd>
+<dt><strong>do_not_parse</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, aucune tentative ne sera faite pour lire les
+éventuelles métadonnées contenues entre les balises
+<code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code>. Dans ce cas, la propriété
+<a class="reference internal" href="#plume.pg.description.PgDescription.metagraph" title="plume.pg.description.PgDescription.metagraph"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.metagraph</span></code></a> sera toujours un graphe
+vide et il n’est pas assuré que <a class="reference internal" href="#plume.pg.description.PgDescription.jsonld" title="plume.pg.description.PgDescription.jsonld"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.jsonld</span></code></a>
+soit un JSON-LD valide. Faire usage de ce paramètre est
+recommandé lorsqu’il n’est pas prévu d’exploiter les
+métadonnées, afin de réduire le temps de calcul.</p>
 </dd>
 </dl>
 </dd>
@@ -462,6 +471,37 @@ de JSON-LD.</p>
 n’avait pas de descriptif, ou si le descriptif finit par le JSON-LD.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.description.truncate_metadata">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">truncate_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('fr',</span> <span class="pre">'en')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.truncate_metadata" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Supprime les métadonnées d’un texte présumé contenir un descriptif PostgreSQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>text</strong><span class="classifier">str</span></dt><dd><p>Le texte à nettoyer.</p>
+</dd>
+<dt><strong>with_title</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, la fonction tentera d’extraire des métadonnées
+le libellé de la table ou vue, et le substituera aux
+métadonnées. Si <code class="docutils literal notranslate"><span class="pre">False</span></code>, les métadonnées sont seulement
+supprimées sans que rien n’apparaisse à leur place.</p>
+</dd>
+<dt><strong>langlist</strong><span class="classifier">list(str) or tuple(str) or str, default (“fr”, “en”)</span></dt><dd><p>Priorisation des langues pour le libellé, si plusieurs
+traductions sont disponibles. N’est considéré que si
+<cite>with_title</cite> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple(str, bool)</dt><dd><p>Un tuple dont le premier élément est le texte nettoyé, le
+second un booléen valant <code class="docutils literal notranslate"><span class="pre">True</span></code> si et seulement si le
+texte contenait des métadonnées.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
