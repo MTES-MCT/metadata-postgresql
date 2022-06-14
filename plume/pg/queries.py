@@ -260,10 +260,15 @@ def query_plume_pg_check(min_version=PLUME_PG_MIN_VERSION,
         
     return PgQueryWithArgs(
         query=sql.SQL("""
-            WITH check_plumepg AS (
+            WITH ref_versions AS (
             SELECT
-                regexp_split_to_array(installed_version, '[.]')::int[] >= %(l_min)s
-                    AND regexp_split_to_array(installed_version, '[.]')::int[] < %(l_max)s
+                %(min_version)s::text AS min_version,
+                %(max_version)s::text AS max_version
+            ),
+            check_plumepg AS (
+            SELECT
+                regexp_split_to_array(installed_version, '[.]')::int[] >= %(l_min)s::int[]
+                    AND regexp_split_to_array(installed_version, '[.]')::int[] < %(l_max)s::int[]
                     AS plumepg_ok,
                 installed_version,
                 default_version
@@ -292,15 +297,17 @@ def query_plume_pg_check(min_version=PLUME_PG_MIN_VERSION,
             )
             SELECT
                 coalesce(plumepg_ok AND bool_and(schema_ok) AND bool_and(table_ok), False),
-                ARRAY[%(min_version)s, %(max_version)s],
+                ARRAY[min_version, max_version],
                 installed_version,
                 default_version,
                 coalesce(array_agg(DISTINCT n_schema ORDER BY n_schema)
                     FILTER (WHERE NOT schema_ok), ARRAY[]::text[]),
                 coalesce(array_agg(DISTINCT n_table ORDER BY n_table)
                     FILTER (WHERE NOT table_ok), ARRAY[]::text[])
-                FROM check_plumepg, check_relation, check_schema
-                GROUP BY plumepg_ok, installed_version, default_version
+                FROM ref_versions LEFT JOIN check_plumepg ON True
+                    LEFT JOIN check_relation ON True
+                    LEFT JOIN check_schema ON True
+                GROUP BY min_version, max_version, plumepg_ok, installed_version, default_version
             """),
         args={'min_version': min_version, 'l_min': l_min,
             'max_version': max_version, 'l_max': l_max},
