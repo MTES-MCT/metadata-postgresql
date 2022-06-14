@@ -1563,3 +1563,72 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t019() IS 'PlumePg (recette). TEST : Identicité des fonctions lors d''une installation directe ou par montée de version.' ;
 
+
+-- Function: z_plume_recette.t020()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t020()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    e_errcode text ;
+BEGIN
+
+    ------ expérience témoin ------
+    -- On vérifie que l'erreur sur la montée de version de 0.0.1
+    -- à 0.1.0 est bien détectée. Il n'est pas possible de 
+    -- reproduire exactement ce qui se produit lors de l'exécution
+    -- isolée de "ALTER EXTENSION plume_pg UPDATE TO '0.1.0' ;"
+    -- (impossible de lancer ALTER TYPE ... ADD dans un bloc de
+    -- transactions, sauf à ce que la commande CREATE TYPE y soit
+    -- également), mais le comportement obtenu en présence
+    -- d'Asgard paraît s'en approcher.
+
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION asgard ;
+    CREATE EXTENSION plume_pg VERSION '0.0.1' ;
+    INSERT INTO z_plume.meta_template (tpl_label) VALUES ('Mon modèle') ;
+    INSERT INTO z_plume.meta_template_categories (shrcat_path, tpl_label, compute)
+        VALUES ('dct:conformsTo', 'Mon modèle', ARRAY['auto', 'manual']) ;
+
+    BEGIN
+        ALTER EXTENSION plume_pg UPDATE TO '0.1.0' ;
+        ASSERT current_setting('server_version_num')::int >= 120000, 'échec assertion #1-a' ;
+    EXCEPTION WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS e_errcode = RETURNED_SQLSTATE ;
+        ASSERT e_errcode = '25001' AND current_setting('server_version_num')::int < 120000,
+            'échec assertion #1-b' ;
+    END ;
+
+    ------ validation de la montée de version ------
+    -- N'est pas supposé échouer.
+
+    ALTER EXTENSION plume_pg UPDATE ;
+    DROP EXTENSION asgard ;
+
+    -- on vérifie ce qu'il est advenu des valeurs du champ compute,
+    -- considérant que la mise à jour de la v0.0.1 à la v0.1.0 impose
+    -- de les transformer temporairement en text.
+    ASSERT (SELECT compute FROM z_plume.meta_template_categories
+        WHERE shrcat_path = 'dct:conformsTo')
+        = ARRAY['auto', 'manual']::z_plume.meta_compute[], 'échec assertion #2' ;
+
+    DELETE FROM z_plume.meta_template ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t020() IS 'PlumePg (recette). TEST : Mise à jour, ALTER TYPE et blocs de transaction.' ;
+
