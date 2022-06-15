@@ -130,26 +130,26 @@ Après"""
         self.assertEqual(truncate_metadata(text), (
 '''IGN Admin Express. Départements 2021-01.
 table
-geom MultiPolygon (srid 2154)
-
-Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+geom MultiPolygon (srid 2154)''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
         self.assertEqual(truncate_metadata(text, with_title=True), (
 '''IGN Admin Express. Départements 2021-01.
 
 ADMIN EXPRESS - Départements de métropole
 
 table
-geom MultiPolygon (srid 2154)
-
-Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+geom MultiPolygon (srid 2154)''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
 
         # sans métadonnées
         self.assertEqual(truncate_metadata('table\ngeom MultiPolygon (srid 2154)\n'),
-            ('table\ngeom MultiPolygon (srid 2154)', False))
+            ('table\ngeom MultiPolygon (srid 2154)', None))
         self.assertEqual(truncate_metadata('table\ngeom MultiPolygon (srid 2154)\n',
-            with_title=True), ('table\ngeom MultiPolygon (srid 2154)', False))
-        self.assertEqual(truncate_metadata(''), ('', False))
-        self.assertEqual(truncate_metadata('', with_title=True), ('', False))
+            with_title=True), ('table\ngeom MultiPolygon (srid 2154)', None))
+        self.assertEqual(truncate_metadata(''), ('', None))
+        self.assertEqual(truncate_metadata('', with_title=True), ('', None))
 
         # avec métadonnées, mais sans libellé
         text ="""Avant
@@ -172,14 +172,14 @@ Des métadonnées sont disponibles pour cette couche. Activez Plume pour les con
 Après"""
         self.assertEqual(truncate_metadata(text, with_title=True), (
 '''Avant
-Après
-
-Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+Après''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
         self.assertEqual(truncate_metadata(text, with_title=False), (
 '''Avant
-Après
-
-Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.''', True))
+Après''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
 
 
 if __name__ == '__main__':
