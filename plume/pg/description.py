@@ -182,18 +182,20 @@ def truncate_metadata(text, with_title=False, langlist=('fr', 'en')):
 
     Returns
     -------
-    tuple(str, bool)
-        Un tuple dont le premier élément est le texte nettoyé, le
-        second un booléen valant ``True`` si et seulement si le
-        texte contenait des métadonnées.   
+    tuple(str, str or None)
+        Un tuple dont le premier élément est le texte nettoyé. Le
+        second est toujours ``None`` si le texte ne contenait pas
+        de métadonnées. Sinon il s'agit d'un texte qui explique
+        que des métadonnées sont disponibles.
 
     """
     title = None
-    info = ''
+    info = None
+    info_meta = 'Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.'
     if with_title:
         descr = PgDescription(raw=text)
         if descr.metagraph:
-            info = '\n\nDes métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.'
+            info = info_meta
             titles = [o for o in descr.metagraph.objects(descr.metagraph.datasetid, DCT.title)]
             if titles:
                 t = pick_translation(titles, langlist)
@@ -201,7 +203,7 @@ def truncate_metadata(text, with_title=False, langlist=('fr', 'en')):
     else:
         descr = PgDescription(raw=text, do_not_parse=True)
         if descr.jsonld:
-            info = '\n\nDes métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.'
+            info = info_meta
     nt = '\n\n{}\n\n'.format(title) if title else '\n' if descr.post else ''
-    return ('{}{}{}{}'.format(descr.ante.rstrip('\n'), nt, descr.post.strip('\n'), info), bool(info))
+    return ('{}{}{}'.format(descr.ante.rstrip('\n'), nt, descr.post.strip('\n')), info)
 
