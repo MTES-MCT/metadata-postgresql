@@ -495,9 +495,10 @@ traductions sont disponibles. N’est considéré que si
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>tuple(str, bool)</dt><dd><p>Un tuple dont le premier élément est le texte nettoyé, le
-second un booléen valant <code class="docutils literal notranslate"><span class="pre">True</span></code> si et seulement si le
-texte contenait des métadonnées.</p>
+<dt>tuple(str, str or None)</dt><dd><p>Un tuple dont le premier élément est le texte nettoyé. Le
+second est toujours <code class="docutils literal notranslate"><span class="pre">None</span></code> si le texte ne contenait pas
+de métadonnées. Sinon il s’agit d’un texte qui explique
+que des métadonnées sont disponibles.</p>
 </dd>
 </dl>
 </dd>
