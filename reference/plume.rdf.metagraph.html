@@ -798,7 +798,7 @@ est censée rester cohérente avec l’URI du dcat:Dataset.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="plume.rdf.metagraph.SHAPE">
-<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">SHAPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N9e79a08167e640c1b09c6ba7d2e2be18</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.SHAPE" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">SHAPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Graph</span> <span class="pre">identifier=N7235484a493b405d8cdb5b7352d81426</span> <span class="pre">(&lt;class</span> <span class="pre">'rdflib.graph.Graph'&gt;)&gt;</span></em><a class="headerlink" href="#plume.rdf.metagraph.SHAPE" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Schéma SHACL définissant la structure des métadonnées communes.</p>
 </dd></dl>
 
@@ -904,7 +904,7 @@ un XML conforme au standard ISO 19139.</p>
 <dt><strong>old_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe contenant les métadonnées actuelles de l’objet
 PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
 </dd>
-<dt><strong>preserve</strong><span class="classifier">{“never”, “if exists”, “always”}, optional</span></dt><dd><p>Mode de fusion de l’ancien et du nouveau graphe :</p>
+<dt><strong>preserve</strong><span class="classifier">{“always”, “if exists”, “never”}, optional</span></dt><dd><p>Mode de fusion de l’ancien et du nouveau graphe :</p>
 <ul class="simple">
 <li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'never'</span></code>, le graphe est
 est intégralement recréé à partir des informations
@@ -940,6 +940,52 @@ renseignées dans l’ancien graphe.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">metagraph_from_iso</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.rdf.metagraph.metagraph_from_iso_file">
+<span class="sig-prename descclassname"><span class="pre">plume.rdf.metagraph.</span></span><span class="sig-name descname"><span class="pre">metagraph_from_iso_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_metagraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'never'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.metagraph.metagraph_from_iso_file" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Crée un graphe de métadonnées à partir d’un fichier XML contenant des métadonnées INSPIRE/ISO 19139.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>Chemin complet du fichier source, supposé contenir des
+métadonnées INSPIRE/ISO 19139, sans quoi la fiche de
+métadonnées résultante sera certainement vide.
+Le fichier sera présumé être encodé en UTF-8 et mieux
+vaudrait qu’il le soit.</p>
+</dd>
+<dt><strong>old_metagraph</strong><span class="classifier">Metagraph, optional</span></dt><dd><p>Le graphe contenant les métadonnées actuelles de l’objet
+PostgreSQL considéré, dont on récupèrera l’identifiant.</p>
+</dd>
+<dt><strong>preserve</strong><span class="classifier">{“never”, “if exists”, “always”}, optional</span></dt><dd><p>Mode de fusion de l’ancien et du nouveau graphe :</p>
+<ul class="simple">
+<li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'never'</span></code>, le graphe est
+est intégralement recréé à partir des informations
+disponibles sur le catalogue distant. Hormis l’identifiant,
+tout le contenu de l’ancien graphe est perdu.</p></li>
+<li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'if</span> <span class="pre">blank'</span></code>, les informations de
+l’ancien graphe ne sont preservées que pour les
+catégories de métadonnées qui ne sont pas renseignées
+sur le catalogue distant.         .</p></li>
+<li><p>Si <cite>preserve</cite> vaut <code class="docutils literal notranslate"><span class="pre">'always'</span></code>, les valeurs du 
+catalogue distant ne sont importées que pour les
+catégories de métadonnées qui n’étaient pas
+renseignées dans l’ancien graphe.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Metagraph</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Cette fonction se borne à exécuter successivement
+<a class="reference internal" href="plume.rdf.utils.html#plume.rdf.utils.data_from_file" title="plume.rdf.utils.data_from_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">plume.rdf.utils.data_from_file()</span></code></a> et
+<a class="reference internal" href="#plume.rdf.metagraph.metagraph_from_iso" title="plume.rdf.metagraph.metagraph_from_iso"><code class="xref py py-func docutils literal notranslate"><span class="pre">metagraph_from_iso()</span></code></a>.</p>
 </dd></dl>
 
 </section>

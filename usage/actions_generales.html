@@ -340,16 +340,23 @@
   <a class="reference internal nav-link" href="#import-de-metadonnees">
    Import de métadonnées
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#import-de-metadonnees-depuis-un-fichier">
-   Import de métadonnées depuis un fichier
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#import-de-metadonnees-depuis-un-service-csw">
-   Import de métadonnées depuis un service CSW
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#import-de-metadonnees-depuis-un-fichier-dcat">
+     Import de métadonnées depuis un fichier (DCAT)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#import-de-metadonnees-depuis-un-service-csw-inspire">
+     Import de métadonnées depuis un service CSW (INSPIRE)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#import-de-metadonnees-depuis-un-fichier-inspire">
+     Import de métadonnées depuis un fichier (INSPIRE)
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#export-des-metadonnees-dans-un-fichier">
@@ -441,8 +448,8 @@
   <section id="actions-generales">
 <h1>Actions générales<a class="headerlink" href="#actions-generales" title="Lien permanent vers ce titre">#</a></h1>
 <p>Sont décrites ici les actions que l’utilisateur peut réaliser dans la partie fixe de l’interface du plugin. Pour les interactions de l’utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à <a class="reference internal" href="actions_widgets.html"><span class="doc std std-doc">Actions contrôlées par les widgets du formulaire</span></a>.</p>
-<p>Barre d’outils de Plume : <a class="reference internal" href="#mode-lecture-mode-edition"><span class="std std-doc">Mode lecture, mode édition</span></a> • <a class="reference internal" href="#sauvegarde"><span class="std std-doc">Sauvegarde</span></a> • <a class="reference internal" href="#activation-du-mode-traduction"><span class="std std-doc">Activation du mode traduction</span></a> • <a class="reference internal" href="#choix-de-la-trame-de-formulaire"><span class="std std-doc">Choix de la trame de formulaire</span></a> • <a class="reference internal" href="#langue-principale-des-metadonnees"><span class="std std-doc">Langue principale des métadonnées</span></a> • <a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier"><span class="std std-doc">Import de métadonnées depuis un fichier</span></a> • <a class="reference internal" href="#export-des-metadonnees-dans-un-fichier"><span class="std std-doc">Export des métadonnées dans un fichier</span></a> • <a class="reference internal" href="#reinitialisation"><span class="std std-doc">Réinitialisation</span></a> • <a class="reference internal" href="#copier-coller-d-une-fiche-complete"><span class="std std-doc">Copier / coller d’une fiche complète</span></a></p>
-<p>Détail des fonctionnalités d’import : <a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier"><span class="std std-doc">Import de métadonnées depuis un fichier</span></a> • <a class="reference internal" href="#import-de-metadonnees-depuis-un-service-csw"><span class="std std-doc">Import de métadonnées depuis un service CSW</span></a></p>
+<p>Barre d’outils de Plume : <a class="reference internal" href="#mode-lecture-mode-edition"><span class="std std-doc">Mode lecture, mode édition</span></a> • <a class="reference internal" href="#sauvegarde"><span class="std std-doc">Sauvegarde</span></a> • <a class="reference internal" href="#activation-du-mode-traduction"><span class="std std-doc">Activation du mode traduction</span></a> • <a class="reference internal" href="#choix-de-la-trame-de-formulaire"><span class="std std-doc">Choix de la trame de formulaire</span></a> • <a class="reference internal" href="#langue-principale-des-metadonnees"><span class="std std-doc">Langue principale des métadonnées</span></a> • <a class="reference internal" href="#import-de-metadonnees"><span class="std std-doc">Import de métadonnées</span></a> • <a class="reference internal" href="#export-des-metadonnees-dans-un-fichier"><span class="std std-doc">Export des métadonnées dans un fichier</span></a> • <a class="reference internal" href="#reinitialisation"><span class="std std-doc">Réinitialisation</span></a> • <a class="reference internal" href="#copier-coller-d-une-fiche-complete"><span class="std std-doc">Copier / coller d’une fiche complète</span></a></p>
+<p>Détail des fonctionnalités d’import : <a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier-dcat"><span class="std std-doc">Import de métadonnées depuis un fichier (DCAT)</span></a> • <a class="reference internal" href="#import-de-metadonnees-depuis-un-service-csw-inspire"><span class="std std-doc">Import de métadonnées depuis un service CSW (INSPIRE)</span></a> • <a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier-inspire"><span class="std std-doc">Import de métadonnées depuis un fichier (INSPIRE)</span></a></p>
 <p>Autres actions : <a class="reference internal" href="#selection-de-la-table-a-documenter"><span class="std std-doc">Sélection de la table à documenter</span></a></p>
 <section id="mode-lecture-mode-edition">
 <h2>Mode lecture, mode édition<a class="headerlink" href="#mode-lecture-mode-edition" title="Lien permanent vers ce titre">#</a></h2>
@@ -720,18 +727,18 @@
 <section id="import-de-metadonnees">
 <h2>Import de métadonnées<a class="headerlink" href="#import-de-metadonnees" title="Lien permanent vers ce titre">#</a></h2>
 <p>Le bouton d’import de métadonnées depuis des sources externes n’est actif qu’en mode édition.</p>
-<p>Il s’agit d’un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> dont le menu contient à ce jour deux items, correspondant aux deux sources possibles :</p>
+<p>Il s’agit d’un <code class="docutils literal notranslate"><span class="pre">QToolButton</span></code> dont le menu contient à ce jour trois items, correspondant aux trois sources possibles :</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">fichier</span></code> ;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">service</span> <span class="pre">CSW</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">fichier</span> <span class="pre">(DCAT)</span></code> ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">fichier</span> <span class="pre">(INSPIRE)</span></code> ;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Importer</span> <span class="pre">depuis</span> <span class="pre">un</span> <span class="pre">service</span> <span class="pre">CSW</span> <span class="pre">(INSPIRE)</span></code>.</p></li>
 </ul>
 <p>Leur effet est décrit ci-après.</p>
 <p>Le bouton utilise l’icône <a class="reference download internal" download="" href="../_downloads/c83a26532634cd231afb366bf01d26ac/import.svg"><span class="xref download myst">import.svg</span></a> :
 <img alt="import.svg" src="../_images/import.svg" /></p>
 <p>Texte d’aide : <em>Importer les métadonnées depuis un fichier ou un service CSW</em>.</p>
-</section>
-<section id="import-de-metadonnees-depuis-un-fichier">
-<h2>Import de métadonnées depuis un fichier<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier" title="Lien permanent vers ce titre">#</a></h2>
+<section id="import-de-metadonnees-depuis-un-fichier-dcat">
+<h3>Import de métadonnées depuis un fichier (DCAT)<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier-dcat" title="Lien permanent vers ce titre">#</a></h3>
 <p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées depuis un fichier. L’import ne fonctionnera que si les métadonnées sont encodées dans un format RDF et il ne donnera un résulat concluant que si elles respectent les profils DCAT-AP, GeoDCAT-AP, ou le profil GeoDCAT-AP étendu mis en oeuvre par le plugin.</p>
 <p>L’import est réalisé via la fonction <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_file</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -785,8 +792,8 @@
 </pre></div>
 </div>
 </section>
-<section id="import-de-metadonnees-depuis-un-service-csw">
-<h2>Import de métadonnées depuis un service CSW<a class="headerlink" href="#import-de-metadonnees-depuis-un-service-csw" title="Lien permanent vers ce titre">#</a></h2>
+<section id="import-de-metadonnees-depuis-un-service-csw-inspire">
+<h3>Import de métadonnées depuis un service CSW (INSPIRE)<a class="headerlink" href="#import-de-metadonnees-depuis-un-service-csw-inspire" title="Lien permanent vers ce titre">#</a></h3>
 <p>Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées par requête sur le service CSW d’un catalogue INSPIRE, comme GéoIDE ou une plateforme régionale.</p>
 <p>Son activation par l’utilisateur ouvre une boîte de dialogue dans laquelle s’effectue le paramétrage de l’import.</p>
 <table class="colwidths-auto table">
@@ -895,6 +902,27 @@
 <ol class="arabic simple" start="5">
 <li><p>Comme toujours, il faudra ensuite <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">regénérer le dictionnaire de widgets</span></a> avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre <a class="reference internal" href="generation_dictionnaire_widgets.html#metagraph-le-graphe-des-metadonnees-pre-existantes"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span></a> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>.</p></li>
 </ol>
+</section>
+<section id="import-de-metadonnees-depuis-un-fichier-inspire">
+<h3>Import de métadonnées depuis un fichier (INSPIRE)<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier-inspire" title="Lien permanent vers ce titre">#</a></h3>
+<p>Comme l’import depuis un service CSW, ce mode d’import gère des métadonnées INSPIRE, mais mises à disposition sous la forme d’un fichier XML. Du point de vue de l’interface, le fonctionnement est donc très proche de l”<a class="reference internal" href="#import-de-metadonnees-depuis-un-fichier-dcat"><span class="std std-doc">import depuis un fichier DCAT</span></a>, tandis que le traitement aval est identique à celui de l”<a class="reference internal" href="#import-de-metadonnees-depuis-un-service-csw-inspire"><span class="std std-doc">import depuis un service CSW</span></a>.</p>
+<p>L’import est réalisé via la fonction <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_iso_file</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plume.rdf.metagraph</span> <span class="kn">import</span> <span class="n">metagraph_from_iso_file</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">metagraph</span> <span class="o">=</span> <span class="n">metagraph_from_iso_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">old_metagraph</span><span class="o">=</span><span class="n">old_metagraph</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="c1"># par exemple si le chemin ne pointe pas sur un fichier </span>
+    <span class="o">...</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">filepath</span></code> est le chemin complet du fichier source, à spécifier par l’utilisateur. <code class="docutils literal notranslate"><span class="pre">old_metagraph</span></code> est l’ancien graphe de métadonnées de la table, soit le <code class="docutils literal notranslate"><span class="pre">metagraph</span></code> actuel, dont la fonction récupère l’identifiant.</em></p>
+<p><em>NB. La fonction <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_iso_file</span></code> admet également le même paramètre <code class="docutils literal notranslate"><span class="pre">preserve</span></code> que <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_iso</span></code> - cf. <a class="reference internal" href="#import-de-metadonnees-depuis-un-service-csw-inspire"><span class="std std-doc">Import de métadonnées depuis un service CSW (INSPIRE)</span></a> - mais il est plutôt proposé à ce stade de conserver le même comportement pour toutes les fonctionnalités d’import depuis un fichier, à savoir le remplacement complet de la fiche. C’est ce que fait nativement <code class="docutils literal notranslate"><span class="pre">plume.rdf.metagraph.metagraph_from_iso_file</span></code> (valeur par défaut <code class="docutils literal notranslate"><span class="pre">'never'</span></code> pour <code class="docutils literal notranslate"><span class="pre">preserve</span></code>).</em></p>
+<p>On attend a priori un fichier d’extension <code class="docutils literal notranslate"><span class="pre">.xml</span></code>, donc la boîte de dialogue de sélection du fichier pourrait filtrer sur cette extension à l’ouverture, tout en laissant aussi à l’utilisateur la possibilité d’afficher tous les fichiers.</p>
+<p>Il faudra ensuite <a class="reference internal" href="generation_dictionnaire_widgets.html"><span class="doc std std-doc">regénérer le dictionnaire de widgets</span></a> avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre <a class="reference internal" href="generation_dictionnaire_widgets.html#metagraph-le-graphe-des-metadonnees-pre-existantes"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">metagraph</span></code></span></a> du constructeur de <code class="docutils literal notranslate"><span class="pre">plume.rdf.widgetsdict.WidgetsDict</span></code>. Le formulaire de saisie/consultation peut ensuite être <a class="reference internal" href="creation_widgets.html"><span class="doc std std-doc">recréé à partir du nouveau dictionnaire</span></a>.</p>
+</section>
 </section>
 <section id="export-des-metadonnees-dans-un-fichier">
 <h2>Export des métadonnées dans un fichier<a class="headerlink" href="#export-des-metadonnees-dans-un-fichier" title="Lien permanent vers ce titre">#</a></h2>

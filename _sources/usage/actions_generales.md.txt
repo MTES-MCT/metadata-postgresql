@@ -2,9 +2,9 @@
 
 Sont décrites ici les actions que l'utilisateur peut réaliser dans la partie fixe de l'interface du plugin. Pour les interactions de l'utilisateur avec les widgets du formulaire de saisie (ajout/suppression de valeurs, etc.), on se reportera à [Actions contrôlées par les widgets du formulaire](./actions_widgets.md).
 
-Barre d'outils de Plume : [Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation) • [Copier / coller d'une fiche complète](#copier--coller-dune-fiche-complète)
+Barre d'outils de Plume : [Mode lecture, mode édition](#mode-lecture-mode-édition) • [Sauvegarde](#sauvegarde) • [Activation du mode traduction](#activation-du-mode-traduction) • [Choix de la trame de formulaire](#choix-de-la-trame-de-formulaire) • [Langue principale des métadonnées](#langue-principale-des-métadonnées) • [Import de métadonnées](#import-de-métadonnées) • [Export des métadonnées dans un fichier](#export-des-métadonnées-dans-un-fichier) • [Réinitialisation](#réinitialisation) • [Copier / coller d'une fiche complète](#copier--coller-dune-fiche-complète)
 
-Détail des fonctionnalités d'import : [Import de métadonnées depuis un fichier](#import-de-métadonnées-depuis-un-fichier) • [Import de métadonnées depuis un service CSW](#import-de-métadonnées-depuis-un-service-csw)
+Détail des fonctionnalités d'import : [Import de métadonnées depuis un fichier (DCAT)](#import-de-métadonnées-depuis-un-fichier-dcat) • [Import de métadonnées depuis un service CSW (INSPIRE)](#import-de-métadonnées-depuis-un-service-csw-inspire) • [Import de métadonnées depuis un fichier (INSPIRE)](#import-de-métadonnées-depuis-un-fichier-inspire)
 
 Autres actions : [Sélection de la table à documenter](#sélection-de-la-table-à-documenter)
 
@@ -285,9 +285,10 @@ Un point important est que `language` doit toujours être l'une des langues list
 
 Le bouton d'import de métadonnées depuis des sources externes n'est actif qu'en mode édition.
 
-Il s'agit d'un `QToolButton` dont le menu contient à ce jour deux items, correspondant aux deux sources possibles :
-- `Importer depuis un fichier` ;
-- `Importer depuis un service CSW`.
+Il s'agit d'un `QToolButton` dont le menu contient à ce jour trois items, correspondant aux trois sources possibles :
+- `Importer depuis un fichier (DCAT)` ;
+- `Importer depuis un fichier (INSPIRE)` ;
+- `Importer depuis un service CSW (INSPIRE)`.
 
 Leur effet est décrit ci-après.
 
@@ -296,7 +297,7 @@ Le bouton utilise l'icône [import.svg](../../../plume/icons/general/import.svg)
 
 Texte d'aide : *Importer les métadonnées depuis un fichier ou un service CSW*.
 
-## Import de métadonnées depuis un fichier
+### Import de métadonnées depuis un fichier (DCAT)
 
 Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées depuis un fichier. L'import ne fonctionnera que si les métadonnées sont encodées dans un format RDF et il ne donnera un résulat concluant que si elles respectent les profils DCAT-AP, GeoDCAT-AP, ou le profil GeoDCAT-AP étendu mis en oeuvre par le plugin.
 
@@ -363,7 +364,7 @@ extensions = import_extensions_from_format()
 
 ```
 
-## Import de métadonnées depuis un service CSW
+### Import de métadonnées depuis un service CSW (INSPIRE)
 
 Cette fonctionnalité permet de remplacer les métadonnées de la table ou vue considérée par des métadonnées importées par requête sur le service CSW d'un catalogue INSPIRE, comme GéoIDE ou une plateforme régionale.
 
@@ -453,6 +454,31 @@ if save_configuration:
 
 5. Comme toujours, il faudra ensuite [regénérer le dictionnaire de widgets](./generation_dictionnaire_widgets.md) avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre [`metagraph`](./generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) du constructeur de `plume.rdf.widgetsdict.WidgetsDict`. Le formulaire de saisie/consultation peut ensuite être [recréé à partir du nouveau dictionnaire](./creation_widgets.md).
 
+### Import de métadonnées depuis un fichier (INSPIRE)
+
+Comme l'import depuis un service CSW, ce mode d'import gère des métadonnées INSPIRE, mais mises à disposition sous la forme d'un fichier XML. Du point de vue de l'interface, le fonctionnement est donc très proche de l'[import depuis un fichier DCAT](#import-de-métadonnées-depuis-un-fichier-dcat), tandis que le traitement aval est identique à celui de l'[import depuis un service CSW](#import-de-métadonnées-depuis-un-service-csw-inspire).
+
+L'import est réalisé via la fonction `plume.rdf.metagraph.metagraph_from_iso_file` :
+
+```python
+
+from plume.rdf.metagraph import metagraph_from_iso_file
+
+try:
+    metagraph = metagraph_from_iso_file(filepath, old_metagraph=old_metagraph)
+except:
+    # par exemple si le chemin ne pointe pas sur un fichier 
+    ...
+
+```
+
+*`filepath` est le chemin complet du fichier source, à spécifier par l'utilisateur. `old_metagraph` est l'ancien graphe de métadonnées de la table, soit le `metagraph` actuel, dont la fonction récupère l'identifiant.*
+
+*NB. La fonction `plume.rdf.metagraph.metagraph_from_iso_file` admet également le même paramètre `preserve` que `plume.rdf.metagraph.metagraph_from_iso` - cf. [Import de métadonnées depuis un service CSW (INSPIRE)](#import-de-métadonnées-depuis-un-service-csw-inspire) - mais il est plutôt proposé à ce stade de conserver le même comportement pour toutes les fonctionnalités d'import depuis un fichier, à savoir le remplacement complet de la fiche. C'est ce que fait nativement `plume.rdf.metagraph.metagraph_from_iso_file` (valeur par défaut `'never'` pour `preserve`).*
+
+On attend a priori un fichier d'extension `.xml`, donc la boîte de dialogue de sélection du fichier pourrait filtrer sur cette extension à l'ouverture, tout en laissant aussi à l'utilisateur la possibilité d'afficher tous les fichiers.
+
+Il faudra ensuite [regénérer le dictionnaire de widgets](./generation_dictionnaire_widgets.md) avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre [`metagraph`](./generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) du constructeur de `plume.rdf.widgetsdict.WidgetsDict`. Le formulaire de saisie/consultation peut ensuite être [recréé à partir du nouveau dictionnaire](./creation_widgets.md).
 
 ## Export des métadonnées dans un fichier
 
