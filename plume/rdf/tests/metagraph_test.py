@@ -4,7 +4,7 @@ import unittest
 from plume.rdf.rdflib import isomorphic, URIRef, Literal
 from plume.rdf.utils import abspath, data_from_file, DatasetId
 from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, \
-    metagraph_from_iso, clean_metagraph
+    metagraph_from_iso, clean_metagraph, metagraph_from_iso_file
 from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF
 from plume.rdf.widgetsdict import WidgetsDict
 
@@ -466,6 +466,21 @@ class MetagraphTestCase(unittest.TestCase):
             'dcat_eurostat_bilan_nutritif_brut_terre_agricole.ttl'),
             old_metagraph=m)
         self.assertTrue(isomorphic(m, m_reload))
+
+    def test_metagraph_from_iso_file(self):
+        """Raccourci por la création d'un graphe à partir d'un fichier de métadonnées ISO 19115/19139.
+        
+        """
+        old_metagraph = Metagraph()
+        old_metagraph.datasetid = DatasetId()
+        raw_xml = data_from_file(abspath('rdf/tests/samples/'
+            'iso_geolittoral_sentier_du_littoral.xml'))
+        metagraph = metagraph_from_iso(raw_xml, old_metagraph=old_metagraph,
+            preserve='never')
+        metagraph_bis = metagraph_from_iso_file(abspath('rdf/tests/samples/'
+            'iso_geolittoral_sentier_du_littoral.xml'),
+            old_metagraph=old_metagraph)
+        self.assertTrue(isomorphic(metagraph, metagraph_bis))
 
 if __name__ == '__main__':
     unittest.main()
