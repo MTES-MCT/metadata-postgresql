@@ -10,7 +10,7 @@ from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
     LOCAL, PLUME, DCT, FOAF, XSD, PREDICATE_MAP, CLASS_MAP
 from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
     export_extension_from_format, export_format_from_extension, export_formats, \
-    forbidden_char
+    forbidden_char, data_from_file
 from plume.iso.map import IsoToDcat
 
 
@@ -609,7 +609,7 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, preserve='always'):
     old_metagraph : Metagraph, optional
         Le graphe contenant les métadonnées actuelles de l'objet
         PostgreSQL considéré, dont on récupèrera l'identifiant.
-    preserve : {'never', 'if exists', 'always'}, optional
+    preserve : {'always', 'if exists', 'never'}, optional
         Mode de fusion de l'ancien et du nouveau graphe :
         
         * Si `preserve` vaut ``'never'``, le graphe est
@@ -655,4 +655,48 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, preserve='always'):
         metagraph.merge(old_metagraph, replace=(preserve == 'always'))
     
     return metagraph
+
+def metagraph_from_iso_file(filepath, old_metagraph=None, preserve='never'):
+    """Crée un graphe de métadonnées à partir d'un fichier XML contenant des métadonnées INSPIRE/ISO 19139.
+    
+    Parameters
+    ----------
+    filepath : str
+        Chemin complet du fichier source, supposé contenir des
+        métadonnées INSPIRE/ISO 19139, sans quoi la fiche de
+        métadonnées résultante sera certainement vide.
+        Le fichier sera présumé être encodé en UTF-8 et mieux
+        vaudrait qu'il le soit.
+    old_metagraph : Metagraph, optional
+        Le graphe contenant les métadonnées actuelles de l'objet
+        PostgreSQL considéré, dont on récupèrera l'identifiant.
+    preserve : {'never', 'if exists', 'always'}, optional
+        Mode de fusion de l'ancien et du nouveau graphe :
+        
+        * Si `preserve` vaut ``'never'``, le graphe est
+          est intégralement recréé à partir des informations
+          disponibles sur le catalogue distant. Hormis l'identifiant,
+          tout le contenu de l'ancien graphe est perdu.
+        * Si `preserve` vaut ``'if blank'``, les informations de
+          l'ancien graphe ne sont preservées que pour les
+          catégories de métadonnées qui ne sont pas renseignées
+          sur le catalogue distant.         .
+        * Si `preserve` vaut ``'always'``, les valeurs du 
+          catalogue distant ne sont importées que pour les
+          catégories de métadonnées qui n'étaient pas
+          renseignées dans l'ancien graphe.
+    
+    Returns
+    -------
+    Metagraph
+    
+    Notes
+    -----
+    Cette fonction se borne à exécuter successivement
+    :py:func:`plume.rdf.utils.data_from_file` et
+    :py:func:`metagraph_from_iso`.
+    
+    """
+    raw_xml = data_from_file(filepath)
+    return metagraph_from_iso(raw_xml, old_metagraph=old_metagraph, preserve=preserve)
 
