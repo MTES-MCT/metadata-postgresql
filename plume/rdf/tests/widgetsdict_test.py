@@ -363,7 +363,7 @@ class WidgetsDictTestCase(unittest.TestCase):
             uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
                 dct:accessRights [ a dct:RightsStatement ;
                     rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
-                dct:description "Délimitation simplifiée des départements de France métropolitaine pour représentation à petite échelle, conforme au code officiel géographique (COG) de l'INSEE au 1er janvier de l'année de référence."@fr ;
+                dct:description "Some stuff in english."@en ;
                 dct:title "ADMIN EXPRESS - Départements de métropole"@fr ;
                 dcat:keyword "admin express"@fr,
                     "donnée externe"@fr,
@@ -413,6 +413,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         # --- avec graphe, sans modèle ---
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph)
         self.assertIsNone(widgetsdict.check_grids())
+        key = widgetsdict.root.search_from_path(DCT.description)
+        self.assertTrue(key in widgetsdict)
         key = widgetsdict.root.search_from_path(DCAT.keyword)
         self.assertTrue(key in widgetsdict)
         self.assertIsNone(key.button)
