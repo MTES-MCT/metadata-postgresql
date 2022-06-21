@@ -348,10 +348,13 @@ class WidgetKeyTestCase(unittest.TestCase):
         b = TranslationButtonKey(parent=t)
         w1 = ValueKey(parent=t)
         w2 = ValueKey(parent=t)
+        d = ValueKey(parent=r, is_ghost=True, predicate=DCT.description)
         self.assertEqual(r.search_from_path(DCT.accessRights / RDFS.label), t)
         self.assertEqual(r.search_from_path(DCT.accessRights), m)
         m.switch_twin()
         self.assertEqual(r.search_from_path(DCT.accessRights), g)
+        self.assertIsNone(r.search_from_path(DCT.description))
+        self.assertEqual(r.search_from_path(DCT.description, allow_ghosts=True), d)
     
     def test_search_path_tab(self):
         """Recherche dans un arbre de clés à partir du chemin, avec onglet à la racine.
