@@ -1982,7 +1982,7 @@ class GroupKey(WidgetKey):
                 # "not child.path" est là pour les onglets rattachés
                 # à la racine, dont le chemin est vide
                 target = child._search_from_path(path, allow_ghosts=allow_ghosts)
-                if target:
+                if target is not None:
                     return target
 
     def _search_from_rdfclass(self, rdfclass, matchlist):
