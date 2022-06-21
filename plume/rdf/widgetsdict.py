@@ -436,7 +436,8 @@ class WidgetsDict(dict):
                 # ------ Affichage mono-langue (suite) ------
                 if val_dict.get('datatype') == RDF.langString \
                     and self.onlyCurrentLanguage:
-                    if value and prop_dict['parent'].has_real_children and \
+                    if value and len(values) > 1 and \
+                        prop_dict['parent'].has_real_children and \
                         (not isinstance(value, Literal) or \
                         value.language != self.main_language):
                         val_dict['is_ghost'] = True
