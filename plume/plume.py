@@ -33,7 +33,11 @@ class MainPlugin(object):
         self.translator = QTranslator()
         self.translator.load(self.localePath)
         QCoreApplication.installTranslator(self.translator)
-     # Generation de la traduction selon la langue choisie   
+     # Generation de la traduction selon la langue choisie
+        
+     #Active Tooltip
+     self.dicTooltipExiste = {}   
+     #Active Tooltip   
 
   def initGui(self):
      #Construction du menu
@@ -42,9 +46,8 @@ class MainPlugin(object):
      _pathIcons = os.path.dirname(__file__) + "/icons/logo"
      menuIcon          = _pathIcons + "/plume.svg"
      self.plume2 = QAction(QIcon(menuIcon),"PLUGIN METADATA (Metadata storage in PostGreSQL)" + "  (" + str(bibli_plume.returnVersion()) + ")",self.iface.mainWindow())
-     self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) ") + "  (" + str(bibli_plume.returnVersion()) + ")")
+     self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) "))
      self.plume2.triggered.connect(self.clickIHMplume2)
-     
      #Construction du menu
      self.menu.addAction(self.plume2)
      #=========================
@@ -64,13 +67,12 @@ class MainPlugin(object):
      self.toolbar.addAction(self.plume2)
      #-
      #Management Click before open IHM 
-     self.initializingDisplay()
+     self.initializingDisplayPlume()
      #Management Click before open IHM 
      #-
-     #=========================
 
-     #==========================
-  def initializingDisplay(self):
+  #==========================
+  def initializingDisplayPlume(self):
       try : 
          iface.layerTreeView().clicked.connect(self.returnLayerBeforeClickedQgis)
                 
@@ -88,6 +90,30 @@ class MainPlugin(object):
          self.navigateurTreeView2.clicked.connect(self.returnLayerBeforeClickedBrowser)
       except :
          pass   
+
+      #tooltip
+      mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+      self.mDic_LH = mDic_LH
+      #
+      #==========================
+      #Active Tooltip   
+      self.activeTooltip      = True if mDic_LH["activeTooltip"]      == "true" else False
+      self.activeTooltipWithtitle = True if mDic_LH["activeTooltipWithtitle"] == "true" else False
+      self.activeTooltipLogo      = True if mDic_LH["activeTooltipLogo"]      == "true" else False
+      self.activeTooltipCadre     = True if mDic_LH["activeTooltipCadre"]     == "true" else False
+      self.activeTooltipColor     = True if mDic_LH["activeTooltipColor"]     == "true" else False
+      self.activeTooltipColorText       = mDic_LH["activeTooltipColorText"] 
+      self.activeTooltipColorBackground = mDic_LH["activeTooltipColorBackground"] 
+      #
+      _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+      iconSourceTooltip   = _pathIcons + "/plume.png"
+      # liste des Paramétres UTILISATEURS
+      listUserParam(self)
+      # liste des Paramétres UTILISATEURS
+      
+      self._myExploBrowser  = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+      self._myExploBrowser2 = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+
       return
               
   #==========================
@@ -130,7 +156,7 @@ class MainPlugin(object):
       d.exec_()
 
   def clickIHMplume2(self):
-      d = doplume_ui.Dialog()
+      d = doplume_ui.Dialog(self.dicTooltipExiste)
       d.exec_()
 
   def unload(self):

@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit, QMainWindow, QWidget, QDockWidget, QTreeView) 
+from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit, QMainWindow, QWidget, QDockWidget, QTreeView, QTreeWidget) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -27,9 +27,9 @@ if find_spec('rdflib') ==  None :
 #==================================================
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph
+from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, metagraph_from_iso_file
 from plume.rdf.utils import export_extension_from_format, import_formats, import_extensions_from_format, export_format_from_extension
-from plume.pg.description import PgDescription
+from plume.pg.description import PgDescription, truncate_metadata
 from plume.pg.template import TemplateDict, search_template
 from plume.pg import queries
 
@@ -327,6 +327,29 @@ def importObjetMetagraph(self) :
     return metagraph 
 
 #==================================================
+def importObjetMetagraphInspire(self) :
+    #boite de dialogue Fichiers
+    MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    MonFichierPath = MonFichierPath.replace("\\","/")        
+    InitDir = MonFichierPath
+    TypeList = QtWidgets.QApplication.translate("bibli_plume", "Inspire file", None) + " (*.xml);;" + QtWidgets.QApplication.translate("bibli_plume", "Other files", None) + " (*.*)"
+    fileName = QFileDialog.getOpenFileName(None,QtWidgets.QApplication.translate("bibli_plume", "Metadata cards Inspire", None),InitDir,TypeList) 
+    filepath = str(fileName[0]) if fileName[0] != "" else "" 
+    if filepath == "" : return
+    #**********************
+    # Récupération fiche de métadonnée
+    try:
+       old_metagraph = self.metagraph
+       metagraph = metagraph_from_iso_file(filepath, old_metagraph=old_metagraph)
+    except:
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("bibli_plume", "PLUME failed to import your metadata record.", None) 
+       displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+
+       metagraph = None
+    return metagraph 
+
+#==================================================
 def returnObjetTpl_label(self, option = None) : #None = Pas local et "LOCAL" = local
     #**********************
     #Récupération de la liste des modèles
@@ -477,6 +500,89 @@ class NoReturnSql(Exception) :
     def __init__(self, _mMess) :
         self.mMess = _mMess
         return
+        
+#==================================================
+#==================================================
+# gestion des tooltip in the browser
+class MyExploBrowser(QTreeWidget):
+   def __init__(self, parent, _dicTooltipExiste, _activeTooltip, _activeTooltipColorText, _activeTooltipColorBackground, _langList, _iconSource, _activeTooltipLogo, _activeTooltipCadre, _activeTooltipColor, _activeTooltipWithtitle, *args):
+        QTreeWidget.__init__(self, parent = None, *args)
+        self.parent = parent
+        self.parent.setMouseTracking(True)
+        self._activeTooltip, self._activeTooltipColorText, self._activeTooltipColorBackground, self._langList, self._iconSource, self._activeTooltipLogo, self._activeTooltipCadre, self._activeTooltipColor, self._activeTooltipWithtitle = \
+             _activeTooltip,      _activeTooltipColorText,      _activeTooltipColorBackground,      _langList,      _iconSource,      _activeTooltipLogo,      _activeTooltipCadre,      _activeTooltipColor,      _activeTooltipWithtitle
+        self._dicTooltipExiste = _dicTooltipExiste
+        #
+        self.parent.viewport().installEventFilter(self)
+
+   def eventFilter(self, source, event):
+        if event.type() == QtCore.QEvent.MouseMove:                   
+            if event.buttons() == QtCore.Qt.NoButton:
+                self.proxy_model = self.parent.model()
+                self.model       = iface.browserModel()
+                #
+                index = self.parent.indexAt(event.pos())
+                #
+                if index != -1 and self.proxy_model != None :
+                   self.itemLayer = self.model.dataItem(self.proxy_model.mapToSource(index))
+                   
+                   if self.itemLayer != None :
+                      #Gestion id for _dicTooltipExiste  
+                      if isinstance(self.itemLayer, QgsLayerItem) :
+                         if self.itemLayer.providerKey() == 'postgres' :
+                            itemLayer_id = QgsVectorLayer(self.itemLayer.uri(), self.itemLayer.name(), 'postgres').id()
+                         else : # Non vector postgresql
+                            return False  
+                      else :  # Non type layer     
+                         return False  
+                      #Gestion id for _dicTooltipExiste  
+
+                      self.itemLayer.setObjectName("itemLayer")
+
+                      # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
+                      if self.itemLayer in self._dicTooltipExiste :
+                         itemLayerTooltip = self._dicTooltipExiste[self.itemLayer] 
+                      else :
+                         itemLayerTooltip = self.itemLayer.toolTip()
+                         self._dicTooltipExiste[self.itemLayer] = itemLayerTooltip 
+                      # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
+
+                      itemLayerTooltipNew, mFindMetadata_OR_itemLayerTooltipNew = truncate_metadata(itemLayerTooltip, self._activeTooltipWithtitle, self._langList)
+                      itemLayerTooltipNew = itemLayerTooltipNew.replace("\n","<br>")
+                      
+                      if self._activeTooltip : # For disable modif tooltip 
+                         if mFindMetadata_OR_itemLayerTooltipNew :
+                            _border     = "style='border: 1px solid black;'"
+                            _icon       = "<img width='30' src='" + self._iconSource + "'/>" 
+                            mTableHtml  = "<table style='border=0' width=100%>"
+                            mTableHtml += "<tr><td>" + itemLayerTooltipNew
+                            mTableHtml += "</td></tr>"
+                            #
+                            if self._activeTooltipColor : 
+                               if self._activeTooltipCadre :
+                                  mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'" + _border + ">"
+                               else :   
+                                  mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'>"
+                            else :   
+                               if self._activeTooltipCadre :
+                                  mTableHtml += "<tr><td " + _border + ">"
+                               else :
+                                  mTableHtml += "<tr><td>"
+                            #
+                            if self._activeTooltipLogo : mTableHtml += _icon + "<br>"
+                            #
+                            mTableHtml += mFindMetadata_OR_itemLayerTooltipNew     
+                            mTableHtml += "</td></tr>"
+                            mTableHtml += "</table>"
+                            self.itemLayer.setToolTip(mTableHtml)
+                      else :
+                         self.itemLayer.setToolTip(itemLayerTooltipNew)
+                   return True
+                else:
+                   return False
+        else :
+            return False
+        return super(MyExploBrowser, self).eventFilter(source, event)
 #==================================================
 #==================================================
         
@@ -619,6 +725,31 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     return  
 
 #==================================================
+#Lecture du fichier ini pour Tooltip
+#==================================================
+def loadParamTooltip(self) :
+    mSettings = QgsSettings()
+    mDicAutre = {}
+    mSettings.beginGroup("PLUME")
+    mSettings.beginGroup("Generale")
+    mDicAutre["activeTooltip"]                = "false"
+    mDicAutre["activeTooltipWithtitle"]       = "true"
+    mDicAutre["activeTooltipLogo"]            = "true"
+    mDicAutre["activeTooltipCadre"]           = "false"
+    mDicAutre["activeTooltipColor"]           = "false"
+    mDicAutre["activeTooltipColorText"]       = "#FFFFFF"
+    mDicAutre["activeTooltipColorBackground"] = "#D88F92"
+    for key, value in mDicAutre.items():
+        if not mSettings.contains(key) :
+           mSettings.setValue(key, value)
+        else :
+           mDicAutre[key] = mSettings.value(key)
+                  
+    mSettings.endGroup()
+    mSettings.endGroup()
+    return mDicAutre
+
+#==================================================
 #Lecture du fichier ini pour click before open IHM
 #==================================================
 def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mBrowser = "") :
@@ -628,13 +759,38 @@ def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mB
     mSettings.beginGroup("Generale")
     if mAction == "write" : 
        if layerBeforeClicked[0] != None and layerBeforeClicked[0] != "" :
-          #mDicAutre["layerBeforeClicked"] = layerBeforeClicked[0].id() if layerBeforeClicked[1] == "qgis" else layerBeforeClicked[0] 
           mDicAutre["layerBeforeClicked"]         = layerBeforeClicked[0].id() if layerBeforeClicked[1] == "qgis" else mItem if mItem != None else layerBeforeClicked[0]
-          #print("mitem " + str(mItem) + " " + str(mDicAutre["layerBeforeClicked"] ))
           mDicAutre["layerBeforeClickedWho"]      = layerBeforeClicked[1]
           mDicAutre["layerBeforeClickedBrowser"]  = mBrowser
           for key, value in mDicAutre.items():
               mSettings.setValue(key, value)
+       #---- for Tooltip
+       mDicAutre = {}
+       mDicAutre["activeTooltip"]                = "false"
+       mDicAutre["activeTooltipWithtitle"]       = "true"
+       mDicAutre["activeTooltipLogo"]            = "true"
+       mDicAutre["activeTooltipCadre"]           = "false"
+       mDicAutre["activeTooltipColor"]           = "false"
+
+       for key, value in mDicAutre.items():
+          if not mSettings.contains(key) :
+             mSettings.setValue(key, value)
+          else :
+             mDicAutre[key] = mSettings.value(key)
+       #---- for Tooltip color
+       mSettings.endGroup()
+       mSettings.beginGroup("BlocsColor")
+       mDicAutre = {}
+       mDicAutre["activeTooltipColorText"]       = "#000000"
+       mDicAutre["activeTooltipColorBackground"] = "#fff4f2"
+
+       for key, value in mDicAutre.items():
+          if not mSettings.contains(key) :
+             mSettings.setValue(key, value)
+          else :
+             mDicAutre[key] = mSettings.value(key)
+       #---- for Tooltip
+
     elif mAction == "read" : 
        mDicAutre["layerBeforeClicked"]         = ""
        mDicAutre["layerBeforeClickedWho"]      = ""
@@ -684,6 +840,13 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["layerBeforeClickedWho"]     = valueDefautLayerBeforeClickedWho
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
+       #---- for Tooltip
+       mDicAutre["activeTooltip"]                = "false"
+       mDicAutre["activeTooltipWithtitle"]       = "true"
+       mDicAutre["activeTooltipLogo"]            = "true"
+       mDicAutre["activeTooltipCadre"]           = "false"
+       mDicAutre["activeTooltipColor"]           = "false"
+       #---- for Tooltip
 
        for key, value in mDicAutre.items():
            if not mSettings.contains(key) :
@@ -707,6 +870,10 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["geomPointEpaisseur"]          = "8"
        mDicAutreColor["geomZoom"]                    = "true"
        mDicAutreColor["geomPrecision"]               = "8"
+       #---- for Tooltip
+       mDicAutreColor["activeTooltipColorText"]       = "#000000"
+       mDicAutreColor["activeTooltipColorBackground"] = "#fff4f2"
+       #---- for Tooltip
 
        for key, value in mDicAutreColor.items():
            if not mSettings.contains(key) :

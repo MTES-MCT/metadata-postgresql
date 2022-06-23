@@ -33,6 +33,7 @@ import os
 import subprocess
 import time
 import sys
+import traceback
 
 from contextlib import contextmanager
 import psycopg2
@@ -48,7 +49,7 @@ class Ui_Dialog_plume(object):
         self.iface = qgis.utils.iface                                                          
         self.firstOpen = True                                 
         self.firstOpenConnect = True
-
+        
     @contextmanager
     def safe_pg_connection(self) :
         if not getattr(self, 'mConnectEnCours', False) or self.mConnectEnCours.closed:
@@ -81,16 +82,17 @@ class Ui_Dialog_plume(object):
            bibli_plume.breakExecuteSql(self)
 
            zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
-           zMess  = str(err_Exception) 
+           zMess  = str(err_Exception) + "\n" + str(traceback.format_tb(Exception.__traceback__)) 
            displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
         
         finally:
            if getattr(self, 'mConnectEnCours', False) : self.mConnectEnCours.close()
                 
-    def setupUi(self, Dialog):
+    def setupUi(self, Dialog, _dicTooltipExiste):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
         self.zMessError_Transaction = "FIN TRANSACTION"
+        self._dicTooltipExiste = _dicTooltipExiste
         #--
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
@@ -129,6 +131,15 @@ class Ui_Dialog_plume(object):
         self.geomPointEpaisseur = self.mDic_LH["geomPointEpaisseur"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
         self.geomPrecision   = int(self.mDic_LH["geomPrecision"])       
+        #-
+        #tooltip         
+        self.activeTooltip          = True if mDic_LH["activeTooltip"]          == "true" else False
+        self.activeTooltipWithtitle = True if mDic_LH["activeTooltipWithtitle"] == "true" else False
+        self.activeTooltipLogo      = True if mDic_LH["activeTooltipLogo"]      == "true" else False
+        self.activeTooltipCadre     = True if mDic_LH["activeTooltipCadre"]     == "true" else False
+        self.activeTooltipColor     = True if mDic_LH["activeTooltipColor"]     == "true" else False
+        self.activeTooltipColorText       = mDic_LH["activeTooltipColorText"] 
+        self.activeTooltipColorBackground = mDic_LH["activeTooltipColorBackground"] 
         #-
         mDicType         = ["ICON_CROSS", "ICON_X", "ICON_BOX", "ICON_CIRCLE", "ICON_FULL_BOX" , "ICON_DIAMOND" , "ICON_FULL_DIAMOND"]
         mDicTypeObj      = [QgsRubberBand.ICON_X, QgsRubberBand.ICON_CROSS, QgsRubberBand.ICON_BOX, QgsRubberBand.ICON_CIRCLE, QgsRubberBand.ICON_FULL_BOX, QgsRubberBand.ICON_DIAMOND, QgsRubberBand.ICON_FULL_DIAMOND]
@@ -193,6 +204,7 @@ class Ui_Dialog_plume(object):
         Dialog.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint) 
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource          = _pathIcons + "/plume.svg"
+        iconSourceTooltip   = _pathIcons + "/plume.png"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -252,7 +264,12 @@ class Ui_Dialog_plume(object):
         #==========================
         #Interactions avec les différents canaux de communication
         self.gestionInteractionConnections()
-
+        
+        #==========================
+        #Active Tooltip
+        self._myExploBrowser  = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+        self._myExploBrowser2 = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+        
         #==========================
         #Instanciation des "shape, template, vocabulary, mode" 
         self.translation = bibli_plume.returnObjetTranslation(self)
@@ -348,6 +365,16 @@ class Ui_Dialog_plume(object):
               metagraph  = bibli_plume.importObjetMetagraph(self)
               if metagraph != None : self.metagraph = metagraph
            #**********************
+           elif mItem == "plumeImportFileInspire" :
+              if self.saveMetaGraph :
+                 self.oldMetagraph  = self.metagraph
+              else :   
+                 self.metagraph     = self.oldMetagraph
+              self.saveMetaGraph = False
+              #-   
+              metagraph  = bibli_plume.importObjetMetagraphInspire(self)
+              if metagraph != None : self.metagraph = metagraph
+           #**********************
            elif mItem == "Traduction" :
               self.translation = (False if self.translation else True) 
            #**********************
@@ -357,7 +384,7 @@ class Ui_Dialog_plume(object):
 
            #**********************
            #*** commun
-           if mItem in ["Edition", "Save", "Empty", "plumeImportFile", "Paste", "Traduction"] :
+           if mItem in ["Edition", "Save", "Empty", "plumeImportFile", "plumeImportFileInspire", "Paste", "Traduction"] :
               bibli_plume.saveObjetTranslation(self.translation)
               self.generationALaVolee(bibli_plume.returnObjetsMeta(self))
            #-
@@ -881,7 +908,6 @@ class Ui_Dialog_plume(object):
            #Lecture existence Extension METADATA            
            mKeySql = queries.query_plume_pg_check()
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-
            result = r[0]
            self.instalMetadata = False
            #Information si not installe
@@ -1204,30 +1230,45 @@ class Ui_Dialog_plume(object):
         self.plumeImport.setIcon(QIcon(_iconSourcesImport))
         self.plumeImport.setObjectName("Import")
         self.plumeImport.setGeometry(QtCore.QRect(abs, ord, larg, haut))
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata from a file or from a CSW service.") 
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata.") 
         self.plumeImport.setToolTip(mTextToolTip)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         _editStyle = self.editStyle             #style saisie
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:220px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:270px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
-        #-- Importer les métadonnées depuis un fichier
-        mText = QtWidgets.QApplication.translate("plume_ui", "Import from file")
+        #-- Importer les métadonnées depuis un fichier DACT
+        mText = QtWidgets.QApplication.translate("plume_ui", "Import from file (DCAT)")
         self.plumeImportFile = QAction("plumeImportFile",self.plumeImport)
         self.plumeImportFile.setText(mText)
         self.plumeImportFile.setObjectName("plumeImportFile")
         self.plumeImportFile.setToolTip(mText)
         self.plumeImportFile.triggered.connect(self.clickButtonsActions)
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import the contents of a metadata file using RDF syntax with DCAT vocabulary.") + "\n" +  QtWidgets.QApplication.translate("plume_ui", "The result will be all the more conclusive if the metadata conforms to the DCAT-AP v2 or GeoDCAT-AP v2 profiles.") 
+        self.plumeImportFile.setToolTip(mTextToolTip)
         _mObjetQMenu.addAction(self.plumeImportFile)
-        #-- Importer les métadonnées depuis un fichier
+        #-- Importer les métadonnées depuis un fichier DACT
+        #-- Importer les métadonnées depuis un fichier INSPIRE
+        mText = QtWidgets.QApplication.translate("plume_ui", "Import from file (INSPIRE)")
+        self.plumeImportFileInspire = QAction("plumeImportFileInspire",self.plumeImport)
+        self.plumeImportFileInspire.setText(mText)
+        self.plumeImportFileInspire.setObjectName("plumeImportFileInspire")
+        self.plumeImportFileInspire.setToolTip(mText)
+        self.plumeImportFileInspire.triggered.connect(self.clickButtonsActions)
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import the metadata contained in an XML file that complies with INSPIRE specifications.") 
+        self.plumeImportFileInspire.setToolTip(mTextToolTip)
+        _mObjetQMenu.addAction(self.plumeImportFileInspire)
+        #-- Importer les métadonnées depuis un fichier INSPIRE
         #-- Importer les métadonnées depuis un service CSW
-        mText = QtWidgets.QApplication.translate("plume_ui", "Import from a CSW service") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Import from a CSW service (INSPIRE)") 
         self.plumeImportCsw = QAction("plumeImportCSW",self.plumeImport)
         self.plumeImportCsw.setText(mText)
         self.plumeImportCsw.setObjectName("plumeImportCSW")
         self.plumeImportCsw.setToolTip(mText)
         self.plumeImportCsw.triggered.connect(self.clickImportCSW)
+        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata that conforms to INSPIRE specifications by querying a CSW service.") 
+        self.plumeImportCsw.setToolTip(mTextToolTip)
         _mObjetQMenu.addAction(self.plumeImportCsw)
         #-- Importer les métadonnées depuis un service CSW
         #------------

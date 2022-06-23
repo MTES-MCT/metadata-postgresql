@@ -12,9 +12,9 @@ from . import bibli_plume
 from .bibli_plume import *
 
 class Dialog(QDialog, Ui_Dialog_plume):
-      def __init__(self):
+      def __init__(self, _dicTooltipExiste):
           QDialog.__init__(self)
-          self.setupUi(self)
+          self.setupUi(self, _dicTooltipExiste)
 
       def reject(self):
           try :

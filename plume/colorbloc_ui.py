@@ -62,6 +62,11 @@ class Ui_Dialog_ColorBloc(object):
         labelTab_Perso = QtWidgets.QApplication.translate("colorbloc_ui", "   IHM param   ", None)
         self.tabWidget.addTab(self.tab_widget_Perso,labelTab_Perso)
         #--------------------------
+        self.tab_widget_Geom = QWidget()
+        self.tab_widget_Geom.setObjectName("tab_widget_Geom")
+        labelTab_Geom = QtWidgets.QApplication.translate("colorbloc_ui", "  Geom settings  ", None)
+        self.tabWidget.addTab(self.tab_widget_Geom,labelTab_Geom)
+        #--------------------------
         self.tab_widget_User = QWidget()
         self.tab_widget_User.setObjectName("tab_widget_User")
         labelTab_User = QtWidgets.QApplication.translate("colorbloc_ui", "  User settings  ", None)
@@ -71,14 +76,17 @@ class Ui_Dialog_ColorBloc(object):
 
         #========
         self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
-        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor"}
+        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor", 7:"activeTooltipColorText", 8:"activeTooltipColorBackground"}
         self.dicListLettreLabel = { 0:QtWidgets.QApplication.translate("colorbloc_ui", "Tab"),\
                                     1:QtWidgets.QApplication.translate("colorbloc_ui", "General group"),\
                                     2:QtWidgets.QApplication.translate("colorbloc_ui", "Property group"),\
                                     3:QtWidgets.QApplication.translate("colorbloc_ui", "Value group"),\
                                     4:QtWidgets.QApplication.translate("colorbloc_ui", "Translation group"),\
                                     5:QtWidgets.QApplication.translate("colorbloc_ui", "Wording"),\
-                                    6:QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tools color")}
+                                    6:QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tools color"),\
+                                    7:QtWidgets.QApplication.translate("colorbloc_ui", "Text color"),\
+                                    8:QtWidgets.QApplication.translate("colorbloc_ui", "Background color")\
+                                    }
         #========
         self.groupBoxAll = QtWidgets.QGroupBox(self.tab_widget_Perso)
         self.groupBoxAll.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
@@ -188,7 +196,111 @@ class Ui_Dialog_ColorBloc(object):
         mValueTemp = [ k for k, v in mDicToolBarDialog.items() if v == self.comboToolBarDialog.currentText()][0]
         self.zComboToolBarDialog = mValueTemp  # si ouverture sans chgt et sauve
 
+        #======== for Tooltip explo
+        #========
+        self.groupBoxTooltip = QtWidgets.QGroupBox(self.groupBoxAll)
+        self.groupBoxTooltip.setGeometry(QtCore.QRect(0,270,(self.tabWidget.width()/2) - 40, 130))
+        self.groupBoxTooltip.setObjectName("groupBoxTooltip")
+        self.groupBoxTooltip.setStyleSheet("QGroupBox {   \
+                                border-style: dashed; border-width:2px;       \
+                                border-color: #958B62;      \
+                                font: bold 11px;         \
+                                }")
+        self.groupBoxTooltip.setTitle(QtWidgets.QApplication.translate("colorbloc_ui", "Browser"))
+        #tooltip
+        self.activeTooltip           = True   if self.mDic_LH["activeTooltip"]           == "true" else False
+        self.activeTooltipWithtitle  = True   if self.mDic_LH["activeTooltipWithtitle"]  == "true" else False
+        self.activeTooltipLogo       = True   if self.mDic_LH["activeTooltipLogo"]       == "true" else False
+        self.activeTooltipCadre      = True   if self.mDic_LH["activeTooltipCadre"]      == "true" else False
+        self.activeTooltipColor      = True   if self.mDic_LH["activeTooltipColor"]      == "true" else False
+        self.activeTooltipColorText       = self.mDic_LH["activeTooltipColorText"] 
+        self.activeTooltipColorBackground = self.mDic_LH["activeTooltipColorBackground"] 
+        #--
+        self.labelActivetooltip = QtWidgets.QLabel(self.groupBoxTooltip)
+        self.labelActivetooltip.setGeometry(QtCore.QRect(10, 30, 120, 30))
+        self.labelActivetooltip.setAlignment(Qt.AlignRight)        
+        self.labelActivetooltip.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Modified tooltip :"))         
+        #--
+        self.QChecklabelActivetooltip = QtWidgets.QCheckBox(self.groupBoxTooltip)
+        self.QChecklabelActivetooltip.setGeometry(QtCore.QRect(145, 25, 190, 20))
+        self.QChecklabelActivetooltip.setObjectName("QChecklabelActivetooltip")
+        self.QChecklabelActivetooltip.setChecked(self.activeTooltip)  
+        self.QChecklabelActivetooltip.toggled.connect(lambda : self.functionTooltip("Activetooltip"))       
+        self.activeTooltip = True if self.QChecklabelActivetooltip.isChecked() else False  # si ouverture sans chgt et sauve
+
+        #--
+        self.labelActiveTooltipWithtitle = QtWidgets.QLabel(self.groupBoxTooltip)
+        self.labelActiveTooltipWithtitle.setGeometry(QtCore.QRect(10, 50, 120, 30))
+        self.labelActiveTooltipWithtitle.setAlignment(Qt.AlignRight)        
+        self.labelActiveTooltipWithtitle.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Show label :"))         
+        self.labelActiveTooltipWithtitle.setToolTip("Extract metadata label")        
+        #--
+        self.QChecklabelActiveTooltipWithtitle = QtWidgets.QCheckBox(self.groupBoxTooltip)
+        self.QChecklabelActiveTooltipWithtitle.setGeometry(QtCore.QRect(145, 45, 190, 20))
+        self.QChecklabelActiveTooltipWithtitle.setObjectName("QChecklabelActiveTooltipWithtitle")
+        self.QChecklabelActiveTooltipWithtitle.setChecked(self.activeTooltipWithtitle)  
+        self.QChecklabelActiveTooltipWithtitle.toggled.connect(lambda : self.functionTooltip("ActiveTooltipWithtitle"))       
+        self.QChecklabelActiveTooltipWithtitle.setToolTip(QtWidgets.QApplication.translate("colorbloc_ui", "Extract metadata label :"))        
+        self.activeTooltipWithtitle = True if self.QChecklabelActiveTooltipWithtitle.isChecked() else False  # si ouverture sans chgt et sauve
+
+        #--
+        self.labelActiveTooltipLogo = QtWidgets.QLabel(self.groupBoxTooltip)
+        self.labelActiveTooltipLogo.setGeometry(QtCore.QRect(170, 10, 80, 30))
+        self.labelActiveTooltipLogo.setAlignment(Qt.AlignRight)        
+        self.labelActiveTooltipLogo.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Logo Plume :"))         
+        #--
+        self.QChecklabelActiveTooltipLogo = QtWidgets.QCheckBox(self.groupBoxTooltip)
+        self.QChecklabelActiveTooltipLogo.setGeometry(QtCore.QRect(265, 5, 190, 20))
+        self.QChecklabelActiveTooltipLogo.setObjectName("QChecklabelActiveTooltipLogo")
+        self.QChecklabelActiveTooltipLogo.setChecked(self.activeTooltipLogo)  
+        self.QChecklabelActiveTooltipLogo.toggled.connect(lambda : self.functionTooltip("ActiveTooltipLogo"))       
+        self.activeTooltipLogo = True if self.QChecklabelActiveTooltipLogo.isChecked() else False  # si ouverture sans chgt et sauve
+        #--
+        self.labelActiveTooltipCadre = QtWidgets.QLabel(self.groupBoxTooltip)
+        self.labelActiveTooltipCadre.setGeometry(QtCore.QRect(170, 30, 80, 30))
+        self.labelActiveTooltipCadre.setAlignment(Qt.AlignRight)        
+        self.labelActiveTooltipCadre.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Border :"))         
+        #--
+        self.QChecklabelActiveTooltipCadre = QtWidgets.QCheckBox(self.groupBoxTooltip)
+        self.QChecklabelActiveTooltipCadre.setGeometry(QtCore.QRect(265, 25, 190, 20))
+        self.QChecklabelActiveTooltipCadre.setObjectName("QChecklabelActiveTooltipCadre")
+        self.QChecklabelActiveTooltipCadre.setChecked(self.activeTooltipCadre)  
+        self.QChecklabelActiveTooltipCadre.toggled.connect(lambda : self.functionTooltip("ActiveTooltipCadre"))       
+        self.activeTooltipCadre = True if self.QChecklabelActiveTooltipCadre.isChecked() else False  # si ouverture sans chgt et sauve
+        #--
+        self.labelActiveTooltipColor = QtWidgets.QLabel(self.groupBoxTooltip)
+        self.labelActiveTooltipColor.setGeometry(QtCore.QRect(170, 50, 80, 30))
+        self.labelActiveTooltipColor.setAlignment(Qt.AlignRight)        
+        self.labelActiveTooltipColor.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Color :"))         
+        #--
+        self.QChecklabelActiveTooltipColor = QtWidgets.QCheckBox(self.groupBoxTooltip)
+        self.QChecklabelActiveTooltipColor.setGeometry(QtCore.QRect(265, 45, 190, 20))
+        self.QChecklabelActiveTooltipColor.setObjectName("QChecklabelActiveTooltipColor")
+        self.QChecklabelActiveTooltipColor.setChecked(self.activeTooltipColor)  
+        self.QChecklabelActiveTooltipColor.toggled.connect(lambda : self.functionTooltip("ActiveTooltipColor"))       
+        self.activeTooltipColor = True if self.QChecklabelActiveTooltipColor.isChecked() else False  # si ouverture sans chgt et sauve
+        #--
+        button_7, img_7, reset_7 = QtWidgets.QPushButton(self.groupBoxTooltip), QtWidgets.QLabel(self.groupBoxTooltip), QtWidgets.QPushButton(self.groupBoxTooltip)
+        self.button_7, self.reset_7 = button_7, reset_7
+        self.genereButtonAction(button_7, img_7, reset_7, "button_7", "img_7", "reset_7", 7)
+        #--
+        button_8, img_8, reset_8 = QtWidgets.QPushButton(self.groupBoxTooltip), QtWidgets.QLabel(self.groupBoxTooltip), QtWidgets.QPushButton(self.groupBoxTooltip)
+        self.button_8, self.reset_8 = button_8, reset_8
+        self.genereButtonAction(button_8, img_8, reset_8, "button_8", "img_8", "reset_8", 8)
+        self.functionTooltip("Activetooltip")
+        #========
+        #======== for Tooltip explo
+
         #======== for Geometry
+        #========
+        self.groupBoxGeom = QtWidgets.QGroupBox(self.tab_widget_Geom)
+        self.groupBoxGeom.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
+        self.groupBoxGeom.setObjectName("groupBoxGeom")
+        self.groupBoxGeom.setStyleSheet("QGroupBox {   \
+                                border-style: dashed; border-width:0px;       \
+                                border-color: #958B62;      \
+                                font: bold 11px;         \
+                                }")
         #-
         self.geomPrecision   = self.mDic_LH["geomPrecision"]       
         self.geomEpaisseur   = self.mDic_LH["geomEpaisseur"]       
@@ -196,18 +308,18 @@ class Ui_Dialog_ColorBloc(object):
         self.geomPointEpaisseur = self.mDic_LH["geomPointEpaisseur"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
         #-
-        self.groupBoxLineGeom = QtWidgets.QGroupBox(self.groupBoxAll)
+        self.groupBoxLineGeom = QtWidgets.QGroupBox(self.groupBoxGeom)
         self.groupBoxLineGeom.setObjectName("groupBoxLineGeom")
         self.groupBoxLineGeom.setStyleSheet("QGroupBox#groupBoxLineGeom { border-style: dotted; border-width: 2px ; border-color: #958b62;}")
-        self.groupBoxLineGeom.setGeometry(QtCore.QRect(10, 270, (self.tabWidget.width()/2) - 50, 2))
+        self.groupBoxLineGeom.setGeometry(QtCore.QRect(10, 10, (self.tabWidget.width()/2) - 50, 2))
         #========
-        self.labelgeomPrecision = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelgeomPrecision.setGeometry(QtCore.QRect(10, 280, 180, 30))
+        self.labelgeomPrecision = QtWidgets.QLabel(self.groupBoxGeom)
+        self.labelgeomPrecision.setGeometry(QtCore.QRect(10, 20, 180, 30))
         self.labelgeomPrecision.setAlignment(Qt.AlignRight)        
         self.labelgeomPrecision.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Coordinate accuracy. WKT :"))         
         #-
-        self.spingeomPrecision = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
-        self.spingeomPrecision.setGeometry(QtCore.QRect(205,276 ,50, 20))
+        self.spingeomPrecision = QtWidgets.QDoubleSpinBox(self.groupBoxGeom)
+        self.spingeomPrecision.setGeometry(QtCore.QRect(205,16 ,50, 20))
         self.spingeomPrecision.setMaximum(17)
         self.spingeomPrecision.setMinimum(0)
         self.spingeomPrecision.setSingleStep(1)
@@ -218,13 +330,13 @@ class Ui_Dialog_ColorBloc(object):
         self.spingeomPrecision.valueChanged.connect(self.functiongeomPrecision)
         self.geomPrecision = self.spingeomPrecision.value()  # si ouverture sans chgt et sauve
         #-
-        self.labelgeomEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelgeomEpaisseur.setGeometry(QtCore.QRect(10, 300, 180, 30))
+        self.labelgeomEpaisseur = QtWidgets.QLabel(self.groupBoxGeom)
+        self.labelgeomEpaisseur.setGeometry(QtCore.QRect(10, 40, 180, 30))
         self.labelgeomEpaisseur.setAlignment(Qt.AlignRight)        
         self.labelgeomEpaisseur.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tool thickness :"))        
         #-
-        self.spingeomEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
-        self.spingeomEpaisseur.setGeometry(QtCore.QRect(205,296 ,50, 20))
+        self.spingeomEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxGeom)
+        self.spingeomEpaisseur.setGeometry(QtCore.QRect(205,36 ,50, 20))
         self.spingeomEpaisseur.setMaximum(10)
         self.spingeomEpaisseur.setMinimum(0)
         self.spingeomEpaisseur.setValue(1)
@@ -241,26 +353,26 @@ class Ui_Dialog_ColorBloc(object):
         self.mDialog.mDicTypeObj = dict(zip(mDicTypeCle, mDicTypeObj)) # For bibli_plume_tools_map
 
         mDicTypeCle = [ elem.lower().capitalize() for elem in mDicTypeCle ]
-        self.labelTypegeomPoint = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelTypegeomPoint.setGeometry(QtCore.QRect(-20, 320, 210, 30))
+        self.labelTypegeomPoint = QtWidgets.QLabel(self.groupBoxGeom)
+        self.labelTypegeomPoint.setGeometry(QtCore.QRect(-20, 60, 210, 30))
         self.labelTypegeomPoint.setAlignment(Qt.AlignRight)        
         self.labelTypegeomPoint.setText(QtWidgets.QApplication.translate("colorbloc_ui", "POINT geometry symbol :"))         
         #--
-        self.comboTypegeomPoint = QtWidgets.QComboBox(self.groupBoxAll)
-        self.comboTypegeomPoint.setGeometry(QtCore.QRect(205, 315, 190, 20))
+        self.comboTypegeomPoint = QtWidgets.QComboBox(self.groupBoxGeom)
+        self.comboTypegeomPoint.setGeometry(QtCore.QRect(205, 55, 190, 20))
         self.comboTypegeomPoint.setObjectName("comboTypegeomPoint")
         self.comboTypegeomPoint.addItems( mDicTypeCle )
         self.comboTypegeomPoint.currentTextChanged.connect(self.functioncomboTypegeomPoint)
         self.comboTypegeomPoint.setCurrentText(self.geomPoint.lower().capitalize())         
         self.geomPoint = self.comboTypegeomPoint.currentText().upper()  # si ouverture sans chgt et sauve
         #-
-        self.labelgeomPointEpaisseur = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelgeomPointEpaisseur.setGeometry(QtCore.QRect(10, 340, 180, 30))
+        self.labelgeomPointEpaisseur = QtWidgets.QLabel(self.groupBoxGeom)
+        self.labelgeomPointEpaisseur.setGeometry(QtCore.QRect(10, 80, 180, 30))
         self.labelgeomPointEpaisseur.setAlignment(Qt.AlignRight)        
         self.labelgeomPointEpaisseur.setText(QtWidgets.QApplication.translate("colorbloc_ui", "POINT geometry size :"))         
         #-
-        self.spingeomPointEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxAll)
-        self.spingeomPointEpaisseur.setGeometry(QtCore.QRect(205,335 ,50, 20))
+        self.spingeomPointEpaisseur = QtWidgets.QDoubleSpinBox(self.groupBoxGeom)
+        self.spingeomPointEpaisseur.setGeometry(QtCore.QRect(205,75 ,50, 20))
         self.spingeomPointEpaisseur.setMaximum(20)
         self.spingeomPointEpaisseur.setMinimum(0)
         self.spingeomPointEpaisseur.setValue(1)
@@ -272,19 +384,19 @@ class Ui_Dialog_ColorBloc(object):
         self.spingeomPointEpaisseur.valueChanged.connect(self.functiongeomPointEpaisseur)
         self.geomPointEpaisseur = self.spingeomPointEpaisseur.value()  # si ouverture sans chgt et sauve
         #--
-        self.labelgeomZoom = QtWidgets.QLabel(self.groupBoxAll)
-        self.labelgeomZoom.setGeometry(QtCore.QRect(-20, 360, 210, 30))
+        self.labelgeomZoom = QtWidgets.QLabel(self.groupBoxGeom)
+        self.labelgeomZoom.setGeometry(QtCore.QRect(-20, 100, 210, 30))
         self.labelgeomZoom.setAlignment(Qt.AlignRight)        
         self.labelgeomZoom.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Zoom on the geometric visualization :"))         
         #--
-        self.QCheckgeomZoom = QtWidgets.QCheckBox(self.groupBoxAll)
-        self.QCheckgeomZoom.setGeometry(QtCore.QRect(205, 355, 190, 20))
+        self.QCheckgeomZoom = QtWidgets.QCheckBox(self.groupBoxGeom)
+        self.QCheckgeomZoom.setGeometry(QtCore.QRect(205, 95, 190, 20))
         self.QCheckgeomZoom.setObjectName("QCheckgeomZoom")
         self.QCheckgeomZoom.setChecked(self.geomZoom)  
         self.QCheckgeomZoom.toggled.connect(self.functiongeomZoom)       
         self.geomZoom = True if self.QCheckgeomZoom.isChecked() else False  # si ouverture sans chgt et sauve
         #--
-        button_6, img_6, reset_6 = QtWidgets.QPushButton(self.groupBoxAll), QtWidgets.QLabel(self.groupBoxAll), QtWidgets.QPushButton(self.groupBoxAll)
+        button_6, img_6, reset_6 = QtWidgets.QPushButton(self.groupBoxGeom), QtWidgets.QLabel(self.groupBoxGeom), QtWidgets.QPushButton(self.groupBoxGeom)
         self.genereButtonAction(button_6, img_6, reset_6, "button_6", "img_6", "reset_6", 6)
         #======== for Geometry
 
@@ -668,7 +780,43 @@ class Ui_Dialog_ColorBloc(object):
         return 
     # for geometry         
  
+    #==========================       
+    # for tooltip         
+    def functionTooltip(self, param):
+        if param == "Activetooltip" : 
+           self.activeTooltip = True if self.QChecklabelActivetooltip.isChecked() else False
+           self.QChecklabelActiveTooltipWithtitle.setEnabled(self.activeTooltip)
+           self.QChecklabelActiveTooltipLogo.setEnabled(self.activeTooltip)
+           self.QChecklabelActiveTooltipCadre.setEnabled(self.activeTooltip)
+           self.QChecklabelActiveTooltipColor.setEnabled(self.activeTooltip)
+
+           if self.activeTooltip :
+              self.button_7.setEnabled(self.QChecklabelActiveTooltipColor.isChecked())
+              self.reset_7.setEnabled(self.QChecklabelActiveTooltipColor.isChecked())
+              self.button_8.setEnabled(self.QChecklabelActiveTooltipColor.isChecked())
+              self.reset_8.setEnabled(self.QChecklabelActiveTooltipColor.isChecked())
+           else :  
+              self.button_7.setEnabled(False)
+              self.reset_7.setEnabled(False)
+              self.button_8.setEnabled(False)
+              self.reset_8.setEnabled(False)
+        elif param == "ActiveTooltipWithtitle" : 
+           self.activeTooltipWithtitle = True if self.QChecklabelActiveTooltipWithtitle.isChecked() else False
+        elif param == "ActiveTooltipLogo" : 
+           self.activeTooltipLogo = True if self.QChecklabelActiveTooltipLogo.isChecked() else False
+        elif param == "ActiveTooltipCadre" : 
+           self.activeTooltipCadre = True if self.QChecklabelActiveTooltipCadre.isChecked() else False
+        elif param == "ActiveTooltipColor" : 
+           self.activeTooltipColor = True if self.QChecklabelActiveTooltipColor.isChecked() else False
+           self.button_7.setEnabled(self.activeTooltipColor)
+           self.reset_7.setEnabled(self.activeTooltipColor)
+           self.button_8.setEnabled(self.activeTooltipColor)
+           self.reset_8.setEnabled(self.activeTooltipColor)
+
+        return 
+    # for tooltip         
     #==========================         
+
     #==========================         
     def createWYSIWYG(self):
         #======== wysiwyg
@@ -1237,9 +1385,59 @@ class Ui_Dialog_ColorBloc(object):
         elif compt == 6 :  
            ii = 1
            i = compt
-           mX1, mY1 = (ii * 10) +  0,  380 
-           mX2, mY2 = (ii * 10) + 185, 380
-           mX3, mY3 = (ii * 10) + 230, 380
+           mX1, mY1 = (ii * 10) +  0,  120 
+           mX2, mY2 = (ii * 10) + 185, 120
+           mX3, mY3 = (ii * 10) + 230, 120
+           mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
+           mButton.setObjectName(mButtonName)
+           mButton.setText(self.dicListLettreLabel[i])
+           #
+           mImage.setGeometry(QtCore.QRect(mX2, mY2, 40, 20))
+           mImage.setObjectName(mImageName)
+           if self.dicListLettre[i] in self.mDic_LH :
+              varColor = str( self.mDic_LH[self.dicListLettre[i]] ) 
+              zStyleBackground = "QLabel { background-color : "  + varColor + "; }"
+              mImage.setStyleSheet(zStyleBackground)
+           #
+           mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
+           mReset.setObjectName(mResetName)
+           mReset.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Reset")) 
+           #
+           mButton.clicked.connect(lambda : self.functionColor(mImage, i))
+           mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))
+
+        #for tooltip       
+        elif compt == 7 : #Tooltip Text  
+           ii = 1
+           i = compt
+           mX1, mY1 = (ii * 10) +  0,  70 
+           mX2, mY2 = (ii * 10) + 185, 70
+           mX3, mY3 = (ii * 10) + 230, 70
+           mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
+           mButton.setObjectName(mButtonName)
+           mButton.setText(self.dicListLettreLabel[i])
+           #
+           mImage.setGeometry(QtCore.QRect(mX2, mY2, 40, 20))
+           mImage.setObjectName(mImageName)
+           if self.dicListLettre[i] in self.mDic_LH :
+              varColor = str( self.mDic_LH[self.dicListLettre[i]] ) 
+              zStyleBackground = "QLabel { background-color : "  + varColor + "; }"
+              mImage.setStyleSheet(zStyleBackground)
+           #
+           mReset.setGeometry(QtCore.QRect(mX3, mY3, 80, 20))
+           mReset.setObjectName(mResetName)
+           mReset.setText(QtWidgets.QApplication.translate("colorbloc_ui", "Reset")) 
+           #
+           mButton.clicked.connect(lambda : self.functionColor(mImage, i))
+           mReset.clicked.connect(lambda : self.functionResetColor(mImage, i, mButtonName))
+
+        #for tooltip       
+        elif compt == 8 : #Tooltip Background  
+           ii = 1
+           i = compt
+           mX1, mY1 = (ii * 10) +  0,  100 
+           mX2, mY2 = (ii * 10) + 185, 100
+           mX3, mY3 = (ii * 10) + 230, 100
            mButton.setGeometry(QtCore.QRect(mX1, mY1, 180, 20))
            mButton.setObjectName(mButtonName)
            mButton.setText(self.dicListLettreLabel[i])
@@ -1280,8 +1478,32 @@ class Ui_Dialog_ColorBloc(object):
                       mColorFirst  = mColor.name()
                       mDicSaveColor[mLettre] = mColorFirst
                       break
+ 
+          #---- for Tooltip
+           mChild_premier = [mObj for mObj in self.groupBoxTooltip.children()] 
 
-           #======== for Geometry
+           mLettre, mColorFirst = "", None
+           for mObj in mChild_premier :
+               for i in range(9) :
+                   if mObj.objectName() == "img_" + str(i) :
+                      mLettre      = str(self.dicListLettre[i])
+                      mColor       = mObj.palette().color(QPalette.Window)
+                      mColorFirst  = mColor.name()
+                      mDicSaveColor[mLettre] = mColorFirst
+                      break
+          #---- for Tooltip
+          #======== for Geometry
+           mChild_premier = [mObj for mObj in self.groupBoxGeom.children()] 
+
+           mLettre, mColorFirst = "", None
+           for mObj in mChild_premier :
+               for i in range(7) :
+                   if mObj.objectName() == "img_" + str(i) :
+                      mLettre      = str(self.dicListLettre[i])
+                      mColor       = mObj.palette().color(QPalette.Window)
+                      mColorFirst  = mColor.name()
+                      mDicSaveColor[mLettre] = mColorFirst
+                      break
            #Ajouter si autre param
            mDicSaveColor["geomPrecision"] = self.geomPrecision
            mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
@@ -1312,6 +1534,13 @@ class Ui_Dialog_ColorBloc(object):
            mDicAutre = {}
            mDicAutre["ihm"]           = self.zComboWinVsDock
            mDicAutre["toolBarDialog"] = self.zComboToolBarDialog
+           #---- for Tooltip
+           mDicAutre["activeTooltip"]           = "true" if self.activeTooltip else "false"
+           mDicAutre["activeTooltipWithtitle"]  = "true" if self.activeTooltipWithtitle else "false"
+           mDicAutre["activeTooltipLogo"]       = "true" if self.activeTooltipLogo else "false"
+           mDicAutre["activeTooltipCadre"]      = "true" if self.activeTooltipCadre else "false"
+           mDicAutre["activeTooltipColor"]      = "true" if self.activeTooltipColor else "false"
+           #---- for Tooltip
            mSettings.beginGroup("Generale")
            for key, value in mDicAutre.items():
                mSettings.setValue(key, value)
@@ -1372,7 +1601,9 @@ class Ui_Dialog_ColorBloc(object):
                 "QGroupBoxTranslationGroup",
                 "QTabWidget",
                 "QLabelBackGround",
-                "geomColor"
+                "geomColor",
+                "activeTooltipColorText",
+                "activeTooltipColorBackground"
                 ]
         listBlocsValue = [
                 "#958B62",
@@ -1381,7 +1612,9 @@ class Ui_Dialog_ColorBloc(object):
                 "#FF8D7E",
                 "#958B62",
                 "#BFEAE2",   
-                "#958B62"
+                "#958B62",
+                "#000000",
+                "#f40105"
                 ] 
         mDicDashBoard = dict(zip(listBlocsKey, listBlocsValue))
  
