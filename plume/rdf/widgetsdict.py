@@ -30,7 +30,7 @@ from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, RDFS
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, RDFS, GSP
 from plume.rdf.properties import PlumeProperty, class_properties
 from plume.pg.computer import computation_method, has_computation_method
 
@@ -1131,6 +1131,7 @@ class WidgetsDict(dict):
         if widgetkey.is_long_text:
             return 'QTextEdit'
         d = {
+            GSP.wktLiteral: 'QTextEdit',
             XSD.date: 'QDateEdit',
             XSD.dateTime: 'QDateTimeEdit',
             XSD.time: 'QTimeEdit'
