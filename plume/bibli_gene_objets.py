@@ -356,6 +356,40 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQDateTime})
     # == QDATETIMEEDIT
     #---------------------------
+    #---------------------------
+    # == QTIMEEDIT
+    elif _valueObjet['main widget type'] == "QTimeEdit" :
+       #--                        
+       _mObjetQTime = QgsDateTimeEdit()
+       #Masqué /Visible Générale                               
+       if (_valueObjet['hidden']) : _mObjetQTime.setVisible(False)
+       #--                        
+       _mObjetQTime.setStyleSheet("QTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
+       _mObjetQTime.setObjectName(str(_keyObjet))
+       _displayFormat = 'hh:mm:ss'
+       _mObjetQTime.setDisplayFormat(_displayFormat)
+       _mObjetQTime.setMinimumWidth(130)
+       _mObjetQTime.setMaximumWidth(130)
+       #--                        
+       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
+       _mParentEnCours.addWidget(_mObjetQTime, row, column, rowSpan, columnSpan, Qt.AlignLeft)
+       #Valeur
+       if valueExiste('value', _valueObjet) :  
+          bibli_plume.updateObjetWithValue(_mObjetQTime, _valueObjet)  #  Mets à jour la valeur de l'objet en fonction de son type                       
+       else :
+          _mObjetQTime.clear()
+          bibli_plume.updateObjetWithValue(_mObjetQTime, _valueObjet)  #  Mets à jour la valeur de l'objet en fonction de son type                       
+       #Lecture seule                        
+       _mObjetQTime.setEnabled(False if _valueObjet['read only'] else True)
+       #Masque valeur fictive                        
+       if valueExiste('placeholder text', _valueObjet) : _mObjetQTime.setPlaceholderText(_valueObjet['placeholder text'])                                
+       #Tooltip                        
+       if valueExiste('help text', _valueObjet)        : _mObjetQTime.setToolTip(_valueObjet['help text'])
+                                          
+       #Dict des objets instanciés
+       self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQTime})
+    # == QTIMEEDIT
+    #---------------------------
 
     #---------------------------
     # == QTOOLBUTTON   Button PLUS et Button TRADUCTION et Button UNITES
@@ -721,7 +755,7 @@ def action_mObjetQToolButtonGeoToolsShow(self, __mObjetQToolButton, __keyObjet, 
     self.dic_geoToolsShow[__keyObjet] = False if self.dic_geoToolsShow[__keyObjet] else True  # Param for display BBOX ou no
     majVisuButton(self, self, __mObjetQToolButton, self.dic_geoToolsShow, __keyObjet, __valueObjet) 
 
-    mCoordSaisie  = self.mDicObjetsInstancies[__keyObjet]['main widget'].text() if self.mDicObjetsInstancies[__keyObjet]['main widget type'] == "QLabel" else self.mDicObjetsInstancies[__keyObjet]['main widget'].toPlainText()
+    mCoordSaisie  = self.mDicObjetsInstancies[__keyObjet]['main widget'].text() if self.mDicObjetsInstancies[__keyObjet]['main widget type'] == "QLabel" else (self.mDicObjetsInstancies[__keyObjet]['main widget'].toPlainText() if self.mDicObjetsInstancies[__keyObjet]['main widget type'] == "QTextEdit" else self.mDicObjetsInstancies[__keyObjet]['main widget'].text())
     mCanvas       = qgis.utils.iface.mapCanvas()
     mAuthid       = mCanvas.mapSettings().destinationCrs().authid()
     

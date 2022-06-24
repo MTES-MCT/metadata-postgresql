@@ -209,6 +209,9 @@ def updateObjetWithValue(_mObjetQSaisie, _valueObjet) :
     elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
        _displayFormat = 'dd/MM/yyyy hh:mm:ss'
        _mObjetQSaisie.setDateTime(QDateTime.fromString( __Val, _displayFormat))       
+    elif _valueObjet['main widget type'] in ("QTimeEdit",) :
+       _displayFormat = 'hh:mm:ss'
+       _mObjetQSaisie.setTime(QTime.fromString( __Val, _displayFormat))       
     elif _valueObjet['main widget type'] in ("QCheckBox",) :
        _mObjetQSaisie.setCheckState((Qt.Checked if str(__Val).lower() == 'true' else Qt.Unchecked) if __Val != None else Qt.PartiallyChecked)
     return
@@ -237,6 +240,9 @@ def ifChangeValues(_dict):
            elif _dict[key]['main widget type'] in ("QDateTimeEdit",) :
                goodValue = _dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") if _dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") != "" else None 
                if oldValue != (_dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") if _dict[key]['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss") != "" else None ) : ret = True
+           elif _dict[key]['main widget type'] in ("QTimeEdit",) :
+               goodValue = _dict[key]['main widget'].time().toString("hh:mm:ss") if _dict[key]['main widget'].time().toString("hh:mm:ss") != "" else None 
+               if oldValue != (_dict[key]['main widget'].time().toString("hh:mm:ss") if _dict[key]['main widget'].time().toString("hh:mm:ss") != "" else None ) : ret = True
            elif _dict[key]['main widget type'] in ("QCheckBox",) :
                goodValue = ("True" if _dict[key]['main widget'].checkState() == Qt.Checked else "False") if  _dict[key]['main widget'].checkState() != Qt.PartiallyChecked else None 
                if oldValue != ("True" if _dict[key]['main widget'].checkState() == Qt.Checked else "False") if  _dict[key]['main widget'].checkState() != Qt.PartiallyChecked else None : ret = True
@@ -464,6 +470,8 @@ def saveMetaIhm(self, _schema, _table) :
                value = _valueObjet['main widget'].date().toString("dd/MM/yyyy")
            elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
               value = _valueObjet['main widget'].dateTime().toString("dd/MM/yyyy hh:mm:ss")
+           elif _valueObjet['main widget type'] in ("QTimeEdit",) :
+              value = _valueObjet['main widget'].time().toString("hh:mm:ss")
            elif _valueObjet['main widget type'] in ("QCheckBox",) :
               value = (True if _valueObjet['main widget'].checkState() == Qt.Checked else False) if  _valueObjet['main widget'].checkState() != Qt.PartiallyChecked else None
 
