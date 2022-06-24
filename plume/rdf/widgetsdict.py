@@ -1131,7 +1131,6 @@ class WidgetsDict(dict):
         if widgetkey.is_long_text:
             return 'QTextEdit'
         d = {
-            GSP.wktLiteral: 'QTextEdit',
             XSD.date: 'QDateEdit',
             XSD.dateTime: 'QDateTimeEdit',
             XSD.time: 'QTimeEdit'
