@@ -1905,6 +1905,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(widgetsdict[k]['regex validator pattern'],
             r'^[^<>"\s{}|\\^`]*$')
         k = widgetsdict.root.search_from_path(LOCAL['c2dc9756-8088-4f99-b6d7-d3897513406b'])
+        self.assertTrue(k.is_long_text)
+        self.assertEqual(widgetsdict.widget_type(k), 'QTextEdit')
         self.assertListEqual(widgetsdict[k]['geo tools'],
             ['show', 'rectangle', 'polygon', 'centroid', 'circle'])
         k = widgetsdict.root.search_from_path(LOCAL['14363668-e379-4dcb-8612-48f9c76fc778'])
