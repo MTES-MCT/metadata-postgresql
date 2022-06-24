@@ -4610,6 +4610,8 @@ class ValueKey(ObjectKey):
         Cette propriété ne peut valoir ``True`` que pour une valeur textuelle
         (``rdf:langString``, ``xsd:string``, ``gsp:wktLiteral``). Toute
         tentative dans d'autres circonstances serait silencieusement ignorée.
+
+        Elle vaut toujours ``True`` pour le type ``gsp:wktLiteral``.
         
         Il est permis de fournir des valeurs de type ``rdflib.term.Literal``,
         qui seront alors automatiquement converties.
@@ -4622,8 +4624,9 @@ class ValueKey(ObjectKey):
     
     @is_long_text.setter
     def is_long_text(self, value):
-        if value and self.datatype in (RDF.langString,
-            XSD.string, GSP.wktLiteral):
+        if self.datatype == GSP.wktLiteral:
+            self._is_long_text = True
+        elif value and self.datatype in (RDF.langString, XSD.string):
             self._is_long_text = True
         else:
             self._is_long_text = False
