@@ -22,8 +22,17 @@ Ainsi, Plume est désormais capable d'alléger les infobulles de l'explorateur e
 
 *Réference : [issue #67](https://github.com/MTES-MCT/metadata-postgresql/issues/67).*
 
+## Prise en charge effective des métadonnées de type heure
+
+Plume est maintenant capable d'afficher et modifier des métadonnées prenant pour valeur des heures (`datatype` valant `'xsd:time'`). Ceci ne concerne que d'éventuelles catégories locales ajoutées par l'administrateur d'un service, car aucune catégorie commune n'est de ce type.
+
+*Réference : [issue #12](https://github.com/MTES-MCT/metadata-postgresql/issues/12).*
+
 ## Correction d'anomalies et divers
 
 En mode lecture, ou plus généralement quand Plume est paramétré pour n'afficher que les métadonnées dans la langue principale[^mainlanguage], la fiche de métadonnées présente les informations saisies dans ladite langue lorsqu'elles existent et masque alors toutes les informations dans les autres langues. Si aucune valeur n'est disponible dans langue principale pour une métadonnée traduisible, Plume affiche une valeur (et une seule) dans une autre langue, en privilégiant les langues de la liste des langues autorisées pour les traductions, considérées dans l'ordre de la liste. Ce mécanisme était affecté par une anomalie qui empêchait parfois l'affichage de la valeur dans la langue de substitution, Plume v0.5 bêta la corrige.
 
+Correction d'une anomalie qui provoquait une erreur en cas de tentative d'utilisation des fonctionnalités d'aide à la saisie des géométries sur une catégorie de métadonnées locale de type géométrique (`datatype` valant `'gsp:wktLiteral'`) non paramétrée avec `is_long_text` valant `True`. Désormais, `is_long_text` sera considéré comme valant toujours `True` pour les métadonnées géométriques (même si l'administrateur a spécifié `False` dans son modèle). Ces métadonnées seront dès lors quoi qu'il arrive présentées par Plume avec un champ de saisie multi-lignes.
+
 [^mainlanguage]: Il s'agit de la langue que l'utilisateur peut sélectionner via la barre d'outils de Plume en choisissant dans la liste des langues autorisées pour les traductions. Cette liste est elle-même un paramètre utilisateur configurable via le menu ![configuration.svg](../../../plume/icons/general/configuration.svg)  *Personnalisation de l'interface*.
+

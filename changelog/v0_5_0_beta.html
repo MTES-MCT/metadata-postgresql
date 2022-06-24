@@ -208,6 +208,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prise-en-charge-effective-des-metadonnees-de-type-heure">
+   Prise en charge effective des métadonnées de type heure
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#correction-d-anomalies-et-divers">
    Correction d’anomalies et divers
   </a>
@@ -247,9 +252,15 @@
 <p>Ainsi, Plume est désormais capable d’alléger les infobulles de l’explorateur en « supprimant » le cas échéant les balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et le JSON-LD qu’elles contiennent<a class="footnote-reference brackets" href="#suppression" id="id1">1</a>. Il ajoute également un message qui signale que des métadonnées sont disponibles pour la couche, et - au gré de l’utilisateur - peut changer l’apparence de l’infobulle (logo de Plume, fond coloré…) pour que l’utilisateur sache immédiatement si la couche est documentée. La transformation est active par défaut, mais elle peut être inhibée et/ou reconfigurée via le menu <img alt="configuration.svg" src="../_images/configuration.svg" /> <em>Personnalisation de l’interface</em>. Il est en outre possible de paramétrer Plume, toujours via le menu <img alt="configuration.svg" src="../_images/configuration.svg" /> <em>Personnalisation de l’interface</em>, pour que les balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> soient remplacées par le libellé de la table/vue extrait des métadonnées (s’il existe) au lieu d’être purement et simplement effacées.</p>
 <p><em>Réference : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/67">issue #67</a>.</em></p>
 </section>
+<section id="prise-en-charge-effective-des-metadonnees-de-type-heure">
+<h2>Prise en charge effective des métadonnées de type heure<a class="headerlink" href="#prise-en-charge-effective-des-metadonnees-de-type-heure" title="Lien permanent vers ce titre">#</a></h2>
+<p>Plume est maintenant capable d’afficher et modifier des métadonnées prenant pour valeur des heures (<code class="docutils literal notranslate"><span class="pre">datatype</span></code> valant <code class="docutils literal notranslate"><span class="pre">'xsd:time'</span></code>). Ceci ne concerne que d’éventuelles catégories locales ajoutées par l’administrateur d’un service, car aucune catégorie commune n’est de ce type.</p>
+<p><em>Réference : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/12">issue #12</a>.</em></p>
+</section>
 <section id="correction-d-anomalies-et-divers">
 <h2>Correction d’anomalies et divers<a class="headerlink" href="#correction-d-anomalies-et-divers" title="Lien permanent vers ce titre">#</a></h2>
 <p>En mode lecture, ou plus généralement quand Plume est paramétré pour n’afficher que les métadonnées dans la langue principale<a class="footnote-reference brackets" href="#mainlanguage" id="id2">2</a>, la fiche de métadonnées présente les informations saisies dans ladite langue lorsqu’elles existent et masque alors toutes les informations dans les autres langues. Si aucune valeur n’est disponible dans langue principale pour une métadonnée traduisible, Plume affiche une valeur (et une seule) dans une autre langue, en privilégiant les langues de la liste des langues autorisées pour les traductions, considérées dans l’ordre de la liste. Ce mécanisme était affecté par une anomalie qui empêchait parfois l’affichage de la valeur dans la langue de substitution, Plume v0.5 bêta la corrige.</p>
+<p>Correction d’une anomalie qui provoquait une erreur en cas de tentative d’utilisation des fonctionnalités d’aide à la saisie des géométries sur une catégorie de métadonnées locale de type géométrique (<code class="docutils literal notranslate"><span class="pre">datatype</span></code> valant <code class="docutils literal notranslate"><span class="pre">'gsp:wktLiteral'</span></code>) non paramétrée avec <code class="docutils literal notranslate"><span class="pre">is_long_text</span></code> valant <code class="docutils literal notranslate"><span class="pre">True</span></code>. Désormais, <code class="docutils literal notranslate"><span class="pre">is_long_text</span></code> sera considéré comme valant toujours <code class="docutils literal notranslate"><span class="pre">True</span></code> pour les métadonnées géométriques (même si l’administrateur a spécifié <code class="docutils literal notranslate"><span class="pre">False</span></code> dans son modèle). Ces métadonnées seront dès lors quoi qu’il arrive présentées par Plume avec un champ de saisie multi-lignes.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="suppression"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
