@@ -774,7 +774,7 @@ def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mB
               mSettings.setValue(key, value)
        #---- for Tooltip
        mDicAutre = {}
-       mDicAutre["activeTooltip"]                = "false"
+       mDicAutre["activeTooltip"]                = "true"
        mDicAutre["activeTooltipWithtitle"]       = "true"
        mDicAutre["activeTooltipLogo"]            = "true"
        mDicAutre["activeTooltipCadre"]           = "false"
@@ -849,7 +849,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
        #---- for Tooltip
-       mDicAutre["activeTooltip"]                = "false"
+       mDicAutre["activeTooltip"]                = "true"
        mDicAutre["activeTooltipWithtitle"]       = "true"
        mDicAutre["activeTooltipLogo"]            = "true"
        mDicAutre["activeTooltipCadre"]           = "false"
