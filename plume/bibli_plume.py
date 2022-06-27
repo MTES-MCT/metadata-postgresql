@@ -549,7 +549,7 @@ class MyExploBrowser(QTreeWidget):
 
                       # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
                       if self.itemLayer in self._dicTooltipExiste :
-                         itemLayerTooltip = self._dicTooltipExiste[self.itemLayer] 
+                         itemLayerTooltip = self._dicTooltipExiste[self.itemLayer]
                       else :
                          itemLayerTooltip = self.itemLayer.toolTip()
                          self._dicTooltipExiste[self.itemLayer] = itemLayerTooltip 
@@ -584,7 +584,7 @@ class MyExploBrowser(QTreeWidget):
                             mTableHtml += "</table>"
                             self.itemLayer.setToolTip(mTableHtml)
                       else :
-                         self.itemLayer.setToolTip(itemLayerTooltipNew)
+                         self.itemLayer.setToolTip(itemLayerTooltip)
                    return True
                 else:
                    return False
