@@ -34,5 +34,7 @@ En mode lecture, ou plus généralement quand Plume est paramétré pour n'affic
 
 Correction d'une anomalie qui provoquait une erreur en cas de tentative d'utilisation des fonctionnalités d'aide à la saisie des géométries sur une catégorie de métadonnées locale de type géométrique (`datatype` valant `'gsp:wktLiteral'`) non paramétrée avec `is_long_text` valant `True`. Désormais, `is_long_text` sera considéré comme valant toujours `True` pour les métadonnées géométriques (même si l'administrateur a spécifié `False` dans son modèle). Ces métadonnées seront dès lors quoi qu'il arrive présentées par Plume avec un champ de saisie multi-lignes.
 
+Pour améliorer la lisibilité des fiches de métadonnées, le cadre extérieur qui contenait l'ensemble des métadonnées de chaque onglet est supprimé. *Réference : [issue #75](https://github.com/MTES-MCT/metadata-postgresql/issues/75).*
+
 [^mainlanguage]: Il s'agit de la langue que l'utilisateur peut sélectionner via la barre d'outils de Plume en choisissant dans la liste des langues autorisées pour les traductions. Cette liste est elle-même un paramètre utilisateur configurable via le menu ![configuration.svg](../../../plume/icons/general/configuration.svg)  *Personnalisation de l'interface*.
 
