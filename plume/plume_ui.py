@@ -1017,7 +1017,7 @@ class Ui_Dialog_plume(object):
     def createQmenuModele(self, _mObjetQMenu, templateLabels) :
         _mObjetQMenu.clear()
         templateLabels.insert(0, "Aucun")
-        self.lenButtonTemplate = int(len(max(templateLabels)) * 10) + 20
+        self.lenButtonTemplate = int(len(max(templateLabels, key=len)) * 10) + 20     
         _mObjetQMenu.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str(self.lenButtonTemplate) + "px;}")
         #------------
         for elemQMenuItem in templateLabels :
