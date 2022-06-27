@@ -36,5 +36,7 @@ Correction d'une anomalie qui provoquait une erreur en cas de tentative d'utilis
 
 Pour améliorer la lisibilité des fiches de métadonnées, le cadre extérieur qui contenait l'ensemble des métadonnées de chaque onglet est supprimé. *Réference : [issue #75](https://github.com/MTES-MCT/metadata-postgresql/issues/75).*
 
+Le bouton de sortie de la boite de dialogue de personnalisation de l'interface porte désormais l'étiquette *Quitter* au lieu d'*Annuler*, considérant qu'il ne permet pas d'annuler les modifications préalablement sauvegardées. Par ailleurs il n'est plus demandé à l'utilisateur de confirmer lorsqu'il clique sur le bouton *Sauvegarder*.
+
 [^mainlanguage]: Il s'agit de la langue que l'utilisateur peut sélectionner via la barre d'outils de Plume en choisissant dans la liste des langues autorisées pour les traductions. Cette liste est elle-même un paramètre utilisateur configurable via le menu ![configuration.svg](../../../plume/icons/general/configuration.svg)  *Personnalisation de l'interface*.
 
