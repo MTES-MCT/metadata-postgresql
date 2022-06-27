@@ -93,23 +93,25 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #-- 
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetGroupBox.setVisible(False)
-
-       if _valueObjet['object'] == 'group of properties' :
-          _colorQGroupBox = self.colorQGroupBox if self.mFirst else self.colorQGroupBoxGroupOfProperties
-          _epaiQGroupBox  = self.epaiQGroupBox #Si on souhaite gérer l'épaisseur du premier cadre 
-          _epaiQGroupBox  = 0 if self.mFirst else self.epaiQGroupBox 
+       #--                        
+       _marginTopGroupBox = 6
+       _marginLeftGroupBox = 10
+       _epaiQGroupBox  = self.epaiQGroupBox
+       _colorQGroupBox = self.colorDefaut
+       if self.mFirst:
+          _epaiQGroupBox  = 0
+          _marginTopGroupBox = 0
+          _marginLeftGroupBox = 0
+       elif _valueObjet['object'] == 'group of properties' :
+          _colorQGroupBox = self.colorQGroupBoxGroupOfProperties
        elif _valueObjet['object'] == 'group of values' :
           _colorQGroupBox = self.colorQGroupBoxGroupOfValues
-          _epaiQGroupBox  = self.epaiQGroupBox 
        elif _valueObjet['object'] == 'translation group' :
           _colorQGroupBox = self.colorQGroupBoxTranslationGroup
-          _epaiQGroupBox  = self.epaiQGroupBox 
-       else :   
-          _colorQGroupBox = self.colorDefaut
-          _epaiQGroupBox  = self.epaiQGroupBox 
+
        _mObjetGroupBox.setStyleSheet("QGroupBox {   \
-                              margin-top: 6px; \
-                              margin-left: 10px; \
+                              margin-top: " + str(_marginTopGroupBox) + "px; \
+                              margin-left: " + str(_marginLeftGroupBox) + "px; \
                               font-family:" + self.policeQGroupBox  +" ; \
                               border-style: " + self.lineQGroupBox  + ";    \
                               border-width:" + str(_epaiQGroupBox)  + "px ; \
