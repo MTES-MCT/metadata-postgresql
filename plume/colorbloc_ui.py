@@ -1466,114 +1466,114 @@ class Ui_Dialog_ColorBloc(object):
         mLib = QtWidgets.QApplication.translate("colorbloc_ui", "You will save all your changes..", None)
         mLib1 = QtWidgets.QApplication.translate("colorbloc_ui", "Are you sure you want to continue ?", None)
 
-        if QMessageBox.question(None, mTitre, mLib + "<br><br>" + mLib1,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes :
-           mChild_premier = [mObj for mObj in self.groupBoxAll.children()] 
+        #if QMessageBox.question(None, mTitre, mLib + "<br><br>" + mLib1,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes :
+        mChild_premier = [mObj for mObj in self.groupBoxAll.children()] 
 
-           mLettre, mColorFirst, mDicSaveColor = "", None, {}
-           for mObj in mChild_premier :
-               for i in range(7) :
-                   if mObj.objectName() == "img_" + str(i) :
-                      mLettre      = str(self.dicListLettre[i])
-                      mColor       = mObj.palette().color(QPalette.Window)
-                      mColorFirst  = mColor.name()
-                      mDicSaveColor[mLettre] = mColorFirst
-                      break
- 
-          #---- for Tooltip
-           mChild_premier = [mObj for mObj in self.groupBoxTooltip.children()] 
+        mLettre, mColorFirst, mDicSaveColor = "", None, {}
+        for mObj in mChild_premier :
+            for i in range(7) :
+                if mObj.objectName() == "img_" + str(i) :
+                   mLettre      = str(self.dicListLettre[i])
+                   mColor       = mObj.palette().color(QPalette.Window)
+                   mColorFirst  = mColor.name()
+                   mDicSaveColor[mLettre] = mColorFirst
+                   break
 
-           mLettre, mColorFirst = "", None
-           for mObj in mChild_premier :
-               for i in range(9) :
-                   if mObj.objectName() == "img_" + str(i) :
-                      mLettre      = str(self.dicListLettre[i])
-                      mColor       = mObj.palette().color(QPalette.Window)
-                      mColorFirst  = mColor.name()
-                      mDicSaveColor[mLettre] = mColorFirst
-                      break
-          #---- for Tooltip
-          #======== for Geometry
-           mChild_premier = [mObj for mObj in self.groupBoxGeom.children()] 
+       #---- for Tooltip
+        mChild_premier = [mObj for mObj in self.groupBoxTooltip.children()] 
 
-           mLettre, mColorFirst = "", None
-           for mObj in mChild_premier :
-               for i in range(7) :
-                   if mObj.objectName() == "img_" + str(i) :
-                      mLettre      = str(self.dicListLettre[i])
-                      mColor       = mObj.palette().color(QPalette.Window)
-                      mColorFirst  = mColor.name()
-                      mDicSaveColor[mLettre] = mColorFirst
-                      break
-           #Ajouter si autre param
-           mDicSaveColor["geomPrecision"] = self.geomPrecision
-           mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
-           mDicSaveColor["geomPoint"]     = self.geomPoint
-           mDicSaveColor["geomPointEpaisseur"] = self.geomPointEpaisseur
-           mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
-           #======== for Geometry
-           #-
-           mSettings.beginGroup("PLUME")
-           mSettings.beginGroup("BlocsColor")
-           for key, value in mDicSaveColor.items():
-               mSettings.setValue(key, value)
-           mSettings.endGroup()
-           #---------------
-           #Ajouter si autre param
-           mDicAutrePolice = {}
-           mDicAutrePolice["QEdit"]              = self.zEditStyle
-           mDicAutrePolice["QGroupBoxEpaisseur"] = self.zEpaiQGroupBox
-           mDicAutrePolice["QGroupBoxLine"]      = self.zLineQGroupBox
-           mDicAutrePolice["QGroupBoxPolice"]    = self.zFontQGroupBox
-           mSettings.beginGroup("BlocsPolice")
-           for key, value in mDicAutrePolice.items():
-               mSettings.setValue(key, value)
-       
-           mSettings.endGroup()    
-           #---------------
-           #Ajouter si autre param
-           mDicAutre = {}
-           mDicAutre["ihm"]           = self.zComboWinVsDock
-           mDicAutre["toolBarDialog"] = self.zComboToolBarDialog
-           #---- for Tooltip
-           mDicAutre["activeTooltip"]           = "true" if self.activeTooltip else "false"
-           mDicAutre["activeTooltipWithtitle"]  = "true" if self.activeTooltipWithtitle else "false"
-           mDicAutre["activeTooltipLogo"]       = "true" if self.activeTooltipLogo else "false"
-           mDicAutre["activeTooltipCadre"]      = "true" if self.activeTooltipCadre else "false"
-           mDicAutre["activeTooltipColor"]      = "true" if self.activeTooltipColor else "false"
-           #---- for Tooltip
-           mSettings.beginGroup("Generale")
-           for key, value in mDicAutre.items():
-               mSettings.setValue(key, value)
-       
-           mSettings.endGroup()    
+        mLettre, mColorFirst = "", None
+        for mObj in mChild_premier :
+            for i in range(9) :
+                if mObj.objectName() == "img_" + str(i) :
+                   mLettre      = str(self.dicListLettre[i])
+                   mColor       = mObj.palette().color(QPalette.Window)
+                   mColorFirst  = mColor.name()
+                   mDicSaveColor[mLettre] = mColorFirst
+                   break
+       #---- for Tooltip
+       #======== for Geometry
+        mChild_premier = [mObj for mObj in self.groupBoxGeom.children()] 
 
-           #======== User Settings
-           mSettings.beginGroup("UserSettings")
-           # liste des Paramétres UTILISATEURS
-           mDicUserSettings = {}
-           mDicUserSettings["langList"]                = self.mZoneLangList.text().split(",")
-           mDicUserSettings["geoideJSON"]              = "true" if self.mZoneGeoideJSON.isChecked() else "false"
-           #----
-           mDicUserSettings["preferedTemplate"]        = self.mZonePreferedTemplate.text().strip()
-           mDicUserSettings["enforcePreferedTemplate"] = ("true" if self.mZoneEnforcePreferedTemplate.checkState() == Qt.Checked else "false") if self.mZoneEnforcePreferedTemplate.checkState() != Qt.PartiallyChecked else ""
-           mDicUserSettings["readHideBlank"]           = ("true" if self.mZoneReadHideBlank.checkState() == Qt.Checked else "false")           if self.mZoneReadHideBlank.checkState() != Qt.PartiallyChecked else ""
-           mDicUserSettings["readHideUnlisted"]        = ("true" if self.mZoneReadHideUnlisted.checkState() == Qt.Checked else "false")        if self.mZoneReadHideUnlisted.checkState() != Qt.PartiallyChecked else ""
-           mDicUserSettings["editHideUnlisted"]        = ("true" if self.mZoneEditHideUnlisted.checkState() == Qt.Checked else "false")        if self.mZoneEditHideUnlisted.checkState() != Qt.PartiallyChecked else ""
-           mDicUserSettings["readOnlyCurrentLanguage"] = ("true" if self.mZonereadOnlyCurrentLanguage.checkState() == Qt.Checked else "false") if self.mZonereadOnlyCurrentLanguage.checkState() != Qt.PartiallyChecked else ""
-           mDicUserSettings["editOnlyCurrentLanguage"] = ("true" if self.mZoneEditOnlyCurrentLanguage.checkState() == Qt.Checked else "false") if self.mZoneEditOnlyCurrentLanguage.checkState() != Qt.PartiallyChecked else ""
-           #----
-           mDicUserSettings["labelLengthLimit"]        = "" if self.mZoneLabelLengthLimit.text().strip(",") == "" else int(self.mZoneLabelLengthLimit.text())
-           mDicUserSettings["valueLengthLimit"]        = "" if self.mZoneValueLengthLimit.text().strip(",") == "" else int(self.mZoneValueLengthLimit.text())
-           mDicUserSettings["textEditRowSpan"]         = "" if self.mZoneTextEditRowSpan.text().strip(",")  == "" else int(self.mZoneTextEditRowSpan.text())
-           mDicUserSettings["zoneConfirmMessage"]      = "true" if self.mZoneConfirmMessage.isChecked() else "false"
-           #----
-           for key, value in mDicUserSettings.items():
-               mSettings.setValue(key, value)
-           mSettings.endGroup()    
-           # liste des Paramétres UTILISATEURS
+        mLettre, mColorFirst = "", None
+        for mObj in mChild_premier :
+            for i in range(7) :
+                if mObj.objectName() == "img_" + str(i) :
+                   mLettre      = str(self.dicListLettre[i])
+                   mColor       = mObj.palette().color(QPalette.Window)
+                   mColorFirst  = mColor.name()
+                   mDicSaveColor[mLettre] = mColorFirst
+                   break
+        #Ajouter si autre param
+        mDicSaveColor["geomPrecision"] = self.geomPrecision
+        mDicSaveColor["geomEpaisseur"] = self.geomEpaisseur
+        mDicSaveColor["geomPoint"]     = self.geomPoint
+        mDicSaveColor["geomPointEpaisseur"] = self.geomPointEpaisseur
+        mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
+        #======== for Geometry
+        #-
+        mSettings.beginGroup("PLUME")
+        mSettings.beginGroup("BlocsColor")
+        for key, value in mDicSaveColor.items():
+            mSettings.setValue(key, value)
+        mSettings.endGroup()
+        #---------------
+        #Ajouter si autre param
+        mDicAutrePolice = {}
+        mDicAutrePolice["QEdit"]              = self.zEditStyle
+        mDicAutrePolice["QGroupBoxEpaisseur"] = self.zEpaiQGroupBox
+        mDicAutrePolice["QGroupBoxLine"]      = self.zLineQGroupBox
+        mDicAutrePolice["QGroupBoxPolice"]    = self.zFontQGroupBox
+        mSettings.beginGroup("BlocsPolice")
+        for key, value in mDicAutrePolice.items():
+            mSettings.setValue(key, value)
+    
+        mSettings.endGroup()    
+        #---------------
+        #Ajouter si autre param
+        mDicAutre = {}
+        mDicAutre["ihm"]           = self.zComboWinVsDock
+        mDicAutre["toolBarDialog"] = self.zComboToolBarDialog
+        #---- for Tooltip
+        mDicAutre["activeTooltip"]           = "true" if self.activeTooltip else "false"
+        mDicAutre["activeTooltipWithtitle"]  = "true" if self.activeTooltipWithtitle else "false"
+        mDicAutre["activeTooltipLogo"]       = "true" if self.activeTooltipLogo else "false"
+        mDicAutre["activeTooltipCadre"]      = "true" if self.activeTooltipCadre else "false"
+        mDicAutre["activeTooltipColor"]      = "true" if self.activeTooltipColor else "false"
+        #---- for Tooltip
+        mSettings.beginGroup("Generale")
+        for key, value in mDicAutre.items():
+            mSettings.setValue(key, value)
+    
+        mSettings.endGroup()    
 
-           zMess, zTitre = QtWidgets.QApplication.translate("colorbloc_ui", "Colors saved.", None), QtWidgets.QApplication.translate("bibli_plume", "Information !!!", None)
-           #QMessageBox.information(self, zTitre, zMess) 
+        #======== User Settings
+        mSettings.beginGroup("UserSettings")
+        # liste des Paramétres UTILISATEURS
+        mDicUserSettings = {}
+        mDicUserSettings["langList"]                = self.mZoneLangList.text().split(",")
+        mDicUserSettings["geoideJSON"]              = "true" if self.mZoneGeoideJSON.isChecked() else "false"
+        #----
+        mDicUserSettings["preferedTemplate"]        = self.mZonePreferedTemplate.text().strip()
+        mDicUserSettings["enforcePreferedTemplate"] = ("true" if self.mZoneEnforcePreferedTemplate.checkState() == Qt.Checked else "false") if self.mZoneEnforcePreferedTemplate.checkState() != Qt.PartiallyChecked else ""
+        mDicUserSettings["readHideBlank"]           = ("true" if self.mZoneReadHideBlank.checkState() == Qt.Checked else "false")           if self.mZoneReadHideBlank.checkState() != Qt.PartiallyChecked else ""
+        mDicUserSettings["readHideUnlisted"]        = ("true" if self.mZoneReadHideUnlisted.checkState() == Qt.Checked else "false")        if self.mZoneReadHideUnlisted.checkState() != Qt.PartiallyChecked else ""
+        mDicUserSettings["editHideUnlisted"]        = ("true" if self.mZoneEditHideUnlisted.checkState() == Qt.Checked else "false")        if self.mZoneEditHideUnlisted.checkState() != Qt.PartiallyChecked else ""
+        mDicUserSettings["readOnlyCurrentLanguage"] = ("true" if self.mZonereadOnlyCurrentLanguage.checkState() == Qt.Checked else "false") if self.mZonereadOnlyCurrentLanguage.checkState() != Qt.PartiallyChecked else ""
+        mDicUserSettings["editOnlyCurrentLanguage"] = ("true" if self.mZoneEditOnlyCurrentLanguage.checkState() == Qt.Checked else "false") if self.mZoneEditOnlyCurrentLanguage.checkState() != Qt.PartiallyChecked else ""
+        #----
+        mDicUserSettings["labelLengthLimit"]        = "" if self.mZoneLabelLengthLimit.text().strip(",") == "" else int(self.mZoneLabelLengthLimit.text())
+        mDicUserSettings["valueLengthLimit"]        = "" if self.mZoneValueLengthLimit.text().strip(",") == "" else int(self.mZoneValueLengthLimit.text())
+        mDicUserSettings["textEditRowSpan"]         = "" if self.mZoneTextEditRowSpan.text().strip(",")  == "" else int(self.mZoneTextEditRowSpan.text())
+        mDicUserSettings["zoneConfirmMessage"]      = "true" if self.mZoneConfirmMessage.isChecked() else "false"
+        #----
+        for key, value in mDicUserSettings.items():
+            mSettings.setValue(key, value)
+        mSettings.endGroup()    
+        # liste des Paramétres UTILISATEURS
+
+        zMess, zTitre = QtWidgets.QApplication.translate("colorbloc_ui", "Colors saved.", None), QtWidgets.QApplication.translate("bibli_plume", "Information !!!", None)
+        #QMessageBox.information(self, zTitre, zMess) 
         return 
 
     #==========================         
