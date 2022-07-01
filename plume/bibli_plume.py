@@ -977,6 +977,17 @@ def returnAndSaveDialogParam(self, mAction):
     return mDicAutre
 
 #==================================================
+#==================================================
+#Création GIF et Déplacement 
+def addDeplaceGif(**kwargs) :
+    if kwargs['_action'] == "ADD" :
+       _movie = QtGui.QMovie(kwargs['_gif'])
+       kwargs['_objet'].setMovie(_movie)
+       _movie.start()
+    kwargs['_objet'].setGeometry(QtCore.QRect(kwargs['_x'], kwargs['_y'], kwargs['_l'], kwargs['_h']))
+    return
+
+#==================================================
 #Execute Pdf 
 #==================================================
 def execPdf(nameciblePdf):
