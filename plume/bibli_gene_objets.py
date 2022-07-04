@@ -116,7 +116,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                               border-style: " + self.lineQGroupBox  + ";    \
                               border-width:" + str(_epaiQGroupBox)  + "px ; \
                               border-color: " + _colorQGroupBox  +";      \
-                              font: bold 11px;         \
+                              font-weight : bold;         \
                               padding: 6px;            \
                               }")
        #--
@@ -1056,7 +1056,7 @@ def gestionOnglets(self, _key, _value):
                 border-width: 0px;       \
                 border-radius: 10px;     \
                 border-color: red;      \
-                font: bold 11px;     \
+                font-weight : bold;     \
                 padding-top: 6px;        \
                 }")
     #Zone affichage du modèle
