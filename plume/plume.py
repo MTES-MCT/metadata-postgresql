@@ -11,8 +11,28 @@ from PyQt5.QtGui import QIcon
 
 from qgis.core import *
 from qgis.gui import *
-
 import os
+from plume.bibli_install import manageLibrary
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+
+#===================================================
+# Generation de la traduction selon la langue choisie   
+overrideLocale = QSettings().value("locale/overrideFlag", False)
+localeFullName = QLocale.system().name() if not overrideLocale else QSettings().value("locale/userLocale", "")
+if localeFullName == None :
+  localePath = os.path.dirname(__file__) + "/i18n/plume_fr.qm"
+else :
+  localePath = os.path.dirname(__file__) + "/i18n/plume_" + localeFullName[0:2] + ".qm"
+if QFileInfo(localePath).exists():
+  translator = QTranslator()
+  translator.load(localePath)
+  QCoreApplication.installTranslator(translator)
+# Generation de la traduction selon la langue choisie
+#===================================================
+# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+manageLibrary()
+# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+#===================================================
 
 from . import doplume_ui
 from . import bibli_plume
@@ -22,23 +42,10 @@ class MainPlugin(object):
   def __init__(self, iface):
      self.name = "PLUME"
      self.iface = iface
-     # Generation de la traduction selon la langue choisie   
-     overrideLocale = QSettings().value("locale/overrideFlag", False)
-     localeFullName = QLocale.system().name() if not overrideLocale else QSettings().value("locale/userLocale", "")
-     if localeFullName == None :
-        self.localePath = os.path.dirname(__file__) + "/i18n/plume_fr.qm"
-     else :
-        self.localePath = os.path.dirname(__file__) + "/i18n/plume_" + localeFullName[0:2] + ".qm"
-     if QFileInfo(self.localePath).exists():
-        self.translator = QTranslator()
-        self.translator.load(self.localePath)
-        QCoreApplication.installTranslator(self.translator)
-     # Generation de la traduction selon la langue choisie
-        
      #Active Tooltip
      self.dicTooltipExiste = {}   
-     #Active Tooltip   
-
+     #Active Tooltip  
+      
   def initGui(self):
      #Construction du menu
      self.menu=QMenu("plume")

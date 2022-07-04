@@ -40,7 +40,6 @@ import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
 from plume.pg.template import LocalTemplatesCollection
-from plume.bibli_install import manageLibrary
 from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 
 
@@ -146,11 +145,6 @@ class Ui_Dialog_plume(object):
         self.mDicTypeObj = dict(zip(mDicType, mDicTypeObj)) # For bibli_plume_tools_map
         _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
         createFolder(_pathIconsUser)        
-
-        # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
-        manageLibrary(bibli_plume.returnVersion(), self.versionPlumeBibli)
-        # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
-
         #-
         #Management Click before open IHM 
         if self.mDic_LH["layerBeforeClickedWho"] == "qgis" : 

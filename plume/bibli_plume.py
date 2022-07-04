@@ -10,20 +10,11 @@ from PyQt5.QtGui import *
 from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayerCache, QgsFeatureRequest, QgsSettings, QgsDataSourceUri, QgsCredentials
 from qgis.utils import iface
 
-from importlib.util import find_spec
-
 from plume.config import (PLUME_VERSION)  
 
 #==================================================
 #==================================================
 def returnVersion() : return PLUME_VERSION
-#==================================================
-# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
-if find_spec('rdflib') ==  None :
-   from plume.bibli_install import manageLibrary
-   manageLibrary(returnVersion(), "")
-# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
-#==================================================
 #==================================================
 
 from plume.rdf.widgetsdict import WidgetsDict

@@ -7,11 +7,30 @@ import time
 from qgis.core import QgsSettings
 from PyQt5 import QtCore, QtGui, QtWidgets 
 from PyQt5.Qt import *
-from plume.config import (PLUME_VERSION)
-
-from PyQt5.QtWidgets import QMessageBox 
+from plume.config import (PLUME_VERSION) 
+from PyQt5.QtWidgets import QMessageBox
+from qgis.core import QgsSettings
+ 
 #==================================================
-def manageLibrary(mVersionPlume, mVersionPlumeBibli) :
+def manageLibrary() :
+    mVersionPlume = PLUME_VERSION
+    #--                  
+    mSettings = QgsSettings()
+    mSettings.beginGroup("PLUME")
+    mSettings.beginGroup("Generale")
+    mDicAutre        = {}
+    valueDefautVersion = ""
+    mDicAutre["versionPlumeBibli"]     = valueDefautVersion
+    #--                  
+    for key, value in mDicAutre.items():
+        if not mSettings.contains(key) :
+           mSettings.setValue(key, value)
+        else :
+           mDicAutre[key] = mSettings.value(key)
+    #--                  
+    mSettings.endGroup()
+    mVersionPlumeBibli = mDicAutre["versionPlumeBibli"]
+    
     if mVersionPlume != mVersionPlumeBibli :
        mPath = os.path.dirname(__file__)
        mPathPerso = mPath.replace("\\","/") + "/requirements.txt"
@@ -30,20 +49,20 @@ def manageLibrary(mVersionPlume, mVersionPlumeBibli) :
        monHtml = zMessConfirme + "\n\n" + zMessConfirme2  + "\n\n" + zMessConfirme3
        #----------
        managerPatienter = ManagerPatienter(zMessTitle, monHtml)
-       num = managerPatienter.prgr_dialog.maximum() / 2
+       num = managerPatienter.prgr_dialog.maximum() / 4
        #------ PIP ----
        for i in range(int(num)) :
            managerPatienter.prgr_dialog.setValue(int(i))
            time.sleep(0.05)
-       if not updatePip() : managerPatienter.prgr_dialog.setLabelText(monHtml + "\n\n" + QtWidgets.QApplication.translate("bibli_install", "pip has not been updated."))
+       if not updatePip() : managerPatienter.prgr_dialog.setLabelText(monHtml + "\n\n" + QtWidgets.QApplication.translate("bibli_install", "pip has not been updated.", None))
        #------ PIP ----
        #------ BIBLI ----
-       managerPatienter.startBibli(num, comptBibli)
+       managerPatienter.startBibli(num, comptBibli, 66)
        if not updateRequierement(mPathPerso) :
           managerPatienter.prgr_dialog.setValue(100)
-          _messError  = QtWidgets.QApplication.translate("bibli_install", "One or more libraries were not installed correctly.")
-          _messError += "\n\n" + QtWidgets.QApplication.translate("bibli_install", "Plume could malfunction.")
-          _messError += "\n\n" + QtWidgets.QApplication.translate("bibli_install", "Please contact support.")
+          _messError  = QtWidgets.QApplication.translate("bibli_install", "One or more libraries were not installed correctly.", None)
+          _messError += "\n\n" + QtWidgets.QApplication.translate("bibli_install", "Plume could malfunction.", None)
+          _messError += "\n\n" + QtWidgets.QApplication.translate("bibli_install", "Please contact support.", None)
           managerPatienter.prgr_dialog.setLabelText(_messError)
           _pathIcons = os.path.dirname(__file__) + "/icons/logo"
           iconSource          = _pathIcons + "/plume.svg"
@@ -53,6 +72,7 @@ def manageLibrary(mVersionPlume, mVersionPlumeBibli) :
           _QMess.setWindowIcon(icon)
           _QMess.exec_()
        else :
+          managerPatienter.startBibli(66, comptBibli, 100)
           managerPatienter.prgr_dialog.setValue(100)
           #==================================================
           #Sauvegarde de la version de Plume pour les bibliothèques
@@ -73,9 +93,9 @@ def updatePip() :
     si = subprocess.STARTUPINFO() 
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '1', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, startupinfo=si) 
+       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '0', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, startupinfo=si) 
     except subprocess.CalledProcessError as err :
-       return  False
+       return False
     return True
 
 #==================================================
@@ -113,10 +133,10 @@ class ManagerPatienter() :
        self.prgr_dialog.show()
 
    #------
-   def startBibli(self, _num, _comptBibli) :
+   def startBibli(self, _num, _comptBibli, _total) :
        i    = int(_num)
        step = _num / _comptBibli
-       totalBibli = 100
+       totalBibli = _total
        while i <= totalBibli :
            self.prgr_dialog.setValue(int(i))
            time.sleep(0.05)
