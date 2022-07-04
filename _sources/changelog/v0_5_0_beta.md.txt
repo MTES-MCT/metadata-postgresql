@@ -1,10 +1,10 @@
 # Version mineure 0.5.0 bêta (en cours de développement)
 
-*Date de publication : à venir aux alentours du 1er juillet 2022.*
+*Date de publication : 4 juillet 2022.*
 
-*Sur GitHub : à venir.*
+*Sur GitHub : [https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.5-beta](https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.5-beta).*
 
-Plume v0.5 bêta est vraisemblablement la denière version précédant le déploiement officiel de Plume (hors correctifs éventuels). Elle poursuit la mise à disposition des fonctionnalités essentielles pour la saisie et la consultation des métadonnées.
+Plume v0.5 bêta est vraisemblablement la denière version précédant le déploiement officiel de Plume, hors correctifs éventuels. Elle poursuit la mise à disposition des fonctionnalités essentielles pour la saisie et la consultation des métadonnées.
 
 ## Import de métadonnées depuis un fichier XML conforme INSPIRE
 
@@ -27,6 +27,11 @@ Ainsi, Plume est désormais capable d'alléger les infobulles de l'explorateur e
 Plume est maintenant capable d'afficher et modifier des métadonnées prenant pour valeur des heures (`datatype` valant `'xsd:time'`). Ceci ne concerne que d'éventuelles catégories locales ajoutées par l'administrateur d'un service, car aucune catégorie commune n'est de ce type.
 
 *Réference : [issue #12](https://github.com/MTES-MCT/metadata-postgresql/issues/12).*
+
+## Convivialité de l'installation des dépendances Python
+
+L'invite de commande ne s'ouvre plus intempestivement lors de la mise à jour des bibliothèques Python nécessaires à Plume. L'utilisateur est désormais averti de l'opération par une boîte de dialogue qui s'ouvre au début du processus de mise à jour, rend sommairement compte de sa progression, et se referme automatiquement à la fin.
+
 
 ## Correction d'anomalies et divers
 
