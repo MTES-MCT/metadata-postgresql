@@ -129,6 +129,7 @@ Après"""
         text = pg_description_1 + '\ntable\ngeom MultiPolygon (srid 2154)\n'
         self.assertEqual(truncate_metadata(text), (
 '''IGN Admin Express. Départements 2021-01.
+
 table
 geom MultiPolygon (srid 2154)''',
             'Des métadonnées sont disponibles pour cette couche. ' \
@@ -172,15 +173,85 @@ geom MultiPolygon (srid 2154)''',
 Après"""
         self.assertEqual(truncate_metadata(text, with_title=True), (
 '''Avant
+
 Après''',
             'Des métadonnées sont disponibles pour cette couche. ' \
             'Activez Plume pour les consulter.'))
         self.assertEqual(truncate_metadata(text, with_title=False), (
 '''Avant
+
 Après''',
             'Des métadonnées sont disponibles pour cette couche. ' \
             'Activez Plume pour les consulter.'))
 
+        # pas de texte avant
+        text ="""<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "fr",
+        "@value": "ADMIN EXPRESS - Départements de métropole"
+      }
+    ]
+  }
+]
+</METADATA>
+
+Après"""
+        self.assertEqual(truncate_metadata(text, with_title=True), (
+'''ADMIN EXPRESS - Départements de métropole
+
+Après''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
+        self.assertEqual(truncate_metadata(text, with_title=False), (
+'''Après''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
+
+        # pas de texte après
+        text ="""Avant
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "fr",
+        "@value": "ADMIN EXPRESS - Départements de métropole"
+      }
+    ]
+  }
+]
+</METADATA>"""
+        self.assertEqual(truncate_metadata(text, with_title=True), (
+'''Avant
+
+ADMIN EXPRESS - Départements de métropole''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
+        self.assertEqual(truncate_metadata(text, with_title=False), (
+'''Avant''',
+            'Des métadonnées sont disponibles pour cette couche. ' \
+            'Activez Plume pour les consulter.'))
 
 if __name__ == '__main__':
     unittest.main()

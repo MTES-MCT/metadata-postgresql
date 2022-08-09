@@ -192,6 +192,7 @@ def truncate_metadata(text, with_title=False, langlist=('fr', 'en')):
     title = None
     info = None
     info_meta = 'Des métadonnées sont disponibles pour cette couche. Activez Plume pour les consulter.'
+    
     if with_title:
         descr = PgDescription(raw=text)
         if descr.metagraph:
@@ -204,6 +205,12 @@ def truncate_metadata(text, with_title=False, langlist=('fr', 'en')):
         descr = PgDescription(raw=text, do_not_parse=True)
         if descr.jsonld:
             info = info_meta
-    nt = '\n\n{}\n\n'.format(title) if title else '\n' if descr.post else ''
-    return ('{}{}{}'.format(descr.ante.rstrip('\n'), nt, descr.post.strip('\n')), info)
+    
+    ante = descr.ante.rstrip('\n')
+    post = descr.post.strip('\n')
+    sep = '\n\n' if title else '\n' if ante and post else ''
+    ante = (ante + sep) if ante else ''
+    post = (sep + post) if post else ''
+
+    return ('{}{}{}'.format(ante, title or '', post), info)
 
