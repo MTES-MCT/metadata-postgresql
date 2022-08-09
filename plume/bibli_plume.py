@@ -706,7 +706,7 @@ def dialogueMessageError(mTypeErreur, zMessError_Erreur):
 #==================================================
 def resizeIhm(self, l_Dialog, h_Dialog) :
     #----
-    x, y = 10, 45
+    x, y = 10, 50
     larg, haut =  self.Dialog.width() -20, (self.Dialog.height() - 60 )
     self.tabWidget.setGeometry(QtCore.QRect(x, y, larg , haut))
     #----
@@ -714,6 +714,16 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     larg, haut =  self.tabWidget.width()-5, self.tabWidget.height()-25
     for elem in self.listeResizeIhm :
         elem.setGeometry(QtCore.QRect(x, y, larg, haut))
+    #----
+    try : 
+       if hasattr(self, "monDock") :
+          self.mMenuBarDialogLine1.setGeometry(QtCore.QRect(10,  0, self.tabWidget.width() , 23))
+          self.mMenuBarDialogLine2.setGeometry(QtCore.QRect(10, 24, self.tabWidget.width() , 23))
+       else:    
+          self.mMenuBarDialogLine1.setGeometry(QtCore.QRect(10,  0, self.Dialog.width() - 20, 23))
+          self.mMenuBarDialogLine2.setGeometry(QtCore.QRect(10, 24, self.Dialog.width() - 20, 23))
+    except :
+        pass 
     #----
     #----
     #Réinit les dimensions de l'IHM

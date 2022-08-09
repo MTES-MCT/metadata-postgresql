@@ -94,7 +94,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetGroupBox.setVisible(False)
        #--                        
-       _marginTopGroupBox = 6
+       _marginTopGroupBox = 10
        _marginLeftGroupBox = 10
        _epaiQGroupBox  = self.epaiQGroupBox
        _colorQGroupBox = self.colorDefaut
@@ -108,7 +108,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
           _colorQGroupBox = self.colorQGroupBoxGroupOfValues
        elif _valueObjet['object'] == 'translation group' :
           _colorQGroupBox = self.colorQGroupBoxTranslationGroup
-
        _mObjetGroupBox.setStyleSheet("QGroupBox {   \
                               margin-top: " + str(_marginTopGroupBox) + "px; \
                               margin-left: " + str(_marginLeftGroupBox) + "px; \
@@ -117,11 +116,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                               border-width:" + str(_epaiQGroupBox)  + "px ; \
                               border-color: " + _colorQGroupBox  +";      \
                               font-weight : bold;         \
-                              padding: 6px;            \
+                              padding-left:    6px;            \
+                              padding-top:    10px;            \
+                              padding-right:   6px;            \
+                              padding-bottom:  6px;            \
                               }")
        #--
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan)
+       #_mParentEnCours.setRowStretch(row, 0)
        #--                        
        _mObjet = QtWidgets.QGridLayout()
        _mObjet.setContentsMargins(0, 0, 0, 0)
