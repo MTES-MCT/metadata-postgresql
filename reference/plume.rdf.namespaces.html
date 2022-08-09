@@ -403,9 +403,12 @@ besoin.</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bind</span></code>(prefix, namespace[, override, replace])</p></td>
-<td><p>bind a given namespace to the prefix</p></td>
+<td><p>Bind a given namespace to the prefix</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalizeUri</span></code>(rdfTerm)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_curie</span></code>(curie)</p></td>
+<td><p>Expand a CURIE of the form &lt;prefix:element&gt;, e.g.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalizeUri</span></code>(rdfTerm)</p></td>
 <td><p>Takes an RDF Term and 'normalizes' it into a QName (using the registered prefix) or (unlike compute_qname) the Notation 3 form for URIs: &lt;...URI...&gt;</p></td>
 </tr>
 </tbody>
