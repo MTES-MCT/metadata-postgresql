@@ -341,7 +341,7 @@ class Ui_Dialog_plume(object):
            elif mItemLine2 == "Copy" :
               self.copyMetagraph = self.metagraph
               if self.copyMetagraph !=  None :
-                 mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the metadata card of ") + "<b>" + str(self.schema) + "." + str(self.table) + "</b>" 
+                 mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the metadata card of ") + "<b>" + str(self.schema) + "." + str(self.table) + "</b>     Alt+Maj+V" 
               else :    
                  mTextToolTip = QtWidgets.QApplication.translate("plume_main", "Paste the saved metadata card.")    
               self.copyMetagraphTooltip = mTextToolTip
@@ -374,6 +374,11 @@ class Ui_Dialog_plume(object):
               if metagraph != None : self.metagraph = metagraph
            #**********************
            elif mItemLine1 == "Traduction" :
+              #Interroge l'utilisateur si modifications
+              if self.zoneConfirmMessage :
+                 if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
+                    if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+                    #Si vous poursuivez, les modifications non enregistrées seront perdues.
               self.translation = (False if self.translation else True) 
            #**********************
            elif QtWidgets.QApplication.translate("plume_ui", mItemLine2) == "Verrouillage" :
@@ -1072,7 +1077,8 @@ class Ui_Dialog_plume(object):
         mListExtensionFormat = self.metagraph.available_formats
         self.mListExtensionFormat = mListExtensionFormat
         self._mObjetQMenuExport.clear()
-        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width: " + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px;}")
+        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
+        #self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px;}")
         #------------
         for elemQMenuItem in mListExtensionFormat :
             _mObjetQMenuItem = QAction(elemQMenuItem, self._mObjetQMenuExport)
@@ -1130,6 +1136,9 @@ class Ui_Dialog_plume(object):
         self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_ui", "Read") 
         self.plumeEdit.setToolTip(self.mTextToolTipEdit)
         self.plumeEdit.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumeEdit.setShortcut(QKeySequence("ALT+SHIFT+E"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine1.addWidget(self.plumeEdit)
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Save") 
@@ -1140,6 +1149,9 @@ class Ui_Dialog_plume(object):
         self.plumeSave.setObjectName("Save")
         self.plumeSave.setToolTip(mText)
         self.plumeSave.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumeSave.setShortcut(QKeySequence("ALT+SHIFT+S"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine1.addWidget(self.plumeSave)
         #--                                        
         mText = QtWidgets.QApplication.translate("plume_ui", "Translation") 
@@ -1152,6 +1164,9 @@ class Ui_Dialog_plume(object):
         self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
         self.plumeTranslation.setToolTip(self.mTextToolTipNon)
         self.plumeTranslation.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumeTranslation.setShortcut(QKeySequence("ALT+SHIFT+T"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine1.addWidget(self.plumeTranslation)
         #====================
         #--QToolButton LANGUAGE                                               
@@ -1215,6 +1230,9 @@ class Ui_Dialog_plume(object):
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card.") 
         self.plumeCopy.setToolTip(mTextToolTip)
         self.plumeCopy.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumeCopy.setShortcut(QKeySequence("ALT+SHIFT+C"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine2.addWidget(self.plumeCopy)
         #Création pour la copy à None
         self.copyMetagraph = None
@@ -1228,6 +1246,9 @@ class Ui_Dialog_plume(object):
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card.") 
         self.plumePaste.setToolTip(mTextToolTip)
         self.plumePaste.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumePaste.setShortcut(QKeySequence("ALT+SHIFT+V"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine2.addWidget(self.plumePaste)
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Empty") 
@@ -1239,6 +1260,9 @@ class Ui_Dialog_plume(object):
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card.")
         self.plumeEmpty.setToolTip(mTextToolTip)
         self.plumeEmpty.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumeEmpty.setShortcut(QKeySequence("ALT+SHIFT+B"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine2.addWidget(self.plumeEmpty)
         #--                                        
         #====================
@@ -1310,6 +1334,7 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.setToolTipsVisible(True)
         self._mObjetQMenuExport = _mObjetQMenu
         self.mMenuBarDialogGridLine2.addWidget(self.plumeExport)
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #--QToolButton EXPORT                                               
         #====================
         #--
@@ -1372,6 +1397,9 @@ class Ui_Dialog_plume(object):
         self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_ui", 'Unlock the display.')                       
         self.plumeVerrou.setToolTip(self.mTextToolTipVerrouEdit)
         self.plumeVerrou.clicked.connect(self.clickButtonsActions)
+        #-- Raccourci
+        self.plumeVerrou.setShortcut(QKeySequence("ALT+SHIFT+R"))
+        #-- Raccourci
         self.mMenuBarDialogGridLine2.addWidget(self.plumeVerrou)
         #-- Verrouillage
         #====================
