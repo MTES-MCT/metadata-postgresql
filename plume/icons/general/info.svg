@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    id="svg1"
    width="24"
    height="24"
    viewBox="0 0 24 24.000001"
    sodipodi:docname="info.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -37,8 +37,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="705"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
      id="namedview7"
      showgrid="false"
      fit-margin-top="0"
@@ -46,13 +46,16 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="11.313708"
-     inkscape:cx="-8.829035"
-     inkscape:cy="15.473195"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:cx="-11.00435"
+     inkscape:cy="15.600544"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g4685"
-     inkscape:snap-global="false" />
+     inkscape:current-layer="text36920"
+     inkscape:snap-global="false"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <g
      id="g4685">
     <g
@@ -60,11 +63,21 @@
        style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:32px;line-height:1.25;font-family:Marianne;-inkscape-font-specification:'Marianne Ultra-Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        id="text820"
        transform="translate(-4.9828349,11.686369)">
-      <path
-         d="m 14.278835,3.9136313 h 3.68 l 0.256,-1.952 c 3.776,-0.64 6.432,-2.976 6.432,-6.656 0,-4.256 -3.584,-6.7200003 -7.36,-6.7200003 -3.456,0 -6.08,1.5040003 -7.9680002,4.7040003 l 4.3520002,2.688 c 1.088,-1.728 1.92,-2.592 3.36,-2.592 1.152,0 2.112,0.768 2.112,1.92 0,2.464 -2.368,2.752 -5.504,3.04 z m 1.856,8.1279997 c 1.792,0 3.36,-1.536 3.36,-3.3599997 0,-1.792 -1.568,-3.328 -3.36,-3.328 -1.856,0 -3.392,1.536 -3.392,3.328 0,1.8239997 1.536,3.3599997 3.392,3.3599997 z"
-         style="fill:#958b62"
-         id="path822"
-         inkscape:connector-curvature="0" />
+      <g
+         aria-label="?"
+         id="text36920"
+         style="font-size:32.8317px;fill:#bb8568;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1">
+        <g
+           aria-label="?"
+           transform="scale(0.99937019,1.0006302)"
+           id="text48625"
+           style="font-weight:normal;font-size:32.8111px;-inkscape-font-specification:Marianne;fill:#845d48;stroke:#f7ebe5;stroke-width:0.999996">
+          <path
+             d="m 14.434271,5.7108592 h 1.542122 l 0.164056,-3.3139211 c 4.593554,-0.8202775 7.809041,-3.34673218 7.809041,-7.4481197 0,-3.6748432 -2.952999,-6.6278424 -6.890331,-6.6278424 -3.313921,0 -5.413831,1.509311 -7.021575,3.6420323 l 1.673366,1.0171441 c 1.4765,-1.9030438 3.051432,-2.8873768 5.282587,-2.8873768 2.821755,0 4.888854,2.0999104 4.888854,4.8888539 0,3.3467322 -2.559266,5.34820932 -7.710608,6.00443132 z m 0.820278,6.5950308 c 0.8859,0 1.607744,-0.754655 1.607744,-1.640555 0,-0.8858994 -0.721844,-1.5749325 -1.607744,-1.5749325 -0.8859,0 -1.640555,0.6890331 -1.640555,1.5749325 0,0.8859 0.754655,1.640555 1.640555,1.640555 z"
+             style="font-weight:300;-inkscape-font-specification:'Marianne Light';stroke:none"
+             id="path59981" />
+        </g>
+      </g>
     </g>
   </g>
 </svg>

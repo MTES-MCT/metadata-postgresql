@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    id="svg1"
    width="24"
    height="24"
    viewBox="0 0 24 24.000001"
-   sodipodi:docname="edit.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   sodipodi:docname="read.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,36 +37,48 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="705"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
      id="namedview7"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="1"
-     inkscape:cx="14.950613"
-     inkscape:cy="13.88346"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="8"
+     inkscape:cx="22.5"
+     inkscape:cy="18.6875"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
+     inkscape:current-layer="svg1"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <g
-     id="g4658"
-     transform="matrix(-0.90745601,0.90745601,-0.90745601,-0.90745601,33.094165,12.684779)"
-     style="stroke-width:0.77921879">
+     id="g45192"
+     transform="rotate(45,12,12)">
     <rect
        ry="0"
-       y="10.25"
-       x="1.1490483"
-       height="3.5"
-       width="18.5"
+       y="-14.853126"
+       x="-1.3807966"
+       height="5.7062511"
+       width="22.723385"
        id="rect4634"
-       style="fill:#e5e2d8;fill-opacity:1;stroke:#958b62;stroke-width:1.16882825;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:#6b93f6;fill-opacity:1;stroke:#2f4077;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="rotate(90)" />
+    <rect
+       ry="0"
+       y="-14.478126"
+       x="-1.3807966"
+       height="2.3937511"
+       width="22.723385"
+       id="rect4634-2"
+       style="fill:#bfccfb;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="rotate(90)" />
     <path
-       transform="matrix(1,0,0,0.85972072,-0.97227183,-3.3622179)"
-       inkscape:transform-center-x="-0.46072254"
+       transform="matrix(0,1.9133137,-1.3919941,0,36.87333,-17.756429)"
+       inkscape:transform-center-x="-0.5594473"
        d="m 22.29376,19.145638 c -2.211467,1.276791 -2.211467,1.276791 -2.211467,-1.276791 0,-2.553582 0,-2.553582 2.211467,-1.276791 2.211467,1.276791 2.211467,1.276791 0,2.553582 z"
        inkscape:randomized="0"
        inkscape:rounded="1"
@@ -79,15 +91,42 @@
        sodipodi:cx="21.556604"
        sodipodi:sides="3"
        id="path4638"
-       style="fill:#958b62;fill-opacity:1;stroke:#958b62;stroke-width:1.26058459;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#e9edfe;fill-opacity:1;stroke:#2f4077;stroke-width:0.612757;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:type="star" />
+    <path
+       transform="matrix(0,0.50999296,-0.45130079,0,20.064224,15.694101)"
+       inkscape:transform-center-x="-0.18137905"
+       d="m 22.29376,19.145638 c -2.211467,1.276791 -2.211467,1.276791 -2.211467,-1.276791 0,-2.553582 0,-2.553582 2.211467,-1.276791 2.211467,1.276791 2.211467,1.276791 0,2.553582 z"
+       inkscape:randomized="0"
+       inkscape:rounded="1"
+       inkscape:flatsided="true"
+       sodipodi:arg2="2.0943951"
+       sodipodi:arg1="1.0471976"
+       sodipodi:r2="0.7371558"
+       sodipodi:r1="1.4743114"
+       sodipodi:cy="17.868847"
+       sodipodi:cx="21.556604"
+       sodipodi:sides="3"
+       id="path4638-8"
+       style="fill:#2f4077;fill-opacity:1;stroke:#2f4077;stroke-width:2.08442;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        sodipodi:type="star" />
     <rect
        ry="0"
-       y="10.25"
-       x="1.1490483"
-       height="3.5"
-       width="3.0320392"
+       y="-14.853126"
+       x="-1.3807966"
+       height="5.7062511"
+       width="2.849051"
        id="rect4634-4"
-       style="fill:none;fill-opacity:1;stroke:#958b62;stroke-width:1.16882825;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:#465f9d;fill-opacity:1;stroke:#2f4077;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="rotate(90)" />
+    <rect
+       ry="0"
+       y="-14.853126"
+       x="0.69722635"
+       height="5.7062511"
+       width="2.849051"
+       id="rect4634-4-1"
+       style="fill:#465f9d;fill-opacity:1;stroke:#2f4077;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="rotate(90)" />
   </g>
 </svg>
