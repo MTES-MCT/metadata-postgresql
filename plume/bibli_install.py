@@ -10,6 +10,7 @@ from PyQt5.Qt import *
 from plume.config import (PLUME_VERSION) 
 from PyQt5.QtWidgets import QMessageBox
 from qgis.core import QgsSettings
+import qgis
  
 #==================================================
 def manageLibrary() :
@@ -18,9 +19,15 @@ def manageLibrary() :
     mSettings = QgsSettings()
     mSettings.beginGroup("PLUME")
     mSettings.beginGroup("Generale")
+    version_cur        = qgis.utils.Qgis.QGIS_VERSION.split(".")
+    python_version_cur = "-".join([ version_cur[0], version_cur[1], version_cur[2].split("-")[0] ])
+    
     mDicAutre        = {}
     valueDefautVersion = ""
-    mDicAutre["versionPlumeBibli"]     = valueDefautVersion
+    valueDefautVersion_python_version = ""
+    mDicAutre["versionPlumeBibli"]    = valueDefautVersion
+    valueDefautVersion_python_version = mDicAutre["versionPlumeBibli"]
+    mDicAutre[python_version_cur]     = valueDefautVersion_python_version
     #--                  
     for key, value in mDicAutre.items():
         if not mSettings.contains(key) :
@@ -30,8 +37,9 @@ def manageLibrary() :
     #--                  
     mSettings.endGroup()
     mVersionPlumeBibli = mDicAutre["versionPlumeBibli"]
-    
-    if mVersionPlume != mVersionPlumeBibli :
+    mPython_version    = mDicAutre[python_version_cur]
+
+    if mVersionPlume != mVersionPlumeBibli or mVersionPlume != mPython_version :
        mPath = os.path.dirname(__file__)
        mPathPerso = mPath.replace("\\","/") + "/requirements.txt"
        #----------
@@ -81,6 +89,7 @@ def manageLibrary() :
           mSettings.beginGroup("PLUME")
           mSettings.beginGroup("Generale")
           mDicAutre["versionPlumeBibli"] = mVersionPlume
+          mDicAutre[python_version_cur]  = mVersionPlume
           for key, value in mDicAutre.items():
               mSettings.setValue(key, value)
           mSettings.endGroup()
