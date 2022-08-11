@@ -8,19 +8,19 @@
   <g
      id="g1">
     <rect
+       style="fill:#465f9d;fill-opacity:1"
        y="4.15"
        x="8.70"
        height="12.7"
        width="3.6"
-       fill="#465f9d"
        id="rect1"
        />
     <rect
+       style="fill:#465f9d;fill-opacity:1"
        y="8.70"
        x="4.15"
        height="3.6"
        width="12.7"
-       fill="#465f9d"
        id="rect2"
        />
   </g>
