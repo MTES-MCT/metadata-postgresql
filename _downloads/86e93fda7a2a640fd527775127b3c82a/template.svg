@@ -14,6 +14,8 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title26745">Choix du modèle de fiche de métadonnées</title>
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -22,7 +24,20 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <cc:license
+           rdf:resource="https://spdx.org/licenses/etalab-2.0" />
+        <dc:date>2022.08.12</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>République Française</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Choix du modèle de fiche de métadonnées</dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,18 +52,18 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
      id="namedview7"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="11.313708"
-     inkscape:cx="23.555495"
-     inkscape:cy="19.312854"
-     inkscape:window-x="-9"
+     inkscape:zoom="8"
+     inkscape:cx="17.8125"
+     inkscape:cy="20.9375"
+     inkscape:window-x="2391"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1"
@@ -62,23 +77,23 @@
      height="23"
      width="23"
      id="rect819"
-     style="fill:#dffdf7;fill-opacity:1;stroke:#009081;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+     style="fill:#fbf5f2;fill-opacity:1;stroke:#845d48;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
   <rect
      y="16.194271"
      x="8.2653332"
      height="4.1161165"
      width="12.115948"
      id="rect821"
-     style="fill:#73e0cf;fill-opacity:1;stroke:#009081;stroke-width:0.999995;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+     style="fill:#f3e2d9;fill-opacity:1;stroke:#845d48;stroke-width:0.999995;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
   <rect
      y="8.3159971"
      x="3.4999952"
      height="4.116004"
      width="16.881289"
      id="rect821-1"
-     style="fill:#73e0cf;fill-opacity:1;stroke:#009081;stroke-width:0.999994;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
+     style="fill:#f3e2d9;fill-opacity:1;stroke:#845d48;stroke-width:0.999994;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke" />
   <rect
-     style="fill:#958b62;fill-opacity:1;stroke:#009082;stroke-width:1.875;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:#845d48;fill-opacity:1;stroke:#845d48;stroke-width:1.875;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="rect4679-5"
      width="1.1249999"
      height="3.125"
@@ -86,7 +101,7 @@
      y="16.624683" />
   <rect
      transform="rotate(-90)"
-     style="fill:#958b62;fill-opacity:1;stroke:#009081;stroke-width:1.875;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:#845d48;fill-opacity:1;stroke:#845d48;stroke-width:1.875;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="rect4679-5-2"
      width="1.1249999"
      height="3.125"

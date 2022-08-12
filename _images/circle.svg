@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg1"
    width="21"
    height="21"
    viewBox="0 0 21 21"
    version="1.1"
    sodipodi:docname="circle.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title238">Tracé manuel : cercle</title>
   <metadata
      id="metadata12">
     <rdf:RDF>
@@ -22,7 +24,20 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:date>2022.08.12</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>République Française</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Tracé manuel : cercle</dc:title>
+        <cc:license
+           rdf:resource="https://spdx.org/licenses/etalab-2.0" />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -39,19 +54,22 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
      id="namedview8"
      showgrid="false"
-     inkscape:zoom="4"
-     inkscape:cx="10.386197"
-     inkscape:cy="39.122045"
-     inkscape:window-x="1358"
-     inkscape:window-y="-8"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="-63.904775"
+     inkscape:cy="20.417708"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
+     inkscape:current-layer="svg1"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <circle
-     style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#00ac8c;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#465f9d;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      id="path944"
      cx="10.5"
      cy="10.5"
@@ -64,18 +82,18 @@
        cx="4.25"
        r="2.5"
        id="circle2-2"
-       style="fill:#e6f7f4;stroke-width:1.00000012" />
+       style="fill:#f4f6fe;stroke-width:1.00000012" />
     <circle
        cy="15.375"
        cx="4.25"
        r="2.2727273"
        id="circle2"
-       style="fill:#00ac8c;stroke-width:1.00000012" />
+       style="fill:#465f9d;stroke-width:1.00000012" />
     <circle
        cy="15.375"
        cx="4.25"
        r="1.1363636"
        id="circle2-7"
-       style="fill:#80d6c6;stroke-width:1.00000012" />
+       style="fill:#bfccfb;stroke-width:1.00000012" />
   </g>
 </svg>

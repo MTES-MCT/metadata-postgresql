@@ -14,6 +14,8 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title25169">Exporter la fiche de métadonnées</title>
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -22,7 +24,20 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <cc:license
+           rdf:resource="https://spdx.org/licenses/etalab-2.0" />
+        <dc:date>2022.08.12</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>République Française</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Exporter la fiche de métadonnées</dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,8 +52,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
      id="namedview7"
      showgrid="false"
      fit-margin-top="0"
@@ -46,12 +61,12 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="11.313708"
-     inkscape:cx="7.380427"
-     inkscape:cy="5.4358834"
-     inkscape:window-x="-9"
+     inkscape:cx="38.935069"
+     inkscape:cy="6.0546021"
+     inkscape:window-x="2391"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g39114"
+     inkscape:current-layer="g4707"
      inkscape:snap-global="false"
      inkscape:showpageshadow="0"
      inkscape:pagecheckerboard="0"
@@ -62,14 +77,14 @@
        style="fill:#f7ecdb;fill-opacity:1;stroke:#8b7954;stroke-width:0.999999;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
        id="path39180"
        sodipodi:type="arc"
-       sodipodi:cx="23.5"
+       sodipodi:cx="22.17767"
        sodipodi:cy="23.5"
        sodipodi:rx="17.67767"
        sodipodi:ry="15.99829"
        sodipodi:start="3.1415927"
        sodipodi:end="4.712389"
        sodipodi:arc-type="slice"
-       d="M 5.8223305,23.5 A 17.67767,15.99829 0 0 1 23.5,7.5017099 V 23.5 Z" />
+       d="M 4.5,23.5 A 17.67767,15.99829 0 0 1 22.17767,7.5017099 V 23.5 Z" />
     <g
        id="g39114"
        transform="rotate(-45,7.6656334,7.6439099)">
