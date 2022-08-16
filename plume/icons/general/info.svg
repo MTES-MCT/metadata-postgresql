@@ -14,6 +14,8 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title26171">Aide</title>
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -22,7 +24,18 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:date>2022.08.12</dc:date>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>République Française</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Aide</dc:title>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Dérivé d'un caractère de la typographie officielle de la charte de l'Etat, &quot;Marianne&quot;.</dc:title>
+          </cc:Agent>
+        </dc:rights>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,8 +50,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
      id="namedview7"
      showgrid="false"
      fit-margin-top="0"
@@ -48,7 +61,7 @@
      inkscape:zoom="11.313708"
      inkscape:cx="-11.00435"
      inkscape:cy="15.600544"
-     inkscape:window-x="-9"
+     inkscape:window-x="2391"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="text36920"
