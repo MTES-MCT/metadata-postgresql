@@ -866,6 +866,8 @@ def returnAndSaveDialogParam(self, mAction):
        mSettings.endGroup()
        mSettings.beginGroup("BlocsColor")
        #Ajouter si autre param
+       
+       """ A SUPPRIMER
        mDicAutreColor["defaut"]                      = "#958B62"
        mDicAutreColor["QGroupBox"]                   = "#958B62"
        mDicAutreColor["QGroupBoxGroupOfProperties"]  = "#958B62"
@@ -874,6 +876,16 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["QTabWidget"]                  = "#958B62"
        mDicAutreColor["QLabelBackGround"]            = "#BFEAE2"
        mDicAutreColor["geomColor"]                   = "#958B62"
+       """
+       
+       mDicAutreColor["defaut"]                      = "#a38e63"
+       mDicAutreColor["QGroupBox"]                   = "#a38e63"
+       mDicAutreColor["QGroupBoxGroupOfProperties"]  = "#a38e63"
+       mDicAutreColor["QGroupBoxGroupOfValues"]      = "#465f9d"
+       mDicAutreColor["QGroupBoxTranslationGroup"]   = "#e18b76"
+       mDicAutreColor["QTabWidget"]                  = "#cecece"
+       mDicAutreColor["QLabelBackGround"]            = "#e3e3fd"
+       mDicAutreColor["geomColor"]                   = "#a38e63"
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
        mDicAutreColor["geomPointEpaisseur"]          = "8"
@@ -881,7 +893,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["geomPrecision"]               = "8"
        #---- for Tooltip
        mDicAutreColor["activeTooltipColorText"]       = "#000000"
-       mDicAutreColor["activeTooltipColorBackground"] = "#fff4f2"
+       mDicAutreColor["activeTooltipColorBackground"] = "#fee9e9"
        #---- for Tooltip
 
        for key, value in mDicAutreColor.items():

@@ -341,9 +341,12 @@ class GeometryMapToolShow(QgsMapTool ):
 # Maj text, Icon, ToolTip
 def majVisuButton(self, Dialog, __mObjetQToolButton, mDic_geoToolsShow, __keyObjet, __valueObjet = None) :
     self.Dialog = Dialog
-    __mObjetQToolButton.setText(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['libelle'])
+    #__mObjetQToolButton.setText(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['libelle'])
     __mObjetQToolButton.setIcon(QIcon(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['icon']))
-    __mObjetQToolButton.setToolTip(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['toolTip'])
+    if self.mode == "edit" :
+       __mObjetQToolButton.setToolTip(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['toolTip'] + "\n\nMaintenez la souris appuyée 2 à 3 secondes pour ouvrir le menu déroulant.")
+    else :   
+       __mObjetQToolButton.setToolTip(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['toolTip'])
     return
 
 #==================================================

@@ -2,7 +2,7 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle, QGridLayout) 
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle, QGridLayout, QSizePolicy) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -21,7 +21,9 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
     _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
     _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
-    _iconQComboBox = _iconQComboBox.replace("\\","/")
+    _iconQComboBox    = _iconQComboBox.replace("\\","/")
+    _iconQComboBoxGeo          = _pathIcons + "/dropDownArrowGeo.png"
+    _iconQComboBoxGeo = _iconQComboBoxGeo.replace("\\","/")
     _iconSources               = _pathIcons + "/source_button.svg"
     _iconSourcesSelect         = _pathIcons + "/source_button.png"
     _iconSourcesVierge         = _pathIcons + "/vierge.png"
@@ -124,7 +126,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
        _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan)
-       #_mParentEnCours.setRowStretch(row, 0)
        #--                        
        _mObjet = QtWidgets.QGridLayout()
        _mObjet.setContentsMargins(0, 0, 0, 0)
@@ -258,6 +259,14 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--                        
        _mObjetQLabel.setWordWrap(True)
        _mObjetQLabel.setOpenExternalLinks(True)
+
+
+       if valueExiste('help text', _valueObjet) : 
+          if _valueObjet['help text'].find("Date et heure") != -1 :
+             print([ _mObjetQLabel, _valueObjet ])       
+       #_mObjetQLabel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQLabel})
     # == QLABEL
@@ -266,11 +275,17 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QDATEEDIT
     elif _valueObjet['main widget type'] == "QDateEdit" :
        #--                        
+       _editStyle = self.editStyle             #style saisie
        _mObjetQDateEdit = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQDateEdit.setVisible(False)
-       #--                        
-       _mObjetQDateEdit.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
+       #--
+       _mObjetQDateEdit.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                                       QgsDateTimeEdit::drop-down {border: 0px;}\
+                                       QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       _width  = _mObjetQDateEdit.width()
+       _mObjetQDateEdit.setMinimumSize(QtCore.QSize(_width, 23))
+
        _mObjetQDateEdit.setObjectName(str(_keyObjet))
        _displayFormat = 'dd/MM/yyyy'
        _mObjetQDateEdit.setDisplayFormat(_displayFormat)
@@ -330,11 +345,17 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QDATETIMEEDIT
     elif _valueObjet['main widget type'] == "QDateTimeEdit" :
        #--                        
+       _editStyle = self.editStyle             #style saisie
        _mObjetQDateTime = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQDateTime.setVisible(False)
        #--                        
-       _mObjetQDateTime.setStyleSheet("QDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
+       _mObjetQDateTime.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                                       QgsDateTimeEdit::drop-down {border: 0px;}\
+                                       QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       _width  = _mObjetQDateTime.width()
+       _mObjetQDateTime.setMinimumSize(QtCore.QSize(_width, 23))
+
        _mObjetQDateTime.setObjectName(str(_keyObjet))
        _displayFormat = 'dd/MM/yyyy hh:mm:ss'
        _mObjetQDateTime.setDisplayFormat(_displayFormat)
@@ -365,11 +386,17 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QTIMEEDIT
     elif _valueObjet['main widget type'] == "QTimeEdit" :
        #--                        
+       _editStyle = self.editStyle             #style saisie
        _mObjetQTime = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQTime.setVisible(False)
        #--                        
-       _mObjetQTime.setStyleSheet("QTimeEdit {  font-family:" + self.policeQGroupBox  +"; }")
+       _mObjetQTime.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                                   QgsDateTimeEdit::drop-down {border: 0px;}\
+                                   QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       _width  = _mObjetQTime.width()
+       _mObjetQTime.setMinimumSize(QtCore.QSize(_width, 23))
+
        _mObjetQTime.setObjectName(str(_keyObjet))
        _displayFormat = 'hh:mm:ss'
        _mObjetQTime.setDisplayFormat(_displayFormat)
@@ -400,11 +427,18 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QTOOLBUTTON   Button PLUS et Button TRADUCTION et Button UNITES
     elif _valueObjet['main widget type'] in ("QToolButton") :
        #--
+       _editStyle = self.editStyle             #style saisie
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
-       # == QICON  
-       _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
-       # == QICON
+       
+       if _valueObjet['object'] == "translation button" : 
+          _mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border: none;}")
+          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)  
+          _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+       elif _valueObjet['object'] == "plus button" :
+          # == QICON  
+          _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
+          # == QICON
               
        #- Actions
        _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButton_Plus_translation(self, _keyObjet, _valueObjet, _language, _langList))
@@ -494,6 +528,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setIcon(QIcon(_iconSources))
+       _mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border: none;}")
+       
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
@@ -514,7 +550,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, _keyObjet, _valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language))
            _mListActions.append(_mObjetQMenuItem)
        
-       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
+       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
+       _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
@@ -541,9 +578,10 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setText(_valueObjet['language value'])
+       _mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:2.5em; border-style:" + _editStyle  + "; border : none;}")  
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:50px; border-style:" + _editStyle  + "; border-width: 0px;}")
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:3.5em; border-style:" + _editStyle  + "}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['authorized languages'] :
@@ -555,7 +593,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonAuthorizesLanguages(self, _keyObjet, _valueObjet, _language, _langList))
            _mListActions.append(_mObjetQMenuItem)
        
-       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
+       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
+       _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
@@ -580,6 +619,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _editStyle = self.editStyle             #style saisie
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
+       #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:40px; border-style:" + _editStyle  + "; border-width: 0px;} QToolButton::drop-down {border: 0px;} QToolButton::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       _mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:60px; border-style:" + _editStyle  + "; border: none;}") 
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setText(_valueObjet['current unit'])
        #MenuQToolButton                        
@@ -596,7 +637,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonUnits(self, _keyObjet, _valueObjet))
            _mListActions.append(_mObjetQMenuItem)
        
-       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
+       _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
+       _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
@@ -622,16 +664,19 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        self.dic_geoToolsShow[_keyObjet] = False  # Param for display BBOX ou no
+       _mObjetQToolButton.setStyleSheet("QToolButton {border: none; }")
        #---------------------------
        # Visualisation mode read
        if _valueObjet['geo tools'] == ['show'] :
           majVisuButton(self, self, _mObjetQToolButton, self.dic_geoToolsShow, _keyObjet, _valueObjet) 
-          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
           _mObjetQToolButton.clicked.connect(lambda : action_mObjetQToolButtonGeoToolsShow(self, _mObjetQToolButton, _keyObjet, _valueObjet))
        #---------------------------
        # Visualisation mode edit
        else :
           #MenuQToolButton                        
+          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.DelayedPopup)       # InstantPopup  MenuButtonPopup DelayedPopup
+          _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+          
           _mObjetQMenu = QMenu()
           majVisuButton(self, self, _mObjetQToolButton, self.dic_geoToolsShow, _keyObjet, _valueObjet) 
           _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:250px; border-style:" + _editStyle  + "; border-width: 0px;}")
@@ -681,7 +726,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                  _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonGeoTools(self, _mObjetQToolButton,_keyObjet, _valueObjet))
                  _mListActions.append(_mObjetQMenuItem)
 
-          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.MenuButtonPopup)
           _mObjetQToolButton.setMenu(_mObjetQMenu)
           #Dict des objets instanciés
           self.mDicObjetsInstancies[_keyObjet].update({'geo widget'  : _mObjetQToolButton, 
@@ -979,6 +1023,7 @@ def regenerationMenuQToolButton(self, _ret, _language, _selectItem, _iconSources
            __valueObjet['switch source menu'].removeAction(act)
        #--    
        _mObjetQMenu = __valueObjet['switch source menu']
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  + ";}")
        #------------
        _mListActions = []
        for elemQMenuItem in __valueObjet['sources'] :
@@ -997,7 +1042,10 @@ def regenerationMenuQToolButton(self, _ret, _language, _selectItem, _iconSources
            _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButton(self, mKeyQMenuUpdate, __valueObjet, _iconSources, _iconSourcesSelect, _iconSourcesVierge, _language))
            _mListActions.append(_mObjetQMenuItem)
     
-       __valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].MenuButtonPopup)
+       #__valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].MenuButtonPopup)
+       __valueObjet['switch source widget'].setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  +" ; border: none;}")
+       __valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].InstantPopup)
+       __valueObjet['switch source widget'].setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
        __valueObjet['switch source widget'].setMenu(_mObjetQMenu)
 
        #Dict des objets instanciés
@@ -1036,7 +1084,8 @@ def regenerationMenu(self, _ret, _language, _langList) :
            _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonAuthorizesLanguages(self, mKeyQMenuUpdate, __valueObjet, _language, _langList))
            _mListActions.append(_mObjetQMenuItem)
     
-       __valueObjet['language widget'].setPopupMode(__valueObjet['language widget'].MenuButtonPopup)
+       __valueObjet['language widget'].setPopupMode(__valueObjet['language widget'].InstantPopup)
+       __valueObjet['language widget'].setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
        __valueObjet['language widget'].setMenu(_mObjetQMenu)
 
        #Dict des objets instanciés
@@ -1081,6 +1130,7 @@ def gestionOnglets(self, _key, _value):
     zoneWidgets.setObjectName("zoneWidgets" + str(_key))
     #--            
     scroll_bar = QtWidgets.QScrollArea(tab_widget_Onglet) 
+    scroll_bar.setStyleSheet("QScrollArea { border: none;}")
     scroll_bar.setWidgetResizable(True)
     scroll_bar.setGeometry(QtCore.QRect(x, y, larg, haut))
     scroll_bar.setMinimumWidth(50)

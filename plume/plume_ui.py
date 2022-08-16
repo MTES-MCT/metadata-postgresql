@@ -187,6 +187,10 @@ class Ui_Dialog_plume(object):
         _iconSourcesHelp          = _pathIcons + "/assistance.png"
         _iconSourcesAbout         = _pathIcons + "/about.png"
         _iconSourcesVerrou        = _pathIcons + "/verrou.svg"
+        _pathIconsQComboBox       = os.path.dirname(__file__) + "/icons/buttons"
+        _iconQComboBox            = _pathIconsQComboBox + "/dropDownArrow.png"
+        self._iconQComboBox = _iconQComboBox.replace("\\","/")
+        
         # For menu contex QGroupBox
         self._iconSourcesCopy, self._iconSourcesPaste = _iconSourcesCopy, _iconSourcesPaste
         _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
@@ -279,9 +283,6 @@ class Ui_Dialog_plume(object):
               self.retrieveInfoLayerQgis(self.layerBeforeClicked[0])
         #Management Click before open IHM 
            
-        # == Gestion Context ==
-        with self.safe_pg_connection() :
-           self.displayToolBar(*self.listIconToolBar)
     #= Fin setupUi
 
     #==========================
@@ -469,7 +470,7 @@ class Ui_Dialog_plume(object):
            #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
            self.plumeChoiceLang.setText(mItemLine1)
            lenQTool = self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, mItemLine1).width()
-           if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")  
+           #if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border:none;}")  
            mDicUserSettings        = {}
            mSettings = QgsSettings()
            mSettings.beginGroup("PLUME")
@@ -988,7 +989,7 @@ class Ui_Dialog_plume(object):
         #-
         self.plumeEdit.setToolTip(self.mTextToolTipEdit if self.mode == 'read' else self.mTextToolTipRead)   
         if self.toolBarDialog == "picture" :
-           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
+           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun            
            self.plumeEdit.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if self.mode == 'read' else \
                                         "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
            self.plumeTranslation.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if not self.translation else \
@@ -1036,9 +1037,10 @@ class Ui_Dialog_plume(object):
         textItem = max( templateLabels, key=lambda x:_mObjetQMenu.fontMetrics().size(Qt.TextSingleLine, x).width() )
 
         lenQTool = _mObjetQMenu.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQMenu) + "px; border-width: 0px;}")
+        #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQMenu) + "px; border-width: 0px;}")
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-width: 0px;}")
         #-
-        self.plumeTemplate.setPopupMode(self.plumeTemplate.MenuButtonPopup)
+        self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
         self.plumeTemplate.setMenu(_mObjetQMenu)
         return
 
@@ -1077,8 +1079,10 @@ class Ui_Dialog_plume(object):
         mListExtensionFormat = self.metagraph.available_formats
         self.mListExtensionFormat = mListExtensionFormat
         self._mObjetQMenuExport.clear()
+        textItem = max( mListExtensionFormat, key=lambda x:self._mObjetQMenuExport.fontMetrics().size(Qt.TextSingleLine, x).width() )
+        lenQTool = self._mObjetQMenuExport.fontMetrics().size(Qt.TextSingleLine, textItem).width()
+        #self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
         self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
-        #self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px;}")
         #------------
         for elemQMenuItem in mListExtensionFormat :
             _mObjetQMenuItem = QAction(elemQMenuItem, self._mObjetQMenuExport)
@@ -1090,7 +1094,6 @@ class Ui_Dialog_plume(object):
             #- Actions
             _mObjetQMenuItem.triggered.connect(lambda : self.clickButtonsExportActions())
         #-
-        self.plumeExport.setPopupMode(self.plumeExport.MenuButtonPopup)
         self.plumeExport.setMenu(self._mObjetQMenuExport)
         return
 
@@ -1113,7 +1116,7 @@ class Ui_Dialog_plume(object):
            self.mMenuBarDialogLine2.setContentsMargins(0, 0, 0, 0)
         except :
               pass 
-        _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun   
+        _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun   
 
         self.mMenuBarDialogGridLine1 = QtWidgets.QHBoxLayout()
         self.mMenuBarDialogGridLine1.setContentsMargins(0, 0, 0, 0)
@@ -1178,7 +1181,9 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setToolTip(self.mTextToolTip)
         textItem = max( self.langList, key=lambda x:self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, x).width() )
         lenQTool = self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")  
+        if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:3em; border-style:" + _editStyle  + "; border : none;}")  
+        #if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border:none;}")  
+
         #self.plumeChoiceLang.setMinimumWidth(lenQTool)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
@@ -1193,7 +1198,9 @@ class Ui_Dialog_plume(object):
             #- Actions
             _mObjetQMenuItem.triggered.connect(self.clickButtonsChoiceLanguages)
        
-        self.plumeChoiceLang.setPopupMode(self.plumeChoiceLang.MenuButtonPopup)
+        self.plumeChoiceLang.setPopupMode(self.plumeChoiceLang.InstantPopup)
+        self.plumeChoiceLang.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        #self.plumeChoiceLang.setIcon(QIcon(_iconSourcesTemplate))
         self.plumeChoiceLang.setMenu(_mObjetQMenu)
         
         self.mMenuBarDialogGridLine1.addWidget(self.plumeChoiceLang)
@@ -1203,13 +1210,15 @@ class Ui_Dialog_plume(object):
         #--QToolButton TEMPLATE                                               
         mText = QtWidgets.QApplication.translate("plume_ui", "Template") 
         self.plumeTemplate = QtWidgets.QToolButton()
-        self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
         self.plumeTemplate.setObjectName("Template")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "METADATA extension not installed.")   
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")    
         self.plumeTemplate.setToolTip(mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border: none;}")  
+        #if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border: none;}")  
+        if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border: none;}")  
+        self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
+        self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         self._mObjetQMenu = _mObjetQMenu
@@ -1273,7 +1282,7 @@ class Ui_Dialog_plume(object):
         self.plumeImport.setObjectName("Import")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata.") 
         self.plumeImport.setToolTip(mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeImport.setStyleSheet("QToolButton { width:40px; border: none;}")  
+        if self.toolBarDialog == "picture" : self.plumeImport.setStyleSheet("QToolButton {border: none; }")
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
@@ -1313,9 +1322,11 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.addAction(self.plumeImportCsw)
         #-- Importer les métadonnées depuis un service CSW
         lenQTool = self._mObjetQMenu.fontMetrics().size(Qt.TextSingleLine, mText).width()
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
-        self.plumeImport.setPopupMode(self.plumeImport.MenuButtonPopup)
+        self.plumeImport.setPopupMode(self.plumeImport.InstantPopup)
+        self.plumeImport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeImport.setMenu(_mObjetQMenu)
         self.mMenuBarDialogGridLine2.addWidget(self.plumeImport)
         #--QToolButton IMPORT                                               
@@ -1328,8 +1339,11 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setObjectName("Export")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file.")
         self.plumeExport.setToolTip(mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QToolButton { width:40px; border: none;}")  
-        #MenuQToolButton                        
+        if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QToolButton { border: none;}")  
+        self.plumeExport.setPopupMode(self.plumeExport.InstantPopup)
+        self.plumeExport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+
+        #MenuQToolButton
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         self._mObjetQMenuExport = _mObjetQMenu
@@ -1353,12 +1367,12 @@ class Ui_Dialog_plume(object):
         self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Help / About") 
         self.plumeInterrogation.setIcon(QIcon(_iconSourcesInterrogation))
         self.plumeInterrogation.setToolTip(self.mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeInterrogation.setStyleSheet("QToolButton { width:40px; border: none;}")  
+        if self.toolBarDialog == "picture" : self.plumeInterrogation.setStyleSheet("QToolButton { border: none;}")  
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         _editStyle = self.editStyle             #style saisie
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
         #-- Aide
         mText = QtWidgets.QApplication.translate("plume_ui", "Help") 
@@ -1380,8 +1394,10 @@ class Ui_Dialog_plume(object):
         self.plumeAbout.triggered.connect(self.clickAbout)
         _mObjetQMenu.addAction(self.plumeAbout)
         #-- About
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
-        self.plumeInterrogation.setPopupMode(self.plumeInterrogation.MenuButtonPopup)
+        self.plumeInterrogation.setPopupMode(self.plumeInterrogation.InstantPopup)
+        self.plumeInterrogation.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeInterrogation.setMenu(_mObjetQMenu)
         self.mMenuBarDialogGridLine2.addWidget(self.plumeInterrogation)
         #--QToolButton POINT ?                                               

@@ -125,7 +125,7 @@ class Ui_Dialog(object):
         MonHtml4 = QtWidgets.QApplication.translate("about", "MTE / MCTRCT / Mer", None) 
         MonHtml += MonHtml4
         MonHtml += "</b><br><b>"
-        MonHtml6 = QtWidgets.QApplication.translate("about", "digital service SG/SNUM/UNI/DRC", None) 
+        MonHtml6 = QtWidgets.QApplication.translate("about", "digital service SG/DNUM/UNI/DRC", None) 
         MonHtml += MonHtml6
         MonHtml += "<br><br><i>"
         MonHtml7 = QtWidgets.QApplication.translate("about", "Development in 2021/2022", None) 
