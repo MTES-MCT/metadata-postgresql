@@ -56,6 +56,7 @@ class MainPlugin(object):
      self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) "))
      self.plume2.triggered.connect(self.clickIHMplume2)
      #Construction du menu
+     self.menu.setIcon(QIcon(menuIcon))
      self.menu.addAction(self.plume2)
      #=========================
      #-- Ajout du menu
