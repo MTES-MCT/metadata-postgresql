@@ -68,16 +68,16 @@ Documentation technique : https://mtes-mct.github.io/metadata-postgresql.
 
 ### Éditeur
 
-Service du numérique du ministère de la transition écologique, du ministère de la cohésion des territoires et des relations avec les collectivités territoriales et du ministère de la mer.
+Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'État chargé de la Mer.
 
 ### Équipe
 
-- Didier LECLERC (SNUM/UNI/DRC) : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL.
-- Leslie LEMAIRE (SNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes (modules des répertoires [rdf](/plume/rdf), [pg](/plume/pg) et [iso](/plume/iso)), création des logos et icônes, rédaction de la documentation technique.
+- Didier LECLERC (DNUM/UNI/DRC) : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL.
+- Leslie LEMAIRE (DNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes (modules des répertoires [rdf](/plume/rdf), [pg](/plume/pg) et [iso](/plume/iso)), création des logos et icônes, rédaction de la documentation technique.
 
 ## Contact
 
-Via les issues du [dépôt GitHub](https://github.com/MTES-MCT/metadata-postgresql) ou par mél à drc.uni.snum.sg@developpement-durable.gouv.fr.
+Via les issues du [dépôt GitHub](https://github.com/MTES-MCT/metadata-postgresql) ou par mél à drc.uni.dnum.sg@developpement-durable.gouv.fr.
 
 
 ## Licence
