@@ -771,8 +771,13 @@ def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mB
           mDicAutre["layerBeforeClicked"]         = layerBeforeClicked[0].id() if layerBeforeClicked[1] == "qgis" else mItem if mItem != None else layerBeforeClicked[0]
           mDicAutre["layerBeforeClickedWho"]      = layerBeforeClicked[1]
           mDicAutre["layerBeforeClickedBrowser"]  = mBrowser
-          for key, value in mDicAutre.items():
-              mSettings.setValue(key, value)
+       else :   
+          mDicAutre["layerBeforeClicked"]         = layerBeforeClicked[0]
+          mDicAutre["layerBeforeClickedWho"]      = layerBeforeClicked[1]
+          mDicAutre["layerBeforeClickedBrowser"]  = mBrowser
+       #   
+       for key, value in mDicAutre.items():
+           mSettings.setValue(key, value)
        #---- for Tooltip
        mDicAutre = {}
        mDicAutre["activeTooltip"]                = "true"

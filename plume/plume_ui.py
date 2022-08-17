@@ -281,6 +281,8 @@ class Ui_Dialog_plume(object):
               self.retrieveInfoLayerQgis(None)
            elif self.layerBeforeClicked[1] == "postgres" : 
               self.retrieveInfoLayerQgis(self.layerBeforeClicked[0])
+        else :      
+           if not self.verrouLayer : bibli_plume.initIhmNoConnection(self)
         #Management Click before open IHM 
            
     #= Fin setupUi

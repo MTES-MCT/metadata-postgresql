@@ -260,11 +260,12 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQLabel.setWordWrap(True)
        _mObjetQLabel.setOpenExternalLinks(True)
 
-
+       """ GESTION DES ESPACES A FAIRE
        if valueExiste('help text', _valueObjet) : 
           if _valueObjet['help text'].find("Date et heure") != -1 :
              print([ _mObjetQLabel, _valueObjet ])       
        #_mObjetQLabel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+       GESTION DES ESPACES A FAIRE """
 
 
        #Dict des objets instanciés
@@ -438,6 +439,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        elif _valueObjet['object'] == "plus button" :
           # == QICON  
           _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
+          _mObjetQToolButton.setAutoRaise(True)
           # == QICON
               
        #- Actions
@@ -471,6 +473,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
+       _mObjetQToolButton.setAutoRaise(True)
 
        # == QICON
        _mObjetQToolButton.setIcon(QIcon(_iconComputeButton ))
@@ -498,6 +501,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
+       _mObjetQToolButton.setAutoRaise(True)
 
        # == QICON
        _mObjetQToolButton.setIcon(QIcon(changeColorIcon(self, _keyObjet, "buttonMinus", _mListeIconsButtonPlusMinus )))
@@ -664,7 +668,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        self.dic_geoToolsShow[_keyObjet] = False  # Param for display BBOX ou no
-       _mObjetQToolButton.setStyleSheet("QToolButton {border: none; }")
+       #_mObjetQToolButton.setStyleSheet("QToolButton {border: none; }")
+       _mObjetQToolButton.setAutoRaise(True)
        #---------------------------
        # Visualisation mode read
        if _valueObjet['geo tools'] == ['show'] :

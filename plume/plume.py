@@ -121,7 +121,6 @@ class MainPlugin(object):
       
       self._myExploBrowser  = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
       self._myExploBrowser2 = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-
       return
               
   #==========================
