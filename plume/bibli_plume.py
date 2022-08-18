@@ -57,15 +57,16 @@ def initIhmNoConnection(self) :
     self.plumeTranslation.setEnabled(False)
     self.plumeChoiceLang.setEnabled(False)
     self.plumeVerrou.setEnabled(False)
+    self.plumeVerrou.setChecked(False)
     #-
     self.mode            = "read"  #Intiialise les autres instances  
     self.verrouLayer     = False   #Verrouillage de la couche 
     self.nameVerrouLayer = None    #Couche verrouillée 
     #-
     if self.toolBarDialog == "picture" :
-       _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun            
-       self.plumeEdit.setStyleSheet(  "QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
-       self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
+       _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun            
+       #self.plumeEdit.setStyleSheet(  "QToolButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QToolButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
+       #self.plumeVerrou.setStyleSheet("QToolButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QToolButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
     #-
     afficheNoConnections(self, "show")
     self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(returnVersion()) + ")" 

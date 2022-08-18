@@ -114,7 +114,7 @@ class MainPlugin(object):
       self.activeTooltipColorBackground = mDic_LH["activeTooltipColorBackground"] 
       #
       _pathIcons = os.path.dirname(__file__) + "/icons/logo"
-      iconSourceTooltip   = _pathIcons + "/plume.png"
+      iconSourceTooltip   = _pathIcons + "/plume.svg"
       # liste des Paramétres UTILISATEURS
       listUserParam(self)
       # liste des Paramétres UTILISATEURS

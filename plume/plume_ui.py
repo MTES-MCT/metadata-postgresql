@@ -184,18 +184,16 @@ class Ui_Dialog_plume(object):
         _iconSourcesTranslation   = _pathIcons + "/translation.svg"
         _iconSourcesParam         = _pathIcons + "/configuration.svg"
         _iconSourcesInterrogation = _pathIcons + "/info.svg"
-        _iconSourcesHelp          = _pathIcons + "/assistance.png"
-        _iconSourcesAbout         = _pathIcons + "/about.png"
         _iconSourcesVerrou        = _pathIcons + "/verrou.svg"
         _pathIconsQComboBox       = os.path.dirname(__file__) + "/icons/buttons"
-        _iconQComboBox            = _pathIconsQComboBox + "/dropDownArrow.png"
+        _iconQComboBox            = _pathIconsQComboBox + "/drop_down_arrow.svg"
         self._iconQComboBox = _iconQComboBox.replace("\\","/")
         
         # For menu contex QGroupBox
         self._iconSourcesCopy, self._iconSourcesPaste = _iconSourcesCopy, _iconSourcesPaste
         _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
         
-        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ]
+        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
@@ -204,7 +202,7 @@ class Ui_Dialog_plume(object):
         Dialog.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint) 
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource          = _pathIcons + "/plume.svg"
-        iconSourceTooltip   = _pathIcons + "/plume.png"
+        iconSourceTooltip   = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -387,6 +385,7 @@ class Ui_Dialog_plume(object):
            elif QtWidgets.QApplication.translate("plume_ui", mItemLine2) == "Verrouillage" :
               self.verrouLayer = (False if self.verrouLayer else True) 
               self.nameVerrouLayer = (self.layer if self.verrouLayer else None) 
+              self.plumeVerrou.setChecked(True if self.verrouLayer else False)  
 
            #**********************
            #*** commun
@@ -472,7 +471,6 @@ class Ui_Dialog_plume(object):
            #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
            self.plumeChoiceLang.setText(mItemLine1)
            lenQTool = self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, mItemLine1).width()
-           #if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border:none;}")  
            mDicUserSettings        = {}
            mSettings = QgsSettings()
            mSettings.beginGroup("PLUME")
@@ -893,7 +891,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
-    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou):
+    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou):
         #-- Désactivation
         self.plumeEdit.setEnabled(False)
         self.plumeSave.setEnabled(False)
@@ -906,13 +904,12 @@ class Ui_Dialog_plume(object):
         self.plumeTranslation.setEnabled(False)
         self.plumeChoiceLang.setEnabled(False)
         self.plumeVerrou.setEnabled(False)
+        self.plumeVerrou.setChecked(False)
 
         #====================
         #====================
         #--QToolButton TEMPLATE                                               
         if hasattr(self, 'mConnectEnCours') :
-           #self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
-           #self.plumeTemplate.setObjectName("Template")
            
            #Lecture existence Extension METADATA            
            mKeySql = queries.query_plume_pg_check()
@@ -981,7 +978,9 @@ class Ui_Dialog_plume(object):
            
            self.plumeVerrou.setEnabled(False if self.mode == "edit" else True)
            if self.mode == "edit" : self.verrouLayer = True
-           
+           if self.verrouLayer : self.plumeVerrou.setChecked(True)  
+           #Mode edition avec les droits
+
            #Mode edition avec les droits
            if r == True and self.mode == 'read' : 
               self.plumeSave.setEnabled(False)
@@ -992,13 +991,6 @@ class Ui_Dialog_plume(object):
         self.plumeEdit.setToolTip(self.mTextToolTipEdit if self.mode == 'read' else self.mTextToolTipRead)   
         if self.toolBarDialog == "picture" :
            _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun            
-           self.plumeEdit.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if self.mode == 'read' else \
-                                        "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
-           self.plumeTranslation.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if not self.translation else \
-                                        "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
-           self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}"  if not self.verrouLayer else \
-                                        "QPushButton { border: 0px solid black;; background-color: " + _mColorSecondPlan + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorFirstPlan  + ";}")   
-
         #-ToolTip
         #-
         if self.copyMetagraph !=  None :
@@ -1039,7 +1031,6 @@ class Ui_Dialog_plume(object):
         textItem = max( templateLabels, key=lambda x:_mObjetQMenu.fontMetrics().size(Qt.TextSingleLine, x).width() )
 
         lenQTool = _mObjetQMenu.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQMenu) + "px; border-width: 0px;}")
         _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-width: 0px;}")
         #-
         self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
@@ -1050,9 +1041,9 @@ class Ui_Dialog_plume(object):
     # == Gestion des Icons Flags dans le menu des templates
     def majQmenuModeleIconFlag(self, mItemTemplates) :
         try : 
-           _pathIcons = os.path.dirname(__file__) + "/icons/buttons"
-           _iconSourcesSelect    = _pathIcons + "/source_button.png"
-           _iconSourcesVierge    = _pathIcons + "/vierge.png"
+           _pathIcons = os.path.dirname(__file__) + "/icons/general"
+           _iconSourcesSelect    = _pathIcons + "/selected_brown.svg"
+           _iconSourcesVierge    = _pathIcons + ""
 
            if mItemTemplates == None : mItemTemplates = "Aucun" # Gestion si None
            for elemQMenuItem in self._mObjetQMenu.children() :
@@ -1070,7 +1061,6 @@ class Ui_Dialog_plume(object):
     def majButtonTemplate(self, _plumeTemplate, _mTemplateTextChoice, _mLenTemplateTextChoice) :
         _plumeTemplate.setText(_mTemplateTextChoice)
         lenQTool = _plumeTemplate.fontMetrics().size(Qt.TextSingleLine, _mTemplateTextChoice).width()
-        if self.toolBarDialog == "picture" : _plumeTemplate.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border: none;}")
         _plumeTemplate.setMinimumWidth(lenQTool + self.margeQToolButton)
         _plumeTemplate.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         return
@@ -1083,7 +1073,6 @@ class Ui_Dialog_plume(object):
         self._mObjetQMenuExport.clear()
         textItem = max( mListExtensionFormat, key=lambda x:self._mObjetQMenuExport.fontMetrics().size(Qt.TextSingleLine, x).width() )
         lenQTool = self._mObjetQMenuExport.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        #self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
         self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
         #------------
         for elemQMenuItem in mListExtensionFormat :
@@ -1100,7 +1089,7 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================
-    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesHelp, _iconSourcesAbout, _iconSourcesVerrou ):
+    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou ):
         #Menu Dialog  
         self.mMenuBarDialogLine1 = QMenuBar(self) 
         self.mMenuBarDialogLine2 = QMenuBar(self) 
@@ -1132,43 +1121,45 @@ class Ui_Dialog_plume(object):
         #====================
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Edition") 
-        self.plumeEdit = QtWidgets.QPushButton()
+        self.plumeEdit = QtWidgets.QToolButton()
         self.plumeEdit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumeEdit.setStyleSheet("QPushButton { border: 0px solid black;}")
         self.plumeEdit.setIcon(QIcon(_iconSourcesRead))
         self.plumeEdit.setObjectName("Edition")
         self.mTextToolTipRead = QtWidgets.QApplication.translate("plume_ui", "Edit") 
         self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_ui", "Read") 
         self.plumeEdit.setToolTip(self.mTextToolTipEdit)
         self.plumeEdit.clicked.connect(self.clickButtonsActions)
+        self.plumeEdit.setAutoRaise(True)
+        self.plumeEdit.setCheckable(True)
         #-- Raccourci
         self.plumeEdit.setShortcut(QKeySequence("ALT+SHIFT+E"))
         #-- Raccourci
         self.mMenuBarDialogGridLine1.addWidget(self.plumeEdit)
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Save") 
-        self.plumeSave = QtWidgets.QPushButton()
+        self.plumeSave = QtWidgets.QToolButton()
         self.plumeSave.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumeSave.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeSave.setIcon(QIcon(_iconSourcesSave))
         self.plumeSave.setObjectName("Save")
         self.plumeSave.setToolTip(mText)
         self.plumeSave.clicked.connect(self.clickButtonsActions)
+        self.plumeSave.setAutoRaise(True)
         #-- Raccourci
         self.plumeSave.setShortcut(QKeySequence("ALT+SHIFT+S"))
         #-- Raccourci
         self.mMenuBarDialogGridLine1.addWidget(self.plumeSave)
         #--                                        
         mText = QtWidgets.QApplication.translate("plume_ui", "Translation") 
-        self.plumeTranslation = QtWidgets.QPushButton()
+        self.plumeTranslation = QtWidgets.QToolButton()
         self.plumeTranslation.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumeTranslation.setStyleSheet("QPushButton { border: 0px solid black;}")  
         self.plumeTranslation.setIcon(QIcon(_iconSourcesTranslation))
         self.plumeTranslation.setObjectName("Traduction")
         self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_ui", "Enable translation functions.") 
         self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
         self.plumeTranslation.setToolTip(self.mTextToolTipNon)
         self.plumeTranslation.clicked.connect(self.clickButtonsActions)
+        self.plumeTranslation.setAutoRaise(True)
+        self.plumeTranslation.setCheckable(True)
         #-- Raccourci
         self.plumeTranslation.setShortcut(QKeySequence("ALT+SHIFT+T"))
         #-- Raccourci
@@ -1183,8 +1174,7 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setToolTip(self.mTextToolTip)
         textItem = max( self.langList, key=lambda x:self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, x).width() )
         lenQTool = self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:3em; border-style:" + _editStyle  + "; border : none;}")  
-        #if self.toolBarDialog == "picture" : self.plumeChoiceLang.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border:none;}")  
+        self.plumeChoiceLang.setAutoRaise(True)
 
         #self.plumeChoiceLang.setMinimumWidth(lenQTool)
         #MenuQToolButton                        
@@ -1217,8 +1207,7 @@ class Ui_Dialog_plume(object):
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "METADATA extension not installed.")   
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")    
         self.plumeTemplate.setToolTip(mTextToolTip)
-        #if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border: none;}")  
-        if self.toolBarDialog == "picture" : self.plumeTemplate.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border: none;}")  
+        self.plumeTemplate.setAutoRaise(True)
         self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
         self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         #MenuQToolButton                        
@@ -1233,14 +1222,14 @@ class Ui_Dialog_plume(object):
         #====================
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Copy") 
-        self.plumeCopy = QtWidgets.QPushButton()
+        self.plumeCopy = QtWidgets.QToolButton()
         self.plumeCopy.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumeCopy.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeCopy.setIcon(QIcon(_iconSourcesCopy))
         self.plumeCopy.setObjectName("Copy")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card.") 
         self.plumeCopy.setToolTip(mTextToolTip)
         self.plumeCopy.clicked.connect(self.clickButtonsActions)
+        self.plumeCopy.setAutoRaise(True)
         #-- Raccourci
         self.plumeCopy.setShortcut(QKeySequence("ALT+SHIFT+C"))
         #-- Raccourci
@@ -1249,28 +1238,28 @@ class Ui_Dialog_plume(object):
         self.copyMetagraph = None
         #--
         mText = QtWidgets.QApplication.translate("plume_main", "Paste") 
-        self.plumePaste = QtWidgets.QPushButton()
+        self.plumePaste = QtWidgets.QToolButton()
         self.plumePaste.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumePaste.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumePaste.setIcon(QIcon(_iconSourcesPaste))
         self.plumePaste.setObjectName("Paste")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card.") 
         self.plumePaste.setToolTip(mTextToolTip)
         self.plumePaste.clicked.connect(self.clickButtonsActions)
+        self.plumePaste.setAutoRaise(True)
         #-- Raccourci
         self.plumePaste.setShortcut(QKeySequence("ALT+SHIFT+V"))
         #-- Raccourci
         self.mMenuBarDialogGridLine2.addWidget(self.plumePaste)
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Empty") 
-        self.plumeEmpty = QtWidgets.QPushButton()
+        self.plumeEmpty = QtWidgets.QToolButton()
         self.plumeEmpty.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumeEmpty.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
         self.plumeEmpty.setIcon(QIcon(_iconSourcesEmpty))
         self.plumeEmpty.setObjectName("Empty")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card.")
         self.plumeEmpty.setToolTip(mTextToolTip)
         self.plumeEmpty.clicked.connect(self.clickButtonsActions)
+        self.plumeEmpty.setAutoRaise(True)
         #-- Raccourci
         self.plumeEmpty.setShortcut(QKeySequence("ALT+SHIFT+B"))
         #-- Raccourci
@@ -1284,7 +1273,7 @@ class Ui_Dialog_plume(object):
         self.plumeImport.setObjectName("Import")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata.") 
         self.plumeImport.setToolTip(mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeImport.setStyleSheet("QToolButton {border: none; }")
+        self.plumeImport.setAutoRaise(True)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
@@ -1324,7 +1313,6 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.addAction(self.plumeImportCsw)
         #-- Importer les métadonnées depuis un service CSW
         lenQTool = self._mObjetQMenu.fontMetrics().size(Qt.TextSingleLine, mText).width()
-        #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")
         _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
         self.plumeImport.setPopupMode(self.plumeImport.InstantPopup)
@@ -1341,7 +1329,7 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setObjectName("Export")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file.")
         self.plumeExport.setToolTip(mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeExport.setStyleSheet("QToolButton { border: none;}")  
+        self.plumeExport.setAutoRaise(True)
         self.plumeExport.setPopupMode(self.plumeExport.InstantPopup)
         self.plumeExport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -1355,12 +1343,12 @@ class Ui_Dialog_plume(object):
         #====================
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM") 
-        self.paramColor = QtWidgets.QPushButton()
-        if self.toolBarDialog == "picture" : self.paramColor.setStyleSheet("QPushButton { border: 0px solid black; width:30px;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
+        self.paramColor = QtWidgets.QToolButton()
         self.paramColor.setIcon(QIcon(_iconSourcesParam))
         self.paramColor.setObjectName("Customization of the IHM")
         self.paramColor.setToolTip(mText)
         self.paramColor.clicked.connect(self.clickColorDialog)
+        self.paramColor.setAutoRaise(True)
         self.mMenuBarDialogGridLine2.addWidget(self.paramColor)
         #====================
         #--QToolButton POINT ?                                               
@@ -1369,18 +1357,16 @@ class Ui_Dialog_plume(object):
         self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Help / About") 
         self.plumeInterrogation.setIcon(QIcon(_iconSourcesInterrogation))
         self.plumeInterrogation.setToolTip(self.mTextToolTip)
-        if self.toolBarDialog == "picture" : self.plumeInterrogation.setStyleSheet("QToolButton { border: none;}")  
+        self.plumeInterrogation.setAutoRaise(True)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         _editStyle = self.editStyle             #style saisie
-        #_mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:120px; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
         #-- Aide
         mText = QtWidgets.QApplication.translate("plume_ui", "Help") 
         self.plumeHelp = QAction("Help",self.plumeInterrogation)
         self.plumeHelp.setText(mText)
-        #self.plumeHelp.setIcon(QIcon(_iconSourcesHelp))
         self.plumeHelp.setObjectName("Help")
         self.plumeHelp.setToolTip(mText)
         self.plumeHelp.triggered.connect(self.myHelpAM)
@@ -1406,9 +1392,10 @@ class Ui_Dialog_plume(object):
         self.mMenuBarDialogGridLine2.addStretch(1)
         #-- Verrouillage
         mText = QtWidgets.QApplication.translate("plume_ui", "Lockdown") 
-        self.plumeVerrou = QtWidgets.QPushButton()
+        self.plumeVerrou = QtWidgets.QToolButton()
         self.plumeVerrou.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        if self.toolBarDialog == "picture" : self.plumeVerrou.setStyleSheet("QPushButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
+        self.plumeVerrou.setAutoRaise(True)
+        self.plumeVerrou.setCheckable(True)
         self.plumeVerrou.setIcon(QIcon(_iconSourcesVerrou))
         self.plumeVerrou.setObjectName("Verrouillage")
         self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_ui", 'Lock the display on the current metadata card.') 

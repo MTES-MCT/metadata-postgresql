@@ -13,7 +13,7 @@ class Ui_Dialog(object):
 
         Dialog.setObjectName("Dialog")
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0,700,600).size()).expandedTo(Dialog.minimumSizeHint()))
-        iconSource = bibli_plume.getThemeIcon("logo_init.png")
+        iconSource = bibli_plume.getThemeIcon("plume.svg")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -34,7 +34,7 @@ class Ui_Dialog(object):
         self.label_2.setTextFormat(QtCore.Qt.RichText)
         self.label_2.setObjectName("label_2")
         self.labelImage = QtWidgets.QLabel(self.groupDialog)
-        myPath = os.path.dirname(__file__)+"\\icons\\logo\\logoabout1.png"
+        myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
         myDefPath = myPath.replace("\\","/");
         carIcon = QtGui.QImage(myDefPath)
         self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
@@ -42,7 +42,7 @@ class Ui_Dialog(object):
         self.labelImage.setObjectName("labelImage")
 
         self.labelImage2 = QtWidgets.QLabel(self.groupDialog)
-        myPath = os.path.dirname(__file__)+"\\icons\\logo\\logoabout2.png";
+        myPath = os.path.dirname(__file__)+"\\icons\\about\\ui_screenshot.png";
         myDefPath = myPath.replace("\\","/");
         carIcon2 = QtGui.QImage(myDefPath)
         self.labelImage2.setPixmap(QtGui.QPixmap.fromImage(carIcon2))

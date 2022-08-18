@@ -332,7 +332,7 @@ class TREEVIEWCSW(QTreeWidget):
     #===============================              
     def afficheCSW(self, DialogImportCSW, listeUrlCSW):
         self.DialogImportCSW = DialogImportCSW 
-        iconGestion = bibli_plume.returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\logo.png")
+        iconGestion = bibli_plume.returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\plume.svg")
         self.setGeometry(5, 5, self.DialogImportCSW.groupBoxOptionsListeUrl.width() - 10, self.DialogImportCSW.groupBoxOptionsListeUrl.height() - 10 )
         #---
         self.header().setStretchLastSection(False)

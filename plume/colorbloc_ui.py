@@ -825,11 +825,11 @@ class Ui_Dialog_ColorBloc(object):
 
         _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
         _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
-        _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
+        _iconQComboBox             = _pathIcons + "/drop_down_arrow.svg"
         _iconQComboBox = _iconQComboBox.replace("\\","/")
         _iconSources               = _pathIcons + "/source_button.svg"
-        _iconSourcesSelect         = _pathIcons + "/source_button.png"
-        _iconSourcesVierge         = _pathIcons + "/vierge.png"
+        _iconSourcesSelect         = _pathIcons + "/selected_blue.svg"
+        _iconSourcesVierge         = _pathIcons + ""
         _iconPlus                  = _pathIcons + "/plus_button.svg"
         _iconPlusTempGoValues      = _pathIconsUser + "/color_button_Plus_GoValues_ForVisu.svg"
         _iconPlusTempTgroup        = _pathIconsUser + "/color_button_Plus_Tgroup_ForVisu.svg"
@@ -1191,11 +1191,11 @@ class Ui_Dialog_ColorBloc(object):
     def applyWYSIWYG(self): 
         _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
         _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
-        _iconQComboBox             = _pathIcons + "/dropDownArrow.png"
+        _iconQComboBox             = _pathIcons + "/drop_down_arrow.svg"
         _iconQComboBox = _iconQComboBox.replace("\\","/")
         _iconSources               = _pathIcons + "/source_button.svg"
-        _iconSourcesSelect         = _pathIcons + "/source_button.png"
-        _iconSourcesVierge         = _pathIcons + "/vierge.png"
+        _iconSourcesSelect         = _pathIcons + "/selected_blue.svg"
+        _iconSourcesVierge         = _pathIcons + ""
         _iconPlus                  = _pathIcons + "/plus_button.svg"
         _iconPlusTempGoValues      = _pathIconsUser + "/color_button_Plus_GoValues_ForVisu.svg"
         _iconPlusTempTgroup        = _pathIconsUser + "/color_button_Plus_Tgroup_ForVisu.svg"
