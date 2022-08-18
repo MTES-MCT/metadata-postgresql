@@ -249,7 +249,10 @@ Les valeurs disponibles dans son menu sont les noms de modèles listés par [`te
 Si `templateLabels` est `None` ou une liste vide, on pourra désactiver le widget, voire ne pas l'afficher. `template` vaudra simplement toujours `None`.
 
 D'autant que de besoin, le bouton utilise l'icône [template.svg](../../../plume/icons/general/template.svg) :
-![template.svg](../../../plume/icons/general/template.svg)
+![template.svg](../../../plume/icons/general/template.svg).
+
+Le nom du modèle courant est affiché à côté de l'icône. Dans le menu, il est mis en évidence par l'icône [selected_brown.svg](../../../plume/icons/general/selected_brown.svg) :
+![selected_brown.svg](../../../plume/icons/general/selected_brown.svg).
 
 Texte d'aide : *Choisir un modèle de formulaire*.
 
@@ -271,6 +274,9 @@ Lorsque l'utilisateur modifie la langue principale, il est nécessaire de [regé
 ### Caractéristiques du widget
 
 Le widget de choix de la langue principale est un `QToolButton` similaire aux [boutons de sélection de la langue](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) affichés dans le formulaire. Les valeurs disponibles dans le menu sont les langues listées par le paramètre utilisateur [`langList`](./generation_dictionnaire_widgets.md#langlist).
+
+Le code de la langue courante est affiché sur le bouton (pas d'icône). Dans le menu, il est mis en évidence par l'icône [selected_brown.svg](../../../plume/icons/general/selected_brown.svg) :
+![selected_brown.svg](../../../plume/icons/general/selected_brown.svg).
 
 Texte d'aide : *Modifier la langue principale des métadonnées*.
 

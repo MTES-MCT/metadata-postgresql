@@ -525,7 +525,8 @@ widgetsdict[widgetkey]['sources']
 
 *Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](./actions_widgets.md#boutons-de-sélection-de-la-source).*
 
-Il serait souhaitable de mettre en évidence le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - par exemple via une icône (tandis que les autres thésaurus n'en auraient pas). Le nom de ce thésaurus courant est donné par la clé `'current source'`.
+Le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - est mis en évidence dans le menu par l'icône [selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg) :
+![selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg). Le nom de ce thésaurus est donné par la clé `'current source'`.
 
 ```python
 
@@ -643,6 +644,9 @@ widgetsdict[widgetkey]['language value']
 
 ```
 
+La langue sélectionnée est également mise en évidence dans le menu par l'icône [selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg) :
+![selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg).
+
 ### Texte d'aide
 
 On pourra afficher en infobulle sur le bouton le texte suivant :
@@ -750,6 +754,9 @@ Au lieu d'une icône, le `QToolButton` de sélection de l'unité montre un texte
 widgetsdict[widgetkey]['current unit']
 
 ```
+
+L'unité sélectionnée est également mise en évidence dans le menu par l'icône [selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg) :
+![selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg).
 
 ### Texte d'aide
 
