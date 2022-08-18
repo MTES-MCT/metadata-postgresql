@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="svg1"
+   width="21"
+   height="21"
+   viewBox="0 0 21 21"
+   version="1.1"
+   sodipodi:docname="selected_blue.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title4910">Marqueur de sélection (tons bleus)</title>
+  <metadata
+     id="metadata12">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:date>2022.08.17</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>République Française</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <cc:license
+           rdf:resource="https://spdx.org/licenses/etalab-2.0" />
+        <dc:title>Marqueur de sélection (tons bleus)</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
+     id="namedview8"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="-88.875"
+     inkscape:cy="-17.375"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     id="g5587"
+     transform="matrix(0.50001287,0,0,0.4996796,10.249573,5.2534797)"
+     style="stroke-width:2.00061">
+    <path
+       id="path187"
+       style="fill:#bfccfb;stroke:#2f4077;stroke-width:2.00061;stroke-linecap:round;stroke-linejoin:round"
+       inkscape:transform-center-x="-3.0168599"
+       inkscape:transform-center-y="-0.22589811"
+       d="m 1.4029567,0.84588494 c 2.842636,-1.4914647 7.283314,2.32849006 10.1668743,3.75727876 2.88356,1.4287865 8.888874,2.7848458 8.929965,5.7051003 0.04092,2.920254 -5.924635,4.407344 -8.767271,5.898809 -2.8424693,1.491466 -7.1742393,5.407449 -10.0577993,3.978662 -2.88356,-1.428788 1.731673,-6.735836 1.690749,-9.656089 -0.04109,-2.9202545 -4.805154,-8.1922964 -1.962518,-9.68376106 z"
+       sodipodi:nodetypes="scsssss" />
+    <path
+       id="path187-2"
+       style="fill:#adbffc;fill-opacity:1;stroke:none;stroke-width:2.00061;stroke-linecap:round;stroke-linejoin:round"
+       inkscape:transform-center-x="-3.0168599"
+       inkscape:transform-center-y="-0.22589811"
+       d="m 3.3632812,10.5 c 2.337e-4,0.0096 0.00182,0.01979 0.00195,0.0293 0.040924,2.92025 -4.5730103,8.227463 -1.6894532,9.65625 2.8835572,1.428785 7.214174,-2.487051 10.056641,-3.978516 C 14.51197,14.748667 20.273964,13.293937 20.490234,10.5 Z" />
+    <path
+       id="path187-8"
+       style="fill:none;stroke:#2f4077;stroke-width:2.00061;stroke-linecap:round;stroke-linejoin:round"
+       inkscape:transform-center-x="-3.0168599"
+       inkscape:transform-center-y="-0.22589811"
+       d="m 1.4029567,0.84588494 c 2.842636,-1.4914647 7.283314,2.32849006 10.1668743,3.75727876 2.88356,1.4287865 8.888874,2.7848458 8.929965,5.7051003 0.04092,2.920254 -5.924635,4.407344 -8.767271,5.898809 -2.8424693,1.491466 -7.1742393,5.407449 -10.0577993,3.978662 -2.88356,-1.428788 1.731673,-6.735836 1.690749,-9.656089 -0.04109,-2.9202545 -4.805154,-8.1922964 -1.962518,-9.68376106 z"
+       sodipodi:nodetypes="scsssss" />
+  </g>
+</svg>
