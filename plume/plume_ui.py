@@ -9,7 +9,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtQuick
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QToolBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
                              QDockWidget, QTreeView, QGridLayout, QHBoxLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, 
-                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle, QToolBar)
+                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle, QSpacerItem)
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
 from html import escape
@@ -172,6 +172,8 @@ class Ui_Dialog_plume(object):
         """
         #for test param user
         #---
+        _pathIcons = os.path.dirname(__file__) + "/icons/misc"
+        _iconSourcesBlank         = _pathIcons + "/blank.svg"
         _pathIcons = os.path.dirname(__file__) + "/icons/general"
         _iconSourcesRead          = _pathIcons + "/read.svg"
         _iconSourcesEmpty         = _pathIcons + "/empty.svg"
@@ -193,7 +195,7 @@ class Ui_Dialog_plume(object):
         self._iconSourcesCopy, self._iconSourcesPaste = _iconSourcesCopy, _iconSourcesPaste
         _iconSourcesPaste         = _pathIcons + "/paste_all.svg"
         
-        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou ]
+        self.listIconToolBar = [ _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou, _iconSourcesBlank ]
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0, self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")" 
@@ -462,6 +464,10 @@ class Ui_Dialog_plume(object):
            # If suppression d'une couche active pour les métadonnées affichées
 
            mItemLine1 = self.mMenuBarDialogLine1.sender().objectName()
+
+           # MAJ ICON FLAGS
+           self.majQmenuModeleIconFlagChoiceLang(mItemLine1)
+
            #un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
            if mItemLine1 == "" : 
               self.language, mItemLine1 = "fr", "fr" 
@@ -891,7 +897,7 @@ class Ui_Dialog_plume(object):
 
     #==========================
     # == Gestion des actions de boutons de la barre de menu
-    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou):
+    def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou, _iconSourcesBlank):
         #-- Désactivation
         self.plumeEdit.setEnabled(False)
         self.plumeSave.setEnabled(False)
@@ -989,8 +995,6 @@ class Ui_Dialog_plume(object):
               self.plumeTranslation.setEnabled(False)
         #-
         self.plumeEdit.setToolTip(self.mTextToolTipEdit if self.mode == 'read' else self.mTextToolTipRead)   
-        if self.toolBarDialog == "picture" :
-           _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun            
         #-ToolTip
         #-
         if self.copyMetagraph !=  None :
@@ -1011,6 +1015,25 @@ class Ui_Dialog_plume(object):
            self.messWindowTitleVerrou = ""
         self.Dialog.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
         if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
+        return
+
+    #==========================
+    # == Gestion des Icons Flags dans le menu des choix des langues
+    def majQmenuModeleIconFlagChoiceLang(self, mItemLang) :
+        try : 
+           _pathIcons = os.path.dirname(__file__) + "/icons/general"
+           _iconSourcesSelect    = _pathIcons + "/selected_brown.svg"
+           _iconSourcesVierge    = _pathIcons + ""
+
+           if mItemLang == None : mItemLang = "Aucun" # Gestion si None
+           for elemQMenuItem in self._mObjetQMenuChoiceLang.children() :
+               if elemQMenuItem.text() == mItemLang : 
+                  _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
+               else :                 
+                  _mObjetQMenuIcon = QIcon(_iconSourcesVierge)
+               elemQMenuItem.setIcon(_mObjetQMenuIcon)
+        except :
+           pass 
         return
 
     #==========================
@@ -1057,12 +1080,13 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================
-    # == Gestion de la taille et du texte du bouton Templates
+    #== Gestion de la taille et du texte du bouton Templates
     def majButtonTemplate(self, _plumeTemplate, _mTemplateTextChoice, _mLenTemplateTextChoice) :
         _plumeTemplate.setText(_mTemplateTextChoice)
-        lenQTool = _plumeTemplate.fontMetrics().size(Qt.TextSingleLine, _mTemplateTextChoice).width()
-        _plumeTemplate.setMinimumWidth(lenQTool + self.margeQToolButton)
-        _plumeTemplate.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        #_plumeTemplate.updateGeometry()
+        #lenQTool = _plumeTemplate.fontMetrics().size(Qt.TextSingleLine, _mTemplateTextChoice).width()
+        #_plumeTemplate.setMinimumWidth(lenQTool + self.margeQToolButton)
+        _plumeTemplate.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         return
 
     #==========================
@@ -1073,7 +1097,8 @@ class Ui_Dialog_plume(object):
         self._mObjetQMenuExport.clear()
         textItem = max( mListExtensionFormat, key=lambda x:self._mObjetQMenuExport.fontMetrics().size(Qt.TextSingleLine, x).width() )
         lenQTool = self._mObjetQMenuExport.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
+        #self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; width:" + str((int(len(max(mListExtensionFormat))) * 10) + 50) + "px; border-style:" + self.editStyle  + "; border-width: 0px;}")
+        self._mObjetQMenuExport.setStyleSheet("QMenu { font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  + "; border-width: 0px;}")
         #------------
         for elemQMenuItem in mListExtensionFormat :
             _mObjetQMenuItem = QAction(elemQMenuItem, self._mObjetQMenuExport)
@@ -1089,9 +1114,9 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================
-    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou ):
+    def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou, _iconSourcesBlank ):
         #Menu Dialog  
-        self.mMenuBarDialogLine1 = QMenuBar(self) 
+        self.mMenuBarDialogLine1 = QMenuBar(self)  
         self.mMenuBarDialogLine2 = QMenuBar(self) 
         try : 
            if hasattr(self, "monDock") :
@@ -1107,7 +1132,6 @@ class Ui_Dialog_plume(object):
            self.mMenuBarDialogLine2.setContentsMargins(0, 0, 0, 0)
         except :
               pass 
-        _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun   
 
         self.mMenuBarDialogGridLine1 = QtWidgets.QHBoxLayout()
         self.mMenuBarDialogGridLine1.setContentsMargins(0, 0, 0, 0)
@@ -1170,20 +1194,29 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang = QtWidgets.QToolButton()
         self.plumeChoiceLang.setObjectName("plumeChoiceLang")
         self.plumeChoiceLang.setText(self.language)
+        self.plumeChoiceLang.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
+        self.plumeChoiceLang.setIcon(QIcon(_iconSourcesBlank))
         self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") 
         self.plumeChoiceLang.setToolTip(self.mTextToolTip)
         textItem = max( self.langList, key=lambda x:self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, x).width() )
         lenQTool = self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, textItem).width()
         self.plumeChoiceLang.setAutoRaise(True)
+        self.plumeChoiceLang.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
         #self.plumeChoiceLang.setMinimumWidth(lenQTool)
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
-        _mObjetQMenu.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQMenu) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        self._mObjetQMenuChoiceLang = _mObjetQMenu
+        _mObjetQMenu.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
+
+        _pathIcons = os.path.dirname(__file__) + "/icons/general"
+        _iconSourcesSelect    = _pathIcons + "/selected_brown.svg"
+        _iconSourcesVierge    = _pathIcons + ""
         #------------
         for elemQMenuItem in self.langList :
             _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
+            if elemQMenuItem == self.language : _mObjetQMenuItem.setIcon(QIcon(_iconSourcesSelect))
             _mObjetQMenuItem.setText(elemQMenuItem)
             _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
             _mObjetQMenu.addAction(_mObjetQMenuItem)
@@ -1192,7 +1225,6 @@ class Ui_Dialog_plume(object):
        
         self.plumeChoiceLang.setPopupMode(self.plumeChoiceLang.InstantPopup)
         self.plumeChoiceLang.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        #self.plumeChoiceLang.setIcon(QIcon(_iconSourcesTemplate))
         self.plumeChoiceLang.setMenu(_mObjetQMenu)
         
         self.mMenuBarDialogGridLine1.addWidget(self.plumeChoiceLang)
@@ -1206,10 +1238,13 @@ class Ui_Dialog_plume(object):
         self.plumeTemplate.setObjectName("Template")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "METADATA extension not installed.")   
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")    
+        self.plumeTemplate.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
         self.plumeTemplate.setToolTip(mTextToolTip)
         self.plumeTemplate.setAutoRaise(True)
         self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
-        self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)  # ToolButtonFollowStyle  ToolButtonTextBesideIcon
+        self.plumeTemplate.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+
         #MenuQToolButton                        
         _mObjetQMenu = QMenu()
         self._mObjetQMenu = _mObjetQMenu
@@ -1253,7 +1288,7 @@ class Ui_Dialog_plume(object):
         #--
         mText = QtWidgets.QApplication.translate("plume_ui", "Empty") 
         self.plumeEmpty = QtWidgets.QToolButton()
-        self.plumeEmpty.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.plumeEmpty.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.plumeEmpty.setIcon(QIcon(_iconSourcesEmpty))
         self.plumeEmpty.setObjectName("Empty")
         mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card.")
@@ -1338,7 +1373,7 @@ class Ui_Dialog_plume(object):
         _mObjetQMenu.setToolTipsVisible(True)
         self._mObjetQMenuExport = _mObjetQMenu
         self.mMenuBarDialogGridLine2.addWidget(self.plumeExport)
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:" + str(lenQTool + self.margeQToolButton) + "px; border-style:" + _editStyle  + "; border-width: 0px;}")
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
         #--QToolButton EXPORT                                               
         #====================
         #--

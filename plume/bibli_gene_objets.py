@@ -19,6 +19,8 @@ from plume.rdf.utils import wkt_with_srid
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
     _pathIconsUser = QgsApplication.qgisSettingsDirPath().replace("\\","/") + "plume/icons/buttons"
+    _pathIcons = os.path.dirname(__file__) + "/icons/misc"
+    _iconSourcesBlank          = _pathIcons + "/blank.svg"
     _pathIcons     = os.path.dirname(__file__) + "/icons/buttons"
     _iconQComboBox             = _pathIcons + "/drop_down_arrow.svg"
     _iconQComboBox    = _iconQComboBox.replace("\\","/")
@@ -429,6 +431,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _editStyle = self.editStyle             #style saisie
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
+       _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
      
        if _valueObjet['object'] == "translation button" : 
           #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border: none;}")
@@ -581,21 +584,24 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setText(_valueObjet['language value'])
+       _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
+       _mObjetQToolButton.setIcon(QIcon(_iconSourcesBlank))
        #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:2.5em; border-style:" + _editStyle  + "; border : none;}")  
        _mObjetQToolButton.setAutoRaise(True)
 
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:3.5em; border-style:" + _editStyle  + "}")
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['authorized languages'] :
            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
            _mObjetQMenuItem.setText(elemQMenuItem)
+           if elemQMenuItem == _valueObjet['language value'] : _mObjetQMenuItem.setIcon(QIcon(_iconSourcesSelect))
            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
            _mObjetQMenu.addAction(_mObjetQMenuItem)
            #- Actions
-           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonAuthorizesLanguages(self, _keyObjet, _valueObjet, _language, _langList))
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonAuthorizesLanguages(self, _keyObjet, _valueObjet, _language, _langList, _iconSourcesSelect))
            _mListActions.append(_mObjetQMenuItem)
        
        _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
@@ -624,23 +630,24 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _editStyle = self.editStyle             #style saisie
        #--
        _mObjetQToolButton = QtWidgets.QToolButton()
-       #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:40px; border-style:" + _editStyle  + "; border-width: 0px;} QToolButton::drop-down {border: 0px;} QToolButton::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
-       #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:60px; border-style:" + _editStyle  + "; border: none;}") 
        _mObjetQToolButton.setAutoRaise(True)
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setText(_valueObjet['current unit'])
+       _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
+       _mObjetQToolButton.setIcon(QIcon(_iconSourcesBlank))
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
-       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; width:80px; border-style:" + _editStyle  + "; border-width: 0px;}")
+       _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
        #------------
        _mListActions = []
        for elemQMenuItem in _valueObjet['units'] :
            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
            _mObjetQMenuItem.setText(elemQMenuItem)
+           if elemQMenuItem == _valueObjet['current unit'] : _mObjetQMenuItem.setIcon(QIcon(_iconSourcesSelect))
            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
            _mObjetQMenu.addAction(_mObjetQMenuItem)
            #- Actions
-           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonUnits(self, _keyObjet, _valueObjet))
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonUnits(self, _keyObjet, _valueObjet, _iconSourcesSelect))
            _mListActions.append(_mObjetQMenuItem)
        
        _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
@@ -888,24 +895,23 @@ def action_mObjetQToolButtonGeoTools(self, __mObjetQToolButton, __keyObjet, __va
 
 #==================================================
 # Traitement action sur QToolButton avec Menu UNITS
-def action_mObjetQToolButtonUnits(self, __keyObjet, __valueObjet):
+def action_mObjetQToolButtonUnits(self, __keyObjet, __valueObjet, _iconSourcesSelect):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['unit menu'].sender()
     #maj Source 
     ret = self.mDicObjetsInstancies.change_unit(__keyObjet,  _selectItem.text() )
-
     #- regénération et matérialisation en fonction de la structure du dictionnaire
-    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet)
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, None, None, _iconSourcesSelect = _iconSourcesSelect)
     return  
 
 #==================================================
 # Traitement action sur QToolButton avec Menu AUTHORIZED LANGUAGES
-def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, _language, _langList):
+def action_mObjetQToolButtonAuthorizesLanguages(self, __keyObjet, __valueObjet, _language, _langList, _iconSourcesSelect):
     _selectItem = self.mDicObjetsInstancies[__keyObjet]['language menu'].sender()
     #maj Source 
     ret = self.mDicObjetsInstancies.change_language(__keyObjet,  _selectItem.text() )
 
     #- regénération et matérialisation en fonction de la structure du dictionnaire
-    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList)
+    regenerationStructureMaterialisation(self, ret, __keyObjet, __valueObjet, _language = _language, _langList = _langList, _iconSourcesSelect = _iconSourcesSelect)
     #maj apparence QToolButton 
     #apparence_mObjetQToolButton(self, __keyObjet, _iconSources, _selectItem.text())
     return  
@@ -978,13 +984,13 @@ def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _
         elem.deleteLater()
     #---------------------------------------------
     #- Regénération du Menu Languages, Sources, Translation, Moins, Plus
-    if _ret['language menu to update'] != "" : regenerationMenu(self, _ret['language menu to update'], _language, _langList)
+    if _ret['language menu to update'] != "" : regenerationMenu(self, _ret['language menu to update'], _language, _langList, _iconSourcesSelect)
     #---------------------------------------------        
     #- Regénération du Menu des QToolButton 
     if  _ret['switch source menu to update'] != "" : regenerationMenuQToolButton(self, _ret['switch source menu to update'], _language, _selectItem, _iconSources, _iconSourcesSelect, _iconSourcesVierge)
     #---------------------------------------------
     #- Regénération du Menu Unit 
-    if  _ret['unit menu to update'] != "" : regenerationMenuUnit(self, _ret['unit menu to update'])
+    if  _ret['unit menu to update'] != "" : regenerationMenuUnit(self, _ret['unit menu to update'], _iconSourcesSelect)
     #---------------------------------------------
     #- Maj QComboBox
     for elem in _ret['concepts list to update'] : 
@@ -1006,14 +1012,22 @@ def regenerationStructureMaterialisation(self, _ret, __keyObjet, __valueObjet, _
 #==================================================
 # Traitement Regénération du menu Unités avec la clé "unit menu to update" 
 # Pour le moment ne fait que mettre à jour le texte, en attente si utilisation nécessaire de la clé "unit menu to update")
-def regenerationMenuUnit(self, _ret) :
+def regenerationMenuUnit(self, _ret, _iconSourcesSelect) :
     mListeKeyQMenuUpdate = _ret
-    
+
     for mKeyQMenuUpdate in mListeKeyQMenuUpdate :
        #Nouveau __valueObjet en fonction nouvelle clef                        
        __valueObjet  = self.mDicObjetsInstancies[mKeyQMenuUpdate]     
        __valueObjet['unit widget'].setText(__valueObjet['current unit'])  
        #MenuQToolButton                        
+       _mObjetQMenu = __valueObjet['unit menu']
+       #------------
+       for elemQMenuItem in _mObjetQMenu.children() :
+           if elemQMenuItem.text() == __valueObjet['current unit'] : 
+              _mObjetQMenuIcon = QIcon(_iconSourcesSelect)
+           else :                 
+              _mObjetQMenuIcon = QIcon("")
+           elemQMenuItem.setIcon(_mObjetQMenuIcon)
     return
 
 #==================================================
@@ -1068,7 +1082,7 @@ def regenerationMenuQToolButton(self, _ret, _language, _selectItem, _iconSources
 # Traitement Regénération du menu avec la clé "language menu to update" 
 # contient une liste de clés du dictionnaire de widgets (et non directement des widgets),
 # pour lesquelles le menu des langues doit être régénéré
-def regenerationMenu(self, _ret, _language, _langList) :
+def regenerationMenu(self, _ret, _language, _langList, _iconSourcesSelect) :
     # pour infos    _ret = ret['language menu to update']
     mListeKeyQMenuUpdate = _ret
     
@@ -1087,10 +1101,11 @@ def regenerationMenu(self, _ret, _language, _langList) :
        for elemQMenuItem in __valueObjet['authorized languages'] :
            _mObjetQMenuItem = QAction(elemQMenuItem, _mObjetQMenu)
            _mObjetQMenuItem.setText(elemQMenuItem)
+           if elemQMenuItem == __valueObjet['language value'] : _mObjetQMenuItem.setIcon(QIcon(_iconSourcesSelect))
            _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
            _mObjetQMenu.addAction(_mObjetQMenuItem)
            #- Actions
-           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonAuthorizesLanguages(self, mKeyQMenuUpdate, __valueObjet, _language, _langList))
+           _mObjetQMenuItem.triggered.connect(lambda : action_mObjetQToolButtonAuthorizesLanguages(self, mKeyQMenuUpdate, __valueObjet, _language, _langList, _iconSourcesSelect))
            _mListActions.append(_mObjetQMenuItem)
     
        __valueObjet['language widget'].setPopupMode(__valueObjet['language widget'].InstantPopup)

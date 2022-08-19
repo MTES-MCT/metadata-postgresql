@@ -100,7 +100,7 @@ def afficheNoConnections(self, action = ""):
     else :
        self.labelImage.setVisible(True if action == "show" else False)
        self.zoneWarningClickSource.setVisible(True if action == "show" else False)
-    if hasattr(self, "plumeTemplate") : self.plumeTemplate.setFixedSize(QSize(30, 18))
+    #if hasattr(self, "plumeTemplate") : self.plumeTemplate.setFixedSize(QSize(30, 18))
     return
 
 #==================================================
