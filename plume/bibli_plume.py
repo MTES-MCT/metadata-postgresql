@@ -63,11 +63,6 @@ def initIhmNoConnection(self) :
     self.verrouLayer     = False   #Verrouillage de la couche 
     self.nameVerrouLayer = None    #Couche verrouillée 
     #-
-    if self.toolBarDialog == "picture" :
-       _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cecece"     #Brun            
-       #self.plumeEdit.setStyleSheet(  "QToolButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QToolButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
-       #self.plumeVerrou.setStyleSheet("QToolButton { border: 0px solid black; background-color: "  + _mColorFirstPlan  + ";}" "QToolButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")
-    #-
     afficheNoConnections(self, "show")
     self.messWindowTitle = QtWidgets.QApplication.translate("plume_ui", "PLUGIN METADATA (Metadata storage in PostGreSQL)", None) + "  (" + str(returnVersion()) + ")" 
     self.Dialog.setWindowTitle(self.messWindowTitle)   
@@ -840,7 +835,6 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautDisplayMessage = "dialogBox"
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "dockFalse"
-       valueDefautToolBarDialog = "picture"
        valueDefautLayerBeforeClicked    = ""
        valueDefautLayerBeforeClickedWho = ""
        valueDefautLayerBeforeClickedBrowser = ""
@@ -850,7 +844,6 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
-       mDicAutre["toolBarDialog"]   = valueDefautToolBarDialog
        mDicAutre["layerBeforeClicked"]        = valueDefautLayerBeforeClicked
        mDicAutre["layerBeforeClickedWho"]     = valueDefautLayerBeforeClickedWho
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
@@ -872,17 +865,6 @@ def returnAndSaveDialogParam(self, mAction):
        mSettings.endGroup()
        mSettings.beginGroup("BlocsColor")
        #Ajouter si autre param
-       
-       """ A SUPPRIMER
-       mDicAutreColor["defaut"]                      = "#958B62"
-       mDicAutreColor["QGroupBox"]                   = "#958B62"
-       mDicAutreColor["QGroupBoxGroupOfProperties"]  = "#958B62"
-       mDicAutreColor["QGroupBoxGroupOfValues"]      = "#5770BE"
-       mDicAutreColor["QGroupBoxTranslationGroup"]   = "#FF8D7E"
-       mDicAutreColor["QTabWidget"]                  = "#958B62"
-       mDicAutreColor["QLabelBackGround"]            = "#BFEAE2"
-       mDicAutreColor["geomColor"]                   = "#958B62"
-       """
        
        mDicAutreColor["defaut"]                      = "#a38e63"
        mDicAutreColor["QGroupBox"]                   = "#a38e63"

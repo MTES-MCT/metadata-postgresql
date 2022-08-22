@@ -125,7 +125,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                               }")
        #--
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan)
+       _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan, Qt.AlignTop)
        #--                        
        _mObjet = QtWidgets.QGridLayout()
        _mObjet.setContentsMargins(0, 0, 0, 0)
@@ -171,12 +171,12 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQSaisie.setVisible(False)
        #--                        
-       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQSaisie, row, column, rowSpan, columnSpan)
+       row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget') 
+       _mParentEnCours.addWidget(_mObjetQSaisie, row, column, rowSpan, columnSpan, Qt.AlignTop)
        #--                        
        if _valueObjet['main widget type'] in ("QTextEdit") :
           _mObjetQSaisie.setMinimumSize(QtCore.QSize(100, 15 * rowSpan)) # Pour obtenir des QTexEdit suffisament haut
-       else :   
+       else :             
           _mObjetQSaisie.setMinimumSize(QtCore.QSize(100, 23))
 
        if _valueObjet['main widget type'] in ("QLineEdit") :
@@ -251,7 +251,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if (_valueObjet['hidden']) : _mObjetQLabel.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan)
+       _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan, Qt.AlignTop)
        #Valeur                        
        bibli_plume.updateObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        #Tooltip                        
@@ -295,7 +295,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQDateEdit.setCalendarPopup(True)
         #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignLeft)
+       _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignTop)
         #Valeur 
        if valueExiste('value', _valueObjet) :
            bibli_plume.updateObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
@@ -432,15 +432,17 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton = QtWidgets.QToolButton()
        _mObjetQToolButton.setObjectName(str(_keyObjet))
        _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
-     
+       """
        if _valueObjet['object'] == "translation button" : 
           #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border: none;}")
-          _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)  
-          _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+          #_mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)  
+          #_mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
        elif _valueObjet['object'] == "plus button" :
           # == QICON  
           _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
-          # == QICON
+       """
+       # == QICON
+       _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
        _mObjetQToolButton.setAutoRaise(True)
               
        #- Actions
@@ -1132,7 +1134,7 @@ def gestionOnglets(self, _key, _value):
                 border-style: outset;    \
                 border-width: 0px;       \
                 border-radius: 10px;     \
-                border-color: red;      \
+                border-color: green;      \
                 font-weight : bold;     \
                 padding-top: 6px;        \
                 }")
@@ -1150,12 +1152,12 @@ def gestionOnglets(self, _key, _value):
     zoneWidgetsGroupBox.setGeometry(QtCore.QRect(x, y, larg, haut))
     #--            
     zoneWidgets = QtWidgets.QGridLayout()
-    zoneWidgets.setContentsMargins(0, 0, 0, 0)
+    zoneWidgets.setContentsMargins(0, 0, 0, 0) 
     zoneWidgetsGroupBox.setLayout(zoneWidgets )
     zoneWidgets.setObjectName("zoneWidgets" + str(_key))
     #--            
     scroll_bar = QtWidgets.QScrollArea(tab_widget_Onglet) 
-    scroll_bar.setStyleSheet("QScrollArea { border: none;}")
+    scroll_bar.setStyleSheet("QScrollArea { border: 0px solid red;}")
     scroll_bar.setWidgetResizable(True)
     scroll_bar.setGeometry(QtCore.QRect(x, y, larg, haut))
     scroll_bar.setMinimumWidth(50)
@@ -1261,7 +1263,6 @@ def createToolBarGeographic(self, key_keyObjet,  _keyObjet, _iconSourcesAuto, _i
     #--
     mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Automatique") 
     plumeAutoGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
-    if self.toolBarDialog == "picture" : plumeAutoGeographic.setStyleSheet("QPushButton { border: 0px solid black;}")
     plumeAutoGeographic.setIcon(QIcon(_iconSourcesAuto))
     plumeAutoGeographic.setObjectName("Automatique")
     plumeAutoGeographic.setToolTip(mText)
@@ -1270,7 +1271,6 @@ def createToolBarGeographic(self, key_keyObjet,  _keyObjet, _iconSourcesAuto, _i
     #--
     mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Manual") 
     plumeManuGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
-    if self.toolBarDialog == "picture" : plumeManuGeographic.setStyleSheet("QPushButton { border: 0px solid black;}" "background-color: "  + _mColorFirstPlan  + ";}" "QPushButton::pressed { border: 0px solid black; background-color: " + _mColorSecondPlan + ";}")  
     plumeManuGeographic.setIcon(QIcon(_iconSourcesManu))
     plumeManuGeographic.setObjectName("Manuel")
     plumeManuGeographic.setToolTip(mText)

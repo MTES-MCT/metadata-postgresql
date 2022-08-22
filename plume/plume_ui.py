@@ -103,7 +103,6 @@ class Ui_Dialog_plume(object):
         self.fileHelpHtml      = VALUEDEFAUTFILEHELPHTML  #Fichier Help  HTML
         self.durationBarInfo   = int(self.mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
         self.ihm               = self.mDic_LH["ihm"]  #window/dock
-        self.toolBarDialog     = self.mDic_LH["toolBarDialog"]    #toolBarDialog
         self.versionPlumeBibli = self.mDic_LH["versionPlumeBibli"]  #version Plume des bibliothèques
         #---
         self.colorDefaut                      = self.mDic_LH["defaut"]                      #Color QGroupBox
@@ -219,13 +218,13 @@ class Ui_Dialog_plume(object):
         self.tabWidget.setObjectName("tabWidget")
         x, y = 10, 50
         larg, haut =  self.lScreenDialog -20, (self.hScreenDialog - 60 )
-        self.tabWidget.setGeometry(QtCore.QRect(x, y, larg , haut))
+        self.tabWidget.setGeometry(QtCore.QRect(x, y, larg , haut))  
         self.tabWidget.setStyleSheet("QTabWidget::pane {border: 2px solid " + self.colorQTabWidget  + "; font-family:" + self.policeQGroupBox  +"; } \
                                     QTabBar::tab {border: 1px solid " + self.colorQTabWidget  + "; border-bottom-color: none; font-family:" + self.policeQGroupBox  +";\
-                                                    border-top-left-radius: 6px;border-top-right-radius: 6px;\
-                                                    width: 160px; padding: 2px;} \
+                                                    border-top-left-radius: 6px;border-top-right-radius: 6px; width: 120px; padding: 2px;} \
                                       QTabBar::tab:selected {background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 " + self.colorQTabWidget  + ", stop: 1 white);  font: bold;} \
                                      ")
+        self.tabWidget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         tab_widget_Onglet = QWidget()
         tab_widget_Onglet.setObjectName("Informations")
         labelTabOnglet = "Informations"

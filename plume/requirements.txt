@@ -16,6 +16,8 @@ six==1.16.0
 isodate==0.6.1
 pyparsing==3.0.7
 setuptools==61.2.0
-rdflib==6.1.1
+rdflib==6.1.1  
+
+
                     
                                            

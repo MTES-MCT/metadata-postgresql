@@ -42,9 +42,10 @@ class Ui_Dialog(object):
         self.labelImage.setObjectName("labelImage")
 
         self.labelImage2 = QtWidgets.QLabel(self.groupDialog)
-        myPath = os.path.dirname(__file__)+"\\icons\\about\\ui_screenshot.png";
+        myPath = os.path.dirname(__file__)+"\\icons\\about\\ui_screenshot.svg";
         myDefPath = myPath.replace("\\","/");
         carIcon2 = QtGui.QImage(myDefPath)
+        
         self.labelImage2.setPixmap(QtGui.QPixmap.fromImage(carIcon2))
         self.labelImage2.setGeometry(QtCore.QRect(self.groupDialog.width()/2 - 55, 40, self.groupDialog.width()/2 + 60, self.groupDialog.height() - 70))
         self.labelImage2.setObjectName("labelImage2")
@@ -97,7 +98,7 @@ class Ui_Dialog(object):
         MonHtml += "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
         MonHtml += "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8pt;\"><span style=\" font-weight:600;\">"
         mVERSION = " = version 1.6"
-        MonHtml1 = QtWidgets.QApplication.translate("about", "PLUME", None) + "  (" + str(bibli_plume.returnVersion()) + ")"
+        MonHtml1 = QtWidgets.QApplication.translate("about", "Plume", None) + "  (" + str(bibli_plume.returnVersion()) + ")"
         MonHtml += MonHtml1
         MonHtml += "</span>" 
         MonHtml2 = "<br><br>"
@@ -133,7 +134,7 @@ class Ui_Dialog(object):
         MonHtml += "</i></p></body></html>"
 
         Dialog.setWindowTitle(QtWidgets.QApplication.translate("about", "PLUME (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
-        self.label_2.setText(QtWidgets.QApplication.translate("about", "PLUME", None))
+        self.label_2.setText(QtWidgets.QApplication.translate("about", "Plume", None))
         self.textEdit.setHtml(QtWidgets.QApplication.translate("about", MonHtml, None))
         self.textEditDL.setText(mLinkDL)
         self.textEditDL.setOpenExternalLinks(True)       
