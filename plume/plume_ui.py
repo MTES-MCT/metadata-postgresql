@@ -302,7 +302,9 @@ class Ui_Dialog_plume(object):
               #Interroge l'utilisateur si modifications
               if self.mode == "edit" and self.zoneConfirmMessage :
                  if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
-                    if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+                    if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel :
+                       self.plumeEdit.setChecked(False if self.plumeEdit.isChecked() else True)  
+                       return
                     #Si vous poursuivez, les modifications non enregistrées seront perdues.
         
               if self.mode == None or self.mode == "read" : 
@@ -379,7 +381,9 @@ class Ui_Dialog_plume(object):
               #Interroge l'utilisateur si modifications
               if self.zoneConfirmMessage :
                  if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
-                    if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : return
+                    if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : 
+                       self.plumeTranslation.setChecked(False if self.plumeTranslation.isChecked() else True)  
+                       return
                     #Si vous poursuivez, les modifications non enregistrées seront perdues.
               self.translation = (False if self.translation else True) 
            #**********************
