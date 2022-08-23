@@ -1158,62 +1158,6 @@ class WidgetsDictTestCase(unittest.TestCase):
                 'value to update'):
                 self.assertFalse(actionsdict[k])
         self.assertIsNone(widgetsdict.check_grids())
-
-        # --- Sortie du mode manuel ---
-        g = widgetsdict.root.search_from_path(DCT.accessRights)
-        b1 = g.children[0]
-        b2 = g.children[1]
-        widgetsdict[g]['grid widget'] = '<QGridLayout dct:accessRights>'
-        widgetsdict[b1]['main widget'] = '<B1 QGroupBox dct:accessRights>'
-        widgetsdict[b1]['minus widget'] = '<B1-minus QToolButton dct:accessRights>'
-        widgetsdict[b1]['switch source widget'] = '<B1-source QToolButton dct:accessRights>'
-        widgetsdict[b1]['switch source menu'] = '<B1-source QMenu dct:accessRights>'
-        widgetsdict[b1]['switch source actions'] = ['<B1-source QAction n°1', '<B1-source QAction n°2']
-        widgetsdict[b1.children[0]]['main widget'] = '<B1 QGroupBox rdfs:label>'
-        widgetsdict[b2]['main widget'] = '<B2 QComboBox dct:accessRights>'
-        widgetsdict[b2]['minus widget'] = '<B2-minus QToolButton dct:accessRights>'
-        widgetsdict[b2]['switch source widget'] = '<B2-source QToolButton dct:accessRights>'
-        widgetsdict[b2]['switch source menu'] = '<B2-source QMenu dct:accessRights>'
-        widgetsdict[b2]['switch source actions'] = ['<B2-source QAction n°1', '<B2-source QAction n°2']
-        self.assertEqual(widgetsdict[b1]['current source'], "< manuel >")
-        self.assertFalse(widgetsdict[b1]['hidden'])
-        self.assertFalse(widgetsdict[b1.children[0]]['hidden'])
-        self.assertTrue(widgetsdict[b2]['hidden'])
-        actionsdict = widgetsdict.change_source(b1, "Droits d'accès (UE)")
-        self.assertEqual(widgetsdict[b2]['current source'], "Droits d'accès (UE)")
-        self.assertTrue(widgetsdict[b2]['thesaurus values'], 'public')
-        self.assertTrue(widgetsdict[b1]['hidden'])
-        self.assertTrue(widgetsdict[b1.children[0]]['hidden'])
-        self.assertFalse(widgetsdict[b2]['hidden'])
-        self.assertEqual(actionsdict['widgets to show'], ['<B2 QComboBox dct:accessRights>',
-            '<B2-minus QToolButton dct:accessRights>', '<B2-source QToolButton dct:accessRights>'])
-        self.assertEqual(actionsdict['widgets to hide'], ['<B1 QGroupBox dct:accessRights>',
-            '<B1-minus QToolButton dct:accessRights>', '<B1-source QToolButton dct:accessRights>',
-            '<B1 QGroupBox rdfs:label>'])
-        self.assertEqual(actionsdict['switch source menu to update'], [b2])
-        self.assertEqual(actionsdict['concepts list to update'], [b2])
-        self.assertEqual(actionsdict['value to update'], [b2])
-        for k in actionsdict.keys():
-            if not k in ('switch source menu to update', 'concepts list to update',
-                'widgets to show', 'widgets to hide',  'value to update'):
-                self.assertFalse(actionsdict[k])
-        self.assertIsNone(widgetsdict.check_grids())
-
-        # --- Entrée en mode manuel ---
-        actionsdict = widgetsdict.change_source(b2, '< manuel >')
-        self.assertEqual(widgetsdict[b1]['current source'], "< manuel >")
-        self.assertFalse(widgetsdict[b1]['hidden'])
-        self.assertFalse(widgetsdict[b1.children[0]]['hidden'])
-        self.assertTrue(widgetsdict[b2]['hidden'])
-        self.assertEqual(actionsdict['widgets to hide'], ['<B2 QComboBox dct:accessRights>',
-            '<B2-minus QToolButton dct:accessRights>', '<B2-source QToolButton dct:accessRights>'])
-        self.assertEqual(actionsdict['widgets to show'], ['<B1 QGroupBox dct:accessRights>',
-            '<B1-minus QToolButton dct:accessRights>', '<B1-source QToolButton dct:accessRights>',
-            '<B1 QGroupBox rdfs:label>'])
-        for k in actionsdict.keys():
-            if not k in ('widgets to show', 'widgets to hide'):
-                self.assertFalse(actionsdict[k])
-        self.assertIsNone(widgetsdict.check_grids())
         
         # --- Item non référencé vers thésaurus ---
         g = widgetsdict.root.search_from_path(DCT.accessRights)
@@ -1273,6 +1217,69 @@ class WidgetsDictTestCase(unittest.TestCase):
         with self.assertRaises(ForbiddenOperation):
             actionsdict = widgetsdict.change_source(b2, '< non référencé >')
         self.assertIsNone(widgetsdict.check_grids())
+
+        # --- Sortie du mode manuel ---
+        g = widgetsdict.root.search_from_path(DCT.accessRights)
+        b1 = g.children[0]
+        b2 = g.children[1]
+        widgetsdict[g]['grid widget'] = '<QGridLayout dct:accessRights>'
+        widgetsdict[b1]['main widget'] = '<B1 QGroupBox dct:accessRights>'
+        widgetsdict[b1]['minus widget'] = '<B1-minus QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source widget'] = '<B1-source QToolButton dct:accessRights>'
+        widgetsdict[b1]['switch source menu'] = '<B1-source QMenu dct:accessRights>'
+        widgetsdict[b1]['switch source actions'] = ['<B1-source QAction n°1', '<B1-source QAction n°2']
+        widgetsdict[b1.children[0]]['main widget'] = '<B1 QGroupBox rdfs:label>'
+        widgetsdict[b2]['main widget'] = '<B2 QComboBox dct:accessRights>'
+        widgetsdict[b2]['minus widget'] = '<B2-minus QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source widget'] = '<B2-source QToolButton dct:accessRights>'
+        widgetsdict[b2]['switch source menu'] = '<B2-source QMenu dct:accessRights>'
+        widgetsdict[b2]['switch source actions'] = ['<B2-source QAction n°1', '<B2-source QAction n°2']
+        self.assertEqual(widgetsdict[b1]['current source'], "< manuel >")
+        self.assertFalse(widgetsdict[b1]['hidden'])
+        self.assertFalse(widgetsdict[b1.children[0]]['hidden'])
+        self.assertTrue(widgetsdict[b2]['hidden'])
+        actionsdict = widgetsdict.change_source(b1, "Droits d'accès (UE)")
+        self.assertEqual(widgetsdict[b2]['current source'], "Droits d'accès (UE)")
+        self.assertTrue(widgetsdict[b2]['thesaurus values'], 'public')
+        self.assertTrue(widgetsdict[b1]['hidden'])
+        self.assertTrue(widgetsdict[b1.children[0]]['hidden'])
+        self.assertFalse(widgetsdict[b2]['hidden'])
+        self.assertEqual(actionsdict['widgets to show'], ['<B2 QComboBox dct:accessRights>',
+            '<B2-minus QToolButton dct:accessRights>', '<B2-source QToolButton dct:accessRights>'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<B1 QGroupBox dct:accessRights>',
+            '<B1-minus QToolButton dct:accessRights>', '<B1-source QToolButton dct:accessRights>',
+            '<B1 QGroupBox rdfs:label>'])
+        self.assertEqual(actionsdict['switch source menu to update'], [b2])
+        self.assertEqual(actionsdict['concepts list to update'], [b2])
+        self.assertEqual(actionsdict['value to update'], [b2])
+        for k in actionsdict.keys():
+            if not k in ('switch source menu to update', 'concepts list to update',
+                'widgets to show', 'widgets to hide',  'value to update'):
+                self.assertFalse(actionsdict[k])
+        self.assertIsNone(widgetsdict.check_grids())
+
+        # --- Entrée en mode manuel ---
+        # cette fois avec une seule valeur dans le groupe, pour vérifier
+        # qu'aucun bouton moins parasite n'apparaît
+        widgetsdict.drop(g.children[3])
+        self.assertTrue(b2.is_single_child)
+        self.assertTrue(widgetsdict[b2]['hide minus button'])
+        actionsdict = widgetsdict.change_source(b2, '< manuel >')
+        self.assertEqual(widgetsdict[b1]['current source'], "< manuel >")
+        self.assertFalse(widgetsdict[b1]['hidden'])
+        self.assertFalse(widgetsdict[b1.children[0]]['hidden'])
+        self.assertTrue(widgetsdict[b2]['hidden'])
+        self.assertEqual(actionsdict['widgets to hide'], ['<B2 QComboBox dct:accessRights>',
+            '<B2-minus QToolButton dct:accessRights>', '<B2-source QToolButton dct:accessRights>'])
+        self.assertEqual(actionsdict['widgets to show'], ['<B1 QGroupBox dct:accessRights>',
+            '<B1-source QToolButton dct:accessRights>', '<B1 QGroupBox rdfs:label>'])
+        for k in actionsdict.keys():
+            if not k in ('widgets to show', 'widgets to hide'):
+                self.assertFalse(actionsdict[k])
+        self.assertTrue(b1.is_single_child)
+        self.assertTrue(widgetsdict[b1]['hide minus button'])
+        self.assertIsNone(widgetsdict.check_grids())
+
 
     def test_twins_and_template(self):
         """Quelques contrôles sur le comportement des clés jumelles hors modèle.
