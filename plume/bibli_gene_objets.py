@@ -588,6 +588,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setText(_valueObjet['language value'])
        _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
        _mObjetQToolButton.setIcon(QIcon(_iconSourcesBlank))
+       h = _mObjetQToolButton.iconSize().height()
+       _mObjetQToolButton.setIconSize(QSize(1, h))
        #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:2.5em; border-style:" + _editStyle  + "; border : none;}")  
        _mObjetQToolButton.setAutoRaise(True)
 
@@ -637,6 +639,8 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setText(_valueObjet['current unit'])
        _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
        _mObjetQToolButton.setIcon(QIcon(_iconSourcesBlank))
+       h = _mObjetQToolButton.iconSize().height()
+       _mObjetQToolButton.setIconSize(QSize(1, h))
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
@@ -1253,30 +1257,6 @@ def generationLabel(self, __keyObjet, __valueObjet, __mParentEnCours) :
     # == QLABEL
     
     return __mObjetQLabelEtiquette
-
-#==========================
-def createToolBarGeographic(self, key_keyObjet,  _keyObjet, _iconSourcesAuto, _iconSourcesManu ):
-    #Menu Dialog                                                                               
-    self.mMenuBarGeographic = QMenuBar(_keyObjet)
-    self.mMenuBarGeographic.setGeometry(QtCore.QRect(_keyObjet.width() - 240, 0, 80, 18))
-    _mColorFirstPlan, _mColorSecondPlan = "transparent", "#cac5b1"     #Brun        
-    #--
-    mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Automatique") 
-    plumeAutoGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
-    plumeAutoGeographic.setIcon(QIcon(_iconSourcesAuto))
-    plumeAutoGeographic.setObjectName("Automatique")
-    plumeAutoGeographic.setToolTip(mText)
-    plumeAutoGeographic.setGeometry(QtCore.QRect( 0, -2,18,18))
-    plumeAutoGeographic.clicked.connect(lambda : self.clickButtonsActionsGeographic(self.mDicObjetsInstancies[key_keyObjet]['main widget']))
-    #--
-    mText = QtWidgets.QApplication.translate("bibli_gene_objet", "Manual") 
-    plumeManuGeographic = QtWidgets.QPushButton(self.mMenuBarGeographic)
-    plumeManuGeographic.setIcon(QIcon(_iconSourcesManu))
-    plumeManuGeographic.setObjectName("Manuel")
-    plumeManuGeographic.setToolTip(mText)
-    plumeManuGeographic.setGeometry(QtCore.QRect( 30, -2,18,18))
-    plumeManuGeographic.clicked.connect(lambda : self.clickButtonsActionsGeographic(self.mDicObjetsInstancies[key_keyObjet]['main widget']))
-    return
 
 #==================================================
 # Retourne si la valeur n'est pas nulle ou égale à "" : Clé et dictionnaire des widgets

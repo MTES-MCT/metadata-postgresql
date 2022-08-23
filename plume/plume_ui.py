@@ -1112,6 +1112,22 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setMenu(self._mObjetQMenuExport)
         return
 
+    #==========================         
+    def genereButtonsToolBar(self, typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable ) :
+        mText = QtWidgets.QApplication.translate("plume_ui", textWidget) 
+        _buttonToolBar = typeWidget
+        _buttonToolBar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        _buttonToolBar.setIcon(QIcon(iconWidget))
+        _buttonToolBar.setObjectName(nameWidget)
+        _buttonToolBar.setToolTip(toolTipWidget)
+        _buttonToolBar.clicked.connect(actionWidget)
+        _buttonToolBar.setAutoRaise(autoRaise)
+        _buttonToolBar.setCheckable(checkable)
+        #-- Raccourci
+        _buttonToolBar.setShortcut(QKeySequence(shorCutWidget))
+        #-- Raccourci
+        return _buttonToolBar
+
     #==========================
     def createToolBar(self, _iconSourcesRead, _iconSourcesSave, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou, _iconSourcesBlank ):
         #Menu Dialog  
@@ -1142,51 +1158,26 @@ class Ui_Dialog_plume(object):
         #====================
         # ** First line **
         #====================
-        #--
-        mText = QtWidgets.QApplication.translate("plume_ui", "Edition") 
-        self.plumeEdit = QtWidgets.QToolButton()
-        self.plumeEdit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumeEdit.setIcon(QIcon(_iconSourcesRead))
-        self.plumeEdit.setObjectName("Edition")
+        #-- plumeEdit
         self.mTextToolTipRead = QtWidgets.QApplication.translate("plume_ui", "Edit") 
         self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_ui", "Read") 
-        self.plumeEdit.setToolTip(self.mTextToolTipEdit)
-        self.plumeEdit.clicked.connect(self.clickButtonsActions)
-        self.plumeEdit.setAutoRaise(True)
-        self.plumeEdit.setCheckable(True)
-        #-- Raccourci
-        self.plumeEdit.setShortcut(QKeySequence("ALT+SHIFT+E"))
-        #-- Raccourci
-        self.mMenuBarDialogGridLine1.addWidget(self.plumeEdit)
-        #--
-        mText = QtWidgets.QApplication.translate("plume_ui", "Save") 
-        self.plumeSave = QtWidgets.QToolButton()
-        self.plumeSave.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumeSave.setIcon(QIcon(_iconSourcesSave))
-        self.plumeSave.setObjectName("Save")
-        self.plumeSave.setToolTip(mText)
-        self.plumeSave.clicked.connect(self.clickButtonsActions)
-        self.plumeSave.setAutoRaise(True)
-        #-- Raccourci
-        self.plumeSave.setShortcut(QKeySequence("ALT+SHIFT+S"))
-        #-- Raccourci
-        self.mMenuBarDialogGridLine1.addWidget(self.plumeSave)
-        #--                                        
-        mText = QtWidgets.QApplication.translate("plume_ui", "Translation") 
-        self.plumeTranslation = QtWidgets.QToolButton()
-        self.plumeTranslation.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumeTranslation.setIcon(QIcon(_iconSourcesTranslation))
-        self.plumeTranslation.setObjectName("Traduction")
+        typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable = QtWidgets.QToolButton(), "Edition", "Edition", _iconSourcesRead, self.mTextToolTipEdit, self.clickButtonsActions, "ALT+SHIFT+E", True, True
+        self.plumeEdit = self.genereButtonsToolBar( typeWidget, nameWidget, textWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable )
+        #-- plumeSave
+        typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable = QtWidgets.QToolButton(), "Save", "Save", _iconSourcesSave, "Save", self.clickButtonsActions, "ALT+SHIFT+S", True, False
+        self.plumeSave = self.genereButtonsToolBar( typeWidget, nameWidget, textWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable )
+        #-- plumeTranslation
         self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_ui", "Enable translation functions.") 
         self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
-        self.plumeTranslation.setToolTip(self.mTextToolTipNon)
-        self.plumeTranslation.clicked.connect(self.clickButtonsActions)
-        self.plumeTranslation.setAutoRaise(True)
-        self.plumeTranslation.setCheckable(True)
-        #-- Raccourci
-        self.plumeTranslation.setShortcut(QKeySequence("ALT+SHIFT+T"))
-        #-- Raccourci
+        typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable = QtWidgets.QToolButton(), "Translation", "Traduction", _iconSourcesTranslation, self.mTextToolTipNon, self.clickButtonsActions, "ALT+SHIFT+T", True, True
+        self.plumeTranslation = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable )
+
+        # ** Add First line **
+        self.mMenuBarDialogGridLine1.addWidget(self.plumeEdit)
+        self.mMenuBarDialogGridLine1.addWidget(self.plumeSave)
         self.mMenuBarDialogGridLine1.addWidget(self.plumeTranslation)
+
+
         #====================
         #--QToolButton LANGUAGE                                               
         _editStyle = self.editStyle             #style saisie
@@ -1195,6 +1186,8 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setText(self.language)
         self.plumeChoiceLang.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
         self.plumeChoiceLang.setIcon(QIcon(_iconSourcesBlank))
+        h = self.plumeChoiceLang.iconSize().height()
+        self.plumeChoiceLang.setIconSize(QSize(1, h))
         self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") 
         self.plumeChoiceLang.setToolTip(self.mTextToolTip)
         textItem = max( self.langList, key=lambda x:self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, x).width() )
