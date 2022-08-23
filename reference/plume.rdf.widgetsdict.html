@@ -581,7 +581,7 @@ du widget de saisie.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="plume.rdf.widgetsdict.WidgetsDict.list_widgets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_widgets</span></code></a>(widgetkey[, with_kind])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="plume.rdf.widgetsdict.WidgetsDict.list_widgets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_widgets</span></code></a>(widgetkey[, with_kind, ...])</p></td>
 <td><p>Renvoie la liste des widgets référencés pour la clé considérée.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#plume.rdf.widgetsdict.WidgetsDict.parent_grid" title="plume.rdf.widgetsdict.WidgetsDict.parent_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent_grid</span></code></a>(widgetkey)</p></td>
@@ -1098,7 +1098,7 @@ qui vaut toujours <cite>None</cite> dans un groupe de valeurs).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="plume.rdf.widgetsdict.WidgetsDict.list_widgets">
-<span class="sig-name descname"><span class="pre">list_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">list_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgetkey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.rdf.widgetsdict.WidgetsDict.list_widgets" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoie la liste des widgets référencés pour la clé considérée.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1109,6 +1109,8 @@ qui vaut toujours <cite>None</cite> dans un groupe de valeurs).</p>
 liste de tuples dont le premier élément est le widget et le
 second une chaîne de caractères spécifiant sa nature (nom de la
 clé du dictionnaire interne où il est référencé).</p>
+</dd>
+<dt><strong>visible_only</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, la méthode veille à ne pas renvoyer de widgets masqués.</p>
 </dd>
 </dl>
 </dd>
