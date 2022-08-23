@@ -1113,19 +1113,25 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================         
-    def genereButtonsToolBar(self, typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable ) :
-        mText = QtWidgets.QApplication.translate("plume_ui", textWidget) 
+    def genereButtonsToolBar(self, typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet ) :
         _buttonToolBar = typeWidget
-        _buttonToolBar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        _buttonToolBar.setSizePolicy(qSizePolicy, qSizePolicy)
         _buttonToolBar.setIcon(QIcon(iconWidget))
         _buttonToolBar.setObjectName(nameWidget)
         _buttonToolBar.setToolTip(toolTipWidget)
         _buttonToolBar.clicked.connect(actionWidget)
         _buttonToolBar.setAutoRaise(autoRaise)
         _buttonToolBar.setCheckable(checkable)
+        #-- Icon Blank
+        if redimIcon : 
+           h = _buttonToolBar.iconSize().height()
+           _buttonToolBar.setIconSize(QSize(1, h))
+        #-- Text
+        if textWidget != None : _buttonToolBar.setText(textWidget)
+        #-- StyleSheet
+        if styleSheet != None : _buttonToolBar.setStyleSheet(styleSheet)
         #-- Raccourci
-        _buttonToolBar.setShortcut(QKeySequence(shorCutWidget))
-        #-- Raccourci
+        if shorCutWidget != None : _buttonToolBar.setShortcut(QKeySequence(shorCutWidget))
         return _buttonToolBar
 
     #==========================
@@ -1158,45 +1164,29 @@ class Ui_Dialog_plume(object):
         #====================
         # ** First line **
         #====================
-        #-- plumeEdit
+        # [ == plumeEdit == ]
         self.mTextToolTipRead = QtWidgets.QApplication.translate("plume_ui", "Edit") 
         self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_ui", "Read") 
-        typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable = QtWidgets.QToolButton(), "Edition", "Edition", _iconSourcesRead, self.mTextToolTipEdit, self.clickButtonsActions, "ALT+SHIFT+E", True, True
-        self.plumeEdit = self.genereButtonsToolBar( typeWidget, nameWidget, textWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable )
-        #-- plumeSave
-        typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable = QtWidgets.QToolButton(), "Save", "Save", _iconSourcesSave, "Save", self.clickButtonsActions, "ALT+SHIFT+S", True, False
-        self.plumeSave = self.genereButtonsToolBar( typeWidget, nameWidget, textWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable )
-        #-- plumeTranslation
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), "Edition", "Edition", _iconSourcesRead, False, self.mTextToolTipEdit, self.clickButtonsActions, "ALT+SHIFT+E", True, True, QSizePolicy.Fixed, None
+        self.plumeEdit = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # [ == plumeSave == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), "Save", "Save", _iconSourcesSave, False, QtWidgets.QApplication.translate("plume_ui", "Save"), self.clickButtonsActions, "ALT+SHIFT+S", True, False, QSizePolicy.Fixed, None
+        self.plumeSave = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # [ == plumeTranslation == ]
         self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_ui", "Enable translation functions.") 
         self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
-        typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable = QtWidgets.QToolButton(), "Translation", "Traduction", _iconSourcesTranslation, self.mTextToolTipNon, self.clickButtonsActions, "ALT+SHIFT+T", True, True
-        self.plumeTranslation = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable )
-
-        # ** Add First line **
-        self.mMenuBarDialogGridLine1.addWidget(self.plumeEdit)
-        self.mMenuBarDialogGridLine1.addWidget(self.plumeSave)
-        self.mMenuBarDialogGridLine1.addWidget(self.plumeTranslation)
-
-
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), "Translation", "Traduction", _iconSourcesTranslation, False, self.mTextToolTipNon, self.clickButtonsActions, "ALT+SHIFT+T", True, True, QSizePolicy.Fixed, None
+        self.plumeTranslation = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
         #====================
-        #--QToolButton LANGUAGE                                               
-        _editStyle = self.editStyle             #style saisie
-        self.plumeChoiceLang = QtWidgets.QToolButton()
-        self.plumeChoiceLang.setObjectName("plumeChoiceLang")
-        self.plumeChoiceLang.setText(self.language)
-        self.plumeChoiceLang.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
-        self.plumeChoiceLang.setIcon(QIcon(_iconSourcesBlank))
-        h = self.plumeChoiceLang.iconSize().height()
-        self.plumeChoiceLang.setIconSize(QSize(1, h))
-        self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") 
-        self.plumeChoiceLang.setToolTip(self.mTextToolTip)
-        textItem = max( self.langList, key=lambda x:self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, x).width() )
-        lenQTool = self.plumeChoiceLang.fontMetrics().size(Qt.TextSingleLine, textItem).width()
-        self.plumeChoiceLang.setAutoRaise(True)
-        self.plumeChoiceLang.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-
-        #self.plumeChoiceLang.setMinimumWidth(lenQTool)
-        #MenuQToolButton                        
+        # [ == plumeChoiceLang == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), self.language, "plumeChoiceLang", _iconSourcesBlank, True, QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") , self.clickButtonsActions, None, True, False, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}"
+        self.plumeChoiceLang = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet)
+        # -- QToolButton LANGUAGE MenuQToolButton                        
+        _editStyle = self.editStyle  #style saisie
         _mObjetQMenu = QMenu()
         self._mObjetQMenuChoiceLang = _mObjetQMenu
         _mObjetQMenu.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
@@ -1214,94 +1204,51 @@ class Ui_Dialog_plume(object):
             _mObjetQMenu.addAction(_mObjetQMenuItem)
             #- Actions
             _mObjetQMenuItem.triggered.connect(self.clickButtonsChoiceLanguages)
-       
+        #------------
         self.plumeChoiceLang.setPopupMode(self.plumeChoiceLang.InstantPopup)
         self.plumeChoiceLang.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeChoiceLang.setMenu(_mObjetQMenu)
-        
-        self.mMenuBarDialogGridLine1.addWidget(self.plumeChoiceLang)
-        #--QToolButton LANGUAGE                                               
+        # -- QToolButton LANGUAGE MenuQToolButton                        
         #====================
-        #====================
-        #--QToolButton TEMPLATE                                               
-        mText = QtWidgets.QApplication.translate("plume_ui", "Template") 
-        self.plumeTemplate = QtWidgets.QToolButton()
-        self.plumeTemplate.setIcon(QIcon(_iconSourcesTemplate))
-        self.plumeTemplate.setObjectName("Template")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "METADATA extension not installed.")   
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Choose a form template.")    
-        self.plumeTemplate.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
-        self.plumeTemplate.setToolTip(mTextToolTip)
-        self.plumeTemplate.setAutoRaise(True)
-        self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
-        self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)  # ToolButtonFollowStyle  ToolButtonTextBesideIcon
-        self.plumeTemplate.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-
-        #MenuQToolButton                        
+        # [ == plumeTemplate == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Template"), "Template", _iconSourcesTemplate, False, QtWidgets.QApplication.translate("plume_ui", "Choose a form template."), self.clickButtonsActions, None, True, False, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}"
+        self.plumeTemplate = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet)
+        # -- QToolButton TEMPLATE MenuQToolButton                        
         _mObjetQMenu = QMenu()
         self._mObjetQMenu = _mObjetQMenu
+        #------------
+        self.plumeTemplate.setPopupMode(self.plumeTemplate.InstantPopup)
+        self.plumeTemplate.setToolButtonStyle(Qt.ToolButtonTextBesideIcon) 
+        # -- QToolButton TEMPLATE MenuQToolButton                        
+
+        # ** Add First line **
+        self.mMenuBarDialogGridLine1.addWidget(self.plumeEdit)
+        self.mMenuBarDialogGridLine1.addWidget(self.plumeSave)
+        self.mMenuBarDialogGridLine1.addWidget(self.plumeTranslation)
+        self.mMenuBarDialogGridLine1.addWidget(self.plumeChoiceLang)
         self.mMenuBarDialogGridLine1.addWidget(self.plumeTemplate)
-        #--QToolButton TEMPLATE                                               
-        #====================
         self.mMenuBarDialogGridLine1.addStretch(1)
-        #====================
-        # ** Second line **
-        #====================
-        #--
-        mText = QtWidgets.QApplication.translate("plume_ui", "Copy") 
-        self.plumeCopy = QtWidgets.QToolButton()
-        self.plumeCopy.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumeCopy.setIcon(QIcon(_iconSourcesCopy))
-        self.plumeCopy.setObjectName("Copy")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card.") 
-        self.plumeCopy.setToolTip(mTextToolTip)
-        self.plumeCopy.clicked.connect(self.clickButtonsActions)
-        self.plumeCopy.setAutoRaise(True)
-        #-- Raccourci
-        self.plumeCopy.setShortcut(QKeySequence("ALT+SHIFT+C"))
-        #-- Raccourci
-        self.mMenuBarDialogGridLine2.addWidget(self.plumeCopy)
+
+        # [ == plumeCopy == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Copy"), "Copy", _iconSourcesCopy, False, QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card."), self.clickButtonsActions, "ALT+SHIFT+C", True, False, QSizePolicy.Fixed, None
+        self.plumeCopy = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
         #Création pour la copy à None
         self.copyMetagraph = None
-        #--
-        mText = QtWidgets.QApplication.translate("plume_main", "Paste") 
-        self.plumePaste = QtWidgets.QToolButton()
-        self.plumePaste.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumePaste.setIcon(QIcon(_iconSourcesPaste))
-        self.plumePaste.setObjectName("Paste")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card.") 
-        self.plumePaste.setToolTip(mTextToolTip)
-        self.plumePaste.clicked.connect(self.clickButtonsActions)
-        self.plumePaste.setAutoRaise(True)
-        #-- Raccourci
-        self.plumePaste.setShortcut(QKeySequence("ALT+SHIFT+V"))
-        #-- Raccourci
-        self.mMenuBarDialogGridLine2.addWidget(self.plumePaste)
-        #--
-        mText = QtWidgets.QApplication.translate("plume_ui", "Empty") 
-        self.plumeEmpty = QtWidgets.QToolButton()
-        self.plumeEmpty.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumeEmpty.setIcon(QIcon(_iconSourcesEmpty))
-        self.plumeEmpty.setObjectName("Empty")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card.")
-        self.plumeEmpty.setToolTip(mTextToolTip)
-        self.plumeEmpty.clicked.connect(self.clickButtonsActions)
-        self.plumeEmpty.setAutoRaise(True)
-        #-- Raccourci
-        self.plumeEmpty.setShortcut(QKeySequence("ALT+SHIFT+B"))
-        #-- Raccourci
-        self.mMenuBarDialogGridLine2.addWidget(self.plumeEmpty)
-        #--                                        
-        #====================
-        #--QToolButton IMPORT                                               
-        mText = QtWidgets.QApplication.translate("plume_main", "Import") 
-        self.plumeImport = QtWidgets.QToolButton()
-        self.plumeImport.setIcon(QIcon(_iconSourcesImport))
-        self.plumeImport.setObjectName("Import")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Import metadata.") 
-        self.plumeImport.setToolTip(mTextToolTip)
-        self.plumeImport.setAutoRaise(True)
-        #MenuQToolButton                        
+        # [ == plumePaste == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Paste"), "Paste", _iconSourcesPaste, False, QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card."), self.clickButtonsActions, "ALT+SHIFT+V", True, False, QSizePolicy.Fixed, None
+        self.plumePaste = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # [ == plumeEmpty == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Empty"), "Empty", _iconSourcesPaste, False, QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card."), self.clickButtonsActions, "ALT+SHIFT+B", True, False, QSizePolicy.Fixed, None
+        self.plumeEmpty = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # [ == plumeImport == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), None, "Import", _iconSourcesImport, False, QtWidgets.QApplication.translate("plume_ui", "Import metadata."), self.clickButtonsActions, None, True, False, QSizePolicy.Fixed, None
+        self.plumeImport = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # -- QToolButton IMPORT MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         _editStyle = self.editStyle             #style saisie
@@ -1345,47 +1292,32 @@ class Ui_Dialog_plume(object):
         self.plumeImport.setPopupMode(self.plumeImport.InstantPopup)
         self.plumeImport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeImport.setMenu(_mObjetQMenu)
-        self.mMenuBarDialogGridLine2.addWidget(self.plumeImport)
-        #--QToolButton IMPORT                                               
+        # -- QToolButton IMPORT MenuQToolButton                        
         #====================
-        #====================
-        #--QToolButton EXPORT                                               
-        mText = QtWidgets.QApplication.translate("plume_ui", "Export") 
-        self.plumeExport = QtWidgets.QToolButton()
-        self.plumeExport.setIcon(QIcon(_iconSourcesExport))
-        self.plumeExport.setObjectName("Export")
-        mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file.")
-        self.plumeExport.setToolTip(mTextToolTip)
-        self.plumeExport.setAutoRaise(True)
-        self.plumeExport.setPopupMode(self.plumeExport.InstantPopup)
-        self.plumeExport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        #MenuQToolButton
+        # [ == plumeExport == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), None, "Export", _iconSourcesExport, False, QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file."), self.clickButtonsActions, None, True, False, QSizePolicy.Fixed, None
+        self.plumeExport = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # -- QToolButton EXPORT MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         self._mObjetQMenuExport = _mObjetQMenu
-        self.mMenuBarDialogGridLine2.addWidget(self.plumeExport)
         _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
-        #--QToolButton EXPORT                                               
+        #------------
+        self.plumeExport.setPopupMode(self.plumeExport.InstantPopup)
+        self.plumeExport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        # -- QToolButton EXPORT MenuQToolButton                        
         #====================
-        #--
-        mText = QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM") 
-        self.paramColor = QtWidgets.QToolButton()
-        self.paramColor.setIcon(QIcon(_iconSourcesParam))
-        self.paramColor.setObjectName("Customization of the IHM")
-        self.paramColor.setToolTip(mText)
-        self.paramColor.clicked.connect(self.clickColorDialog)
-        self.paramColor.setAutoRaise(True)
-        self.mMenuBarDialogGridLine2.addWidget(self.paramColor)
+        # [ == paramColor == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), None, "Customization of the IHM", _iconSourcesParam, False, QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM"), self.clickColorDialog, None, True, False, QSizePolicy.Fixed, None
+        self.paramColor = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
         #====================
-        #--QToolButton POINT ?                                               
-        self.plumeInterrogation = QtWidgets.QToolButton()
-        self.plumeInterrogation.setObjectName("plumeInterrogation")
-        self.mTextToolTip = QtWidgets.QApplication.translate("plume_ui", "Help / About") 
-        self.plumeInterrogation.setIcon(QIcon(_iconSourcesInterrogation))
-        self.plumeInterrogation.setToolTip(self.mTextToolTip)
-        self.plumeInterrogation.setAutoRaise(True)
-        #MenuQToolButton                        
+        # [ == plumeInterrogation == ]
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), None, "plumeInterrogation", _iconSourcesInterrogation, False, QtWidgets.QApplication.translate("plume_ui", "Help / About"), self.clickButtonsActions, None, True, False, QSizePolicy.Fixed, None
+        self.plumeInterrogation = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        # -- QToolButton POINT ? MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
         _editStyle = self.editStyle             #style saisie
@@ -1414,27 +1346,25 @@ class Ui_Dialog_plume(object):
         self.plumeInterrogation.setPopupMode(self.plumeInterrogation.InstantPopup)
         self.plumeInterrogation.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeInterrogation.setMenu(_mObjetQMenu)
-        self.mMenuBarDialogGridLine2.addWidget(self.plumeInterrogation)
-        #--QToolButton POINT ?                                               
-        self.mMenuBarDialogGridLine2.addStretch(1)
-        #-- Verrouillage
-        mText = QtWidgets.QApplication.translate("plume_ui", "Lockdown") 
-        self.plumeVerrou = QtWidgets.QToolButton()
-        self.plumeVerrou.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.plumeVerrou.setAutoRaise(True)
-        self.plumeVerrou.setCheckable(True)
-        self.plumeVerrou.setIcon(QIcon(_iconSourcesVerrou))
-        self.plumeVerrou.setObjectName("Verrouillage")
+        # -- QToolButton POINT ? MenuQToolButton                        
+        # [ == plumeVerrou == ]
         self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_ui", 'Lock the display on the current metadata card.') 
         self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_ui", 'Unlock the display.')                       
-        self.plumeVerrou.setToolTip(self.mTextToolTipVerrouEdit)
-        self.plumeVerrou.clicked.connect(self.clickButtonsActions)
-        #-- Raccourci
-        self.plumeVerrou.setShortcut(QKeySequence("ALT+SHIFT+R"))
-        #-- Raccourci
-        self.mMenuBarDialogGridLine2.addWidget(self.plumeVerrou)
-        #-- Verrouillage
+        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
+        QtWidgets.QToolButton(), None, "Verrouillage", _iconSourcesVerrou, False, self.mTextToolTipVerrouEdit, self.clickButtonsActions, "ALT+SHIFT+R", True, True, QSizePolicy.Fixed, None
+        self.plumeVerrou = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+
         #====================
+        # ** Add Second line **
+        self.mMenuBarDialogGridLine2.addWidget(self.plumeCopy)
+        self.mMenuBarDialogGridLine2.addWidget(self.plumePaste)
+        self.mMenuBarDialogGridLine2.addWidget(self.plumeEmpty)
+        self.mMenuBarDialogGridLine2.addWidget(self.plumeImport)
+        self.mMenuBarDialogGridLine2.addWidget(self.plumeExport)
+        self.mMenuBarDialogGridLine2.addWidget(self.paramColor)
+        self.mMenuBarDialogGridLine2.addWidget(self.plumeInterrogation)
+        self.mMenuBarDialogGridLine2.addStretch(1)
+        self.mMenuBarDialogGridLine2.addWidget(self.plumeVerrou)
         return
 
     #==========================

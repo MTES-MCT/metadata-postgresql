@@ -260,14 +260,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQLabel.setWordWrap(True)
        _mObjetQLabel.setOpenExternalLinks(True)
 
-       """ GESTION DES ESPACES A FAIRE
-       if valueExiste('help text', _valueObjet) : 
-          if _valueObjet['help text'].find("Date et heure") != -1 :
-             print([ _mObjetQLabel, _valueObjet ])       
-       #_mObjetQLabel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-       GESTION DES ESPACES A FAIRE """
-
-
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQLabel})
     # == QLABEL
