@@ -251,6 +251,7 @@ class Ui_Dialog_plume(object):
         self.verrouLayer     = False   #Verrouillage de la couche 
         self.nameVerrouLayer = None    #Couche verrouillée 
         #----
+
         #=====================================================  
         #--- Icons Actions ---- Edit, Empty, Export, Import, Save, Template, Traslation -----
         self.createToolBar(*self.listIconToolBar)
@@ -269,10 +270,11 @@ class Ui_Dialog_plume(object):
         #Active Tooltip
         self._myExploBrowser  = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
         self._myExploBrowser2 = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-        
+
         #==========================
         #Instanciation des "shape, template, vocabulary, mode" 
         self.translation = bibli_plume.returnObjetTranslation(self)
+        
         #==========================
         #Management Click before open IHM 
         if self.layerBeforeClicked[0] != "" : 
@@ -1000,6 +1002,8 @@ class Ui_Dialog_plume(object):
            self.plumeTemplate.setEnabled(r)
            self.plumeTranslation.setEnabled(True if self.mode == "edit" else False)
            self.plumeChoiceLang.setEnabled(r)
+           #
+           self.plumeTranslation.setChecked(True if self.translation else False)  
            
            self.plumeVerrou.setEnabled(False if self.mode == "edit" else True)
            if self.mode == "edit" : self.verrouLayer = True
@@ -1197,7 +1201,7 @@ class Ui_Dialog_plume(object):
         _ListValues = [ QtWidgets.QToolButton(), "Save", "Save", _iconSourcesSave, QtWidgets.QApplication.translate("plume_ui", "Save"), self.clickButtonsActions, "ALT+SHIFT+S", True, QSizePolicy.Fixed ]
         dicParamButton = dict(zip(_Listkeys, _ListValues))
         self.plumeSave = self.genereButtonsToolBarWithDict( dicParamButton )
-        # [ == plumeTranslation == ]
+        # [ == plumeTranslation == ]    
         self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_ui", "Enable translation functions.") 
         self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
         _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
