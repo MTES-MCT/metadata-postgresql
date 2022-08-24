@@ -788,7 +788,9 @@ class WidgetsDict(dict):
         d['value to update'] = actionsbook.update
         
         for widgetkey in actionsbook.show:
-            d['widgets to show'] += self.list_widgets(widgetkey)
+            d['widgets to show'] += self.list_widgets(
+                widgetkey, visible_only=True
+            )
         
         for widgetkey in actionsbook.show_minus_button:
             w = self[widgetkey]['minus widget']
@@ -843,7 +845,7 @@ class WidgetsDict(dict):
         
         return d
 
-    def list_widgets(self, widgetkey, with_kind=False):
+    def list_widgets(self, widgetkey, with_kind=False, visible_only=False):
         """Renvoie la liste des widgets référencés pour la clé considérée.
         
         Parameters
@@ -855,18 +857,28 @@ class WidgetsDict(dict):
             liste de tuples dont le premier élément est le widget et le
             second une chaîne de caractères spécifiant sa nature (nom de la
             clé du dictionnaire interne où il est référencé).
+        visible_only : bool, default False
+            Si ``True``, la méthode veille à ne pas renvoyer de widgets masqués.
             
         Returns
         -------
         list
 
         """
-        if not widgetkey or not widgetkey in self:
+        if (
+            not widgetkey or not widgetkey in self
+            or visible_only and self[widgetkey]['hidden']
+        ):
             return []
         l = []        
         for k in ('main widget', 'minus widget', 'switch source widget',
             'language widget', 'unit widget', 'geo widget', 'compute widget',
             'label widget'):
+            if (
+                visible_only and k == 'minus widget'
+                and self[widgetkey]['hide minus button']
+            ):
+                continue
             w = self[widgetkey][k]
             if w:
                 if with_kind:
