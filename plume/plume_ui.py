@@ -1133,25 +1133,26 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================         
-    def genereButtonsToolBar(self, typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet ) :
-        _buttonToolBar = typeWidget
-        _buttonToolBar.setSizePolicy(qSizePolicy, qSizePolicy)
-        _buttonToolBar.setIcon(QIcon(iconWidget))
-        _buttonToolBar.setObjectName(nameWidget)
-        _buttonToolBar.setToolTip(toolTipWidget)
-        _buttonToolBar.clicked.connect(actionWidget)
-        _buttonToolBar.setAutoRaise(autoRaise)
-        _buttonToolBar.setCheckable(checkable)
-        #-- Icon Blank
-        if redimIcon : 
-           h = _buttonToolBar.iconSize().height()
-           _buttonToolBar.setIconSize(QSize(1, h))
-        #-- Text
-        if textWidget != None : _buttonToolBar.setText(textWidget)
-        #-- StyleSheet
-        if styleSheet != None : _buttonToolBar.setStyleSheet(styleSheet)
-        #-- Raccourci
-        if shorCutWidget != None : _buttonToolBar.setShortcut(QKeySequence(shorCutWidget))
+    def genereButtonsToolBarWithDict(self, dicParamButton ) :
+        for k, v in dicParamButton.items() :
+            if k == "typeWidget"    : _buttonToolBar = v
+            if k == "qSizePolicy"   : _buttonToolBar.setSizePolicy(v, v)
+            if k == "iconWidget"    : _buttonToolBar.setIcon(QIcon(v))
+            if k == "nameWidget"    : _buttonToolBar.setObjectName(v)
+            if k == "toolTipWidget" : _buttonToolBar.setToolTip(v)
+            if k == "actionWidget"  : _buttonToolBar.clicked.connect(v)
+            if k == "autoRaise"     : _buttonToolBar.setAutoRaise(v)
+            if k == "checkable"     : _buttonToolBar.setCheckable(v)
+            #-- Icon Blank
+            if k == "redimIcon"     :
+               h = _buttonToolBar.iconSize().height()
+               _buttonToolBar.setIconSize(QSize(1, h))
+            #-- Text
+            if k == "textWidget"    : _buttonToolBar.setText(v)
+            #-- StyleSheet
+            if k == "styleSheet"    : _buttonToolBar.setStyleSheet(v)
+            #-- Raccourci
+            if k == "shorCutWidget" : _buttonToolBar.setShortcut(QKeySequence(v))
         return _buttonToolBar
 
     #==========================
@@ -1187,24 +1188,28 @@ class Ui_Dialog_plume(object):
         # [ == plumeEdit == ]
         self.mTextToolTipRead = QtWidgets.QApplication.translate("plume_ui", "Edit") 
         self.mTextToolTipEdit = QtWidgets.QApplication.translate("plume_ui", "Read") 
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), "Edition", "Edition", _iconSourcesRead, False, self.mTextToolTipEdit, self.clickButtonsActions, "ALT+SHIFT+E", True, True, QSizePolicy.Fixed, None
-        self.plumeEdit = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition", "Edition", _iconSourcesRead, self.mTextToolTipEdit, self.clickButtonsActions, "ALT+SHIFT+E", True, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeEdit = self.genereButtonsToolBarWithDict( dicParamButton )
         # [ == plumeSave == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), "Save", "Save", _iconSourcesSave, False, QtWidgets.QApplication.translate("plume_ui", "Save"), self.clickButtonsActions, "ALT+SHIFT+S", True, False, QSizePolicy.Fixed, None
-        self.plumeSave = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Save", "Save", _iconSourcesSave, QtWidgets.QApplication.translate("plume_ui", "Save"), self.clickButtonsActions, "ALT+SHIFT+S", True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeSave = self.genereButtonsToolBarWithDict( dicParamButton )
         # [ == plumeTranslation == ]
         self.mTextToolTipNon = QtWidgets.QApplication.translate("plume_ui", "Enable translation functions.") 
         self.mTextToolTipOui = QtWidgets.QApplication.translate("plume_ui", "Disable translation functions.")
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), "Translation", "Traduction", _iconSourcesTranslation, False, self.mTextToolTipNon, self.clickButtonsActions, "ALT+SHIFT+T", True, True, QSizePolicy.Fixed, None
-        self.plumeTranslation = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Translation", "Traduction", _iconSourcesTranslation, self.mTextToolTipNon, self.clickButtonsActions, "ALT+SHIFT+T", True, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeTranslation = self.genereButtonsToolBarWithDict( dicParamButton )
         #====================
         # [ == plumeChoiceLang == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), self.language, "plumeChoiceLang", _iconSourcesBlank, True, QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") , self.clickButtonsActions, None, True, False, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}"
-        self.plumeChoiceLang = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet)
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "redimIcon", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy", "styleSheet" ]
+        _ListValues = [ QtWidgets.QToolButton(), self.language, "plumeChoiceLang", _iconSourcesBlank, True, QtWidgets.QApplication.translate("plume_ui", "Change the main metadata language.") , self.clickButtonsActions, True, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}" ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeChoiceLang = self.genereButtonsToolBarWithDict( dicParamButton )
         # -- QToolButton LANGUAGE MenuQToolButton                        
         _editStyle = self.editStyle  #style saisie
         _mObjetQMenu = QMenu()
@@ -1231,9 +1236,10 @@ class Ui_Dialog_plume(object):
         # -- QToolButton LANGUAGE MenuQToolButton                        
         #====================
         # [ == plumeTemplate == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Template"), "Template", _iconSourcesTemplate, False, QtWidgets.QApplication.translate("plume_ui", "Choose a form template."), self.clickButtonsActions, None, True, False, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}"
-        self.plumeTemplate = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet)
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy", "styleSheet" ]
+        _ListValues = [ QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Template"), "Template", _iconSourcesTemplate, QtWidgets.QApplication.translate("plume_ui", "Choose a form template."), self.clickButtonsActions, True, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}" ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeTemplate = self.genereButtonsToolBarWithDict( dicParamButton )
         # -- QToolButton TEMPLATE MenuQToolButton                        
         _mObjetQMenu = QMenu()
         self._mObjetQMenu = _mObjetQMenu
@@ -1251,23 +1257,27 @@ class Ui_Dialog_plume(object):
         self.mMenuBarDialogGridLine1.addStretch(1)
 
         # [ == plumeCopy == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Copy"), "Copy", _iconSourcesCopy, False, QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card."), self.clickButtonsActions, "ALT+SHIFT+C", True, False, QSizePolicy.Fixed, None
-        self.plumeCopy = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Copy"), "Copy", _iconSourcesCopy, QtWidgets.QApplication.translate("plume_ui", "Copy the metadata card."), self.clickButtonsActions, "ALT+SHIFT+C", True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeCopy = self.genereButtonsToolBarWithDict( dicParamButton )
         #Création pour la copy à None
         self.copyMetagraph = None
         # [ == plumePaste == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Paste"), "Paste", _iconSourcesPaste, False, QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card."), self.clickButtonsActions, "ALT+SHIFT+V", True, False, QSizePolicy.Fixed, None
-        self.plumePaste = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Paste"), "Paste", _iconSourcesPaste, QtWidgets.QApplication.translate("plume_ui", "Paste the saved metadata card."), self.clickButtonsActions, "ALT+SHIFT+V", True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumePaste = self.genereButtonsToolBarWithDict( dicParamButton )
         # [ == plumeEmpty == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Empty"), "Empty", _iconSourcesPaste, False, QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card."), self.clickButtonsActions, "ALT+SHIFT+B", True, False, QSizePolicy.Fixed, None
-        self.plumeEmpty = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Empty"), "Empty", _iconSourcesEmpty, QtWidgets.QApplication.translate("plume_ui", "Empty the metadata card."), self.clickButtonsActions, "ALT+SHIFT+B", True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeEmpty = self.genereButtonsToolBarWithDict( dicParamButton )
         # [ == plumeImport == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), None, "Import", _iconSourcesImport, False, QtWidgets.QApplication.translate("plume_ui", "Import metadata."), self.clickButtonsActions, None, True, False, QSizePolicy.Fixed, None
-        self.plumeImport = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Import", _iconSourcesImport, QtWidgets.QApplication.translate("plume_ui", "Import metadata."), self.clickButtonsActions, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeImport = self.genereButtonsToolBarWithDict( dicParamButton )
         # -- QToolButton IMPORT MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
@@ -1315,9 +1325,10 @@ class Ui_Dialog_plume(object):
         # -- QToolButton IMPORT MenuQToolButton                        
         #====================
         # [ == plumeExport == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), None, "Export", _iconSourcesExport, False, QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file."), self.clickButtonsActions, None, True, False, QSizePolicy.Fixed, None
-        self.plumeExport = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Export", _iconSourcesExport, QtWidgets.QApplication.translate("plume_ui", "Export metadata to a file."), self.clickButtonsActions, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeExport = self.genereButtonsToolBarWithDict( dicParamButton )
         # -- QToolButton EXPORT MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
@@ -1329,14 +1340,16 @@ class Ui_Dialog_plume(object):
         # -- QToolButton EXPORT MenuQToolButton                        
         #====================
         # [ == paramColor == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), None, "Customization of the IHM", _iconSourcesParam, False, QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM"), self.clickColorDialog, None, True, False, QSizePolicy.Fixed, None
-        self.paramColor = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Customization of the IHM", _iconSourcesParam, QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM"), self.clickColorDialog, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.paramColor = self.genereButtonsToolBarWithDict( dicParamButton )
         #====================
         # [ == plumeInterrogation == ]
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), None, "plumeInterrogation", _iconSourcesInterrogation, False, QtWidgets.QApplication.translate("plume_ui", "Help / About"), self.clickButtonsActions, None, True, False, QSizePolicy.Fixed, None
-        self.plumeInterrogation = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "plumeInterrogation", _iconSourcesInterrogation, QtWidgets.QApplication.translate("plume_ui", "Help / About"), self.clickButtonsActions, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeInterrogation = self.genereButtonsToolBarWithDict( dicParamButton )
         # -- QToolButton POINT ? MenuQToolButton                        
         _mObjetQMenu = QMenu()
         _mObjetQMenu.setToolTipsVisible(True)
@@ -1370,9 +1383,10 @@ class Ui_Dialog_plume(object):
         # [ == plumeVerrou == ]
         self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_ui", 'Lock the display on the current metadata card.') 
         self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_ui", 'Unlock the display.')                       
-        typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet = \
-        QtWidgets.QToolButton(), None, "Verrouillage", _iconSourcesVerrou, False, self.mTextToolTipVerrouEdit, self.clickButtonsActions, "ALT+SHIFT+R", True, True, QSizePolicy.Fixed, None
-        self.plumeVerrou = self.genereButtonsToolBar( typeWidget, textWidget, nameWidget, iconWidget, redimIcon, toolTipWidget, actionWidget, shorCutWidget, autoRaise, checkable, qSizePolicy, styleSheet )
+        _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Verrouillage", _iconSourcesVerrou, self.mTextToolTipVerrouEdit, self.clickButtonsActions, "ALT+SHIFT+R", True, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.plumeVerrou = self.genereButtonsToolBarWithDict( dicParamButton )
 
         #====================
         # ** Add Second line **
