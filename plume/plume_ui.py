@@ -426,6 +426,14 @@ class Ui_Dialog_plume(object):
            if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
            # If suppression d'une couche active pour les métadonnées affichées
 
+           #Interroge l'utilisateur si modifications
+           if self.zoneConfirmMessage :
+              if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
+                 if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel :
+                    self.plumeTemplate.setText(self.plumeTemplate.text())
+                    return
+                 #Si vous poursuivez, les modifications non enregistrées seront perdues.
+
            mItemTemplates = self.mMenuBarDialogLine1.sender().objectName()
 
            """
@@ -465,6 +473,14 @@ class Ui_Dialog_plume(object):
            # If suppression d'une couche active pour les métadonnées affichées
            if not bibli_plume.gestionErreurExisteLegendeInterface(self) : return
            # If suppression d'une couche active pour les métadonnées affichées
+
+           #Interroge l'utilisateur si modifications
+           if self.zoneConfirmMessage :
+              if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
+                 if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel :
+                    self.plumeChoiceLang.setText(self.plumeChoiceLang.text())
+                    return
+                 #Si vous poursuivez, les modifications non enregistrées seront perdues.
 
            mItemLine1 = self.mMenuBarDialogLine1.sender().objectName()
 
