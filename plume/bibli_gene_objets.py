@@ -224,7 +224,14 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #QCOMBOBOX 
        if _valueObjet['main widget type'] in ("QComboBox") :
           _thesaurus = _valueObjet['thesaurus values']                                                           
-          if _thesaurus != None : _mObjetQSaisie.addItems(_thesaurus)
+          if _thesaurus != None : 
+             _mObjetQSaisie.addItems(_thesaurus)
+             #Tooltip for items QCOMBOBOX                        
+             i = 0
+             while i < len(_thesaurus) :
+                _mObjetQSaisie.setItemData(i, _thesaurus[i], Qt.ToolTipRole)
+                i+=1
+              
           bibli_plume.updateObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
           _mObjetQSaisie.setEditable(True)
           #-

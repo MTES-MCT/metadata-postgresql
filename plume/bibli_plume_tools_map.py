@@ -343,7 +343,7 @@ def majVisuButton(self, Dialog, __mObjetQToolButton, mDic_geoToolsShow, __keyObj
     self.Dialog = Dialog
     #__mObjetQToolButton.setText(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['libelle'])
     __mObjetQToolButton.setIcon(QIcon(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['icon']))
-    if self.mode == "edit" :
+    if self.Dialog.mode == "edit" :
        __mObjetQToolButton.setToolTip(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['toolTip'] + "\n\nMaintenez la souris appuyée 2 à 3 secondes pour ouvrir le menu déroulant.")
     else :   
        __mObjetQToolButton.setToolTip(self.Dialog._dicGeoTools['show' if mDic_geoToolsShow[__keyObjet] else 'hide']['toolTip'])
