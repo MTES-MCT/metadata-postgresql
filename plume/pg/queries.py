@@ -644,15 +644,6 @@ def query_template_tabs(tpl_label):
                     LEFT JOIN z_plume.meta_template_categories
                         ON meta_tab.tab = meta_template_categories.tab
                 WHERE meta_template_categories.tpl_label = %s
-                    AND (
-                        meta_template_categories.shrcat_path IS NOT NULL
-                            AND meta_template_categories.shrcat_path ~ '^[a-z]{1,10}[:][a-z0-9-]{1,100}$'
-                        OR meta_template_categories.shrcat_path IS NULL
-                            AND meta_template_categories.loccat_path ~ ANY(ARRAY[
-                                '^[a-z]{1,10}[:][a-z0-9-]{1,100}$',
-                                '^[<][^<>"[:space:]{}|\\^`]+[:][^<>"[:space:]{}|\\^`]+[>]$'
-                                ])
-                        )
                 GROUP BY meta_tab.tab, meta_tab.tab_num
                 ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab
             """),
