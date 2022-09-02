@@ -7,6 +7,7 @@ Package plume.rdf
    plume.rdf.actionsbook
    plume.rdf.exceptions
    plume.rdf.internaldict
+   plume.rdf.labels
    plume.rdf.metagraph
    plume.rdf.namespaces
    plume.rdf.properties
