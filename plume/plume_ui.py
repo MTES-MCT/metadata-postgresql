@@ -222,7 +222,7 @@ class Ui_Dialog_plume(object):
         self.tabWidget.setStyleSheet("QTabWidget::pane {border: 2px solid " + self.colorQTabWidget  + "; font-family:" + self.policeQGroupBox  +"; } \
                                     QTabBar::tab {border: 1px solid " + self.colorQTabWidget  + "; border-bottom-color: none; font-family:" + self.policeQGroupBox  +";\
                                                     border-top-left-radius: 6px;border-top-right-radius: 6px; \
-                                                    width: 130px; padding-left: 20px; padding-right: 20px;} \
+                                                    } \
                                       QTabBar::tab:selected {background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 " + self.colorQTabWidget  + ", stop: 1 white);} \
                                      ")
         self.tabWidget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)

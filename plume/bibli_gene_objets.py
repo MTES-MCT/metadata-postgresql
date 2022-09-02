@@ -1127,7 +1127,7 @@ def gestionOnglets(self, _key, _value):
     #--------------------------
     tab_widget_Onglet = QWidget()
     tab_widget_Onglet.setObjectName(str(_key))
-    labelTabOnglet = str(_value['label'])
+    labelTabOnglet = "     " + str(_value['label']) + "     " 
     self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
     #==========================     
     #Zone affichage Widgets
