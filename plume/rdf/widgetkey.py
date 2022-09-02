@@ -30,9 +30,11 @@ from plume.rdf.rdflib import URIRef, BNode, Literal
 from plume.rdf.exceptions import IntegrityBreach, MissingParameter, \
     ForbiddenOperation
 from plume.rdf.actionsbook import ActionsBook
-from plume.rdf.namespaces import DCAT, RDF, XSD, GSP
+from plume.rdf.namespaces import DCAT, RDF, XSD, GSP, PlumeNamespaceManager
 from plume.rdf.metagraph import Metagraph
-from plume.rdf.utils import DatasetId, int_from_duration
+from plume.rdf.utils import DatasetId, int_from_duration, path_n3
+
+NSM = PlumeNamespaceManager()
 
 class WidgetKey:
     """Clé d'un dictionnaire de widgets.
@@ -377,10 +379,18 @@ class WidgetKey:
         return
     
     def __str__(self):
-        return "{} {}".format(type(self).__name__, self.uuid)
+        if hasattr(self, 'path') and self.path:
+            path = '"{}" '.format(path_n3(self.path, NSM))
+        else:
+            path = ''
+        return "{} {}{}".format(type(self).__name__, path, self.uuid)
     
     def __repr__(self):
-        return "{} {}".format(type(self).__name__, self.uuid)
+        if hasattr(self, 'path') and self.path:
+            path = '"{}" '.format(path_n3(self.path, NSM))
+        else:
+            path = ''
+        return "{} {}{}".format(type(self).__name__, path, self.uuid)
     
     def __bool__(self):
         return not self.is_ghost
@@ -2093,6 +2103,10 @@ class GroupKey(WidgetKey):
             if isinstance(child, TabKey) and (not label or \
                 str(label) == child.label):
                 return child
+        if label:
+            raise IntegrityBreach(f'Aucun onglet nommé "{label}".')
+        else:
+            raise IntegrityBreach('Aucun onglet.')
 
     def _build_metagraph(self, metagraph):
         b = False
