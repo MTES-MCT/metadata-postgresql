@@ -30,8 +30,9 @@ from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, ForbiddenOperation
 from plume.rdf.thesaurus import Thesaurus
-from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, RDFS, GSP
+from plume.rdf.namespaces import PlumeNamespaceManager, SH, RDF, XSD, PLUME, RDFS
 from plume.rdf.properties import PlumeProperty, class_properties
+from plume.rdf.labels import SourceLabels, TabLabels, TranslatedLabel
 from plume.pg.computer import computation_method, has_computation_method
 
 class WidgetsDict(dict):
@@ -250,18 +251,33 @@ class WidgetsDict(dict):
             # s'il n'existe pas déjà, on ajoute un
             # onglet "Autres" pour les catégories hors
             # modèle
-            if not 'Autres' in template.tabs:
-                tabkey = TabKey(parent=self.root, label='Autres',
-                    order_idx=(9999,))
+            if not TabLabels.OTHERS.trans(self.langlist) in template.tabs:
+                tabkey = TabKey(
+                    parent=self.root,
+                    label=TabLabels.OTHERS.trans(self.langlist),
+                    order_idx=(9999,)
+                )
         else:
-            tabkey = TabKey(parent=self.root, label='Général', order_idx=(0,))
+            tabkey = TabKey(
+                parent=self.root,
+                label=TabLabels.GENERAL.trans(self.langlist),
+                order_idx=(0,)
+            )
             # et on ajoute un onglet "Autres"
             # pour les catégories hors modèle
-            tabkey = TabKey(parent=self.root, label='Autres', order_idx=(9999,))
+            tabkey = TabKey(
+                parent=self.root,
+                label=TabLabels.OTHERS.trans(self.langlist),
+                order_idx=(9999,)
+            )
         
         # ------ Colonnes de la table ------
         if columns:
-            tabkey = TabKey(parent=self.root, label='Champs', order_idx=(9998,))
+            tabkey = TabKey(
+                parent=self.root,
+                label=TabLabels.FIELDS.trans(self.langlist),
+                order_idx=(9998,)
+            )
             for label, value in columns:
                 valkey = ValueKey(parent=tabkey, label=label,
                     value=Literal(value) if value else None,
@@ -400,7 +416,9 @@ class WidgetsDict(dict):
                 if prop.unlisted:
                     # les métadonnées hors modèle iront dans
                     # l'onglet "Autres".
-                    prop_dict['parent'] = parent.search_tab('Autres')
+                    prop_dict['parent'] = parent.search_tab(
+                        TabLabels.OTHERS.trans(self.langlist)
+                    )
                 else:
                     tab_label = prop_dict.get('tab')
                     prop_dict['parent'] = parent.search_tab(tab_label)
@@ -638,16 +656,16 @@ class WidgetsDict(dict):
                             internaldict['thesaurus values'] = Thesaurus.get_values(
                                 (widgetkey.value_source, self.langlist))
                         else:
-                            internaldict['current source'] = '< non référencé >'
-                            internaldict['sources'].insert(0, '< non référencé >')
+                            internaldict['current source'] = SourceLabels.UNLISTED.trans(self.langlist)
+                            internaldict['sources'].insert(0, SourceLabels.UNLISTED.trans(self.langlist))
                 else:
-                    internaldict['sources'] = ['< URI >']
+                    internaldict['sources'] = [SourceLabels.URI.trans(self.langlist)]
                     if isinstance(widgetkey, ValueKey):
-                        internaldict['current source'] = '< URI >'
+                        internaldict['current source'] = SourceLabels.URI.trans(self.langlist)
                 if widgetkey.m_twin:
-                    internaldict['sources'].insert(0, '< manuel >')
+                    internaldict['sources'].insert(0, SourceLabels.MANUAL.trans(self.langlist))
                     if isinstance(widgetkey, GroupOfPropertiesKey): 
-                        internaldict['current source'] = '< manuel >'
+                        internaldict['current source'] = SourceLabels.MANUAL.trans(self.langlist)
 
 
     def widget_placement(self, widgetkey, kind):
@@ -1047,7 +1065,7 @@ class WidgetsDict(dict):
                 "la source d'une clé invisible.", objectkey)
         
         value_source = None
-        if not new_source in ('< manuel >', '< URI >', '< non référencé >'):
+        if not isinstance(new_source, TranslatedLabel):
             for s in objectkey.sources:
                 # tous ces thésaurus ont déjà été chargés à
                 # l'initialisation du dictionnaire de widgets, donc
@@ -1064,7 +1082,10 @@ class WidgetsDict(dict):
             # Le cas d'une nouvelle source valant < URI > remplit
             # nécessairement cette condition
             a = objectkey.switch_twin(value_source)
-        elif isinstance(objectkey, ValueKey) and new_source == '< manuel >':
+        elif (
+            isinstance(objectkey, ValueKey)
+            and new_source == SourceLabels.MANUAL.trans(self.langlist)
+        ):
             a = objectkey.switch_twin()
         else:
             a = objectkey.change_source(value_source)
