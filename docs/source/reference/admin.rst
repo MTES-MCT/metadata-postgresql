@@ -4,11 +4,12 @@ Package admin
 .. toctree::
    :maxdepth: 1
 
-   admin.plume_pg
-   admin.zip_plume
    admin.docs
-   admin.tests
+   admin.pictures
+   admin.plume_pg
    admin.register
+   admin.tests
+   admin.zip_plume
 
 .. automodule:: admin
    :members:
