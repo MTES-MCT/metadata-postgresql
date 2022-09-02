@@ -23,7 +23,7 @@ from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
     query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
     query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check, \
     query_get_comment_fragments, query_get_creation_date, query_get_modification_date
-from plume.pg.template import LocalTemplatesCollection
+from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.utils import data_from_file, abspath
 
@@ -379,10 +379,8 @@ class QueriesTestCase(unittest.TestCase):
         """Requête d'import des onglets associés à un modèle (cas particuliers).
 
         Ce second test vérifie notamment que
-        la requête n'importe pas les onglets
-        des catégories qui ne sont pas de
-        premier niveau, et qu'elle fonctionne
-        avec les catégories locales et communes.
+        la requête fonctionne avec les catégories locales
+        et communes.
         
         """
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
@@ -411,10 +409,17 @@ class QueriesTestCase(unittest.TestCase):
                     *query_template_tabs('Template test')
                     )
                 tabs = cur.fetchall()
+                cur.execute(
+                    *query_get_categories('Template test')
+                    )
+                categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
                 # suppression des modèles pré-configurés
         conn.close()
-        self.assertEqual([x[0] for x in tabs], ['O2', 'O1'])
+        self.assertEqual([x[0] for x in tabs], ['O2', 'O4', 'O1'])
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(template=template)
+        self.assertListEqual([t.label for t in widgetsdict.root.children], ['O2', 'O1', 'Autres'])
 
     def test_query_get_columns(self):
         """Requête de récupération de la liste des colonnes d'une relation avec leurs descriptifs.
