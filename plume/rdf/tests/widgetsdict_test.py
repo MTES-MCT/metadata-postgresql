@@ -11,12 +11,12 @@ import unittest, psycopg2, re
 from datetime import datetime, date
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, SKOS, FOAF, \
+from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, FOAF, \
     PLUME, LOCAL, RDF, RDFS
 from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
-from plume.rdf.exceptions import ForbiddenOperation
+from plume.rdf.exceptions import ForbiddenOperation, IntegrityBreach
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs, query_exists_extension
@@ -446,8 +446,8 @@ class WidgetsDictTestCase(unittest.TestCase):
         widgetsdict = WidgetsDict(mode = 'read', metagraph=metagraph,
             template=template)
         self.assertIsNone(widgetsdict.check_grids())
-        key = widgetsdict.root.search_tab('Autres')
-        self.assertIsNone(key)
+        with self.assertRaises(IntegrityBreach):
+            key = widgetsdict.root.search_tab('Autres')
         for child in widgetsdict.root.children:
             if child.label == 'Autres':
                 key = child
@@ -2865,7 +2865,6 @@ class WidgetsDictTestCase(unittest.TestCase):
         """Catégories en lecture seule.
         
         """
-        connection_string = ConnectionString()
         conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
@@ -3215,6 +3214,46 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue('<a href="http://www.opengis.net/def/crs/EPSG/0/4326">' \
             'EPSG 4326 : WGS 84</a>' in [widgetsdict[c]['value'] for c in b.children])
 
+    def test_multiple_custom_tabs(self):
+        """Cas d'un modèle personnalisé avec plusieurs onglets.
+        """
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    SELECT * FROM z_plume.meta_import_sample_template('Classique') ;
+                    INSERT INTO z_plume.meta_tab VALUES
+                        ('onglet XYZ', 1),
+                        ('onglet ABC', 2) ;
+                    UPDATE z_plume.meta_template_categories
+                        SET tab = 'onglet ABC'
+                        WHERE tpl_label = 'Classique' AND shrcat_path IN (
+                            'dcat:contactPoint', 'adms:versionNotes'
+                        ) ;
+                    UPDATE z_plume.meta_template_categories
+                        SET tab = 'onglet XYZ'
+                        WHERE tpl_label = 'Classique' AND shrcat_path = 'dct:title' ;
+                    ''')
+                cur.execute(
+                    *query_get_categories('Classique')
+                    )
+                categories = cur.fetchall()
+                cur.execute(
+                    *query_template_tabs('Classique')
+                    )
+                tabs = cur.fetchall()
+                cur.execute('TRUNCATE z_plume.meta_tab CASCADE ; TRUNCATE z_plume.meta_template CASCADE')
+        conn.close()
+        template = TemplateDict(categories, tabs)
+        widgetsdict = WidgetsDict(template=template, mode='edit')
+        xyz = widgetsdict.root.search_tab('onglet XYZ')
+        abc = widgetsdict.root.search_tab('onglet ABC')
+        k = widgetsdict.root.search_from_path(DCT.title)
+        self.assertEqual(k.parent, xyz)
+        k = widgetsdict.root.search_from_path(DCT.description)
+        self.assertEqual(k.parent, xyz)
+        k = widgetsdict.root.search_from_path(DCAT.contactPoint)
+        self.assertEqual(k.parent, abc)
 
 if __name__ == '__main__':
     unittest.main()
