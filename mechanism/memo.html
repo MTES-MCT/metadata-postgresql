@@ -613,7 +613,19 @@
 </pre></div>
 </div>
 <p>Les installateurs <em>wheel</em> des packages doivent être placés dans le répertoire <code class="docutils literal notranslate"><span class="pre">/plume/bibli_install</span></code>. Les bibliothèques avec leur version de référence sont listées par le fichier <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt"><code class="docutils literal notranslate"><span class="pre">/plume/requirements.txt</span></code></a>.</p>
-<p>Pour que les mises à jour se fassent, il est nécessaire de modifier la valeur renvoyée par la fonction <code class="docutils literal notranslate"><span class="pre">plume.bibli_plume.returnVersion</span></code>. Plume - plus précisément <code class="docutils literal notranslate"><span class="pre">plume.bibli_install.manageLibrary</span></code> - compare cette chaîne de caractères (supposée correspondre au numéro de version) avec le paramètre <code class="docutils literal notranslate"><span class="pre">versionPlumeBibli</span></code> inscrit dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, avant d’actualiser le paramètre selon la valeur. La commande de mise à jour selon <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> n’est lancée que si le paramètre et la valeur retournée par la fonction sont différents.</p>
+<p>Pour que les mises à jour se fassent, il est nécessaire que la valeur du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">plume.config.PLUME_VERSION</span></code> corresponde toujours au numéro de la version courante. Plume - plus précisément <code class="docutils literal notranslate"><span class="pre">plume.bibli_install.manageLibrary</span></code> - compare cette chaîne de caractères avec la valeur inscrite dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code> de l’utilisateur pour la version de QGIS courante. Par exemple, si Plume a été lancé sous QGIS 3.22.8, le paramètre utilisateur considéré est <code class="docutils literal notranslate"><span class="pre">Generale/3-22-8</span></code>. Lorsque ce paramètre est absent du fichier de configuration utilisateur (cas par exemple d’une nouvelle installation) ou s’il ne correspond pas à la valeur de <code class="docutils literal notranslate"><span class="pre">plume.config.PLUME_VERSION</span></code>, la mise à jour des dépendances selon <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> est lancée et le numéro de version de Plume est enregistré dans le fichier <code class="docutils literal notranslate"><span class="pre">QGIS3.ini</span></code>, de manière à ce que ce processus ne s’exécute plus tant que Plume n’aura pas été mis à jour.</p>
+</section>
+<section id="exporter-toutes-les-icones-de-plume-au-format-png">
+<h2>Exporter toutes les icônes de Plume au format PNG<a class="headerlink" href="#exporter-toutes-les-icones-de-plume-au-format-png" title="Lien permanent vers ce titre">#</a></h2>
+<p>En veillant au préalable à ce qu’Inskape soit disponible, et son fichier de binaires dans le Path:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">admin.pictures</span> <span class="kn">import</span> <span class="n">all_svg_as_png</span>
+
+<span class="n">all_svg_as_png</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>Les images sont stockées dans le répertoire <code class="docutils literal notranslate"><span class="pre">pictures</span></code> à la racine.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="pgcrypto"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -775,6 +787,11 @@
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#gestion-des-dependances">
    Gestion des dépendances
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exporter-toutes-les-icones-de-plume-au-format-png">
+   Exporter toutes les icônes de Plume au format PNG
   </a>
  </li>
 </ul>

@@ -352,4 +352,20 @@ requires('rdflib')
 
 Les installateurs *wheel* des packages doivent être placés dans le répertoire `/plume/bibli_install`. Les bibliothèques avec leur version de référence sont listées par le fichier [`/plume/requirements.txt`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt).
 
-Pour que les mises à jour se fassent, il est nécessaire de modifier la valeur renvoyée par la fonction `plume.bibli_plume.returnVersion`. Plume - plus précisément `plume.bibli_install.manageLibrary` - compare cette chaîne de caractères (supposée correspondre au numéro de version) avec le paramètre `versionPlumeBibli` inscrit dans le fichier `QGIS3.ini`, avant d'actualiser le paramètre selon la valeur. La commande de mise à jour selon `requirements.txt` n'est lancée que si le paramètre et la valeur retournée par la fonction sont différents.
+Pour que les mises à jour se fassent, il est nécessaire que la valeur du paramètre de configuration `plume.config.PLUME_VERSION` corresponde toujours au numéro de la version courante. Plume - plus précisément `plume.bibli_install.manageLibrary` - compare cette chaîne de caractères avec la valeur inscrite dans le fichier `QGIS3.ini` de l'utilisateur pour la version de QGIS courante. Par exemple, si Plume a été lancé sous QGIS 3.22.8, le paramètre utilisateur considéré est `Generale/3-22-8`. Lorsque ce paramètre est absent du fichier de configuration utilisateur (cas par exemple d'une nouvelle installation) ou s'il ne correspond pas à la valeur de `plume.config.PLUME_VERSION`, la mise à jour des dépendances selon `requirements.txt` est lancée et le numéro de version de Plume est enregistré dans le fichier `QGIS3.ini`, de manière à ce que ce processus ne s'exécute plus tant que Plume n'aura pas été mis à jour.
+
+
+## Exporter toutes les icônes de Plume au format PNG
+
+En veillant au préalable à ce qu'Inskape soit disponible, et son fichier de binaires dans le Path:
+
+```python
+
+from admin.pictures import all_svg_as_png
+
+all_svg_as_png()
+
+```
+
+Les images sont stockées dans le répertoire `pictures` à la racine.
+

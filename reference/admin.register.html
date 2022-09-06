@@ -534,7 +534,7 @@ initial. Par exemple <code class="docutils literal notranslate"><span class="pre
 </div>
 <p>Mise à jour massive du registre (avec ajout des éléments manquants, mais pas
 suppression des éléments obsolètes) :</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span><span class="o">.</span><span class="n">udapte</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">api</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -720,7 +720,7 @@ décrivent.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="admin.register.ObjectDefinition">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">admin.register.</span></span><span class="sig-name descname"><span class="pre">ObjectDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.register.ObjectDefinition" title="Lien permanent vers cette définition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">admin.register.</span></span><span class="sig-name descname"><span class="pre">ObjectDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#admin.register.ObjectDefinition" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Définition d’un objet RDF créé par Plume.</p>
 <dl class="field-list simple">
@@ -737,6 +737,9 @@ le registre (sans le slash initial).</p>
 <dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Le libellé principal de l’objet.</p>
 </dd>
 <dt><strong>graph</strong><span class="classifier">rdflib.graph.Graph</span></dt><dd><p>Graphe contenant la description de l’objet.</p>
+</dd>
+<dt><strong>subject</strong><span class="classifier">rdflib.term.URIRef</span></dt><dd><p>URI de l’objet, qui est donc le sujet de tous les triplets
+RDF le décrivant.</p>
 </dd>
 <dt><strong>jsonval</strong><span class="classifier">list</span></dt><dd><p>Désérialisation python de la sérialisation JSON-LD de
 <cite>graph</cite>.</p>
