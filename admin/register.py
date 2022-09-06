@@ -43,7 +43,7 @@ Suppression d'un élément du registre :
 Mise à jour massive du registre (avec ajout des éléments manquants, mais pas
 suppression des éléments obsolètes) :
 
-    >>> api.udapte()
+    >>> api.update()
 
 References
 ----------
@@ -56,9 +56,10 @@ from urllib.request import urlopen, HTTPBasicAuthHandler, \
     build_opener, install_opener, Request, HTTPPasswordMgrWithDefaultRealm
 from urllib.error import HTTPError
 from json import load, loads, dumps
+from datetime import datetime
 
 from plume.rdf.utils import abspath, pick_translation
-from plume.rdf.rdflib import Graph, URIRef
+from plume.rdf.rdflib import Graph, URIRef, Literal
 from plume.rdf.thesaurus import VOCABULARY
 from plume.rdf.metagraph import SHAPE
 from plume.rdf.namespaces import PLUME, SKOS, DCT, SH, \
@@ -365,12 +366,15 @@ class ObjectDefinition:
         Le libellé principal de l'objet.
     graph : rdflib.graph.Graph
         Graphe contenant la description de l'objet.
+    subject : rdflib.term.URIRef
+        URI de l'objet, qui est donc le sujet de tous les triplets
+        RDF le décrivant.
     jsonval : list
         Désérialisation python de la sérialisation JSON-LD de
         `graph`.
     
     """
-    def __init__(self, objid, objtype, title, graph):
+    def __init__(self, objid, objtype, title, graph, subject):
         self.objid = objid.strip('/')
         if '/' in self.objid:
             self.parent = '/{}'.format(self.objid.rsplit('/', 1)[0])
@@ -380,7 +384,13 @@ class ObjectDefinition:
         self.title = title
         self.graph = graph
         self.jsonval = None
+        self.subject = subject
         if graph:
+            # date courante comme date de dernière modification
+            # de l'objet
+            graph.add((subject, DCT.modified, Literal(
+                datetime.now().astimezone()
+            )))
             jsonld = graph.serialize(format='json-ld')
             self.jsonval = loads(jsonld)
 
@@ -446,7 +456,7 @@ class ConceptDefinition(ObjectDefinition):
                 # il ne paraît pas pertinent de les exposer
                 graph.add((s, p, o))
         super().__init__(objid=objid, objtype='E',
-            title=title, graph=graph)
+            title=title, graph=graph, subject=s)
 
 class ConceptSchemeDefinition(ObjectDefinition):
     """Définition d'un ensemble de concepts de Plume.
@@ -479,10 +489,12 @@ class ConceptSchemeDefinition(ObjectDefinition):
         predicate_map = {SKOS.prefLabel : DCT.title}
         for p, o in VOCABULARY.predicate_objects(iri):
             graph.add((s, predicate_map.get(p, p), o))
-        for o, p in VOCABULARY.subject_predicates(iri):
-            graph.add((s, SKOS.hasTopConcept, o))
+        for o in VOCABULARY.subjects(SKOS.inScheme, iri):
+            suffix = VOCABULARY.value(o, DCT.identifier) or o.rsplit('/', 1)[1]
+            concept = URIRef('{}/{}'.format(s, suffix))
+            graph.add((s, SKOS.hasTopConcept, concept))
         super().__init__(objid=objid, objtype='R',
-            title=title, graph=graph)
+            title=title, graph=graph, subject=s)
 
 class PropertyDefinition(ObjectDefinition):
     """Définition d'une propriété de Plume.
@@ -533,7 +545,7 @@ class PropertyDefinition(ObjectDefinition):
                 o = SHAPE.value(s, SH.targetClass)
                 graph.add((iri, RDFS.domain, o))  
         super().__init__(objid=objid, objtype='E',
-            title=title, graph=graph)
+            title=title, graph=graph, subject=iri)
 
 class ClassDefinition(ObjectDefinition):
     """Définition d'une classe de Plume.
@@ -578,7 +590,7 @@ class ClassDefinition(ObjectDefinition):
                 graph.add((iri, RDFS.comment, o))
             break
         super().__init__(objid=objid, objtype='E',
-            title=title, graph=graph)
+            title=title, graph=graph, subject=iri)
 
 class DefinitionsCollection(dict):
     """Répertoire de définitions des objets du registre de Plume.
@@ -603,7 +615,7 @@ class DefinitionsCollection(dict):
     def __init__(self):
         self['plume'] = ObjectDefinition(objid='plume', objtype='R',
             title="Registre de l'application Plume (gestion des métadonnées d'un patrimoine PostgreSQL)",
-            graph=None)
+            graph=None, subject=None)
         for s, p, iri in SHAPE.triples((None, SH.path, None)):
             if str(iri).startswith(str(PLUME)):
                 od = PropertyDefinition(iri)
