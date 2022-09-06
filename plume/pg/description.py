@@ -151,6 +151,10 @@ class PgDescription:
         
         """
         return self._ante
+
+    @ante.setter
+    def ante(self, value):
+        self._ante = value or ''
     
     @property
     def post(self):
@@ -162,6 +166,9 @@ class PgDescription:
         """
         return self._post
     
+    @post.setter
+    def post(self, value):
+        self._post = value or ''
 
 def truncate_metadata(text, with_title=False, langlist=('fr', 'en')):
     """Supprime les métadonnées d'un texte présumé contenir un descriptif PostgreSQL.
