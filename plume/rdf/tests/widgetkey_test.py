@@ -332,7 +332,7 @@ class WidgetKeyTestCase(unittest.TestCase):
         r2 = RootKey()
         WidgetKey.langlist = ['fr', 'en']
         r.main_language = 'it'
-        self.assertEqual(WidgetKey.langlist, ['it', 'en', 'fr'])
+        self.assertEqual(WidgetKey.langlist, ['it', 'fr', 'en'])
         WidgetKey.langlist = ['de', 'en']
         self.assertEqual(r2.main_language, 'de')
 
