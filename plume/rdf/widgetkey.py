@@ -341,7 +341,10 @@ class WidgetKey:
         if value and WidgetKey.langlist:
             # langlist est trié de manière à ce que la langue principale
             # soit toujours le premier élément.
-            WidgetKey.langlist.sort(key= lambda x: (x != value, x))
+            langlist_copy = WidgetKey.langlist.copy()
+            WidgetKey.langlist.sort(
+                key= lambda x: (x != value, langlist_copy.index(x))
+            )
 
     def __new__(cls, **kwargs):
         if cls.__name__ == 'WidgetKey':
