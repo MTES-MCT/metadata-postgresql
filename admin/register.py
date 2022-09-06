@@ -393,6 +393,8 @@ class ObjectDefinition:
             )))
             jsonld = graph.serialize(format='json-ld')
             self.jsonval = loads(jsonld)
+            if isinstance(self.jsonval, list):
+                self.jsonval = self.jsonval[0]
 
     def parameters(self):
         """Renvoie la description de l'objet sous forme de paramètres utilisables par une requête HTTP POST.
@@ -493,7 +495,7 @@ class ConceptSchemeDefinition(ObjectDefinition):
             suffix = VOCABULARY.value(o, DCT.identifier) or o.rsplit('/', 1)[1]
             concept = URIRef('{}/{}'.format(s, suffix))
             graph.add((s, SKOS.hasTopConcept, concept))
-        super().__init__(objid=objid, objtype='R',
+        super().__init__(objid=objid, objtype='E',
             title=title, graph=graph, subject=s)
 
 class PropertyDefinition(ObjectDefinition):
