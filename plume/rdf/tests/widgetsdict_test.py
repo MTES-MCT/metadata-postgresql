@@ -3255,6 +3255,15 @@ class WidgetsDictTestCase(unittest.TestCase):
         k = widgetsdict.root.search_from_path(DCAT.contactPoint)
         self.assertEqual(k.parent, abc)
 
+    def test_langlist_order(self):
+        """Respect de l'ordre des langues."""
+        w = WidgetsDict(langList=('en', 'fr', 'it'), language='it')
+        self.assertEqual(w.langlist, ('it', 'en', 'fr'))
+        w = WidgetsDict(langList=('en', 'de', 'it'), language='it')
+        self.assertEqual(w.langlist, ('it', 'en', 'de'))
+        w = WidgetsDict(langList=('en', 'de', 'it'))
+        self.assertEqual(w.langlist, ('en', 'de', 'it'))
+
 if __name__ == '__main__':
     unittest.main()
 
