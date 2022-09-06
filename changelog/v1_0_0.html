@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Version mineure 0.5.0 bêta &#8212; Documentation Plume 0.3.0-beta</title>
+    <title>Version majeure 1.0.0 (en cours de développement) &#8212; Documentation Plume 0.3.0-beta</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -34,12 +34,11 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/translations.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'changelog/v0_5_0_beta';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'changelog/v1_0_0';</script>
     <link rel="shortcut icon" href="../_static/plume.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
-    <link rel="next" title="Version majeure 1.0.0 (en cours de développement)" href="v1_0_0.html" />
-    <link rel="prev" title="Version mineure 0.4.1 bêta" href="v0_4_1_beta.html" />
+    <link rel="prev" title="Version mineure 0.5.0 bêta" href="v0_5_0_beta.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="fr">
   </head>
@@ -305,13 +304,13 @@
    Version mineure 0.4.1 bêta
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="v0_5_0_beta.html">
    Version mineure 0.5.0 bêta
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="v1_0_0.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Version majeure 1.0.0 (en cours de développement)
   </a>
  </li>
@@ -343,46 +342,14 @@
             
             <article class="bd-article" role="main">
               
-  <section id="version-mineure-0-5-0-beta">
-<h1>Version mineure 0.5.0 bêta<a class="headerlink" href="#version-mineure-0-5-0-beta" title="Lien permanent vers ce titre">#</a></h1>
-<p><em>Date de publication : 4 juillet 2022.</em></p>
-<p><em>Sur GitHub : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.5-beta">https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.5-beta</a>.</em></p>
-<p>Plume v0.5 bêta est vraisemblablement la dernière version précédant le déploiement officiel de Plume, hors correctifs éventuels. Elle poursuit la mise à disposition des fonctionnalités essentielles pour la saisie et la consultation des métadonnées.</p>
-<section id="import-de-metadonnees-depuis-un-fichier-xml-conforme-inspire">
-<h2>Import de métadonnées depuis un fichier XML conforme INSPIRE<a class="headerlink" href="#import-de-metadonnees-depuis-un-fichier-xml-conforme-inspire" title="Lien permanent vers ce titre">#</a></h2>
-<p>Plume v0.5 bêta propose une nouvelle fonctionnalité d’import, qui permet de lire le contenu d’un fichier XML conforme aux spécifications d’INSPIRE. Elle est accessible, tout comme les autres méthodes d’import, via le menu <img alt="import.svg" src="../_images/import.svg" /> <em>Importer les métadonnées</em> de la barre d’outils de Plume. À noter qu’elle présente les mêmes limitations que l”<a class="reference internal" href="../usage/actions_generales.html#import-de-metadonnees-depuis-un-service-csw-inspire"><span class="std std-doc">import de métadonnées INSPIRE via un service CSW</span></a>, notamment en ce qui concerne les catégories de métadonnées prises en charge à ce stade.</p>
-<p><em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/72">issue #72</a>.</em></p>
-</section>
-<section id="nettoyage-des-infobulles-de-l-explorateur">
-<h2>Nettoyage des infobulles de l’explorateur<a class="headerlink" href="#nettoyage-des-infobulles-de-l-explorateur" title="Lien permanent vers ce titre">#</a></h2>
-<p>Parce que Plume enregistre les métadonnées des tables et vues dans leurs descriptifs PostgreSQL, ceux-ci deviennent immanquablement rapidement illisibles. S’il n’existe pas de méthode miracle pour résoudre globalement cette problématique d’ergonomie intrinsèque, Plume v0.5 bêta offre une solution pour l’une des situations où elle était particulièrement prégnante : lorsque QGIS affiche le contenu du descriptif PostgreSQL au survol d’une couche dans l’explorateur.</p>
-<p>Ainsi, Plume est désormais capable d’alléger les infobulles de l’explorateur en « supprimant » le cas échéant les balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> et le JSON-LD qu’elles contiennent<a class="footnote-reference brackets" href="#suppression" id="id1">1</a>. Il ajoute également un message qui signale que des métadonnées sont disponibles pour la couche, et - au gré de l’utilisateur - peut changer l’apparence de l’infobulle (logo de Plume, fond coloré…) pour que l’utilisateur sache immédiatement si la couche est documentée. La transformation est active par défaut, mais elle peut être inhibée et/ou reconfigurée via le menu <img alt="configuration.svg" src="../_images/configuration.svg" /> <em>Personnalisation de l’interface</em>. Il est en outre possible de paramétrer Plume, toujours via le menu <img alt="configuration.svg" src="../_images/configuration.svg" /> <em>Personnalisation de l’interface</em>, pour que les balises <code class="docutils literal notranslate"><span class="pre">&lt;METADATA&gt;</span></code> soient remplacées par le libellé de la table/vue extrait des métadonnées (s’il existe) au lieu d’être purement et simplement effacées.</p>
-<p><em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/67">issue #67</a>.</em></p>
-</section>
-<section id="prise-en-charge-effective-des-metadonnees-de-type-heure">
-<h2>Prise en charge effective des métadonnées de type heure<a class="headerlink" href="#prise-en-charge-effective-des-metadonnees-de-type-heure" title="Lien permanent vers ce titre">#</a></h2>
-<p>Plume est maintenant capable d’afficher et modifier des métadonnées prenant pour valeur des heures (<code class="docutils literal notranslate"><span class="pre">datatype</span></code> valant <code class="docutils literal notranslate"><span class="pre">'xsd:time'</span></code>). Ceci ne concerne que d’éventuelles catégories locales ajoutées par l’administrateur d’un service, car aucune catégorie commune n’est de ce type.</p>
-<p><em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/12">issue #12</a>.</em></p>
-</section>
-<section id="convivialite-de-l-installation-des-dependances-python">
-<h2>Convivialité de l’installation des dépendances Python<a class="headerlink" href="#convivialite-de-l-installation-des-dependances-python" title="Lien permanent vers ce titre">#</a></h2>
-<p>L’invite de commande ne s’ouvre plus intempestivement lors de la mise à jour des bibliothèques Python nécessaires à Plume. L’utilisateur est désormais averti de l’opération par une boîte de dialogue qui s’ouvre au début du processus de mise à jour, rend sommairement compte de sa progression, et se referme automatiquement à la fin.</p>
-</section>
+  <section id="version-majeure-1-0-0-en-cours-de-developpement">
+<h1>Version majeure 1.0.0 (en cours de développement)<a class="headerlink" href="#version-majeure-1-0-0-en-cours-de-developpement" title="Lien permanent vers ce titre">#</a></h1>
+<p><em>Date de publication : à venir.</em></p>
+<p><em>Sur GitHub : à venir.</em></p>
 <section id="correction-d-anomalies-et-divers">
 <h2>Correction d’anomalies et divers<a class="headerlink" href="#correction-d-anomalies-et-divers" title="Lien permanent vers ce titre">#</a></h2>
-<p>En mode lecture, ou plus généralement quand Plume est paramétré pour n’afficher que les métadonnées dans la langue principale<a class="footnote-reference brackets" href="#mainlanguage" id="id2">2</a>, la fiche de métadonnées présente les informations saisies dans ladite langue lorsqu’elles existent et masque alors toutes les informations dans les autres langues. Si aucune valeur n’est disponible dans langue principale pour une métadonnée traduisible, Plume affiche une valeur (et une seule) dans une autre langue, en privilégiant les langues de la liste des langues autorisées pour les traductions, considérées dans l’ordre de la liste. Ce mécanisme était affecté par une anomalie qui empêchait parfois l’affichage de la valeur dans la langue de substitution, Plume v0.5 bêta la corrige.</p>
-<p>Correction d’une anomalie qui provoquait une erreur en cas de tentative d’utilisation des fonctionnalités d’aide à la saisie des géométries sur une catégorie de métadonnées locale de type géométrique (<code class="docutils literal notranslate"><span class="pre">datatype</span></code> valant <code class="docutils literal notranslate"><span class="pre">'gsp:wktLiteral'</span></code>) non paramétrée avec <code class="docutils literal notranslate"><span class="pre">is_long_text</span></code> valant <code class="docutils literal notranslate"><span class="pre">True</span></code>. Désormais, <code class="docutils literal notranslate"><span class="pre">is_long_text</span></code> sera considéré comme valant toujours <code class="docutils literal notranslate"><span class="pre">True</span></code> pour les métadonnées géométriques (même si l’administrateur a spécifié <code class="docutils literal notranslate"><span class="pre">False</span></code> dans son modèle). Ces métadonnées seront dès lors quoi qu’il arrive présentées par Plume avec un champ de saisie multi-lignes.</p>
-<p>Pour améliorer la lisibilité des fiches de métadonnées, le cadre extérieur qui contenait l’ensemble des métadonnées de chaque onglet est supprimé. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/75">issue #75</a>.</em></p>
-<p>Le bouton de sortie de la boite de dialogue de personnalisation de l’interface porte désormais l’étiquette <em>Quitter</em> au lieu de <em>Annuler</em>, considérant qu’il ne permet pas d’annuler les modifications préalablement sauvegardées. Par ailleurs il n’est plus demandé à l’utilisateur de confirmer lorsqu’il clique sur le bouton <em>Sauvegarder</em>.</p>
-<hr class="footnotes docutils" />
-<dl class="footnote brackets">
-<dt class="label" id="suppression"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>Les métadonnées disparaissent uniquement de l’infobulle, le descriptif PostgreSQL n’est bien évidemment pas affecté.</p>
-</dd>
-<dt class="label" id="mainlanguage"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>Il s’agit de la langue que l’utilisateur peut sélectionner via la barre d’outils de Plume en choisissant dans la liste des langues autorisées pour les traductions. Cette liste est elle-même un paramètre utilisateur configurable via le menu <img alt="configuration.svg" src="../_images/configuration.svg" />  <em>Personnalisation de l’interface</em>.</p>
-</dd>
-</dl>
+<p>Correction d’une anomalie qui altérait l’ordre de préférence des langues défini par l’utilisateur.</p>
+<p>Correction d’une anomalie qui provoquait des erreurs lors de l’usage d’un modèle de fiche de métadonnées affectant explicitement un onglet à une catégorie commune dont le chemin comporte des majuscules.</p>
 </section>
 </section>
 
@@ -394,19 +361,12 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="v0_4_1_beta.html" title="précédent page">
+  <a class='left-prev' id="prev-link" href="v0_5_0_beta.html" title="précédent page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">précédent</p>
-          <p class="prev-next-title">Version mineure 0.4.1 bêta</p>
+          <p class="prev-next-title">Version mineure 0.5.0 bêta</p>
       </div>
-  </a>
-  <a class='right-next' id="next-link" href="v1_0_0.html" title="suivant page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">suivant</p>
-      <p class="prev-next-title">Version majeure 1.0.0 (en cours de développement)</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
   </a>
 </div>
             </footer>
@@ -425,26 +385,6 @@
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#import-de-metadonnees-depuis-un-fichier-xml-conforme-inspire">
-   Import de métadonnées depuis un fichier XML conforme INSPIRE
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#nettoyage-des-infobulles-de-l-explorateur">
-   Nettoyage des infobulles de l’explorateur
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#prise-en-charge-effective-des-metadonnees-de-type-heure">
-   Prise en charge effective des métadonnées de type heure
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#convivialite-de-l-installation-des-dependances-python">
-   Convivialité de l’installation des dépendances Python
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#correction-d-anomalies-et-divers">
    Correction d’anomalies et divers
   </a>
@@ -461,7 +401,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/changelog/v0_5_0_beta.md.txt">
+    <a href="../_sources/changelog/v1_0_0.md.txt">
         <i class="fas fa-file-alt"></i> Montrer le code source
     </a>
 </div>
