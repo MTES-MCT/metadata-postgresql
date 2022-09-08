@@ -58,6 +58,24 @@ class PgDescription:
         soit un JSON-LD valide. Faire usage de ce paramètre est
         recommandé lorsqu'il n'est pas prévu d'exploiter les
         métadonnées, afin de réduire le temps de calcul.
+    clean : {'never', 'first', 'always'}, optional
+        Le descriptif PostgreSQL doit-il être réinitialisé ?
+        La valeur ``'always'`` entraîne la réinitialisation
+        systématique des propriétés :py:attr:`PgDescription.ante`
+        et :py:attr:`PgDescription.post`. Avec ``'first'``,
+        ces propriétés ne sont vidées que si le graphe d'origine
+        était vide.
+    copy_dct_title : bool, default False
+        Si ``True``, :py:attr:`PgDescription.ante` est réinitialisé
+        avec le libellé du jeu de donnée (extrait du graphe)
+        lorsque le graphe est mis à jour.
+    copy_dct_description : bool, default False
+        Si ``True``, :py:attr:`PgDescription.ante` est réinitialisé
+        avec la description du jeu de donnée (extraite du graphe)
+        lorsque le graphe est mis à jour. Il est possible de combiner
+        `copy_dct_title` et `copy_dct_description`, le libellé et
+        la description sont alors écrits à la suite, séparés par un
+        retour à la ligne.
     
     Attributes
     ----------
@@ -77,16 +95,22 @@ class PgDescription:
     
     """
     
-    def __init__(self, raw=None, do_not_parse=False):
-        raw = raw or ''
+    def __init__(
+        self, raw=None, do_not_parse=False, clean='never',
+        copy_dct_title=False, copy_dct_description=False
+    ):
+        self.raw = raw or ''
+        self.clean = clean if clean in ('always', 'first') else 'never'
+        self.copy_dct_title = copy_dct_title or False
+        self.copy_dct_description = copy_dct_description or False
         self._ante = ''
         self._post = ''
         self._jsonld = ''
         self._metagraph = Metagraph()
-        if raw:
-            r = re.split(r'\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}', raw, flags=re.DOTALL)
+        if self.raw:
+            r = re.split(r'\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}', self.raw, flags=re.DOTALL)
             if len(r) != 3:
-                self._ante = raw
+                self._ante = self.raw
             else:
                 self._ante, jsonld, self._post = r
                 self._jsonld = jsonld.strip('\n')
@@ -95,6 +119,9 @@ class PgDescription:
                         self._metagraph.parse(data=self._jsonld, format='json-ld')
                     except:
                         self._jsonld = ''
+        if self.clean == 'always' or self.clean == 'first' and self.metagraph.is_empty:
+            self._ante = ''
+            self._post = ''
     
     def __str__(self):
         jsonld = '\n\n<METADATA>\n{}\n</METADATA>\n'.format(self._jsonld) \
@@ -138,6 +165,30 @@ class PgDescription:
             self.jsonld = value.serialize(format='json-ld')
         else:
             self.jsonld = ''
+        
+        if self.copy_dct_title:
+            titles = [
+                o for o in self.metagraph.objects(self.metagraph.datasetid, DCT.title)
+            ]
+            if titles:
+                t = pick_translation(titles, self.metagraph.langlist)
+                self.ante = str(t)
+            else:
+                self.ante = ''
+        
+        if self.copy_dct_description:
+            descriptions = [
+                o for o in self.metagraph.objects(self.metagraph.datasetid, DCT.description)
+            ]
+            if descriptions:
+                t = pick_translation(descriptions, self.metagraph.langlist)
+                if self.copy_dct_title:
+                    title = self.ante + '\n' if self.ante else ''
+                    self.ante = title + str(t)
+                else:
+                    self.ante = str(t)
+            else:
+                self.ante = ''
     
     @property
     def ante(self):
