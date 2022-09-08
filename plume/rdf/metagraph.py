@@ -31,6 +31,11 @@ class Metagraph(Graph):
         ``False`` pour un graphe de métadonnées généré par
         désérialisation d'un dictionnaire de widgets (méthode
         :py:meth:`plume.rdf.widgetsdict.WidgetsDict.build_metagraph`).
+    langlist : tuple(str)
+        Tuple des langues autorisées pour les traductions, hérité
+        le cas échéant du dictionnaire de widgets à partir duquel
+        le graphe a été généré. Dans les autres cas, cet attribut
+        vaut toujours ``('fr', 'en')``.
     
     Notes
     -----   
@@ -42,6 +47,7 @@ class Metagraph(Graph):
     def __init__(self):
         super().__init__(namespace_manager=PlumeNamespaceManager())
         self.fresh = True
+        self.langlist = ('fr', 'en')
 
     def __str__(self):
         datasetid = self.datasetid
