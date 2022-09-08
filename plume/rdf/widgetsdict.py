@@ -1502,6 +1502,7 @@ class WidgetsDict(dict):
             if not preserve_metadata_date:
                 metagraph.update_metadata_date()
             metagraph.fresh = False
+            metagraph.langlist = self.langlist
             return metagraph
 
     def group_kind(self, widgetkey):
