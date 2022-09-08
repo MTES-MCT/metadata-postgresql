@@ -1,7 +1,7 @@
 
 import unittest
 
-from plume.rdf.rdflib import isomorphic
+from plume.rdf.rdflib import isomorphic, Literal
 from plume.pg.description import PgDescription, truncate_metadata
 from plume.rdf.utils import abspath, data_from_file
 from plume.rdf.widgetsdict import WidgetsDict
@@ -253,6 +253,155 @@ ADMIN EXPRESS - Départements de métropole''',
             'Des métadonnées sont disponibles pour cette couche. ' \
             'Activez Plume pour les consulter.'))
 
+    def test_clean(self):
+        """Réinitialisation du descriptif avec le paramètre clean."""
+
+        text ="""Avant
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "@language": "fr",
+        "@value": "ADMIN EXPRESS - Départements de métropole"
+      }
+    ]
+  }
+]
+</METADATA>
+Après"""
+        pg_description = PgDescription(text, clean='never')
+        self.assertEqual(pg_description.ante, 'Avant')
+        self.assertEqual(pg_description.post, 'Après')
+        pg_description = PgDescription(text, clean='first')
+        self.assertEqual(pg_description.ante, 'Avant')
+        self.assertEqual(pg_description.post, 'Après')
+        pg_description = PgDescription(text, clean='always')
+        self.assertEqual(pg_description.ante, '')
+        self.assertEqual(pg_description.post, '')
+
+        text = 'Pas de métadonnées.'
+        pg_description = PgDescription(text, clean='never')
+        self.assertEqual(pg_description.ante, 'Pas de métadonnées.')
+        self.assertEqual(pg_description.post, '')
+        pg_description = PgDescription(text, clean='first')
+        self.assertEqual(pg_description.ante, '')
+        self.assertEqual(pg_description.post, '')
+        pg_description = PgDescription(text, clean='always')
+        self.assertEqual(pg_description.ante, '')
+        self.assertEqual(pg_description.post, '')
+
+    def test_copy_dct_title(self):
+        """Copie du libellé du jeu de donnée dans le descriptif hors balises avec copy_dct_title."""
+        text ="""Avant
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ]
+  }
+]
+</METADATA>
+Après"""
+        pg_description = PgDescription(text, copy_dct_title=True)
+        for title in (
+            Literal('Mon titre', lang='fr'),
+            Literal('é_&çèç_'),
+            Literal('My title', lang='en')
+        ):
+          pg_description.metagraph.add(
+              (pg_description.metagraph.datasetid, DCT.title, title)
+          )
+        widgetsdict = WidgetsDict(
+            metagraph=pg_description.metagraph, language='en'
+        )
+        metagraph_bis = widgetsdict.build_metagraph()
+        self.assertEqual(metagraph_bis.langlist, ('en', 'fr'))
+        pg_description.metagraph = metagraph_bis
+        self.assertEqual(pg_description.ante, 'My title')
+        self.assertEqual(pg_description.post, 'Après')
+
+    def test_copy_dct_description(self):
+        """Copie de la description du jeu de donnée dans le descriptif hors balises avec copy_dct_title."""
+        text ="""Avant
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ]
+  }
+]
+</METADATA>
+Après"""
+        pg_description = PgDescription(text, copy_dct_description=True)
+        pg_description.metagraph.add(
+            (pg_description.metagraph.datasetid, DCT.description, Literal('Ma description', lang='fr'))
+        )
+        widgetsdict = WidgetsDict(metagraph=pg_description.metagraph)
+        pg_description.metagraph = widgetsdict.build_metagraph()
+        self.assertEqual(pg_description.ante, 'Ma description')
+        self.assertEqual(pg_description.post, 'Après')
+
+    def test_copy_dct_title_and_description(self):
+        """Copie du titre et de la description du jeu de donnée dans le descriptif hors balises avec copy_dct_title."""
+        text ="""Avant
+
+<METADATA>
+[
+  {
+    "@id": "urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046",
+    "@type": [
+      "http://www.w3.org/ns/dcat#Dataset"
+    ],
+    "http://purl.org/dc/terms/identifier": [
+      {
+        "@value": "479fd670-32c5-4ade-a26d-0268b0ce5046"
+      }
+    ]
+  }
+]
+</METADATA>
+Après"""
+        pg_description = PgDescription(text, copy_dct_title=True, copy_dct_description=True)
+        pg_description.metagraph.add(
+            (pg_description.metagraph.datasetid, DCT.title, Literal('Mon titre', lang='fr'))
+        )
+        pg_description.metagraph.add(
+            (pg_description.metagraph.datasetid, DCT.description, Literal('Ma description', lang='fr'))
+        )
+        widgetsdict = WidgetsDict(metagraph=pg_description.metagraph)
+        pg_description.metagraph = widgetsdict.build_metagraph()
+        self.assertEqual(pg_description.ante, 'Mon titre\nMa description')
+        self.assertEqual(pg_description.post, 'Après')
+
+
 if __name__ == '__main__':
     unittest.main()
+
 
