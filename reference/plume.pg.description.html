@@ -528,7 +528,7 @@ propriété <a class="reference internal" href="#plume.pg.description.PgDescript
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="plume.pg.description.PgDescription">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_not_parse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plume.pg.description.</span></span><span class="sig-name descname"><span class="pre">PgDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_not_parse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'never'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_dct_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_dct_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.description.PgDescription" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Descriptif PostgreSQL.</p>
 <dl class="field-list simple">
@@ -547,6 +547,24 @@ vide et il n’est pas assuré que <a class="reference internal" href="#plume.pg
 soit un JSON-LD valide. Faire usage de ce paramètre est
 recommandé lorsqu’il n’est pas prévu d’exploiter les
 métadonnées, afin de réduire le temps de calcul.</p>
+</dd>
+<dt><strong>clean</strong><span class="classifier">{“never”, “first”, “always”}, optional</span></dt><dd><p>Le descriptif PostgreSQL doit-il être réinitialisé ?
+La valeur <code class="docutils literal notranslate"><span class="pre">'always'</span></code> entraîne la réinitialisation
+systématique des propriétés <a class="reference internal" href="#plume.pg.description.PgDescription.ante" title="plume.pg.description.PgDescription.ante"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.ante</span></code></a>
+et <a class="reference internal" href="#plume.pg.description.PgDescription.post" title="plume.pg.description.PgDescription.post"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.post</span></code></a>. Avec <code class="docutils literal notranslate"><span class="pre">'first'</span></code>,
+ces propriétés ne sont vidées que si le graphe d’origine
+était vide.</p>
+</dd>
+<dt><strong>copy_dct_title</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference internal" href="#plume.pg.description.PgDescription.ante" title="plume.pg.description.PgDescription.ante"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.ante</span></code></a> est réinitialisé
+avec le libellé du jeu de donnée (extrait du graphe)
+lorsque le graphe est mis à jour.</p>
+</dd>
+<dt><strong>copy_dct_description</strong><span class="classifier">bool, default False</span></dt><dd><p>Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference internal" href="#plume.pg.description.PgDescription.ante" title="plume.pg.description.PgDescription.ante"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PgDescription.ante</span></code></a> est réinitialisé
+avec la description du jeu de donnée (extraite du graphe)
+lorsque le graphe est mis à jour. Il est possible de combiner
+<cite>copy_dct_title</cite> et <cite>copy_dct_description</cite>, le libellé et
+la description sont alors écrits à la suite, séparés par un
+retour à la ligne.</p>
 </dd>
 </dl>
 </dd>
