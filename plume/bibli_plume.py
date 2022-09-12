@@ -43,7 +43,7 @@ def initIhmNoConnection(self) :
     self.tabWidget.clear()
     tab_widget_Onglet = QWidget()
     tab_widget_Onglet.setObjectName("Informations")
-    labelTabOnglet = "Informations"
+    labelTabOnglet = "     Informations     "
     self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
     #-
     self.plumeEdit.setEnabled(False)
@@ -256,6 +256,9 @@ def listUserParam(self):
     self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if ("valueLengthLimit"        in self.mDic_LH and self.mDic_LH["valueLengthLimit"] != "")        else None
     self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if ("textEditRowSpan"         in self.mDic_LH and self.mDic_LH["textEditRowSpan"] != "")         else None
     self.zoneConfirmMessage      = (True if self.mDic_LH["zoneConfirmMessage"]      == "true" else False) if "zoneConfirmMessage"       in self.mDic_LH                                                    else True
+    self.zComboCleanPgDescription          = self.mDic_LH["cleanPgDescription"]                                               if "cleanPgDescription"                in self.mDic_LH                                                 else "never"
+    self.copyDctTitleToPgDescription       = (True if self.mDic_LH["copyDctTitleToPgDescription"]       == "true" else False) if "copyDctTitleToPgDescription"       in self.mDic_LH                                                 else "false" 
+    self.copyDctDescriptionToPgDescription = (True if self.mDic_LH["copyDctDescriptionToPgDescription"] == "true" else False) if "copyDctDescriptionToPgDescription" in self.mDic_LH                                                 else "false" 
 
     # liste des Paramétres UTILISATEURS
     
@@ -421,7 +424,11 @@ def returnObjetComment(self, _schema, _table) :
     # Récupération champ commentaire
     mKeySql = queries.query_get_table_comment(_schema, _table)
     old_description, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    return PgDescription(old_description)
+    return PgDescription(old_description, 
+                         clean=self.zComboCleanPgDescription,
+                         copy_dct_title=self.copyDctTitleToPgDescription,
+                         copy_dct_description=self.copyDctDescriptionToPgDescription
+                        )
 
 #==================================================
 def returnObjetsMeta(self) :
@@ -931,6 +938,9 @@ def returnAndSaveDialogParam(self, mAction):
        mDicUserSettings["valueLengthLimit"]        = ""
        mDicUserSettings["textEditRowSpan"]         = ""
        mDicUserSettings["zoneConfirmMessage"]      = "true"
+       mDicUserSettings["cleanPgDescription"]                = "never"
+       mDicUserSettings["copyDctTitleToPgDescription"]       = "false"
+       mDicUserSettings["copyDctDescriptionToPgDescription"] = "false"
        #----
        for key, value in mDicUserSettings.items():
            if not mSettings.contains(key) :
