@@ -228,7 +228,7 @@ class Ui_Dialog_plume(object):
         self.tabWidget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         tab_widget_Onglet = QWidget()
         tab_widget_Onglet.setObjectName("Informations")
-        labelTabOnglet = "Informations"
+        labelTabOnglet = "     Informations     "
         self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
 
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -562,7 +562,7 @@ class Ui_Dialog_plume(object):
         #== For Create premier onglet Générale 
         tab_widget_Onglet = QWidget()
         tab_widget_Onglet.setObjectName("Informations")
-        labelTabOnglet = "Informations"
+        labelTabOnglet = "     Informations     "
         self.tabWidget.addTab(tab_widget_Onglet, labelTabOnglet)
         #== For Create premier onglet Générale 
         # Nettoyage 
@@ -602,7 +602,7 @@ class Ui_Dialog_plume(object):
 
         # Nettoyage
         for comptElemTab in range(self.tabWidget.count()) :
-            if self.tabWidget.tabText(comptElemTab) == "Informations" :
+            if self.tabWidget.tabText(comptElemTab) == "     Informations     " :
                self.tabWidget.removeTab(comptElemTab)
                
         # For Réaffichage du dimensionnement

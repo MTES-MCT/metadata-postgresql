@@ -837,6 +837,67 @@ class Ui_Dialog_ColorBloc(object):
 
         self.mZoneLangList, self.mZonePreferedTemplate, self.mZoneEnforcePreferedTemplate, self.mZoneReadHideBlank, self.mZoneReadHideUnlisted, self.mZoneEditHideUnlisted, self.mZonereadOnlyCurrentLanguage, self.mZoneEditOnlyCurrentLanguage, self.mZoneLabelLengthLimit, self.mZoneValueLengthLimit, self.mZoneTextEditRowSpan = \
         mZoneLangList, mZonePreferedTemplate, mZoneEnforcePreferedTemplate, mZoneReadHideBlank, mZoneReadHideUnlisted, mZoneEditHideUnlisted, mZonereadOnlyCurrentLanguage, mZoneEditOnlyCurrentLanguage, mZoneLabelLengthLimit, mZoneValueLengthLimit, mZoneTextEditRowSpan 
+        #------ 
+        mlabelCleanPgDescriptionText    = QtWidgets.QApplication.translate("colorbloc_ui", "Clean up the PostgreSQL description", None)
+        mlabelCleanPgDescriptionToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "By default, Plume adds its metadata to the information present in the PostgreSQL description of the table/view, preserving the latter. When this option is activated, this non-metadata information is erased from the description when saving.", None)
+        mlabelCleanPgDescription = QtWidgets.QLabel()
+        mlabelCleanPgDescription.setText(mlabelCleanPgDescriptionText)
+        mlabelCleanPgDescription.setAlignment(Qt.AlignRight)        
+        mlabelCleanPgDescription.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mlabelCleanPgDescription.setToolTip(mlabelCleanPgDescriptionToolTip)
+        mlabelCleanPgDescription.setWordWrap(True)
+        self.layoutAdvanced.addWidget(mlabelCleanPgDescription, 11, 0, Qt.AlignTop)
+        #-
+        mDicCleanPgDescription = {"never":"Jamais", "first":"À l'initialisation de la fiche", "always":"Toujours"}
+        self.comboCleanPgDescription= QtWidgets.QComboBox()
+        self.comboCleanPgDescription.setObjectName("comboCleanPgDescription")
+        self.comboCleanPgDescription.addItems([ elem for elem in mDicCleanPgDescription.values() ])
+        self.comboCleanPgDescription.setCurrentText(mDicCleanPgDescription[self.zComboCleanPgDescription])         
+        self.comboCleanPgDescription.currentTextChanged.connect(lambda : self.functionCleanPgDescription(mDicCleanPgDescription))
+        self.comboCleanPgDescription.setToolTip(mlabelCleanPgDescriptionToolTip)
+        mValueTemp = [ k for k, v in mDicCleanPgDescription.items() if v == self.comboCleanPgDescription.currentText()][0]
+        self.zComboCleanPgDescription = mValueTemp  # si ouverture sans chgt et sauve
+        self.layoutAdvanced.addWidget(self.comboCleanPgDescription, 11, 1, Qt.AlignTop)
+        #------ 
+        mLabelCopyDctTitleToPgDescriptionText    = QtWidgets.QApplication.translate("colorbloc_ui", "Copy dataset label to PostgreSQL description", None)
+        mLabelCopyDctTitleToPgDescriptionToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "If active, the label of the dataset entered in the metadata will be copied to the beginning of the PostgreSQL description of the table/view when saving the form. Warning: this has the effect of removing any other information placed before the metadata in the PostgreSQL description.", None)
+        mLabelCopyDctTitleToPgDescription = QtWidgets.QLabel()
+        mLabelCopyDctTitleToPgDescription.setObjectName("mLabelCopyDctTitleToPgDescription")
+        mLabelCopyDctTitleToPgDescription.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mLabelCopyDctTitleToPgDescription.setText(mLabelCopyDctTitleToPgDescriptionText)
+        mLabelCopyDctTitleToPgDescription.setToolTip(mLabelCopyDctTitleToPgDescriptionToolTip)
+        mLabelCopyDctTitleToPgDescription.setWordWrap(True)
+        mLabelCopyDctTitleToPgDescription.setAlignment(Qt.AlignRight)        
+        self.layoutAdvanced.addWidget(mLabelCopyDctTitleToPgDescription, 12, 0, Qt.AlignTop)
+        #- 
+        self.mZoneCopyDctTitleToPgDescription = QtWidgets.QCheckBox()
+        self.mZoneCopyDctTitleToPgDescription.setStyleSheet("QCheckBox {  font-family:" + self.policeQGroupBox  +";}")
+        self.mZoneCopyDctTitleToPgDescription.setObjectName("mZoneCopyDctTitleToPgDescription")
+        self.mZoneCopyDctTitleToPgDescription.setChecked(True if self.copyDctTitleToPgDescription else False)
+        self.mZoneCopyDctTitleToPgDescription.setToolTip(mLabelCopyDctTitleToPgDescriptionToolTip)
+        self.layoutAdvanced.addWidget(self.mZoneCopyDctTitleToPgDescription, 12, 1, Qt.AlignTop)
+        #- 
+        self.copyDctTitleToPgDescription = self.mZoneCopyDctTitleToPgDescription 
+        #------ 
+        mLabelCopyDctDescriptionToPgDescriptionText    = QtWidgets.QApplication.translate("colorbloc_ui", "Copy dataset description to PostgreSQL description", None)
+        mLabelCopyDctDescriptionToPgDescriptionToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "If active, the description of the dataset entered in the metadata will be copied at the beginning of the PostgreSQL description of the table/view when saving the form. Warning: this has the effect of removing any other information placed before the metadata in the PostgreSQL description.", None)
+        mLabelCopyDctDescriptionToPgDescription = QtWidgets.QLabel()
+        mLabelCopyDctDescriptionToPgDescription.setObjectName("mLabelCopyDctDescriptionToPgDescription")
+        mLabelCopyDctDescriptionToPgDescription.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mLabelCopyDctDescriptionToPgDescription.setText(mLabelCopyDctDescriptionToPgDescriptionText)
+        mLabelCopyDctDescriptionToPgDescription.setToolTip(mLabelCopyDctDescriptionToPgDescriptionToolTip)
+        mLabelCopyDctDescriptionToPgDescription.setWordWrap(True)
+        mLabelCopyDctDescriptionToPgDescription.setAlignment(Qt.AlignRight)        
+        self.layoutAdvanced.addWidget(mLabelCopyDctDescriptionToPgDescription, 13, 0, Qt.AlignTop)
+        #- 
+        self.mZoneCopyDctDescriptionToPgDescription = QtWidgets.QCheckBox()
+        self.mZoneCopyDctDescriptionToPgDescription.setStyleSheet("QCheckBox {  font-family:" + self.policeQGroupBox  +";}")
+        self.mZoneCopyDctDescriptionToPgDescription.setObjectName("mZoneCopyDctDescriptionToPgDescription")
+        self.mZoneCopyDctDescriptionToPgDescription.setChecked(True if self.copyDctDescriptionToPgDescription else False)
+        self.mZoneCopyDctDescriptionToPgDescription.setToolTip(mLabelCopyDctDescriptionToPgDescriptionToolTip)
+        self.layoutAdvanced.addWidget(self.mZoneCopyDctDescriptionToPgDescription, 13, 1, Qt.AlignTop)
+        #- 
+        self.copyDctDescriptionToPgDescription = self.mZoneCopyDctDescriptionToPgDescription 
         # Onglets ADVANCED  
         #========
 
@@ -909,6 +970,15 @@ class Ui_Dialog_ColorBloc(object):
     def functionWinVsDock(self, mDicWinVsDock):
         self.zComboWinVsDock = [ k for k, v in mDicWinVsDock.items() if v == self.comboWinVsDock.currentText()][0]
         # --
+        self.applyWYSIWYG() #Lecture et apply des variables
+        # --
+        return 
+
+    #==========================         
+    #==========================             
+    def functionCleanPgDescription(self, mDicCleanPgDescription):
+        self.zComboCleanPgDescription = [ k for k, v in mDicCleanPgDescription.items() if v == self.comboCleanPgDescription.currentText()][0]
+        # -- 
         self.applyWYSIWYG() #Lecture et apply des variables
         # --
         return 
@@ -1591,7 +1661,6 @@ class Ui_Dialog_ColorBloc(object):
         mLib = QtWidgets.QApplication.translate("colorbloc_ui", "You will save all your changes..", None)
         mLib1 = QtWidgets.QApplication.translate("colorbloc_ui", "Are you sure you want to continue ?", None)
 
-        #if QMessageBox.question(None, mTitre, mLib + "<br><br>" + mLib1,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes :
         mChild_premier = [mObj for mObj in self.groupBoxMetadata.children()] 
 
         mLettre, mColorFirst, mDicSaveColor = "", None, {}
@@ -1690,6 +1759,9 @@ class Ui_Dialog_ColorBloc(object):
         mDicUserSettings["valueLengthLimit"]        = "" if self.mZoneValueLengthLimit.text().strip(",") == "" else int(self.mZoneValueLengthLimit.text())
         mDicUserSettings["textEditRowSpan"]         = "" if self.mZoneTextEditRowSpan.text().strip(",")  == "" else int(self.mZoneTextEditRowSpan.text())
         mDicUserSettings["zoneConfirmMessage"]      = "true" if self.mZoneConfirmMessage.isChecked() else "false"
+        mDicUserSettings["cleanPgDescription"]                = self.zComboCleanPgDescription
+        mDicUserSettings["copyDctTitleToPgDescription"]       = "true" if self.mZoneCopyDctTitleToPgDescription.isChecked()       else "false"
+        mDicUserSettings["copyDctDescriptionToPgDescription"] = "true" if self.mZoneCopyDctDescriptionToPgDescription.isChecked() else "false"
         #----
         for key, value in mDicUserSettings.items():
             mSettings.setValue(key, value)
