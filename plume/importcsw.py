@@ -355,7 +355,7 @@ class TREEVIEWCSW(QTreeWidget):
         # Url User
         #---
         # Url par défaut
-        self.mLibNodeUrlDefaut = "URL des CSW par défaut"
+        self.mLibNodeUrlDefaut = "URL par défaut"
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlDefaut ] ) ] )
         nodeBlocs = self.topLevelItem( 0 )
         mListUrlDefaut = URLCSWDEFAUT.split(",")
