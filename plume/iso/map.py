@@ -86,8 +86,11 @@ class IsoToDcat:
     def __init__(self, raw_xml, datasetid=None):
         try:
             root = etree.fromstring(raw_xml)
-            self.isoxml = root.find('./gmd:MD_Metadata', ISO_NS) \
-                or etree.Element(wns('gmd:MD_Metadata'))
+            if root.tag == wns('gmd:MD_Metadata'):
+                self.isoxml = root
+            else:
+                self.isoxml = root.find('./gmd:MD_Metadata', ISO_NS) \
+                    or etree.Element(wns('gmd:MD_Metadata'))
         except:
             self.isoxml = etree.Element(wns('gmd:MD_Metadata'))
         self.triples = []

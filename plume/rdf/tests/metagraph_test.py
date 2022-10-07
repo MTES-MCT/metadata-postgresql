@@ -468,7 +468,7 @@ class MetagraphTestCase(unittest.TestCase):
         self.assertTrue(isomorphic(m, m_reload))
 
     def test_metagraph_from_iso_file(self):
-        """Raccourci por la création d'un graphe à partir d'un fichier de métadonnées ISO 19115/19139.
+        """Raccourci pour la création d'un graphe à partir d'un fichier de métadonnées ISO 19115/19139.
         
         """
         old_metagraph = Metagraph()
@@ -481,6 +481,16 @@ class MetagraphTestCase(unittest.TestCase):
             'iso_geolittoral_sentier_du_littoral.xml'),
             old_metagraph=old_metagraph)
         self.assertTrue(isomorphic(metagraph, metagraph_bis))
+
+    def test_metagraph_from_iso_without_getresponsebyidresponse(self):
+        """Création d'un graphe à partir d'un fichier de métadonnées ISO 19115/19139 quand la balise MD_Metadata est à la racine.
+        
+        """
+        metagraph = metagraph_from_iso_file(
+            abspath('rdf/tests/samples/iso_ignf_bdaltir_2_0.xml')
+        )
+        self.assertTrue((metagraph.datasetid, DCT.title, Literal('BD ALTI®', lang='fr')) in metagraph)
+        
 
 if __name__ == '__main__':
     unittest.main()
