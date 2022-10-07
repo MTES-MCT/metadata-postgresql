@@ -35,7 +35,7 @@ class Dialog(QDialog, Ui_Dialog_ImportCSW):
           _mListCSW = []
           while iterator.value() :
              itemValueText = iterator.value().text(0)
-             if itemValueText not in URLCSWDEFAUT and itemValueText != self.mTreeCSW.mLibNodeUrlDefaut : 
+             if itemValueText not in URLCSWDEFAUT and itemValueText != self.mTreeCSW.mLibNodeUrlDefaut and itemValueText != self.mTreeCSW.mLibNodeUrlUser: 
                 _mListCSW.append(itemValueText)
              iterator += 1
           mDicCSW["urlCsw"] =  ",".join(_mListCSW)

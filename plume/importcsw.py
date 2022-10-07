@@ -83,6 +83,8 @@ class Ui_Dialog_ImportCSW(object):
         if Dialog.urlCswDefaut.split(",")[1]   != "" : self.urlCswDefautIGN      = Dialog.urlCswDefaut.split(",")[1]
         if Dialog.urlCswIdDefaut.split(",")[0] != "" : self.urlCswIdDefautGEOIDE = Dialog.urlCswIdDefaut.split(",")[0]
 
+        mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+        Dialog.urlCsw = mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées
         mListurlCsw = Dialog.urlCsw.split(",")
         self.urlCsw = Dialog.urlCsw
 
@@ -104,6 +106,7 @@ class Ui_Dialog_ImportCSW(object):
         self.mTreeCSW.clear()
         
         mListurlCswtemp = list(reversed(mListurlCsw))
+        mListurlCswtemp = mListurlCsw
         self.mTreeCSW.afficheCSW(DialogImportCSW, mListurlCswtemp)
        #Liste URL / ID 
         #------ 
@@ -339,18 +342,20 @@ class TREEVIEWCSW(QTreeWidget):
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # Url User
-        self.mLibNodeUrlDefaut = "URL des CSW par défaut"
+        self.mLibNodeUrlUser = "Mes URLs CSW"
+        self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlUser ] ) ] )
+        self.nodeBlocsUser = self.topLevelItem( 0 )
         i = 0
         while i in range(len(listeUrlCSW)) :
-           self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ str(listeUrlCSW[i]) ] ) ] )
-           root = self.topLevelItem( 0 )
-           root.setIcon(0, iconGestion)
+           nodeUrlUser = QTreeWidgetItem(None, [ str(listeUrlCSW[i]) ])
+           self.nodeBlocsUser.addChild( nodeUrlUser )
            if str(listeUrlCSW[i]) not in URLCSWDEFAUT :  
-              root.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
+              nodeUrlUser.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
            i += 1
         # Url User
-
+        #---
         # Url par défaut
+        self.mLibNodeUrlDefaut = "URL des CSW par défaut"
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlDefaut ] ) ] )
         nodeBlocs = self.topLevelItem( 0 )
         mListUrlDefaut = URLCSWDEFAUT.split(",")
@@ -379,7 +384,7 @@ class TREEVIEWCSW(QTreeWidget):
         
         if event.mimeData().hasFormat('text/plain'):
            self.mDepart = mItemWidget
-           if self.mDepart not in URLCSWDEFAUT and self.mDepart != self.mLibNodeUrlDefaut : 
+           if self.mDepart not in URLCSWDEFAUT and self.mDepart != self.mLibNodeUrlDefaut and self.mDepart != self.mLibNodeUrlUser : 
               event.accept()
            else :   
               event.ignore()
@@ -388,15 +393,14 @@ class TREEVIEWCSW(QTreeWidget):
     #===============================              
     def dragMoveEvent(self, event):    #//EN COURS
         index = self.indexAt(event.pos())  
-
         try :
            r = self.itemFromIndex(index).text(0)
            mParentItem = self.itemFromIndex(index).parent()
-           if self.mDepart in URLCSWDEFAUT or self.mDepart == self.mLibNodeUrlDefaut : 
+           if self.mDepart in URLCSWDEFAUT or self.mDepart == self.mLibNodeUrlDefaut or self.mDepart == self.mLibNodeUrlUser : 
               event.ignore()
            elif r == self.mLibNodeUrlDefaut :
               event.ignore()
-           elif mParentItem == None :
+           elif mParentItem.text(0) == self.mLibNodeUrlUser :
               event.accept()
            else :
               event.ignore()
@@ -409,18 +413,15 @@ class TREEVIEWCSW(QTreeWidget):
         index = self.indexAt(event.pos())
         r = self.itemFromIndex(index).text(0)
         try :
+           event.accept()
            #----
-           mIndex = 0  
-           while mIndex < self.topLevelItemCount() :
-              if self.mDepart == self.topLevelItem(mIndex).text(0) :
-                 self.takeTopLevelItem(mIndex)
-                 break
-              mIndex += 1
+           current_item = self.DialogImportCSW.mTreeCSW.currentItem()   #itemCourant
+           self.nodeBlocsUser.removeChild(current_item) 
            #----
-           mIndex = 0  
-           while mIndex < self.topLevelItemCount() :
-              if r == self.topLevelItem(mIndex).text(0) :
-                 self.insertTopLevelItem(mIndex,  QTreeWidgetItem(None, [ str(self.mDepart) ] ) )
+           mIndex = 0
+           while mIndex < self.nodeBlocsUser.childCount() :
+              if r == self.nodeBlocsUser.child(mIndex).text(0) :
+                 self.nodeBlocsUser.insertChild(mIndex, QTreeWidgetItem(None, [ str(self.mDepart) ]))
                  break
               mIndex += 1
            #----
@@ -435,7 +436,7 @@ class TREEVIEWCSW(QTreeWidget):
            return
         
         #-------
-        if index.data(0) not in URLCSWDEFAUT and index.data(0) != self.mLibNodeUrlDefaut : 
+        if index.data(0) not in URLCSWDEFAUT and index.data(0) != self.mLibNodeUrlDefaut  and index.data(0) != self.mLibNodeUrlUser : 
            self.treeMenu = QMenu(self)
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
            self.treeActionCSW_del = QAction(QIcon(menuIcon), "Supprimer l'URL CSW", self.treeMenu)
@@ -455,15 +456,8 @@ class TREEVIEWCSW(QTreeWidget):
 
     #===============================              
     def ihmsPlumeDelCSW(self, item): 
-        mItemWidgetID  = item       #Id
-        mItemWidgetLIB = mItemWidgetID.data(0)  #Lib
-        #----
-        mIndex = 0  
-        while mIndex < self.topLevelItemCount() :
-           if mItemWidgetLIB == self.topLevelItem(mIndex).text(0) :
-              self.takeTopLevelItem(mIndex)
-              break
-           mIndex += 1
+        current_item = self.DialogImportCSW.mTreeCSW.currentItem()   #itemCourant
+        self.nodeBlocsUser.removeChild(current_item) 
         return
 
     #===============================              
@@ -479,5 +473,7 @@ class TREEVIEWCSW(QTreeWidget):
               _save = False
               break
            iterator += 1
-        if _save : self.addTopLevelItems( [ QTreeWidgetItem(None, [ str(mCsw) ] ) ] )
+        nodeUrlUser = QTreeWidgetItem(None, [ str(mCsw) ])
+        if _save : self.nodeBlocsUser.addChild( nodeUrlUser )
+
         return
