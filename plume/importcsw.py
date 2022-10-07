@@ -342,7 +342,7 @@ class TREEVIEWCSW(QTreeWidget):
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # Url User
-        self.mLibNodeUrlUser = "Mes URLs CSW"
+        self.mLibNodeUrlUser = "Mes URL"
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlUser ] ) ] )
         self.nodeBlocsUser = self.topLevelItem( 0 )
         i = 0
