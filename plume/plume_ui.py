@@ -996,13 +996,14 @@ class Ui_Dialog_plume(object):
            self.plumeEdit.setEnabled(r)
            self.plumeSave.setEnabled(r)
            self.plumeEmpty.setEnabled(r)
-           self.plumeExport.setEnabled(r)
            self.plumeImport.setEnabled(r)
-           self.plumeCopy.setEnabled(r)
            self.plumePaste.setEnabled(True if (self.copyMetagraph != None and self.mode == "edit") else False)
-           self.plumeTemplate.setEnabled(r)
            self.plumeTranslation.setEnabled(True if self.mode == "edit" else False)
-           self.plumeChoiceLang.setEnabled(r)
+           # issue 94 gestion des bouton sbarre d'outils dans le cas où nous ne sommes pas propriétaire
+           self.plumeChoiceLang.setEnabled(r if r else True)
+           self.plumeTemplate.setEnabled(r if r else True)
+           self.plumeCopy.setEnabled(r if r else True)
+           self.plumeExport.setEnabled(r if r else True)
            #
            self.plumeTranslation.setChecked(True if self.translation else False)  
            
