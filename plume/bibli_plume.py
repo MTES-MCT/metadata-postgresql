@@ -966,6 +966,7 @@ def returnAndSaveDialogParam(self, mAction):
        mSettings.beginGroup("CSW")
        #Ajouter si autre param
        mDicCSW["urlCsw"]            =  ""
+       mDicCSW["liburlCsw"]         =  ""
        #----
        for key, value in mDicCSW.items():
            if not mSettings.contains(key) :

@@ -40,7 +40,7 @@ import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
 from plume.pg.template import LocalTemplatesCollection
-from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, LIBURLCSWDEFAUT, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 
 
 class Ui_Dialog_plume(object):
@@ -121,6 +121,7 @@ class Ui_Dialog_plume(object):
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]    #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
         #---
+        self.libUrlCswDefaut   = LIBURLCSWDEFAUT       #libellé de l'Url par defaut
         self.urlCswDefaut      = URLCSWDEFAUT       #l'Url par defaut
         self.urlCswIdDefaut    = URLCSWIDDEFAUT     #l'Id de l'Url par defaut
         self.urlCsw            = self.mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées

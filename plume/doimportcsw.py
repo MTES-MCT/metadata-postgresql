@@ -31,14 +31,20 @@ class Dialog(QDialog, Ui_Dialog_ImportCSW):
           mSettings.beginGroup("CSW")
           #Ajouter si autre param
           mDicCSW["urlCsw"] =  ''
+          mDicCSW["liburlCsw"] =  ''
           iterator = QTreeWidgetItemIterator(self.mTreeCSW)
           _mListCSW = []
+          _mListLibCSW = []
           while iterator.value() :
-             itemValueText = iterator.value().text(0)
-             if itemValueText not in URLCSWDEFAUT and itemValueText != self.mTreeCSW.mLibNodeUrlDefaut and itemValueText != self.mTreeCSW.mLibNodeUrlUser: 
-                _mListCSW.append(itemValueText)
+             itemValueText = iterator.value().text(1)
+             itemValueLibText = iterator.value().text(0)
+             if itemValueText != "" : 
+                if itemValueText not in URLCSWDEFAUT.split(",") and itemValueText    != self.mTreeCSW.mLibNodeUrlDefaut and itemValueText    != self.mTreeCSW.mLibNodeUrlUser  :
+                   _mListCSW.append(itemValueText)
+                   _mListLibCSW.append(itemValueLibText)
              iterator += 1
           mDicCSW["urlCsw"] =  ",".join(_mListCSW)
+          mDicCSW["liburlCsw"] =  ",".join(_mListLibCSW)
           
           #----
           for key, value in mDicCSW.items():
@@ -46,7 +52,8 @@ class Dialog(QDialog, Ui_Dialog_ImportCSW):
           # liste des CSW
           #----
           #Réinitialise la variable du QGIS3.INI
-          self.Dialog.urlCsw   = mDicCSW["urlCsw"]
+          self.Dialog.urlCsw      = mDicCSW["urlCsw"]
+          self.Dialog.libUrlCsw   = mDicCSW["liburlCsw"]
           #======================
           mSettings.endGroup()
           mSettings.endGroup()

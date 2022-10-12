@@ -18,7 +18,7 @@ from plume.iso import csw
 from qgis.core import QgsNetworkContentFetcher
 #
 from qgis.core import  QgsSettings
-from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, LIBURLCSWDEFAUT, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 
 class Ui_Dialog_ImportCSW(object):
     def setupUiImportCSW(self, DialogImportCSW, Dialog):
@@ -29,6 +29,7 @@ class Ui_Dialog_ImportCSW(object):
 
         self.DialogImportCSW.setObjectName("DialogConfirme")
         self.DialogImportCSW.setFixedSize(900,570)
+        self.lScreenDialog, self.hScreenDialog = int(self.DialogImportCSW.width()), int(self.DialogImportCSW.height())
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
@@ -43,7 +44,7 @@ class Ui_Dialog_ImportCSW(object):
         self.labelImage.setObjectName("labelImage")
         #----------
         self.label_2 = QtWidgets.QLabel(self.DialogImportCSW)
-        self.label_2.setGeometry(QtCore.QRect(100, 30, 430, 30))
+        self.label_2.setGeometry(QtCore.QRect(100, 30, self.lScreenDialog - 100, 30))
         self.label_2.setAlignment(Qt.AlignLeft)        
         font = QtGui.QFont()
         font.setPointSize(12) 
@@ -53,140 +54,153 @@ class Ui_Dialog_ImportCSW(object):
         self.label_2.setTextFormat(QtCore.Qt.RichText)
         self.label_2.setObjectName("label_2")                                                     
         #========
-        self.lScreenDialog, self.hScreenDialog = int(self.DialogImportCSW.width()), int(self.DialogImportCSW.height())
         #------ 
-        #--
-        largeur = 150
-        abscisse, ordonnee, largeur, hauteur = (self.DialogImportCSW.width() / 2) - largeur - 20 , self.DialogImportCSW.height() - 40, largeur, 25
-        self.pushButton = QtWidgets.QPushButton(self.DialogImportCSW)
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton.setGeometry(QtCore.QRect(abscisse, ordonnee, largeur, hauteur))
-        self.pushButton.clicked.connect(lambda : self.functionImport())
-        #----------
-        abscisse, ordonnee, largeur, hauteur = (self.DialogImportCSW.width() / 2) + 20 , self.DialogImportCSW.height() - 40, largeur, 25
-        self.pushButtonAnnuler = QtWidgets.QPushButton(self.DialogImportCSW)
-        self.pushButtonAnnuler.setObjectName("pushButtonAnnuler")
-        self.pushButtonAnnuler.setGeometry(QtCore.QRect(abscisse, ordonnee, largeur, hauteur))
-        self.pushButtonAnnuler.clicked.connect(self.DialogImportCSW.reject)
-        #--
-        #------ 
-        largeurLabel,  hauteurLabel   = 200, 20 
-        abscisseLabel                 = 40 
-        largeurSaisie, hauteurSaisie  = self.DialogImportCSW.width() - abscisseLabel - largeurLabel - 40 , 20
-        abscisseSaisie                = abscisseLabel + largeurLabel + 10 
-        ordonneeLabelSaisie           = 100
-        deltaLabelSaisie              = hauteurLabel + 8
-        hauteurListeUrl               = 200
+        hauteurListeUrl = 175
         #------
         self.urlCswDefautGEOIDE, self.urlCswDefautIGN, self.urlCswIdDefautGEOIDE = "", "", ""
+        self.libUrlCswDefautGEOIDE, self.libUrlCswDefautIGN = "", ""
         if Dialog.urlCswDefaut.split(",")[0]   != "" : self.urlCswDefautGEOIDE   = Dialog.urlCswDefaut.split(",")[0]
         if Dialog.urlCswDefaut.split(",")[1]   != "" : self.urlCswDefautIGN      = Dialog.urlCswDefaut.split(",")[1]
         if Dialog.urlCswIdDefaut.split(",")[0] != "" : self.urlCswIdDefautGEOIDE = Dialog.urlCswIdDefaut.split(",")[0]
+        if Dialog.libUrlCswDefaut.split(",")[0]   != "" : self.libUrlCswDefautGEOIDE   = Dialog.libUrlCswDefaut.split(",")[0]
+        if Dialog.libUrlCswDefaut.split(",")[1]   != "" : self.libUrlCswDefautIGN      = Dialog.libUrlCswDefaut.split(",")[1]
 
         mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
         Dialog.urlCsw = mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées
         mListurlCsw = Dialog.urlCsw.split(",")
         self.urlCsw = Dialog.urlCsw
+        Dialog.libUrlCsw = mDic_LH["liburlCsw"]             #Liste des urlcsw sauvegardées
+        mListliburlCsw = Dialog.libUrlCsw.split(",")
+        self.libUrlCsw = Dialog.libUrlCsw
 
         #------
+        #group general 
+        self.groupBoxGeneral = QtWidgets.QGroupBox(self.DialogImportCSW)
+        self.groupBoxGeneral.setGeometry(QtCore.QRect(10,100,self.lScreenDialog - 20, self.hScreenDialog - 90))
+        self.groupBoxGeneral.setObjectName("groupBoxGeneral")
+        self.groupBoxGeneral.setStyleSheet("QGroupBox { border: 0px solid green }")
+        #-
+        self.layoutGeneral = QtWidgets.QGridLayout()
+        self.layoutGeneral.setRowStretch(0, 4)
+        self.layoutGeneral.setRowStretch(1, 1)
+        self.layoutGeneral.setRowStretch(2, 1)
+        self.layoutGeneral.setRowStretch(3, 1)
+        self.groupBoxGeneral.setLayout(self.layoutGeneral)
+        #------
         #Liste URL / ID 
-        abscisse, ordonnee, largeur, hauteur = abscisseLabel , ordonneeLabelSaisie, largeurLabel + largeurSaisie + 10, hauteurListeUrl
-        groupBoxOptionsListeUrl = QtWidgets.QGroupBox(self.DialogImportCSW)
-        groupBoxOptionsListeUrl.setGeometry(QtCore.QRect(abscisse, ordonnee, largeur, hauteur))
-        groupBoxOptionsListeUrl.setObjectName("groupBoxOptionsListeUrl")
-        groupBoxOptionsListeUrl.setStyleSheet("QGroupBox {   \
+        self.groupBoxListeUrl = QtWidgets.QGroupBox()
+        self.groupBoxListeUrl.setObjectName("groupBoxListeUrl")
+        self.groupBoxListeUrl.setStyleSheet("QGroupBox {   \
                               font-family:" + Dialog.policeQGroupBox  +" ; \
                               border-style: " + Dialog.lineQGroupBox  + ";    \
                               border-width:" + str(Dialog.epaiQGroupBox)  + "px ; \
                               border-color: " + Dialog.colorQGroupBoxGroupOfProperties  +";      \
                               }")
-        self.groupBoxOptionsListeUrl = groupBoxOptionsListeUrl
         #-
-        self.mTreeCSW = TREEVIEWCSW(groupBoxOptionsListeUrl)
-        self.mTreeCSW.clear()
-        
-        mListurlCswtemp = list(reversed(mListurlCsw))
-        mListurlCswtemp = mListurlCsw
-        self.mTreeCSW.afficheCSW(DialogImportCSW, mListurlCswtemp)
-       #Liste URL / ID 
+        self.layoutListeUrl = QtWidgets.QGridLayout()
+        self.groupBoxListeUrl.setLayout(self.layoutListeUrl)
+        self.layoutGeneral.addWidget(self.groupBoxListeUrl)
+        #-
         #------ 
-
-        #------ 
-        ordonneeLabelSaisie = groupBoxOptionsListeUrl.y() + groupBoxOptionsListeUrl.height() + 10
+        #Liste URL / ID 
+        self.groupBoxSaisie = QtWidgets.QGroupBox()
+        self.groupBoxSaisie.setObjectName("groupBoxSaisie")
+         #-
+        self.layoutSaisie = QtWidgets.QGridLayout()
+        self.layoutSaisie.setColumnStretch(0, 3)
+        self.layoutSaisie.setColumnStretch(1, 6)
+        self.layoutSaisie.setColumnStretch(2, 1)
+        self.groupBoxSaisie.setLayout(self.layoutSaisie)
+        self.layoutGeneral.addWidget(self.groupBoxSaisie)
+        #-
+        mLabelLibUrlText = QtWidgets.QApplication.translate("ImportCSW_ui", "CSW URL LIB", None)
+        mLabelLibUrlToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "LIB URL of the CSW service.", None)
+        mLabelLibUrl = QtWidgets.QLabel(self.DialogImportCSW)
+        mLabelLibUrl.setStyleSheet("QLabel {  font-family:" + Dialog.policeQGroupBox  +"; background-color:" + Dialog.labelBackGround  +";}")
+        mLabelLibUrl.setObjectName("mLabelLibUrl")
+        mLabelLibUrl.setText(mLabelLibUrlText)
+        mLabelLibUrl.setToolTip(mLabelLibUrlToolTip)
+        mLabelLibUrl.setWordWrap(True)
+        self.layoutSaisie.addWidget(mLabelLibUrl, 0, 0)
+        #- 
+        mZoneLibUrl = QtWidgets.QLineEdit(self.DialogImportCSW)
+        mZoneLibUrl.setStyleSheet("QLineEdit {  font-family:" + Dialog.policeQGroupBox  +";}")
+        mZoneLibUrl.setObjectName("mZoneLibUrl")
+        mZoneLibUrl.setToolTip(mLabelLibUrlToolTip)
+        mZoneLibUrl.setPlaceholderText("Mon libellé")
+        mZoneLibUrl.setText("")
+        self.layoutSaisie.addWidget(mZoneLibUrl, 0, 1)
+        self.mZoneLibUrl = mZoneLibUrl
+        #-
         mLabelUrlText = QtWidgets.QApplication.translate("ImportCSW_ui", "CSW URL", None)
         mLabelUrlToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "URL of the CSW service, without any parameters.", None)
         mLabelUrl = QtWidgets.QLabel(self.DialogImportCSW)
         mLabelUrl.setStyleSheet("QLabel {  font-family:" + Dialog.policeQGroupBox  +"; background-color:" + Dialog.labelBackGround  +";}")
-        mLabelUrl.setGeometry(QtCore.QRect(abscisseLabel, ordonneeLabelSaisie, largeurLabel,  hauteurLabel))
         mLabelUrl.setObjectName("mLabelUrl")
         mLabelUrl.setText(mLabelUrlText)
         mLabelUrl.setToolTip(mLabelUrlToolTip)
         mLabelUrl.setWordWrap(True)
+        self.layoutSaisie.addWidget(mLabelUrl, 1, 0)
         #- 
         mZoneUrl = QtWidgets.QLineEdit(self.DialogImportCSW)
         mZoneUrl.setStyleSheet("QLineEdit {  font-family:" + Dialog.policeQGroupBox  +";}")
-        mZoneUrl.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, largeurSaisie - 50, hauteurSaisie))
         mZoneUrl.setObjectName("mZoneUrl")
         mZoneUrl.setToolTip(mLabelUrlToolTip)
         mZoneUrl.setPlaceholderText(self.urlCswDefautGEOIDE)
         mZoneUrl.setText("")
+        self.layoutSaisie.addWidget(mZoneUrl, 1, 1)
         self.mZoneUrl = mZoneUrl
-        #------ 
-        ordonneeLabelSaisie           += deltaLabelSaisie
+        #-
         mLabelUrlIdText = QtWidgets.QApplication.translate("ImportCSW_ui", "CSW ID", None)
         mLabelUrlIdToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "This identifier, not to be confused with the resource identifier, generally appears in the URL of the catalog file. This is the gmd: fileIdentifier property of XML.", None)
         mLabelUrlId = QtWidgets.QLabel(self.DialogImportCSW)
         mLabelUrlId.setStyleSheet("QLabel {  font-family:" + Dialog.policeQGroupBox  +"; background-color:" + Dialog.labelBackGround  +";}")
-        mLabelUrlId.setGeometry(QtCore.QRect(abscisseLabel, ordonneeLabelSaisie, largeurLabel,  hauteurLabel))
         mLabelUrlId.setObjectName("mLabelUrlId")
         mLabelUrlId.setText(mLabelUrlIdText)
         mLabelUrlId.setToolTip(mLabelUrlIdToolTip)
         mLabelUrlId.setWordWrap(True)
+        self.layoutSaisie.addWidget(mLabelUrlId, 2, 0)
         #- 
         mZoneUrlId = QtWidgets.QLineEdit(self.DialogImportCSW)
         mZoneUrlId.setStyleSheet("QLineEdit {  font-family:" + Dialog.policeQGroupBox  +";}")
-        mZoneUrlId.setGeometry(QtCore.QRect(abscisseSaisie, ordonneeLabelSaisie, largeurSaisie - 50, hauteurSaisie))
         mZoneUrlId.setObjectName("mZoneUrlId")
         mZoneUrlId.setToolTip(mLabelUrlIdToolTip)
         mZoneUrlId.setPlaceholderText(self.urlCswIdDefautGEOIDE)
         mZoneUrlId.setText("")
+        self.layoutSaisie.addWidget(mZoneUrlId, 2, 1)
         self.mZoneUrlId = mZoneUrlId
         #------
         #Button Add
         self.buttonAdd = QtWidgets.QToolButton(self.DialogImportCSW)
-        self.buttonAdd.setGeometry(QtCore.QRect(abscisseSaisie + largeurSaisie - 40, mZoneUrl.y() - 3, 40, 25))
         self.buttonAdd.setObjectName("buttonAdd")
         self.buttonAdd.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         self.buttonAdd.setToolTip("Ajouter la nouvelle URL saisie dans la liste.")
         self.buttonAdd.clicked.connect(lambda : self.functionAddCsw())
+        self.layoutSaisie.addWidget(self.buttonAdd, 1, 2)
         #Button Add
         #------
         #------
         #Checkbox
-        abscisse, ordonnee, largeur, hauteur = mZoneUrlId.x() , mLabelUrlId.y() + hauteurLabel + 5, 25, 25
         self.caseSave = QtWidgets.QCheckBox(self.DialogImportCSW)
-        self.caseSave.setGeometry(QtCore.QRect(abscisse, ordonnee, largeur, hauteur))
         self.caseSave.setObjectName("caseSave")
         self.caseSave.setToolTip("Enregistrer la configuration dans les métadonnées.")
         self.caseSave.setStyleSheet("QCheckBox {  font-family:" + Dialog.policeQGroupBox  +"; }")
         self.caseSave.setChecked(True)       
+        self.layoutSaisie.addWidget(self.caseSave, 3, 1)
         mLabelcaseSaveText = QtWidgets.QApplication.translate("ImportCSW_ui", "Save the configuration in the metadata", None)
         caseSaveToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "Save the configuration in the metadata.", None)
-        abscisse, ordonnee, largeur, hauteur = mZoneUrlId.x() + 20, mLabelUrlId.y() + hauteurLabel + 4, 250, 25
         self.mLabelcaseSave = QtWidgets.QLabel(self.DialogImportCSW)
-        self.mLabelcaseSave.setGeometry(QtCore.QRect(abscisse, ordonnee, largeur, hauteur))
         self.mLabelcaseSave.setObjectName("mLabelcaseSave")
         self.mLabelcaseSave.setStyleSheet("QLabel {  font-family:" + Dialog.policeQGroupBox  +"; background-color:" + Dialog.labelBackGround  +";}")
         self.mLabelcaseSave.setText(mLabelcaseSaveText)
         self.mLabelcaseSave.setToolTip(caseSaveToolTip)
         self.mLabelcaseSave.setWordWrap(True)
+        self.layoutSaisie.addWidget(self.mLabelcaseSave, 3, 0)
         #Checkbox
         #------
         #------
         #options 
-        abscisse, ordonnee, largeur, hauteur = mLabelUrlId.x() , mLabelUrlId.y() + hauteurLabel + 35, largeurLabel + largeurSaisie + 10, 85
-        groupBoxOptions = QtWidgets.QGroupBox(self.DialogImportCSW)
-        groupBoxOptions.setGeometry(QtCore.QRect(abscisse, ordonnee, largeur, hauteur))
+        groupBoxOptions = QtWidgets.QGroupBox()
         groupBoxOptions.setObjectName("groupBoxOptions")
         groupBoxOptions.setStyleSheet("QGroupBox {   \
                               font-family:" + Dialog.policeQGroupBox  +" ; \
@@ -198,29 +212,63 @@ class Ui_Dialog_ImportCSW(object):
                               )                    
         groupBoxOptions.setTitle("Mode d'import")
         #-
+        self.layoutOptions = QtWidgets.QGridLayout()
+        self.layoutOptions.setColumnStretch(0, 3)
+        self.layoutOptions.setColumnStretch(1, 6)
+        self.layoutOptions.setColumnStretch(2, 1)
+        groupBoxOptions.setLayout(self.layoutOptions)
+        self.layoutGeneral.addWidget(groupBoxOptions)
+        #-
         self.option1 = QtWidgets.QRadioButton(groupBoxOptions)
-        self.option1.setGeometry(QtCore.QRect(15,15,largeur - 20,23))
         self.option1.setObjectName("option1")
         self.option1.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Complete with remote metadata", None)) 
         self.option1.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
         self.option1.setToolTip(QtWidgets.QApplication.translate("ImportCSW_ui", "For all metadata categories entered in the catalog record that do not have a value in the local record, the value of the remote record is added.", None))
+        self.layoutOptions.addWidget(self.option1, 0, 0)
         #-
         self.option2 = QtWidgets.QRadioButton(groupBoxOptions)
-        self.option2.setGeometry(QtCore.QRect(15,35,largeur - 20,23))
         self.option2.setObjectName("option2")
         self.option2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Update with remote metadata", None))  
         self.option2.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
         self.option2.setToolTip(QtWidgets.QApplication.translate("ImportCSW_ui", "For all metadata categories entered in the catalog record, the value of the local record is replaced by that of the catalog or added if there was no value.", None))
+        self.layoutOptions.addWidget(self.option2, 1, 0)
         #-
         self.option3 = QtWidgets.QRadioButton(groupBoxOptions)
-        self.option3.setGeometry(QtCore.QRect(15,55,largeur - 20,23))
         self.option3.setObjectName("option3")
         self.option3.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Replace with remote metadata", None))  
         self.option3.setStyleSheet("QRadioButton {  font-family:" + Dialog.policeQGroupBox  +";}")
         self.option3.setToolTip(QtWidgets.QApplication.translate("ImportCSW_ui", "Generates a new form from remote metadata. The difference with option 1 is that the information of the categories not filled in the catalog record but which could have existed locally will be erased.", None))
+        self.layoutOptions.addWidget(self.option3, 2, 0)
         self.option1.setChecked(True)
         #options 
         #------ 
+
+        #-
+        self.groupBox_buttons = QtWidgets.QGroupBox()
+        self.groupBox_buttons.setObjectName("layoutGeneral")
+        self.groupBox_buttons.setStyleSheet("QGroupBox { border: 0px solid green }")
+        #-
+        self.layout_groupBox_buttons = QtWidgets.QGridLayout()
+        self.layout_groupBox_buttons.setContentsMargins(0, 0, 0, 0)
+        self.groupBox_buttons.setLayout(self.layout_groupBox_buttons)
+        self.layoutGeneral.addWidget(self.groupBox_buttons)
+        #-
+        self.layout_groupBox_buttons.setColumnStretch(0, 3)
+        self.layout_groupBox_buttons.setColumnStretch(1, 1)
+        self.layout_groupBox_buttons.setColumnStretch(2, 1)
+        self.layout_groupBox_buttons.setColumnStretch(3, 1)
+        self.layout_groupBox_buttons.setColumnStretch(4, 3)
+        #-
+        self.pushButton = QtWidgets.QPushButton(self.DialogImportCSW)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(lambda : self.functionImport())
+        self.layout_groupBox_buttons.addWidget(self.pushButton, 0, 1, Qt.AlignTop)
+        #----------
+        self.pushButtonAnnuler = QtWidgets.QPushButton(self.DialogImportCSW)
+        self.pushButtonAnnuler.setObjectName("pushButtonAnnuler")
+        self.pushButtonAnnuler.clicked.connect(self.DialogImportCSW.reject)
+        self.layout_groupBox_buttons.addWidget(self.pushButtonAnnuler, 0, 3,  Qt.AlignTop)
+        #--
         #----------
         self.DialogImportCSW.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(bibli_plume.returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", self.zMessTitle, None))
@@ -234,15 +282,26 @@ class Ui_Dialog_ImportCSW(object):
            self.mZoneUrl.setText(url_csw)
         if file_identifier != None :
            self.mZoneUrlId.setText(file_identifier)
+
+        #------ TREEVIEW Position importante 
+        self.mTreeCSW = TREEVIEWCSW()
+        self.layoutListeUrl.addWidget(self.mTreeCSW)
+        #-
+        self.mTreeCSW.clear()
+        mListurlCswtemp = list(reversed(mListurlCsw))
+        mListurlCswtemp = mListurlCsw
+
+        self.mTreeCSW.afficheCSW(mListurlCswtemp, self.mZoneUrl, self.mZoneLibUrl, mListliburlCsw)
+        #------ TREEVIEW Position importante 
         
     #===============================              
     def functionAddCsw(self):
        zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "You must enter a URL of a CSW service.", None)
-       if self.mZoneUrl.text() == "" :
+       if self.mZoneUrl.text() == "" or self.mZoneLibUrl.text() == "":
           bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
-          self.mTreeCSW.ihmsPlumeAddCSW(self.Dialog , self.mZoneUrl.text())
+          self.mTreeCSW.ihmsPlumeAddCSW(self.Dialog , self.mZoneUrl.text(), self.mZoneLibUrl.text())
        return
 
     #===============================              
@@ -313,8 +372,8 @@ class TREEVIEWCSW(QTreeWidget):
     #===============================              
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
-        self.setColumnCount(1)
-        self.setHeaderLabels(["URL de CSW mémorisées"])
+        self.setColumnCount(2)
+        self.setHeaderLabels(["libellé", "URL de CSW mémorisées"])
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
         self.viewport().setAcceptDrops(True)
@@ -333,10 +392,10 @@ class TREEVIEWCSW(QTreeWidget):
         return
                
     #===============================              
-    def afficheCSW(self, DialogImportCSW, listeUrlCSW):
-        self.DialogImportCSW = DialogImportCSW 
-        iconGestion = bibli_plume.returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\plume.svg")
-        self.setGeometry(5, 5, self.DialogImportCSW.groupBoxOptionsListeUrl.width() - 10, self.DialogImportCSW.groupBoxOptionsListeUrl.height() - 10 )
+    def afficheCSW(self, listeUrlCSW, _mZoneUrl, _mZoneLibUrl, listliburlCSW):
+        self._mZoneUrl    = _mZoneUrl
+        self._mZoneLibUrl = _mZoneLibUrl
+        iconGestion = bibli_plume.returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\plume.svg")  
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -347,10 +406,11 @@ class TREEVIEWCSW(QTreeWidget):
         self.nodeBlocsUser = self.topLevelItem( 0 )
         i = 0
         while i in range(len(listeUrlCSW)) :
-           nodeUrlUser = QTreeWidgetItem(None, [ str(listeUrlCSW[i]) ])
+           nodeUrlUser = QTreeWidgetItem(None, [ str(listliburlCSW[i]), str(listeUrlCSW[i]) ])
            self.nodeBlocsUser.addChild( nodeUrlUser )
-           if str(listeUrlCSW[i]) not in URLCSWDEFAUT :  
+           if str(listeUrlCSW[i]) not in URLCSWDEFAUT.split(",") :  
               nodeUrlUser.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
+              nodeUrlUser.setToolTip(1, "{}".format("Clic droit pour supprimer l'URL CSW"))
            i += 1
         # Url User
         #---
@@ -358,12 +418,13 @@ class TREEVIEWCSW(QTreeWidget):
         self.mLibNodeUrlDefaut = "URL par défaut"
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlDefaut ] ) ] )
         nodeBlocs = self.topLevelItem( 0 )
-        mListUrlDefaut = URLCSWDEFAUT.split(",")
+        mListUrlDefaut    = URLCSWDEFAUT.split(",")
+        mListLibUrlDefaut = LIBURLCSWDEFAUT.split(",")
         iListUrlDefaut = 0
-            
         while iListUrlDefaut in range(len(mListUrlDefaut)) :
-           mUrlDefaut = mListUrlDefaut[iListUrlDefaut]
-           nodeUrlDefaut = QTreeWidgetItem(None, [ mUrlDefaut ])
+           mUrlDefaut    = mListUrlDefaut[iListUrlDefaut]
+           mLibUrlDefaut = mListLibUrlDefaut[iListUrlDefaut]
+           nodeUrlDefaut = QTreeWidgetItem(None, [ mLibUrlDefaut, mUrlDefaut ])
            nodeBlocs.addChild( nodeUrlDefaut )
            iListUrlDefaut += 1
         # Url par défaut
@@ -380,11 +441,13 @@ class TREEVIEWCSW(QTreeWidget):
         selectedItems = self.selectedItems()
         if len(selectedItems) < 1:
             return
-        mItemWidget = selectedItems[0].text(0)
+        mItemWidget    = selectedItems[0].text(1)
+        mItemLibWidget = selectedItems[0].text(0)
         
         if event.mimeData().hasFormat('text/plain'):
-           self.mDepart = mItemWidget
-           if self.mDepart not in URLCSWDEFAUT and self.mDepart != self.mLibNodeUrlDefaut and self.mDepart != self.mLibNodeUrlUser : 
+           self.mDepart    = mItemWidget
+           self.mDepartLib = mItemLibWidget
+           if self.mDepart not in URLCSWDEFAUT.split(",") and self.mDepart not in LIBURLCSWDEFAUT.split(",") and self.mDepart != self.mLibNodeUrlDefaut and self.mDepart != self.mLibNodeUrlUser : 
               event.accept()
            else :   
               event.ignore()
@@ -394,16 +457,13 @@ class TREEVIEWCSW(QTreeWidget):
     def dragMoveEvent(self, event):    #//EN COURS
         index = self.indexAt(event.pos())  
         try :
-           r = self.itemFromIndex(index).text(0)
-           mParentItem = self.itemFromIndex(index).parent()
-           if self.mDepart in URLCSWDEFAUT or self.mDepart == self.mLibNodeUrlDefaut or self.mDepart == self.mLibNodeUrlUser : 
+           r = self.itemFromIndex(index).text(1)
+           if r == "" or r == None or r == self.mDepart : 
               event.ignore()
-           elif r == self.mLibNodeUrlDefaut :
+           elif r in URLCSWDEFAUT.split(",") or r in LIBURLCSWDEFAUT.split(",") or r == self.mLibNodeUrlDefaut or r == self.mLibNodeUrlUser : 
               event.ignore()
-           elif mParentItem.text(0) == self.mLibNodeUrlUser :
-              event.accept()
            else :
-              event.ignore()
+              event.accept()
         except :
            event.ignore()
         return
@@ -411,17 +471,20 @@ class TREEVIEWCSW(QTreeWidget):
     #===============================              
     def dropEvent(self, event):  #//ARRIVEE
         index = self.indexAt(event.pos())
-        r = self.itemFromIndex(index).text(0)
+        r    = self.itemFromIndex(index).text(1)
         try :
            event.accept()
            #----
-           current_item = self.DialogImportCSW.mTreeCSW.currentItem()   #itemCourant
+           current_item = self.currentItem()   #itemCourant
            self.nodeBlocsUser.removeChild(current_item) 
            #----
            mIndex = 0
            while mIndex < self.nodeBlocsUser.childCount() :
-              if r == self.nodeBlocsUser.child(mIndex).text(0) :
-                 self.nodeBlocsUser.insertChild(mIndex, QTreeWidgetItem(None, [ str(self.mDepart) ]))
+              if r == self.nodeBlocsUser.child(mIndex).text(1) :
+                 nodeUrlUser = QTreeWidgetItem(None, [ str(self.mDepartLib), str(self.mDepart) ])
+                 self.nodeBlocsUser.insertChild(mIndex, nodeUrlUser)
+                 nodeUrlUser.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
+                 nodeUrlUser.setToolTip(1, "{}".format("Clic droit pour supprimer l'URL CSW"))
                  break
               mIndex += 1
            #----
@@ -434,9 +497,8 @@ class TREEVIEWCSW(QTreeWidget):
         index = self.indexAt(point)
         if not index.isValid():
            return
-        
         #-------
-        if index.data(0) not in URLCSWDEFAUT and index.data(0) != self.mLibNodeUrlDefaut  and index.data(0) != self.mLibNodeUrlUser : 
+        if index.data(0) not in URLCSWDEFAUT.split(",") and index.data(0) not in LIBURLCSWDEFAUT.split(",") and index.data(0) != self.mLibNodeUrlDefaut and index.data(0) != self.mLibNodeUrlUser : 
            self.treeMenu = QMenu(self)
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
            self.treeActionCSW_del = QAction(QIcon(menuIcon), "Supprimer l'URL CSW", self.treeMenu)
@@ -449,23 +511,25 @@ class TREEVIEWCSW(QTreeWidget):
         
     #===============================              
     def ihmsPlumeCSW(self, item, column): 
-        mItemClicUrlCsw = item.data(0, Qt.DisplayRole)
-        if mItemClicUrlCsw != self.mLibNodeUrlDefaut :
-           self.DialogImportCSW.mZoneUrl.setText(mItemClicUrlCsw)
+        mItemClicUrlCsw = item.data(1, Qt.DisplayRole)
+        mItemClicLibUrlCsw = item.data(0, Qt.DisplayRole)
+        if mItemClicUrlCsw != self.mLibNodeUrlDefaut and mItemClicUrlCsw != self.mLibNodeUrlUser:
+           self._mZoneUrl.setText(mItemClicUrlCsw)
+           self._mZoneLibUrl.setText(mItemClicLibUrlCsw)
         return
 
     #===============================              
     def ihmsPlumeDelCSW(self, item): 
-        current_item = self.DialogImportCSW.mTreeCSW.currentItem()   #itemCourant
+        current_item = self.currentItem()   #itemCourant
         self.nodeBlocsUser.removeChild(current_item) 
         return
 
     #===============================              
-    def ihmsPlumeAddCSW(self, mDialog, mCsw):
+    def ihmsPlumeAddCSW(self, mDialog, mCsw, mLibCsw):
         _save = True
         iterator = QTreeWidgetItemIterator(self)
         while iterator.value() :
-           itemValueText = iterator.value().text(0)
+           itemValueText = iterator.value().text(1)
            if str(mCsw) == itemValueText :
               zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
               zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "The URL already exists in the list.", None)  
@@ -473,7 +537,7 @@ class TREEVIEWCSW(QTreeWidget):
               _save = False
               break
            iterator += 1
-        nodeUrlUser = QTreeWidgetItem(None, [ str(mCsw) ])
+        nodeUrlUser = QTreeWidgetItem(None, [ str(mLibCsw), str(mCsw) ])
         if _save : self.nodeBlocsUser.addChild( nodeUrlUser )
 
         return
