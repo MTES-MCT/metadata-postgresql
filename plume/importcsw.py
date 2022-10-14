@@ -178,7 +178,8 @@ class Ui_Dialog_ImportCSW(object):
         self.buttonAdd = QtWidgets.QToolButton(self.DialogImportCSW)
         self.buttonAdd.setObjectName("buttonAdd")
         self.buttonAdd.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
-        self.buttonAdd.setToolTip("Ajouter ou modifier la nouvelle URL saisie dans la liste.")
+        mbuttonAddToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "Add or modify a stored CSW. The URL and label will be saved in the “My CSW” section of the table above.", None)
+        self.buttonAdd.setToolTip(mbuttonAddToolTip)
         self.buttonAdd.clicked.connect(lambda : self.functionAddCsw())
         self.layoutSaisie.addWidget(self.buttonAdd, 1, 2)
         #Button Add
@@ -187,7 +188,8 @@ class Ui_Dialog_ImportCSW(object):
         #Checkbox
         self.caseSave = QtWidgets.QCheckBox(self.DialogImportCSW)
         self.caseSave.setObjectName("caseSave")
-        self.caseSave.setToolTip("Enregistrer la configuration dans les métadonnées.")
+        mcaseSaveToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "Save the configuration in the metadata.", None)
+        self.caseSave.setToolTip(mcaseSaveToolTip)
         self.caseSave.setStyleSheet("QCheckBox {  font-family:" + Dialog.policeQGroupBox  +"; }")
         self.caseSave.setChecked(True)       
         self.layoutSaisie.addWidget(self.caseSave, 3, 1)
@@ -282,8 +284,17 @@ class Ui_Dialog_ImportCSW(object):
         #Lecture du tuple avec les paramétres  # Return Url and Id   
         url_csw, file_identifier = self.Dialog.metagraph.linked_record
         
+        # Ajout des url par défaut temporairement
+        mListurlCswTemp, mListliburlCswTemp = mListurlCsw, mListliburlCsw
+        mListurlCswTemp.append(self.urlCswDefautGEOIDE)
+        mListurlCswTemp.append(self.urlCswDefautIGN)
+        mListliburlCswTemp.append(self.libUrlCswDefautGEOIDE)
+        mListliburlCswTemp.append(self.libUrlCswDefautIGN)
+        
         if url_csw != None :
            self.mZoneUrl.setText(url_csw)
+           indexList = mListurlCswTemp.index(url_csw) if url_csw and url_csw in mListurlCswTemp else None
+           self.mZoneLibUrl.setText(mListliburlCswTemp[indexList] if indexList != None else "")
         if file_identifier != None :
            self.mZoneUrlId.setText(file_identifier)
 
@@ -384,6 +395,7 @@ class TREEVIEWCSW(QTreeWidget):
         self.setAcceptDrops(True)
         self.setDragDropMode(QAbstractItemView.DragDrop)  
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
+        self.mnodeUrlUserToolTip = QtWidgets.QApplication.translate("ImportCSW_ui", "Right click to remove CSW URL", None)
         return
 
     #===============================              
@@ -405,7 +417,7 @@ class TREEVIEWCSW(QTreeWidget):
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # Url User
-        self.mLibNodeUrlUser = "Mes URL"
+        self.mLibNodeUrlUser = "Mes CSW"
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlUser ] ) ] )
         self.nodeBlocsUser = self.topLevelItem( 0 )
         i = 0
@@ -413,13 +425,13 @@ class TREEVIEWCSW(QTreeWidget):
            nodeUrlUser = QTreeWidgetItem(None, [ str(listliburlCSW[i]), str(listeUrlCSW[i]) ])
            self.nodeBlocsUser.addChild( nodeUrlUser )
            if str(listeUrlCSW[i]) not in URLCSWDEFAUT.split(",") :  
-              nodeUrlUser.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
-              nodeUrlUser.setToolTip(1, "{}".format("Clic droit pour supprimer l'URL CSW"))
+              nodeUrlUser.setToolTip(0, "{}".format(self.mnodeUrlUserToolTip))
+              nodeUrlUser.setToolTip(1, "{}".format(self.mnodeUrlUserToolTip))
            i += 1
         # Url User
         #---
         # Url par défaut
-        self.mLibNodeUrlDefaut = "URL par défaut"
+        self.mLibNodeUrlDefaut = "CSW par défaut"
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlDefaut ] ) ] )
         nodeBlocs = self.topLevelItem( 0 )
         mListUrlDefaut    = URLCSWDEFAUT.split(",")
@@ -515,8 +527,8 @@ class TREEVIEWCSW(QTreeWidget):
               if r == self.nodeBlocsUser.child(mIndex).text(1) :
                  nodeUrlUser = QTreeWidgetItem(None, [ str(self.mDepartLib), str(self.mDepart) ])
                  self.nodeBlocsUser.insertChild(mIndex, nodeUrlUser)
-                 nodeUrlUser.setToolTip(0, "{}".format("Clic droit pour supprimer l'URL CSW"))
-                 nodeUrlUser.setToolTip(1, "{}".format("Clic droit pour supprimer l'URL CSW"))
+                 nodeUrlUser.setToolTip(0, "{}".format(self.mnodeUrlUserToolTip))
+                 nodeUrlUser.setToolTip(1, "{}".format(self.mnodeUrlUserToolTip))
                  break
               mIndex += 1
            #----
@@ -530,15 +542,17 @@ class TREEVIEWCSW(QTreeWidget):
         if not index.isValid():
            return
         #-------
-        if index.data(0) not in URLCSWDEFAUT.split(",") and index.data(0) not in LIBURLCSWDEFAUT.split(",") and index.data(0) != self.mLibNodeUrlDefaut and index.data(0) != self.mLibNodeUrlUser : 
-           self.treeMenu = QMenu(self)
-           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
-           self.treeActionCSW_del = QAction(QIcon(menuIcon), "Supprimer l'URL CSW", self.treeMenu)
-           self.treeMenu.addAction(self.treeActionCSW_del)
-           self.treeActionCSW_del.setToolTip("Supprimer l'URL CSW")
-           self.treeActionCSW_del.triggered.connect( lambda : self.ihmsPlumeDelCSW(index) )
-           #-------
-           self.treeMenu.exec_(self.mapToGlobal(point))
+        if index.data(0) != None : 
+           if index.data(0) not in URLCSWDEFAUT.split(",") and index.data(0) not in LIBURLCSWDEFAUT.split(",") and index.data(0) != self.mLibNodeUrlDefaut and index.data(0) != self.mLibNodeUrlUser : 
+              self.treeMenu = QMenu(self)
+              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
+              treeActionCSW_delTooltip = QtWidgets.QApplication.translate("ImportCSW_ui", "Remove CSW URL", None)
+              self.treeActionCSW_del = QAction(QIcon(menuIcon), treeActionCSW_delTooltip, self.treeMenu)
+              self.treeMenu.addAction(self.treeActionCSW_del)
+              self.treeActionCSW_del.setToolTip(treeActionCSW_delTooltip)
+              self.treeActionCSW_del.triggered.connect( lambda : self.ihmsPlumeDelCSW(index) )
+              #-------
+              self.treeMenu.exec_(self.mapToGlobal(point))
         return
         
     #===============================              
