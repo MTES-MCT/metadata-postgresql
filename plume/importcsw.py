@@ -78,7 +78,7 @@ class Ui_Dialog_ImportCSW(object):
         self.groupBoxGeneral = QtWidgets.QGroupBox(self.DialogImportCSW)
         self.groupBoxGeneral.setGeometry(QtCore.QRect(10,100,self.lScreenDialog - 20, self.hScreenDialog - 90))
         self.groupBoxGeneral.setObjectName("groupBoxGeneral")
-        self.groupBoxGeneral.setStyleSheet("QGroupBox { border: 0px solid green }")
+        self.groupBoxGeneral.setStyleSheet("QGroupBox { border: 0px solid green}")
         #-
         self.layoutGeneral = QtWidgets.QGridLayout()
         self.layoutGeneral.setRowStretch(0, 4)
@@ -94,8 +94,12 @@ class Ui_Dialog_ImportCSW(object):
                               font-family:" + Dialog.policeQGroupBox  +" ; \
                               border-style: " + Dialog.lineQGroupBox  + ";    \
                               border-width:" + str(Dialog.epaiQGroupBox)  + "px ; \
-                              border-color: " + Dialog.colorQGroupBoxGroupOfProperties  +";      \
-                              }")
+                              border-color: " + Dialog.colorQGroupBoxGroupOfProperties  +"; \
+                              }" \
+                              "QGroupBox::title {padding-top: -7px; padding-left: 10px;}"
+                              )                    
+        titlegroupBoxListeUrl = QtWidgets.QApplication.translate("ImportCSW_ui", "Stored CSWs", None)
+        self.groupBoxListeUrl.setTitle(titlegroupBoxListeUrl)
         #-
         self.layoutListeUrl = QtWidgets.QGridLayout()
         self.groupBoxListeUrl.setLayout(self.layoutListeUrl)
@@ -174,7 +178,7 @@ class Ui_Dialog_ImportCSW(object):
         self.buttonAdd = QtWidgets.QToolButton(self.DialogImportCSW)
         self.buttonAdd.setObjectName("buttonAdd")
         self.buttonAdd.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
-        self.buttonAdd.setToolTip("Ajouter la nouvelle URL saisie dans la liste.")
+        self.buttonAdd.setToolTip("Ajouter ou modifier la nouvelle URL saisie dans la liste.")
         self.buttonAdd.clicked.connect(lambda : self.functionAddCsw())
         self.layoutSaisie.addWidget(self.buttonAdd, 1, 2)
         #Button Add
@@ -373,7 +377,7 @@ class TREEVIEWCSW(QTreeWidget):
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
         self.setColumnCount(2)
-        self.setHeaderLabels(["libellé", "URL de CSW mémorisées"])
+        self.setHeaderLabels(["Libellé", "URL"])
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
         self.viewport().setAcceptDrops(True)
@@ -435,6 +439,34 @@ class TREEVIEWCSW(QTreeWidget):
         self.expandAll()
         return
 
+    #===============================              
+    def update_csw(self, url_list, label_list, new_url, new_label) :
+       if not new_url and not new_label:
+           return None, None
+       csw_index_from_url = url_list.index(new_url) if new_url and new_url in url_list else None
+       csw_index_from_label = label_list.index(new_label) if new_label and new_label in label_list else None
+       if csw_index_from_url is not None and csw_index_from_label is not None:
+           # le libellé et l'URL sont déjà répertoriés, et pas pour le même CSW :
+           # on ne garde qu'un CSW avec lesdits libellé et URL
+           if csw_index_from_url != csw_index_from_label:
+               del url_list[csw_index_from_label]
+               del label_list[csw_index_from_label]
+               csw_index_from_url = url_list.index(new_url)
+               label_list[csw_index_from_url] = new_label
+           # si le libellé et l'URL étaient déjà répertoriés pour le même CSW,
+           # c'est que rien n'a été modifié, donc il n'y a rien à faire
+       elif csw_index_from_url is not None:
+           # l'URL est déjà répertoriée, on met à jour le libellé
+           label_list[csw_index_from_url] = new_label
+       elif csw_index_from_label is not None:
+           # le libellé est déjà répertorié, on met à jour l'URL
+           url_list[csw_index_from_label] = new_url
+       else:
+           # URL et libellé non répertoriés = nouveau CSW
+           url_list.append(new_url)
+           label_list.append(new_label)
+       return url_list, label_list
+        
     #===============================              
     def dragEnterEvent(self, event):    #//DEPART
         self.mDepart = ""
@@ -526,18 +558,23 @@ class TREEVIEWCSW(QTreeWidget):
 
     #===============================              
     def ihmsPlumeAddCSW(self, mDialog, mCsw, mLibCsw):
-        _save = True
+        #===============================              
         iterator = QTreeWidgetItemIterator(self)
+        _mListCSW = []
+        _mListLibCSW = []
         while iterator.value() :
            itemValueText = iterator.value().text(1)
-           if str(mCsw) == itemValueText :
-              zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
-              zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "The URL already exists in the list.", None)  
-              bibli_plume.displayMess(self, (2 if mDialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, mDialog.durationBarInfo)
-              _save = False
-              break
+           itemValueLibText = iterator.value().text(0)
+           if itemValueText != "" : 
+              if itemValueText not in URLCSWDEFAUT.split(",") and itemValueText != self.mLibNodeUrlDefaut and itemValueText != self.mLibNodeUrlUser  :
+                 _mListCSW.append(itemValueText)
+                 _mListLibCSW.append(itemValueLibText)
            iterator += 1
-        nodeUrlUser = QTreeWidgetItem(None, [ str(mLibCsw), str(mCsw) ])
-        if _save : self.nodeBlocsUser.addChild( nodeUrlUser )
-
+        url_list   =  _mListCSW 
+        label_list =  _mListLibCSW
+        
+        #===============================              
+        self.clear()
+        url_list, label_list = self.update_csw(url_list, label_list, mCsw, mLibCsw)
+        self.afficheCSW(url_list, self._mZoneUrl, self._mZoneLibUrl, label_list)
         return
