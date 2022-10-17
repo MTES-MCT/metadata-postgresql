@@ -6,10 +6,13 @@ import re
 from json import load
 import xml.etree.ElementTree as etree
 
-from plume.rdf.utils import DatasetId, abspath, forbidden_char, \
+from plume.rdf.utils import (
+    DatasetId, abspath, forbidden_char,
     owlthing_from_email, owlthing_from_tel
-from plume.rdf.namespaces import DCAT, DCT, FOAF, RDF, \
-    RDFS, SKOS, VCARD, XSD, GEODCAT
+)
+from plume.rdf.namespaces import (
+    DCAT, DCT, FOAF, RDF, RDFS, SKOS, VCARD, XSD, GEODCAT
+)
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
 
@@ -70,7 +73,7 @@ class IsoToDcat:
     
     """
     
-    iso639_language_codes = None
+    ISO639_LANGUAGE_CODES = None
     """dict: Mapping des codes de langue de trois caractères en codes à deux caractères.
     
     Répertoire des codes de langues utilisés par les métadonnées
@@ -84,15 +87,7 @@ class IsoToDcat:
     """
  
     def __init__(self, raw_xml, datasetid=None):
-        try:
-            root = etree.fromstring(raw_xml)
-            if root.tag == wns('gmd:MD_Metadata'):
-                self.isoxml = root
-            else:
-                self.isoxml = root.find('./gmd:MD_Metadata', ISO_NS) \
-                    or etree.Element(wns('gmd:MD_Metadata'))
-        except:
-            self.isoxml = etree.Element(wns('gmd:MD_Metadata'))
+        self.isoxml = parse_xml(raw_xml)
         self.triples = []
         self.datasetid = DatasetId(datasetid)
         self.language = self.metadata_language or 'fr'
@@ -110,7 +105,7 @@ class IsoToDcat:
         
         """
         with open(abspath('iso/data/iso-639-2.json')) as src:
-            cls.iso639_language_codes = load(src)
+            cls.ISO639_LANGUAGE_CODES = load(src)
     
     @property
     def metadata_language(self):
@@ -125,16 +120,16 @@ class IsoToDcat:
         if not code:
             code = self.isoxml.findtext('./gmd:language/gco:CharacterString',
                 namespaces=ISO_NS)
-        if not code or len(code) > 3:
+        if not code:
             return
         if code in ('fre', 'fra'):
             return 'fr'
-        if not IsoToDcat.iso639_language_codes:
+        if not IsoToDcat.ISO639_LANGUAGE_CODES:
             IsoToDcat.load_language_codes()
-        alpha2 = IsoToDcat.iso639_language_codes.get(code)
+        alpha2 = IsoToDcat.ISO639_LANGUAGE_CODES.get(code)
         # les métadonnées ISO utilise des codes de langue
         # sur trois caractères, RDF privilégie les codes
-        # sur deux caractères. iso639_language_codes établit
+        # sur deux caractères. ISO639_LANGUAGE_CODES établit
         # la correspondance.
         return alpha2 or code
     
@@ -254,7 +249,7 @@ class IsoToDcat:
                     namespaces=ISO_NS)
                 if t and 'INSPIRE themes' in t:
                     keyword_iri = Thesaurus.concept_iri((
-                        URIRef('https://inspire.ec.europa.eu/theme'),
+                        URIRef('http://inspire.ec.europa.eu/theme'),
                         (self.language,)), keyword)
                     if keyword_iri:
                         l.append((self.datasetid, DCAT.theme, keyword_iri))
@@ -284,7 +279,7 @@ class IsoToDcat:
                 continue
             iri = URIRef('http://inspire.ec.europa.eu/metadata-codelist/'
                 'TopicCategory/{}'.format(code))
-            label = Thesaurus.concept_str((URIRef('https://inspire.ec.'
+            label = Thesaurus.concept_str((URIRef('http://inspire.ec.'
                 'europa.eu/metadata-codelist/TopicCategory'),
                 (self.language,)), iri)
             if not label:
@@ -355,7 +350,7 @@ class IsoToDcat:
                     'gmd:contactInfo/gmd:CI_Contact/gmd:address/'
                     'gmd:CI_Address/gmd:electronicMailAddress/'
                     'gco:CharacterString', node, VCARD.hasEmail,
-                    transform='email')
+                    transform=owlthing_from_email)
                 triples += find_iri(elem, './gmd:CI_ResponsibleParty/'
                     'gmd:contactInfo/gmd:CI_Contact/'
                     'gmd:onlineResource/gmd:CI_OnlineResource/'
@@ -363,7 +358,7 @@ class IsoToDcat:
                 triples += find_iri(elem, './gmd:CI_ResponsibleParty/'
                     'gmd:contactInfo/gmd:CI_Contact/gmd:phone/'
                     'gmd:CI_Telephone/gmd:voice/gco:CharacterString',
-                    node, VCARD.hasTelephone, transform='phone')
+                    node, VCARD.hasTelephone, transform=owlthing_from_tel)
                 if triples:
                     triples.append((self.datasetid, DCAT.contactPoint, node))
                     triples.append((node, RDF.type, VCARD.Kind))
@@ -376,7 +371,7 @@ class IsoToDcat:
                     'gmd:contactInfo/gmd:CI_Contact/gmd:address/'
                     'gmd:CI_Address/gmd:electronicMailAddress/'
                     'gco:CharacterString', node, FOAF.mbox,
-                    transform='email')
+                    transform=owlthing_from_email)
                 triples += find_iri(elem, './gmd:CI_ResponsibleParty/'
                     'gmd:contactInfo/gmd:CI_Contact/'
                     'gmd:onlineResource/gmd:CI_OnlineResource/'
@@ -384,7 +379,7 @@ class IsoToDcat:
                 triples += find_iri(elem, './gmd:CI_ResponsibleParty/'
                     'gmd:contactInfo/gmd:CI_Contact/gmd:phone/'
                     'gmd:CI_Telephone/gmd:voice/gco:CharacterString',
-                    node, FOAF.phone, transform='phone')
+                    node, FOAF.phone, transform=owlthing_from_tel)
                 if triples:
                     triples.append((self.datasetid, predicate, node))
                     triples.append((node, RDF.type, FOAF.Agent))
@@ -399,8 +394,11 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
     elem : xml.etree.ElementTree.Element
         Un élément XML présumé contenir l'information
         recherchée.
-    path : str
+    path : str or list(str)
         Le chemin de l'information recherchée dans le XML.
+        Il est possible de fournir une liste de chemins, auquel
+        cas la fonction s'appliquera successivement à tous les
+        chemins listés.
     subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
         L'identifiant du graphe ou le noeud anonyme sujet
         des triples à renvoyer.
@@ -425,7 +423,18 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
     
     """
     l = []
-    for sub in elem.findall(path, namespaces=ISO_NS):
+    if not path:
+        return l
+    
+    if isinstance(path, list):
+        cpath = path.copy()
+        cpath.reverse()
+        epath = cpath.pop()
+        cpath.reverse()
+    else:
+        epath = path
+        
+    for sub in elem.findall(epath, namespaces=ISO_NS):
         value = sub.text
         if not value:
             continue
@@ -437,6 +446,13 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
             l.append((subject, predicate, Literal(value)))
         if not multi:
             break
+    
+    if isinstance(path, list) and (multi or not l):
+        l += find_literal(
+            elem, cpath, subject, predicate, multi=multi,
+            datatype=datatype, language=language
+        )
+
     return l
 
 def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesaurus=None):
@@ -447,8 +463,11 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
     elem : xml.etree.ElementTree.Element
         Un élément XML présumé contenir l'information
         recherchée.
-    path : str
+    path : str or list(str)
         Le chemin de l'information recherchée dans le XML.
+        Il est possible de fournir une liste de chemins, auquel
+        cas la fonction s'appliquera successivement à tous les
+        chemins listés.
     subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
         L'identifiant du graphe ou le noeud anonyme sujet
         des triples à renvoyer.
@@ -459,38 +478,67 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         La propriété admet-elle plusieurs valeurs ? Si ``False``,
         la fonction s'arrête dès qu'une valeur a été trouvée,
         même si le XML en contenait plusieurs.
-    transform : {None, 'email', 'phone'}, optional
-        Le cas échéant, la nature de la transformation à
-        appliquer aux objets des triples.
-    thesaurus : tuple(rdflib.term.URIRef, tuple(str))
+    transform : function, optional
+        Le cas échéant, une fonction de formatage à appliquer aux objets
+        des triples. Elle doit prendre un unique argument, la valeur
+        de l'objet, et renvoyer un URI.
+    thesaurus : tuple(rdflib.term.URIRef, tuple(str)) or list
         Source de vocabulaire contrôlée pour les objets des triples.
         Il s'agit d'un tuple dont le premier élément est l'IRI de la
         source, le second un tuple de langues pour lequel le thésaurus
         doit être généré.
+        La fonction ne présume pas de la nature de la valeur recueillie
+        dans le XML, elle lui cherchera une correspondance en tant qu'IRI et
+        en tant qu'étiquette.
     
     Returns
     -------
     list of tuples
         Une liste de triples, ou une liste vide si le chemin cherché
-        n'était pas présent dans le XML.
+        n'était pas présent dans le XML ou pour une valeur issue de
+        thésaurus non répertoriée.
     
     """
     l = []
-    for sub in elem.findall(path, namespaces=ISO_NS):
+    if not path:
+        return l
+    
+    if isinstance(path, list):
+        cpath = path.copy()
+        cpath.reverse()
+        epath = cpath.pop()
+        cpath.reverse()
+    else:
+        epath = path
+        
+    for sub in elem.findall(epath, namespaces=ISO_NS):
         value = sub.text
-        if not value or forbidden_char(value):
+        if not value or (
+            not thesaurus and forbidden_char(value)
+        ):
             continue
-        if transform == 'email':
-            value = owlthing_from_email(value)
-        elif transform == 'phone':
-            value = owlthing_from_tel(value)
-        elif thesaurus:
-            value = Thesaurus.concept_iri(thesaurus, value)
+        if transform:
+            value = transform(value)
+        if thesaurus:
+            if not forbidden_char(value):
+                # est-ce un IRI ?
+                value_str = Thesaurus.concept_str(thesaurus, URIRef(value))
+            if not value_str:
+                # est-ce une étiquette ?
+                value = Thesaurus.concept_iri(thesaurus, value)
             if not value:
+                # non référencé
                 continue
         l.append((subject, predicate, URIRef(value)))
         if not multi:
             break
+    
+    if isinstance(path, list) and (multi or not l):
+        l += find_iri(
+            elem, cpath, subject, predicate, multi=multi,
+            transform=transform, thesaurus=thesaurus
+        )
+
     return l    
 
 def wns(tag):
@@ -516,6 +564,31 @@ def wns(tag):
         return tag
     return '{{{}}}{}'.format(ISO_NS[l[0]], l[1])    
 
+def parse_xml(raw_xml):
+    """Désérialise un XML contenant des métadonnées ISO 19115/19139.
 
+    Parameters
+    ----------
+    raw_xml : str
+        Un XML présumé contenir des métadonnées ISO 19115/19139,
+        englobées ou non dans une réponse de CSW.
+    
+    Returns
+    -------
+    xml.etree.ElementTree.Element
+        Si un élément ``gmd:MD_Metadata`` a été trouvé
+        dans le XML, il est renvoyé. Sinon, la fonction 
+        renvoie un élément ``gmd:MD_Metadata`` vide.
+
+    """
+    try:
+        root = etree.fromstring(raw_xml)
+        if root.tag == wns('gmd:MD_Metadata'):
+            return root
+        else:
+            return root.find('./gmd:MD_Metadata', ISO_NS) \
+                or etree.Element(wns('gmd:MD_Metadata'))
+    except:
+        return etree.Element(wns('gmd:MD_Metadata')) 
 
 
