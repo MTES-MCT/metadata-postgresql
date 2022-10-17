@@ -3,6 +3,54 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/completed> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "production of the data has been completed"@en ;
+    skos:prefLabel "completed"@en,
+        "achevé"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/historicalArchive> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data has been stored in an offline storage facility"@en ;
+    skos:prefLabel "historical archive"@en,
+        "archivé"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/obsolete> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data is no longer relevant"@en ;
+    skos:prefLabel "obsolete"@en,
+        "obsolète"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/onGoing> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data is continually being updated"@en ;
+    skos:prefLabel "on going"@en,
+        "vivant"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/planned> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "fixed date has been established upon or by which the data will be created or updated"@en ;
+    skos:prefLabel "planned"@en,
+        "programmé"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/required> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data needs to be generated or updated"@en ;
+    skos:prefLabel "required"@en,
+        "à venir"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/underDevelopment> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data is currently in the process of being created"@en ;
+    skos:prefLabel "under development"@en,
+        "en production"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> a skos:ConceptScheme ;
+    skos:prefLabel "Status of the dataset (ISO 19139)"@en,
+        "État du jeu de données (ISO 19139)"@fr ;
+    foaf:page <https://standards.iso.org/iso/19139/resources/gmxCodelists.xml> .
+
+
 <http://publications.europa.eu/resource/authority/dataset-status/COMPLETED> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
     skos:prefLabel "completed"@en,
@@ -16,7 +64,7 @@
 <http://publications.europa.eu/resource/authority/dataset-status/DEVELOP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
     skos:prefLabel "under development"@en,
-        "en cours d'élaboration"@fr .
+        "en production"@fr .
 
 <http://publications.europa.eu/resource/authority/dataset-status/DISCONT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
@@ -805,7 +853,7 @@
         "Type de fichier (UE)"@fr .
 
 
-<https://tools.ietf.org/html/rfc4287> a skos:Concept ;
+<http://tools.ietf.org/html/rfc4287> a skos:Concept ;
     dct:identifier "atom" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     skos:prefLabel "ATOM Syndication Format"@en .
@@ -1964,66 +2012,66 @@
 
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/annually> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Annually"@en,
         "Annuelle"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/asNeeded> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "As needed"@en,
         "D'autant que de besoin"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/biannually> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Biannually"@en,
         "Deux fois par an"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/continual> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Continual"@en,
         "Continue"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/daily> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Daily"@en,
         "Quotidienne"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/fortnightly> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Fortnightly"@en,
         "Deux fois par mois"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/irregular> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Irregular"@en,
         "Irrégulière"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/monthly> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Monthly"@en,
         "Mensuelle"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/notPlanned> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Not planned"@en,
         "Non planifiée"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/quarterly> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Quarterly"@en,
         "Trimestrielle"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/unknown> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Unknown"@en,
         "Indéterminée"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/weekly> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
     skos:prefLabel "Weekly"@en,
         "Hebdomadaire"@fr .
 
-<https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> a skos:ConceptScheme ;
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> a skos:ConceptScheme ;
     skos:prefLabel "Fréquence d'actualisation (INSPIRE)"@fr,
         "Maintenance frequency (INSPIRE)"@en .
 
@@ -2058,101 +2106,101 @@
 
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/farming> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Farming"@en,
         "Agriculture"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/elevation> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Elevation"@en,
         "Altitude"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/biota> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Biota"@en,
         "Biote"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/climatologyMeteorologyAtmosphere> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Climatology / Meteorology / Atmosphere"@en,
         "Climatologie/Météorologie/Atmosphère"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/inlandWaters> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Inland Waters"@en,
         "Eaux intérieures"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/environment> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Environment"@en,
         "Environnement"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/imageryBaseMapsEarthCover> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Imagery / Base Maps / Earth Cover"@en,
         "Imagerie/Cartes de base/Occupation des terres"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/geoscientificInformation> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Geoscientific Information"@en,
         "Informations géoscientifiques"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/boundaries> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Boundaries"@en,
         "Limites"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/location> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Location"@en,
         "Localisation"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/oceans> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Oceans"@en,
         "Océans"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/planningCadastre> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Planning / Cadastre"@en,
         "Planification/Cadastre"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/intelligenceMilitary> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Intelligence / Military"@en,
         "Renseignement/Secteur militaire"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/health> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Health"@en,
         "Santé"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/utilitiesCommunication> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Utilities / Communication"@en,
         "Services d’utilité publique/Communication"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/society> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Society"@en,
         "Société"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/structure> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Structure"@en,
         "Structure"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/transportation> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Transportation"@en,
         "Transport"@fr .
 
 <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/economy> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
     skos:prefLabel "Economy"@en,
         "Économie"@fr .
 
-<https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> a skos:ConceptScheme ;
+<http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> a skos:ConceptScheme ;
     skos:prefLabel "Catégories thématiques ISO 19115 (INSPIRE)"@fr,
         "Topic categories in accordance with EN ISO 19115 (INSPIRE)"@en .
 
@@ -2217,11 +2265,11 @@
         "EPSG coordinate reference systems (OGC register)"@en.
 
 
-<https://spdx.org/licenses/etalab-2.0> a skos:Concept ;
+<http://spdx.org/licenses/etalab-2.0> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense> ;
     skos:prefLabel "Licence Ouverte version 2.0"@fr .
     
-<https://spdx.org/licenses/ODbL-1.0> a skos:Concept ;
+<http://spdx.org/licenses/ODbL-1.0> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense> ;
     skos:prefLabel "ODC Open Database License (ODbL) version 1.0"@fr .
 
@@ -2375,176 +2423,176 @@
 
 
 <http://inspire.ec.europa.eu/theme/ad> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Adresses"@fr,
         "Addresses"@en .
 
 <http://inspire.ec.europa.eu/theme/au> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Unités administratives"@fr,
         "Administrative units"@en .
 
 <http://inspire.ec.europa.eu/theme/rs> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Référentiels de coordonnées"@fr,
         "Coordinate reference systems"@en .
 
 <http://inspire.ec.europa.eu/theme/gg> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Systèmes de maillage géographique"@fr,
         "Geographical grid systems"@en .
 
 <http://inspire.ec.europa.eu/theme/cp> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Parcelles cadastrales"@fr,
         "Cadastral parcels"@en .
 
 <http://inspire.ec.europa.eu/theme/gn> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Dénominations géographiques"@fr,
         "Geographical names"@en .
 
 <http://inspire.ec.europa.eu/theme/hy> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Hydrographie"@fr,
         "Hydrography"@en .
 
 <http://inspire.ec.europa.eu/theme/ps> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Sites protégés"@fr,
         "Protected sites"@en .
 
 <http://inspire.ec.europa.eu/theme/tn> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Réseaux de transport"@fr,
         "Transport networks"@en .
 
 <http://inspire.ec.europa.eu/theme/el> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Altitude"@fr,
         "Elevation"@en .
 
 <http://inspire.ec.europa.eu/theme/ge> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Géologie"@fr,
         "Geology"@en .
 
 <http://inspire.ec.europa.eu/theme/lc> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Occupation des terres"@fr,
         "Land cover"@en .
 
 <http://inspire.ec.europa.eu/theme/oi> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Ortho-imagerie"@fr,
         "Orthoimagery"@en .
 
 <http://inspire.ec.europa.eu/theme/af> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Installations agricoles et aquacoles"@fr,
         "Agricultural and aquaculture facilities"@en .
 
 <http://inspire.ec.europa.eu/theme/am> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Zones de gestion"@fr,
         "Area management/restriction/regulation zones and reporting units"@en .
 
 <http://inspire.ec.europa.eu/theme/ac> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Conditions atmosphériques"@fr,
         "Atmospheric conditions"@en .
 
 <http://inspire.ec.europa.eu/theme/br> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Régions biogéographiques"@fr,
         "Bio-geographical regions"@en .
 
 <http://inspire.ec.europa.eu/theme/bu> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Bâtiments"@fr,
         "Buildings"@en .
 
 <http://inspire.ec.europa.eu/theme/er> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Sources d'énergie"@fr,
         "Energy resources"@en .
 
 <http://inspire.ec.europa.eu/theme/ef> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Installations de suivi environnemental"@fr,
         "Environmental monitoring facilities"@en .
 
 <http://inspire.ec.europa.eu/theme/hb> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Habitats et biotopes"@fr,
         "Habitats and biotopes"@en .
 
 <http://inspire.ec.europa.eu/theme/hh> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Santé et sécurité des personnes"@fr,
         "Human health and safety"@en .
 
 <http://inspire.ec.europa.eu/theme/lu> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Usage des sols"@fr,
         "Land use"@en .
 
 <http://inspire.ec.europa.eu/theme/mr> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Ressources minérales"@fr,
         "Mineral resources"@en .
 
 <http://inspire.ec.europa.eu/theme/nz> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Zones à risque naturel"@fr,
         "Natural risk zones"@en .
 
 <http://inspire.ec.europa.eu/theme/of> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Caractéristiques géographiques océanographiques"@fr,
         "Oceanographic geographical features"@en .
 
 <http://inspire.ec.europa.eu/theme/pd> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Répartition de la population — démographie"@fr,
         "Population distribution — demography"@en .
 
 <http://inspire.ec.europa.eu/theme/pf> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Lieux de production et sites industriels"@fr,
         "Production and industrial facilities"@en .
 
 <http://inspire.ec.europa.eu/theme/sr> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Régions maritimes"@fr,
         "Sea regions"@en .
 
 <http://inspire.ec.europa.eu/theme/so> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Sols"@fr,
         "Soil"@en .
 
 <http://inspire.ec.europa.eu/theme/sd> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Répartition des espèces"@fr,
         "Species distribution"@en .
 
 <http://inspire.ec.europa.eu/theme/su> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Unités statistiques"@fr,
         "Statistical units"@en .
 
 <http://inspire.ec.europa.eu/theme/us> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Services d'utilité publique et services publics"@fr,
         "Utility and governmental services"@en .
 
 <http://inspire.ec.europa.eu/theme/mf> a skos:Concept ;
-    skos:inScheme <https://inspire.ec.europa.eu/theme> ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
     skos:prefLabel "Caractéristiques géographiques météorologiques"@fr,
         "Meteorological geographical features"@en .
 
-<https://inspire.ec.europa.eu/theme> a skos:ConceptScheme ;
+<http://inspire.ec.europa.eu/theme> a skos:ConceptScheme ;
     skos:prefLabel "Thème (INSPIRE)"@fr,
         "Theme (INSPIRE)"@en .
 
