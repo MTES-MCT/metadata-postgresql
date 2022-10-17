@@ -73,8 +73,8 @@ plume:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         plume:ontology <http://publications.europa.eu/resource/authority/data-theme>,
-            <https://inspire.ec.europa.eu/theme>,
-            <https://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+            <http://inspire.ec.europa.eu/theme>,
+            <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
         sh:order 4 ;
     ] ;
     sh:property [
@@ -141,9 +141,20 @@ plume:DatasetShape
         sh:nodeKind sh:IRI ;
         sh:class dct:Frequency ;
         sh:maxCount 1 ;
-        plume:ontology <https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency>,
+        plume:ontology <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency>,
             <http://publications.europa.eu/resource/authority/frequency> ;
         sh:order 14 ;
+    ] ;
+    sh:property [
+        sh:path adms:status ;
+        sh:name "Statut"@fr ;
+        sh:description "Maturité du jeu de données."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:maxCount 1 ;
+        sh:order 15 ;
+        plume:ontology <http://publications.europa.eu/resource/authority/dataset-status>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
     ] ;
     sh:property [
         sh:path dct:provenance ;
@@ -464,12 +475,13 @@ plume:DistributionShape
     sh:property [
         sh:path adms:status ;
         sh:name "Statut"@fr ;
-        sh:description "Niveau de maturité de la distribution."@fr ;
+        sh:description "Maturité de la distribution."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:maxCount 1 ;
         sh:order 8 ;
-        plume:ontology <http://publications.europa.eu/resource/authority/dataset-status> ;
+        plume:ontology <http://publications.europa.eu/resource/authority/dataset-status>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
     ] ;
     sh:property [
         sh:path dct:type ;
