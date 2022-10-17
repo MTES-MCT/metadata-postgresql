@@ -559,9 +559,8 @@ class TREEVIEWCSW(QTreeWidget):
     def ihmsPlumeCSW(self, item, column): 
         mItemClicUrlCsw = item.data(1, Qt.DisplayRole)
         mItemClicLibUrlCsw = item.data(0, Qt.DisplayRole)
-        if mItemClicUrlCsw != self.mLibNodeUrlDefaut and mItemClicUrlCsw != self.mLibNodeUrlUser:
-           self._mZoneUrl.setText(mItemClicUrlCsw)
-           self._mZoneLibUrl.setText(mItemClicLibUrlCsw)
+        self._mZoneUrl.setText(mItemClicUrlCsw if mItemClicUrlCsw != None else "")
+        self._mZoneLibUrl.setText(mItemClicLibUrlCsw if mItemClicUrlCsw != None else "")
         return
 
     #===============================              
