@@ -362,7 +362,7 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:theme</span></code></p></td>
 <td><p>Thèmes</p></td>
 <td><p>Classification thématique du jeu de données.</p></td>
-<td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/data-theme">Thème de données (UE)</a>, <a class="reference external" href="https://inspire.ec.europa.eu/theme">Thème (INSPIRE)</a>, <a class="reference external" href="https://inspire.ec.europa.eu/metadata-codelist/TopicCategory">Catégories thématiques ISO 19115 (INSPIRE)</a></p></td>
+<td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/data-theme">Thème de données (UE)</a>, <a class="reference external" href="http://inspire.ec.europa.eu/theme">Thème (INSPIRE)</a>, <a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/TopicCategory">Catégories thématiques ISO 19115 (INSPIRE)</a></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:keyword</span></code></p></td>
 <td><p>Mots-clés libres</p></td>
@@ -437,984 +437,989 @@
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:accrualPeriodicity</span></code></p></td>
 <td><p>Fréquence de mise à jour</p></td>
 <td><p>Fréquence de mise à jour des données.</p></td>
-<td><p><a class="reference external" href="https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency">Fréquence d’actualisation (INSPIRE)</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/frequency">Fréquences (UE)</a></p></td>
+<td><p><a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency">Fréquence d’actualisation (INSPIRE)</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/frequency">Fréquences (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:provenance</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">adms:status</span></code></p></td>
+<td><p>Statut</p></td>
+<td><p>Maturité du jeu de données.</p></td>
+<td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/dataset-status">Statut du jeu de données (UE)</a>, <a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode">État du jeu de données (ISO 19139)</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:provenance</span></code></p></td>
 <td><p>Généalogie</p></td>
 <td><p>Sources et méthodes mises en œuvre pour produire les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:provenance</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:provenance</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Texte</p></td>
 <td><p>Informations sur l’origine des données : sources, méthodes de recueil ou de traitement…</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">adms:versionNotes</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">adms:versionNotes</span></code></p></td>
 <td><p>Note de version</p></td>
 <td><p>Différences entre la version courante des données et les versions antérieures.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span></code></p></td>
 <td><p>Conforme à</p></td>
 <td><p>Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données.</p></td>
 <td><p><a class="reference external" href="http://www.opengis.net/def/crs/EPSG/0">Registre EPSG de l’OGC (systèmes de coordonnées)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
 <td><p>Registre</p></td>
 <td><p>Registre de référence auquel appartient le standard.</p></td>
 <td><p><a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister">Registre de standards</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
 <td><p>Identifiant</p></td>
 <td><p>Identifiant du standard, s’il y a lieu. Pour un système de coordonnées géographiques, il s’agit du code EPSG.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
 <td><p>Libellé</p></td>
 <td><p>Libellé explicite du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">owl:versionInfo</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">owl:versionInfo</span></code></p></td>
 <td><p>Version</p></td>
 <td><p>Numéro ou code de la version du standard à laquelle se conforment les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
 <td><p>Description</p></td>
 <td><p>Description sommaire de l’objet du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
 <td><p>Date de publication</p></td>
 <td><p>Date de publication du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
 <td><p>Date de modification</p></td>
 <td><p>Date de la dernière modification du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:created</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:created</span></code></p></td>
 <td><p>Date de création</p></td>
 <td><p>Date de création du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
 <td><p>Page internet</p></td>
 <td><p>Chemin d’accès au standard ou URL d’une page contenant des informations sur le standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:spatialResolutionInMeters</span></code></p></td>
 <td><p>Résolution spatiale en mètres</p></td>
 <td><p>Plus petite distance significative dans le contexte du jeu de données, exprimée en mètres.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:temporalResolution</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:temporalResolution</span></code></p></td>
 <td><p>Résolution temporelle</p></td>
 <td><p>Plus petit pas de temps significatif dans le contexte du jeu de données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span></code></p></td>
 <td><p>Conditions d’accès</p></td>
 <td><p>Contraintes réglementaires limitant l’accès aux données.</p></td>
 <td><p><a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess">Restriction d’accès public (INSPIRE)</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/access-right">Droits d’accès (UE)</a>, <a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations">Restrictions d’accès en application du Code des relations entre le public et l’administration</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:accessRights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Mention</p></td>
 <td><p>Description des contraintes réglementaires et des modalités pratiques pour s’y conformer.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span></code></p></td>
 <td><p>Point de contact</p></td>
 <td><p>Entité à contacter pour obtenir des informations sur les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:fn</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:fn</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom du point de contact.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasEmail</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasEmail</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasTelephone</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasTelephone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasURL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasURL</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:organization-name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:organization-name</span></code></p></td>
 <td><p>Appartient à</p></td>
 <td><p>Le cas échéant, organisation dont le point de contact fait partie.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span></code></p></td>
 <td><p>Éditeur</p></td>
 <td><p>Organisme ou personne qui assure la publication des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span></code></p></td>
 <td><p>Auteur</p></td>
 <td><p>Principal responsable de la production des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span></code></p></td>
 <td><p>Propriétaire</p></td>
 <td><p>Organisme ou personne qui détient des droits sur les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span></code></p></td>
 <td><p>Gestionnaire</p></td>
 <td><p>Organisme ou personne qui assume la maintenance des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:custodian</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span></code></p></td>
 <td><p>Distributeur</p></td>
 <td><p>Organisme ou personne qui assure la distribution des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:distributor</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span></code></p></td>
 <td><p>Commanditaire</p></td>
 <td><p>Organisme ou personne qui est à l’origine de la création des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:originator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span></code></p></td>
 <td><p>Maître d’œuvre</p></td>
 <td><p>Organisme ou personne chargée du recueil des informations.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:principalInvestigator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span></code></p></td>
 <td><p>Intégrateur</p></td>
 <td><p>Organisation ou personne qui a retraité les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:processor</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span></code></p></td>
 <td><p>Fournisseur de la ressource</p></td>
 <td><p>Organisme ou personne qui diffuse les données, soit directement soit par l’intermédiaire d’un distributeur.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:resourceProvider</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span></code></p></td>
 <td><p>Utilisateur</p></td>
 <td><p>Organisme ou personne qui utilise les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">geodcat:user</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span></code></p></td>
 <td><p>Distribution</p></td>
 <td><p>Distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessURL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessURL</span></code></p></td>
 <td><p>URL d’accès</p></td>
 <td><p>URL de la page où est publiée cette distribution des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
 <td><p>Libellé</p></td>
 <td><p>Nom de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
 <td><p>Description</p></td>
 <td><p>Description de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:downloadURL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:downloadURL</span></code></p></td>
 <td><p>Lien de téléchargement direct</p></td>
 <td><p>URL de téléchargement direct du ou des fichiers de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
 <td><p>Date de publication</p></td>
 <td><p>Date à laquelle la distribution a été diffusée.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
 <td><p>Date de dernière modification</p></td>
 <td><p>Date de la dernière modification de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcatap:availability</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcatap:availability</span></code></p></td>
 <td><p>Disponibilité</p></td>
 <td><p>Niveau de disponibilité prévu pour la distribution, permettant d’apprécier le temps pendant lequel elle est susceptible de rester accessible.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/planned-availability">Disponibilité prévue (UE)</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">adms:status</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">adms:status</span></code></p></td>
 <td><p>Statut</p></td>
-<td><p>Niveau de maturité de la distribution.</p></td>
-<td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/dataset-status">Statut du jeu de données (UE)</a></p></td>
+<td><p>Maturité de la distribution.</p></td>
+<td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/dataset-status">Statut du jeu de données (UE)</a>, <a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode">État du jeu de données (ISO 19139)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type de distribution</p></td>
 <td><p>Type de distribution.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/distribution-type">Type de distribution (UE)</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:format</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:format</span></code></p></td>
 <td><p>Format de fichier</p></td>
 <td><p>Format de fichier ou extension.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/file-type">Type de fichier (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:format</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:format</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Libellé du format.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:compressFormat</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:compressFormat</span></code></p></td>
 <td><p>Format de compression</p></td>
 <td><p>Format du fichier contenant les données sous une forme compressée, afin de réduire leur volume.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/file-type">Type de fichier (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:compressFormat</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:compressFormat</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Libellé du format.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:packageFormat</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:packageFormat</span></code></p></td>
 <td><p>Format d’empaquatage</p></td>
 <td><p>Format du fichier rassemblant les différents fichiers contenant les données pour permettre leur téléchargement conjoint.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/file-type">Type de fichier (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:packageFormat</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:packageFormat</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Libellé du format.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span></code></p></td>
 <td><p>Service</p></td>
 <td><p>Service donnant accès aux données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
 <td><p>Libellé</p></td>
 <td><p>Nom explicite du service de données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code></p></td>
 <td><p>URL de base</p></td>
 <td><p>URL de base du service de données, sans aucun paramètre.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span></code></p></td>
 <td><p>Conforme à</p></td>
 <td><p>Standard ou référentiel de coordonnées auquel se conforme le service.</p></td>
 <td><p><a class="reference external" href="http://www.opengis.net/def/crs/EPSG/0">Registre EPSG de l’OGC (systèmes de coordonnées)</a>, <a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard">Standards de services de données</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
 <td><p>Registre</p></td>
 <td><p>Registre de référence auquel appartient le standard.</p></td>
 <td><p><a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister">Registre de standards</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
 <td><p>Identifiant</p></td>
 <td><p>Identifiant du standard, s’il y a lieu. Pour un système de coordonnées géographiques, il s’agit du code EPSG.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
 <td><p>Libellé</p></td>
 <td><p>Libellé explicite du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">owl:versionInfo</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">owl:versionInfo</span></code></p></td>
 <td><p>Version</p></td>
 <td><p>Numéro ou code de la version du standard à laquelle se conforment les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
 <td><p>Description</p></td>
 <td><p>Description sommaire de l’objet du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
 <td><p>Date de publication</p></td>
 <td><p>Date de publication du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
 <td><p>Date de modification</p></td>
 <td><p>Date de la dernière modification du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:created</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:created</span></code></p></td>
 <td><p>Date de création</p></td>
 <td><p>Date de création du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
 <td><p>Page internet</p></td>
 <td><p>Chemin d’accès au standard ou URL d’une page contenant des informations sur le standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:endpointDescription</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:endpointDescription</span></code></p></td>
 <td><p>URL de la description</p></td>
 <td><p>URL de la description technique du service, par exemple le GetCapabilities d’un service WMS.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
 <td><p>Description</p></td>
 <td><p>Description libre du service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:keyword</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:keyword</span></code></p></td>
 <td><p>Mots-clés libres</p></td>
 <td><p>Mots ou très brèves expressions représentatives du service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type de service de données</p></td>
 <td><p>Type de service de données.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/data-service-type">Types de services de données (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span></code></p></td>
 <td><p>Conditions d’accès</p></td>
 <td><p>Contraintes réglementaires limitant l’accès au service.</p></td>
 <td><p><a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess">Restriction d’accès public (INSPIRE)</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/access-right">Droits d’accès (UE)</a>, <a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations">Restrictions d’accès en application du Code des relations entre le public et l’administration</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Mention</p></td>
 <td><p>Description des contraintes réglementaires et des modalités pratiques pour s’y conformer.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:license</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:license</span></code></p></td>
 <td><p>Licence</p></td>
 <td><p>Licence de mise à diposition des données via le service, ou conditions d’utilisation du service.</p></td>
 <td><p><a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense">Licences admises pour les informations publiques des administrations françaises</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/licence">Licences (UE)</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Caractéristiques de la licence.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/licencetype/1.1">Types de licence (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Termes</p></td>
 <td><p>Termes de la licence.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span></code></p></td>
 <td><p>Point de contact</p></td>
 <td><p>Entité à contacter pour obtenir des informations sur le service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:fn</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:fn</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom du point de contact.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasEmail</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasEmail</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasTelephone</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasTelephone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasURL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:hasURL</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:organization-name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:contactPoint</span> <span class="pre">/</span> <span class="pre">vcard:organization-name</span></code></p></td>
 <td><p>Appartient à</p></td>
 <td><p>Le cas échéant, organisation dont le point de contact fait partie.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span></code></p></td>
 <td><p>Éditeur</p></td>
 <td><p>Organisme ou personne responsable de la mise à disposition du service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:publisher</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span></code></p></td>
 <td><p>Auteur</p></td>
 <td><p>Principal acteur de la création du service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:creator</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span></code></p></td>
 <td><p>Propriétaire</p></td>
 <td><p>Organisme ou personne qui détient des droits sur le service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:name</span></code></p></td>
 <td><p>Nom</p></td>
 <td><p>Nom de l’organisation.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Type d’organisation.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/publishertype/1.0">Types d’entité en charge de la publication (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:mbox</span></code></p></td>
 <td><p>Courriel</p></td>
 <td><p>Adresse mél.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:phone</span></code></p></td>
 <td><p>Téléphone</p></td>
 <td><p>Numéro de téléphone.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:rightsHolder</span> <span class="pre">/</span> <span class="pre">foaf:workplaceHomepage</span></code></p></td>
 <td><p>Site internet</p></td>
 <td><p>Site internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
 <td><p>Date d’ouverture</p></td>
 <td><p>Date d’ouverture du service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:language</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:language</span></code></p></td>
 <td><p>Langues</p></td>
 <td><p>Langue·s prises en charge par le service.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/language">Langues (UE)</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span></code></p></td>
 <td><p>Couverture géographique</p></td>
 <td><p>Territoire couvert par le service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
 <td><p>Index géographique</p></td>
 <td><p>Type de lieu, index de référence pour l’identifiant (commune, département…).</p></td>
 <td><p><a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex">Index géographique de l’INSEE</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
 <td><p>Code géographique</p></td>
 <td><p>Code du département, code INSEE de la commune, etc.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">skos:prefLabel</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">skos:prefLabel</span></code></p></td>
 <td><p>Libellé</p></td>
 <td><p>Dénomination explicite du lieu.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">dcat:bbox</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">dcat:bbox</span></code></p></td>
 <td><p>Rectangle d’emprise</p></td>
 <td><p>Rectangle d’emprise (BBox), au format textuel WKT.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">dcat:centroid</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">dcat:centroid</span></code></p></td>
 <td><p>Centroïde</p></td>
 <td><p>Localisant du centre géographique des données, au format textuel WKT.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">locn:geometry</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:spatial</span> <span class="pre">/</span> <span class="pre">locn:geometry</span></code></p></td>
 <td><p>Géométrie</p></td>
 <td><p>Emprise géométrique, au format textuel WKT.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:spatialResolutionInMeters</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:spatialResolutionInMeters</span></code></p></td>
 <td><p>Résolution spatiale en mètres</p></td>
 <td><p>Résolution des données mises à disposition par le service, exprimée en mètres.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:temporal</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:temporal</span></code></p></td>
 <td><p>Couverture temporelle</p></td>
 <td><p>Période pour laquelle des données sont mises à disposition par le service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:temporal</span> <span class="pre">/</span> <span class="pre">dcat:startDate</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:temporal</span> <span class="pre">/</span> <span class="pre">dcat:startDate</span></code></p></td>
 <td><p>Date de début</p></td>
 <td><p>Date de début de la période.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:temporal</span> <span class="pre">/</span> <span class="pre">dcat:endDate</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dct:temporal</span> <span class="pre">/</span> <span class="pre">dcat:endDate</span></code></p></td>
 <td><p>Date de fin</p></td>
 <td><p>Date de fin de la période.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:temporalResolution</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:accessService</span> <span class="pre">/</span> <span class="pre">dcat:temporalResolution</span></code></p></td>
 <td><p>Résolution temporelle</p></td>
 <td><p>Résolution temporelle des données mises à disposition par le service.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">adms:representationTechnique</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">adms:representationTechnique</span></code></p></td>
 <td><p>Mode de représentation géographique</p></td>
 <td><p>Type de représentation technique de l’information géographique présentée par la distribution, le cas échéant.</p></td>
 <td><p><a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType">Type de représentation géographique (INSPIRE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
 <td><p>Documentation</p></td>
 <td><p>Documentation ou page internet contenant des informations relative à la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span></code></p></td>
 <td><p>Conforme à</p></td>
 <td><p>Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données de la distribution.</p></td>
 <td><p><a class="reference external" href="http://www.opengis.net/def/crs/EPSG/0">Registre EPSG de l’OGC (systèmes de coordonnées)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">skos:inScheme</span></code></p></td>
 <td><p>Registre</p></td>
 <td><p>Registre de référence auquel appartient le standard.</p></td>
 <td><p><a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister">Registre de standards</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
 <td><p>Identifiant</p></td>
 <td><p>Identifiant du standard, s’il y a lieu. Pour un système de coordonnées géographiques, il s’agit du code EPSG.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:title</span></code></p></td>
 <td><p>Libellé</p></td>
 <td><p>Libellé explicite du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">owl:versionInfo</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">owl:versionInfo</span></code></p></td>
 <td><p>Version</p></td>
 <td><p>Numéro ou code de la version du standard à laquelle se conforment les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:description</span></code></p></td>
 <td><p>Description</p></td>
 <td><p>Description sommaire de l’objet du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:issued</span></code></p></td>
 <td><p>Date de publication</p></td>
 <td><p>Date de publication du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
 <td><p>Date de modification</p></td>
 <td><p>Date de la dernière modification du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:created</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">dct:created</span></code></p></td>
 <td><p>Date de création</p></td>
 <td><p>Date de création du standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:conformsTo</span> <span class="pre">/</span> <span class="pre">foaf:page</span></code></p></td>
 <td><p>Page internet</p></td>
 <td><p>Chemin d’accès au standard ou URL d’une page contenant des informations sur le standard.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">cnt:characterEncoding</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">cnt:characterEncoding</span></code></p></td>
 <td><p>Encodage</p></td>
 <td><p>Encodage de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:language</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:language</span></code></p></td>
 <td><p>Langue</p></td>
 <td><p>Langue·s des données de la distribution.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/language">Langues (UE)</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:byteSize</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:byteSize</span></code></p></td>
 <td><p>Taille en bytes</p></td>
 <td><p>Taille en bytes de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:temporalResolution</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:temporalResolution</span></code></p></td>
 <td><p>Résolution temporelle</p></td>
 <td><p>Plus petit pas de temps significatif dans le contexte de la distribution.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:spatialResolutionInMeters</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dcat:spatialResolutionInMeters</span></code></p></td>
 <td><p>Résolution spatiale en mètres</p></td>
 <td><p>Résolution des données de la distribution, exprimée en mètres.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:rights</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:rights</span></code></p></td>
 <td><p>Propriété intellectuelle</p></td>
 <td><p>Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:rights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:rights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Mention</p></td>
 <td><p>Description des contraintes réglementaires et des modalités pratiques pour s’y conformer.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span></code></p></td>
 <td><p>Licence</p></td>
 <td><p>Licence sous laquelle est publiée la distribution ou conditions d’utilisation de la distribution.</p></td>
 <td><p><a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense">Licences admises pour les informations publiques des administrations françaises</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/licence">Licences (UE)</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">dct:type</span></code></p></td>
 <td><p>Type</p></td>
 <td><p>Caractéristiques de la licence.</p></td>
 <td><p><a class="reference external" href="http://purl.org/adms/licencetype/1.1">Types de licence (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:license</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Termes</p></td>
 <td><p>Termes de la licence.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span></code></p></td>
 <td><p>Conditions d’accès</p></td>
 <td><p>Contraintes réglementaires limitant l’accès à la distribution.</p></td>
 <td><p><a class="reference external" href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess">Restriction d’accès public (INSPIRE)</a>, <a class="reference external" href="http://publications.europa.eu/resource/authority/access-right">Droits d’accès (UE)</a>, <a class="reference external" href="http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations">Restrictions d’accès en application du Code des relations entre le public et l’administration</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:distribution</span> <span class="pre">/</span> <span class="pre">dct:accessRights</span> <span class="pre">/</span> <span class="pre">rdfs:label</span></code></p></td>
 <td><p>Mention</p></td>
 <td><p>Description des contraintes réglementaires et des modalités pratiques pour s’y conformer.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:landingPage</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dcat:landingPage</span></code></p></td>
 <td><p>Page internet</p></td>
 <td><p>URL de la fiche de métadonnées sur internet.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:page</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:page</span></code></p></td>
 <td><p>Documentation</p></td>
 <td><p>URL d’accès à une documentation rédigée décrivant la donnée.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:isReferencedBy</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:isReferencedBy</span></code></p></td>
 <td><p>Cité par</p></td>
 <td><p>URL d’une publication qui utilise ou évoque les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:relation</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:relation</span></code></p></td>
 <td><p>Ressource liée</p></td>
 <td><p>URL d’accès à une ressource en rapport avec les données.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:language</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:language</span></code></p></td>
 <td><p>Langue des données</p></td>
 <td><p>Langue·s des données.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/language">Langues (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plume:relevanceScore</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plume:relevanceScore</span></code></p></td>
 <td><p>Score</p></td>
 <td><p>Niveau de pertinence de la donnée. Plus le score est élevé plus la donnée sera mise en avant dans les résultats de recherche.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:type</span></code></p></td>
 <td><p>Type de jeu de données</p></td>
 <td><p>Type de jeu de données.</p></td>
 <td><p><a class="reference external" href="http://publications.europa.eu/resource/authority/dataset-type">Types de jeux de données (UE)</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct:identifier</span></code></p></td>
 <td><p>Identifiant interne</p></td>
 <td><p>Identifiant du jeu de données, attribué automatiquement par Plume.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span></code></p></td>
 <td><p>Fiche distante</p></td>
 <td><p>Configuration d’import des métadonnées depuis une fiche de catalogue INSPIRE.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span> <span class="pre">/</span> <span class="pre">dcat:endpointURL</span></code></p></td>
 <td><p>Service CSW</p></td>
 <td><p>URL de base du service CSW, sans aucun paramètre.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plume:linkedRecord</span> <span class="pre">/</span> <span class="pre">dct:identifier</span></code></p></td>
 <td><p>Identifiant de la fiche</p></td>
 <td><p>Identifiant de la fiche de métadonnées (et non de la ressource).</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span></code></p></td>
 <td><p>Informations sur les métadonnées</p></td>
 <td><p>Métadonnées des métadonnées.</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">foaf:isPrimaryTopicOf</span> <span class="pre">/</span> <span class="pre">dct:modified</span></code></p></td>
 <td><p>Date de modification des métadonnées</p></td>
 <td><p>Date et heure de la dernière modification des métadonnées. Cette propriété est renseignée automatiquement par Plume lors de la sauvegarde de la fiche de métadonnées.</p></td>
 <td><p></p></td>

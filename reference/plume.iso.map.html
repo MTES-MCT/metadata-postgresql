@@ -416,8 +416,8 @@ présumées être en français.</p>
 </tbody>
 </table>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.iso639_language_codes">
-<span class="sig-name descname"><span class="pre">iso639_language_codes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plume.iso.map.IsoToDcat.iso639_language_codes" title="Lien permanent vers cette définition">#</a></dt>
+<dt class="sig sig-object py" id="plume.iso.map.IsoToDcat.ISO639_LANGUAGE_CODES">
+<span class="sig-name descname"><span class="pre">ISO639_LANGUAGE_CODES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#plume.iso.map.IsoToDcat.ISO639_LANGUAGE_CODES" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>dict: Mapping des codes de langue de trois caractères en codes à deux caractères.</p>
 <p>Répertoire des codes de langues utilisés par les métadonnées
 ISO 19139. Les clés sont les codes sur trois caractères des
@@ -525,7 +525,10 @@ du XML.</p>
 <dt><strong>elem</strong><span class="classifier">xml.etree.ElementTree.Element</span></dt><dd><p>Un élément XML présumé contenir l’information
 recherchée.</p>
 </dd>
-<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Le chemin de l’information recherchée dans le XML.</p>
+<dt><strong>path</strong><span class="classifier">str or list(str)</span></dt><dd><p>Le chemin de l’information recherchée dans le XML.
+Il est possible de fournir une liste de chemins, auquel
+cas la fonction s’appliquera successivement à tous les
+chemins listés.</p>
 </dd>
 <dt><strong>subject</strong><span class="classifier">plume.rdf.utils.DatasetId or rdflib.term.BNode</span></dt><dd><p>L’identifiant du graphe ou le noeud anonyme sujet
 des triples à renvoyer.</p>
@@ -537,20 +540,25 @@ renvoyés.</p>
 la fonction s’arrête dès qu’une valeur a été trouvée,
 même si le XML en contenait plusieurs.</p>
 </dd>
-<dt><strong>transform</strong><span class="classifier">{None, “email”, “phone”}, optional</span></dt><dd><p>Le cas échéant, la nature de la transformation à
-appliquer aux objets des triples.</p>
+<dt><strong>transform</strong><span class="classifier">function, optional</span></dt><dd><p>Le cas échéant, une fonction de formatage à appliquer aux objets
+des triples. Elle doit prendre un unique argument, la valeur
+de l’objet, et renvoyer un URI.</p>
 </dd>
-<dt><strong>thesaurus</strong><span class="classifier">tuple(rdflib.term.URIRef, tuple(str))</span></dt><dd><p>Source de vocabulaire contrôlée pour les objets des triples.
+<dt><strong>thesaurus</strong><span class="classifier">tuple(rdflib.term.URIRef, tuple(str)) or list</span></dt><dd><p>Source de vocabulaire contrôlée pour les objets des triples.
 Il s’agit d’un tuple dont le premier élément est l’IRI de la
 source, le second un tuple de langues pour lequel le thésaurus
-doit être généré.</p>
+doit être généré.
+La fonction ne présume pas de la nature de la valeur recueillie
+dans le XML, elle lui cherchera une correspondance en tant qu’IRI et
+en tant qu’étiquette.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>list of tuples</dt><dd><p>Une liste de triples, ou une liste vide si le chemin cherché
-n’était pas présent dans le XML.</p>
+n’était pas présent dans le XML ou pour une valeur issue de
+thésaurus non répertoriée.</p>
 </dd>
 </dl>
 </dd>
@@ -567,7 +575,10 @@ n’était pas présent dans le XML.</p>
 <dt><strong>elem</strong><span class="classifier">xml.etree.ElementTree.Element</span></dt><dd><p>Un élément XML présumé contenir l’information
 recherchée.</p>
 </dd>
-<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Le chemin de l’information recherchée dans le XML.</p>
+<dt><strong>path</strong><span class="classifier">str or list(str)</span></dt><dd><p>Le chemin de l’information recherchée dans le XML.
+Il est possible de fournir une liste de chemins, auquel
+cas la fonction s’appliquera successivement à tous les
+chemins listés.</p>
 </dd>
 <dt><strong>subject</strong><span class="classifier">plume.rdf.utils.DatasetId or rdflib.term.BNode</span></dt><dd><p>L’identifiant du graphe ou le noeud anonyme sujet
 des triples à renvoyer.</p>
@@ -590,6 +601,29 @@ et RDF.langString ne doivent pas être spécifiés.</p>
 <dd class="field-even"><dl class="simple">
 <dt>list of tuples</dt><dd><p>Une liste de triples, ou une liste vide si le chemin cherché
 n’était pas présent dans le XML.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.iso.map.parse_xml">
+<span class="sig-prename descclassname"><span class="pre">plume.iso.map.</span></span><span class="sig-name descname"><span class="pre">parse_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_xml</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.iso.map.parse_xml" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Désérialise un XML contenant des métadonnées ISO 19115/19139.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>raw_xml</strong><span class="classifier">str</span></dt><dd><p>Un XML présumé contenir des métadonnées ISO 19115/19139,
+englobées ou non dans une réponse de CSW.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>xml.etree.ElementTree.Element</dt><dd><p>Si un élément <code class="docutils literal notranslate"><span class="pre">gmd:MD_Metadata</span></code> a été trouvé
+dans le XML, il est renvoyé. Sinon, la fonction 
+renvoie un élément <code class="docutils literal notranslate"><span class="pre">gmd:MD_Metadata</span></code> vide.</p>
 </dd>
 </dl>
 </dd>

@@ -6,7 +6,7 @@
 | `owl:versionInfo` | Version | Numéro de version ou millésime du jeu de données. |  |
 | `dct:description` | Description | Description du jeu de données. |  |
 | `plume:isExternal` | Donnée externe | Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe. |  |
-| `dcat:theme` | Thèmes | Classification thématique du jeu de données. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](https://inspire.ec.europa.eu/theme), [Catégories thématiques ISO 19115 (INSPIRE)](https://inspire.ec.europa.eu/metadata-codelist/TopicCategory) |
+| `dcat:theme` | Thèmes | Classification thématique du jeu de données. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](http://inspire.ec.europa.eu/theme), [Catégories thématiques ISO 19115 (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/TopicCategory) |
 | `dcat:keyword` | Mots-clés libres | Mots ou très brèves expressions représentatives du jeu de données, à l'usage des moteurs de recherche. |  |
 | `dct:spatial` | Couverture géographique | Territoire·s décrit·s par le jeu de données. |  |
 | `dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex) |
@@ -21,7 +21,8 @@
 | `dct:created` | Date de création | Date de création du jeu de données. Il peut par exemple s'agir de la date de création de la table PostgreSQL ou de la date de la première saisie de données dans cette table. |  |
 | `dct:modified` | Date de dernière modification | Date de la dernière modification du jeu de données. Cette date est présumée tenir compte tant des modifications de fond, tels que les ajouts d'enregistrements, que des modification purement formelles (corrections de coquilles dans les données, changement de nom d'un champ, etc.). L'absence de date de dernière modification signifie que la donnée n'a jamais été modifiée depuis sa création. |  |
 | `dct:issued` | Date de publication | Date à laquelle le jeu de données a été diffusé. Cette date ne devrait être renseignée que pour un jeu de données effectivement mis à disposition du public ou d'utilisateur tiers via un catalogue de données ou un site internet. Pour un jeu de données mis à jour en continu, il s'agit de la date de publication initiale. |  |
-| `dct:accrualPeriodicity` | Fréquence de mise à jour | Fréquence de mise à jour des données. | [Fréquence d'actualisation (INSPIRE)](https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency), [Fréquences (UE)](http://publications.europa.eu/resource/authority/frequency) |
+| `dct:accrualPeriodicity` | Fréquence de mise à jour | Fréquence de mise à jour des données. | [Fréquence d'actualisation (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency), [Fréquences (UE)](http://publications.europa.eu/resource/authority/frequency) |
+| `adms:status` | Statut | Maturité du jeu de données. | [Statut du jeu de données (UE)](http://publications.europa.eu/resource/authority/dataset-status), [État du jeu de données (ISO 19139)](http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode) |
 | `dct:provenance` | Généalogie | Sources et méthodes mises en œuvre pour produire les données. |  |
 | `dct:provenance / rdfs:label` | Texte | Informations sur l'origine des données : sources, méthodes de recueil ou de traitement... |  |
 | `adms:versionNotes` | Note de version | Différences entre la version courante des données et les versions antérieures. |  |
@@ -113,7 +114,7 @@
 | `dcat:distribution / dct:issued` | Date de publication | Date à laquelle la distribution a été diffusée. |  |
 | `dcat:distribution / dct:modified` | Date de dernière modification | Date de la dernière modification de la distribution. |  |
 | `dcat:distribution / dcatap:availability` | Disponibilité | Niveau de disponibilité prévu pour la distribution, permettant d'apprécier le temps pendant lequel elle est susceptible de rester accessible. | [Disponibilité prévue (UE)](http://publications.europa.eu/resource/authority/planned-availability) |
-| `dcat:distribution / adms:status` | Statut | Niveau de maturité de la distribution. | [Statut du jeu de données (UE)](http://publications.europa.eu/resource/authority/dataset-status) |
+| `dcat:distribution / adms:status` | Statut | Maturité de la distribution. | [Statut du jeu de données (UE)](http://publications.europa.eu/resource/authority/dataset-status), [État du jeu de données (ISO 19139)](http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode) |
 | `dcat:distribution / dct:type` | Type de distribution | Type de distribution. | [Type de distribution (UE)](http://publications.europa.eu/resource/authority/distribution-type) |
 | `dcat:distribution / dct:format` | Format de fichier | Format de fichier ou extension. | [Type de fichier (UE)](http://publications.europa.eu/resource/authority/file-type) |
 | `dcat:distribution / dct:format / rdfs:label` | Nom | Libellé du format. |  |
