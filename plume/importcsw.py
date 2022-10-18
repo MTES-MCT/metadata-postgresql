@@ -306,7 +306,8 @@ class Ui_Dialog_ImportCSW(object):
         mListurlCswtemp = list(reversed(mListurlCsw))
         mListurlCswtemp = mListurlCsw
 
-        self.mTreeCSW.afficheCSW(mListurlCswtemp, self.mZoneUrl, self.mZoneLibUrl, mListliburlCsw)
+        self.mTreeCSW.afficheCSW(mListurlCswtemp, mListliburlCsw, self.mZoneUrl, self.mZoneLibUrl, self.mZoneUrlId)
+
         #------ TREEVIEW Position importante 
         
     #===============================              
@@ -408,9 +409,10 @@ class TREEVIEWCSW(QTreeWidget):
         return
                
     #===============================              
-    def afficheCSW(self, listeUrlCSW, _mZoneUrl, _mZoneLibUrl, listliburlCSW):
+    def afficheCSW(self, listeUrlCSW, listliburlCSW, _mZoneUrl, _mZoneLibUrl, _mZoneUrlId):
         self._mZoneUrl    = _mZoneUrl
         self._mZoneLibUrl = _mZoneLibUrl
+        self._mZoneUrlId = _mZoneUrlId
         iconGestion = bibli_plume.returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\plume.svg")  
         #---
         self.header().setStretchLastSection(False)
@@ -561,6 +563,7 @@ class TREEVIEWCSW(QTreeWidget):
         mItemClicLibUrlCsw = item.data(0, Qt.DisplayRole)
         self._mZoneUrl.setText(mItemClicUrlCsw if mItemClicUrlCsw != None else "")
         self._mZoneLibUrl.setText(mItemClicLibUrlCsw if mItemClicUrlCsw != None else "")
+        self._mZoneUrlId.setText("")
         return
 
     #===============================              
@@ -589,5 +592,5 @@ class TREEVIEWCSW(QTreeWidget):
         #===============================              
         self.clear()
         url_list, label_list = self.update_csw(url_list, label_list, mCsw, mLibCsw)
-        self.afficheCSW(url_list, self._mZoneUrl, self._mZoneLibUrl, label_list)
+        self.afficheCSW(url_list, label_list, self._mZoneUrl, self._mZoneLibUrl, self._mZoneUrlId )
         return
