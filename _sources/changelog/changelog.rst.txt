@@ -9,4 +9,4 @@ Notes de version
    v0_4_0_beta
    v0_4_1_beta
    v0_5_0_beta
-   v1_0_0
+   v0_6_0_beta
