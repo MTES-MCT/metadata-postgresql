@@ -1342,7 +1342,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(len(g.children), 3)
         c = g.children[0]
         self.assertTrue(c.m_twin)
-        self.assertTrue("Registre EPSG de l'OGC (systèmes de coordonnées)" in widgetsdict[c]['sources'])
+        self.assertTrue("Système de référence de coordonnées EPSG (OGC)" in widgetsdict[c]['sources'])
         self.assertTrue(widgetsdict[c]['multiple sources'])
         # on pourrait aussi ne pas avoir de clé-valeur jumelle dans
         # ce cas. Les deux tests précédents servent seulement à confirmer
