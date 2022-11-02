@@ -2259,7 +2259,7 @@
     skos:prefLabel "EPSG 9794 : RGF93 v2b / Lambert-93 (France métropolitaine)" .
 
 <http://www.opengis.net/def/crs/EPSG/0> a skos:ConceptScheme ;
-    skos:prefLabel "Système de référence de coordonnées EPSG"@fr,
+    skos:prefLabel "Système de référence de coordonnées EPSG (OGC)"@fr,
         "EPSG Coordinate reference system (OGC)"@en.
 
 
