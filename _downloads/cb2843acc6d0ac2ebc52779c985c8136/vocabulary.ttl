@@ -2207,9 +2207,7 @@
 
 <http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
     dct:identifier "OGC-EPSG" ;
-    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister> ;
-    skos:prefLabel "OGC EPSG Coordinate Reference Systems Register"@en,
-        "Registre EPSG de l'OGC (systèmes de coordonnées)"@fr .
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister> .
 
 <http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister> a skos:ConceptScheme ;
     skos:prefLabel "Registre de standards"@fr,
@@ -2261,8 +2259,8 @@
     skos:prefLabel "EPSG 9794 : RGF93 v2b / Lambert-93 (France métropolitaine)" .
 
 <http://www.opengis.net/def/crs/EPSG/0> a skos:ConceptScheme ;
-    skos:prefLabel "Système de coordonnées (registre EPSG de l'OGC)"@fr,
-        "EPSG coordinate reference systems (OGC register)"@en.
+    skos:prefLabel "Système de référence de coordonnées EPSG (OGC)"@fr,
+        "EPSG Coordinate reference system (OGC)"@en.
 
 
 <http://spdx.org/licenses/etalab-2.0> a skos:Concept ;

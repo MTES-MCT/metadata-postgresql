@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Version majeure 1.0.0 (en cours de développement) &#8212; Documentation Plume 0.3.0-beta</title>
+    <title>Version mineure 0.6.0 bêta (en cours de développement) &#8212; Documentation Plume 0.3.0-beta</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -36,11 +36,10 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/translations.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'changelog/v1_0_0';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'changelog/v0_6_0_beta';</script>
     <link rel="shortcut icon" href="../_static/plume.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Recherche" href="../search.html" />
-    <link rel="prev" title="Version mineure 0.5.0 bêta" href="v0_5_0_beta.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="fr">
   </head>
@@ -131,7 +130,7 @@
                 </li>
                 
 
-                <li class="nav-item current active">
+                <li class="nav-item">
                     <a class="nav-link" href="changelog.html">
                         Notes de version
                     </a>
@@ -199,7 +198,7 @@
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
   
   <div class="sidebar-header-items sidebar-primary__section">
@@ -235,7 +234,7 @@
                 </li>
                 
 
-                <li class="nav-item current active">
+                <li class="nav-item">
                     <a class="nav-link" href="changelog.html">
                         Notes de version
                     </a>
@@ -281,26 +280,6 @@
   </div>
 
   
-  <div class="sidebar-start-items sidebar-primary__section">
-    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">
-    Section Navigation
-  </p>
-  <div class="bd-toc-item navbar-nav">
-    <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="v0_3_1_beta.html">Version mineure 0.3.1 bêta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="v0_3_2_beta.html">Version mineure 0.3.2 bêta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="v0_4_0_beta.html">Version 0.4.0 bêta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="v0_4_1_beta.html">Version mineure 0.4.1 bêta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="v0_5_0_beta.html">Version mineure 0.5.0 bêta</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Version majeure 1.0.0 (en cours de développement)</a></li>
-</ul>
-
-  </div>
-</nav>
-    </div>
-  </div>
-  
 
   
   <div class="sidebar-end-items sidebar-primary__section">
@@ -322,10 +301,41 @@
             
             <article class="bd-article" role="main">
               
-  <section id="version-majeure-1-0-0-en-cours-de-developpement">
-<h1>Version majeure 1.0.0 (en cours de développement)<a class="headerlink" href="#version-majeure-1-0-0-en-cours-de-developpement" title="Lien permanent vers ce titre">#</a></h1>
+  <section id="version-mineure-0-6-0-beta-en-cours-de-developpement">
+<h1>Version mineure 0.6.0 bêta (en cours de développement)<a class="headerlink" href="#version-mineure-0-6-0-beta-en-cours-de-developpement" title="Lien permanent vers ce titre">#</a></h1>
 <p><em>Date de publication : à venir.</em></p>
 <p><em>Sur GitHub : à venir.</em></p>
+<section id="refonte-de-l-interface">
+<h2>Refonte de l’interface<a class="headerlink" href="#refonte-de-l-interface" title="Lien permanent vers ce titre">#</a></h2>
+<p>L’interface de Plume devient plus ergonomique et plus souple. En particulier :</p>
+<ul class="simple">
+<li><p>La barre d’outils de Plume et ses fiches de métadonnées présentent désormais de nouvelles icônes colorées plus aisément reconnaissables. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/84">issue #84</a>.</em></p></li>
+<li><p>Il est désormais possible d’utiliser des polices exotiques ou d’activer le grossissement sur son écran sans avoir de libellés tronqués, tant dans l’interface principale que dans la boîte de dialogue de paramétrage et la boîte de dialogue pour l’import depuis un CSW). <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/91">issue #91</a>.</em></p></li>
+<li><p>La boîte de paramétrage a été réorganisée, avec un classement plus intuitif des paramètres dans les onglets. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/90">issue #90</a>.</em></p></li>
+<li><p>La barre d’outils de l’interface principale bénéficie désormais d’un placement dynamique des icônes et réagit mieux en cas de redimensionnement de la fenêtre, grossissement, etc. <em>Références : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/82">issue #82</a>, <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/87">issue #87</a>.</em></p></li>
+<li><p>Dans tous les menus de choix, il est désormais possible d’identifier immédiatement la valeur actuellement sélectionnée par la petite flèche positionnée devant. Ce fonctionnement existait déjà pour le menu de choix du modèle (barre d’outils) et les menus de choix de la source qui accompagnent certaines catégories de métadonnées, il est désormais étendu à tous les autres. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/85">issue #85</a>.</em></p></li>
+</ul>
+<p>Afin d’assurer l’homogénéité visuelle des boutons avec menus, le bouton d’aide à la saisie des géométries qui, en mode édition, est associé aux métadonnées de type géométrique, adopte un nouveau fonctionnement :
+cliquer brièvement active/désactive la visualisation de la géométrie saisie, cliquer en maintenant appuyé quelques secondes fait apparaître le menu.  <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/81">issue #81</a>.</em></p>
+</section>
+<section id="des-libelles-pour-les-services-csw">
+<h2>Des libellés pour les services CSW<a class="headerlink" href="#des-libelles-pour-les-services-csw" title="Lien permanent vers ce titre">#</a></h2>
+<p>Plume permettait déjà de mémoriser des URL de base de services CSW pour éviter d’avoir à les resaisir à chaque import de fiche. Il est désormais possible d’ajouter un libellé à ces URL pour retrouver plus facilement à quoi elles correspondent. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/95">issue #95</a>.</em></p>
+</section>
+<section id="securisation-du-changement-de-langue-ou-de-modele">
+<h2>Sécurisation du changement de langue ou de modèle<a class="headerlink" href="#securisation-du-changement-de-langue-ou-de-modele" title="Lien permanent vers ce titre">#</a></h2>
+<p>L’utilisateur est désormais averti qu’il risque de perdre ses modifications non enregistrées lorsqu’il change la langue principale de saisie ou le modèle, comme il l’était déjà lors d’un retour en mode lecture ou lorsqu’il activait/désactivait le mode traduction. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/88">issue #88</a>.</em></p>
+</section>
+<section id="correction-d-anomalies-et-divers">
+<h2>Correction d’anomalies et divers<a class="headerlink" href="#correction-d-anomalies-et-divers" title="Lien permanent vers ce titre">#</a></h2>
+<p>Correction de la fonctionnalité d’import depuis un fichier de métadonnées INSPIRE ou ISO 19115/19139 pour qu’elle reconnaisse l’élément <code class="docutils literal notranslate"><span class="pre">gmd:MD_Metadata</span></code> qu’il soit à la racine ou englobé dans un élément de réponse comme <code class="docutils literal notranslate"><span class="pre">csw:GetRecordByIdResponse</span></code>. À défaut, les tentatives d’import produisaient souvent une fiche vide. Cette évolution rend aussi plus permissif l’import depuis les CSW, même s’il n’y avait pas nécessairement de besoin identifié à date (mêmes commandes de traitement pour les deux sources). <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/93">issue #93</a>.</em></p>
+<p>Un rôle qui n’est pas propriétaire d’une table/vue et n’a donc accès à ses métadonnées qu’en lecture peut désormais réaliser toutes les actions normalement disponibles dans ce mode : choisir la langue principale d’affichage des métadonnées, choisir le modèle de fiche de métadonnées, copier la fiche, exporter la fiche. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/94">issue #94</a>.</em></p>
+<p>Correction d’une anomalie qui provoquait l’apparition de boutons moins parasites lors de l’activation ou la désactivation de la saisie manuelle. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/89">issue #89</a>.</em></p>
+<p>Correction d’une anomalie qui altérait l’ordre de préférence des langues défini par l’utilisateur.</p>
+<p>Correction d’une anomalie qui provoquait des erreurs lors de l’usage d’un modèle de fiche de métadonnées affectant explicitement un onglet à une catégorie commune dont le chemin comporte des majuscules.</p>
+<p>Correction d’une anomalie qui faisait qu’une fiche de métadonnées ouverte en mode édition lors de la fermeture de Plume réapparaissait comme fiche courante si Plume était rouvert avec une ressource sélectionnée autre qu’une couche PostgreSQL. <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/83">issue #83</a>.</em></p>
+<p>Correction d’une anomalie qui faisait que fermer Plume avec une fiche en mode édition puis rouvrir immédiatement Plume montrait à l’utilisateur l’écran d’accueil… avec tous les boutons de la barre d’outils actifs.  <em>Référence : <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/issues/83">issue #83</a>.</em></p>
+</section>
 </section>
 
 
@@ -336,13 +346,6 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="v0_5_0_beta.html" title="précédent page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">précédent</p>
-          <p class="prev-next-title">Version mineure 0.5.0 bêta</p>
-      </div>
-  </a>
 </div>
             </footer>
             
@@ -352,6 +355,38 @@
           
             <div class="bd-sidebar-secondary bd-toc">
               
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#refonte-de-l-interface">
+   Refonte de l’interface
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#des-libelles-pour-les-services-csw">
+   Des libellés pour les services CSW
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#securisation-du-changement-de-langue-ou-de-modele">
+   Sécurisation du changement de langue ou de modèle
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#correction-d-anomalies-et-divers">
+   Correction d’anomalies et divers
+  </a>
+ </li>
+</ul>
+
+</nav>
+</div>
+
 <div class="toc-item">
   
 <div id="searchbox"></div>
@@ -364,7 +399,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/changelog/v1_0_0.md.txt">
+    <a href="../_sources/changelog/v0_6_0_beta.md.txt">
         <i class="fa-solid fa-file-lines"></i> Montrer le code source
     </a>
 </div>
