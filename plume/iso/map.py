@@ -255,9 +255,10 @@ class IsoToDcat:
                         l.append((self.datasetid, DCAT.theme, keyword_iri))
                         continue
                 for k in keyword.split(','):
+                    k = k.strip()
                     if k:
                         l.append((self.datasetid, DCAT.keyword,
-                            Literal(k.strip(), lang=self.language)))
+                            Literal(k, lang=self.language)))
         return l
 
     @property
@@ -482,7 +483,7 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         Le cas échéant, une fonction de formatage à appliquer aux objets
         des triples. Elle doit prendre un unique argument, la valeur
         de l'objet, et renvoyer un URI.
-    thesaurus : tuple(rdflib.term.URIRef, tuple(str)) or list
+    thesaurus : tuple(rdflib.term.URIRef, tuple(str))
         Source de vocabulaire contrôlée pour les objets des triples.
         Il s'agit d'un tuple dont le premier élément est l'IRI de la
         source, le second un tuple de langues pour lequel le thésaurus
