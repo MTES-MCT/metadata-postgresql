@@ -5,8 +5,8 @@
 -- > Script de mise à jour depuis la version 0.1.1
 --
 -- Copyright République Française, 2022.
--- Secrétariat général du Ministère de la transition écologique et
--- de la cohésion des territoires, du Ministère de la transition
+-- Secrétariat général du Ministère de la Transition écologique et
+-- de la Cohésion des territoires, du Ministère de la Transition
 -- énergétique et du Secrétariat d'Etat à la Mer.
 -- Direction du numérique.
 --
