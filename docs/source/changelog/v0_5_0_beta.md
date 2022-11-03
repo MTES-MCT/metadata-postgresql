@@ -4,7 +4,7 @@
 
 *Sur GitHub : [https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.5-beta](https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.5-beta).*
 
-Plume v0.5 bêta est vraisemblablement la dernière version précédant le déploiement officiel de Plume, hors correctifs éventuels. Elle poursuit la mise à disposition des fonctionnalités essentielles pour la saisie et la consultation des métadonnées.
+Plume v0.5 bêta poursuit la mise à disposition des fonctionnalités essentielles pour la saisie et la consultation des métadonnées.
 
 ## Import de métadonnées depuis un fichier XML conforme INSPIRE
 
