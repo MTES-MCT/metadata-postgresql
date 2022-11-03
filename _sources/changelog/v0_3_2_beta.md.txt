@@ -1,4 +1,4 @@
-# Version mineure 0.3.2 bêta
+# Version corrective 0.3.2 bêta
 
 *Date de publication : 31 mars 2022.*
 
