@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-06-06 à 19:06:24."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-12-07 à 11:00:59."
         ]
     },
     "Classique": {
@@ -421,8 +421,8 @@
                 false,
                 [
                     "http://publications.europa.eu/resource/authority/data-theme",
-                    "https://inspire.ec.europa.eu/theme",
-                    "https://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
+                    "http://inspire.ec.europa.eu/theme",
+                    "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
                 ],
                 null,
                 null,
@@ -497,7 +497,7 @@
                 "false",
                 false,
                 [
-                    "https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency",
+                    "http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency",
                     "http://publications.europa.eu/resource/authority/frequency"
                 ],
                 null,
@@ -1049,7 +1049,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-06-06 à 19:06:24."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-12-07 à 11:00:59."
         ]
     },
     "Donnée externe": {
@@ -1396,8 +1396,8 @@
                 false,
                 [
                     "http://publications.europa.eu/resource/authority/data-theme",
-                    "https://inspire.ec.europa.eu/theme",
-                    "https://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
+                    "http://inspire.ec.europa.eu/theme",
+                    "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
                 ],
                 null,
                 null,
@@ -1472,7 +1472,7 @@
                 "false",
                 false,
                 [
-                    "https://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency",
+                    "http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency",
                     "http://publications.europa.eu/resource/authority/frequency"
                 ],
                 null,
@@ -1886,7 +1886,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-06-06 à 19:06:24."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-12-07 à 11:00:59."
         ]
     }
 }
