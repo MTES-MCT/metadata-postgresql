@@ -10,7 +10,9 @@ un super-utilisateur.
 import unittest, psycopg2
 
 from plume.rdf.utils import data_from_file, abspath
-from plume.rdf.namespaces import RDF
+from plume.rdf.rdflib import URIRef
+from plume.rdf.namespaces import RDF, DCAT
+from plume.rdf.widgetsdict import WidgetsDict
 from plume.pg.template import TemplateDict, search_template, \
     LocalTemplatesCollection
 from plume.pg.description import PgDescription
@@ -294,6 +296,30 @@ class TemplateTestCase(unittest.TestCase):
             search_template(templates_c, pg_description_2.metagraph),
             'Classique'
             )
+
+    def test_local_template_sources(self):
+        """Récupération des sources de vocabulaires contrôlés avec les modèles stockés en local.
+
+        """
+        templates_collection = LocalTemplatesCollection()
+        pg_description_1 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_1.txt')))
+        template = templates_collection['Donnée externe']
+        self.assertTrue(URIRef('http://inspire.ec.europa.eu/theme') in template.shared['dcat:theme']['sources'])
+        self.assertTrue(URIRef('http://publications.europa.eu/resource/authority/data-theme') in template.shared['dcat:theme']['sources'])
+        widgetdict = WidgetsDict(pg_description_1.metagraph, template=template, langList=['fr', 'en'])
+        k = widgetdict.root.search_from_path(DCAT.theme)
+        self.assertIsNotNone(k)
+        self.assertEqual(len(k.children), 2)
+        c0 = k.children[0]
+        c1 = k.children[1]
+        self.assertTrue(URIRef('http://inspire.ec.europa.eu/theme') in c0.sources)
+        self.assertTrue(URIRef('http://publications.europa.eu/resource/authority/data-theme') in c0.sources)
+        self.assertEqual(c0.value_source, URIRef('http://publications.europa.eu/resource/authority/data-theme'))
+        self.assertEqual(c1.value_source, URIRef('http://inspire.ec.europa.eu/theme'))
+        self.assertEqual(c1.value, URIRef('http://inspire.ec.europa.eu/theme/au'))
+        self.assertEqual(widgetdict[c1]['value'], 'Unités administratives')
+        self.assertEqual(widgetdict[c1]['value'], 'Unités administratives')
+        self.assertTrue(widgetdict[c1]['multiple sources'])
 
 if __name__ == '__main__':
     unittest.main()
