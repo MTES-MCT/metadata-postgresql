@@ -123,7 +123,7 @@ class Ui_Dialog(object):
         mLinkLL = '<a href=\"' + mLinkLL + '\">' + MonHtmlLL + '</a>'
         
         MonHtml += "<b>"
-        MonHtml4 = QtWidgets.QApplication.translate("about", "MTE / MCTRCT / Mer", None) 
+        MonHtml4 = QtWidgets.QApplication.translate("about", "MTECT/MTE/Mer", None) 
         MonHtml += MonHtml4
         MonHtml += "</b><br><b>"
         MonHtml6 = QtWidgets.QApplication.translate("about", "digital service SG/DNUM/UNI/DRC", None) 
