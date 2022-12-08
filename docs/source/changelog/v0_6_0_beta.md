@@ -72,9 +72,9 @@ La propriété équivalente pour les distributions `dcat:distribution / adms:sta
 
 Correction d'URI de termes et d'ensembles de termes de vocabulaires contrôlés qui présentaient à tort le protocole *https* au lieu de *http*.
 
-***Attention :*** *Ces évolutions donnent lieu à une nouvelle version de l'extension PlumePg, la version 0.1.2, qui les répercute dans la table des catégories `z_plume.meta_categorie`. **Il est fortement recommandé aux utilisateurs de PlumePg de procéder à la mise à jour l'extension.***
+***Attention :*** *Ces évolutions donnent lieu à une nouvelle version de l'extension PlumePg, la version 0.1.2, qui les répercute dans la table des catégories `z_plume.meta_categorie`. **Il est fortement recommandé aux utilisateurs de PlumePg de procéder à la mise à jour l'extension**, faute de quoi les modèles personnalisés définis via PlumePg ne seront plus disponibles pour les utilisateurs de Plume.*
 
-*La rétro-compatibilité n'est pas assurée au niveau des fiches de métadonnées elles-mêmes. Si des métadonnées déjà saisies contiennent les URI erronnées susmentionnées, celles-ci ne seront pas correctement affichées dans l'interface de Plume.*
+*Pour cette version bêta, la rétro-compatibilité n'est pas assurée au niveau des fiches de métadonnées elles-mêmes. Si des métadonnées déjà saisies contiennent les URI erronnées susmentionnées, celles-ci ne seront pas correctement affichées dans l'interface de Plume.*
 
 ## Des libellés pour les services CSW
 
