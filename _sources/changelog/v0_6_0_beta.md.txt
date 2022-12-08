@@ -1,6 +1,6 @@
 # Version mineure 0.6.0 bêta
 
-*Date de publication : à venir.*
+*Date de publication : 8 décembre 2022.*
 
 *Sur GitHub : https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.6-beta.*
 
@@ -66,7 +66,7 @@ Ces paramètres visent notamment à faciliter deux usages :
 
 ## Registre de Plume
 
-Plume dispose désormais d'un véritable registre RDF, accessible à l'adresse : https://registre.data.developpement-durable.gouv.fr/plume.
+Plume dispose désormais d'un véritable **registre RDF**, accessible à l'adresse : https://registre.data.developpement-durable.gouv.fr/plume.
 
 Ainsi, une personne ou une application qui consulte une fiche de métadonnées élaborée avec Plume peut maintenant interroger ce registre pour disposer d'informations sur les catégories de métadonnées communes et les vocabulaires contrôlés spécifiques à Plume.
 
