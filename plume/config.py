@@ -10,7 +10,7 @@ PLUME_VERSION = 'v0.6.0 bêta'
 PLUME_VERSION_TPL = (0, 6, 0)
 """Version courante de Plume, sous forme de tuple (version majeure, version mineure, correctif)."""
 
-PLUME_PG_MIN_VERSION = '0.1.0'
+PLUME_PG_MIN_VERSION = '0.1.2'
 """Plus petite version de l'extension PlumePg compatible avec la version courante de Plume."""
 
 PLUME_PG_MAX_VERSION = '1.0.0'
