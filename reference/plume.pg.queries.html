@@ -373,15 +373,14 @@
 <p>Requêtes prêtes à être envoyées au serveur PostgreSQL.</p>
 <p>Ce module suppose l’usage de la bibliothèque Psycopg pour la
 communication avec le serveur PostgreSQL.</p>
-<p>Selon le cas, les paramètres des requêtes doivent être passés :</p>
-<ul class="simple">
-<li><p>soit en argument de la fonction qui crée la requête, dans
-le cas des identifiants d’objets PostgreSQL ;</p></li>
-<li><p>soit, pour les valeurs litérales, dans le tuple qui constitue le
-second argument de <code class="xref py py-meth docutils literal notranslate"><span class="pre">psycopg2.cursor.execute()</span></code>.</p></li>
-</ul>
-<p>La syntaxe est systématiquement détaillée dans l’en-tête
-des fonctions.</p>
+<p>Il génère des requêtes à exécuter avec la méthode
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">psycopg2.cursor.execute()</span></code>. Ces requêtes - objets
+<a class="reference internal" href="#plume.pg.queries.PgQueryWithArgs" title="plume.pg.queries.PgQueryWithArgs"><code class="xref py py-class docutils literal notranslate"><span class="pre">PgQueryWithArgs</span></code></a> - sont auto-suffisantes, dans le sens
+où elles incluent tous les paramètres nécessaires.</p>
+<p>La syntaxe pour l’usage de ces requêtes est toujours :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Lien permanent vers ce titre">#</a></h2>
 <p><a class="reference external" href="https://www.psycopg.org">https://www.psycopg.org</a></p>
@@ -1018,6 +1017,197 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_insert_or_update_any_table">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_insert_or_update_any_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_insert_or_update_any_table" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui crée ou met à jour un enregistrement d’une table quelconque.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_any_table</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom de la table&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du champ de clé primaire&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="p">[</span><span class="s1">&#39;valeur champ 1&#39;</span><span class="p">,</span> <span class="s1">&#39;valeur champ 2&#39;</span><span class="p">,</span> <span class="s1">&#39;valeur champ 3&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="p">[</span><span class="s1">&#39;nom champ 1&#39;</span><span class="p">,</span> <span class="s1">&#39;nom champ 2&#39;</span><span class="p">,</span> <span class="s1">&#39;nom champ 3&#39;</span><span class="p">]</span>
+<span class="gp">... </span>   <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>schema_name</strong><span class="classifier">str</span></dt><dd><p>Nom du schéma.</p>
+</dd>
+<dt><strong>table_name</strong><span class="classifier">str</span></dt><dd><p>Nom de la table.</p>
+</dd>
+<dt><strong>pk_name</strong><span class="classifier">str</span></dt><dd><p>Nom du champ de clé primaire. La fonction ne prend pas en
+charge les tables avec des clés primaires multi-champs.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">list or dict</span></dt><dd><p><cite>data</cite> représente un enregistrement de la table. Il peut
+s’agir de :</p>
+<ul class="simple">
+<li><p>La liste des valeurs des champs, dans l’ordre de <cite>columns</cite>,
+qui doit alors être renseigné.</p></li>
+<li><p>Un dictionnaire dont les clés sont les noms des champs.
+<cite>columns</cite> est ignoré dans ce cas.</p></li>
+</ul>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list</span></dt><dd><p>Liste des noms des champs de la table des onglets pour lesquels
+<cite>data</cite> fournit des valeurs, exactement dans le même ordre. Il est
+possible d’obtenir la liste complète avec <a class="reference internal" href="#plume.pg.queries.query_get_columns" title="plume.pg.queries.query_get_columns"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_columns()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_insert_or_update_meta_categorie">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_insert_or_update_meta_categorie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_insert_or_update_meta_categorie" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui crée ou met à jour une ou plusieurs catégories de métadonnées dans la table meta_categorie de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_categorie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">list or dict</span></dt><dd><p><cite>data</cite> représente un enregistrement de la table. Il peut
+s’agir de :</p>
+<ul class="simple">
+<li><p>La liste des valeurs des champs, dans l’ordre de <cite>columns</cite>,
+qui doit alors être renseigné.</p></li>
+<li><p>Un dictionnaire dont les clés sont les noms des champs.
+<cite>columns</cite> est ignoré dans ce cas.</p></li>
+</ul>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list</span></dt><dd><p>Liste des noms des champs de la table des onglets pour lesquels
+<cite>data</cite> fournit des valeurs, exactement dans le même ordre. Il est
+possible d’obtenir la liste complète avec <a class="reference internal" href="#plume.pg.queries.query_get_columns" title="plume.pg.queries.query_get_columns"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_columns()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_insert_or_update_meta_tab">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_insert_or_update_meta_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_insert_or_update_meta_tab" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui crée ou met à jour un ou plusieurs onglets dans la table meta_tab de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_tab</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">list or dict</span></dt><dd><p><cite>data</cite> représente un enregistrement de la table. Il peut
+s’agir de :</p>
+<ul class="simple">
+<li><p>La liste des valeurs des champs, dans l’ordre de <cite>columns</cite>,
+qui doit alors être renseigné.</p></li>
+<li><p>Un dictionnaire dont les clés sont les noms des champs.
+<cite>columns</cite> est ignoré dans ce cas.</p></li>
+</ul>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list</span></dt><dd><p>Liste des noms des champs de la table des onglets pour lesquels
+<cite>data</cite> fournit des valeurs, exactement dans le même ordre. Il est
+possible d’obtenir la liste complète avec <a class="reference internal" href="#plume.pg.queries.query_get_columns" title="plume.pg.queries.query_get_columns"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_columns()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_insert_or_update_meta_template">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_insert_or_update_meta_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_insert_or_update_meta_template" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui crée ou met à jour un ou plusieurs modèles de fiches de métadonnées dans la table meta_template de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_template</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">list or dict</span></dt><dd><p><cite>data</cite> représente un enregistrement de la table. Il peut
+s’agir de :</p>
+<ul class="simple">
+<li><p>La liste des valeurs des champs, dans l’ordre de <cite>columns</cite>,
+qui doit alors être renseigné.</p></li>
+<li><p>Un dictionnaire dont les clés sont les noms des champs.
+<cite>columns</cite> est ignoré dans ce cas.</p></li>
+</ul>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list</span></dt><dd><p>Liste des noms des champs de la table des onglets pour lesquels
+<cite>data</cite> fournit des valeurs, exactement dans le même ordre. Il est
+possible d’obtenir la liste complète avec <a class="reference internal" href="#plume.pg.queries.query_get_columns" title="plume.pg.queries.query_get_columns"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_columns()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_insert_or_update_meta_template_categories">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_insert_or_update_meta_template_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_insert_or_update_meta_template_categories" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui crée ou met à jour une association modèle-catégorie dans la table meta_template_categories de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_template_categories</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">list or dict</span></dt><dd><p><cite>data</cite> représente un enregistrement de la table. Il peut
+s’agir de :</p>
+<ul class="simple">
+<li><p>La liste des valeurs des champs, dans l’ordre de <cite>columns</cite>,
+qui doit alors être renseigné.</p></li>
+<li><p>Un dictionnaire dont les clés sont les noms des champs.
+<cite>columns</cite> est ignoré dans ce cas.</p></li>
+</ul>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list</span></dt><dd><p>Liste des noms des champs de la table des onglets pour lesquels
+<cite>data</cite> fournit des valeurs, exactement dans le même ordre. Il est
+possible d’obtenir la liste complète avec <a class="reference internal" href="#plume.pg.queries.query_get_columns" title="plume.pg.queries.query_get_columns"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_get_columns()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_is_relation_owner">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_is_relation_owner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_is_relation_owner" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Requête qui vérifie que le rôle courant est membre du propriétaire d’une relation (table, etc.).</p>
@@ -1039,6 +1229,49 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_is_template_admin">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_is_template_admin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_is_template_admin" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui vérifie que le rôle courant dispose des privilèges nécessaire pour configurer les modèles de fiches de métadonnées de PlumePg.</p>
+<p>Concrètement, elle vérifie les privilèges suivants :
+* <code class="docutils literal notranslate"><span class="pre">USAGE</span></code> sur le schéma <code class="docutils literal notranslate"><span class="pre">z_plume</span></code>.
+* <code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> sur la table d’association</p>
+<blockquote>
+<div><p>des catégories aux modèles, <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> sur la table des modèles,
+<code class="docutils literal notranslate"><span class="pre">z_plume.meta_template</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> sur la table des catégories,
+<code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> sur la table des onlgets,
+<code class="docutils literal notranslate"><span class="pre">z_plume.meta_tab</span></code>.</p></li>
+</ul>
+<p>Ces privilèges ne sont pas tout à fait suffisants pour pouvoir éditer
+les modèles (il faut aussi des droits sur les séquences, les types, etc.),
+mais en disposer signifer qu’on a voulu habiliter l’utilisateur à
+les modifier. S’il lui manque des droits annexes, Plume lui fera
+savoir par un message d’erreur qui permettra à l’administrateur du
+serveur d’accorder les privilèges manquants.</p>
+<p>La requête suppose que l’extension PostgreSQL PlumePg est installée
+sur le serveur, sans quoi son exécution échouera.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_is_template_admin</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_template_admin</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
 <dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
 </dd>
 </dl>
@@ -1141,6 +1374,86 @@ version de référence <code class="docutils literal notranslate"><span class="p
 <dd class="field-even"><dl class="simple">
 <dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL
 et son tuple de paramètres.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_read_meta_categorie">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_read_meta_categorie</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_read_meta_categorie" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui importe le contenu de la table des catégories de métadonnées (meta_categorie) de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_categorie</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_read_meta_tab">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_read_meta_tab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_read_meta_tab" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui importe le contenu de la table des onglets (meta_tab) de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_tab</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_read_meta_template">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_read_meta_template</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_read_meta_template" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui importe le contenu de la table des modèles (meta_template) de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_template</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_read_meta_template_categories">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_read_meta_template_categories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_read_meta_template_categories" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui importe le contenu de la table d’association des catégories aux modèles (meta_template_categories) de PlumePg.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_template_categories</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
 </dd>
 </dl>
 </dd>
