@@ -4,7 +4,7 @@
 --no-index
 --find-links ./bibli_install
 
-wheel==0.37.1
+wheel==0.38.1
 
 # Python < 3.8
 zipp==3.7.0  ; python_version < '3.8'
