@@ -6,7 +6,7 @@ from .bibli_plume import *
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.Qt import *
-from qgis.gui import QgsDateTimeEdit
+from qgis.gui import QgsDateTimeEdit, QgsOpacityWidget
 
 from qgis.core import  QgsSettings
 
@@ -19,7 +19,7 @@ class Ui_Dialog_ColorBloc(object):
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
 
         self.DialogColorBloc.setObjectName("DialogConfirme")
-        self.DialogColorBloc.setFixedSize(900, 605)
+        self.DialogColorBloc.setFixedSize(900, 620)
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
@@ -177,7 +177,7 @@ class Ui_Dialog_ColorBloc(object):
 
         #========
         self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
-        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor", 7:"activeTooltipColorText", 8:"activeTooltipColorBackground"}
+        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor", 7:"activeTooltipColorText", 8:"activeTooltipColorBackground", 9:"opacity"}
         self.dicListLettreLabel = { 0:QtWidgets.QApplication.translate("colorbloc_ui", "Tab"),\
                                     1:QtWidgets.QApplication.translate("colorbloc_ui", "General group"),\
                                     2:QtWidgets.QApplication.translate("colorbloc_ui", "Property group"),\
@@ -186,7 +186,8 @@ class Ui_Dialog_ColorBloc(object):
                                     5:QtWidgets.QApplication.translate("colorbloc_ui", "Wording"),\
                                     6:QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tools color"),\
                                     7:QtWidgets.QApplication.translate("colorbloc_ui", "Text color"),\
-                                    8:QtWidgets.QApplication.translate("colorbloc_ui", "Background color")\
+                                    8:QtWidgets.QApplication.translate("colorbloc_ui", "Background color"),\
+                                    9:QtWidgets.QApplication.translate("colorbloc_ui", "Opacity")\
                                     }
         #-
         self.editStyle        = self.mDic_LH["QEdit"]              #style saisie
@@ -195,7 +196,9 @@ class Ui_Dialog_ColorBloc(object):
         self.lineQGroupBox    = self.mDic_LH["QGroupBoxLine"]    #trait QGroupBox
         self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]  #Police QGroupBox
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"] #Police QTabWidget
-        self.ihm              = self.mDic_LH["ihm"]  #window/dock
+        self.ihm              = self.mDic_LH["ihm"]              #window/dock
+        self.opacityValue     = self.mDic_LH["opacityValue"]     #valeur pour l'opacité
+        self.activeZoneNonSaisie  = True   if self.mDic_LH["activeZoneNonSaisie"]     == "true" else False
         #-
         self.zEditStyle = self.editStyle  # si ouverture sans chgt et sauve
         # liste des Paramétres UTILISATEURS
@@ -351,6 +354,61 @@ class Ui_Dialog_ColorBloc(object):
         self.spinBoxEpai.valueChanged.connect(self.functionEpai)
         self.layoutMetadata.addWidget(self.spinBoxEpai, 8, 1, Qt.AlignTop)
         self.zEpaiQGroupBox = self.epaiQGroupBox  # si ouverture sans chgt et sauve
+        #- Début Opacité
+        self.groupBoxStretch = QtWidgets.QGroupBox()
+        self.groupBoxStretch.setObjectName("groupBoxStretch")
+        self.groupBoxStretch.setStyleSheet("QGroupBox { border: 0px solid red }")
+        self.layoutMetadata.addWidget(self.groupBoxStretch, 9, 0)
+
+        #------ Gestion zones non saisies 
+        mLabelZoneNonSaisieText    = QtWidgets.QApplication.translate("colorbloc_ui", "Visualization of non-entered zones.", None)
+        mLabelZoneNonSaisieToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "Use the mechanism for viewing unentered areas in edit mode.", None)
+        mLabelZoneNonSaisie = QtWidgets.QLabel()
+        mLabelZoneNonSaisie.setObjectName("mLabelZoneNonSaisie")
+        mLabelZoneNonSaisie.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mLabelZoneNonSaisie.setText(mLabelZoneNonSaisieText)
+        mLabelZoneNonSaisie.setToolTip(mLabelZoneNonSaisieToolTip)
+        mLabelZoneNonSaisie.setWordWrap(True)
+        mLabelZoneNonSaisie.setAlignment(Qt.AlignRight)        
+        mLabelZoneNonSaisie.setWordWrap(True)
+        self.layoutMetadata.addWidget(mLabelZoneNonSaisie, 10, 0, Qt.AlignTop)
+        #- 
+        self.mZoneZoneNonSaisie = QtWidgets.QCheckBox()
+        self.mZoneZoneNonSaisie.setStyleSheet("QCheckBox {  font-family:" + self.policeQGroupBox  +";}")
+        self.mZoneZoneNonSaisie.setObjectName("mZoneZoneNonSaisie")
+        self.mZoneZoneNonSaisie.setChecked(self.activeZoneNonSaisie)
+        self.mZoneZoneNonSaisie.setToolTip(mLabelZoneNonSaisieToolTip)
+        self.activeZoneNonSaisie = True if self.mZoneZoneNonSaisie.isChecked() else False  # si ouverture sans chgt et sauve
+        self.mZoneZoneNonSaisie.toggled.connect(lambda : self.functionTooltip("activeZoneNonSaisie"))       
+        self.layoutMetadata.addWidget(self.mZoneZoneNonSaisie, 10, 1, Qt.AlignTop)
+        #------ Gestion zones non saisies 
+
+        layout, button_9, img_9, reset_9 = self.layoutMetadata, QtWidgets.QPushButton(), QtWidgets.QLabel(), QtWidgets.QPushButton()
+        self.button_9, self.reset_9 = button_9, reset_9
+        self.genereButtonActionColor(layout, button_9, img_9, reset_9, "button_9", "img_9", "reset_9", 9)
+        #.
+        self.labelOpacity = QtWidgets.QLineEdit()
+        self.labelOpacity.setAlignment(Qt.AlignRight)    
+        self.labelOpacity.setPlaceholderText(QtWidgets.QApplication.translate("colorbloc_ui", "Zone sans valeur."))  
+        self.labelOpacity.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; background-color:" + str( self.mDic_LH[self.dicListLettre[9]] )  +";}")
+        self.labelOpacity.setAlignment(Qt.AlignLeft)        
+        self.layoutMetadata.addWidget(self.labelOpacity, 13, 0, 1, 3, Qt.AlignTop)
+        # création Effect opacité
+        self.opacityEffect = QGraphicsOpacityEffect()
+        # coeff d'opacité
+        self.opacityEffect.setOpacity(float(self.mDic_LH["opacityValue"]))
+        # adding opacity effect to the label
+        self.labelOpacity.setGraphicsEffect(self.opacityEffect)
+        #.
+        self.comboOpacity = QgsOpacityWidget()
+        self.comboOpacity.setObjectName("comboOpacity")         
+        self.comboOpacity.setOpacity(float(self.mDic_LH["opacityValue"]))
+        #Event
+        self.comboOpacity.opacityChanged.connect(self.onValueChangedOpacity)
+        self.layoutMetadata.addWidget(self.comboOpacity, 14, 0, 1, 3, Qt.AlignTop)
+        #- Fin Opacité
+        self.functionTooltip("activeZoneNonSaisie")
+        #-
         # Onglets METADATA  
         #========
         #========
@@ -496,7 +554,7 @@ class Ui_Dialog_ColorBloc(object):
         self.layoutExplorer.setColumnStretch(8, 4)
         self.groupBoxExplorer.setLayout(self.layoutExplorer)
         self.layout_tab_widget_Explorer.addWidget(self.groupBoxExplorer, 0, 0, Qt.AlignTop)
-        #-
+        #-  
         self.activeTooltip           = True   if self.mDic_LH["activeTooltip"]           == "true" else False
         self.activeTooltipWithtitle  = True   if self.mDic_LH["activeTooltipWithtitle"]  == "true" else False
         self.activeTooltipLogo       = True   if self.mDic_LH["activeTooltipLogo"]       == "true" else False
@@ -517,7 +575,7 @@ class Ui_Dialog_ColorBloc(object):
         self.QChecklabelActivetooltip.setChecked(self.activeTooltip)  
         self.QChecklabelActivetooltip.toggled.connect(lambda : self.functionTooltip("Activetooltip"))       
         self.activeTooltip = True if self.QChecklabelActivetooltip.isChecked() else False  # si ouverture sans chgt et sauve
-        self.layoutExplorer.addWidget(self.QChecklabelActivetooltip, 0, 4, Qt.AlignTop)
+        self.layoutExplorer.addWidget(self.QChecklabelActivetooltip, 0, 4, Qt.AlignTop)        
         #--
         self.labelActiveTooltipWithtitle = QtWidgets.QLabel()
         self.labelActiveTooltipWithtitle.setAlignment(Qt.AlignRight)        
@@ -949,12 +1007,21 @@ class Ui_Dialog_ColorBloc(object):
 
     #==========================         
     #==========================         
+    def onValueChangedOpacity(self) :
+        valueOpacity = self.comboOpacity.opacity()
+        # coeff d'opacité
+        self.opacityEffect.setOpacity(float(valueOpacity))
+        # adding opacity effect to the label
+        self.labelOpacity.setGraphicsEffect(self.opacityEffect)
+        return 
+
+    #==========================         
+    #==========================         
     def functionFont(self):
         self.zFontQGroupBox = self.fontQGroupBox.currentFont().family()
         # --
         self.applyWYSIWYG() #Lecture et apply des variables
         # --
-        return 
 
     #==========================         
     #==========================             
@@ -1017,6 +1084,7 @@ class Ui_Dialog_ColorBloc(object):
     #==========================       
     # for tooltip         
     def functionTooltip(self, param):
+        print(param)
         if param == "Activetooltip" : 
            self.activeTooltip = True if self.QChecklabelActivetooltip.isChecked() else False
            self.QChecklabelActiveTooltipWithtitle.setEnabled(self.activeTooltip)
@@ -1046,7 +1114,12 @@ class Ui_Dialog_ColorBloc(object):
            self.reset_7.setEnabled(self.activeTooltipColor)
            self.button_8.setEnabled(self.activeTooltipColor)
            self.reset_8.setEnabled(self.activeTooltipColor)
-
+        elif param == "activeZoneNonSaisie" :     
+           self.activeZoneNonSaisie = True if self.mZoneZoneNonSaisie.isChecked() else False
+           self.button_9.setEnabled(self.activeZoneNonSaisie)
+           self.reset_9.setEnabled(self.activeZoneNonSaisie)
+           self.labelOpacity.setEnabled(self.activeZoneNonSaisie)
+           self.comboOpacity.setEnabled(self.activeZoneNonSaisie)
         return 
     # for tooltip         
     #==========================         
@@ -1624,9 +1697,11 @@ class Ui_Dialog_ColorBloc(object):
     def genereButtonActionColor(self, mLayout, mButton, mImage, mReset, mButtonName, mImageName, mResetName, compt):
         i = compt
         line, col = compt, 3
-        if compt in (0, 1, 2, 3, 4, 5, 6, 7, 8) : 
-           if compt in (0, 1, 2, 3, 4, 5) :
+        if compt in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9) : 
+           if compt in (0, 1, 2, 3, 4, 5, 9) :
               line, col = compt, 0
+           if compt == 9 : 
+              line, col = 11, 0
            if compt == 6 : 
               line, col = compt, 3
            if compt == 7 : 
@@ -1665,7 +1740,7 @@ class Ui_Dialog_ColorBloc(object):
 
         mLettre, mColorFirst, mDicSaveColor = "", None, {}
         for mObj in mChild_premier :
-            for i in range(6) :
+            for i in range(10) :
                 if mObj.objectName() == "img_" + str(i) :
                    mLettre      = str(self.dicListLettre[i])
                    mColor       = mObj.palette().color(QPalette.Window)
@@ -1704,6 +1779,8 @@ class Ui_Dialog_ColorBloc(object):
         mDicSaveColor["geomPoint"]     = self.geomPoint
         mDicSaveColor["geomPointEpaisseur"] = self.geomPointEpaisseur
         mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
+        mDicSaveColor["opacityValue"]  = self.comboOpacity.opacity()
+        
         #======== for Geometry
         #-
         mSettings.beginGroup("PLUME")
@@ -1727,6 +1804,7 @@ class Ui_Dialog_ColorBloc(object):
         #Ajouter si autre param
         mDicAutre = {}
         mDicAutre["ihm"]           = self.zComboWinVsDock
+        mDicAutre["activeZoneNonSaisie"]     = "true" if self.activeZoneNonSaisie else "false"
         #---- for Tooltip
         mDicAutre["activeTooltip"]           = "true" if self.activeTooltip else "false"
         mDicAutre["activeTooltipWithtitle"]  = "true" if self.activeTooltipWithtitle else "false"
@@ -1777,7 +1855,10 @@ class Ui_Dialog_ColorBloc(object):
     def functionColor(self, mImage, i):
         mColor = mImage.palette().color(QPalette.Window)
         mColorInit = QColor(mColor.name())
-        zMess = "%s %s" %(QtWidgets.QApplication.translate("colorbloc_ui", "Choose a color for the block : ", None), str(self.dicListLettreLabel[i]) )
+        if i == 9 :
+           zMess = "%s" %(QtWidgets.QApplication.translate("colorbloc_ui", "Choose a color for the untyped areas.", None) )
+        else :    
+           zMess = "%s %s" %(QtWidgets.QApplication.translate("colorbloc_ui", "Choose a color for the block : ", None), str(self.dicListLettreLabel[i]) )
         zColor = QColorDialog.getColor(mColorInit, self, zMess)
         if zColor.isValid():
            zStyleBackground = "QLabel { background-color : " + zColor.name() + " }"
@@ -1785,6 +1866,9 @@ class Ui_Dialog_ColorBloc(object):
            # --
            self.applyWYSIWYG() #Lecture et apply des variables
            # --
+        #For opacity
+        if zColor.isValid() and i == 9 :
+           self.labelOpacity.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; background-color:" + zColor.name()  +";}")
         return 
         
     #==========================         
@@ -1799,7 +1883,8 @@ class Ui_Dialog_ColorBloc(object):
                 "QLabelBackGround",
                 "geomColor",
                 "activeTooltipColorText",
-                "activeTooltipColorBackground"
+                "activeTooltipColorBackground",
+                "opacity"
                 ]
         listBlocsValue = [
                 "#a38e63",
@@ -1810,7 +1895,8 @@ class Ui_Dialog_ColorBloc(object):
                 "#e3e3fd",   
                 "#a38e63",
                 "#000000",
-                "#fee9e9"
+                "#fee9e9",
+                "#ddddbe"
                 ] 
         mDicDashBoard = dict(zip(listBlocsKey, listBlocsValue))
  
@@ -1821,5 +1907,8 @@ class Ui_Dialog_ColorBloc(object):
            # --
            self.applyWYSIWYG() #Lecture et apply des variables
            # --
-
+        #For opacity
+        if i == 9 :
+           varColor = str( mDicDashBoard[self.dicListLettre[i]] )
+           self.labelOpacity.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; background-color:" + varColor  +";}")
         return                                                     

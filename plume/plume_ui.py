@@ -23,6 +23,7 @@ from .bibli_gene_objets import *
 from . import docolorbloc
 from . import doabout
 from . import doimportcsw
+from . import docreatetemplate
 
 from qgis.core import *
 from qgis.gui import *
@@ -141,6 +142,7 @@ class Ui_Dialog_plume(object):
         self.activeTooltipColor     = True if mDic_LH["activeTooltipColor"]     == "true" else False
         self.activeTooltipColorText       = mDic_LH["activeTooltipColorText"] 
         self.activeTooltipColorBackground = mDic_LH["activeTooltipColorBackground"] 
+        self.activeZoneNonSaisie  = True   if self.mDic_LH["activeZoneNonSaisie"]     == "true" else False
         #-
         mDicType         = ["ICON_CROSS", "ICON_X", "ICON_BOX", "ICON_CIRCLE", "ICON_FULL_BOX" , "ICON_DIAMOND" , "ICON_FULL_DIAMOND"]
         mDicTypeObj      = [QgsRubberBand.ICON_X, QgsRubberBand.ICON_CROSS, QgsRubberBand.ICON_BOX, QgsRubberBand.ICON_CIRCLE, QgsRubberBand.ICON_FULL_BOX, QgsRubberBand.ICON_DIAMOND, QgsRubberBand.ICON_FULL_DIAMOND]
@@ -907,6 +909,12 @@ class Ui_Dialog_plume(object):
         return
         
     #==========================
+    def clickCreateTemplate(self):
+        d = docreatetemplate.Dialog(self)
+        d.exec_()
+        return
+        
+    #==========================
     def clickAbout(self):
         d = doabout.Dialog()
         d.exec_()
@@ -917,7 +925,7 @@ class Ui_Dialog_plume(object):
         mKeySql = queries.query_exists_extension('postgis')
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
         return r
-
+        
     #==========================
     # == Gestion des actions de boutons de la barre de menu
     def displayToolBar(self, _iconSourcesRead, _iconSourcesEmpty, _iconSourcesExport, _iconSourcesImport, _iconSourcesSave, _iconSourcesCopy, _iconSourcesPaste, _iconSourcesTemplate, _iconSourcesTranslation, _iconSourcesParam, _iconSourcesInterrogation, _iconSourcesVerrou, _iconSourcesBlank):
@@ -934,6 +942,8 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setEnabled(False)
         self.plumeVerrou.setEnabled(False)
         self.plumeVerrou.setChecked(False)
+        self.paramColor.setVisible(False if bibli_plume.ifActivateRightsToManageModels(self) else True)
+        self.paramColorModele.setVisible(True if bibli_plume.ifActivateRightsToManageModels(self) else False)
 
         #====================
         #====================
@@ -1346,11 +1356,62 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         # -- QToolButton EXPORT MenuQToolButton                        
         #====================
-        # [ == paramColor == ]
+        # [ == paramColor == ] afficher si ifActivateRightsToManageModels = False
         _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
         _ListValues = [ QtWidgets.QToolButton(), "Customization of the IHM", _iconSourcesParam, QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM"), self.clickColorDialog, True, QSizePolicy.Fixed ]
         dicParamButton = dict(zip(_Listkeys, _ListValues))
         self.paramColor = self.genereButtonsToolBarWithDict( dicParamButton )
+
+
+        #====================
+        # [ == paramColor and Gestion des modèles == ] afficher si ifActivateRightsToManageModels = True
+        _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Customization of the IHM / Model management", _iconSourcesParam, QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM / Model management"), self.clickButtonsActions, True, QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.paramColorModele = self.genereButtonsToolBarWithDict( dicParamButton )
+        
+        # -- QToolButton paramColor ? MenuQToolButton                        
+        _mObjetQMenu = QMenu()
+        _mObjetQMenu.setToolTipsVisible(True)
+        _editStyle = self.editStyle             #style saisie
+        #------------
+        #-- paramColor
+        mText = QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM") 
+        self.paramColorItem = QAction("Customization of the IHM",self.paramColorModele)
+        self.paramColorItem.setText(mText)
+        self.paramColorItem.setObjectName("Customization of the IHM")
+        self.paramColorItem.setToolTip(mText)
+        self.paramColorItem.triggered.connect(self.clickColorDialog)
+        _mObjetQMenu.addAction(self.paramColorItem)
+        #-- paramColor
+        _mObjetQMenu.addSeparator()
+        #-- Gestion des modèles
+        mText = QtWidgets.QApplication.translate("plume_ui", "Model management") 
+        self.paramModeleItem = QAction("Model management",self.paramColorModele)
+        self.paramModeleItem.setText(mText)
+        self.paramModeleItem.setObjectName("Model management")
+        self.paramModeleItem.setToolTip(mText)
+        self.paramModeleItem.triggered.connect(self.clickCreateTemplate)
+        _mObjetQMenu.addAction(self.paramModeleItem)
+        #-- Gestion des modèles
+        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
+        #------------
+        self.paramColorModele.setPopupMode(self.paramColorModele.InstantPopup)
+        self.paramColorModele.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.paramColorModele.setMenu(_mObjetQMenu)
+        # -- QToolButton paramColor ? MenuQToolButton                        
+        # [ == paramColor and Gestion des modèles == ] afficher si ifActivateRightsToManageModels = True
+        #====================
+
+
+        #====================
+        # [ == templates == ]
+        _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy", "styleSheet" ]
+        _ListValues = [ QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Template"), "CreateTemplate", _iconSourcesTemplate, QtWidgets.QApplication.translate("plume_ui", "Choose a form template."), self.clickCreateTemplate, True, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}" ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.createTemplate = self.genereButtonsToolBarWithDict( dicParamButton )
+
+
         #====================
         # [ == plumeInterrogation == ]
         _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
@@ -1403,9 +1464,18 @@ class Ui_Dialog_plume(object):
         self.mMenuBarDialogGridLine2.addWidget(self.plumeImport)
         self.mMenuBarDialogGridLine2.addWidget(self.plumeExport)
         self.mMenuBarDialogGridLine2.addWidget(self.paramColor)
+        self.mMenuBarDialogGridLine2.addWidget(self.paramColorModele)
         self.mMenuBarDialogGridLine2.addWidget(self.plumeInterrogation)
+        self.mMenuBarDialogGridLine2.addWidget(self.createTemplate)
+        
+        self.createTemplate.setVisible(False) #Temporaire, A supprimer quand OK
+        
         self.mMenuBarDialogGridLine2.addStretch(1)
         self.mMenuBarDialogGridLine2.addWidget(self.plumeVerrou)
+        #--
+        self.paramColor.setVisible(True)
+        self.paramColorModele.setVisible(False)
+
         return
 
     #==========================

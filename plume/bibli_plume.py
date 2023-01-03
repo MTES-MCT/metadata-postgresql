@@ -37,6 +37,51 @@ import datetime
 import os.path
 import time
 
+
+#==========================         
+def genereLabelWithDict(dicParamLabel ) :
+    for k, v in dicParamLabel.items() :
+        if v != "" :
+           if k == "typeWidget"    : _label = v
+           if k == "nameWidget"    : _label.setObjectName(v)
+           if k == "toolTipWidget" : _label.setToolTip(v)
+           if k == "aligneWidget"  : _label.setAlignment(v)
+           if k == "textWidget"    : _label.setText(v)
+           if k == "styleSheet"    : _label.setStyleSheet(v)
+           if k == "wordWrap"      : _label.setWordWrap(v)
+    return _label
+
+#==========================         
+def genereButtonsWithDict(dicParamButton ) :
+    for k, v in dicParamButton.items() :
+        if v != "" :
+           if k == "typeWidget"    : _button = v
+           if k == "qSizePolicy"   : _button.setSizePolicy(v, v)
+           if k == "iconWidget"    : _button.setIcon(QIcon(v))
+           if k == "nameWidget"    : _button.setObjectName(v)
+           if k == "toolTipWidget" : _button.setToolTip(v)
+           if k == "actionWidget"  : _button.clicked.connect(v)
+           if k == "autoRaise"     : _button.setAutoRaise(v)
+           if k == "checkable"     : _button.setCheckable(v)
+           if k == "checked"       : _button.setChecked(v)
+           #-- combobox
+           if k == "listItems"     : _button.addItems(v)
+           if k == "currentText"   : _button.setCurrentText(v)
+           #-- Text
+           if k == "textWidget"    : _button.setText(v)
+           #-- StyleSheet
+           if k == "styleSheet"    : _button.setStyleSheet(v)
+           #-- Raccourci
+           if k == "shorCutWidget" : _button.setShortcut(QKeySequence(v))
+    return _button
+
+#==========================
+def ifActivateRightsToManageModels(self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
+    mKeySql = queries.query_exists_extension('postgis')
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    r = False
+    return r
+
 #==========================
 #Regeneration de l'IHML et de la barre d'icone comme à l'ouverture
 def initIhmNoConnection(self) :
@@ -58,6 +103,8 @@ def initIhmNoConnection(self) :
     self.plumeChoiceLang.setEnabled(False)
     self.plumeVerrou.setEnabled(False)
     self.plumeVerrou.setChecked(False)
+    self.paramColor.setVisible(True)
+    self.paramColorModele.setVisible(False)
     #-
     self.mode            = "read"  #Intiialise les autres instances  
     self.verrouLayer     = False   #Verrouillage de la couche 
@@ -178,6 +225,31 @@ def returnIfExisteInBrowser(self, _ItemLayerBeforeClick) :
 #==========================
 
 #==================================================
+#Retourne si la valeur est saisie
+def returnIfValueSaisietWithObjet(_mObjetQSaisie, _valueObjet) : 
+    __Val = _valueObjet['value']
+    
+    if _valueObjet['main widget type'] in ("QLineEdit",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QTextEdit",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QComboBox",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QLabel",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QDateEdit",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QDateTimeEdit",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QTimeEdit",) :
+       True if __Val != None else False  
+    elif _valueObjet['main widget type'] in ("QCheckBox",) :
+       True if __Val != None else False  
+    return True if __Val != None else False
+#Retourne si la valeur est saisie
+#==================================================
+
+#==================================================
 #Mets à jour la valeur de l'objet en fonction de son type
 def updateObjetWithValue(_mObjetQSaisie, _valueObjet) : 
     __Val = _valueObjet['value']
@@ -256,6 +328,7 @@ def listUserParam(self):
     self.valueLengthLimit        = self.mDic_LH["valueLengthLimit"]                                       if ("valueLengthLimit"        in self.mDic_LH and self.mDic_LH["valueLengthLimit"] != "")        else None
     self.textEditRowSpan         = self.mDic_LH["textEditRowSpan"]                                        if ("textEditRowSpan"         in self.mDic_LH and self.mDic_LH["textEditRowSpan"] != "")         else None
     self.zoneConfirmMessage      = (True if self.mDic_LH["zoneConfirmMessage"]      == "true" else False) if "zoneConfirmMessage"       in self.mDic_LH                                                    else True
+    self.confirmZoneNonSaisie    = (True if self.mDic_LH["activeZoneNonSaisie"]     == "true" else False) if "activeZoneNonSaisie"      in self.mDic_LH                                                    else False
     self.zComboCleanPgDescription          = self.mDic_LH["cleanPgDescription"]                                               if "cleanPgDescription"                in self.mDic_LH                                                 else "never"
     self.copyDctTitleToPgDescription       = (True if self.mDic_LH["copyDctTitleToPgDescription"]       == "true" else False) if "copyDctTitleToPgDescription"       in self.mDic_LH                                                 else "false" 
     self.copyDctDescriptionToPgDescription = (True if self.mDic_LH["copyDctDescriptionToPgDescription"] == "true" else False) if "copyDctDescriptionToPgDescription" in self.mDic_LH                                                 else "false" 
@@ -782,7 +855,7 @@ def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mB
        for key, value in mDicAutre.items():
            mSettings.setValue(key, value)
        #---- for Tooltip
-       mDicAutre = {}
+       mDicAutre = {}           
        mDicAutre["activeTooltip"]                = "true"
        mDicAutre["activeTooltipWithtitle"]       = "true"
        mDicAutre["activeTooltipLogo"]            = "true"
@@ -825,7 +898,7 @@ def saveinitializingDisplay(mAction, layerBeforeClicked = None, mItem = None, mB
 #==================================================
 #Lecture du fichier ini pour dimensions Dialog
 #==================================================
-def returnAndSaveDialogParam(self, mAction):
+def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight = None) :
     mDicAutre        = {}
     mDicAutreColor   = {}
     mDicAutrePolice  = {}
@@ -839,6 +912,8 @@ def returnAndSaveDialogParam(self, mAction):
        #Ajouter si autre param
        valueDefautL = 810
        valueDefautH = 640
+       valueDefautTemplateL = 950
+       valueDefautTemplateH = 650
        valueDefautDisplayMessage = "dialogBox"
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "dockFalse"
@@ -848,6 +923,8 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautVersion = ""
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
+       mDicAutre["dialogLargeurTemplate"]   = valueDefautTemplateL
+       mDicAutre["dialogHauteurTemplate"]   = valueDefautTemplateH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
@@ -856,6 +933,7 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
        #---- for Tooltip
+       mDicAutre["activeZoneNonSaisie"]          = "false"
        mDicAutre["activeTooltip"]                = "true"
        mDicAutre["activeTooltipWithtitle"]       = "true"
        mDicAutre["activeTooltipLogo"]            = "true"
@@ -881,6 +959,8 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutreColor["QTabWidget"]                  = "#cecece"
        mDicAutreColor["QLabelBackGround"]            = "#e3e3fd"
        mDicAutreColor["geomColor"]                   = "#a38e63"
+       mDicAutreColor["opacity"]                     = "#ddddbe"
+       mDicAutreColor["opacityValue"]                = 1.0
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
        mDicAutreColor["geomPointEpaisseur"]          = "8"
@@ -984,6 +1064,12 @@ def returnAndSaveDialogParam(self, mAction):
        for key, value in mDicAutre.items():
            mSettings.setValue(key, value)
 
+    elif mAction == "SaveTemplate" :
+       mDicAutre["dialogLargeurTemplate"] = templateWidth
+       mDicAutre["dialogHauteurTemplate"] = templateHeight
+                 
+       for key, value in mDicAutre.items():
+           mSettings.setValue(key, value)
     mSettings.endGroup()
     mSettings.endGroup()    
     return mDicAutre

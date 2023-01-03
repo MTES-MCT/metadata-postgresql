@@ -2,12 +2,12 @@
 # créé sept 2021
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle, QGridLayout, QSizePolicy) 
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle, QGridLayout, QSizePolicy, QGraphicsOpacityEffect) 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
 from qgis.gui import *
-from qgis.gui import QgsDateTimeEdit
+from qgis.gui import QgsDateTimeEdit   
 import os
 from . import bibli_plume
 from .bibli_plume import *
@@ -72,6 +72,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # Gestion des langues
     _language = self.language
     _langList = self.langList
+
+    #----Opacité
+    # création Effect opacité
+    opacityEffect = QGraphicsOpacityEffect()
+    # coeff d'opacité
+    opacityEffect.setOpacity(float(self.mDic_LH["opacityValue"]))
+    # couleur d'opacité
+    _labelBackGroundOpacity = self.mDic_LH["opacity"]
+    #----Opacité
 
     #---------------------------
     #Pour Gestion et Génération à la volée des onglets 
@@ -155,17 +164,34 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     elif _valueObjet['main widget type'] in ("QLineEdit", "QTextEdit", "QComboBox") :
        #--
        _editStyle = self.editStyle             #style saisie
+
        if _valueObjet['main widget type'] == "QLineEdit" :
           _mObjetQSaisie = QtWidgets.QLineEdit()
-          _mObjetQSaisie.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
+          styleSaisie    = "QLineEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}"
+          styleNonSaisie = "QLineEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px; background-color:" + _labelBackGroundOpacity  +";}"
+          _mObjetQSaisie.textChanged.connect(lambda : onValueChangedBackground(self, _mObjetQSaisie, _valueObjet['main widget type'], styleSaisie, styleNonSaisie, float(self.mDic_LH["opacityValue"])))
        elif _valueObjet['main widget type'] == "QTextEdit" :
           _mObjetQSaisie = QtWidgets.QTextEdit()
-          _mObjetQSaisie.setStyleSheet("QTextEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
+          styleSaisie    = "QTextEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}"
+          styleNonSaisie = "QTextEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px; background-color:" + _labelBackGroundOpacity  +";}"
+          _mObjetQSaisie.textChanged.connect(lambda : onValueChangedBackground(self, _mObjetQSaisie, _valueObjet['main widget type'], styleSaisie, styleNonSaisie, float(self.mDic_LH["opacityValue"])))
        elif _valueObjet['main widget type'] == "QComboBox" :
           _mObjetQSaisie = QtWidgets.QComboBox()
-          _mObjetQSaisie.setStyleSheet("QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
-                                        QComboBox::drop-down {border: 0px;}\
-                                        QComboBox::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+          styleSaisie    = "QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                            QComboBox::drop-down {border: 0px;}\
+                            QComboBox::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}"
+          styleNonSaisie = "QComboBox {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px; ; background-color:" + _labelBackGroundOpacity  +";} \
+                            QComboBox::drop-down {border: 0px;} \
+                            QComboBox::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}"
+          _mObjetQSaisie.currentIndexChanged.connect(lambda : onValueChangedBackground(self, _mObjetQSaisie, _valueObjet['main widget type'], styleSaisie, styleNonSaisie, float(self.mDic_LH["opacityValue"])))
+    
+       if  bibli_plume.returnIfValueSaisietWithObjet(_mObjetQSaisie, _valueObjet) :                         
+           _mObjetQSaisie.setStyleSheet(styleSaisie)
+       else :
+           _mObjetQSaisie.setStyleSheet(styleNonSaisie) if self.activeZoneNonSaisie else _mObjetQSaisie.setStyleSheet(styleSaisie)
+           # adding opacity effect to the label
+           if self.activeZoneNonSaisie : _mObjetQSaisie.setGraphicsEffect(opacityEffect)
+
        _mObjetQSaisie.setObjectName(str(_keyObjet))
        #--                        
        #Masqué /Visible Générale                               
@@ -280,9 +306,22 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQDateEdit.setVisible(False)
        #--
-       _mObjetQDateEdit.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
-                                       QgsDateTimeEdit::drop-down {border: 0px;}\
-                                       QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       styleSaisie    = "QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                         QgsDateTimeEdit::drop-down {border: 0px;}\
+                         QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}" 
+       styleNonSaisie = "QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px; ; background-color:" + _labelBackGroundOpacity  +";} \
+                         QgsDateTimeEdit::drop-down {border: 0px;}\
+                         QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}"
+
+       if  bibli_plume.returnIfValueSaisietWithObjet(_mObjetQDateEdit, _valueObjet) :                         
+           _mObjetQDateEdit.setStyleSheet(styleSaisie)
+       else :
+           _mObjetQDateEdit.setStyleSheet(styleNonSaisie) if self.activeZoneNonSaisie else _mObjetQDateEdit.setStyleSheet(styleSaisie)
+           # adding opacity effect to the label
+           if not self.activeZoneNonSaisie : _mObjetQDateEdit.setGraphicsEffect(opacityEffect)
+
+       _mObjetQDateEdit.valueChanged.connect(lambda : onValueChangedBackground(self, _mObjetQDateEdit, _valueObjet['main widget type'], styleSaisie, styleNonSaisie, float(self.mDic_LH["opacityValue"])))
+
        _width  = _mObjetQDateEdit.width()
        _mObjetQDateEdit.setMinimumSize(QtCore.QSize(_width, 23))
 
@@ -343,16 +382,29 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     #---------------------------
     #---------------------------
     # == QDATETIMEEDIT
-    elif _valueObjet['main widget type'] == "QDateTimeEdit" :
+    elif _valueObjet['main widget type'] == "QDateTimeEdit" :               
        #--                        
        _editStyle = self.editStyle             #style saisie
        _mObjetQDateTime = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQDateTime.setVisible(False)
-       #--                        
-       _mObjetQDateTime.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
-                                       QgsDateTimeEdit::drop-down {border: 0px;}\
-                                       QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       #--
+       styleSaisie    = "QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                         QgsDateTimeEdit::drop-down {border: 0px;}\
+                         QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}" 
+       styleNonSaisie = "QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px; ; background-color:" + _labelBackGroundOpacity  +";} \
+                         QgsDateTimeEdit::drop-down {border: 0px;}\
+                         QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}"
+
+       if  bibli_plume.returnIfValueSaisietWithObjet(_mObjetQDateTime, _valueObjet) :                         
+           _mObjetQDateTime.setStyleSheet(styleSaisie)
+       else :
+           _mObjetQDateTime.setStyleSheet(styleNonSaisie) if self.activeZoneNonSaisie else _mObjetQDateTime.setStyleSheet(styleSaisie)
+           # adding opacity effect to the label
+           if not self.activeZoneNonSaisie : _mObjetQDateTime.setGraphicsEffect(opacityEffect)
+
+       _mObjetQDateTime.valueChanged.connect(lambda : onValueChangedBackground(self, _mObjetQDateTime, _valueObjet['main widget type'], styleSaisie, styleNonSaisie, float(self.mDic_LH["opacityValue"])))
+
        _width  = _mObjetQDateTime.width()
        _mObjetQDateTime.setMinimumSize(QtCore.QSize(_width, 23))
 
@@ -390,10 +442,23 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQTime = QgsDateTimeEdit()
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQTime.setVisible(False)
-       #--                        
-       _mObjetQTime.setStyleSheet("QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
-                                   QgsDateTimeEdit::drop-down {border: 0px;}\
-                                   QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}") 
+       #--
+       styleSaisie    = "QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px;} \
+                         QgsDateTimeEdit::drop-down {border: 0px;}\
+                         QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}" 
+       styleNonSaisie = "QgsDateTimeEdit {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + " ; border-width: 0px; ; background-color:" + _labelBackGroundOpacity  +";} \
+                         QgsDateTimeEdit::drop-down {border: 0px;}\
+                         QgsDateTimeEdit::down-arrow {image: url(" + _iconQComboBox + ");position:absolute; left : 5px;width: 12px;height: 45px;}"
+
+       if  bibli_plume.returnIfValueSaisietWithObjet(_mObjetQTime, _valueObjet) :                         
+           _mObjetQTime.setStyleSheet(styleSaisie)
+       else :
+           _mObjetQTime.setStyleSheet(styleNonSaisie) if self.activeZoneNonSaisie else _mObjetQTime.setStyleSheet(styleSaisie)
+           # adding opacity effect to the label
+           if not self.activeZoneNonSaisie : _mObjetQTime.setGraphicsEffect(opacityEffect)
+
+       _mObjetQTime.valueChanged.connect(lambda : onValueChangedBackground(self, _mObjetQTime, _valueObjet['main widget type'], styleSaisie, styleNonSaisie, float(self.mDic_LH["opacityValue"])))
+
        _width  = _mObjetQTime.width()
        _mObjetQTime.setMinimumSize(QtCore.QSize(_width, 23))
 
@@ -761,6 +826,73 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # == QTOOLBUTTON  GEO TOOLS
     #---------------------------
     return  
+
+#==========================         
+#==========================         
+def onValueChangedBackground(self, _mObjetQSaisie, _typeWidget, styleSaisie, styleNonSaisie, opacityValue) : 
+
+    if self.activeZoneNonSaisie : 
+       #----Opacité
+       # création Effect opacité
+       opacityEffect = QGraphicsOpacityEffect()
+       # coeff d'opacité
+       opacityEffect.setOpacity(opacityValue)
+       # couleur d'opacité
+       #----Opacité
+   
+       #----Réinit Opacité
+       # création Effect opacité
+       opacityEffectNone = QGraphicsOpacityEffect()
+       # coeff d'opacité
+       opacityEffectNone.setOpacity(100)
+       #----Réinit Opacité
+   
+       if _typeWidget == "QLineEdit" :
+          if _mObjetQSaisie.text() != "" :
+             _mObjetQSaisie.setStyleSheet(styleSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffectNone)
+          else :
+             _mObjetQSaisie.setStyleSheet(styleNonSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffect)
+       elif _typeWidget == "QTextEdit" :
+          if _mObjetQSaisie.toPlainText() != "" :
+             _mObjetQSaisie.setStyleSheet(styleSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffectNone)
+          else :
+             _mObjetQSaisie.setStyleSheet(styleNonSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffect)
+       elif _typeWidget == "QComboBox" :
+          if _mObjetQSaisie.currentText() != "" :
+             _mObjetQSaisie.setStyleSheet(styleSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffectNone)
+          else :
+             _mObjetQSaisie.setStyleSheet(styleNonSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffect)
+       elif _typeWidget == "QDateEdit" :
+          if not _mObjetQSaisie.date().isNull() :
+             _mObjetQSaisie.setStyleSheet(styleSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffectNone)
+          else :
+             _mObjetQSaisie.setStyleSheet(styleNonSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffect)
+       elif _typeWidget in "QDateEdit, QDateTimeEdit, QTimeEdit" :
+          if not _mObjetQSaisie.date().isNull() :
+             _mObjetQSaisie.setStyleSheet(styleSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffectNone)
+          else :
+             _mObjetQSaisie.setStyleSheet(styleNonSaisie)
+             # adding opacity effect to the label
+             _mObjetQSaisie.setGraphicsEffect(opacityEffect)
+    return 
 
 #==================================================
 # Traitement action sur QToolButton avec COMPUTE BUTTON

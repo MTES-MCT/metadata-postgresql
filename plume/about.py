@@ -10,84 +10,123 @@ from .bibli_plume import *
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
+        self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+        self.editStyle        = self.mDic_LH["QEdit"]              #style saisie
+        self.labelBackGround  = self.mDic_LH["QLabelBackGround"] #QLabel    
+        self.epaiQGroupBox    = self.mDic_LH["QGroupBoxEpaisseur"] #épaisseur QGroupBox
+        self.lineQGroupBox    = self.mDic_LH["QGroupBoxLine"]    #trait QGroupBox
+        self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]  #Police QGroupBox
+        self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"] #Police QTabWidget
+        #-
+        #-
+        self.Dialog = Dialog   #Pour remonter les variables de la boite de dialogue
+        self.zMessTitle    =  QtWidgets.QApplication.translate("about", "model management", None)   #Gestion des modèles
+        myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
 
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(QtCore.QSize(QtCore.QRect(0,0,700,600).size()).expandedTo(Dialog.minimumSizeHint()))
-        iconSource = bibli_plume.getThemeIcon("plume.svg")
+        self.Dialog.setObjectName("DialogConfirme")
+        #mLargDefaut, mHautDefaut = int(self.mDic_LH["dialogLargeurTemplate"]), int(self.mDic_LH["dialogHauteurTemplate"]) #900, 650    
+        mLargDefaut, mHautDefaut = 900, 450
+        self.Dialog.resize(mLargDefaut, mHautDefaut)
+        self.lScreenDialog, self.hScreenDialog = int(self.Dialog.width()), int(self.Dialog.height())
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconSource          = _pathIcons + "/plume.svg"
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        Dialog.setWindowIcon(icon)
-
-        self.groupDialog = QtWidgets.QGroupBox(Dialog)
-        self.groupDialog.setGeometry(QtCore.QRect(5, 5, Dialog.width()-10,  Dialog.height()-10))
-        self.groupDialog.setObjectName("groupDialog")
-        self.groupDialog.setStyleSheet("QGroupBox {border: 3px solid #958B62;}")
-        
-        self.label_2 = QtWidgets.QLabel(self.groupDialog)
-        self.label_2.setGeometry(QtCore.QRect((self.groupDialog.width()/2) - 100, 5, 200, 30))
-        self.label_2.setAlignment(Qt.AlignCenter)        
+        self.Dialog.setWindowIcon(icon)
+        #----------
+        self.labelImage = QtWidgets.QLabel(self.Dialog)
+        myDefPath = myPath.replace("\\","/")
+        carIcon = QtGui.QImage(myDefPath)
+        self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
+        self.labelImage.setGeometry(QtCore.QRect(20, 0, 100, 100))
+        self.labelImage.setObjectName("labelImage")
+        #----------
+        self.label_2 = QtWidgets.QLabel(self.Dialog)
+        self.label_2.setGeometry(QtCore.QRect(100, 30, self.lScreenDialog - 100, 30))
+        self.label_2.setAlignment(Qt.AlignLeft)        
         font = QtGui.QFont()
-        font.setPointSize(15) 
+        font.setPointSize(12) 
         font.setWeight(50) 
         font.setBold(True)
         self.label_2.setFont(font)
         self.label_2.setTextFormat(QtCore.Qt.RichText)
-        self.label_2.setObjectName("label_2")
-        self.labelImage = QtWidgets.QLabel(self.groupDialog)
-        myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
-        myDefPath = myPath.replace("\\","/");
-        carIcon = QtGui.QImage(myDefPath)
-        self.labelImage.setPixmap(QtGui.QPixmap.fromImage(carIcon))
-        self.labelImage.setGeometry(QtCore.QRect(10, 30, 266, 70))
-        self.labelImage.setObjectName("labelImage")
+        self.label_2.setObjectName("label_2")                                                     
+        #========
 
-        self.labelImage2 = QtWidgets.QLabel(self.groupDialog)
+        #group general 
+        self.groupBoxGeneral = QtWidgets.QGroupBox(self.Dialog)
+        self.groupBoxGeneral.setGeometry(QtCore.QRect(10,100,self.lScreenDialog - 20, self.hScreenDialog - 110))
+        self.groupBoxGeneral.setObjectName("groupBoxGeneral")
+        self.groupBoxGeneral.setStyleSheet("QGroupBox { border: 0px solid green}")
+        #-
+        self.layoutGeneral = QtWidgets.QGridLayout()
+        self.layoutGeneral.setRowStretch(0, 8)
+        self.layoutGeneral.setRowStretch(1, 1)
+        self.layoutGeneral.setRowStretch(2, 1)
+        self.layoutGeneral.setRowStretch(3, 1)
+        #-
+        self.layoutGeneral.setColumnStretch(0, 10)
+        self.layoutGeneral.setColumnStretch(1, 1)
+        self.layoutGeneral.setColumnStretch(2, 5)
+        self.groupBoxGeneral.setLayout(self.layoutGeneral)
+
+        #========
+        self.labelImage2 = QtWidgets.QLabel()
         myPath = os.path.dirname(__file__)+"\\icons\\about\\ui_screenshot.svg";
         myDefPath = myPath.replace("\\","/");
         carIcon2 = QtGui.QImage(myDefPath)
-        
         self.labelImage2.setPixmap(QtGui.QPixmap.fromImage(carIcon2))
-        self.labelImage2.setGeometry(QtCore.QRect(self.groupDialog.width()/2 - 55, 40, self.groupDialog.width()/2 + 60, self.groupDialog.height() - 70))
         self.labelImage2.setObjectName("labelImage2")
-        #self.labelImage2.setStyleSheet("QLabel {border: 3px solid #958B62;}")
+        #========
 
-        self.textEdit = QtWidgets.QTextBrowser(self.groupDialog)
+        self.textEdit = QtWidgets.QTextBrowser()
         palette = QtGui.QPalette()
-
+        #-
         brush = QtGui.QBrush(QtGui.QColor(0,0,0,0))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active,QtGui.QPalette.Base,brush)
-
+        #-
         brush = QtGui.QBrush(QtGui.QColor(0,0,0,0))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive,QtGui.QPalette.Base,brush)
-
+        #-
         brush = QtGui.QBrush(QtGui.QColor(255,255,255))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled,QtGui.QPalette.Base,brush)
         self.textEdit.setPalette(palette)
         self.textEdit.setAutoFillBackground(True)
-        self.textEdit.width = 300
-        self.textEdit.height = 260
         self.textEdit.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.textEdit.setFrameShadow(QtWidgets.QFrame.Plain)
         self.textEdit.setReadOnly(True)
         self.textEdit.setObjectName("textEdit")
         self.textEdit.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
-        self.textEdit.setGeometry(QtCore.QRect(10, 100, 280, 360))
-
-        self.textEditDL = QtWidgets.QLabel(self.groupDialog)
-        self.textEditDL.setGeometry(QtCore.QRect(10, 450, 280, 50))
+        self.layoutGeneral.addWidget(self.textEdit, 0, 0, 4, 1)
+        #========
+        # Références Href
+        self.groupBoxHref = QtWidgets.QGroupBox()
+        self.groupBoxHref.setObjectName("groupBoxHref")
+        self.groupBoxHref.setStyleSheet("QGroupBox { border: 0px solid blue;}")
+        #-
+        self.layoutHref = QtWidgets.QGridLayout()
+        #-
+        self.groupBoxHref.setLayout(self.layoutHref)
+        self.layoutGeneral.addWidget(self.groupBoxHref, 0, 2)
+        #=====================================
+        # [ == scrolling == ]
+        self.scroll_bar_Href = QtWidgets.QScrollArea() 
+        self.scroll_bar_Href.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        self.scroll_bar_Href.setWidgetResizable(True)
+        self.scroll_bar_Href.setWidget(self.groupBoxHref)
+        self.layoutGeneral.addWidget(self.scroll_bar_Href, 0, 2)
+        #=====================================
+        self.textEditDL = QtWidgets.QLabel()
         self.textEditDL.setWordWrap(True)
-        self.textEditLL = QtWidgets.QLabel(self.groupDialog)
-        self.textEditLL.setGeometry(QtCore.QRect(10, 500, 280, 50))
-        self.textEditLL.setWordWrap(True)
-
-
-        self.pushButton = QtWidgets.QPushButton(self.groupDialog)
+        self.layoutHref.addWidget(self.textEditDL)
+        #========
+        self.pushButton = QtWidgets.QPushButton()
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setGeometry(QtCore.QRect(410, self.groupDialog.height() - 35, 100, 25))
         self.pushButton.clicked.connect(Dialog.reject)
+        #self.layoutGeneral.addWidget(self.pushButton, 3, 1)
 
         self.retranslateUi(Dialog)
 
@@ -115,11 +154,11 @@ class Ui_Dialog(object):
         MonHtml += "<p style=\"margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
         
         mLinkDL = "mailto:didier.leclerc@developpement-durable.gouv.fr"
-        MonHtmlDL = "<font color='#0000FF'><b><u>" + QtWidgets.QApplication.translate("about", "Didier LECLERC: integration, development of the user interface and the interface with the PostgreSQL server.", None) + "</u></b></font><br><br>"
+        MonHtmlDL = "<font color='#0000FF'>" + QtWidgets.QApplication.translate("about", "Didier LECLERC: integration, development of the user interface and the interface with the PostgreSQL server.", None) + "</font><br><br>"
         mLinkDL = '<a href=\"' + mLinkDL + '\">' + MonHtmlDL + '</a>'
 
         mLinkLL = "mailto:leslie.lemaire@developpement-durable.gouv.fr"
-        MonHtmlLL = "<font color='#0000FF'><b><u>" + QtWidgets.QApplication.translate("about", "Leslie LEMAIRE: design and development of the underlying mechanics (plume.rdf, plume.pg et plume.iso.), creation of logos and icons.", None) + "</u></b></font><br><br>"
+        MonHtmlLL = "<font color='#0000FF'>" + QtWidgets.QApplication.translate("about", "Leslie LEMAIRE: design and development of the underlying mechanics (plume.rdf, plume.pg et plume.iso.), creation of logos and icons.", None) + "</font><br><br>"
         mLinkLL = '<a href=\"' + mLinkLL + '\">' + MonHtmlLL + '</a>'
         
         MonHtml += "<b>"
@@ -129,15 +168,20 @@ class Ui_Dialog(object):
         MonHtml6 = QtWidgets.QApplication.translate("about", "digital service SG/DNUM/UNI/DRC", None) 
         MonHtml += MonHtml6
         MonHtml += "<br><br><i>"
-        MonHtml7 = QtWidgets.QApplication.translate("about", "Development in 2021/2022", None) 
+        MonHtml7 = QtWidgets.QApplication.translate("about", "Development in 2021/2022/2023", None) 
         MonHtml += MonHtml7
         MonHtml += "</i></p></body></html>"
 
         Dialog.setWindowTitle(QtWidgets.QApplication.translate("about", "PLUME (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("about", "Plume", None))
         self.textEdit.setHtml(QtWidgets.QApplication.translate("about", MonHtml, None))
-        self.textEditDL.setText(mLinkDL)
+        self.textEditDLLL = mLinkDL + "<br>" + mLinkLL
+        self.textEditDL.setText(self.textEditDLLL)
         self.textEditDL.setOpenExternalLinks(True)       
-        self.textEditLL.setText(mLinkLL)
-        self.textEditLL.setOpenExternalLinks(True)       
         self.pushButton.setText(QtWidgets.QApplication.translate("about", "OK", None))
+
+    #==========================
+    def resizeEvent(self, event):
+        self.groupBoxGeneral.setGeometry(QtCore.QRect(10,100,self.Dialog.width() - 20, self.Dialog.height() - 110))
+        return
+        
