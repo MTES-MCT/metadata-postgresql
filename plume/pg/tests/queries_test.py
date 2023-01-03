@@ -16,13 +16,19 @@ import unittest, psycopg2
 from datetime import datetime
 
 from plume.pg.tests.connection import ConnectionString
-from plume.pg.queries import query_is_relation_owner, query_exists_extension, \
-    query_get_relation_kind, query_update_table_comment, query_get_table_comment, \
-    query_list_templates, query_get_categories, query_template_tabs, \
-    query_get_columns, query_update_column_comment, query_update_columns_comments, \
-    query_get_geom_extent, query_get_geom_srid, query_get_srid_list,\
-    query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check, \
-    query_get_comment_fragments, query_get_creation_date, query_get_modification_date
+from plume.pg.queries import (
+    query_is_relation_owner, query_exists_extension, query_is_template_admin,
+    query_get_relation_kind, query_update_table_comment, query_get_table_comment, 
+    query_list_templates, query_get_categories, query_template_tabs,
+    query_get_columns, query_update_column_comment, query_update_columns_comments,
+    query_get_geom_extent, query_get_geom_srid, query_get_srid_list,
+    query_get_geom_centroid, query_evaluate_local_templates, query_plume_pg_check,
+    query_get_comment_fragments, query_get_creation_date, query_get_modification_date,
+    query_insert_or_update_any_table, query_insert_or_update_meta_categorie,
+    query_insert_or_update_meta_tab, query_insert_or_update_meta_template,
+    query_insert_or_update_meta_template_categories, query_read_meta_categorie,
+    query_read_meta_tab, query_read_meta_template, query_read_meta_template_categories
+)
 from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.utils import data_from_file, abspath
@@ -83,7 +89,7 @@ class QueriesTestCase(unittest.TestCase):
         conn.close()
         self.assertTrue(res[0])
 
-    def test_query_query_exists_extension(self):
+    def test_query_exists_extension(self):
         """Requête qui vérifie que l'extension PlumePg est installée sur la base.
 
         Il est présumé que c'est le cas sur la base
@@ -955,6 +961,287 @@ class QueriesTestCase(unittest.TestCase):
         conn.close()
         self.assertTrue(isinstance(result1[0][0], datetime))
         self.assertListEqual(result2, [])
+
+    def test_query_is_template_admin(self):
+        """Vérification de la présence de droits d'édition sur les modèles.
+
+        La documentation de la fonction précise qu'elle ne doit être
+        utilisée que si PlumePg est active sur la base.
+
+        Ceci est un pseudo-test qui vérifie seulement l'absence de coquille
+        dans le code. Il est exécuté avec un rôle de connexion super-utilisateur
+        qui a nécessairement les droits nécessaires.
+        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_is_template_admin()
+                cur.execute(*query)
+                result = cur.fetchone()
+        conn.close()
+        self.assertIsNotNone(result)
+        # un super-utilisateur a tous les droits...
+        self.assertTrue(result[0])
+
+    def test_query_insert_or_update_any_table(self):
+        """Contrôle de la fonction générique en charge de créer les requêtes INSERT OR UPDATE
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test_insert_update (
+                        id serial PRIMARY KEY,
+                        field_1 text,
+                        field_2 text
+                    )
+                ''')
+                # INSERT avec une liste
+                query = query_insert_or_update_any_table(
+                    'z_plume', 'table_test_insert_update', 'id',
+                    [None, 'val A-1'], ['id', 'field_1']
+                )
+                cur.execute(*query)
+                cur.execute('''
+                    SELECT count(*) FROM z_plume.table_test_insert_update
+                        WHERE field_1 = 'val A-1'
+                ''')
+                res1 = cur.fetchone()[0]
+                # INSERT avec dictionnaire
+                query = query_insert_or_update_any_table(
+                    'z_plume', 'table_test_insert_update', 'id',
+                    {'id': 99, 'field_1': 'val B-1'}
+                )
+                cur.execute(*query)
+                cur.execute('''
+                    SELECT count(*) FROM z_plume.table_test_insert_update
+                        WHERE field_1 = 'val B-1'
+                ''')
+                res2 = cur.fetchone()[0]
+                # UPDATE
+                query = query_insert_or_update_any_table(
+                    'z_plume', 'table_test_insert_update', 'id',
+                    {'id': 99, 'field_2': 'val B-2'}
+                )
+                cur.execute(*query)
+                cur.execute('''
+                    SELECT count(*) FROM z_plume.table_test_insert_update
+                        WHERE field_1 = 'val B-1'
+                ''')
+                res3 = cur.fetchone()[0]
+                cur.execute('''
+                    SELECT count(*) FROM z_plume.table_test_insert_update
+                        WHERE field_2 IS NULL
+                ''')
+                res4 = cur.fetchone()[0]
+                cur.execute('''
+                    SELECT count(*) FROM z_plume.table_test_insert_update
+                        WHERE field_2 = 'val B-2' AND id = 99
+                ''')
+                res5 = cur.fetchone()[0]
+                # nettoyage
+                cur.execute('''
+                    DROP TABLE z_plume.table_test_insert_update
+                ''')
+        conn.close()
+        self.assertEqual(res1, 1)
+        self.assertEqual(res2, 1)
+        self.assertEqual(res3, 1)
+        self.assertEqual(res4, 1)
+        self.assertEqual(res5, 1)
+
+    def test_query_read_meta_categorie(self):
+        """Lecture de la table des catégories.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_read_meta_categorie()
+                cur.execute(*query)
+                result = cur.fetchall()
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertGreater(len(result), 1)
+        self.assertGreater(len(result[0]), 1)
+
+    def test_query_read_meta_tab(self):
+        """Lecture de la table des onglets.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_tab
+                        VALUES ('Onglet 1', 1), ('Onglet 10', 10)
+                ''')
+                query = query_read_meta_tab()
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_tab CASCADE
+                ''')
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+        self.assertGreater(len(result[0]), 1)
+
+    def test_query_read_meta_template(self):
+        """Lecture de la table des modèles.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_template (tpl_label)
+                        VALUES ('Modèle 1'), ('Modèle 10')
+                ''')
+                query = query_read_meta_template()
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_template CASCADE
+                ''')
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+        self.assertGreater(len(result[0]), 1)
+
+    def test_query_read_meta_template_categories(self):
+        """Lecture de la table des associations modèles-catégories.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_template (tpl_label)
+                        VALUES ('Modèle 1'), ('Modèle 10') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path)
+                        VALUES ('Modèle 10', 'dct:title'), ('Modèle 10', 'dct:description')
+                ''')
+                query = query_read_meta_template_categories()
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_template CASCADE
+                ''')
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+        self.assertGreater(len(result[0]), 1)
+
+    def test_query_insert_or_update_meta_template_categories(self):
+        """Mise à jour de la table des associations modèle-catégories.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO z_plume.meta_template (tpl_label)
+                        VALUES ('Modèle 1'), ('Modèle 10') ;
+                ''')
+                query = query_insert_or_update_meta_template_categories(
+                    {'tpl_label': 'Modèle 10', 'shrcat_path': 'dct:title'}
+                )
+                cur.execute(*query)
+                query = query_insert_or_update_meta_template_categories(
+                    [None, 'Modèle 10', 'dct:description'], ['tplcat_id', 'tpl_label', 'shrcat_path']
+                )
+                cur.execute(*query)
+                query = query_read_meta_template_categories()
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_template CASCADE
+                ''')
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+        self.assertGreater(len(result[0]), 1)
+
+    def test_query_insert_or_update_meta_template(self):
+        """Mise à jour de la table des modèles.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_insert_or_update_meta_template(
+                    {'tpl_label': 'Modèle 10'}
+                )
+                cur.execute(*query)
+                query = query_insert_or_update_meta_template(
+                    ['Modèle 10', 'Mon commentaire...'], ['tpl_label', 'comment']
+                )
+                cur.execute(*query)
+                query = query_read_meta_template()
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_template CASCADE
+                ''')
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 1)
+        self.assertGreater(len(result[0]), 1)
+
+    def test_query_insert_or_update_meta_tab(self):
+        """Mise à jour de la table des onglets.        
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_insert_or_update_meta_tab(
+                    {'tab': 'Onglet 1'}
+                )
+                cur.execute(*query)
+                query = query_insert_or_update_meta_tab(
+                    ['Onglet 2', 100], ['tab', 'tab_num']
+                )
+                cur.execute(*query)
+                query = query_read_meta_tab()
+                cur.execute(*query)
+                result = cur.fetchall()
+                cur.execute('''
+                    TRUNCATE z_plume.meta_tab CASCADE
+                ''')
+        conn.close()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+        self.assertGreater(len(result[0]), 1)
+
+    # def test_query_insert_or_update_meta_categorie(self):
+    #     """Mise à jour de la table des catégories.        
+    #     """
+    #     conn = psycopg2.connect(PlumePgTestCase.connection_string)
+    #     with conn:
+    #         with conn.cursor() as cur:
+    #             query = query_insert_or_update_meta_categorie(
+    #                 {'path': None, 'label': 'Catégorie 1'}
+    #             )
+    #             cur.execute(*query)
+    #             query = query_insert_or_update_meta_categorie(
+    #                 ['dct:title', 'Catégorie titre'], ['path', 'label']
+    #             )
+    #             cur.execute(*query)
+    #             cur.execute('''
+    #                 SELECT * FROM z_plume.meta_shared_categorie
+    #                     WHERE label = 'Catégorie titre'
+    #             ''')
+    #             result1 = cur.fetchall()
+    #             cur.execute('''
+    #                 SELECT * FROM z_plume.meta_local_categorie
+    #             ''')
+    #             result2 = cur.fetchall()
+    #             cur.execute('''
+    #                 TRUNCATE z_plume.meta_categorie CASCADE
+    #             ''')
+    #     conn.close()
+    #     self.assertIsNotNone(result1)
+    #     self.assertEqual(len(result1), 1)
+    #     self.assertGreater(len(result1[0]), 1)
+    #     self.assertIsNotNone(result2)
+    #     self.assertEqual(len(result2), 1)
+    #     self.assertGreater(len(result2[0]), 1)
 
 if __name__ == '__main__':
     unittest.main()

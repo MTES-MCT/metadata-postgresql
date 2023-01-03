@@ -3,15 +3,14 @@
 Ce module suppose l'usage de la bibliothèque Psycopg pour la
 communication avec le serveur PostgreSQL.
 
-Selon le cas, les paramètres des requêtes doivent être passés :
+Il génère des requêtes à exécuter avec la méthode
+:py:meth:`psycopg2.cursor.execute`. Ces requêtes - objets
+:py:class:`PgQueryWithArgs` - sont auto-suffisantes, dans le sens
+où elles incluent tous les paramètres nécessaires.
 
-* soit en argument de la fonction qui crée la requête, dans
-  le cas des identifiants d'objets PostgreSQL ;
-* soit, pour les valeurs litérales, dans le tuple qui constitue le
-  second argument de :py:meth:`psycopg2.cursor.execute`.
+La syntaxe pour l'usage de ces requêtes est toujours :
 
-La syntaxe est systématiquement détaillée dans l'en-tête
-des fonctions.
+    >>> cur.execute(*query)
 
 References
 ----------
@@ -23,7 +22,7 @@ import re
 from psycopg2 import sql
 from psycopg2.extras import Json
 
-from plume.rdf.exceptions import UnknownParameterValue
+from plume.rdf.exceptions import UnknownParameterValue, MissingParameter
 from plume.rdf.namespaces import PLUME
 from plume.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
 
@@ -1184,7 +1183,6 @@ def query_get_modification_date(schema_name, table_name, **kwargs):
         # n'est pas actif sur la table
         )
 
-
 def query_get_creation_date(schema_name, table_name, **kwargs):
     """Requête de récupération de la date de création d'une table.
     
@@ -1245,3 +1243,358 @@ def query_get_creation_date(schema_name, table_name, **kwargs):
         # n'est pas actif sur la table        
         )
 
+def query_is_template_admin():
+    """Requête qui vérifie que le rôle courant dispose des privilèges nécessaire pour configurer les modèles de fiches de métadonnées de PlumePg.
+    
+    Concrètement, elle vérifie les privilèges suivants :
+    * ``USAGE`` sur le schéma ``z_plume``.
+    * ``INSERT``, ``UPDATE``, ``DELETE`` sur la table d'association
+      des catégories aux modèles, ``z_plume.meta_template_categories``.
+    * ``INSERT``, ``UPDATE``, ``DELETE`` sur la table des modèles,
+      ``z_plume.meta_template``.
+    * ``INSERT``, ``UPDATE``, ``DELETE`` sur la table des catégories,
+      ``z_plume.meta_categorie``.
+    * ``INSERT``, ``UPDATE``, ``DELETE`` sur la table des onlgets,
+      ``z_plume.meta_tab``.
+    
+    Ces privilèges ne sont pas tout à fait suffisants pour pouvoir éditer
+    les modèles (il faut aussi des droits sur les séquences, les types, etc.),
+    mais en disposer signifer qu'on a voulu habiliter l'utilisateur à
+    les modifier. S'il lui manque des droits annexes, Plume lui fera
+    savoir par un message d'erreur qui permettra à l'administrateur du
+    serveur d'accorder les privilèges manquants.
+
+    La requête suppose que l'extension PostgreSQL PlumePg est installée
+    sur le serveur, sans quoi son exécution échouera.
+
+    À utiliser comme suit :
+    
+        >>> query = query_is_template_admin
+        >>> cur.execute(*query)
+        >>> res = cur.fetchone()
+        >>> is_template_admin = res[0]
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT
+                has_schema_privilege('z_plume', 'USAGE')
+                AND has_table_privilege('z_plume.meta_template', 'INSERT')
+                AND has_table_privilege('z_plume.meta_template', 'UPDATE')
+                AND has_table_privilege('z_plume.meta_template', 'DELETE')
+                AND has_table_privilege('z_plume.meta_template_categories', 'INSERT')
+                AND has_table_privilege('z_plume.meta_template_categories', 'UPDATE')
+                AND has_table_privilege('z_plume.meta_template_categories', 'DELETE')
+                AND has_table_privilege('z_plume.meta_categorie', 'INSERT')
+                AND has_table_privilege('z_plume.meta_categorie', 'UPDATE')
+                AND has_table_privilege('z_plume.meta_categorie', 'DELETE')
+                AND has_table_privilege('z_plume.meta_tab', 'INSERT')
+                AND has_table_privilege('z_plume.meta_tab', 'UPDATE')
+                AND has_table_privilege('z_plume.meta_tab', 'DELETE')
+            """),
+        expecting='one value',
+        allow_none=False,
+        missing_mssg="Plume n'a pas pu confirmer si le rôle courant est " \
+            'habilité à gérer les modèles de fiches de métadonnées de PlumePg.'
+    )
+
+def query_read_meta_template_categories():
+    """Requête qui importe le contenu de la table d'association des catégories aux modèles (meta_template_categories) de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_meta_template_categories()
+        >>> cur.execute(*query)
+        >>> template_categories = cur.fetchall()
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT * FROM z_plume.meta_template_categories
+                ORDER BY tpl_label, shrcat_path NULLS LAST, loccat_path NULLS LAST
+            """),
+        expecting='some rows',
+        allow_none=True
+    )
+
+def query_read_meta_template():
+    """Requête qui importe le contenu de la table des modèles (meta_template) de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_meta_template()
+        >>> cur.execute(*query)
+        >>> template_categories = cur.fetchall()
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT * FROM z_plume.meta_template
+                ORDER BY tpl_label
+            """),
+        expecting='some rows',
+        allow_none=True
+    )
+
+def query_read_meta_categorie():
+    """Requête qui importe le contenu de la table des catégories de métadonnées (meta_categorie) de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_meta_categorie()
+        >>> cur.execute(*query)
+        >>> template_categories = cur.fetchall()
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT * FROM z_plume.meta_categorie
+                ORDER BY origin DESC, path
+            """),
+        expecting='some rows',
+        allow_none=True
+    )
+
+def query_read_meta_tab():
+    """Requête qui importe le contenu de la table des onglets (meta_tab) de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_meta_tab()
+        >>> cur.execute(*query)
+        >>> template_categories = cur.fetchall()
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT * FROM z_plume.meta_tab
+                ORDER BY tab
+            """),
+        expecting='some rows',
+        allow_none=True
+    )
+
+def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, columns=None):
+    """Requête qui crée ou met à jour un enregistrement d'une table quelconque.
+
+    À utiliser comme suit :
+    
+        >>> query = query_insert_or_update_any_table(
+        ...    'nom du schéma', 'nom de la table', 'nom du champ de clé primaire',
+        ...    ['valeur champ 1', 'valeur champ 2', 'valeur champ 3'],
+        ...    ['nom champ 1', 'nom champ 2', 'nom champ 3']
+        ...    )
+        >>> cur.execute(*query)
+
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la table.
+    pk_name : str
+        Nom du champ de clé primaire. La fonction ne prend pas en
+        charge les tables avec des clés primaires multi-champs.
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    if isinstance(data, list):
+        if not columns:
+            raise MissingParameter('columns')
+        if len(data) != len(columns):
+            raise ValueError("Les listes 'data' et 'columns' devraient être de même longueur")
+        values = data
+    elif isinstance(data, dict):
+        values = [v for v in data.values()]
+        columns = [k for k in data.keys()]
+    else:
+        raise TypeError("'data' devrait être un dictionnaire ou une liste")
+
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            INSERT INTO {relation} ({columns})
+                VALUES ({values})
+                ON CONFLICT ({pk_name}) DO UPDATE
+                    SET ({columns}) = ROW ({values})
+            """).format(
+                relation=sql.Identifier(schema_name, table_name),
+                columns=sql.SQL(', ').join(sql.Identifier(c) for c in columns),
+                values=sql.SQL(', ').join(sql.Literal(v) if v else sql.SQL('DEFAULT') for v in values),
+                pk_name=sql.Identifier(pk_name)
+            ),
+        expecting='nothing'
+    )
+
+def query_insert_or_update_meta_tab(data, columns=None):
+    """Requête qui crée ou met à jour un ou plusieurs onglets dans la table meta_tab de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_insert_or_update_meta_tab(data)
+        >>> cur.execute(*query)
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_insert_or_update_any_table(
+        'z_plume', 'meta_tab', 'tab', data, columns=columns
+    )
+
+def query_insert_or_update_meta_categorie(data, columns=None):
+    """Requête qui crée ou met à jour une ou plusieurs catégories de métadonnées dans la table meta_categorie de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_insert_or_update_meta_categorie(data)
+        >>> cur.execute(*query)
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    # INSERT ON CONFLICT ne fonctionne pas avec les tables partitionnées
+    # return query_insert_or_update_any_table(
+    #     'z_plume', 'meta_categorie', 'path', data, columns=columns
+    # )
+
+def query_insert_or_update_meta_template(data, columns=None):
+    """Requête qui crée ou met à jour un ou plusieurs modèles de fiches de métadonnées dans la table meta_template de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_insert_or_update_meta_template(data)
+        >>> cur.execute(*query)
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_insert_or_update_any_table(
+        'z_plume', 'meta_template', 'tpl_label', data, columns=columns
+    )
+
+def query_insert_or_update_meta_template_categories(data, columns=None):
+    """Requête qui crée ou met à jour une association modèle-catégorie dans la table meta_template_categories de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_insert_or_update_meta_template_categories(data)
+        >>> cur.execute(*query)
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_insert_or_update_any_table(
+        'z_plume', 'meta_template_categories', 'tplcat_id', data, columns=columns
+    )
