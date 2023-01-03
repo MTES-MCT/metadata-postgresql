@@ -502,11 +502,11 @@
 <p>Pour que le nouveau champ des tables et vues de <em>PlumePg</em> soit exploité, encore faut-il que son contenu soit importé par Plume.</p>
 <p>Ceci suppose de l’ajouter dans la requête définie par la fonction <code class="docutils literal notranslate"><span class="pre">query_get_categories</span></code> du module <a class="reference external" href="https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/queries.py"><code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code></a> :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span>
-<span class="w">    </span><span class="p">...</span><span class="w"></span>
-<span class="w">    </span><span class="n">geo_tools</span><span class="p">::</span><span class="nb">text</span><span class="p">[],</span><span class="w"></span>
-<span class="w">    </span><span class="p">...</span><span class="w"></span>
-<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template_categories_full</span><span class="w"></span>
-<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">tpl_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="w"></span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="n">geo_tools</span><span class="p">::</span><span class="nb">text</span><span class="p">[],</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template_categories_full</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">tpl_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">%</span><span class="n">s</span>
 </pre></div>
 </div>
 <p>Psycopg ne reconnaissant pas les types personnalisés, il est préférable de caster toutes les valeurs dont le type n’est pas standard en <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">text[]</span></code> ou autre type standard adapté.</p>

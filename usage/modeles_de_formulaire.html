@@ -372,25 +372,25 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">sql_filter</span></code> est un filtre SQL, qui peut se référer au nom du schéma avec <code class="docutils literal notranslate"><span class="pre">$1</span></code> et/ou de la table / vue avec <code class="docutils literal notranslate"><span class="pre">$2</span></code>. Il est évalué côté serveur au moment de l’import des modèles par le plugin, par la fonction <code class="docutils literal notranslate"><span class="pre">z_plume.meta_execute_sql_filter(text,</span> <span class="pre">text,</span> <span class="pre">text)</span></code>.</p></li>
 </ul>
 <p>Par exemple, le filtre suivant appliquera le modèle aux tables des schémas des blocs « données référentielles » (préfixe <code class="docutils literal notranslate"><span class="pre">'r_'</span></code>) et « données externes » (préfixe <code class="docutils literal notranslate"><span class="pre">'e_'</span></code>) de la nomenclature nationale :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;$1 ~ ANY(ARRAY[&#39;&#39;^r_&#39;&#39;, &#39;&#39;^e_&#39;&#39;]&#39;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;$1 ~ ANY(ARRAY[&#39;&#39;^r_&#39;&#39;, &#39;&#39;^e_&#39;&#39;]&#39;</span>
 </pre></div>
 </div>
 <p>D’une manière générale, toute commande renvoyant un booléen peut être utilisée. Ainsi, le filtre suivant appliquera le modèle pour toutes les fiches de métadonnées dès lors que l””utilisateur est membre du rôle <code class="docutils literal notranslate"><span class="pre">g_admin</span></code> :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;pg_has_role(&#39;&#39;g_admin&#39;&#39;, &#39;&#39;USAGE&#39;&#39;)&#39;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;pg_has_role(&#39;&#39;g_admin&#39;&#39;, &#39;&#39;USAGE&#39;&#39;)&#39;</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">md_conditions</span></code> est une liste JSON définissant des ensembles de conditions portant cette fois sur les métadonnées.</p></li>
 </ul>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;plume:isExternal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;dcat:keyword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IGN&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">},</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;dct:publisher / foaf:name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Institut national de l&#39;&#39;information géographique et forestière (IGN-F)&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">]</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;plume:isExternal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;dcat:keyword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IGN&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;dct:publisher / foaf:name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Institut national de l&#39;&#39;information géographique et forestière (IGN-F)&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 <p>Les ensembles sont combinés entre eux avec l’opérateur <code class="docutils literal notranslate"><span class="pre">OR</span></code>. Au sein d’un ensemble, les conditions sont combinées avec l’opérateur <code class="docutils literal notranslate"><span class="pre">AND</span></code>.</p>
@@ -405,14 +405,14 @@
 <p>À noter que les conditions ne valent qu’à l’ouverture de la fiche. L’utilisateur du plugin pourra a posteriori choisir librement un autre modèle dans la liste, y compris un modèle sans conditions définies ou dont les conditions d’application automatique ne sont pas vérifiées. Il aura aussi la possibilité de n’appliquer aucun modèle, auquel cas le schéma des métadonnées communes s’appliquera tel quel.</p>
 <p>Le champ <code class="docutils literal notranslate"><span class="pre">enabled</span></code> de <code class="docutils literal notranslate"><span class="pre">meta_template</span></code> permet de désactiver un modèle, qui ne sera alors plus proposé aux utilisateurs du plugin QGIS, en passant simplement la valeur du champ de <code class="docutils literal notranslate"><span class="pre">True</span></code> (valeur par défaut) à <code class="docutils literal notranslate"><span class="pre">False</span></code>. Ce mécanisme peut notamment être utilisé pour les modèles en cours de construction, dont l’administrateur pourra souhaiter qu’ils n’apparaissent pas dans la liste des modèles disponibles tant qu’ils ne sont pas prêts à l’usage.</p>
 <p>On pourra ainsi initier la création d’un nouveau modèle avec une requête de ce type :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template</span><span class="w"> </span><span class="p">(</span><span class="n">tpl_label</span><span class="p">,</span><span class="w"> </span><span class="n">enabled</span><span class="p">)</span><span class="w"></span>
-<span class="w">	</span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Mon nouveau modèle&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">False</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template</span><span class="w"> </span><span class="p">(</span><span class="n">tpl_label</span><span class="p">,</span><span class="w"> </span><span class="n">enabled</span><span class="p">)</span>
+<span class="w">	</span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Mon nouveau modèle&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">False</span><span class="p">)</span><span class="w"> </span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Puis, une fois finalisée l’association des catégories au modèle (cf. ci-après), on activera le modèle :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template</span><span class="w"></span>
-<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">True</span><span class="w"></span>
-<span class="w">	</span><span class="k">WHERE</span><span class="w"> </span><span class="n">tpl_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Mon nouveau modèle&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_template</span>
+<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">True</span>
+<span class="w">	</span><span class="k">WHERE</span><span class="w"> </span><span class="n">tpl_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Mon nouveau modèle&#39;</span><span class="w"> </span><span class="p">;</span>
 </pre></div>
 </div>
 </section>
@@ -538,11 +538,11 @@
 <section id="modeles-pre-configures">
 <h3>Modèles pré-configurés<a class="headerlink" href="#modeles-pre-configures" title="Lien permanent vers ce titre">#</a></h3>
 <p>L’extension propose des modèles pré-configurés - trois à ce stade - qui peuvent être importés via la commande suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">(</span><span class="o">%</span><span class="n">tpl_label</span><span class="p">)</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">(</span><span class="o">%</span><span class="n">tpl_label</span><span class="p">)</span><span class="w"> </span><span class="p">;</span>
 </pre></div>
 </div>
 <p><em><code class="docutils literal notranslate"><span class="pre">%tpl_label</span></code> est à remplacer par une chaîne de caractères correspondant au nom du modèle à importer. Il est aussi possible de ne donner aucun argument à la fonction, dans ce cas tous les modèles pré-configurés sont importés.</em></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_import_sample_template</span><span class="p">()</span><span class="w"> </span><span class="p">;</span>
 </pre></div>
 </div>
 <p>La fonction renvoie une table dont la première colonne contient les noms des modèles traités et la seconde indique si le modèle a été créé (<code class="docutils literal notranslate"><span class="pre">'created'</span></code>) ou, dans le cas d’un modèle déjà répertorié, mis à jour / réinitialisé (<code class="docutils literal notranslate"><span class="pre">'updated'</span></code>).</p>

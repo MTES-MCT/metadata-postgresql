@@ -385,10 +385,10 @@
 </table>
 <p>Les paramètres optionnels sont spécifiés via le champ <code class="docutils literal notranslate"><span class="pre">compute_params</span></code> des tables <code class="docutils literal notranslate"><span class="pre">z_plume.meta_categorie</span></code> et <code class="docutils literal notranslate"><span class="pre">z_plume.meta_template_categories</span></code>. Il s’agit d’un champ de type <code class="docutils literal notranslate"><span class="pre">jsonb</span></code>, qui attend un dictionnaire dont les clés sont les noms des paramètres et les valeurs les valeurs des paramètres.</p>
 <p>Par exemple :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_categorie</span><span class="w"></span>
-<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">compute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">],</span><span class="w"></span>
-<span class="w">        </span><span class="n">compute_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{&quot;pattern&quot;: &quot;^[\\w\\s]+&quot;}&#39;</span><span class="p">::</span><span class="n">jsonb</span><span class="w"></span>
-<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;dct:title&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">z_plume</span><span class="p">.</span><span class="n">meta_categorie</span>
+<span class="w">    </span><span class="k">SET</span><span class="w"> </span><span class="n">compute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">],</span>
+<span class="w">        </span><span class="n">compute_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{&quot;pattern&quot;: &quot;^[\\w\\s]+&quot;}&#39;</span><span class="p">::</span><span class="n">jsonb</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;dct:title&#39;</span><span class="w"> </span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Les trois modes de calcul automatique opèrent comme suit :</p>
