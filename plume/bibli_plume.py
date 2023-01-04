@@ -77,9 +77,10 @@ def genereButtonsWithDict(dicParamButton ) :
 
 #==========================
 def ifActivateRightsToManageModels(self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
-    mKeySql = queries.query_exists_extension('postgis')
+    mKeySql = queries.query_is_template_admin()
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    r = False
+    # r = False for Test A supprimer
+    print(r)
     return r
 
 #==========================
