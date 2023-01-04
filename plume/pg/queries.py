@@ -1312,6 +1312,13 @@ def query_read_meta_template_categories():
         >>> cur.execute(*query)
         >>> template_categories = cur.fetchall()
 
+    ``template_categories`` est une liste de tuples, où chaque tuple correspond à un
+    couple modèle + catégorie. Les tuples contiennent un unique élément : un dictionnaire
+    dont les clés sont les noms des champs de la table d'association et les valeurs
+    sont les valeurs contenues dans ces champs pour le couple modèle + catégorie
+    considéré. L'ordre des clés ne respecte pas l'ordre des champs dans la
+    table.
+
     Returns
     -------
     PgQueryWithArgs
@@ -1320,7 +1327,8 @@ def query_read_meta_template_categories():
     """
     return PgQueryWithArgs(
         query = sql.SQL("""
-            SELECT * FROM z_plume.meta_template_categories
+            SELECT to_json(meta_template_categories.*)
+                FROM z_plume.meta_template_categories
                 ORDER BY tpl_label, shrcat_path NULLS LAST, loccat_path NULLS LAST
             """),
         expecting='some rows',
@@ -1334,7 +1342,14 @@ def query_read_meta_template():
     
         >>> query = query_read_meta_template()
         >>> cur.execute(*query)
-        >>> template_categories = cur.fetchall()
+        >>> templates = cur.fetchall()
+
+    ``templates`` est une liste de tuples, où chaque tuple correspond à un
+    modèle. Les tuples contiennent un unique élément : un dictionnaire
+    dont les clés sont les noms des champs de la table des modèles
+    et les valeurs sont les valeurs contenues dans ces champs pour le modèle
+    considéré. L'ordre des clés ne respecte pas l'ordre des champs dans la
+    table.
 
     Returns
     -------
@@ -1344,7 +1359,8 @@ def query_read_meta_template():
     """
     return PgQueryWithArgs(
         query = sql.SQL("""
-            SELECT * FROM z_plume.meta_template
+            SELECT to_json(meta_template.*)
+                FROM z_plume.meta_template
                 ORDER BY tpl_label
             """),
         expecting='some rows',
@@ -1358,7 +1374,14 @@ def query_read_meta_categorie():
     
         >>> query = query_read_meta_categorie()
         >>> cur.execute(*query)
-        >>> template_categories = cur.fetchall()
+        >>> categories = cur.fetchall()
+
+    ``categories`` est une liste de tuples, où chaque tuple correspond à une
+    catégorie. Les tuples contiennent un unique élément : un dictionnaire
+    dont les clés sont les noms des champs de la table des catégories
+    et les valeurs sont les valeurs contenues dans ces champs pour la catégorie
+    considéré. L'ordre des clés ne respecte pas l'ordre des champs dans la
+    table.
 
     Returns
     -------
@@ -1368,7 +1391,8 @@ def query_read_meta_categorie():
     """
     return PgQueryWithArgs(
         query = sql.SQL("""
-            SELECT * FROM z_plume.meta_categorie
+            SELECT to_json(meta_categorie.*) 
+                FROM z_plume.meta_categorie
                 ORDER BY origin DESC, path
             """),
         expecting='some rows',
@@ -1382,7 +1406,14 @@ def query_read_meta_tab():
     
         >>> query = query_read_meta_tab()
         >>> cur.execute(*query)
-        >>> template_categories = cur.fetchall()
+        >>> tabs = cur.fetchall()
+
+    ``tabs`` est une liste de tuples, où chaque tuple correspond à un
+    onglet. Les tuples contiennent un unique élément : un dictionnaire
+    dont les clés sont les noms des champs de la table des onglets
+    et les valeurs sont les valeurs contenues dans ces champs pour l'onglet
+    considéré. L'ordre des clés ne respecte pas l'ordre des champs dans la
+    table.
 
     Returns
     -------
@@ -1392,7 +1423,8 @@ def query_read_meta_tab():
     """
     return PgQueryWithArgs(
         query = sql.SQL("""
-            SELECT * FROM z_plume.meta_tab
+            SELECT to_json(meta_tab.*)
+                FROM z_plume.meta_tab
                 ORDER BY tab
             """),
         expecting='some rows',
