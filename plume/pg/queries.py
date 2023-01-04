@@ -1499,7 +1499,7 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
     )
 
 def query_insert_or_update_meta_tab(data, columns=None):
-    """Requête qui crée ou met à jour un ou plusieurs onglets dans la table meta_tab de PlumePg.
+    """Requête qui crée ou met à jour un onglet dans la table meta_tab de PlumePg.
 
     À utiliser comme suit :
     
@@ -1532,12 +1532,21 @@ def query_insert_or_update_meta_tab(data, columns=None):
     )
 
 def query_insert_or_update_meta_categorie(data, columns=None):
-    """Requête qui crée ou met à jour une ou plusieurs catégories de métadonnées dans la table meta_categorie de PlumePg.
+    """Requête qui crée ou met à jour une catégorie de métadonnées dans la table meta_categorie de PlumePg.
 
     À utiliser comme suit :
     
         >>> query = query_insert_or_update_meta_categorie(data)
         >>> cur.execute(*query)
+
+    Pour la mise à jour d'une catégorie commune, il est impératif :
+
+    * que le champ ``origin`` soit présent et prenne la valeur 
+      ``'shared'`` ;
+    * que l'identifiant ``path`` soit renseigné.
+
+    Si l'une au moins de ces deux conditions n'est pas remplie, la
+    catégorie de métadonnée est considérée comme locale.
 
     Parameters
     ----------
@@ -1561,12 +1570,34 @@ def query_insert_or_update_meta_categorie(data, columns=None):
     
     """
     # INSERT ON CONFLICT ne fonctionne pas avec les tables partitionnées
-    # return query_insert_or_update_any_table(
-    #     'z_plume', 'meta_categorie', 'path', data, columns=columns
-    # )
+    if isinstance(data, list):
+        if not columns:
+            raise MissingParameter('columns')
+        path = data[columns.index('path')] if 'path' in columns else None
+        origin = data[columns.index('origin')] if 'origin' in columns else None
+    elif isinstance(data, dict):
+        path = data.get('path')
+        origin = data.get('origin')
+    else:
+        raise TypeError("'data' devrait être un dictionnaire ou une liste")
+    if origin == 'shared':
+        if not path:
+            raise ValueError('Métadonnée commune non identifiée')
+        return query_insert_or_update_any_table(
+            'z_plume', 'meta_shared_categorie', 'path', data, columns=columns
+        )
+    elif origin in (None, 'local'):
+        return query_insert_or_update_any_table(
+            'z_plume', 'meta_local_categorie', 'path', data, columns=columns
+        )
+    else:
+        raise ValueError(
+            'Une métadonnée peut être commune ("shared") ou'
+            f' locale ("local"), pas "{origin}"'
+        )
 
 def query_insert_or_update_meta_template(data, columns=None):
-    """Requête qui crée ou met à jour un ou plusieurs modèles de fiches de métadonnées dans la table meta_template de PlumePg.
+    """Requête qui crée ou met à jour un modèle de fiches de métadonnées dans la table meta_template de PlumePg.
 
     À utiliser comme suit :
     
@@ -1630,3 +1661,338 @@ def query_insert_or_update_meta_template_categories(data, columns=None):
     return query_insert_or_update_any_table(
         'z_plume', 'meta_template_categories', 'tplcat_id', data, columns=columns
     )
+
+def query_delete_any_table(schema_name, table_name, pk_name, data, columns):
+    """Requête qui supprime un enregistrement d'une table quelconque.
+
+    À utiliser comme suit :
+    
+        >>> query = query_delete_any_table(
+        ...    'nom du schéma', 'nom de la table', 'nom du champ de clé primaire',
+        ...    ['valeur champ 1', 'valeur de la clé primaire', 'valeur champ 3'],
+        ...    ['nom champ 1', 'nom du champ de clé primaire', 'nom champ 3']
+        ...    )
+        >>> cur.execute(*query)
+
+    La fonction renvoie une erreur si `data` et `columns`
+    ne contiennent pas de valeur pour le champ de clé primaire.
+    Il ne pose aucun problème de fournir des valeurs pour d'autres
+    champs, même si la fonction n'en fera rien.
+
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la table.
+    pk_name : str
+        Nom du champ de clé primaire. La fonction ne prend pas en
+        charge les tables avec des clés primaires multi-champs.
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    if isinstance(data, list):
+        if not columns:
+            raise MissingParameter('columns')
+        pk_value = data[columns.index(pk_name)] if pk_name in columns else None
+    elif isinstance(data, dict):
+        pk_value = data.get(pk_name)
+    else:
+        raise TypeError("'data' devrait être un dictionnaire ou une liste")
+    if not pk_value:
+        raise ValueError('Enregistrement à supprimer non identifié')
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            DELETE FROM {relation}
+                WHERE {pk_name} = {pk_value}
+            """).format(
+                relation=sql.Identifier(schema_name, table_name),
+                pk_name=sql.Identifier(pk_name),
+                pk_value=sql.Literal(pk_value)
+            ),
+        expecting='nothing'
+    )
+
+def query_delete_meta_tab(data, columns=None):
+    """Requête qui supprime un onglet de la table meta_tab de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_delete_meta_tab(data)
+        >>> cur.execute(*query)
+
+    La fonction renvoie une erreur si `data` et `columns`
+    ne contiennent pas de valeur pour le champ de clé primaire, `tab`.
+    Il ne pose aucun problème de fournir des valeurs pour d'autres
+    champs, même si la fonction n'en fera rien.
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_delete_any_table(
+        'z_plume', 'meta_tab', 'tab', data, columns=columns
+    )
+
+def query_delete_meta_template(data, columns=None):
+    """Requête qui supprime un modèle de fiches de métadonnées de la table meta_template de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_delete_meta_template(data)
+        >>> cur.execute(*query)
+
+    La fonction renvoie une erreur si `data` et `columns`
+    ne contiennent pas de valeur pour le champ de clé primaire, `tpl_label`.
+    Il ne pose aucun problème de fournir des valeurs pour d'autres
+    champs, même si la fonction n'en fera rien.
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_delete_any_table(
+        'z_plume', 'meta_template', 'tpl_label', data, columns=columns
+    )
+
+def query_delete_meta_template_categories(data, columns=None):
+    """Requête qui supprime une association modèle-catégorie de la table meta_template_categories de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_delete_meta_template_categories(data)
+        >>> cur.execute(*query)
+
+    La fonction renvoie une erreur si `data` et `columns`
+    ne contiennent pas de valeur pour le champ de clé primaire, `tplcat_id`.
+    Il ne pose aucun problème de fournir des valeurs pour d'autres
+    champs, même si la fonction n'en fera rien.
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_delete_any_table(
+        'z_plume', 'meta_template_categories', 'tplcat_id', data, columns=columns
+    )
+
+def query_delete_meta_categorie(data, columns=None):
+    """Requête qui supprime une catégorie de la table meta_categorie de PlumePg.
+
+    À utiliser comme suit :
+    
+        >>> query = query_delete_meta_categorie(data)
+        >>> cur.execute(*query)
+
+    La fonction renvoie une erreur si `data` et `columns`
+    ne contiennent pas de valeur pour le champ de clé primaire, `path`.
+    Il ne pose aucun problème de fournir des valeurs pour d'autres
+    champs, même si la fonction n'en fera rien.
+
+    Parameters
+    ----------
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_delete_any_table(
+        'z_plume', 'meta_categorie', 'path', data, columns=columns
+    )
+
+def query_read_any_enum_type(schema_name, type_name):
+    """Requête qui récupère les valeurs d'un type énuméré quelconque.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_any_enum_type(
+        ...    'nom du schéma', 'nom du type'
+        ...    )
+        >>> cur.execute(*query)
+        >>> enum_values = cur.fetchone()
+
+    ``enum_values`` est une liste triée par ordre alphabétique.
+
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    type_name : str
+        Nom du type énuméré.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT array_agg(enumlabel ORDER BY enumlabel)
+                FROM pg_catalog.pg_enum
+                WHERE enumtypid = '{enumtype}'::regtype
+            """).format(
+                enumtype=sql.Identifier(schema_name, type_name)
+            ),
+        expecting='one value',
+        allow_none=False, # cas d'un type non énuméré
+        missing_mssg="Plume n'a pas pu importer les valeurs du type " \
+            'énuméré "{}"."{}".'.format(schema_name, type_name)
+    )
+
+def query_read_enum_meta_special():
+    """Requête qui récupère les valeurs admises par le champ special des tables meta_categorie et meta_template_categories.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_enum_meta_special()
+        >>> cur.execute(*query)
+        >>> enum_values = cur.fetchone()
+
+    ``enum_values`` est une liste triée par ordre alphabétique.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_read_any_enum_type('z_plume', 'meta_special')
+
+def query_read_enum_meta_datatype():
+    """Requête qui récupère les valeurs admises par le champ datatype des tables meta_categorie et meta_template_categories.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_enum_meta_datatype()
+        >>> cur.execute(*query)
+        >>> enum_values = cur.fetchone()
+
+    ``enum_values`` est une liste triée par ordre alphabétique.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_read_any_enum_type('z_plume', 'meta_datatype')
+
+def query_read_enum_meta_geo_tool():
+    """Requête qui récupère les valeurs admises par le champ geo_tools des tables meta_categorie et meta_template_categories.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_enum_meta_geo_tool()
+        >>> cur.execute(*query)
+        >>> enum_values = cur.fetchone()
+
+    ``enum_values`` est une liste triée par ordre alphabétique.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_read_any_enum_type('z_plume', 'meta_geo_tool')
+
+def query_read_enum_meta_compute():
+    """Requête qui récupère les valeurs admises par le champ compute des tables meta_categorie et meta_template_categories.
+
+    À utiliser comme suit :
+    
+        >>> query = query_read_enum_meta_compute()
+        >>> cur.execute(*query)
+        >>> enum_values = cur.fetchone()
+
+    ``enum_values`` est une liste triée par ordre alphabétique.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    return query_read_any_enum_type('z_plume', 'meta_compute')
