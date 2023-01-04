@@ -7,16 +7,16 @@
 wheel==0.38.4
 
 # Python < 3.8
-zipp==3.7.0  ; python_version < '3.8'
-typing_extensions==4.1.1  ; python_version < '3.8'
-importlib_metadata==4.11.3  ; python_version < '3.8'
+zipp==3.11.0  ; python_version < '3.8'
+typing_extensions==4.4.0  ; python_version < '3.8'
+importlib_metadata==6.0.0  ; python_version < '3.8'
 
 # Python All
 six==1.16.0
 isodate==0.6.1
-pyparsing==3.0.7
+pyparsing==3.0.9
 setuptools==65.6.3
-rdflib==6.1.1  
+rdflib==6.2.0  
 
 
                     
