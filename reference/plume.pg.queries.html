@@ -1387,9 +1387,15 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_categorie</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">categories</span></code> est une liste de tuples, où chaque tuple correspond à une
+catégorie. Les tuples contiennent un unique élément : un dictionnaire
+dont les clés sont les noms des champs de la table des catégories
+et les valeurs sont les valeurs contenues dans ces champs pour la catégorie
+considéré. L’ordre des clés ne respecte pas l’ordre des champs dans la
+table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1407,9 +1413,15 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_tab</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tabs</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">tabs</span></code> est une liste de tuples, où chaque tuple correspond à un
+onglet. Les tuples contiennent un unique élément : un dictionnaire
+dont les clés sont les noms des champs de la table des onglets
+et les valeurs sont les valeurs contenues dans ces champs pour l’onglet
+considéré. L’ordre des clés ne respecte pas l’ordre des champs dans la
+table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1427,9 +1439,15 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_meta_template</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">templates</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">templates</span></code> est une liste de tuples, où chaque tuple correspond à un
+modèle. Les tuples contiennent un unique élément : un dictionnaire
+dont les clés sont les noms des champs de la table des modèles
+et les valeurs sont les valeurs contenues dans ces champs pour le modèle
+considéré. L’ordre des clés ne respecte pas l’ordre des champs dans la
+table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1450,6 +1468,12 @@ et son tuple de paramètres.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">template_categories</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">template_categories</span></code> est une liste de tuples, où chaque tuple correspond à un
+couple modèle + catégorie. Les tuples contiennent un unique élément : un dictionnaire
+dont les clés sont les noms des champs de la table d’association et les valeurs
+sont les valeurs contenues dans ces champs pour le couple modèle + catégorie
+considéré. L’ordre des clés ne respecte pas l’ordre des champs dans la
+table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
