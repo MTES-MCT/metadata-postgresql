@@ -1062,8 +1062,12 @@ class QueriesTestCase(unittest.TestCase):
                 result = cur.fetchall()
         conn.close()
         self.assertIsNotNone(result)
-        self.assertGreater(len(result), 1)
-        self.assertGreater(len(result[0]), 1)
+        self.assertTrue(isinstance(result, list))
+        self.assertGreater(len(result), 2)
+        self.assertTrue(isinstance(result[0], tuple))
+        self.assertEqual(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0][0], dict))
+        self.assertIsNotNone(result[0][0].get('label'))
 
     def test_query_read_meta_tab(self):
         """Lecture de la table des onglets.        
@@ -1072,7 +1076,7 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_tab
+                    INSERT INTO z_plume.meta_tab (tab, tab_num)
                         VALUES ('Onglet 1', 1), ('Onglet 10', 10)
                 ''')
                 query = query_read_meta_tab()
@@ -1083,8 +1087,15 @@ class QueriesTestCase(unittest.TestCase):
                 ''')
         conn.close()
         self.assertIsNotNone(result)
+        self.assertTrue(isinstance(result, list))
         self.assertEqual(len(result), 2)
-        self.assertGreater(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0], tuple))
+        self.assertEqual(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0][0], dict))
+        self.assertTrue('tab' in result[0][0])
+        self.assertEqual(result[0][0]['tab'], 'Onglet 1')
+        self.assertTrue('tab_num' in result[0][0])
+        self.assertEqual(result[0][0]['tab_num'], 1)
 
     def test_query_read_meta_template(self):
         """Lecture de la table des modèles.        
@@ -1104,8 +1115,13 @@ class QueriesTestCase(unittest.TestCase):
                 ''')
         conn.close()
         self.assertIsNotNone(result)
+        self.assertTrue(isinstance(result, list))
         self.assertEqual(len(result), 2)
-        self.assertGreater(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0], tuple))
+        self.assertEqual(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0][0], dict))
+        self.assertTrue('tpl_label' in result[0][0])
+        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 1')
 
     def test_query_read_meta_template_categories(self):
         """Lecture de la table des associations modèles-catégories.        
@@ -1127,8 +1143,13 @@ class QueriesTestCase(unittest.TestCase):
                 ''')
         conn.close()
         self.assertIsNotNone(result)
+        self.assertTrue(isinstance(result, list))
         self.assertEqual(len(result), 2)
-        self.assertGreater(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0], tuple))
+        self.assertEqual(len(result[0]), 1)
+        self.assertTrue(isinstance(result[0][0], dict))
+        self.assertTrue('tpl_label' in result[0][0])
+        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
 
     def test_query_insert_or_update_meta_template_categories(self):
         """Mise à jour de la table des associations modèle-catégories.        
@@ -1157,7 +1178,7 @@ class QueriesTestCase(unittest.TestCase):
         conn.close()
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 2)
-        self.assertGreater(len(result[0]), 1)
+        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
 
     def test_query_insert_or_update_meta_template(self):
         """Mise à jour de la table des modèles.        
@@ -1182,7 +1203,8 @@ class QueriesTestCase(unittest.TestCase):
         conn.close()
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 1)
-        self.assertGreater(len(result[0]), 1)
+        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
+        self.assertEqual(result[0][0]['comment'], 'Mon commentaire...')
 
     def test_query_insert_or_update_meta_tab(self):
         """Mise à jour de la table des onglets.        
@@ -1207,7 +1229,10 @@ class QueriesTestCase(unittest.TestCase):
         conn.close()
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 2)
-        self.assertGreater(len(result[0]), 1)
+        self.assertTrue(result[0][0]['tab'], 'Onglet 1')
+        self.assertIsNone(result[0][0]['tab_num'])
+        self.assertTrue(result[1][0]['tab'], 'Onglet 2')
+        self.assertTrue(result[1][0]['tab_num'], 100)
 
     # def test_query_insert_or_update_meta_categorie(self):
     #     """Mise à jour de la table des catégories.        
