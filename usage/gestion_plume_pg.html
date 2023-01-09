@@ -343,7 +343,7 @@
   <section id="installation-et-gestion-de-l-extension-postgresql-plumepg">
 <h1>Installation et gestion de l’extension PostgreSQL <em>PlumePg</em><a class="headerlink" href="#installation-et-gestion-de-l-extension-postgresql-plumepg" title="Lien permanent vers ce titre">#</a></h1>
 <p>L’extension PostgreSQL <em>PlumePg</em> est un composant optionnel de Plume, qui ouvre la possibilité d’utiliser des <a class="reference internal" href="modeles_de_formulaire.html"><span class="doc std std-doc">modèles de formulaire</span></a> et d”<a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">enregistrer les dates de création et dernière modification des tables</span></a>.</p>
-<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#privileges"><span class="std std-doc">Privilèges</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a> • <a class="reference internal" href="#usage-des-modeles-de-formulaires"><span class="std std-doc">Usage des modèles de formulaires</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a></p>
+<p><a class="reference internal" href="#compatibilite"><span class="std std-doc">Compatibilité</span></a> • <a class="reference internal" href="#installation"><span class="std std-doc">Installation</span></a> • <a class="reference internal" href="#localisation-des-objets-de-l-extension"><span class="std std-doc">Localisation des objets de l’extension</span></a> • <a class="reference internal" href="#privileges"><span class="std std-doc">Privilèges</span></a> • <a class="reference internal" href="#cohabitation-avec-asgard"><span class="std std-doc">Cohabitation avec <em>Asgard</em></span></a> • <a class="reference internal" href="#mise-a-jour"><span class="std std-doc">Mise à jour</span></a> • <a class="reference internal" href="#desinstallation"><span class="std std-doc">Désinstallation</span></a> • <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a> • <a class="reference internal" href="#usage-des-modeles-de-formulaires"><span class="std std-doc">Usage des modèles de formulaires</span></a> • <a class="reference internal" href="#sauvegarde-et-restauration-de-la-base"><span class="std std-doc">Sauvegarde et restauration de la base</span></a> • <a class="reference internal" href="#gestion-de-plumepg-via-plume"><span class="std std-doc">Gestion de <em>PlumePg</em> via Plume</span></a></p>
 <section id="compatibilite">
 <h2>Compatibilité<a class="headerlink" href="#compatibilite" title="Lien permanent vers ce titre">#</a></h2>
 <table class="colwidths-auto table">
@@ -553,6 +553,101 @@
 <h3>Considérations spécifiques au mécanisme d’enregistrement des dates<a class="headerlink" href="#considerations-specifiques-au-mecanisme-d-enregistrement-des-dates" title="Lien permanent vers ce titre">#</a></h3>
 <p>En l’état actuel, au contraire des informations relatives aux modèles, les dates stockées dans la table <code class="docutils literal notranslate"><span class="pre">z_plume.stamp_timestamp</span></code> ne sont pas conservées en cas de sauvegarde et restauration de la base. Il faudra qu’elles aient été préalablement intégrées aux fiches de métadonnées pour ne pas être <strong>perdues</strong>. Cette intégration s’effectue en principe lors de l’édition des fiches de métadonnées avec le plugin QGIS, sous réserve d’avoir activé la <a class="reference internal" href="metadonnees_calculees.html"><span class="doc std std-doc">fonctionnalité de calcul</span></a> pour les catégories <code class="docutils literal notranslate"><span class="pre">dct:created</span></code> et <code class="docutils literal notranslate"><span class="pre">dct:modified</span></code>. Pour les dates de dernières modifications, elle peut aussi être réalisée automatiquement côté serveur en activant le déclencheur prévu à cette fin - cf. <a class="reference internal" href="#integration-directe-dans-les-metadonnees"><span class="std std-doc">Intégration directe dans les métadonnées</span></a>.</p>
 <p>Les déclencheurs et déclencheurs sur évènement retrouvent leur état initial après la restauration et <strong>devront donc être réactivés manuellement</strong> d’autant que de besoin - cf. <a class="reference internal" href="#activation-de-l-enregistrement-des-dates"><span class="std std-doc">Activation de l’enregistrement des dates</span></a>. Il n’est pas nécessaire de chercher à recréer les déclencheurs <code class="docutils literal notranslate"><span class="pre">plume_stamp_data_edit</span></code> sur les tables, ils sont pour leur part restaurés.</p>
+</section>
+</section>
+<section id="gestion-de-plumepg-via-plume">
+<h2>Gestion de <em>PlumePg</em> via Plume<a class="headerlink" href="#gestion-de-plumepg-via-plume" title="Lien permanent vers ce titre">#</a></h2>
+<p><em>Voir aussi <a class="reference internal" href="modeles_de_formulaire.html#gestion-des-modeles-via-plume"><span class="std std-doc">Gestion des modèles via Plume</span></a> pour les modalités d’administration des modèles de fiches de métadonnées avec l’interface de Plume.</em></p>
+<p>Le module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code> met à disposition des requêtes permettant la réalisation via l’interface de Plume des actions les plus simples de gestion de <em>PlumePg</em>.</p>
+<p>Les actions disponibles dépendent des droits de l’utilisateur et de l’état de l’extension sur la base considérée. Pour les connaître, il suffit d’exécuter la requête <code class="docutils literal notranslate"><span class="pre">query_plume_pg_status</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+	<span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+	
+		<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+			<span class="o">*</span><span class="n">queries</span><span class="o">.</span><span class="n">query_plume_pg_status</span><span class="p">()</span>
+			<span class="p">)</span>
+		<span class="n">actions</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> est la chaîne de connexion à la base de données PostgreSQL.</em></p>
+<p>Si <code class="docutils literal notranslate"><span class="pre">actions</span></code> vaut <code class="docutils literal notranslate"><span class="pre">None</span></code>, aucune action n’est possible. Sinon, <code class="docutils literal notranslate"><span class="pre">actions</span></code> est une liste pouvant contenir les mots-clés énumérés dans le tableau suivant. À chaque mot-clé correspond une action qui pourra être proposée à l’utilisateur via le menu <em>Configuration</em> de la barre d’outils <img alt="configuration.svg" src="../_images/configuration.svg" />.</p>
+<p>En pratique, toutes les actions requièrent pour l’heure un super-utilisateur.</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mot-clé</p></th>
+<th class="head"><p>Nom de l’action</p></th>
+<th class="head"><p>Infobulle</p></th>
+<th class="head"><p>Requête d’action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CREATE</span></code></p></td>
+<td><p><em>Activer PlumePg</em></p></td>
+<td><p>Active l’extension PostgreSQL <em>PlumePg</em> sur la base courante.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_plume_pg_create</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UPDATE</span></code></p></td>
+<td><p><em>Mettre à jour PlumePg</em></p></td>
+<td><p>Met à jour l’extension PostgreSQL <em>PlumePg</em> sur la base courante.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_plume_pg_update</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DROP</span></code></p></td>
+<td><p><em>Désactiver PlumePg</em></p></td>
+<td><p>Désactive l’extension PostgreSQL <em>PlumePg</em> sur la base courante. <em><strong>Attention !</strong> Cette action entraînera la perte de tous les modèles personnalisés et des dates de création/modification enregistrées qui n’auraient pas été reportées dans les fiches de métadonnées.</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_plume_pg_drop</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">RECORDING</span> <span class="pre">ENABLE</span></code></p></td>
+<td><p><em>Activer le suivi des dates par PlumePg</em></p></td>
+<td><p>Active sur la base courante l’ensemble des fonctionnalités de suivi automatique des dates de création et modification des tables mises à disposition par l’extension PostgreSQL <em>PlumePg</em>.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_stamp_recording_enable</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">RECORDING</span> <span class="pre">DISABLE</span></code></p></td>
+<td><p><em>Désactiver le suivi des dates par PlumePg</em></p></td>
+<td><p>Désactive intégralement les fonctionnalités de suivi automatique des dates de création et modification des tables mises à disposition par l’extension PostgreSQL <em>PlumePg</em> sur la base courante.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_stamp_recording_disable</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">TO</span> <span class="pre">METADATA</span> <span class="pre">ENABLE</span></code></p></td>
+<td><p><em>Activer la retranscription automatique des dates</em></p></td>
+<td><p>Active sur la base courante la fonctionnalité de l’extension PostgreSQL <em>PlumePg</em> qui copie automatiquement les dates de modification des tables dans les fiches de métadonnées. <em>NB : ce mécanisme est inutile si le suivi des dates est inactif. Il peut notablement ralentir l’exécution de certaines requêtes de mise à jour des données.</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_stamp_to_metadata_enable</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">TO</span> <span class="pre">METADATA</span> <span class="pre">DISABLE</span></code></p></td>
+<td><p><em>Désactiver la retranscription automatique des dates</em></p></td>
+<td><p>Désactive sur la base courante la fonctionnalité de l’extension PostgreSQL <em>PlumePg</em> qui copie automatiquement les dates de modification des tables dans les fiches de métadonnées.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_stamp_to_metadata_disable</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Chaque action est exécutée par une requête sur le serveur PostgreSQL, qui peut être générée grâce aux fonctions du module <code class="docutils literal notranslate"><span class="pre">plume.pg.queries</span></code> listées dans la colonne <em>Requêtes d’action</em> du tableau ci-avant.</p>
+<p>Par exemple, pour l’activation de l’extension :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">plume.pg</span> <span class="kn">import</span> <span class="n">queries</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">conn</span><span class="p">:</span>
+	<span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+	
+		<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+			<span class="o">*</span><span class="n">queries</span><span class="o">.</span><span class="n">query_plume_pg_create</span><span class="p">()</span>
+			<span class="p">)</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p><em><code class="docutils literal notranslate"><span class="pre">connection_string</span></code> est la chaîne de connexion à la base de données PostgreSQL.</em></p>
+<p>Après l’exécution d’une action, il sera nécessaire de re-exécuter la requête générée par <code class="docutils literal notranslate"><span class="pre">query_plume_pg_status</span></code> et d’actualiser en conséquence les actions propsées à l’utilisateur dans le menu <em>Configuration</em>.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="withasgard"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -568,7 +663,6 @@
 <dd><p>Sous réserve d’utiliser une version d’Asgard supérieure ou égale à la 1.3.2. Dans les versions antérieures, les schémas créés par les extensions n’étaient pas automatiquement référencés.</p>
 </dd>
 </dl>
-</section>
 </section>
 </section>
 
@@ -696,6 +790,15 @@
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gestion-de-plumepg-via-plume">
+   Gestion de
+   <em>
+    PlumePg
+   </em>
+   via Plume
+  </a>
  </li>
 </ul>
 

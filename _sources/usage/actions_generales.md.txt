@@ -8,6 +8,8 @@ Détail des fonctionnalités d'import : [Import de métadonnées depuis un fichi
 
 Autres actions : [Sélection de la table à documenter](#sélection-de-la-table-à-documenter)
 
+*Voir aussi : [Gestion de *PlumePg* via Plume](./gestion_plume_pg.md#gestion-de-plumepg-via-plume) • [Gestion des modèles via Plume](./modeles_de_formulaire.md#gestion-des-modèles-via-plume)*
+
 ## Mode lecture, mode édition
 
 ### Effet sur le formulaire

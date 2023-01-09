@@ -2,7 +2,7 @@
 
 L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre la possibilité d'utiliser des [modèles de formulaire](./modeles_de_formulaire.md) et d'[enregistrer les dates de création et dernière modification des tables](#activation-de-lenregistrement-des-dates).
 
-[Compatibilité](#compatibilité) • [Installation](#installation) • [Localisation des objets de l'extension](#localisation-des-objets-de-lextension) • [Privilèges](#privilèges) • [Cohabitation avec *Asgard*](#cohabitation-avec-asgard) • [Mise à jour](#mise-à-jour) • [Désinstallation](#désinstallation) • [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates) • [Usage des modèles de formulaires](#usage-des-modèles-de-formulaires) • [Sauvegarde et restauration de la base](#sauvegarde-et-restauration-de-la-base)
+[Compatibilité](#compatibilité) • [Installation](#installation) • [Localisation des objets de l'extension](#localisation-des-objets-de-lextension) • [Privilèges](#privilèges) • [Cohabitation avec *Asgard*](#cohabitation-avec-asgard) • [Mise à jour](#mise-à-jour) • [Désinstallation](#désinstallation) • [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates) • [Usage des modèles de formulaires](#usage-des-modèles-de-formulaires) • [Sauvegarde et restauration de la base](#sauvegarde-et-restauration-de-la-base) • [Gestion de *PlumePg* via Plume](#gestion-de-plumepg-via-plume)
 
 ## Compatibilité
 
@@ -249,3 +249,70 @@ En l'état actuel, au contraire des informations relatives aux modèles, les dat
 
 Les déclencheurs et déclencheurs sur évènement retrouvent leur état initial après la restauration et **devront donc être réactivés manuellement** d'autant que de besoin - cf. [Activation de l'enregistrement des dates](#activation-de-lenregistrement-des-dates). Il n'est pas nécessaire de chercher à recréer les déclencheurs `plume_stamp_data_edit` sur les tables, ils sont pour leur part restaurés.
 
+## Gestion de *PlumePg* via Plume
+
+*Voir aussi [Gestion des modèles via Plume](./modeles_de_formulaire.md#gestion-des-modèles-via-plume) pour les modalités d'administration des modèles de fiches de métadonnées avec l'interface de Plume.*
+
+Le module `plume.pg.queries` met à disposition des requêtes permettant la réalisation via l'interface de Plume des actions les plus simples de gestion de *PlumePg*.
+
+Les actions disponibles dépendent des droits de l'utilisateur et de l'état de l'extension sur la base considérée. Pour les connaître, il suffit d'exécuter la requête `query_plume_pg_status`.
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_plume_pg_status()
+			)
+		actions = cur.fetchone()[0]
+
+conn.close()
+
+```
+
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+
+Si `actions` vaut `None`, aucune action n'est possible. Sinon, `actions` est une liste pouvant contenir les mots-clés énumérés dans le tableau suivant. À chaque mot-clé correspond une action qui pourra être proposée à l'utilisateur via le menu *Configuration* de la barre d'outils ![configuration.svg](../../../plume/icons/general/configuration.svg).
+
+En pratique, toutes les actions requièrent pour l'heure un super-utilisateur.
+
+| Mot-clé | Nom de l'action | Infobulle | Requête d'action |
+| --- | --- | --- | --- |
+| `CREATE` | *Activer PlumePg* | Active l'extension PostgreSQL *PlumePg* sur la base courante. | `query_plume_pg_create` |
+| `UPDATE` | *Mettre à jour PlumePg* | Met à jour l'extension PostgreSQL *PlumePg* sur la base courante. | `query_plume_pg_update` |
+| `DROP` | *Désactiver PlumePg* | Désactive l'extension PostgreSQL *PlumePg* sur la base courante. _**Attention !** Cette action entraînera la perte de tous les modèles personnalisés et des dates de création/modification enregistrées qui n'auraient pas été reportées dans les fiches de métadonnées._ | `query_plume_pg_drop` |
+| `STAMP RECORDING ENABLE` | *Activer le suivi des dates par PlumePg* | Active sur la base courante l'ensemble des fonctionnalités de suivi automatique des dates de création et modification des tables mises à disposition par l'extension PostgreSQL *PlumePg*. | `query_stamp_recording_enable` |
+| `STAMP RECORDING DISABLE` | *Désactiver le suivi des dates par PlumePg* | Désactive intégralement les fonctionnalités de suivi automatique des dates de création et modification des tables mises à disposition par l'extension PostgreSQL *PlumePg* sur la base courante. | `query_stamp_recording_disable` |
+| `STAMP TO METADATA ENABLE` | *Activer la retranscription automatique des dates* | Active sur la base courante la fonctionnalité de l'extension PostgreSQL *PlumePg* qui copie automatiquement les dates de modification des tables dans les fiches de métadonnées. *NB : ce mécanisme est inutile si le suivi des dates est inactif. Il peut notablement ralentir l'exécution de certaines requêtes de mise à jour des données.* | `query_stamp_to_metadata_enable` |
+| `STAMP TO METADATA DISABLE` | *Désactiver la retranscription automatique des dates* | Désactive sur la base courante la fonctionnalité de l'extension PostgreSQL *PlumePg* qui copie automatiquement les dates de modification des tables dans les fiches de métadonnées. | `query_stamp_to_metadata_disable` |
+
+Chaque action est exécutée par une requête sur le serveur PostgreSQL, qui peut être générée grâce aux fonctions du module `plume.pg.queries` listées dans la colonne *Requêtes d'action* du tableau ci-avant.
+
+Par exemple, pour l'activation de l'extension : 
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_plume_pg_create()
+			)
+
+conn.close()
+
+```
+
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+
+Après l'exécution d'une action, il sera nécessaire de re-exécuter la requête générée par `query_plume_pg_status` et d'actualiser en conséquence les actions propsées à l'utilisateur dans le menu *Configuration*.

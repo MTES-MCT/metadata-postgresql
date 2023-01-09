@@ -1238,8 +1238,11 @@ la présence de PostGIS avec <a class="reference internal" href="#plume.pg.queri
 <span class="gp">... </span>   <span class="p">[</span><span class="s1">&#39;nom champ 1&#39;</span><span class="p">,</span> <span class="s1">&#39;nom champ 2&#39;</span><span class="p">,</span> <span class="s1">&#39;nom champ 3&#39;</span><span class="p">]</span>
 <span class="gp">... </span>   <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_data</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">new_data</span></code> est un dictionnaire contenant l’enregistrement
+mis à jour, tel qu’il est stocké en base.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1281,8 +1284,11 @@ possible d’obtenir la liste complète avec <a class="reference internal" href=
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_categorie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_data</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">new_data</span></code> est un dictionnaire contenant l’enregistrement
+mis à jour, tel qu’il est stocké en base.</p>
 <p>Pour la mise à jour d’une catégorie commune, il est impératif :</p>
 <ul class="simple">
 <li><p>que le champ <code class="docutils literal notranslate"><span class="pre">origin</span></code> soit présent et prenne la valeur 
@@ -1325,8 +1331,11 @@ possible d’obtenir la liste complète avec <a class="reference internal" href=
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_tab</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_data</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">new_data</span></code> est un dictionnaire contenant l’enregistrement
+mis à jour, tel qu’il est stocké en base.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1361,8 +1370,11 @@ possible d’obtenir la liste complète avec <a class="reference internal" href=
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_template</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_data</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">new_data</span></code> est un dictionnaire contenant l’enregistrement
+mis à jour, tel qu’il est stocké en base.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1397,8 +1409,11 @@ possible d’obtenir la liste complète avec <a class="reference internal" href=
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_insert_or_update_meta_template_categories</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_data</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">new_data</span></code> est un dictionnaire contenant l’enregistrement
+mis à jour, tel qu’il est stocké en base.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -1600,6 +1615,155 @@ et son tuple de paramètres.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_plume_pg_create">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_create" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui active l’extension PlumePg sur la base courante.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> était listé dans le résultat renvoyé
+par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_plume_pg_create</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_plume_pg_drop">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_drop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_drop" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui désactive l’extension PlumePg sur la base courante.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">DROP</span></code> était listé dans le résultat renvoyé
+par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>Il est nécessaire de demander confirmation de l’utilisateur
+avant de réaliser cette action, car elle entraîne la perte
+de tous les modèles et dates enregistrés.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_plume_pg_drop</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_plume_pg_import_sample_template">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_import_sample_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_import_sample_template" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui charge un ou plusieurs modèles pré-configurés sur la base courante.</p>
+<p>Cette fonction peut également être utilisée pour réinitialiser
+les modèles. Elle nécessite évidemment que l’extension PlumePg soit
+activée sur la base.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_plume_pg_import_sample_template</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>templates str or list(str) or tuple(str), optional</strong></dt><dd><p>Nom d’un modèle ou plusieurs modèles pré-configurés
+(sous forme de liste ou de tuple) à charger.
+Si l’argument n’est pas fourni, tous les modèles
+pré-configurés sont chargés.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_plume_pg_status">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_status" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui évalue l’état de l’extension PlumePg sur la base PostgreSQL cible.</p>
+<p>Concrètement, cette requête liste les actions que l’utilisateur
+est habilité à réaliser vis-à-vis de l’extension PlumePg. À noter
+qu’à date toutes les actions concernées ne peuvent être réalisées
+que par un super-utilisateur.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_extension_status</span><span class="p">(</span><span class="s1">&#39;nom de l&#39;</span><span class="n">extension</span><span class="s1">&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actions</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Le résultat est <code class="docutils literal notranslate"><span class="pre">None</span></code> si aucune action n’est possible,
+sinon il s’agit de la liste des actions disponibles, parmi :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CREATE</span></code> - activation de l’extension sur la base.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> - mise à jour de l’extension.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DROP</span></code> - désactivation de l’extension.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">RECORDING</span> <span class="pre">ENABLE</span></code> - activation du suivi intégral
+des dates de création et modification des tables. Cette
+action est listée dès lors que l’un au moins des
+déclencheurs sur évènement n’est pas actif.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">RECORDING</span> <span class="pre">DISABLE</span></code> - désactivation du suivi intégral
+des dates. Cette action est listée dès lors que l’un au
+moins des déclencheurs sur évènement est actif.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">TO</span> <span class="pre">METADATA</span> <span class="pre">ENABLE</span></code> - activation de l’enregistrement
+automatique des dates dans les métadonnées.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">TO</span> <span class="pre">METADATA</span> <span class="pre">DISABLE</span></code> - désactivation de l’enregistrement
+automatique des dates dans les métadonnées.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#plume.pg.queries.query_plume_pg_check" title="plume.pg.queries.query_plume_pg_check"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_check()</span></code></a></dt><dd><p>Pour vérifier la compatibilité des versions de Plume et PlumePg.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_plume_pg_update">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_plume_pg_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_plume_pg_update" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui met à jour l’extension PlumePg sur la base courante.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> était listé dans le résultat renvoyé
+par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_plume_pg_update</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="plume.pg.queries.query_read_any_enum_type">
 <span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_read_any_enum_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_read_any_enum_type" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Requête qui récupère les valeurs d’un type énuméré quelconque.</p>
@@ -1608,7 +1772,7 @@ et son tuple de paramètres.</p>
 <span class="gp">... </span>   <span class="s1">&#39;nom du schéma&#39;</span><span class="p">,</span> <span class="s1">&#39;nom du type&#39;</span>
 <span class="gp">... </span>   <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">enum_values</span></code> est une liste triée par ordre alphabétique.</p>
@@ -1637,7 +1801,7 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_enum_meta_compute</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">enum_values</span></code> est une liste triée par ordre alphabétique.</p>
@@ -1658,7 +1822,7 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_enum_meta_datatype</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">enum_values</span></code> est une liste triée par ordre alphabétique.</p>
@@ -1679,7 +1843,7 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_enum_meta_geo_tool</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">enum_values</span></code> est une liste triée par ordre alphabétique.</p>
@@ -1700,7 +1864,7 @@ et son tuple de paramètres.</p>
 <p>À utiliser comme suit :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_read_enum_meta_special</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">enum_values</span></code> est une liste triée par ordre alphabétique.</p>
@@ -1808,6 +1972,94 @@ dont les clés sont les noms des champs de la table d’association et les valeu
 sont les valeurs contenues dans ces champs pour le couple modèle + catégorie
 considéré. L’ordre des clés ne respecte pas l’ordre des champs dans la
 table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_stamp_recording_disable">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_stamp_recording_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_stamp_recording_disable" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui désactive entièrement le suivi des dates de création/modification des tables via PlumePg.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">RECORDING</span> <span class="pre">DISABLE</span></code> était listé dans le résultat
+renvoyé par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_stamp_recording_disable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_stamp_recording_enable">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_stamp_recording_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_stamp_recording_enable" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui active le suivi complet des dates de création/modification des tables via PlumePg.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">RECORDING</span> <span class="pre">ENABLE</span></code> était listé dans le résultat
+renvoyé par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_stamp_recording_enable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_stamp_to_metadata_disable">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_stamp_to_metadata_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_stamp_to_metadata_disable" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui désactive la copie automatique des dates enregistrées par le système de suivi de PlumePg dans les fiches de métadonnées.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">TO</span> <span class="pre">METADATA</span> <span class="pre">DISABLE</span></code> était listé dans le résultat
+renvoyé par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_stamp_to_metadata_disable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>PgQueryWithArgs</dt><dd><p>Une requête prête à être envoyée au serveur PostgreSQL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plume.pg.queries.query_stamp_to_metadata_enable">
+<span class="sig-prename descclassname"><span class="pre">plume.pg.queries.</span></span><span class="sig-name descname"><span class="pre">query_stamp_to_metadata_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plume.pg.queries.query_stamp_to_metadata_enable" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Requête qui active la copie automatique des dates enregistrées par le système de suivi de PlumePg dans les fiches de métadonnées.</p>
+<p>La requête générée par cette fonction ne peut être utilisée
+que si <code class="docutils literal notranslate"><span class="pre">STAMP</span> <span class="pre">TO</span> <span class="pre">METADATA</span> <span class="pre">ENABLE</span></code> était listé dans le résultat
+renvoyé par la fonction <a class="reference internal" href="#plume.pg.queries.query_plume_pg_status" title="plume.pg.queries.query_plume_pg_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">query_plume_pg_status()</span></code></a>.</p>
+<p>À utiliser comme suit :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_stamp_to_metadata_enable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">

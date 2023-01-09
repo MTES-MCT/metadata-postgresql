@@ -4,7 +4,7 @@ Les modèles de formulaire sont définis par l'administrateur de données pour t
 
 Leur usage est totalement optionnel.
 
-[Principe](#principe) • [Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import des modèles par Plume](#import-des-modèles-par-plume) • [Avec les modèles stockés en local](#avec-les-modèles-stockés-en-local)
+[Principe](#principe) • [Gestion dans PostgreSQL](#gestion-dans-postgresql) • [Import des modèles par Plume](#import-des-modèles-par-plume) • [Avec les modèles stockés en local](#avec-les-modèles-stockés-en-local) • [Gestion des modèles via Plume](#gestion-des-modèles-via-plume)
 
 
 ## Principe
@@ -469,4 +469,282 @@ template = templates_collection[tpl_label] if tpl_label else None
 
 ```
 
+## Gestion des modèles via Plume
 
+*Voir aussi [Gestion de *PlumePg* via Plume](./gestion_plume_pg.md#gestion-de-plumepg-via-plume) pour l'administration générale de l'extension PlumePg avec l'interface de Plume.*
+
+Plume propose aux administrateurs des serveurs PostgreSQL une interface simplificatrice pour la conception de leurs modèles, accessible via le menu *Configuration* de la barre d'outils ![configuration.svg](../../../plume/icons/general/configuration.svg).
+
+### Conditions d'apparition
+
+Les fonctionnalités suivantes ne doivent être montrées à l'utilisateur de Plume que si :
+* L'extension PostgreSQL *PlumePg* est active sur la base courante, dans une version compatible avec celle de Plume - cf. [Présence de l'extension *PlumePg*](#présence-de-lextension-plumepg).
+* L'utilisateur est effectivement habilité à gérer les modèles. Cette condition est contrôlée par la requête générée par `plume.pg.queries.query_is_template_admin`.
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_is_template_admin()
+			)
+		res = cur.fetchone()
+        is_template_admin = res[0]
+
+conn.close()
+
+```
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+
+Le résultat `is_template_admin` est un booléen, qui vaudra `True` si et seulement si l'utilisateur dispose des privilèges nécessaires pour modifier les modèles.
+
+*NB : Les privilèges contrôlés par la requête ne sont pas tout à fait suffisants pour pouvoir éditer les modèles - elle vérifie les droits sur le schéma et les tables, il faut aussi des droits sur les séquences, les types, etc. Néanmoins, disposer de ces privilèges signifer qu'on a voulu habiliter l'utilisateur à modifier les modèles. S'il lui manque des droits annexes, Plume lui fera savoir par un message d'erreur qui permettra à l'administrateur du serveur d'accorder les privilèges manquants.*
+
+### Manipulation des données des modèles
+
+Les données des modèles sont stockées en base dans une structure de données mise en place par *PlumePg*. Elles peuvent être consultées et éditées via des requêtes générées par des fonctions du module `plume.pg_queries`.
+
+| Objet | Table | Requête de lecture | Requête d'insertion & mise à jour | Requête de suppression |
+| --- | --- | --- | --- | --- |
+| Modèle | `z_plume.meta_template` | `query_read_meta_template` | `query_insert_or_update_meta_template` | `query_delete_meta_template` |
+| Catégorie de métadonnée | `z_plume.meta_categorie` | `query_read_meta_categorie` | `query_insert_or_update_meta_categorie` | `query_delete_meta_categorie` |
+| Onglet | `z_plume.meta_tab` | `query_read_meta_tab` | `query_insert_or_update_meta_tab` | `query_delete_meta_tab` |
+| Association modèle-catégorie | `z_plume.meta_template_categories` | `query_read_meta_template_categories` | `query_insert_or_update_meta_template_categories` | `query_delete_meta_template_categories` |
+
+Les requêtes de lecture renvoient les données sous la forme d'une liste de tuples contenant chacun un unique dictionnaire. Ce dictionnaire contient les attributs d'un objet (modèle, onglet, etc. selon la table consultée). Ses clés sont les noms des champs de la table PostgreSQL.
+
+Par exemple, pour la récupération des données de la table des onglets :
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_read_meta_tab()
+		)
+		tabs = cur.fetchall()
+
+conn.close()
+
+```
+*`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
+
+Le contenu de `tabs` aura cette forme :
+
+```python
+[
+    (
+        {
+            'tab': 'Onglet n°1',
+            'tab_num': 1
+        }
+    ),
+    (
+        {
+            'tab': 'Onglet n°2',
+            'tab_num': 2
+        }
+    )
+] 
+```
+
+Les requêtes d'insertion/modification et les requêtes de suppression fonctionnent de la même façon : elles prennent en argument un dictionnaire `data` décrivant l'objet à créer, modifier ou supprimer, sous la même forme que les dictionnaires renvoyés par les fonctions de consultation. Ses clés doivent être nommées d'après des champs qui existent effectivement dans la table cible, ses valeurs doivent être fournies dans un format compatible avec les types desdits champs - cf. [Modalités de saisie spécifiques à certains champs](#modalités-de-saisie-spécifiques-à-certains-champs).
+
+Le dictionnaire peut contenir les valeurs de tous les champs de la table (le cas échéant vides), ou seulement ceux qui ont été renseignés/modifiés, auxquels il faudra parfois ajouter quelques champs nécessaires au traitement - cf. [Champs obligatoires](#champs-obligatoires). Dans le cas d'une suppression, seul le champ de clé primaire est attendu. Les autres informations peuvent néanmoins être fournies, elles ne seront simplement pas utilisées.
+
+Les fonctions d'insertion/modification renvoient l'enregistrement mis à jour, ci-après `new_data`, tel qu'il est stocké dans la base à l'issue de l'opération. Il est indispensable d'actualiser le formulaire de saisie avec ces informations, qui peuvent différer significativement de la saisie initiale de l'utilisateur (ajout des valeurs par défaut sur les nouveaux enregistrements, etc.).
+
+Exemple de la définition d'un nouveau modèle :
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_insert_or_update_meta_template(data)
+		)
+        new_data = cur.fetchone()[0]
+
+conn.close()
+
+```
+
+`data` pourrait ressembler à ceci : 
+
+```python
+{
+    'tpl_label': 'Mon nouveau modèle',
+    'priority': 50
+}
+```
+
+Il est également possible de saisir dans `data` une liste de valeurs, en utilisant le second argument `columns` pour les noms des champs.
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_insert_or_update_meta_template(
+                data, columns=columns
+            )
+		)
+        new_data = cur.fetchone()[0]
+
+conn.close()
+
+```
+
+Avec l'exemple précédent, `data` serait ici la liste `['Mon nouveau modèle', 50]`, et `columns` la liste `['tpl_label', 'priority']`.
+
+### Champs obligatoires
+
+Les champs qui suivent doivent impérativement apparaître dans l'argument `data` fourni au constructeur de requêtes avec une valeur non nulle. Les champs précédés d'un astérisque peuvent être omis, mais ne doivent pas être vides s'ils sont présents.
+
+| | Insertion | Modification | Suppression |
+| --- | --- | --- | --- |
+| Modèle | `tpl_label` | `tpl_label` | `tpl_label` |
+| Catégorie de métadonnée (locale) | `label` | `path`, *`label` | `path` |
+| Catégorie de métadonnée (commune) | INTERDIT | `path`, `origin` (valant `'shared'`), *`label` | `path` |
+| Onglet | `tab`, *`enabled` | `tab`, *`enabled` | `tab` |
+| Association modèle-catégorie | `tpl_label`, `shrcat_path` ou `loccat_path` | `tplcat_id` | `tplcat_id` |
+
+Les catégories de métadonnées communes sont distinguées des catégories locales par le fait que l'attribut `origin` est présent et vaut `shared`. Il n'est pas permis d'ajouter de métadonnée commune : si `origin` vaut `shared`, la clé primaire `path` devra impérativement être renseignée et correspondre à l'identifiant d'une catégorie pré-existante que l'utilisateur souhaite mettre à jour.
+
+### Champs non éditables
+
+Les champs listés ci-après ne doivent pas pouvoir faire l'objet d'une modification manuelle par l'utilisateur.
+
+| Objet | Champs |
+| --- | --- |
+| Modèle | - |
+| Catégorie de métadonnée (locale) | `path` (renseigné automatiquement à la création en base), `is_node`, `sources`, `origin` (vaut toujours `'local'`) |
+| Catégorie de métadonnée (commune) | `path` (pré-renseigné), `origin` (vaut toujours `'shared'`), `is_node` |
+| Onglet | - |
+| Association modèle-catégorie | `tpl_label` + `shrcat_path` + `loccat_path` (définis une fois pour toute quand l'utilisateur déclare la catégorie comme utilisée par le modèle), `tplcat_id` (renseigné automatiquement à la création en base) |
+
+### Champs avec des valeurs imposées
+
+Les champs ci-après n'admettent qu'un nombre fini de valeurs, qui peuvent être listées grâce à des requêtes du module `plume.pg.queries`.
+
+| Champ | Objet(s) |  Requête listant les valeurs |
+| --- | --- | --- |
+| `special` | Catégories et Associations modèle-catégorie | `query_read_enum_meta_special` |
+| `datatype` | Catégories et Associations modèle-catégorie | `query_read_enum_meta_datatype` |
+| `geo_tools` | Catégories et Associations modèle-catégorie | `query_read_enum_meta_geo_tool` |
+| `compute` | Catégories et Associations modèle-catégorie | `query_read_enum_meta_compute` |
+
+Exemple de la récupération des valeurs admises par le champ `datatype` :
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_read_enum_meta_datatype()
+		)
+        enum_values = cur.fetchone()[0]
+
+conn.close()
+
+```
+
+`enum_values` est la liste des valeurs, triées par ordre alphabétique.
+
+### Modalités de saisie spécifiques à certains champs
+
+D'une manière générale, le widget à utiliser pour un champ peut être déduit de son type.
+
+| Type PostgreSQL | Type Python | Widget | Remarques |
+| --- | --- | --- | --- |
+| `boolean` | `bool` | `QCheckbox` | Avec trois états sauf mention contraire ci-après. |
+| `text` | `str` | `QLineEdit` |  |
+| `varchar` | `str` | `QLineEdit` | Validateur `QRegularExpressionValidator` avec l'expression régulière `QRegularExpression(f'^.{{0,{m}}}$')` où `m` est une variable correspondant à la longueur limite. En inscrivant plutôt la limite en dur, on aurait par exemple `QRegularExpression('^.{0,48}$')` pour le type `varchar(48)`. |
+| `int` | `int` | `QLineEdit` | Validateur `QIntValidator` pour assurer que seuls des chiffres sont saisis. |
+| type énuméré | `str` | `QCombobox`, ou un `QRadioButton` par valeur selon leur nombre | Seules les valeurs prévues par le type sont autorisées. Cf. [Champs avec des valeurs imposées](#champs-avec-des-valeurs-imposées). |
+| liste de type énuméré | `list(str)` | Un `QCheckbox` par valeur autorisée ? | Idem *type énuméré*. |
+| `text[]` | `list(str)` | *à déterminer* | |
+
+Les champs de type `jsonb` - `compute_params` dans `meta_template_categories` et `meta_categorie` et `md_conditions` dans `meta_template` - nécessiteront des modalités de saisie et validation adaptées.
+
+Les champs qui suivent requièrent des ajustements spécifiques pour assurer le respect des contraintes définies sur les tables de stockage.
+
+| Champ | Objet(s) |  Particularité |
+| --- | --- | --- |
+| `tpl_label` | Modèles | Expression régulière à adapter pour assurer aussi la non nullité : `QRegularExpression('^.{1,48}$')`. |
+| `enabled` | Modèles | Seulement deux états pour la case à cocher, qui doit être cochée par défaut. |
+| `tab` | Onglets | Expression régulière à adapter pour assurer aussi la non nullité : `QRegularExpression('^.{1,48}$')`. |
+| `label` | Catégories | Validateur `QRegularExpressionValidator` avec l'expression régulière `QRegularExpression('.')` pour la non nullité. |
+| `rowspan` | Catégories et Associations modèle-catégorie | Le `QIntValidator` doit aussi fixer la valeur minimum à 1 et maximum à 99. |
+
+### Modifications en cascade
+
+Les champs `tpl_label` de la table des modèles et `tab` de la table des onglets sont libremement modifiables par l'utilisateur, mais il doit être noté que leur modification se répercutera dans la table d'association des catégories aux modèles, où ils sont utilisés comme clés étrangères. Concrètement, si le nom d'un modèle change, son nouveau nom est reporté dans la table d'association modèle-catégorie. Il n'est pas exclu que d'autres champs puissent avoir un comportement similaire à l'avenir.
+
+Ainsi, pour assurer la cohérence des informations présentées à l'utilisateur, il est souhaitable que Plume actualise au moins les données issue de la table d'association modèle-catégorie après toute action sur les tables des modèles, des onglets et (de manière préventive) des catégories.
+
+Toute modification de la table des modèles devra aussi être suivie du rechargement de la liste des modèles disponibles utilisée par le bouton de choix du modèle dans la barre d'outils de Plume. Cf. [Récupération de la liste des modèles](#récupération-de-la-liste-des-modèles).
+
+### Import des modèles pré-configurés
+
+Pour continuer à bénéficier des modèles pré-configurés après l'activation de *PlumePg* sur la base et pouvoir ensuite les éditer, l'administrateur doit commencer par charger ces modèles dans les tables de stockage.
+
+Cette action pourra être proposée via le menu *Configuration* de la barre d'outils ![configuration.svg](../../../plume/icons/general/configuration.svg). Ses [conditions d'apparition](#conditions-dapparition) sont les mêmes que pour l'interface de configuration des modèles.
+
+Libellé : *Importer ou réinitialiser les modèles pré-configurés*
+
+Infobulle : *Charge en base les modèles de fiche de métadonnées pré-configurés de Plume (Basique, Classique...). Réexécuter cette action a pour effet de réinitialiser les modèles. Les modifications réalisées après l'import initial seront perdues.*
+
+L'action est réalisée via la requête générée par la fonction `plume.pg.queries.query_plume_pg_import_sample_template`.
+
+```python
+
+import psycopg2
+from plume.pg import queries
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+		cur.execute(
+			*queries.query_plume_pg_import_sample_template()
+		)
+
+conn.close()
+
+```
+
+À noter que la fonction permet aussi l'import d'un unique modèle ou d'une liste de modèles, dont le ou les noms sont alors à fournir en argument.
+
+Il pourra être pertinent de recharger depuis le serveur la liste des modèles disponibles (utilisée pour le bouton de choix du modèle dans la barre d'outils de Plume) après l'exécution de cette requête - cf. [Récupération de la liste des modèles](#récupération-de-la-liste-des-modèles).
