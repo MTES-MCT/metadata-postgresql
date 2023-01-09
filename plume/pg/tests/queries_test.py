@@ -30,7 +30,10 @@ from plume.pg.queries import (
     query_read_meta_tab, query_read_meta_template, query_read_meta_template_categories,
     query_read_enum_meta_special, query_read_enum_meta_compute, query_read_enum_meta_datatype,
     query_read_enum_meta_geo_tool, query_delete_meta_categorie, query_delete_meta_tab,
-    query_delete_meta_template, query_delete_meta_template_categories
+    query_delete_meta_template, query_delete_meta_template_categories,
+    query_plume_pg_import_sample_template, query_plume_pg_create, query_plume_pg_drop,
+    query_plume_pg_update, query_plume_pg_status, query_stamp_recording_disable,
+    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable
 )
 from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict
@@ -1168,10 +1171,12 @@ class QueriesTestCase(unittest.TestCase):
                     {'tpl_label': 'Modèle 10', 'shrcat_path': 'dct:title'}
                 )
                 cur.execute(*query)
+                result1 = cur.fetchone()
                 query = query_insert_or_update_meta_template_categories(
                     [None, 'Modèle 10', 'dct:description'], ['tplcat_id', 'tpl_label', 'shrcat_path']
                 )
                 cur.execute(*query)
+                result0 = cur.fetchone()
                 query = query_read_meta_template_categories()
                 cur.execute(*query)
                 result = cur.fetchall()
@@ -1179,6 +1184,12 @@ class QueriesTestCase(unittest.TestCase):
                     TRUNCATE z_plume.meta_template CASCADE
                 ''')
         conn.close()
+        self.assertIsNotNone(result1)
+        self.assertIsNotNone(result1[0]['tplcat_id'])
+        self.assertEqual(result1[0]['shrcat_path'], 'dct:title')
+        self.assertIsNotNone(result0)
+        self.assertIsNotNone(result0[0]['tplcat_id'])
+        self.assertEqual(result0[0]['shrcat_path'], 'dct:description')
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
@@ -1193,10 +1204,12 @@ class QueriesTestCase(unittest.TestCase):
                     {'tpl_label': 'Modèle 10'}
                 )
                 cur.execute(*query)
+                result0 = cur.fetchone()
                 query = query_insert_or_update_meta_template(
                     ['Modèle 10', 'Mon commentaire...'], ['tpl_label', 'comment']
                 )
                 cur.execute(*query)
+                result1 = cur.fetchone()
                 query = query_read_meta_template()
                 cur.execute(*query)
                 result = cur.fetchall()
@@ -1204,6 +1217,10 @@ class QueriesTestCase(unittest.TestCase):
                     TRUNCATE z_plume.meta_template CASCADE
                 ''')
         conn.close()
+        self.assertIsNotNone(result0)
+        self.assertEqual(result0[0]['tpl_label'], 'Modèle 10')
+        self.assertIsNotNone(result1)
+        self.assertEqual(result1[0]['comment'], 'Mon commentaire...')
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
@@ -1219,10 +1236,12 @@ class QueriesTestCase(unittest.TestCase):
                     {'tab': 'Onglet 1'}
                 )
                 cur.execute(*query)
+                result0 = cur.fetchone()
                 query = query_insert_or_update_meta_tab(
                     ['Onglet 2', 100], ['tab', 'tab_num']
                 )
                 cur.execute(*query)
+                result1 = cur.fetchone()
                 query = query_read_meta_tab()
                 cur.execute(*query)
                 result = cur.fetchall()
@@ -1230,6 +1249,10 @@ class QueriesTestCase(unittest.TestCase):
                     TRUNCATE z_plume.meta_tab CASCADE
                 ''')
         conn.close()
+        self.assertIsNotNone(result0)
+        self.assertEqual(result0[0]['tab'], 'Onglet 1')
+        self.assertIsNotNone(result1)
+        self.assertEqual(result1[0]['tab'], 'Onglet 2')
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 2)
         self.assertTrue(result[0][0]['tab'], 'Onglet 1')
@@ -1247,15 +1270,18 @@ class QueriesTestCase(unittest.TestCase):
                     {'path': None, 'label': 'Catégorie 1'}
                 )
                 cur.execute(*query)
+                result0a = cur.fetchone()
                 query = query_insert_or_update_meta_categorie(
                     {'path': None, 'origin': 'local', 'label': 'Catégorie 2'}
                 )
                 cur.execute(*query)
+                result0b = cur.fetchone()
                 query = query_insert_or_update_meta_categorie(
                     ['dct:title', 'shared', 'Catégorie titre'],
                     ['path', 'origin', 'label']
                 )
                 cur.execute(*query)
+                result0c = cur.fetchone()
                 cur.execute('''
                     SELECT * FROM z_plume.meta_shared_categorie
                         WHERE label = 'Catégorie titre'
@@ -1269,6 +1295,15 @@ class QueriesTestCase(unittest.TestCase):
                     DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
                 ''')
         conn.close()
+        self.assertIsNotNone(result0a)
+        self.assertIsNotNone(result0a[0]['path'])
+        self.assertEqual(result0a[0]['label'], 'Catégorie 1')
+        self.assertEqual(result0a[0]['origin'], 'local')
+        self.assertIsNotNone(result0b)
+        self.assertIsNotNone(result0b[0]['path'])
+        self.assertEqual(result0b[0]['label'], 'Catégorie 2')
+        self.assertIsNotNone(result0c)
+        self.assertEqual(result0c[0]['label'], 'Catégorie titre')
         self.assertIsNotNone(result1)
         self.assertEqual(len(result1), 1)
         self.assertEqual(len(result2), 2)
@@ -1442,6 +1477,199 @@ class QueriesTestCase(unittest.TestCase):
                 ''')
         conn.close()
         self.assertEqual(len(result1), len(result0) - 1)
+
+    def test_query_plume_pg_import_sample_template(self):
+        """Import des modèles pré-configurés dans la base de données.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_read_meta_template()
+                cur.execute(*query)
+                result0 = cur.fetchall()
+                query = query_plume_pg_import_sample_template('Basique')
+                cur.execute(*query)
+                query = query_read_meta_template()
+                cur.execute(*query)
+                result1 = cur.fetchall()
+                query = query_plume_pg_import_sample_template(['Basique', 'Classique'])
+                cur.execute(*query)
+                query = query_read_meta_template()
+                cur.execute(*query)
+                result2 = cur.fetchall()
+                query = query_plume_pg_import_sample_template()
+                cur.execute(*query)
+                query = query_read_meta_template()
+                cur.execute(*query)
+                result3 = cur.fetchall()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                ''')
+        conn.close()
+        self.assertFalse(result0)
+        self.assertTrue(result1)
+        self.assertEqual(len(result1), 1)
+        self.assertEqual(len(result2), 2)
+        self.assertGreater(len(result3), 2)
+
+    def test_query_plume_pg_create(self):
+        """Activation de PlumePg via Plume.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('DROP EXTENSION plume_pg')
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute(*query_plume_pg_create())
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute(*query_exists_extension('plume_pg'))
+                exists_plume_pg = cur.fetchone()
+        self.assertTrue('CREATE' in status1[0])
+        self.assertTrue('DROP' in status2[0])
+        self.assertTrue(exists_plume_pg[0])
+
+    def test_query_plume_pg_drop(self):
+        """Désactivation de PlumePg via Plume.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute(*query_plume_pg_drop())
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute(*query_exists_extension('plume_pg'))
+                exists_plume_pg = cur.fetchone()
+                cur.execute(*query_plume_pg_create())
+        self.assertTrue('DROP' in status1[0])
+        self.assertTrue('CREATE' in status2[0])
+        self.assertFalse(exists_plume_pg[0])
+
+    def test_query_plume_pg_update(self):
+        """Mise à jour de PlumePg via Plume.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg VERSION '0.1.1'
+                ''')
+                cur.execute(*query_plume_pg_check())
+                ok_plume_pg1 = cur.fetchone()
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute(*query_plume_pg_update())
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute(*query_plume_pg_check())
+                ok_plume_pg2 = cur.fetchone()
+        self.assertFalse(ok_plume_pg1[0])
+        self.assertTrue('UPDATE' in status1[0])
+        self.assertFalse('UPDATE' in status2[0])
+        self.assertTrue(ok_plume_pg2[0])
+
+    def test_query_stamp_recording_enable(self):
+        """Activation par Plume du suivi des dates par PlumePg.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute('ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE')
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute(*query_stamp_recording_enable())
+                cur.execute(*query_plume_pg_status())
+                status3 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg
+                ''')
+        self.assertTrue('STAMP RECORDING ENABLE' in status1[0])
+        self.assertFalse('STAMP RECORDING DISABLE' in status1[0])
+        self.assertTrue('STAMP RECORDING ENABLE' in status2[0])
+        self.assertTrue('STAMP RECORDING DISABLE' in status2[0])
+        self.assertFalse('STAMP RECORDING ENABLE' in status3[0])
+        self.assertTrue('STAMP RECORDING DISABLE' in status3[0])
+
+    def test_query_stamp_recording_disable(self):
+        """Désactivation par Plume du suivi des dates par PlumePg.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+                    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE
+                ''')
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute('ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE')
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute(*query_stamp_recording_disable())
+                cur.execute(*query_plume_pg_status())
+                status3 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg
+                ''')
+        self.assertFalse('STAMP RECORDING ENABLE' in status1[0])
+        self.assertTrue('STAMP RECORDING DISABLE' in status1[0])
+        self.assertTrue('STAMP RECORDING ENABLE' in status2[0])
+        self.assertTrue('STAMP RECORDING DISABLE' in status2[0])
+        self.assertTrue('STAMP RECORDING ENABLE' in status3[0])
+        self.assertFalse('STAMP RECORDING DISABLE' in status3[0])
+
+    def test_query_stamp_to_metadata_enable(self):
+        """Activation par Plume de la copie automatique des dates enregistrées par PlumePg dans les fiches de métadonnées.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute(*query_stamp_to_metadata_enable())
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg
+                ''')
+        self.assertTrue('STAMP TO METADATA ENABLE' in status1[0])
+        self.assertFalse('STAMP TO METADATA DISABLE' in status1[0])
+        self.assertFalse('STAMP TO METADATA ENABLE' in status2[0])
+        self.assertTrue('STAMP TO METADATA DISABLE' in status2[0])
+
+    def test_query_stamp_to_metadata_disable(self):
+        """Désactivation par Plume de la copie automatique des dates enregistrées par PlumePg dans les fiches de métadonnées.
+        """
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    ALTER TABLE z_plume.stamp_timestamp
+                        ENABLE TRIGGER stamp_timestamp_to_metadata
+                ''')
+                cur.execute(*query_plume_pg_status())
+                status1 = cur.fetchone()
+                cur.execute(*query_stamp_to_metadata_disable())
+                cur.execute(*query_plume_pg_status())
+                status2 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg
+                ''')
+        self.assertFalse('STAMP TO METADATA ENABLE' in status1[0])
+        self.assertTrue('STAMP TO METADATA DISABLE' in status1[0])
+        self.assertTrue('STAMP TO METADATA ENABLE' in status2[0])
+        self.assertFalse('STAMP TO METADATA DISABLE' in status2[0])
 
 if __name__ == '__main__':
     unittest.main()
