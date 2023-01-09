@@ -1442,6 +1442,10 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
         ...    ['nom champ 1', 'nom champ 2', 'nom champ 3']
         ...    )
         >>> cur.execute(*query)
+        >>> new_data = cur.fetchone()[0]
+
+    ``new_data`` est un dictionnaire contenant l'enregistrement
+    mis à jour, tel qu'il est stocké en base.
 
     Parameters
     ----------
@@ -1489,13 +1493,16 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
                 VALUES ({values})
                 ON CONFLICT ({pk_name}) DO UPDATE
                     SET ({columns}) = ROW ({values})
+                RETURNING to_json({relation}.*)
             """).format(
                 relation=sql.Identifier(schema_name, table_name),
                 columns=sql.SQL(', ').join(sql.Identifier(c) for c in columns),
                 values=sql.SQL(', ').join(sql.Literal(v) if v else sql.SQL('DEFAULT') for v in values),
                 pk_name=sql.Identifier(pk_name)
             ),
-        expecting='nothing'
+        expecting='one row',
+        allow_none=False,
+        missing_mssg="Echec de la modification des données"
     )
 
 def query_insert_or_update_meta_tab(data, columns=None):
@@ -1505,6 +1512,10 @@ def query_insert_or_update_meta_tab(data, columns=None):
     
         >>> query = query_insert_or_update_meta_tab(data)
         >>> cur.execute(*query)
+        >>> new_data = cur.fetchone()[0]
+
+    ``new_data`` est un dictionnaire contenant l'enregistrement
+    mis à jour, tel qu'il est stocké en base.
 
     Parameters
     ----------
@@ -1538,6 +1549,10 @@ def query_insert_or_update_meta_categorie(data, columns=None):
     
         >>> query = query_insert_or_update_meta_categorie(data)
         >>> cur.execute(*query)
+        >>> new_data = cur.fetchone()[0]
+
+    ``new_data`` est un dictionnaire contenant l'enregistrement
+    mis à jour, tel qu'il est stocké en base.
 
     Pour la mise à jour d'une catégorie commune, il est impératif :
 
@@ -1603,6 +1618,10 @@ def query_insert_or_update_meta_template(data, columns=None):
     
         >>> query = query_insert_or_update_meta_template(data)
         >>> cur.execute(*query)
+        >>> new_data = cur.fetchone()[0]
+
+    ``new_data`` est un dictionnaire contenant l'enregistrement
+    mis à jour, tel qu'il est stocké en base.
 
     Parameters
     ----------
@@ -1636,6 +1655,10 @@ def query_insert_or_update_meta_template_categories(data, columns=None):
     
         >>> query = query_insert_or_update_meta_template_categories(data)
         >>> cur.execute(*query)
+        >>> new_data = cur.fetchone()[0]
+
+    ``new_data`` est un dictionnaire contenant l'enregistrement
+    mis à jour, tel qu'il est stocké en base.
 
     Parameters
     ----------
@@ -1890,7 +1913,7 @@ def query_read_any_enum_type(schema_name, type_name):
         ...    'nom du schéma', 'nom du type'
         ...    )
         >>> cur.execute(*query)
-        >>> enum_values = cur.fetchone()
+        >>> enum_values = cur.fetchone()[0]
 
     ``enum_values`` est une liste triée par ordre alphabétique.
 
@@ -1928,7 +1951,7 @@ def query_read_enum_meta_special():
     
         >>> query = query_read_enum_meta_special()
         >>> cur.execute(*query)
-        >>> enum_values = cur.fetchone()
+        >>> enum_values = cur.fetchone()[0]
 
     ``enum_values`` est une liste triée par ordre alphabétique.
 
@@ -1947,7 +1970,7 @@ def query_read_enum_meta_datatype():
     
         >>> query = query_read_enum_meta_datatype()
         >>> cur.execute(*query)
-        >>> enum_values = cur.fetchone()
+        >>> enum_values = cur.fetchone()[0]
 
     ``enum_values`` est une liste triée par ordre alphabétique.
 
@@ -1966,7 +1989,7 @@ def query_read_enum_meta_geo_tool():
     
         >>> query = query_read_enum_meta_geo_tool()
         >>> cur.execute(*query)
-        >>> enum_values = cur.fetchone()
+        >>> enum_values = cur.fetchone()[0]
 
     ``enum_values`` est une liste triée par ordre alphabétique.
 
@@ -1985,7 +2008,7 @@ def query_read_enum_meta_compute():
     
         >>> query = query_read_enum_meta_compute()
         >>> cur.execute(*query)
-        >>> enum_values = cur.fetchone()
+        >>> enum_values = cur.fetchone()[0]
 
     ``enum_values`` est une liste triée par ordre alphabétique.
 
@@ -1996,3 +2019,342 @@ def query_read_enum_meta_compute():
     
     """
     return query_read_any_enum_type('z_plume', 'meta_compute')
+
+def query_plume_pg_import_sample_template(templates=None):
+    """Requête qui charge un ou plusieurs modèles pré-configurés sur la base courante.
+
+    Cette fonction peut également être utilisée pour réinitialiser
+    les modèles. Elle nécessite évidemment que l'extension PlumePg soit
+    activée sur la base.
+
+    À utiliser comme suit :
+    
+        >>> query = query_plume_pg_import_sample_template()
+        >>> cur.execute(*query)
+
+    Parameters
+    ----------
+    templates str or list(str) or tuple(str), optional
+        Nom d'un modèle ou plusieurs modèles pré-configurés
+        (sous forme de liste ou de tuple) à charger.
+        Si l'argument n'est pas fourni, tous les modèles
+        pré-configurés sont chargés.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    if not templates:
+        return PgQueryWithArgs(
+            query = sql.SQL("""
+                SELECT * FROM z_plume.meta_import_sample_template()
+                """),
+            expecting='nothing'
+        )
+    if isinstance(templates, str):
+        templates = [templates]
+    query = sql.SQL('')
+    for template in templates:
+        query += sql.SQL("""
+            SELECT * FROM z_plume.meta_import_sample_template({template}) ;
+            """).format(
+                template=sql.Literal(template)
+            )
+    return PgQueryWithArgs(
+        query = query,
+        expecting='nothing'
+    )
+
+def query_plume_pg_status():
+    """Requête qui évalue l'état de l'extension PlumePg sur la base PostgreSQL cible.
+    
+    Concrètement, cette requête liste les actions que l'utilisateur
+    est habilité à réaliser vis-à-vis de l'extension PlumePg. À noter
+    qu'à date toutes les actions concernées ne peuvent être réalisées
+    que par un super-utilisateur.
+
+    À utiliser comme suit :
+    
+        >>> query = query_extension_status('nom de l'extension')
+        >>> cur.execute(*query)
+        >>> actions = cur.fetchone()[0]
+    
+    Le résultat est ``None`` si aucune action n'est possible,
+    sinon il s'agit de la liste des actions disponibles, parmi :
+    
+    * ``CREATE`` - activation de l'extension sur la base.
+    * ``UPDATE`` - mise à jour de l'extension.
+    * ``DROP`` - désactivation de l'extension.
+    * ``STAMP RECORDING ENABLE`` - activation du suivi intégral
+      des dates de création et modification des tables. Cette
+      action est listée dès lors que l'un au moins des
+      déclencheurs sur évènement n'est pas actif. 
+    * ``STAMP RECORDING DISABLE`` - désactivation du suivi intégral
+      des dates. Cette action est listée dès lors que l'un au
+      moins des déclencheurs sur évènement est actif.
+    * ``STAMP TO METADATA ENABLE`` - activation de l'enregistrement
+      automatique des dates dans les métadonnées.
+    * ``STAMP TO METADATA DISABLE`` - désactivation de l'enregistrement
+      automatique des dates dans les métadonnées.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    See Also
+    --------
+    :py:func:`query_plume_pg_check`
+        Pour vérifier la compatibilité des versions de Plume et PlumePg.
+    
+    """
+    query = sql.SQL("""
+        WITH superuser AS (
+            SELECT rolsuper FROM pg_roles
+                WHERE rolname = current_user
+        ),
+        actions AS (
+            SELECT 'CREATE' AS act
+                FROM pg_available_extensions, superuser
+                WHERE name = 'plume_pg'
+                    AND default_version IS NOT NULL
+                    AND installed_version IS NULL
+                    AND rolsuper
+            UNION
+            SELECT 'UPDATE' AS act
+                FROM pg_available_extensions, superuser
+                WHERE name = 'plume_pg'
+                    AND default_version IS NOT NULL
+                    AND installed_version IS NOT NULL
+                    AND installed_version != default_version
+                    AND rolsuper
+            UNION
+            SELECT 'DROP' AS act
+                FROM pg_available_extensions, superuser
+                WHERE name = 'plume_pg'
+                    AND installed_version IS NOT NULL
+                    AND rolsuper
+            UNION
+            SELECT 'STAMP RECORDING ENABLE' AS act
+                FROM pg_event_trigger, superuser
+                WHERE evtname IN (
+                    'plume_stamp_table_creation',
+                    'plume_stamp_table_modification',
+                    'plume_stamp_table_drop'
+                )
+                    AND rolsuper
+                HAVING count(*) = 3
+                    AND bool_or(evtenabled = 'D')
+            UNION
+            SELECT 'STAMP RECORDING DISABLE' AS act
+                FROM pg_event_trigger, superuser
+                WHERE evtname IN (
+                    'plume_stamp_table_creation',
+                    'plume_stamp_table_modification',
+                    'plume_stamp_table_drop'
+                )
+                    AND rolsuper
+                HAVING count(*) = 3
+                    AND bool_or(evtenabled = 'O')
+            UNION
+            SELECT 'STAMP TO METADATA ENABLE' AS act
+                FROM pg_trigger, superuser
+                WHERE tgname = 'stamp_timestamp_to_metadata'
+                    AND tgenabled = 'D'
+                    AND rolsuper
+            UNION
+            SELECT 'STAMP TO METADATA DISABLE' AS act
+                FROM pg_trigger, superuser
+                WHERE tgname = 'stamp_timestamp_to_metadata'
+                    AND tgenabled = 'O'
+                    AND rolsuper
+        )
+        SELECT array_agg(act) FROM actions
+        """)
+    return PgQueryWithArgs(
+        query=query,
+        expecting='one value',
+        allow_none=False, # n'arrivera jamais
+        missing_mssg="Plume n'a pas pu confirmer l'état de l'extension PlumePg."
+        )
+
+def query_plume_pg_create():
+    """Requête qui active l'extension PlumePg sur la base courante.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``CREATE`` était listé dans le résultat renvoyé
+    par la fonction :py:func:`query_plume_pg_status`.
+
+    À utiliser comme suit :
+    
+        >>> query = query_plume_pg_create()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("CREATE EXTENSION plume_pg CASCADE"),
+        expecting='nothing'
+    )
+
+def query_plume_pg_update():
+    """Requête qui met à jour l'extension PlumePg sur la base courante.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``UPDATE`` était listé dans le résultat renvoyé
+    par la fonction :py:func:`query_plume_pg_status`.
+
+    À utiliser comme suit :
+    
+        >>> query = query_plume_pg_update()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("ALTER EXTENSION plume_pg UPDATE"),
+        expecting='nothing'
+    )
+
+def query_plume_pg_drop():
+    """Requête qui désactive l'extension PlumePg sur la base courante.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``DROP`` était listé dans le résultat renvoyé
+    par la fonction :py:func:`query_plume_pg_status`.
+
+    Il est nécessaire de demander confirmation de l'utilisateur
+    avant de réaliser cette action, car elle entraîne la perte
+    de tous les modèles et dates enregistrés.
+
+    À utiliser comme suit :
+    
+        >>> query = query_plume_pg_drop()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("DROP EXTENSION plume_pg"),
+        expecting='nothing'
+    )
+
+def query_stamp_recording_enable():
+    """Requête qui active le suivi complet des dates de création/modification des tables via PlumePg.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``STAMP RECORDING ENABLE`` était listé dans le résultat
+    renvoyé par la fonction :py:func:`query_plume_pg_status`.
+
+    À utiliser comme suit :
+    
+        >>> query = query_stamp_recording_enable()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+            ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+            ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+        """),
+        expecting='nothing'
+    )
+
+def query_stamp_recording_disable():
+    """Requête qui désactive entièrement le suivi des dates de création/modification des tables via PlumePg.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``STAMP RECORDING DISABLE`` était listé dans le résultat
+    renvoyé par la fonction :py:func:`query_plume_pg_status`.
+
+    À utiliser comme suit :
+    
+        >>> query = query_stamp_recording_disable()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
+            ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+            ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+        """),
+        expecting='nothing'
+    )
+
+def query_stamp_to_metadata_enable():
+    """Requête qui active la copie automatique des dates enregistrées par le système de suivi de PlumePg dans les fiches de métadonnées.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``STAMP TO METADATA ENABLE`` était listé dans le résultat
+    renvoyé par la fonction :py:func:`query_plume_pg_status`.
+
+    À utiliser comme suit :
+    
+        >>> query = query_stamp_to_metadata_enable()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            ALTER TABLE z_plume.stamp_timestamp
+                ENABLE TRIGGER stamp_timestamp_to_metadata
+        """),
+        expecting='nothing'
+    )
+
+def query_stamp_to_metadata_disable():
+    """Requête qui désactive la copie automatique des dates enregistrées par le système de suivi de PlumePg dans les fiches de métadonnées.
+
+    La requête générée par cette fonction ne peut être utilisée
+    que si ``STAMP TO METADATA DISABLE`` était listé dans le résultat
+    renvoyé par la fonction :py:func:`query_plume_pg_status`.
+
+    À utiliser comme suit :
+    
+        >>> query = query_stamp_to_metadata_disable()
+        >>> cur.execute(*query)
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+
+    """
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            ALTER TABLE z_plume.stamp_timestamp
+                DISABLE TRIGGER stamp_timestamp_to_metadata
+        """),
+        expecting='nothing'
+    )
