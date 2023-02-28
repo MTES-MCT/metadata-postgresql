@@ -150,6 +150,29 @@ class Ui_Dialog_ColorBloc(object):
         scroll_bar_Explorer.setMinimumWidth(50)
         scroll_bar_Explorer.setWidget(self.groupBox_tab_widget_Explorer)
         #--------------------------
+        self.tab_widget_Templates = QWidget()
+        self.tab_widget_Templates.setObjectName("tab_widget_Templatesr")
+        labelTab_Templates = QtWidgets.QApplication.translate("colorbloc_ui", "  Templates  ", None)
+        self.tabWidget.addTab(self.tab_widget_Templates,labelTab_Templates)
+        #-
+        self.groupBox_tab_widget_Templates = QtWidgets.QGroupBox(self.tab_widget_Templates)
+        self.groupBox_tab_widget_Templates.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
+        self.groupBox_tab_widget_Templates.setObjectName("groupBox_tab_widget_Templates")
+        self.groupBox_tab_widget_Templates.setStyleSheet("QGroupBox { border: 0px solid green }")
+        #-
+        self.layout_tab_widget_Templates = QtWidgets.QGridLayout()
+        self.layout_tab_widget_Templates.setContentsMargins(0, 0, 0, 0)
+        self.groupBox_tab_widget_Templates.setLayout(self.layout_tab_widget_Templates)
+        x, y = 10,10
+        larg, haut =  self.tabWidget.width()- 20, self.tabWidget.height()-40
+        #--            
+        scroll_bar_Templates = QtWidgets.QScrollArea(self.tab_widget_Templates) 
+        scroll_bar_Templates.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        scroll_bar_Templates.setWidgetResizable(True)
+        scroll_bar_Templates.setGeometry(QtCore.QRect(x, y, larg, haut))
+        scroll_bar_Templates.setMinimumWidth(50)
+        scroll_bar_Templates.setWidget(self.groupBox_tab_widget_Templates)
+        #--------------------------
         self.tab_widget_Advanced = QWidget()
         self.tab_widget_Advanced.setObjectName("tab_widget_Advanced")
         labelTab_Advanced = QtWidgets.QApplication.translate("colorbloc_ui", "  Advanced  ", None)
@@ -177,7 +200,7 @@ class Ui_Dialog_ColorBloc(object):
 
         #========
         self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
-        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor", 7:"activeTooltipColorText", 8:"activeTooltipColorBackground", 9:"opacity"}
+        self.dicListLettre      = { 0:"QTabWidget", 1:"QGroupBox",  2:"QGroupBoxGroupOfProperties",  3:"QGroupBoxGroupOfValues",  4:"QGroupBoxTranslationGroup", 5:"QLabelBackGround", 6:"geomColor", 7:"activeTooltipColorText", 8:"activeTooltipColorBackground", 9:"opacity", 10:"colorTemplateInVersOut", 11:"colorTemplateOutVersIn"}
         self.dicListLettreLabel = { 0:QtWidgets.QApplication.translate("colorbloc_ui", "Tab"),\
                                     1:QtWidgets.QApplication.translate("colorbloc_ui", "General group"),\
                                     2:QtWidgets.QApplication.translate("colorbloc_ui", "Property group"),\
@@ -187,7 +210,9 @@ class Ui_Dialog_ColorBloc(object):
                                     6:QtWidgets.QApplication.translate("colorbloc_ui", "Geometry tools color"),\
                                     7:QtWidgets.QApplication.translate("colorbloc_ui", "Text color"),\
                                     8:QtWidgets.QApplication.translate("colorbloc_ui", "Background color"),\
-                                    9:QtWidgets.QApplication.translate("colorbloc_ui", "Opacity")\
+                                    9:QtWidgets.QApplication.translate("colorbloc_ui", "Opacity"),\
+                                   10:QtWidgets.QApplication.translate("colorbloc_ui", "colorTemplateInVersOut"),\
+                                   11:QtWidgets.QApplication.translate("colorbloc_ui", "colorTemplateOutVersIn")\
                                     }
         #-
         self.editStyle        = self.mDic_LH["QEdit"]              #style saisie
@@ -198,7 +223,11 @@ class Ui_Dialog_ColorBloc(object):
         self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"] #Police QTabWidget
         self.ihm              = self.mDic_LH["ihm"]              #window/dock
         self.opacityValue     = self.mDic_LH["opacityValue"]     #valeur pour l'opacité
+        self.colorTemplateInVersOut = self.mDic_LH["colorTemplateInVersOut"]     
+        self.colorTemplateOutVersIn = self.mDic_LH["colorTemplateOutVersIn"]     
         self.activeZoneNonSaisie  = True   if self.mDic_LH["activeZoneNonSaisie"]     == "true" else False
+        self.sepLeftTemplate  = self.mDic_LH["sepLeftTemplate"]
+        self.sepRightTemplate = self.mDic_LH["sepRightTemplate"]
         #-
         self.zEditStyle = self.editStyle  # si ouverture sans chgt et sauve
         # liste des Paramétres UTILISATEURS
@@ -646,6 +675,71 @@ class Ui_Dialog_ColorBloc(object):
         # Onglets EXPLORER
         #========
         #========
+        # Onglets TEMPLATE
+        self.groupBoxTemplates = QtWidgets.QGroupBox()
+        self.groupBoxTemplates.setObjectName("groupBoxTemplates")
+        self.groupBoxTemplates.setStyleSheet("QGroupBox { border: 0px solid red }")
+        #-
+        self.layoutTemplates = QtWidgets.QGridLayout()
+        self.layoutTemplates.setContentsMargins(0, 0, 0, 0)
+        self.layoutTemplates.setColumnStretch(0, 1)
+        self.layoutTemplates.setColumnStretch(1, 1)
+        self.layoutTemplates.setColumnStretch(2, 1)
+        self.layoutTemplates.setColumnStretch(3, 1)
+        self.layoutTemplates.setColumnStretch(4, 1)
+        self.layoutTemplates.setColumnStretch(5, 1)
+        self.layoutTemplates.setColumnStretch(6, 1)
+        self.layoutTemplates.setColumnStretch(7, 1)
+        self.layoutTemplates.setColumnStretch(8, 4)
+        self.groupBoxTemplates.setLayout(self.layoutTemplates)
+        self.layout_tab_widget_Templates.addWidget(self.groupBoxTemplates, 0, 0, Qt.AlignTop)
+        #-
+        #--
+        layout, button_10, img_10, reset_10 = self.layoutTemplates, QtWidgets.QPushButton(), QtWidgets.QLabel(), QtWidgets.QPushButton()
+        self.genereButtonActionColor(layout, button_10, img_10, reset_10, "button_10", "img_10", "reset_10", 10)
+        layout, button_11, img_11, reset_11 = self.layoutTemplates, QtWidgets.QPushButton(), QtWidgets.QLabel(), QtWidgets.QPushButton()
+        self.genereButtonActionColor(layout, button_11, img_11, reset_11, "button_11", "img_11", "reset_11", 11)
+        #------
+        mLabelSepLeftTemplateText    = QtWidgets.QApplication.translate("colorbloc_ui", "mLabelSepLeftTemplate", None)
+        mLabelSepLeftTemplateToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "mLabelSepLeftTemplateToolTip", None)
+        mLabelSepLeftTemplate = QtWidgets.QLabel()
+        mLabelSepLeftTemplate.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mLabelSepLeftTemplate.setObjectName("mLabelSepLeftTemplate")
+        mLabelSepLeftTemplate.setText(mLabelSepLeftTemplateText)
+        mLabelSepLeftTemplate.setToolTip(mLabelSepLeftTemplateToolTip)
+        mLabelSepLeftTemplate.setWordWrap(True)
+        mLabelSepLeftTemplate.setAlignment(Qt.AlignRight)        
+        self.layoutTemplates.addWidget(mLabelSepLeftTemplate, 2, 0, Qt.AlignTop)
+        #- 
+        mZoneSepLeftTemplate = QtWidgets.QLineEdit()
+        mZoneSepLeftTemplate.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +";}")
+        mZoneSepLeftTemplate.setObjectName("mZoneSepLeftTemplate")
+        mZoneSepLeftTemplate.setText(str(self.sepLeftTemplate))
+        mZoneSepLeftTemplate.setToolTip(mLabelSepLeftTemplateToolTip)
+        self.mZoneSepLeftTemplate = mZoneSepLeftTemplate
+        self.layoutTemplates.addWidget(self.mZoneSepLeftTemplate, 2, 1, Qt.AlignTop)        
+        #------
+        mLabelSepRightTemplateText    = QtWidgets.QApplication.translate("colorbloc_ui", "mLabelSepRightTemplate", None)
+        mLabelSepRightTemplateToolTip = QtWidgets.QApplication.translate("colorbloc_ui", "mLabelSepRightTemplateToolTip", None)
+        mLabelSepRightTemplate = QtWidgets.QLabel()
+        mLabelSepRightTemplate.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}")
+        mLabelSepRightTemplate.setObjectName("mLabelSepRightTemplate")
+        mLabelSepRightTemplate.setText(mLabelSepRightTemplateText)
+        mLabelSepRightTemplate.setToolTip(mLabelSepRightTemplateToolTip)
+        mLabelSepRightTemplate.setWordWrap(True)
+        mLabelSepRightTemplate.setAlignment(Qt.AlignRight)        
+        self.layoutTemplates.addWidget(mLabelSepRightTemplate, 3, 0, Qt.AlignTop)
+        #- 
+        mZoneSepRightTemplate = QtWidgets.QLineEdit()
+        mZoneSepRightTemplate.setStyleSheet("QLineEdit {  font-family:" + self.policeQGroupBox  +";}")
+        mZoneSepRightTemplate.setObjectName("mZoneSepRightTemplate")
+        mZoneSepRightTemplate.setText(str(self.sepRightTemplate))
+        mZoneSepRightTemplate.setToolTip(mLabelSepRightTemplateToolTip)
+        self.mZoneSepRightTemplate = mZoneSepRightTemplate
+        self.layoutTemplates.addWidget(self.mZoneSepRightTemplate, 3, 1, Qt.AlignTop)        
+        # Onglets TEMPLATE
+        #========
+        #========
         # Onglets ADVANCED
         self.groupBoxAdvanced = QtWidgets.QGroupBox()
         self.groupBoxAdvanced.setObjectName("groupBoxAdvanced")
@@ -1084,7 +1178,6 @@ class Ui_Dialog_ColorBloc(object):
     #==========================       
     # for tooltip         
     def functionTooltip(self, param):
-        print(param)
         if param == "Activetooltip" : 
            self.activeTooltip = True if self.QChecklabelActivetooltip.isChecked() else False
            self.QChecklabelActiveTooltipWithtitle.setEnabled(self.activeTooltip)
@@ -1386,7 +1479,7 @@ class Ui_Dialog_ColorBloc(object):
             _mObjetQMenuItem.setObjectName(str(elemQMenuItem))
             _mObjetQMenuItem.setIcon(_mObjetQMenuIcon)
             self.SourcestQMenuG2.addAction(_mObjetQMenuItem)
-       
+
         self.mSourcesQToolButton2.setPopupMode(self.mSourcesQToolButton2.MenuButtonPopup)
         self.mSourcesQToolButton2.setMenu(self.SourcestQMenuG2)
         #- 
@@ -1697,8 +1790,8 @@ class Ui_Dialog_ColorBloc(object):
     def genereButtonActionColor(self, mLayout, mButton, mImage, mReset, mButtonName, mImageName, mResetName, compt):
         i = compt
         line, col = compt, 3
-        if compt in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9) : 
-           if compt in (0, 1, 2, 3, 4, 5, 9) :
+        if compt in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) : 
+           if compt in (0, 1, 2, 3, 4, 5, 9, 10, 11) :
               line, col = compt, 0
            if compt == 9 : 
               line, col = 11, 0
@@ -1780,8 +1873,24 @@ class Ui_Dialog_ColorBloc(object):
         mDicSaveColor["geomPointEpaisseur"] = self.geomPointEpaisseur
         mDicSaveColor["geomZoom"]      = "true" if self.geomZoom else "false"
         mDicSaveColor["opacityValue"]  = self.comboOpacity.opacity()
+        #Ajout pour sép de visualisation des templates / Catégories
+        mDicSaveColor["sepLeftTemplate"]    = self.mZoneSepLeftTemplate.text()
+        mDicSaveColor["sepRightTemplate"]   = self.mZoneSepRightTemplate.text()
         
         #======== for Geometry
+        #======== for Template
+        mChild_premier = [mObj for mObj in self.groupBoxTemplates.children()] 
+
+        mLettre, mColorFirst = "", None
+        for mObj in mChild_premier :
+            for i in range(10,12) :
+                if mObj.objectName() == "img_" + str(i) :
+                   mLettre      = str(self.dicListLettre[i])
+                   mColor       = mObj.palette().color(QPalette.Window)
+                   mColorFirst  = mColor.name()
+                   mDicSaveColor[mLettre] = mColorFirst
+                   break
+        #======== for Template
         #-
         mSettings.beginGroup("PLUME")
         mSettings.beginGroup("BlocsColor")
@@ -1857,6 +1966,8 @@ class Ui_Dialog_ColorBloc(object):
         mColorInit = QColor(mColor.name())
         if i == 9 :
            zMess = "%s" %(QtWidgets.QApplication.translate("colorbloc_ui", "Choose a color for the untyped areas.", None) )
+        elif i in (10, 11) :
+           zMess = "%s" %(QtWidgets.QApplication.translate("colorbloc_ui", "Choose a color for used or unused categories in template design.", None) )  
         else :    
            zMess = "%s %s" %(QtWidgets.QApplication.translate("colorbloc_ui", "Choose a color for the block : ", None), str(self.dicListLettreLabel[i]) )
         zColor = QColorDialog.getColor(mColorInit, self, zMess)
@@ -1884,7 +1995,9 @@ class Ui_Dialog_ColorBloc(object):
                 "geomColor",
                 "activeTooltipColorText",
                 "activeTooltipColorBackground",
-                "opacity"
+                "opacity",
+                "colorTemplateInVersOut",
+                "colorTemplateOutVersIn"
                 ]
         listBlocsValue = [
                 "#a38e63",
@@ -1896,7 +2009,9 @@ class Ui_Dialog_ColorBloc(object):
                 "#a38e63",
                 "#000000",
                 "#fee9e9",
-                "#ddddbe"
+                "#ddddbe",
+                "#ddddbe",
+                "#fffab9"
                 ] 
         mDicDashBoard = dict(zip(listBlocsKey, listBlocsValue))
  

@@ -8,7 +8,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtQuick
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QToolBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
-                             QDockWidget, QTreeView, QGridLayout, QHBoxLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, 
+                             QDockWidget, QTreeView, QGridLayout, QHBoxLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, QLayout, QVBoxLayout,
                              QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle, QSpacerItem)
 
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel
@@ -143,6 +143,8 @@ class Ui_Dialog_plume(object):
         self.activeTooltipColorText       = mDic_LH["activeTooltipColorText"] 
         self.activeTooltipColorBackground = mDic_LH["activeTooltipColorBackground"] 
         self.activeZoneNonSaisie  = True   if self.mDic_LH["activeZoneNonSaisie"]     == "true" else False
+        # For the Dock AsgardMenu Gestion des toolTip
+        self.asgardMenuDock               = mDic_LH["asgardMenuDock"]
         #-
         mDicType         = ["ICON_CROSS", "ICON_X", "ICON_BOX", "ICON_CIRCLE", "ICON_FULL_BOX" , "ICON_DIAMOND" , "ICON_FULL_DIAMOND"]
         mDicTypeObj      = [QgsRubberBand.ICON_X, QgsRubberBand.ICON_CROSS, QgsRubberBand.ICON_BOX, QgsRubberBand.ICON_CIRCLE, QgsRubberBand.ICON_FULL_BOX, QgsRubberBand.ICON_DIAMOND, QgsRubberBand.ICON_FULL_DIAMOND]
@@ -272,9 +274,10 @@ class Ui_Dialog_plume(object):
         
         #==========================
         #Active Tooltip
-        self._myExploBrowser  = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-        self._myExploBrowser2 = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-
+        self._myExploBrowser           = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],               self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+        self._myExploBrowser2          = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0],              self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+        self._myExploBrowserAsgardMenu = MyExploBrowserAsgardMenu(self.navigateurasgardMenuDock.findChild(QTreeView),       self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+        
         #==========================
         #Instanciation des "shape, template, vocabulary, mode" 
         self.translation = bibli_plume.returnObjetTranslation(self)
@@ -629,7 +632,7 @@ class Ui_Dialog_plume(object):
         iface.layerTreeView().clicked.connect(lambda : self.retrieveInfoLayerQgis(None))
                 
         # Interaction avec le navigateur de QGIS
-        self.mNav1, self.mNav2 = 'Browser', 'Browser2' 
+        self.mNav1, self.mNav2, self.mNavAsgardMenu = 'Browser', 'Browser2', self.asgardMenuDock 
         #1
         self.navigateur = iface.mainWindow().findChild(QDockWidget, self.mNav1)
         self.navigateurTreeView = self.navigateur.findChild(QTreeView)
@@ -640,6 +643,11 @@ class Ui_Dialog_plume(object):
         self.navigateurTreeView2 = self.navigateur2.findChild(QTreeView)
         self.navigateurTreeView2.setObjectName(self.mNav2)
         self.navigateurTreeView2.clicked.connect(self.retrieveInfoLayerBrowser)
+        #3 
+        self.navigateurasgardMenuDock          = iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)[0]
+        self.navigateurasgardMenuDockTreeView  = self.navigateurasgardMenuDock.findChild(QTreeView)
+        self.navigateurasgardMenuDockTreeView.setObjectName(self.mNavAsgardMenu)
+
         return
 
     #---------------------------
@@ -707,7 +715,12 @@ class Ui_Dialog_plume(object):
         # DL
         #issu code JD Lomenede
         # copyright            : (C) 2020 by JD Lomenede for # self.proxy_model = self.navigateurTreeView.model() = self.model = iface.browserModel() = item = self.model.dataItem(self.proxy_model.mapToSource(index)) #
-        self.proxy_model = self.navigateurTreeView.model() if mNav == self.mNav1 else self.navigateurTreeView2.model()
+        if mNav == self.mNav1 :
+           self.proxy_model = self.navigateurTreeView.model()
+        elif mNav == self.mNav2 :
+           self.proxy_model = self.navigateurTreeView2.model()
+        elif mNav == self.mNavAsgardMenu :
+           self.proxy_model = self.navigateurasgardMenuDockTreeView.model()
         # DL
         self.modelDefaut = iface.browserModel() 
         self.model = iface.browserModel()
@@ -910,8 +923,10 @@ class Ui_Dialog_plume(object):
         
     #==========================
     def clickCreateTemplate(self):
-        d = docreatetemplate.Dialog(self)
-        d.exec_()
+        
+        with self.safe_pg_connection() :
+           d = docreatetemplate.Dialog(self)
+           d.exec_()
         return
         
     #==========================

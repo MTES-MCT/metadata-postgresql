@@ -79,8 +79,7 @@ def genereButtonsWithDict(dicParamButton ) :
 def ifActivateRightsToManageModels(self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
     mKeySql = queries.query_is_template_admin()
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    # r = False for Test A supprimer
-    print(r)
+    r = False # for Test A supprimer
     return r
 
 #==========================
@@ -580,6 +579,75 @@ class NoReturnSql(Exception) :
 #==================================================
 #==================================================
 # gestion des tooltip in the browser
+class MyExploBrowserAsgardMenu(QTreeWidget):
+   def __init__(self, parent, _dicTooltipExiste, _activeTooltip, _activeTooltipColorText, _activeTooltipColorBackground, _langList, _iconSource, _activeTooltipLogo, _activeTooltipCadre, _activeTooltipColor, _activeTooltipWithtitle, *args):
+        QTreeWidget.__init__(self, parent = None, *args)
+        self.parent = parent
+        self.parent.setMouseTracking(True)
+        self._activeTooltip, self._activeTooltipColorText, self._activeTooltipColorBackground, self._langList, self._iconSource, self._activeTooltipLogo, self._activeTooltipCadre, self._activeTooltipColor, self._activeTooltipWithtitle = \
+             _activeTooltip,      _activeTooltipColorText,      _activeTooltipColorBackground,      _langList,      _iconSource,      _activeTooltipLogo,      _activeTooltipCadre,      _activeTooltipColor,      _activeTooltipWithtitle
+        self._dicTooltipExiste = _dicTooltipExiste
+        #
+        self.parent.viewport().installEventFilter(self)
+
+   def eventFilter(self, source, event):
+        if event.type() == QtCore.QEvent.MouseMove:                   
+            if event.buttons() == QtCore.Qt.NoButton:
+               self.proxy_model = self.parent.model()
+               self.model       = self.proxy_model.sourceModel()  # Différent des Browser
+
+               index = self.parent.indexAt(event.pos())
+
+               #
+               if index != -1 and self.proxy_model != None :
+                  # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
+                  if index in self._dicTooltipExiste :
+                     itemLayerTooltip = self._dicTooltipExiste[index]
+                  else :
+                     itemLayerTooltip = self.proxy_model.data(index, Qt.ToolTipRole)
+                     self._dicTooltipExiste[index] = itemLayerTooltip 
+                  # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
+
+                  itemLayerTooltipNew, mFindMetadata_OR_itemLayerTooltipNew = truncate_metadata(itemLayerTooltip, self._activeTooltipWithtitle, self._langList)
+                  itemLayerTooltipNew = itemLayerTooltipNew.replace("\n","<br>")
+
+                  if self._activeTooltip : # For disable modif tooltip   
+                     if mFindMetadata_OR_itemLayerTooltipNew :
+                        _border     = "style='border: 1px solid black;'"
+                        _icon       = "<img width='30' src='" + self._iconSource + "'/>" 
+                        mTableHtml  = "<table style='border=0' width=100%>"
+                        mTableHtml += "<tr><td>" + itemLayerTooltipNew
+                        mTableHtml += "</td></tr>"
+                        #
+                        if self._activeTooltipColor : 
+                           if self._activeTooltipCadre :
+                              mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'" + _border + ">"
+                           else :   
+                              mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'>"
+                        else :   
+                           if self._activeTooltipCadre :
+                              mTableHtml += "<tr><td " + _border + ">"
+                           else :
+                              mTableHtml += "<tr><td>"
+                        #
+                        if self._activeTooltipLogo : mTableHtml += _icon + "<br>"
+                        #
+                        mTableHtml += mFindMetadata_OR_itemLayerTooltipNew     
+                        mTableHtml += "</td></tr>"
+                        mTableHtml += "</table>"
+                        itemLayerTooltip = self.proxy_model.setData(index, mTableHtml, Qt.ToolTipRole)
+                  else :
+                     itemLayerTooltip = self.proxy_model.setData(index, itemLayerTooltip, Qt.ToolTipRole)
+               return True
+            else:
+               return False
+        else :
+            return False
+        return super(MyExploBrowserAsgardMenu, self).eventFilter(source, event)
+
+#==================================================
+#==================================================
+# gestion des tooltip in the browser
 class MyExploBrowser(QTreeWidget):
    def __init__(self, parent, _dicTooltipExiste, _activeTooltip, _activeTooltipColorText, _activeTooltipColorBackground, _langList, _iconSource, _activeTooltipLogo, _activeTooltipCadre, _activeTooltipColor, _activeTooltipWithtitle, *args):
         QTreeWidget.__init__(self, parent = None, *args)
@@ -625,7 +693,6 @@ class MyExploBrowser(QTreeWidget):
 
                       itemLayerTooltipNew, mFindMetadata_OR_itemLayerTooltipNew = truncate_metadata(itemLayerTooltip, self._activeTooltipWithtitle, self._langList)
                       itemLayerTooltipNew = itemLayerTooltipNew.replace("\n","<br>")
-                      
                       if self._activeTooltip : # For disable modif tooltip 
                          if mFindMetadata_OR_itemLayerTooltipNew :
                             _border     = "style='border: 1px solid black;'"
@@ -661,7 +728,7 @@ class MyExploBrowser(QTreeWidget):
         return super(MyExploBrowser, self).eventFilter(source, event)
 #==================================================
 #==================================================
-        
+
 #==================================================
 def executeSql(self, pointeur, _mKeySql, optionRetour = None) : 
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
@@ -915,6 +982,7 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        valueDefautH = 640
        valueDefautTemplateL = 950
        valueDefautTemplateH = 650
+       valueDefautAsgardMenuDock = "Menu Tree"
        valueDefautDisplayMessage = "dialogBox"
        valueDefautDurationBarInfo = 10
        valueDefautIHM = "dockFalse"
@@ -922,6 +990,7 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        valueDefautLayerBeforeClickedWho = ""
        valueDefautLayerBeforeClickedBrowser = ""
        valueDefautVersion = ""
+       mDicAutre["asgardMenuDock"]  = valueDefautAsgardMenuDock
        mDicAutre["dialogLargeur"]   = valueDefautL
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["dialogLargeurTemplate"]   = valueDefautTemplateL
@@ -961,6 +1030,10 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutreColor["QLabelBackGround"]            = "#e3e3fd"
        mDicAutreColor["geomColor"]                   = "#a38e63"
        mDicAutreColor["opacity"]                     = "#ddddbe"
+       mDicAutreColor["colorTemplateInVersOut"]      = "#ddddbe"
+       mDicAutreColor["colorTemplateOutVersIn"]      = "#fffab9"
+       mDicAutreColor["sepLeftTemplate"]             = "("
+       mDicAutreColor["sepRightTemplate"]            = ")"
        mDicAutreColor["opacityValue"]                = 1.0
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"

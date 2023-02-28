@@ -423,7 +423,6 @@ class TREEVIEWCSW(QTreeWidget):
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ self.mLibNodeUrlUser ] ) ] )
         self.nodeBlocsUser = self.topLevelItem( 0 )
         i = 0
-        print(listeUrlCSW)
         while i in range(len(listeUrlCSW)) :
            if str(listeUrlCSW[i]) not in URLCSWDEFAUT.split(",") :  
               nodeUrlUser = QTreeWidgetItem(None, [ str(listliburlCSW[i]), str(listeUrlCSW[i]) ])

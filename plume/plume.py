@@ -81,11 +81,17 @@ class MainPlugin(object):
 
   #==========================
   def initializingDisplayPlume(self):
+      #tooltip
+      mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+      self.mDic_LH = mDic_LH
+      # For the Dock AsgardMenu Gestion des toolTip
+      self.asgardMenuDock               = mDic_LH["asgardMenuDock"]
+
       try : 
          iface.layerTreeView().clicked.connect(self.returnLayerBeforeClickedQgis)
                 
          # Interaction avec le navigateur de QGIS
-         self.mNav1, self.mNav2 = 'Browser', 'Browser2' 
+         self.mNav1, self.mNav2, self.mNavAsgardMenu = 'Browser', 'Browser2', self.asgardMenuDock 
          #1
          self.navigateur = iface.mainWindow().findChild(QDockWidget, self.mNav1)
          self.navigateurTreeView = self.navigateur.findChild(QTreeView)
@@ -96,16 +102,17 @@ class MainPlugin(object):
          self.navigateurTreeView2 = self.navigateur2.findChild(QTreeView)
          self.navigateurTreeView2.setObjectName(self.mNav2)
          self.navigateurTreeView2.clicked.connect(self.returnLayerBeforeClickedBrowser)
+         #3 
+         self.navigateurasgardMenuDock          = iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)[0]
+         self.navigateurasgardMenuDockTreeView  = self.navigateurasgardMenuDock.findChild(QTreeView)
+         self.navigateurasgardMenuDockTreeView.setObjectName(self.mNavAsgardMenu)
       except :
          pass   
 
-      #tooltip
-      mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
-      self.mDic_LH = mDic_LH
       #
       #==========================
       #Active Tooltip   
-      self.activeTooltip      = True if mDic_LH["activeTooltip"]      == "true" else False
+      self.activeTooltip          = True if mDic_LH["activeTooltip"]      == "true" else False
       self.activeTooltipWithtitle = True if mDic_LH["activeTooltipWithtitle"] == "true" else False
       self.activeTooltipLogo      = True if mDic_LH["activeTooltipLogo"]      == "true" else False
       self.activeTooltipCadre     = True if mDic_LH["activeTooltipCadre"]     == "true" else False
@@ -119,8 +126,9 @@ class MainPlugin(object):
       listUserParam(self)
       # liste des Paramétres UTILISATEURS
       
-      self._myExploBrowser  = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-      self._myExploBrowser2 = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+      self._myExploBrowser           = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+      self._myExploBrowser2          = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+      self._myExploBrowserAsgardMenu = MyExploBrowserAsgardMenu(self.navigateurasgardMenuDock.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
       return
               
   #==========================
