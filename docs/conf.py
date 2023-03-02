@@ -86,7 +86,7 @@ html_theme_options = {
    ]
 }
 
-html_logo = html_favicon = '../../plume/icons/logo/plume.svg'
+html_logo = html_favicon = '../plume/icons/logo/plume.svg'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
