@@ -9,7 +9,7 @@ Leur usage est totalement optionnel.
 
 ## Principe
 
-Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [`shape.ttl`](../../../plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
+Par défaut, les formulaires de Plume présentent toutes les catégories de métadonnées définies par le schéma des métadonnées communes, [`shape.ttl`](../../plume/rdf/data/shape.ttl)[^metadonnees-masquées]. Souvent, c'est trop. Selon l'organisation du service, selon la table considérée, selon le profil de l'utilisateur, les catégories de métadonnées réellement pertinentes ne seront pas les mêmes, et il est peu probable que toutes les catégories communes le soient.
 
 [^metadonnees-masquées]: Du moins en mode édition, car les champs non remplis sont masqués en mode lecture sauf paramétrage contraire.
 
@@ -123,7 +123,7 @@ Avant d'y affecter des catégories, les onglets doivent être définis dans la t
 
 ### Catégories de métadonnées
 
-La table `z_plume.meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](../../../plume/rdf/data/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
+La table `z_plume.meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](../../plume/rdf/data/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
 
 Il s'agit en fait d'une table partitionnée avec deux tables filles :
 - `z_plume.meta_shared_categorie` pour les catégories communes (`origin` vaut `shared`) ;
@@ -425,7 +425,7 @@ Le modèle de formulaire ainsi obtenu peut être passé dans l'argument `templat
 
 Cette partie décrit la méthode alternative de gestion des modèles mise en oeuvre par Plume dans le cas où l'extension PostgreSQL *PlumePg* n'est pas active sur la base cible (cf. [Présence de l'extension *PlumePg*](#présence-de-lextension-plumepg) pour le test). Le processus est similaire à celui décrit dans la partie [Import des modèles par Plume](#import-des-modèles-par-plume), si ce n'est que certaines étapes ne sont plus nécessaires.
 
-Faute de pouvoir importer les modèles personnalisés par l'administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de *PlumePg*. Ceux-ci sont stockés dans le fichier [templates.json](../../../plume/pg/data/templates.json), dont on chargera le contenu en créant un objet de classe `plume.pg.template.LocalTemplatesCollection`. Celui-ci n'étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans *PlumePg* et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.
+Faute de pouvoir importer les modèles personnalisés par l'administrateur de données depuis le serveur PostgreSQL, Plume utilise des copies locales des modèles pré-configurés de *PlumePg*. Ceux-ci sont stockés dans le fichier [templates.json](../../plume/pg/data/templates.json), dont on chargera le contenu en créant un objet de classe `plume.pg.template.LocalTemplatesCollection`. Celui-ci n'étant jamais modifié, on pourra le générer lorsque Plume rencontre pour la première fois une base sans *PlumePg* et le référencer de manière à pouvoir le réutiliser à chaque nouvelle occurrence par la suite.
 
 ```python
 
@@ -473,7 +473,7 @@ template = templates_collection[tpl_label] if tpl_label else None
 
 *Voir aussi [Gestion de *PlumePg* via Plume](./gestion_plume_pg.md#gestion-de-plumepg-via-plume) pour l'administration générale de l'extension PlumePg avec l'interface de Plume.*
 
-Plume propose aux administrateurs des serveurs PostgreSQL une interface simplificatrice pour la conception de leurs modèles, accessible via le menu *Configuration* de la barre d'outils ![configuration.svg](../../../plume/icons/general/configuration.svg).
+Plume propose aux administrateurs des serveurs PostgreSQL une interface simplificatrice pour la conception de leurs modèles, accessible via le menu *Configuration* de la barre d'outils ![configuration.svg](../../plume/icons/general/configuration.svg).
 
 ### Conditions d'apparition
 
@@ -744,7 +744,7 @@ Toute modification de la table des modèles devra aussi être suivie du recharge
 
 Pour continuer à bénéficier des modèles pré-configurés après l'activation de *PlumePg* sur la base et pouvoir ensuite les éditer, l'administrateur doit commencer par charger ces modèles dans les tables de stockage.
 
-Cette action pourra être proposée via le menu *Configuration* de la barre d'outils ![configuration.svg](../../../plume/icons/general/configuration.svg). Ses [conditions d'apparition](#conditions-dapparition) sont les mêmes que pour l'interface de configuration des modèles.
+Cette action pourra être proposée via le menu *Configuration* de la barre d'outils ![configuration.svg](../../plume/icons/general/configuration.svg). Ses [conditions d'apparition](#conditions-dapparition) sont les mêmes que pour l'interface de configuration des modèles.
 
 Libellé : *Importer ou réinitialiser les modèles pré-configurés*
 

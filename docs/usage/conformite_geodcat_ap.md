@@ -109,7 +109,7 @@ Cette classe n'est pas prise en charge.
 
 _Classe `skos:Concept`._
 
-Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl)). Pour chaque concept, celui-ci présente obligatoirement les propriétés *category scheme* (`skos:inScheme`) et *preferred label* (`skos:prefLabel`), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d'origine n'en contenait pas.
+Les propriétés de cette classe ne sont pas supposées être saisies manuellement. Elles sont récupérées par Plume dans un thésaurus (fichier [vocabulary.ttl](../../plume/rdf/data/vocabulary.ttl)). Pour chaque concept, celui-ci présente obligatoirement les propriétés *category scheme* (`skos:inScheme`) et *preferred label* (`skos:prefLabel`), avec le plus souvent une valeur en anglais et une valeur en français. Les traductions françaises ont été ajoutées systématiquement lorsque le thésaurus d'origine n'en contenait pas.
 
 Des propriétés supplémentaires peuvent être disponibles pour certains concepts, dont une seule utilisée à ce stade par Plume : `foaf:page`. Celle-ci fournit l'URL d'une page web pertinente pour le concept. En mode lecture, la métadonnée portera un hyperlien pointant sur cette page ou, à défaut, sur l'IRI du concept.
 
@@ -187,7 +187,7 @@ Pour l'heure, la seule propriété de cette classe qui soit prise en charge par 
 
 _Classe `skos:ConceptScheme`._
 
-Comme pour la classe `skos:Concept`, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n'est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl), avec pour seule propriété `skos:prefLabel` (et non `dct:title` comme dans GeoDCAT-AP), qui fournit le libellé de l'ensemble, généralement en anglais et en français.
+Comme pour la classe `skos:Concept`, Plume fait appel à cette classe dans le cadre de son système de gestion des vocabulaires contrôlés. Aucun objet de cette classe n'est jamais enregistré dans les métadonnées. Ils apparaissent uniquement dans le fichier [vocabulary.ttl](../../plume/rdf/data/vocabulary.ttl), avec pour seule propriété `skos:prefLabel` (et non `dct:title` comme dans GeoDCAT-AP), qui fournit le libellé de l'ensemble, généralement en anglais et en français.
 
 ### Entité
 

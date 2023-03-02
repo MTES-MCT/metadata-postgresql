@@ -278,7 +278,7 @@ conn.close()
 
 *`connection_string` est la chaîne de connexion à la base de données PostgreSQL.*
 
-Si `actions` vaut `None`, aucune action n'est possible. Sinon, `actions` est une liste pouvant contenir les mots-clés énumérés dans le tableau suivant. À chaque mot-clé correspond une action qui pourra être proposée à l'utilisateur via le menu *Configuration* de la barre d'outils ![configuration.svg](../../../plume/icons/general/configuration.svg).
+Si `actions` vaut `None`, aucune action n'est possible. Sinon, `actions` est une liste pouvant contenir les mots-clés énumérés dans le tableau suivant. À chaque mot-clé correspond une action qui pourra être proposée à l'utilisateur via le menu *Configuration* de la barre d'outils ![configuration.svg](../../plume/icons/general/configuration.svg).
 
 En pratique, toutes les actions requièrent pour l'heure un super-utilisateur.
 

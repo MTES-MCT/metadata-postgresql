@@ -118,7 +118,7 @@ Si le contenu des balises n'est pas un JSON-LD valide, la propriété renverra �
 `template` est un objet de classe `plume.pg.template.TemplateDict` contenant les informations relatives au modèle de formulaire à utiliser.
 
 Les modèles de formulaires sont définis à l'échelle du service et stockés dans la base PostgreSQL. Ils permettent :
-- d'ajouter des catégories locales au schéma de métadonnées communes défini par [shape.ttl](../../../plume/rdf/data/shape.ttl) ;
+- d'ajouter des catégories locales au schéma de métadonnées communes défini par [shape.ttl](../../plume/rdf/data/shape.ttl) ;
 - de restreindre les catégories communes à afficher ;
 - de substituer des paramètres locaux à ceux spécifiés par le schéma commun (par exemple remplacer le nom à afficher pour la catégorie de métadonnée, répartir les métadonnées dans plusieurs onglets...).
 
@@ -201,9 +201,9 @@ La documentation invitera l'utilisateur à privilégier les codes de langues sur
 La langue principale de saisie des métadonnées a trois usages :
 - les métadonnées identifiées comme traduisibles (par exemple le libellé du jeu de données et son descriptif sont traduisibles, mais pas sa date de création ni son identifiant) sont représentées en RDF avec une information sur leur langue[^rdflangstring]. Cette langue sera toujours la langue principale de saisie des métadonnées, sauf lorsque le mode traduction (cf. [`translation`](#translation)) est actif.
 - en mode lecture, lorsque des valeurs dans plusieurs langues sont disponibles pour une catégorie de métadonnées, le comportement par défaut de Plume est d'afficher uniquement les valeurs dans la langue principale (à défaut il tente les langues de [`langList`](#langList) dans l'ordre et, à défaut, choisit une langue disponible au hasard). Il est possible d'inhiber ce comportement avec le paramètre [`readOnlyCurrentLanguage`](#readOnlyCurrentLanguage), ou de forcer le même comportement en mode édition avec [`editOnlyCurrentLanguage`](#editOnlyCurrentLanguage) ;
-- lorsqu'une métadonnées prend ses valeurs dans un thésaurus, lesdites valeurs sont représentées en RDF sous la forme d'URI. Ces URI sont référencés dans le fichier [vocabulary.ttl](../../../plume/rdf/data/vocabulary.ttl), qui fournit pour chacun d'entre eux des libellés lisibles par un être humain. Il existe toujours un libellé en français et souvent en anglais. La langue principale de saisie détermine la langue des libellés affichés dans l'interface. À défaut de libellé dans la langue principale, les langues de [`langList`](#langList) sont testées dans l'ordre et, à défaut, une traduction est choisie au hasard.
+- lorsqu'une métadonnées prend ses valeurs dans un thésaurus, lesdites valeurs sont représentées en RDF sous la forme d'URI. Ces URI sont référencés dans le fichier [vocabulary.ttl](../../plume/rdf/data/vocabulary.ttl), qui fournit pour chacun d'entre eux des libellés lisibles par un être humain. Il existe toujours un libellé en français et souvent en anglais. La langue principale de saisie détermine la langue des libellés affichés dans l'interface. À défaut de libellé dans la langue principale, les langues de [`langList`](#langList) sont testées dans l'ordre et, à défaut, une traduction est choisie au hasard.
 
-[^rdflangstring]: Ces catégories "traduisibles" sont celles dont le type est `rdf:langstring`. Ce type est spécificié par le schéma des métadonnées communes, [`shape.ttl`](../../../plume/rdf/data/shape.ttl), ou par le [modèle de formulaire](#template--le-modèle-de-formulaire) dans le cas d'une catégorie locale.
+[^rdflangstring]: Ces catégories "traduisibles" sont celles dont le type est `rdf:langstring`. Ce type est spécificié par le schéma des métadonnées communes, [`shape.ttl`](../../plume/rdf/data/shape.ttl), ou par le [modèle de formulaire](#template--le-modèle-de-formulaire) dans le cas d'une catégorie locale.
 
 ### translation
 

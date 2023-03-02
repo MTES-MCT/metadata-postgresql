@@ -46,7 +46,7 @@ Les trois modes de calcul automatique opèrent comme suit :
 
 Si plusieurs de ces modes sont spécifiés simultanément, `'auto'` prévaut sur `'empty'`, qui prévaut sur `'new'`.
 
-Avec ``'manual'``, un bouton de calcul ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) apparaîtra à droite du champ de saisie de la métadonnées dans le formulaire. Cliquer sur ce bouton importe les informations désirées du serveur. Pour les catégories admettant plusieurs valeurs, le bouton porte sur l'ensemble du groupe.
+Avec ``'manual'``, un bouton de calcul ![compute_button.svg](../../plume/icons/buttons/compute_button.svg) apparaîtra à droite du champ de saisie de la métadonnées dans le formulaire. Cliquer sur ce bouton importe les informations désirées du serveur. Pour les catégories admettant plusieurs valeurs, le bouton porte sur l'ensemble du groupe.
 
 Les boutons de calcul ne sont présents qu'en mode édition, par contre le calcul automatique opère aussi bien en mode édition qu'en mode lecture. Une catégorie sur laquelle une fonctionnalité de calcul automatique est définie apparaîtra toujours dans le formulaire, même lorsque le calcul ne renvoie aucune valeur et que le paramétrage prévoit que les catégories sans valeur ne soient pas affichées (comportement par défaut en mode lecture[^hideblank]).
 

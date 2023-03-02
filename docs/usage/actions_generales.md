@@ -40,8 +40,8 @@ Certaines des actions générales décrites dans la suite ne devraient être dis
 
 **Initialement, toutes les fiches s'ouvrent en mode lecture**. L'utilisateur doit cliquer sur le bouton d'activation du mode édition pour basculer dans ce dernier.
 
-Le bouton utilise l'icône [read.svg](../../../plume/icons/general/read.svg) :
-![read.svg](../../../plume/icons/general/read.svg).
+Le bouton utilise l'icône [read.svg](../../plume/icons/general/read.svg) :
+![read.svg](../../plume/icons/general/read.svg).
 
 L'idéal serait que le texte d'aide s'adapte au mode courant :
 
@@ -192,8 +192,8 @@ conn.close()
 
 Comme susmentionné, ce bouton ne doit être actif qu'en [mode édition](#mode-lecture-mode-édition).
 
-Il utilise l'icône [save.svg](../../../plume/icons/general/save.svg) :
-![save.svg](../../../plume/icons/general/save.svg)
+Il utilise l'icône [save.svg](../../plume/icons/general/save.svg) :
+![save.svg](../../plume/icons/general/save.svg)
 
 Texte d'aide : *Enregistrer les métadonnées*.
 
@@ -213,8 +213,8 @@ Le formulaire de saisie/consultation peut ensuite être [recréé à partir du n
 
 Ce bouton ne doit être actif qu'en [mode édition](#mode-lecture-mode-édition).
 
-Il utilise l'icône [translation.svg](../../../plume/icons/general/translation.svg) :
-![translation.svg](../../../plume/icons/general/translation.svg)
+Il utilise l'icône [translation.svg](../../plume/icons/general/translation.svg) :
+![translation.svg](../../plume/icons/general/translation.svg)
 
 L'idéal serait que le texte d'aide s'adapte selon que le mode traduction est actif ou non :
 
@@ -250,11 +250,11 @@ Les valeurs disponibles dans son menu sont les noms de modèles listés par [`te
 
 Si `templateLabels` est `None` ou une liste vide, on pourra désactiver le widget, voire ne pas l'afficher. `template` vaudra simplement toujours `None`.
 
-D'autant que de besoin, le bouton utilise l'icône [template.svg](../../../plume/icons/general/template.svg) :
-![template.svg](../../../plume/icons/general/template.svg).
+D'autant que de besoin, le bouton utilise l'icône [template.svg](../../plume/icons/general/template.svg) :
+![template.svg](../../plume/icons/general/template.svg).
 
-Le nom du modèle courant est affiché à côté de l'icône. Dans le menu, il est mis en évidence par l'icône [selected_brown.svg](../../../plume/icons/general/selected_brown.svg) :
-![selected_brown.svg](../../../plume/icons/general/selected_brown.svg).
+Le nom du modèle courant est affiché à côté de l'icône. Dans le menu, il est mis en évidence par l'icône [selected_brown.svg](../../plume/icons/general/selected_brown.svg) :
+![selected_brown.svg](../../plume/icons/general/selected_brown.svg).
 
 Texte d'aide : *Choisir un modèle de formulaire*.
 
@@ -277,8 +277,8 @@ Lorsque l'utilisateur modifie la langue principale, il est nécessaire de [regé
 
 Le widget de choix de la langue principale est un `QToolButton` similaire aux [boutons de sélection de la langue](./creation_widgets.md#widget-annexe--bouton-de-sélection-de-la-langue) affichés dans le formulaire. Les valeurs disponibles dans le menu sont les langues listées par le paramètre utilisateur [`langList`](./generation_dictionnaire_widgets.md#langlist).
 
-Le code de la langue courante est affiché sur le bouton (pas d'icône). Dans le menu, il est mis en évidence par l'icône [selected_brown.svg](../../../plume/icons/general/selected_brown.svg) :
-![selected_brown.svg](../../../plume/icons/general/selected_brown.svg).
+Le code de la langue courante est affiché sur le bouton (pas d'icône). Dans le menu, il est mis en évidence par l'icône [selected_brown.svg](../../plume/icons/general/selected_brown.svg) :
+![selected_brown.svg](../../plume/icons/general/selected_brown.svg).
 
 Texte d'aide : *Modifier la langue principale des métadonnées*.
 
@@ -300,8 +300,8 @@ Il s'agit d'un `QToolButton` dont le menu contient à ce jour trois items, corre
 
 Leur effet est décrit ci-après.
 
-Le bouton utilise l'icône [import.svg](../../../plume/icons/general/import.svg) :
-![import.svg](../../../plume/icons/general/import.svg)
+Le bouton utilise l'icône [import.svg](../../plume/icons/general/import.svg) :
+![import.svg](../../plume/icons/general/import.svg)
 
 Texte d'aide : *Importer les métadonnées depuis un fichier ou un service CSW*.
 
@@ -513,8 +513,8 @@ C'est bien `metagraph` qui est exporté et non le contenu (potentiellement non s
 
 ### Caractéristiques du bouton
 
-Ce bouton utilise l'icône [export.svg](../../../plume/icons/general/export.svg) :
-![export.svg](../../../plume/icons/general/export.svg)
+Ce bouton utilise l'icône [export.svg](../../plume/icons/general/export.svg) :
+![export.svg](../../plume/icons/general/export.svg)
 
 Texte d'aide : *Exporter les métadonnées dans un fichier*.
 
@@ -559,8 +559,8 @@ Il faudra ensuite [regénérer le dictionnaire de widgets](./generation_dictionn
 
 Ce bouton ne doit être actif qu'en mode édition.
 
-Il utilise l'icône [empty.svg](../../../plume/icons/general/empty.svg) :
-![empty.svg](../../../plume/icons/general/empty.svg)
+Il utilise l'icône [empty.svg](../../plume/icons/general/empty.svg) :
+![empty.svg](../../plume/icons/general/empty.svg)
 
 Texte d'aide : *Vider la fiche de métadonnées*.
 
@@ -591,13 +591,13 @@ metagraph = copy_metagraph(src_metagraph, old_metagraph)
 
 Le bouton *Copier* est actif quel que soit le mode.
 
-Icône : ![copy_all.svg](../../../plume/icons/general/copy_all.svg)
+Icône : ![copy_all.svg](../../plume/icons/general/copy_all.svg)
 
 Texte d'aide : *Copier la fiche de métadonnées*.
 
 Le bouton *Coller* n'est actif qu'en mode édition et si un graphe a été préalablement mémorisé.
 
-Icône : ![paste_all.svg](../../../plume/icons/general/paste_all.svg)
+Icône : ![paste_all.svg](../../plume/icons/general/paste_all.svg)
 
 Texte d'aide : *Coller la fiche de métadonnées mémorisée*.
 

@@ -12,7 +12,7 @@ Il est fortement recommandé de mettre à jour l'extension PostgreSQL PlumePg en
 
 Plume permet désormais de générer des métadonnées à partir d'informations disponibles côté serveur :
 - soit automatiquement à l'ouverture de la fiche de métadonnées ;
-- soit à la demande de l'utilisateur, lorsque celui-ci clique sur le bouton ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) placé à droite du champ de saisie dans le formulaire.
+- soit à la demande de l'utilisateur, lorsque celui-ci clique sur le bouton ![compute_button.svg](../../plume/icons/buttons/compute_button.svg) placé à droite du champ de saisie dans le formulaire.
 
 L'activation des fonctionnalités de calcul est contrôlée par les modèles. Elle n'est évidemment possible que pour les catégories pour lesquelles une méthode de calcul est d'ores-et-déjà définie dans Plume (essentiellement, il s'agit une requête SQL à envoyer au serveur). Certaines méthodes de calcul ne sont disponible que si l'extension PlumePg est installée sur la base PostgreSQL cible.
 
@@ -29,7 +29,7 @@ Cf. [Métadonnées calculées](../usage/metadonnees_calculees.md) pour plus de p
 
 ### Verrouillage de l'affichage sur la fiche courante
 
-Plume 0.4 bêta ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../../plume/icons/general/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
+Plume 0.4 bêta ajoute à la barre d'outil de Plume un bouton en forme de cadenas ![verrou.svg](../../plume/icons/general/verrou.svg) qui permet de verrouiller l'affichage sur la fiche de métadonnées courante.
 
 En mode lecture, ce bouton est désactivé par défaut. Quand l'utilisateur sélectionne une nouvelle couche PostgreSQL dans l'explorateur ou le panneau, les métadonnées de cette couche s'affichent dans le panneau de Plume. Lorsqu'il sélectionne une couche dont le fournisseur n'est pas un serveur PostgreSQL, Plume revient à son écran d'accueil.
 

@@ -200,7 +200,7 @@ On pourra utiliser les valeurs par défaut suivantes :
 
 Les seuls cas où le widget principal est un `QToolButton` sont ceux des "boutons plus" et "boutons de traduction", qui permettent à l'utilisateur d'ajouter réciproquement des valeurs ou traductions supplémentaires. La clé `'object'` vaut alors `'plus button'` ou `'translation button'`.
 
-- L'image ![plus_button.svg](../../../plume/icons/buttons/plus_button.svg) à utiliser est toujours [plus_button.svg](../../../plume/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+- L'image ![plus_button.svg](../../plume/icons/buttons/plus_button.svg) à utiliser est toujours [plus_button.svg](../../plume/icons/buttons/plus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
@@ -525,8 +525,8 @@ widgetsdict[widgetkey]['sources']
 
 *Pour la définition des actions, cf. [Actions contrôlées par les widgets du formulaire](./actions_widgets.md#boutons-de-sélection-de-la-source).*
 
-Le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - est mis en évidence dans le menu par l'icône [selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg) :
-![selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg). Le nom de ce thésaurus est donné par la clé `'current source'`.
+Le thésaurus courant - celui qui fournit les valeurs du `QComboBox` - est mis en évidence dans le menu par l'icône [selected_blue.svg](../../plume/icons/buttons/selected_blue.svg) :
+![selected_blue.svg](../../plume/icons/buttons/selected_blue.svg). Le nom de ce thésaurus est donné par la clé `'current source'`.
 
 ```python
 
@@ -552,7 +552,7 @@ grid.addWidget(source_widget, row, column, rowSpan, columnSpan)
 
 ### Icône
 
-L'icône ![source_button.svg](../../../plume/icons/buttons/source_button.svg) à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](../../../plume/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
+L'icône ![source_button.svg](../../plume/icons/buttons/source_button.svg) à utiliser pour le bouton de sélection de la source est fournie par le fichier [source_button.svg](../../plume/icons/buttons/source_button.svg). Contrairement aux boutons plus et moins, sa couleur est fixe à ce stade.
 
 
 ### Texte d'aide
@@ -644,8 +644,8 @@ widgetsdict[widgetkey]['language value']
 
 ```
 
-La langue sélectionnée est également mise en évidence dans le menu par l'icône [selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg) :
-![selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg).
+La langue sélectionnée est également mise en évidence dans le menu par l'icône [selected_blue.svg](../../plume/icons/buttons/selected_blue.svg) :
+![selected_blue.svg](../../plume/icons/buttons/selected_blue.svg).
 
 ### Texte d'aide
 
@@ -755,8 +755,8 @@ widgetsdict[widgetkey]['current unit']
 
 ```
 
-L'unité sélectionnée est également mise en évidence dans le menu par l'icône [selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg) :
-![selected_blue.svg](../../../plume/icons/buttons/selected_blue.svg).
+L'unité sélectionnée est également mise en évidence dans le menu par l'icône [selected_blue.svg](../../plume/icons/buttons/selected_blue.svg) :
+![selected_blue.svg](../../plume/icons/buttons/selected_blue.svg).
 
 ### Texte d'aide
 
@@ -870,8 +870,8 @@ L'icône affichée sur le bouton dépend de l'état de visibilité de la géomé
 
 | Etat | Icône | Texte d'aide | Effet d'un clic gauche sur le bouton |
 | --- | --- | --- | --- |
-| Géométrie non visible dans le canevas | ![show.svg](../../../plume/icons/buttons/geo/show.svg) - fichier [/geo/show.svg](../../../plume/icons/buttons/geo/show.svg) | *Afficher la géométrie dans le canevas* | Affiche dans le canevas la géométrie renseignée dans le widget de saisie |
-| Géométrie visible dans le canevas | ![hide.svg](../../../plume/icons/buttons/geo/hide.svg) - fichier [/geo/hide.svg](../../../plume/icons/buttons/geo/hide.svg) | *Effacer la géométrie du canevas* | Efface la géométrie du canevas |
+| Géométrie non visible dans le canevas | ![show.svg](../../plume/icons/buttons/geo/show.svg) - fichier [/geo/show.svg](../../plume/icons/buttons/geo/show.svg) | *Afficher la géométrie dans le canevas* | Affiche dans le canevas la géométrie renseignée dans le widget de saisie |
+| Géométrie visible dans le canevas | ![hide.svg](../../plume/icons/buttons/geo/hide.svg) - fichier [/geo/hide.svg](../../plume/icons/buttons/geo/hide.svg) | *Effacer la géométrie du canevas* | Efface la géométrie du canevas |
 
 Cliquer sur le bouton ne devrait avoir aucun effet s'il n'y a pas de valeur dans le widget de saisie, ou s'il ne s'agit pas d'une représentation WKT valide. Les modalités d'interprétation des WKT stockés dans le widgets sont décrites dans la page [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md#lecture-des-géométries-pour-la-visualisation).
 
@@ -881,7 +881,7 @@ Il pourrait par ailleurs être intéressant d'ajuster automatiquement l'emprise 
 
 #### Sans fonctionnalité de visualisation
 
-Lorsque `'show'` n'est pas inclus dans la liste de la clé `'geo tools'`, cliquer sur le bouton n'a aucun effet, seul son menu associé permet d'interagir avec les géométries. Dans ce cas, l'icône à faire apparaître sur le bouton d'aide à la saisie des géométries sera plutôt ![geo_button.svg](../../../plume/icons/buttons/geo_button.svg) (fichier [geo_button.svg](../../../plume/icons/buttons/geo_button.svg)).
+Lorsque `'show'` n'est pas inclus dans la liste de la clé `'geo tools'`, cliquer sur le bouton n'a aucun effet, seul son menu associé permet d'interagir avec les géométries. Dans ce cas, l'icône à faire apparaître sur le bouton d'aide à la saisie des géométries sera plutôt ![geo_button.svg](../../plume/icons/buttons/geo_button.svg) (fichier [geo_button.svg](../../plume/icons/buttons/geo_button.svg)).
 
 On pourra afficher en infobulle sur le bouton le texte suivant :
 
@@ -893,7 +893,7 @@ On pourra afficher en infobulle sur le bouton le texte suivant :
 
 #### Icônes des actions
 
-Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](../../../plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md) pour les noms des fichiers.
+Les actions du menu associé au bouton ont chacune leur icône. Les SVG se trouvent dans le répertoire [/plume/icons/buttons/geo](../../plume/icons/buttons/geo), cf. [Outils d'aide à la saisie des géométries](./outils_saisie_geometries.md) pour les noms des fichiers.
 
 ### Placement dans la grille
 
@@ -969,7 +969,7 @@ grid.addWidget(minus_widget, row, column, rowSpan, columnSpan)
 
 ### Icône
 
-L'image ![minus_button.svg](../../../plume/icons/buttons/minus_button.svg) à utiliser pour un bouton moins est toujours [minus_button.svg](../../../plume/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
+L'image ![minus_button.svg](../../plume/icons/buttons/minus_button.svg) à utiliser pour un bouton moins est toujours [minus_button.svg](../../plume/icons/buttons/minus_button.svg), mais la couleur dépendra du type de groupe dans lequel se trouve le bouton, soit de la valeur renvoyée par :
 
 ```python
 
@@ -1062,7 +1062,7 @@ grid.addWidget(compute_widget, row, column, rowSpan, columnSpan)
 
 ### Icône
 
-L'image ![compute_button.svg](../../../plume/icons/buttons/compute_button.svg) à utiliser pour un bouton de calcul est toujours [compute_button.svg](../../../plume/icons/buttons/compute_button.svg).
+L'image ![compute_button.svg](../../plume/icons/buttons/compute_button.svg) à utiliser pour un bouton de calcul est toujours [compute_button.svg](../../plume/icons/buttons/compute_button.svg).
 
 ### Texte d'aide
 
