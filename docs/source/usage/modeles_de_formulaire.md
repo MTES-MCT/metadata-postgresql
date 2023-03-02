@@ -510,12 +510,37 @@ Le résultat `is_template_admin` est un booléen, qui vaudra `True` si et seulem
 
 Les données des modèles sont stockées en base dans une structure de données mise en place par *PlumePg*. Elles peuvent être consultées et éditées via des requêtes générées par des fonctions du module `plume.pg_queries`.
 
-| Objet | Table | Requête de lecture | Requête d'insertion & mise à jour | Requête de suppression |
-| --- | --- | --- | --- | --- |
-| Modèle | `z_plume.meta_template` | `query_read_meta_template` | `query_insert_or_update_meta_template` | `query_delete_meta_template` |
-| Catégorie de métadonnée | `z_plume.meta_categorie` | `query_read_meta_categorie` | `query_insert_or_update_meta_categorie` | `query_delete_meta_categorie` |
-| Onglet | `z_plume.meta_tab` | `query_read_meta_tab` | `query_insert_or_update_meta_tab` | `query_delete_meta_tab` |
-| Association modèle-catégorie | `z_plume.meta_template_categories` | `query_read_meta_template_categories` | `query_insert_or_update_meta_template_categories` | `query_delete_meta_template_categories` |
+* Objet "modèle" (table `z_plume.meta_template`) :
+
+   | Action | Fonction pour générer la requête |
+   | --- | --- |
+   | Lecture | `query_read_meta_template` |
+   | Insertion & Mise à jour | `query_insert_or_update_meta_template` |
+   | Suppression | `query_delete_meta_template` |
+
+* Objet "catégorie de métadonnée" (table `z_plume.meta_categorie`) :
+
+   | Action | Fonction pour générer la requête |
+   | --- | --- |
+   | Lecture | `query_read_meta_categorie` |
+   | Insertion & Mise à jour | `query_insert_or_update_meta_categorie` |
+   | Suppression | `query_delete_meta_categorie` |
+
+* Objet "onglet" (table `z_plume.meta_tab`) :
+
+   | Action | Fonction pour générer la requête |
+   | --- | --- |
+   | Lecture | `query_read_meta_tab` |
+   | Insertion & Mise à jour | `query_insert_or_update_meta_tab` |
+   | Suppression | `query_delete_meta_tab` |
+
+* Objet "association modèle-catégorie" (table `z_plume.meta_template_categories`) :
+
+   | Action | Fonction pour générer la requête |
+   | --- | --- |
+   | Lecture | `query_read_meta_template_categories` |
+   | Insertion & Mise à jour | `query_insert_or_update_meta_template_categories` |
+   | Suppression | `query_delete_meta_template_categories` |
 
 Les requêtes de lecture renvoient les données sous la forme d'une liste de tuples contenant chacun un unique dictionnaire. Ce dictionnaire contient les attributs d'un objet (modèle, onglet, etc. selon la table consultée). Ses clés sont les noms des champs de la table PostgreSQL.
 
