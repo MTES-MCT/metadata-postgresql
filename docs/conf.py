@@ -14,6 +14,8 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../.'))
 
+from plume.config import PLUME_VERSION
+
 
 # -- Project information -----------------------------------------------------
 
@@ -22,7 +24,7 @@ copyright = '2023, République française'
 author = "Didier Leclerc et Leslie Lemaire, Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'État chargé de la Mer"
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.8.0 bêta'
+release = PLUME_VERSION
 
 
 # -- General configuration ---------------------------------------------------
@@ -70,7 +72,18 @@ exclude_patterns = [
 html_theme = 'pydata_sphinx_theme'
 
 html_theme_options = {
-    'github_url': 'https://github.com/MTES-MCT/metadata-postgresql'
+    "icon_links": [
+        {
+            # Label for this link
+            "name": "GitHub",
+            # URL where the link will redirect
+            "url": "https://github.com/MTES-MCT/metadata-postgresql",  # required
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "fa-brands fa-square-github",
+            # The type of image to be used (see below for details)
+            "type": "fontawesome",
+        }
+   ]
 }
 
 html_logo = html_favicon = '../../plume/icons/logo/plume.svg'
