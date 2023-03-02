@@ -13,7 +13,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
-from plume.config import PLUME_VERSION
 
 
 # -- Project information -----------------------------------------------------
@@ -23,7 +22,7 @@ copyright = '2023, République française'
 author = "Didier Leclerc et Leslie Lemaire, Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'État chargé de la Mer"
 
 # The full version, including alpha/beta/rc tags
-release = PLUME_VERSION
+release = 'v0.8.0 bêta'
 
 
 # -- General configuration ---------------------------------------------------
