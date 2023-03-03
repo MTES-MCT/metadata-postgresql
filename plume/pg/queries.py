@@ -1247,6 +1247,7 @@ def query_is_template_admin():
     """Requête qui vérifie que le rôle courant dispose des privilèges nécessaire pour configurer les modèles de fiches de métadonnées de PlumePg.
     
     Concrètement, elle vérifie les privilèges suivants :
+    
     * ``USAGE`` sur le schéma ``z_plume``.
     * ``INSERT``, ``UPDATE``, ``DELETE`` sur la table d'association
       des catégories aux modèles, ``z_plume.meta_template_categories``.
