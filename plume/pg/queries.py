@@ -1494,12 +1494,104 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
                 ON CONFLICT ({pk_name}) DO UPDATE
                     SET ({columns}) = ROW ({values})
                 RETURNING to_json({relation}.*)
-            """).format(
-                relation=sql.Identifier(schema_name, table_name),
-                columns=sql.SQL(', ').join(sql.Identifier(c) for c in columns),
-                values=sql.SQL(', ').join(sql.Literal(v) if v else sql.SQL('DEFAULT') for v in values),
-                pk_name=sql.Identifier(pk_name)
+        """).format(
+            relation=sql.Identifier(schema_name, table_name),
+            columns=sql.SQL(', ').join(sql.Identifier(c) for c in columns),
+            values=sql.SQL(', ').join(
+                sql.Literal(v) if v is not None else sql.SQL('DEFAULT') for v in values
             ),
+            # NB: forcer "DEFAULT" empêche de remplacer la valeur par défaut par NULL
+            # mais ce n'est pas un problème ici, considérant que tous les champs avec
+            # des valeurs par défaut ont aussi une contrainte NOT NULL.
+            pk_name=sql.Identifier(pk_name)
+        ),
+        expecting='one row',
+        allow_none=False,
+        missing_mssg="Echec de la modification des données"
+    )
+
+def query_update_any_table(schema_name, table_name, pk_name, data, columns=None):
+    """Requête qui met à jour un enregistrement existant d'une table quelconque.
+
+    La requête sera sans effet si l'enregistrement n'existait pas.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_update_any_table(
+        ...    'nom du schéma', 'nom de la table', 'nom du champ de clé primaire',
+        ...    ['valeur champ 1', 'valeur champ 2', 'valeur champ 3'],
+        ...    ['nom champ 1', 'nom champ 2', 'nom champ 3']
+        ...    )
+        >>> cur.execute(*query)
+        >>> new_data = cur.fetchone()[0]
+
+    ``new_data`` est un dictionnaire contenant l'enregistrement
+    mis à jour, tel qu'il est stocké en base.
+
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la table.
+    pk_name : str
+        Nom du champ de clé primaire. La fonction ne prend pas en
+        charge les tables avec des clés primaires multi-champs.
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    if isinstance(data, list):
+        if not columns:
+            raise MissingParameter('columns')
+        if len(data) != len(columns):
+            raise ValueError("Les listes 'data' et 'columns' devraient être de même longueur")
+        values = data
+    elif isinstance(data, dict):
+        values = [v for v in data.values()]
+        columns = [k for k in data.keys()]
+    else:
+        raise TypeError("'data' devrait être un dictionnaire ou une liste")
+
+    pk_index = columns.index(pk_name)
+    if pk_index is not None:
+        pk_value = values[pk_index]
+    else:
+        raise ValueError("Identifiant de l'enregistrement non spécifié")
+
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            UPDATE {relation}
+                SET ({columns}) = ROW ({values})
+                WHERE {pk_name} = %s
+                RETURNING to_json({relation}.*)
+        """).format(
+            relation=sql.Identifier(schema_name, table_name),
+            columns=sql.SQL(', ').join(sql.Identifier(c) for c in columns),
+            values=sql.SQL(', ').join(
+                sql.Literal(v) if v is not None else sql.SQL('DEFAULT') for v in values
+            ),
+            # NB: forcer "DEFAULT" empêche de remplacer la valeur par défaut par NULL
+            # mais ce n'est pas un problème ici, considérant que tous les champs avec
+            # des valeurs par défaut ont aussi une contrainte NOT NULL.
+            pk_name=sql.Identifier(pk_name)
+        ),
+        args=(pk_value,),
         expecting='one row',
         allow_none=False,
         missing_mssg="Echec de la modification des données"
@@ -1598,9 +1690,13 @@ def query_insert_or_update_meta_categorie(data, columns=None):
     if origin == 'shared':
         if not path:
             raise ValueError('Métadonnée commune non identifiée')
-        return query_insert_or_update_any_table(
+        return query_update_any_table(
             'z_plume', 'meta_shared_categorie', 'path', data, columns=columns
         )
+        # NB: on envoie des UPDATE et pas des INSERT ON CONFLICT DO UPDATE sur
+        # meta_shared_categorie, parce qu'il y a un trigger sur cette table qui
+        # supprime les enregistrements existants qui sont sur le point d'être
+        # réinsérés, entraînant la perte de toutes les données liées...
     elif origin in (None, 'local'):
         return query_insert_or_update_any_table(
             'z_plume', 'meta_local_categorie', 'path', data, columns=columns
