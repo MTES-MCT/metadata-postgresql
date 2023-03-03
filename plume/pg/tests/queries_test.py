@@ -33,7 +33,8 @@ from plume.pg.queries import (
     query_delete_meta_template, query_delete_meta_template_categories,
     query_plume_pg_import_sample_template, query_plume_pg_create, query_plume_pg_drop,
     query_plume_pg_update, query_plume_pg_status, query_stamp_recording_disable,
-    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable
+    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable,
+    query_update_any_table
 )
 from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict
@@ -991,7 +992,7 @@ class QueriesTestCase(unittest.TestCase):
         self.assertTrue(result[0])
 
     def test_query_insert_or_update_any_table(self):
-        """Contrôle de la fonction générique en charge de créer les requêtes INSERT OR UPDATE
+        """Contrôle de la fonction générique en charge de créer les requêtes INSERT ON CONFLICT DO UPDATE
         """
         conn = psycopg2.connect(PlumePgTestCase.connection_string)
         with conn:
@@ -1277,8 +1278,8 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute(*query)
                 result0b = cur.fetchone()
                 query = query_insert_or_update_meta_categorie(
-                    ['dct:title', 'shared', 'Catégorie titre'],
-                    ['path', 'origin', 'label']
+                    ['dct:title', 'shared', 'Catégorie titre', 'Nom Nom Nom'],
+                    ['path', 'origin', 'label', 'description']
                 )
                 cur.execute(*query)
                 result0c = cur.fetchone()
@@ -1291,6 +1292,12 @@ class QueriesTestCase(unittest.TestCase):
                     SELECT * FROM z_plume.meta_local_categorie
                 ''')
                 result2 = cur.fetchall()
+                query = query_insert_or_update_meta_categorie(
+                    ['dct:title', 'shared', 'Nom'],
+                    ['path', 'origin', 'label']
+                )
+                cur.execute(*query)
+                result3 = cur.fetchone()
                 cur.execute('''
                     DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
                 ''')
@@ -1307,6 +1314,9 @@ class QueriesTestCase(unittest.TestCase):
         self.assertIsNotNone(result1)
         self.assertEqual(len(result1), 1)
         self.assertEqual(len(result2), 2)
+        self.assertIsNotNone(result3)
+        self.assertEqual(result3[0]['label'], 'Nom')
+        self.assertEqual(result3[0]['description'], 'Nom Nom Nom')
 
     def test_query_read_enum_meta_special(self):
         """Récupération du type énuméré des champs 'special'.
