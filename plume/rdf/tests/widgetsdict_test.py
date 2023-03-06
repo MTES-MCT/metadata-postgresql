@@ -1313,8 +1313,10 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 cur.execute('''
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path)
-                        VALUES ('Basique', 'dct:conformsTo')
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path) (
+                        SELECT tpl_id, 'dct:conformsTo' FROM z_plume.meta_template
+                            WHERE tpl_label = 'Basique'
+                    )
                     ''')
                 cur.execute(
                     *query_get_categories('Basique')
@@ -1693,16 +1695,21 @@ class WidgetsDictTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
-                cur.execute("""
+                cur.execute("SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = 'Classique'")
+                tpl_id = cur.fetchone()[0]
+                cur.execute(
+                    """
                     INSERT INTO z_plume.meta_categorie (path, label, datatype)
                         VALUES ('uuid:ae75b755-97e7-4d56-be15-00c143b37af0', 'test heure', 'xsd:time'),
                             ('uuid:7a656b67-45a6-4b85-948b-334caca7671f', 'test entier', 'xsd:integer'),
                             ('uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9', 'test décimal', 'xsd:decimal') ;
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path)
-                        VALUES ('Classique', 'uuid:ae75b755-97e7-4d56-be15-00c143b37af0'),
-                            ('Classique', 'uuid:7a656b67-45a6-4b85-948b-334caca7671f'),
-                            ('Classique', 'uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9') ;
-                    """)
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, loccat_path)
+                        VALUES (%(tpl_id)s, 'uuid:ae75b755-97e7-4d56-be15-00c143b37af0'),
+                            (%(tpl_id)s, 'uuid:7a656b67-45a6-4b85-948b-334caca7671f'),
+                            (%(tpl_id)s, 'uuid:9ade6b00-a16a-424c-af8f-9c4bfb2a92f9') ;
+                    """,
+                    {'tpl_id': tpl_id}
+                )
                 cur.execute(
                     *query_get_categories('Classique')
                     )
@@ -1872,7 +1879,6 @@ class WidgetsDictTestCase(unittest.TestCase):
         """Quelques contrôles sur la gestion des catégories locales.
         
         """
-        connection_string = ConnectionString()
         conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
@@ -1895,9 +1901,9 @@ class WidgetsDictTestCase(unittest.TestCase):
                     UPDATE z_plume.meta_categorie
                         SET special = 'url'
                         WHERE label = 'test datatype iri' ;
-                    INSERT INTO z_plume.meta_template(tpl_label) VALUES ('Datatype') ;
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path)
-                        (SELECT 'Datatype', path FROM z_plume.meta_categorie WHERE label ~ 'test.datatype') ;
+                    INSERT INTO z_plume.meta_template(tpl_id, tpl_label) VALUES (100, 'Datatype') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, loccat_path)
+                        (SELECT 100, path FROM z_plume.meta_categorie WHERE label ~ 'test.datatype') ;
                     ''')
                 cur.execute(
                     *query_get_categories('Datatype')
@@ -2181,7 +2187,6 @@ class WidgetsDictTestCase(unittest.TestCase):
         """Mise à jour à partir d'informations calculées, en utilisant le parser par défaut.
         
         """
-        connection_string = ConnectionString()
         conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
@@ -2868,25 +2873,39 @@ class WidgetsDictTestCase(unittest.TestCase):
         conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
-                cur.execute('''
+                cur.execute(
+                    '''
                     SELECT * FROM z_plume.meta_import_sample_template('Donnée externe') ;
+                    '''
+                )
+                cur.execute(
+                    '''
+                    SELECT tpl_id FROM z_plume.meta_template
+                        WHERE tpl_label = 'Donnée externe' ;
+                    '''
+                )
+                tpl_id = cur.fetchone()[0]
+                cur.execute(
+                    '''
                     INSERT INTO z_plume.meta_template_categories
-                        (shrcat_path, tpl_label) VALUES
-                        ('dct:spatial / dcat:bbox', 'Donnée externe'),
-                        ('dct:conformsTo', 'Donnée externe'),
-                        ('dcat:temporalResolution', 'Donnée externe') ;
+                        (shrcat_path, tpl_id) VALUES
+                        ('dct:spatial / dcat:bbox', %(tpl_id)s),
+                        ('dct:conformsTo', %(tpl_id)s),
+                        ('dcat:temporalResolution', %(tpl_id)s) ;
                     UPDATE z_plume.meta_template_categories
                         SET is_read_only = True
-                        WHERE tpl_label = 'Donnée externe'
+                        WHERE tpl_id = %(tpl_id)s
                             AND shrcat_path IN ('dcat:distribution',
                                 'dcat:keyword', 'dcat:theme',
                                 'dct:spatial / dcat:bbox',
                                 'dcat:temporalResolution', 'dct:title',
                                 'dct:conformsTo') ;
-                    ''')
+                    ''',
+                    {'tpl_id': tpl_id}
+                )
                 cur.execute(
                     *query_get_categories('Donnée externe')
-                    )
+                )
                 categories = cur.fetchall()
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
@@ -3032,21 +3051,20 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         """
         # --- préparation d'un modèle avec calcul auto ---
-        connection_string = ConnectionString()
         conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_template (tpl_label) VALUES
-                        ('Calcul') ;
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label) VALUES
+                        (100, 'Calcul') ;
                     INSERT INTO z_plume.meta_template_categories
-                        (tpl_label, shrcat_path, compute, compute_params) VALUES
-                        ('Calcul', 'dct:title', ARRAY['manual', 'empty'],
+                        (tpl_id, shrcat_path, compute, compute_params) VALUES
+                        (100, 'dct:title', ARRAY['manual', 'empty'],
                             '{"pattern": "^[^.]+"}'::jsonb),
-                        ('Calcul', 'dct:description', ARRAY['manual', 'empty'], NULL),
-                        ('Calcul', 'dct:conformsTo', ARRAY['manual', 'auto'], NULL),
-                        ('Calcul', 'dct:created', ARRAY['manual', 'new'], NULL),
-                        ('Calcul', 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
+                        (100, 'dct:description', ARRAY['manual', 'empty'], NULL),
+                        (100, 'dct:conformsTo', ARRAY['manual', 'auto'], NULL),
+                        (100, 'dct:created', ARRAY['manual', 'new'], NULL),
+                        (100, 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
                     ''')
                 cur.execute(
                     *query_get_categories('Calcul')
@@ -3129,21 +3147,20 @@ class WidgetsDictTestCase(unittest.TestCase):
         metagraph = Metagraph().parse(data=metadata)
 
         # --- préparation d'un modèle avec calcul auto ---
-        connection_string = ConnectionString()
         conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_template (tpl_label) VALUES
-                        ('Calcul') ;
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label) VALUES
+                        (100, 'Calcul') ;
                     INSERT INTO z_plume.meta_template_categories
-                        (tpl_label, shrcat_path, compute, compute_params) VALUES
-                        ('Calcul', 'dct:title', ARRAY['manual', 'empty'],
+                        (tpl_id, shrcat_path, compute, compute_params) VALUES
+                        (100, 'dct:title', ARRAY['manual', 'empty'],
                             '{"pattern": "^[^.]+"}'::jsonb),
-                        ('Calcul', 'dct:description', ARRAY['manual', 'empty'], NULL),
-                        ('Calcul', 'dct:conformsTo', ARRAY['manual', 'auto'], NULL),
-                        ('Calcul', 'dct:created', ARRAY['manual', 'new'], NULL),
-                        ('Calcul', 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
+                        (100, 'dct:description', ARRAY['manual', 'empty'], NULL),
+                        (100, 'dct:conformsTo', ARRAY['manual', 'auto'], NULL),
+                        (100, 'dct:created', ARRAY['manual', 'new'], NULL),
+                        (100, 'dct:modified', ARRAY['manual', 'auto'], NULL) ;
                     ''')
                 cur.execute(
                     *query_get_categories('Calcul')
@@ -3222,17 +3239,25 @@ class WidgetsDictTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute('''
                     SELECT * FROM z_plume.meta_import_sample_template('Classique') ;
-                    INSERT INTO z_plume.meta_tab VALUES
-                        ('onglet XYZ', 1),
-                        ('onglet ABC', 2) ;
+                    INSERT INTO z_plume.meta_tab (tab_id, tab_label, tab_num) VALUES
+                        (101, 'onglet XYZ', 1),
+                        (102, 'onglet ABC', 2) ;
                     UPDATE z_plume.meta_template_categories
-                        SET tab = 'onglet ABC'
-                        WHERE tpl_label = 'Classique' AND shrcat_path IN (
+                        SET tab_id = 102
+                        WHERE shrcat_path IN (
                             'dcat:contactPoint', 'adms:versionNotes'
+                        ) AND tpl_id = (
+                            SELECT meta_template.tpl_id
+                                FROM z_plume.meta_template
+                                WHERE tpl_label = 'Classique'
                         ) ;
                     UPDATE z_plume.meta_template_categories
-                        SET tab = 'onglet XYZ'
-                        WHERE tpl_label = 'Classique' AND shrcat_path = 'dct:title' ;
+                        SET tab_id = 101
+                        WHERE shrcat_path = 'dct:title' AND tpl_id = (
+                            SELECT meta_template.tpl_id
+                                FROM z_plume.meta_template
+                                WHERE tpl_label = 'Classique'
+                        ) ;
                     ''')
                 cur.execute(
                     *query_get_categories('Classique')
