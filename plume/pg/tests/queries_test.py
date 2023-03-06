@@ -367,17 +367,32 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
                 # import des modèles pré-configurés
                 cur.execute("""
-                    INSERT INTO z_plume.meta_tab (tab, tab_num)
-                        VALUES ('O1', NULL), ('O2', 10), ('O3', 15), ('O4', 12) ;
+                    INSERT INTO z_plume.meta_tab (tab_id, tab_label, tab_num)
+                        VALUES (101, 'O1', NULL), (102, 'O2', 10), (103, 'O3', 15), (104, 'O4', 12) ;
                     UPDATE z_plume.meta_template_categories
-                        SET tab = 'O1'
-                        WHERE shrcat_path = 'dct:title' AND tpl_label = 'Basique' ;
+                        SET tab_id = 101
+                        WHERE shrcat_path = 'dct:title'
+                            AND meta_template_categories.tpl_id = (
+                                SELECT meta_template.tpl_id
+                                    FROM z_plume.meta_template
+                                    WHERE tpl_label = 'Basique'
+                            ) ;
                     UPDATE z_plume.meta_template_categories
-                        SET tab = 'O2'
-                        WHERE shrcat_path = 'dct:description' AND tpl_label = 'Basique' ;
+                        SET tab_id = 102
+                        WHERE shrcat_path = 'dct:description'
+                            AND meta_template_categories.tpl_id = (
+                                SELECT meta_template.tpl_id
+                                    FROM z_plume.meta_template
+                                    WHERE tpl_label = 'Basique'
+                            ) ;
                     UPDATE z_plume.meta_template_categories
-                        SET tab = 'O4'
-                        WHERE shrcat_path = 'dct:temporal' AND tpl_label = 'Basique' ;
+                        SET tab_id = 104
+                        WHERE shrcat_path = 'dct:temporal'
+                            AND meta_template_categories.tpl_id = (
+                                SELECT meta_template.tpl_id
+                                    FROM z_plume.meta_template
+                                    WHERE tpl_label = 'Basique'
+                            ) ;
                     """)
                 cur.execute(
                     *query_template_tabs('Basique')
@@ -400,8 +415,8 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO z_plume.meta_tab (tab, tab_num)
-                        VALUES ('O1', NULL), ('O2', 10), ('O3', 15), ('O4', 12) ;
+                    INSERT INTO z_plume.meta_tab (tab_id, tab_label, tab_num)
+                        VALUES (101, 'O1', NULL), (102, 'O2', 10), (103, 'O3', 15), (104, 'O4', 12) ;
                     INSERT INTO z_plume.meta_categorie
                         (path, origin, label) VALUES
                         ('uuid:218c1245-6ba7-4163-841e-476e0d5582af',
@@ -409,14 +424,13 @@ class QueriesTestCase(unittest.TestCase):
                         ('dct:title', 'shared', 'Commun valide'),
                         ('dcat:distribution / dct:issued', 'shared', 'Commun composé')
                         ;
-                    INSERT INTO z_plume.meta_template (tpl_label)
-                        VALUES ('Template test') ;
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label)
+                        VALUES (99, 'Template test') ;
                     INSERT INTO z_plume.meta_template_categories
-                        (tab, shrcat_path, loccat_path, tpl_label) VALUES
-                        ('O1', 'dct:title', NULL, 'Template test'),
-                        ('O2', NULL, 'uuid:218c1245-6ba7-4163-841e-476e0d5582af',
-                            'Template test'),
-                        ('O4', 'dcat:distribution / dct:issued', NULL, 'Template test') ;
+                        (tab_id, shrcat_path, loccat_path, tpl_id) VALUES
+                        (101, 'dct:title', NULL, 99),
+                        (102, NULL, 'uuid:218c1245-6ba7-4163-841e-476e0d5582af', 99),
+                        (104, 'dcat:distribution / dct:issued', NULL, 99) ;
                     """)
                 cur.execute(
                     *query_template_tabs('Template test')
@@ -1083,7 +1097,7 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_tab (tab, tab_num)
+                    INSERT INTO z_plume.meta_tab (tab_label, tab_num)
                         VALUES ('Onglet 1', 1), ('Onglet 10', 10)
                 ''')
                 query = query_read_meta_tab()
@@ -1099,10 +1113,12 @@ class QueriesTestCase(unittest.TestCase):
         self.assertTrue(isinstance(result[0], tuple))
         self.assertEqual(len(result[0]), 1)
         self.assertTrue(isinstance(result[0][0], dict))
-        self.assertTrue('tab' in result[0][0])
-        self.assertEqual(result[0][0]['tab'], 'Onglet 1')
+        self.assertTrue('tab_label' in result[0][0])
+        self.assertEqual(result[0][0]['tab_label'], 'Onglet 1')
         self.assertTrue('tab_num' in result[0][0])
         self.assertEqual(result[0][0]['tab_num'], 1)
+        self.assertTrue('tab_id' in result[0][0])
+        self.assertIsNotNone(result[0][0]['tab_id'])
 
     def test_query_read_meta_template(self):
         """Lecture de la table des modèles.        
@@ -1137,10 +1153,10 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_template (tpl_label)
-                        VALUES ('Modèle 1'), ('Modèle 10') ;
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path)
-                        VALUES ('Modèle 10', 'dct:title'), ('Modèle 10', 'dct:description')
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label)
+                        VALUES (1, 'Modèle 1'), (10, 'Modèle 10') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path)
+                        VALUES (10, 'dct:title'), (10, 'dct:description')
                 ''')
                 query = query_read_meta_template_categories()
                 cur.execute(*query)
@@ -1155,8 +1171,8 @@ class QueriesTestCase(unittest.TestCase):
         self.assertTrue(isinstance(result[0], tuple))
         self.assertEqual(len(result[0]), 1)
         self.assertTrue(isinstance(result[0][0], dict))
-        self.assertTrue('tpl_label' in result[0][0])
-        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
+        self.assertTrue('tpl_id' in result[0][0])
+        self.assertEqual(result[0][0]['tpl_id'], 10)
 
     def test_query_insert_or_update_meta_template_categories(self):
         """Mise à jour de la table des associations modèle-catégories.        
@@ -1165,16 +1181,16 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_template (tpl_label)
-                        VALUES ('Modèle 1'), ('Modèle 10') ;
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label)
+                        VALUES (1, 'Modèle 1'), (10, 'Modèle 10') ;
                 ''')
                 query = query_insert_or_update_meta_template_categories(
-                    {'tpl_label': 'Modèle 10', 'shrcat_path': 'dct:title'}
+                    {'tpl_id': 10, 'shrcat_path': 'dct:title'}
                 )
                 cur.execute(*query)
                 result1 = cur.fetchone()
                 query = query_insert_or_update_meta_template_categories(
-                    [None, 'Modèle 10', 'dct:description'], ['tplcat_id', 'tpl_label', 'shrcat_path']
+                    [None, 10, 'dct:description'], ['tplcat_id', 'tpl_id', 'shrcat_path']
                 )
                 cur.execute(*query)
                 result0 = cur.fetchone()
@@ -1193,7 +1209,7 @@ class QueriesTestCase(unittest.TestCase):
         self.assertEqual(result0[0]['shrcat_path'], 'dct:description')
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 2)
-        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
+        self.assertEqual(result[0][0]['tpl_id'], 10)
 
     def test_query_insert_or_update_meta_template(self):
         """Mise à jour de la table des modèles.        
@@ -1202,12 +1218,12 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 query = query_insert_or_update_meta_template(
-                    {'tpl_label': 'Modèle 10'}
+                    {'tpl_id': 10, 'tpl_label': 'Modèle 10'}
                 )
                 cur.execute(*query)
                 result0 = cur.fetchone()
                 query = query_insert_or_update_meta_template(
-                    ['Modèle 10', 'Mon commentaire...'], ['tpl_label', 'comment']
+                    [10, 'Modèle 10*', 'Mon commentaire...'], ['tpl_id', 'tpl_label', 'comment']
                 )
                 cur.execute(*query)
                 result1 = cur.fetchone()
@@ -1221,10 +1237,11 @@ class QueriesTestCase(unittest.TestCase):
         self.assertIsNotNone(result0)
         self.assertEqual(result0[0]['tpl_label'], 'Modèle 10')
         self.assertIsNotNone(result1)
+        self.assertEqual(result1[0]['tpl_label'], 'Modèle 10*')
         self.assertEqual(result1[0]['comment'], 'Mon commentaire...')
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10')
+        self.assertEqual(result[0][0]['tpl_label'], 'Modèle 10*')
         self.assertEqual(result[0][0]['comment'], 'Mon commentaire...')
 
     def test_query_insert_or_update_meta_tab(self):
@@ -1234,12 +1251,12 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 query = query_insert_or_update_meta_tab(
-                    {'tab': 'Onglet 1'}
+                    {'tab_label': 'Onglet 1'}
                 )
                 cur.execute(*query)
                 result0 = cur.fetchone()
                 query = query_insert_or_update_meta_tab(
-                    ['Onglet 2', 100], ['tab', 'tab_num']
+                    ['Onglet 2', 100], ['tab_label', 'tab_num']
                 )
                 cur.execute(*query)
                 result1 = cur.fetchone()
@@ -1251,14 +1268,14 @@ class QueriesTestCase(unittest.TestCase):
                 ''')
         conn.close()
         self.assertIsNotNone(result0)
-        self.assertEqual(result0[0]['tab'], 'Onglet 1')
+        self.assertEqual(result0[0]['tab_label'], 'Onglet 1')
         self.assertIsNotNone(result1)
-        self.assertEqual(result1[0]['tab'], 'Onglet 2')
+        self.assertEqual(result1[0]['tab_label'], 'Onglet 2')
         self.assertIsNotNone(result)
         self.assertEqual(len(result), 2)
-        self.assertTrue(result[0][0]['tab'], 'Onglet 1')
+        self.assertTrue(result[0][0]['tab_label'], 'Onglet 1')
         self.assertIsNone(result[0][0]['tab_num'])
-        self.assertTrue(result[1][0]['tab'], 'Onglet 2')
+        self.assertTrue(result[1][0]['tab_label'], 'Onglet 2')
         self.assertTrue(result[1][0]['tab_num'], 100)
 
     def test_query_insert_or_update_meta_categorie(self):
@@ -1385,14 +1402,14 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 query = query_insert_or_update_meta_tab(
-                    {'tab': 'Onglet 1', 'tab_num': 100}
+                    {'tab_id': 1, 'tab_label': 'Onglet 1', 'tab_num': 100}
                 )
                 cur.execute(*query)
                 query = query_read_meta_tab()
                 cur.execute(*query)
                 result1 = cur.fetchall()
                 query = query_delete_meta_tab(
-                    ['Onglet 1', 200], ['tab', 'tab_num']
+                    [1, 200], ['tab_id', 'tab_num']
                 )
                 cur.execute(*query)
                 query = query_read_meta_tab()
@@ -1413,14 +1430,14 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 query = query_insert_or_update_meta_template(
-                    ['Modèle 10', 'Mon commentaire...'], ['tpl_label', 'comment']
+                    [10, 'Modèle 10', 'Mon commentaire...'], ['tpl_id', 'tpl_label', 'comment']
                 )
                 cur.execute(*query)
                 query = query_read_meta_template()
                 cur.execute(*query)
                 result1 = cur.fetchall()
                 query = query_delete_meta_template(
-                    {'tpl_label': 'Modèle 10'}
+                    {'tpl_id': 10}
                 )
                 cur.execute(*query)
                 query = query_read_meta_template()
@@ -1441,11 +1458,11 @@ class QueriesTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute('''
-                    INSERT INTO z_plume.meta_template (tpl_label)
-                        VALUES ('Modèle 1'), ('Modèle 10') ;
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label)
+                        VALUES (1, 'Modèle 1'), (10, 'Modèle 10') ;
                 ''')
                 query = query_insert_or_update_meta_template_categories(
-                    {'tplcat_id': 100, 'tpl_label': 'Modèle 10', 'shrcat_path': 'dct:title'}
+                    {'tplcat_id': 100, 'tpl_id': 10, 'shrcat_path': 'dct:title'}
                 )
                 cur.execute(*query)
                 query = query_read_meta_template_categories()
