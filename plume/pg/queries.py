@@ -638,13 +638,16 @@ def query_template_tabs(tpl_label):
     return PgQueryWithArgs(
         query=sql.SQL("""
             SELECT
-                meta_tab.tab
-                FROM z_plume.meta_tab
+                meta_tab.tab_label
+                FROM z_plume.meta_template
                     LEFT JOIN z_plume.meta_template_categories
-                        ON meta_tab.tab = meta_template_categories.tab
-                WHERE meta_template_categories.tpl_label = %s
-                GROUP BY meta_tab.tab, meta_tab.tab_num
-                ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab
+                        ON meta_template_categories.tpl_id = meta_template.tpl_id
+                    LEFT JOIN z_plume.meta_tab
+                        ON meta_tab.tab_id = meta_template_categories.tab_id
+                WHERE meta_template.tpl_label = %s
+                    AND meta_tab.tab_label IS NOT NULL
+                GROUP BY meta_tab.tab_label, meta_tab.tab_num
+                ORDER BY meta_tab.tab_num NULLS LAST, meta_tab.tab_label
             """),
         args=(tpl_label,),
         expecting='some rows',
@@ -1330,7 +1333,9 @@ def query_read_meta_template_categories():
         query = sql.SQL("""
             SELECT to_json(meta_template_categories.*)
                 FROM z_plume.meta_template_categories
-                ORDER BY tpl_label, shrcat_path NULLS LAST, loccat_path NULLS LAST
+                    LEFT JOIN z_plume.meta_template
+                        ON meta_template.tpl_id = meta_template_categories.tpl_id
+                ORDER BY meta_template.tpl_label, shrcat_path NULLS LAST, loccat_path NULLS LAST
             """),
         expecting='some rows',
         allow_none=True
@@ -1426,7 +1431,7 @@ def query_read_meta_tab():
         query = sql.SQL("""
             SELECT to_json(meta_tab.*)
                 FROM z_plume.meta_tab
-                ORDER BY tab
+                ORDER BY tab_label
             """),
         expecting='some rows',
         allow_none=True
@@ -1632,7 +1637,7 @@ def query_insert_or_update_meta_tab(data, columns=None):
     
     """
     return query_insert_or_update_any_table(
-        'z_plume', 'meta_tab', 'tab', data, columns=columns
+        'z_plume', 'meta_tab', 'tab_id', data, columns=columns
     )
 
 def query_insert_or_update_meta_categorie(data, columns=None):
@@ -1742,7 +1747,7 @@ def query_insert_or_update_meta_template(data, columns=None):
     
     """
     return query_insert_or_update_any_table(
-        'z_plume', 'meta_template', 'tpl_label', data, columns=columns
+        'z_plume', 'meta_template', 'tpl_id', data, columns=columns
     )
 
 def query_insert_or_update_meta_template_categories(data, columns=None):
@@ -1858,7 +1863,7 @@ def query_delete_meta_tab(data, columns=None):
         >>> cur.execute(*query)
 
     La fonction renvoie une erreur si `data` et `columns`
-    ne contiennent pas de valeur pour le champ de clé primaire, `tab`.
+    ne contiennent pas de valeur pour le champ de clé primaire, `tab_id`.
     Il ne pose aucun problème de fournir des valeurs pour d'autres
     champs, même si la fonction n'en fera rien.
 
@@ -1884,7 +1889,7 @@ def query_delete_meta_tab(data, columns=None):
     
     """
     return query_delete_any_table(
-        'z_plume', 'meta_tab', 'tab', data, columns=columns
+        'z_plume', 'meta_tab', 'tab_id', data, columns=columns
     )
 
 def query_delete_meta_template(data, columns=None):
@@ -1896,7 +1901,7 @@ def query_delete_meta_template(data, columns=None):
         >>> cur.execute(*query)
 
     La fonction renvoie une erreur si `data` et `columns`
-    ne contiennent pas de valeur pour le champ de clé primaire, `tpl_label`.
+    ne contiennent pas de valeur pour le champ de clé primaire, `tpl_id`.
     Il ne pose aucun problème de fournir des valeurs pour d'autres
     champs, même si la fonction n'en fera rien.
 
@@ -1922,7 +1927,7 @@ def query_delete_meta_template(data, columns=None):
     
     """
     return query_delete_any_table(
-        'z_plume', 'meta_template', 'tpl_label', data, columns=columns
+        'z_plume', 'meta_template', 'tpl_id', data, columns=columns
     )
 
 def query_delete_meta_template_categories(data, columns=None):
