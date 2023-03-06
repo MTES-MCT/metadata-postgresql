@@ -49,7 +49,11 @@
 -- - Function: z_plume.meta_shared_categorie_before_insert()
 -- - Trigger: meta_shared_categorie_before_insert
 -- - Table: z_plume.meta_local_categorie
+-- - Sequence: z_plume.meta_template_tpl_id_seq
 -- - Table: z_plume.meta_template
+-- - Sequence: z_plume.meta_tab_tab_id_seq
+-- - Table: z_plume.meta_tab
+-- - Sequence: z_plume.meta_template_categories_tplcat_id_seq
 -- - Table: z_plume.meta_template_categories
 -- - View: z_plume.meta_template_categories_full
 -- - Function: z_plume.meta_import_sample_template(text)
@@ -184,6 +188,7 @@ CREATE CAST (text[] AS z_plume.meta_geo_tool[])
     WITH INOUT
     AS IMPLICIT ;
 
+
 -- Type: z_plume.meta_compute
 
 CREATE TYPE z_plume.meta_compute AS ENUM (
@@ -195,6 +200,7 @@ COMMENT ON TYPE z_plume.meta_compute IS 'Types de fonctionnalités de calcul des
 CREATE CAST (text[] AS z_plume.meta_compute[])
     WITH INOUT
     AS IMPLICIT ;
+
 
 --Table: z_plume.meta_categorie
 
@@ -597,16 +603,28 @@ SELECT pg_extension_config_dump('z_plume.meta_local_categorie'::regclass, '') ;
 
 ------ 1.2 - TABLE DES MODELES ------
 
+-- Sequence: z_plume.meta_template_tpl_id_seq
+
+CREATE SEQUENCE z_plume.meta_template_tpl_id_seq AS int ;
+
+-- la séquence est marquée comme table de configuration de l'extension
+SELECT pg_extension_config_dump('z_plume.meta_template_tpl_id_seq'::regclass, '') ;
+
+
 -- Table: z_plume.meta_template
 
 CREATE TABLE z_plume.meta_template (
-    tpl_label varchar(48) PRIMARY KEY,
+    tpl_label varchar(48) NOT NULL,
     sql_filter text,
     md_conditions jsonb,
     priority int,
     comment text,
-    enabled boolean NOT NULL DEFAULT True
+    enabled boolean NOT NULL DEFAULT True,
+    tpl_id int PRIMARY KEY DEFAULT nextval('z_plume.meta_template_tpl_id_seq'),
+    CONSTRAINT meta_template_tpl_label_uni UNIQUE (tpl_label)
     ) ;
+
+ALTER SEQUENCE z_plume.meta_template_tpl_id_seq OWNED BY z_plume.meta_template.tpl_id ;
 
 GRANT SELECT ON TABLE z_plume.meta_template TO public ;
    
@@ -630,6 +648,7 @@ COMMENT ON COLUMN z_plume.meta_template.md_conditions IS 'Ensemble de conditions
 COMMENT ON COLUMN z_plume.meta_template.priority IS 'Niveau de priorité du modèle. Si un jeu de données remplit les conditions de plusieurs modèles, celui dont la priorité est la plus élevée sera retenu comme modèle par défaut.' ;
 COMMENT ON COLUMN z_plume.meta_template.comment IS 'Commentaire libre.' ;
 COMMENT ON COLUMN z_plume.meta_template.enabled IS 'Booléen indiquant si le modèle est actif. Les modèles désactivés n''apparaîtront pas dans la liste de modèles du plugin QGIS, même si leurs conditions d''application automatique sont remplies.' ;
+COMMENT ON COLUMN z_plume.meta_template.tpl_id IS 'Identifiant unique.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_template'::regclass, '') ;
@@ -637,17 +656,32 @@ SELECT pg_extension_config_dump('z_plume.meta_template'::regclass, '') ;
 
 ---- 1.3 - TABLE DES ONGLETS ------
 
+-- Sequence: z_plume.meta_tab_tab_id_seq
+
+CREATE SEQUENCE z_plume.meta_tab_tab_id_seq AS int ;
+
+-- la séquence est marquée comme table de configuration de l'extension
+SELECT pg_extension_config_dump('z_plume.meta_tab_tab_id_seq'::regclass, '') ;
+
+
+-- Table: z_plume.meta_tab
+
 CREATE TABLE z_plume.meta_tab (
-    tab varchar(48) PRIMARY KEY,
-    tab_num int
+    tab_label varchar(48) NOT NULL,
+    tab_num int,
+    tab_id int PRIMARY KEY DEFAULT nextval('z_plume.meta_tab_tab_id_seq'),
+    CONSTRAINT meta_tab_tab_label_uni UNIQUE (tab_label)
     ) ;
+
+ALTER SEQUENCE z_plume.meta_tab_tab_id_seq OWNED BY z_plume.meta_tab.tab_id ;
 
 GRANT SELECT ON TABLE z_plume.meta_tab TO public ;
    
 COMMENT ON TABLE z_plume.meta_tab IS 'Onglets des modèles.' ;
 
-COMMENT ON COLUMN z_plume.meta_tab.tab IS 'Nom de l''onglet.' ;
+COMMENT ON COLUMN z_plume.meta_tab.tab_label IS 'Nom de l''onglet.' ;
 COMMENT ON COLUMN z_plume.meta_tab.tab_num IS 'Numéro de l''onglet. Les onglets sont affichés du plus petit numéro au plus grand (NULL à la fin), puis par ordre alphabétique en cas d''égalité. Les numéros n''ont pas à se suivre et peuvent être répétés.' ;
+COMMENT ON COLUMN z_plume.meta_tab.tab_id IS 'Identifiant unique.' ;
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_tab'::regclass, '') ;
@@ -655,11 +689,18 @@ SELECT pg_extension_config_dump('z_plume.meta_tab'::regclass, '') ;
 
 ---- 1.4 - ASSOCIATION DES CATEGORIES AUX MODELES ------
 
+-- Sequence: z_plume.meta_template_categories_tplcat_id_seq
+
+CREATE SEQUENCE z_plume.meta_template_categories_tplcat_id_seq AS int ;
+
+-- la séquence est marquée comme table de configuration de l'extension
+SELECT pg_extension_config_dump('z_plume.meta_template_categories_tplcat_id_seq'::regclass, '') ;
+
+
 -- Table: z_plume.meta_template_categories
 
 CREATE TABLE z_plume.meta_template_categories (
-    tplcat_id serial PRIMARY KEY,
-    tpl_label varchar(48) NOT NULL,
+    tplcat_id int PRIMARY KEY DEFAULT nextval('z_plume.meta_template_categories_tplcat_id_seq'),
     shrcat_path text,
     loccat_path text,
     label text,
@@ -678,20 +719,21 @@ CREATE TABLE z_plume.meta_template_categories (
     compute z_plume.meta_compute[],
     template_order int,
     is_read_only boolean,
-    tab varchar(48),
     compute_params jsonb,
-    CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_label, shrcat_path, loccat_path),
-    CONSTRAINT meta_template_categories_tpl_label_fkey FOREIGN KEY (tpl_label)
-        REFERENCES z_plume.meta_template (tpl_label)
-        ON UPDATE CASCADE ON DELETE CASCADE,
+    tpl_id int NOT NULL,
+    tab_id int,
+    CONSTRAINT meta_template_categories_tpl_cat_uni UNIQUE (tpl_id, shrcat_path, loccat_path),
+    CONSTRAINT meta_template_categories_tpl_id_fkey FOREIGN KEY (tpl_id)
+        REFERENCES z_plume.meta_template (tpl_id)
+        ON UPDATE RESTRICT ON DELETE CASCADE,
     CONSTRAINT meta_template_categories_shrcat_path_fkey FOREIGN KEY (shrcat_path)
         REFERENCES z_plume.meta_shared_categorie (path)
         ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT meta_template_categories_loccat_path_fkey FOREIGN KEY (loccat_path)
         REFERENCES z_plume.meta_local_categorie (path)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT meta_template_categories_tab_fkey FOREIGN KEY (tab)
-        REFERENCES z_plume.meta_tab (tab)
+    CONSTRAINT meta_template_categories_tab_id_fkey FOREIGN KEY (tab_id)
+        REFERENCES z_plume.meta_tab (tab_id)
         ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT meta_template_categories_path_check CHECK (
         shrcat_path IS NULL OR loccat_path IS NULL
@@ -700,13 +742,15 @@ CREATE TABLE z_plume.meta_template_categories (
     CONSTRAINT meta_template_categories_rowspan_check CHECK (rowspan BETWEEN 1 AND 99)
     ) ;
 
+ALTER SEQUENCE z_plume.meta_template_categories_tplcat_id_seq OWNED BY z_plume.meta_template_categories.tplcat_id ;
+
 GRANT SELECT ON TABLE z_plume.meta_template_categories TO public ;
 
 COMMENT ON TABLE z_plume.meta_template_categories IS 'Désignation des catégories utilisées par chaque modèle de formulaire.
 Les autres champs permettent de personnaliser la présentation des catégories pour le modèle considéré. S''ils ne sont pas renseignés, les valeurs saisies dans meta_categorie seront utilisées. À défaut, le plugin s''appuyera sur le schéma des catégories communes (évidemment pour les catégories communes uniquement).' ;
 
 COMMENT ON COLUMN z_plume.meta_template_categories.tplcat_id IS 'Identifiant unique.' ;
-COMMENT ON COLUMN z_plume.meta_template_categories.tpl_label IS 'Nom du modèle de formulaire.' ;
+COMMENT ON COLUMN z_plume.meta_template_categories.tpl_id IS 'Identifiant du modèle de formulaire.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.shrcat_path IS 'Chemin N3 / identifiant de la catégorie de métadonnées (si catégorie commune).' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.loccat_path IS 'Chemin N3 / identifiant de la catégorie de métadonnées (si catégorie supplémentaire locale).' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.label IS 'Libellé de la catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
@@ -725,12 +769,11 @@ COMMENT ON COLUMN z_plume.meta_template_categories.geo_tools IS 'Pour une catég
 COMMENT ON COLUMN z_plume.meta_template_categories.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.is_read_only IS 'True si la catégorie est en lecture seule.' ;
-COMMENT ON COLUMN z_plume.meta_template_categories.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle dans la présente table ou, à défaut, dans un onglet "Général".' ;
+COMMENT ON COLUMN z_plume.meta_template_categories.tab_id IS 'Identifiant de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle dans la présente table ou, à défaut, dans un onglet "Général".' ;
 COMMENT ON COLUMN z_plume.meta_template_categories.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres. Si présente, cette valeur se substitue pour le modèle considéré à la valeur renseignée dans le champ éponyme de meta_categorie.' ;
 
--- la table et la séquence sont marquées comme tables de configuration de l'extension
+-- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_template_categories'::regclass, '') ;
-SELECT pg_extension_config_dump('z_plume.meta_template_categories_tplcat_id_seq'::regclass, '') ;
 
 
 -- View: z_plume.meta_template_categories_full
@@ -758,13 +801,15 @@ CREATE VIEW z_plume.meta_template_categories_full AS (
         coalesce(tc.compute, c.compute) AS compute,
         coalesce(tc.template_order, c.template_order) AS template_order,
         tc.is_read_only,
-        tc.tab,
+        tb.tab_label AS tab,
         coalesce(tc.compute_params, c.compute_params) AS compute_params
         FROM z_plume.meta_template_categories AS tc
             LEFT JOIN z_plume.meta_categorie AS c
                 ON coalesce(tc.shrcat_path, tc.loccat_path) = c.path
             LEFT JOIN z_plume.meta_template AS t
-                ON tc.tpl_label = t.tpl_label
+                ON tc.tpl_id = t.tpl_id
+            LEFT JOIN z_plume.meta_tab AS tb 
+                ON tc.tab_id = tb.tab_id
         WHERE t.enabled
     ) ;
 
@@ -978,8 +1023,11 @@ BEGIN
         LOOP
         
             INSERT INTO z_plume.meta_template_categories
-                (tpl_label, shrcat_path)
-                VALUES (tpl.tpl_label, tplcat.shrcat_path) ;
+                (tpl_id, shrcat_path) (
+                    SELECT meta_template.tpl_id, tplcat.shrcat_path
+                        FROM z_plume.meta_template
+                        WHERE meta_template.tpl_label = tpl.tpl_label
+                ) ;
         
         END LOOP ;
     
