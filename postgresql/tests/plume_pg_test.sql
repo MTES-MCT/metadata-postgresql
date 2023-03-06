@@ -1487,7 +1487,7 @@ BEGIN
     PERFORM z_plume.meta_import_sample_template() ;
 
     SELECT
-        array_agg(shrcat_path ORDER BY tpl_label, shrcat_path)
+        array_agg(shrcat_path ORDER BY tplcat_id)
         INTO mod_list_ref
         FROM z_plume.meta_template_categories ;
 
@@ -1502,7 +1502,7 @@ BEGIN
         FROM z_plume.meta_shared_categorie), 'échec assertion #1 (liste des catégories)' ;
 
     -- modèles pré-configurés correctement mis à jour ?
-    ASSERT mod_list_ref = (SELECT array_agg(shrcat_path ORDER BY tpl_label, shrcat_path)
+    ASSERT mod_list_ref = (SELECT array_agg(shrcat_path ORDER BY tplcat_id)
         FROM z_plume.meta_template_categories), 'échec assertion #2 (modèles préconfigurés)' ;
 
     RETURN True ;
@@ -1519,6 +1519,7 @@ END
 $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t018() IS 'PlumePg (recette). TEST : Identicité de la liste des catégories communes lors d''une installation directe ou par montée de version.' ;
+
 
 -- Function: z_plume_recette.t019()
 
@@ -1631,4 +1632,67 @@ END
 $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t020() IS 'PlumePg (recette). TEST : Mise à jour, ALTER TYPE et blocs de transaction.' ;
+
+-- Function: z_plume_recette.t021()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t021()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    classique_id int ;
+    main_id int ;
+BEGIN
+
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg VERSION '0.1.2' ;
+    PERFORM z_plume.meta_import_sample_template('Classique') ;
+    INSERT INTO z_plume.meta_tab (tab, tab_num) VALUES ('Main', 1), ('Details', 2) ;
+    UPDATE z_plume.meta_template_categories
+        SET tab = CASE
+            WHEN shrcat_path IN ('dct:title', 'dct:description')
+            THEN 'Main'
+            ELSE 'Details'
+            END
+        WHERE tpl_label = 'Classique' ;
+    
+    ALTER EXTENSION plume_pg UPDATE ;
+
+    SELECT tpl_id INTO classique_id FROM z_plume.meta_template WHERE tpl_label = 'Classique' ;
+    ASSERT classique_id IS NOT NULL, 'échec assertion #1' ;
+
+    SELECT tab_id INTO main_id FROM z_plume.meta_tab WHERE tab_label = 'Main' ;
+    ASSERT main_id IS NOT NULL, 'échec assertion #2' ;
+
+    ASSERT (
+        SELECT tab_id = main_id
+            FROM z_plume.meta_template_categories
+            WHERE tpl_id = classique_id AND shrcat_path = 'dct:title'
+    ), 'échec assertion #3' ;
+
+    ASSERT (
+        SELECT tab = 'Main'
+            FROM z_plume.meta_template_categories_full
+            WHERE tpl_label = 'Classique' AND path = 'dct:title'
+    ), 'échec assertion #4' ;
+
+    DROP EXTENSION plume_pg ;
+	CREATE EXTENSION plume_pg ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t021() IS 'PlumePg (recette). TEST : Préservation des onglets lors d''une montée de version.' ;
 
