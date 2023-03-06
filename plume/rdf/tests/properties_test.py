@@ -37,54 +37,54 @@ class PlumePropertyTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO z_plume.meta_template(tpl_label) VALUES ('Mon formulaire') ;
-                    INSERT INTO z_plume.meta_tab (tab, tab_num)
-                        VALUES ('Principal', 1), ('Secondaire', 2) ;
+                    INSERT INTO z_plume.meta_template(tpl_id, tpl_label) VALUES (100, 'Mon formulaire') ;
+                    INSERT INTO z_plume.meta_tab (tab_id, tab_label, tab_num)
+                        VALUES (101, 'Principal', 1), (102, 'Secondaire', 2) ;
                     INSERT INTO z_plume.meta_categorie
                         (label, datatype, is_long_text, is_multiple)
                         VALUES ('Notes', 'rdf:langString', True, True) ;
                     INSERT INTO z_plume.meta_template_categories
-                        (tpl_label, shrcat_path, tab, template_order)
+                        (tpl_id, shrcat_path, tab_id, template_order)
                         VALUES
-                        ('Mon formulaire', 'dct:description', 'Secondaire', 1),
-                        ('Mon formulaire', 'dct:modified', 'Secondaire', 2),
-                        ('Mon formulaire', 'dct:temporal / dcat:startDate', 'Secondaire', 3),
-                        ('Mon formulaire', 'dct:temporal / dcat:endDate', 'Secondaire', 4),
-                        ('Mon formulaire', 'dct:title', 'Principal', 1),
-                        ('Mon formulaire', 'owl:versionInfo', 'Principal', 2),
-                        ('Mon formulaire', 'dct:spatial / locn:geometry', 'Secondaire', 10),
-                        ('Mon formulaire', 'dcat:theme', 'Secondaire', 5),
-                        ('Mon formulaire', 'dct:language', 'Secondaire', 6) ;
+                        (100, 'dct:description', 102, 1),
+                        (100, 'dct:modified', 102, 2),
+                        (100, 'dct:temporal / dcat:startDate', 102, 3),
+                        (100, 'dct:temporal / dcat:endDate', 102, 4),
+                        (100, 'dct:title', 101, 1),
+                        (100, 'owl:versionInfo', 101, 2),
+                        (100, 'dct:spatial / locn:geometry', 102, 10),
+                        (100, 'dcat:theme', 102, 5),
+                        (100, 'dct:language', 102, 6) ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['http://publications.europa.eu/resource/authority/data-theme']
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dcat:theme' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'dcat:theme' ;
                     UPDATE z_plume.meta_template_categories
                         SET geo_tools = ARRAY['point', 'rectangle']::z_plume.meta_geo_tool[]
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:spatial / locn:geometry' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'dct:spatial / locn:geometry' ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['https://source-inconnue']
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:language' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'dct:language' ;
                     UPDATE z_plume.meta_template_categories
                         SET datatype = 'xsd:string',
                             label = 'Nom'
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:title' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'dct:title' ;
                     UPDATE z_plume.meta_template_categories
                         SET unilang = False,
                             is_mandatory = False
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:description' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'dct:description' ;
                     UPDATE z_plume.meta_template_categories
                         SET is_multiple = True,
                             is_read_only = True,
                             is_mandatory = True
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'owl:versionInfo' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'owl:versionInfo' ;
                     UPDATE z_plume.meta_template_categories
                         SET datatype = 'xsd:dateTime'
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:temporal / dcat:startDate' ;
+                        WHERE tpl_id = 100 AND shrcat_path = 'dct:temporal / dcat:startDate' ;
                     UPDATE z_plume.meta_template_categories
                         SET datatype = 'xsd:string'
-                        WHERE tpl_label = 'Mon formulaire' AND shrcat_path = 'dct:temporal / dcat:endDate' ;
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path, tab) (
-                        SELECT 'Mon formulaire', path, 'Secondaire'
+                        WHERE tpl_id = 100 AND shrcat_path = 'dct:temporal / dcat:endDate' ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, loccat_path, tab_id) (
+                        SELECT 100, path, 102
                             FROM z_plume.meta_categorie
                             WHERE origin = 'local' AND label = 'Notes'
                         ) ;
