@@ -204,21 +204,21 @@ class TemplateTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO z_plume.meta_template(tpl_label) VALUES ('Mon formulaire') ;
-                    INSERT INTO z_plume.meta_tab (tab, tab_num)
-                        VALUES ('Principal', 1), ('Secondaire', 2) ;
+                    INSERT INTO z_plume.meta_template(tpl_id, tpl_label) VALUES (100, 'Mon formulaire') ;
+                    INSERT INTO z_plume.meta_tab (tab_id, tab_label, tab_num)
+                        VALUES (101, 'Principal', 1), (102, 'Secondaire', 2) ;
                     INSERT INTO z_plume.meta_categorie (label, datatype, is_long_text)
                         VALUES ('Notes', 'rdf:langString', True) ;
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path, tab)
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path, tab_id)
                         VALUES
-                        ('Mon formulaire', 'dct:description', 'Secondaire'),
-                        ('Mon formulaire', 'dct:modified', 'Secondaire'),
-                        ('Mon formulaire', 'dct:temporal / dcat:startDate', 'Secondaire'),
-                        ('Mon formulaire', 'dct:temporal / dcat:endDate', 'Secondaire'),
-                        ('Mon formulaire', 'dct:title', 'Principal'),
-                        ('Mon formulaire', 'owl:versionInfo', 'Principal') ;
-                    INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path, tab) (
-                        SELECT 'Mon formulaire', path, 'Secondaire'
+                        (100, 'dct:description', 102),
+                        (100, 'dct:modified', 102),
+                        (100, 'dct:temporal / dcat:startDate', 102),
+                        (100, 'dct:temporal / dcat:endDate', 102),
+                        (100, 'dct:title', 101),
+                        (100, 'owl:versionInfo', 101) ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, loccat_path, tab_id) (
+                        SELECT 100, path, 102
                             FROM z_plume.meta_categorie
                             WHERE origin = 'local' AND label = 'Notes'
                         ) ;
