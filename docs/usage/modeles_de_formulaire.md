@@ -38,7 +38,7 @@ Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plum
 
 ### Création d'un modèle de formulaire
 
-La table `z_plume.meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, renseigné dans le champ `tpl_label`, qui lui tiendra lieu d'identifiant. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.
+La table `z_plume.meta_template` comporte une ligne par modèle. Un modèle doit obligatoirement avoir un nom, différent pour chaque modèle et renseigné dans le champ `tpl_label`. Ce nom devra être aussi parlant que possible pour les utilisateurs, qui n'auront accès qu'à cette information au moment de sélectionner un modèle. Sa longueur est limitée à 48 caractères.
 
 Les champs `sql_filter` et `md_conditions` servent à définir des conditions selon lesquelles le modèle sera appliqué automatiquement à la fiche de métadonnées considérée. Les remplir est bien évidemment optionnel.
 
@@ -116,8 +116,9 @@ UPDATE z_plume.meta_template
 
 Sans que ce soit obligatoire en aucune façon, les modèles de formulaires peuvent répartir les catégories de métadonnées par onglets.
 
-Avant d'y affecter des catégories, les onglets doivent être définis dans la table `z_plume.meta_tab`. Celle-ci contient deux champs :
-- `tab` pour le nom de l'onglet. Il est limité à 48 caractères et doit obligatoirement être renseigné ;
+Avant d'y affecter des catégories, les onglets doivent être définis dans la table `z_plume.meta_tab`. Celle-ci contient trois champs :
+- `tab_id` est une clé primaire entière générée automatiquement.
+- `tab_label` fournit le nom de l'onglet. Il est limité à 48 caractères et doit obligatoirement être renseigné.
 - `tab_num` sert à ordonner les onglets. Les onglets sont affichés du plus petit numéro au plus grand (`NULL` à la fin), puis par ordre alphabétique en cas d''égalité. Les numéros n''ont pas à se suivre et peuvent être répétés. *NB. Tous les onglets de `meta_tab` ne seront évidemment pas présents dans tous les modèles, mais ceux qui le sont seront donc toujours présentés dans le même ordre quel que soit le modèle.*
 
 
@@ -167,7 +168,7 @@ Les caractéristiques spécifiées dans la table `meta_categorie` seront utilis�
 
 La définition des catégories associées à chaque modèle (relation n-n) se fait par l'intermédiaire de la table de correspondance `meta_template_categories`.
 
-Le modèle est identifié par son nom (champ `tpl_label`), la catégorie par son chemin (champ `path` de `meta_categorie`, repris dans `loccat_path` pour une catégorie locale et dans `shrcat_path` pour une catégorie commune).
+Le modèle est identifié par son identifiant (champ `tpl_id`), la catégorie par son chemin (champ `path` de `meta_categorie`, repris dans `loccat_path` pour une catégorie locale et dans `shrcat_path` pour une catégorie commune).
 
 Hormis ces champs de clés étrangères et la clé primaire séquentielle `tplcat_id`, tous les champs de la table `meta_template_categories` servent au paramétrage du modèle. Les valeurs qui y sont saisies remplaceront (pour le modèle considéré) celles qui avaient éventuellement été renseignées dans `meta_categorie` et le paramétrage du schéma des catégories communes.
 
@@ -178,7 +179,7 @@ Soit un modèle M, une catégorie de métadonnées C et une propriété P.
 
 Aux champs de paramétrage qui apparaissaient déjà dans `meta_categorie`, la table `meta_template_categories` ajoute deux champs optionnels :
 - un champ booléen `read_only` qui pourra valoir `True` si la catégorie doit être en lecture seule pour le modèle considéré. Il peut notamment être mis à profit lorsque des fiches de métadonnées sont co-rédigées par un service métier référent et l'administrateur de données, pour permettre à chacun de voir les informations saisies par l'autre, sans qu'il risque de les modifier involontairement (sauf à ce qu'il change de modèle, bien sûr, ce n'est pas un dispositif de verrouillage, seulement de l'aide à la saisie) ;
-- un champ `tab` qui permet de spécifier l'onglet (préalablement déclaré dans `meta_tab`) dans lequel devra être placée la catégorie. Cette information n'est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple la catégorie de deuxième niveau `'dcat:distribution / dct:issued'` ira nécessairement dans le même onglet que `'dcat:distribution'`). Pour celles-ci, si aucun onglet n'est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, si le modèle n'utilise explicitement aucun onglet, dans un onglet _"Général"_.
+- un champ `tab_id` qui permet de spécifier l'onglet (préalablement déclaré dans `meta_tab`) dans lequel devra être placée la catégorie. Cette information n'est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple la catégorie de deuxième niveau `'dcat:distribution / dct:issued'` ira nécessairement dans le même onglet que `'dcat:distribution'`). Pour celles-ci, si aucun onglet n'est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, si le modèle n'utilise explicitement aucun onglet, dans un onglet _"Général"_.
 
 *NB. Pour les catégories de métadonnées communes imbriquées, il n'est pas nécessaire que le modèle fasse systématiquement apparaître tous les chemins intermédiaires (par exemple `'dcat:distribution'` et `'dcat:distribution / dct:license'` pour `'dcat:distribution / dct:license / rdfs:label'`). Le plugin saura ajouter lui-même les chemins intermédiaires manquants, de même qu'il enlèvera les chemins intermédiaires sans catégorie finale. Ainsi, l'administrateur pourra se contenter d'associer `'dcat:distribution / dct:license / rdfs:label'` à son modèle, sauf à avoir envie de renommer les catégories `'dcat:distribution'` et/ou `'dcat:distribution / dct:license'`, de leur ajouter un texte d'aide, etc.* 
 
@@ -572,14 +573,16 @@ Le contenu de `tabs` aura cette forme :
 [
     (
         {
-            'tab': 'Onglet n°1',
-            'tab_num': 1
+            'tab_id': 1,
+            'tab_label': 'Onglet n°1',
+            'tab_num': 10
         }
     ),
     (
         {
-            'tab': 'Onglet n°2',
-            'tab_num': 2
+            'tab_id': 2,
+            'tab_label': 'Onglet n°2',
+            'tab_num': 20
         }
     )
 ] 
@@ -652,11 +655,11 @@ Les champs qui suivent doivent impérativement apparaître dans l'argument `data
 
 | | Insertion | Modification | Suppression |
 | --- | --- | --- | --- |
-| Modèle | `tpl_label` | `tpl_label` | `tpl_label` |
+| Modèle | `tpl_label` | `tpl_id`, *`tpl_label` | `tpl_id` |
 | Catégorie de métadonnée (locale) | `label` | `path`, *`label` | `path` |
 | Catégorie de métadonnée (commune) | INTERDIT | `path`, `origin` (valant `'shared'`), *`label` | `path` |
-| Onglet | `tab`, *`enabled` | `tab`, *`enabled` | `tab` |
-| Association modèle-catégorie | `tpl_label`, `shrcat_path` ou `loccat_path` | `tplcat_id` | `tplcat_id` |
+| Onglet | `tab_label`, *`enabled` | `tab_id`, *`tab_label`, *`enabled` | `tab_id` |
+| Association modèle-catégorie | `tpl_id`, `shrcat_path` ou `loccat_path` | `tplcat_id` | `tplcat_id` |
 
 Les catégories de métadonnées communes sont distinguées des catégories locales par le fait que l'attribut `origin` est présent et vaut `shared`. Il n'est pas permis d'ajouter de métadonnée commune : si `origin` vaut `shared`, la clé primaire `path` devra impérativement être renseignée et correspondre à l'identifiant d'une catégorie pré-existante que l'utilisateur souhaite mettre à jour.
 
@@ -666,10 +669,10 @@ Les champs listés ci-après ne doivent pas pouvoir faire l'objet d'une modifica
 
 | Objet | Champs |
 | --- | --- |
-| Modèle | - |
+| Modèle | `tpl_id` (renseigné automatiquement à la création en base) |
 | Catégorie de métadonnée (locale) | `path` (renseigné automatiquement à la création en base), `is_node`, `sources`, `origin` (vaut toujours `'local'`) |
 | Catégorie de métadonnée (commune) | `path` (pré-renseigné), `origin` (vaut toujours `'shared'`), `is_node` |
-| Onglet | - |
+| Onglet | `tab_id` (renseigné automatiquement à la création en base) |
 | Association modèle-catégorie | `tpl_label` + `shrcat_path` + `loccat_path` (définis une fois pour toute quand l'utilisateur déclare la catégorie comme utilisée par le modèle), `tplcat_id` (renseigné automatiquement à la création en base) |
 
 ### Champs avec des valeurs imposées
@@ -728,17 +731,9 @@ Les champs qui suivent requièrent des ajustements spécifiques pour assurer le 
 | --- | --- | --- |
 | `tpl_label` | Modèles | Expression régulière à adapter pour assurer aussi la non nullité : `QRegularExpression('^.{1,48}$')`. |
 | `enabled` | Modèles | Seulement deux états pour la case à cocher, qui doit être cochée par défaut. |
-| `tab` | Onglets | Expression régulière à adapter pour assurer aussi la non nullité : `QRegularExpression('^.{1,48}$')`. |
+| `tab_label` | Onglets | Expression régulière à adapter pour assurer aussi la non nullité : `QRegularExpression('^.{1,48}$')`. |
 | `label` | Catégories | Validateur `QRegularExpressionValidator` avec l'expression régulière `QRegularExpression('.')` pour la non nullité. |
 | `rowspan` | Catégories et Associations modèle-catégorie | Le `QIntValidator` doit aussi fixer la valeur minimum à 1 et maximum à 99. |
-
-### Modifications en cascade
-
-Les champs `tpl_label` de la table des modèles et `tab` de la table des onglets sont libremement modifiables par l'utilisateur, mais il doit être noté que leur modification se répercutera dans la table d'association des catégories aux modèles, où ils sont utilisés comme clés étrangères. Concrètement, si le nom d'un modèle change, son nouveau nom est reporté dans la table d'association modèle-catégorie. Il n'est pas exclu que d'autres champs puissent avoir un comportement similaire à l'avenir.
-
-Ainsi, pour assurer la cohérence des informations présentées à l'utilisateur, il est souhaitable que Plume actualise au moins les données issue de la table d'association modèle-catégorie après toute action sur les tables des modèles, des onglets et (de manière préventive) des catégories.
-
-Toute modification de la table des modèles devra aussi être suivie du rechargement de la liste des modèles disponibles utilisée par le bouton de choix du modèle dans la barre d'outils de Plume. Cf. [Récupération de la liste des modèles](#récupération-de-la-liste-des-modèles).
 
 ### Import des modèles pré-configurés
 
