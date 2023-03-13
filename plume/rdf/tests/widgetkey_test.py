@@ -154,6 +154,158 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(len(a.create), 2)
         self.assertEqual(a.create[0].m_twin, a.create[1])
 
+    def test_shrink_expend_special_cases(self):
+        """Préparation d'un groupe de valeurs en vue d'un import massif : cas particuliers.
+        
+        Les tests partent du principe qu'il y aura au moins une clé-valeur
+        non fantôme dans le groupe susceptible d'être utilisée ou copiée.
+
+        """
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        v = ValueKey(parent=g, value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        l = g.shrink_expend(2)
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 2)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        v = ValueKey(parent=g, value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'))
+        l = g.shrink_expend(2, sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')])
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 3)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        p = GroupOfPropertiesKey(parent=g)
+        v = ValueKey(parent=g, value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        l = g.shrink_expend(2)
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 3)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        v = ValueKey(parent=g, value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        p = GroupOfPropertiesKey(parent=g)
+        l = g.shrink_expend(2)
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 3)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        p = GroupOfPropertiesKey(parent=g)
+        v = ValueKey(
+            parent=g,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            m_twin=p,
+            is_hidden_m=False
+        )
+        l = g.shrink_expend(2)
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 4)
+        self.assertTrue(v in l)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        p = GroupOfPropertiesKey(parent=g)
+        v = ValueKey(
+            parent=g,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            m_twin=p,
+            is_hidden_m=True
+        )
+        l = g.shrink_expend(2)
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 4)
+        self.assertTrue(v in l)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        p = GroupOfPropertiesKey(parent=g)
+        v = ValueKey(
+            parent=g,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            m_twin=p,
+            is_hidden_m=True
+        )
+        l = g.shrink_expend(2, sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')])
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertEqual(len(g.children), 6)
+        self.assertFalse(v in l)
+
+        WidgetKey.clear_actionsbook()
+
     def test_get_all_attributes(self):
         """Vérifie que tous les attributs et propriétés peuvent être évalués sans erreur.
         
