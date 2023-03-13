@@ -13,10 +13,11 @@ from datetime import datetime, date
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, FOAF, \
     PLUME, LOCAL, RDF, RDFS
-from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey
+from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey, GroupOfValuesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
 from plume.rdf.exceptions import ForbiddenOperation, IntegrityBreach
+from plume.rdf.labels import SourceLabels
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs, query_exists_extension
@@ -2369,6 +2370,192 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertTrue(widgetsdict[c]['has compute button'])
         self.assertFalse(widgetsdict[c]['auto compute'])
         self.assertIsNotNone(widgetsdict[c]['compute method'])
+
+    def test_compute_conformsto_with_manual_value(self):
+        """Calcul des métadonnées pour dct:conformsTo dans le cas où la métadonnée avait une valeur manuelle.
+
+        Le test contrôle l'alimentation automatique lorsque les propriétés
+        manuelles sont dans le modèle et hors modèle, en mode lecture et 
+        en mode édition.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix owl: <http://www.w3.org/2002/07/owl#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+            @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+            uuid:aa0e6a49-1ef0-49f7-a3cf-7a759fe000bf a dcat:Dataset ;
+                dct:conformsTo [
+                    a dct:Standard ;
+                    dct:identifier "2154" ;
+                    skos:inScheme <http://www.opengis.net/def/crs/EPSG/0>
+                ] ;
+                dct:identifier "aa0e6a49-1ef0-49f7-a3cf-7a759fe000bf" .
+        """
+        metagraph = Metagraph().parse(data=metadata)
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(''' 
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label) VALUES 
+                        (100, 'Compute conformsTo IN'),
+                        (200, 'Compute conformsTo OUT') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path, compute) VALUES
+                        (100, 'dct:conformsTo', ARRAY['auto']),
+                        (100, 'dct:conformsTo / dct:identifier', NULL),
+                        (100, 'dct:conformsTo / skos:inScheme', NULL),
+                        (200, 'dct:conformsTo', ARRAY['auto'])
+                ''')
+                cur.execute(
+                    *query_get_categories('Compute conformsTo IN')
+                )
+                categories_in = cur.fetchall()
+                cur.execute(
+                    *query_get_categories('Compute conformsTo OUT')
+                )
+                categories_out = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template_in = TemplateDict(categories_in)
+        template_out = TemplateDict(categories_out)
+        widgetsdict_in_read = WidgetsDict(metagraph=metagraph, template=template_in, mode='read')
+        widgetsdict_in_edit = WidgetsDict(metagraph=metagraph, template=template_in, mode='edit')
+        widgetsdict_out_read = WidgetsDict(metagraph=metagraph, template=template_out, mode='read')
+        widgetsdict_out_edit = WidgetsDict(metagraph=metagraph, template=template_out, mode='edit')
+        c_in_read = widgetsdict_in_read.root.search_from_path(DCT.conformsTo)
+        c_in_edit = widgetsdict_in_edit.root.search_from_path(DCT.conformsTo)
+        c_out_read = widgetsdict_out_read.root.search_from_path(DCT.conformsTo)
+        c_out_edit = widgetsdict_out_edit.root.search_from_path(DCT.conformsTo)
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # création d'une table de test
+                cur.execute('''
+                    CREATE TABLE z_plume.table_test (
+                        geom1 geometry(POINT, 2154),
+                        "GEOM 2" geometry(POINT, 4326)
+                        ) ;
+                    ''')
+                query = widgetsdict_in_read.computing_query(c_in_read, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result_in_read = cur.fetchall()
+                query = widgetsdict_in_edit.computing_query(c_in_edit, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result_in_edit = cur.fetchall()
+                query = widgetsdict_out_read.computing_query(c_out_read, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result_out_read = cur.fetchall()
+                query = widgetsdict_out_edit.computing_query(c_out_edit, 'z_plume', 'table_test')
+                cur.execute(*query)
+                result_out_edit = cur.fetchall()
+                cur.execute('DROP TABLE z_plume.table_test')
+                # suppression de la table de test
+        conn.close()
+        self.assertListEqual(result_in_read, [('EPSG', '2154'), ('EPSG', '4326')])
+        self.assertListEqual(result_in_edit, [('EPSG', '2154'), ('EPSG', '4326')])
+        self.assertListEqual(result_out_read, [('EPSG', '2154'), ('EPSG', '4326')])
+        self.assertListEqual(result_out_edit, [('EPSG', '2154'), ('EPSG', '4326')])
+        
+        # --- intégration ---
+        widgetsdict_in_read.computing_update(c_in_read, result_in_read)
+        widgetsdict_in_edit.computing_update(c_in_edit, result_in_edit)
+        widgetsdict_out_read.computing_update(c_out_read, result_out_read)
+        widgetsdict_out_edit.computing_update(c_out_edit, result_out_edit)
+
+        # type, is_ghost, is_hidden, twin index, value
+        expecting = {
+            c_in_read: [
+                (GroupOfPropertiesKey, False, False, None),
+                (ValueKey, False, False, None, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')),
+                (ValueKey, False, False, None, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+            ],
+            c_in_edit: [
+                (GroupOfPropertiesKey, False, False, 1),
+                (ValueKey, False, True, 0, None),
+                (GroupOfPropertiesKey, False, True, 3),
+                (ValueKey, False, False, 2, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')),
+                (GroupOfPropertiesKey, False, True, 5),
+                (ValueKey, False, False, 4, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+            ],
+            c_out_read: [
+                (GroupOfPropertiesKey, True, True, None),
+                (ValueKey, False, False, None, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')),
+                (ValueKey, False, False, None, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+            ],
+            c_out_edit: [
+                (GroupOfPropertiesKey, False, False, 1),
+                (ValueKey, False, True, 0, None),
+                (ValueKey, False, False, None, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')),
+                (ValueKey, False, False, None, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
+            ]
+        }
+        tests = {
+            c_in_read: 'in / read',
+            c_in_edit: 'in / edit',
+            c_out_read: 'out / read',
+            c_out_edit: 'out / edit'
+        }
+
+        for c, exp in expecting.items():
+            with self.subTest(test = tests[c]):
+                self.assertTrue(isinstance(c, GroupOfValuesKey))
+                self.assertEqual(len(c.children), len(exp), 'children : {}'.format(
+                    ', '.join(f'{child} - hidden: {child.is_hidden} - twin: {child.m_twin}' for child in c.children))
+                )
+                for i in range(len(exp)):
+                    with self.subTest(child_index = i):
+                        self.assertTrue(isinstance(c.children[i], exp[i][0]), f'children : {c.children}')
+                        self.assertEqual(c.children[i].is_ghost, exp[i][1], f'children : {c.children}')
+                        self.assertEqual(c.children[i].is_hidden, exp[i][2], f'children : {c.children}')
+                        if exp[i][3] is not None:
+                            self.assertEqual(c.children[i].m_twin, c.children[exp[i][3]], f'children : {c.children}')
+                        else:
+                            self.assertIsNone(c.children[i].m_twin, f'children : {c.children}')
+                        if exp[i][0] == ValueKey:
+                            self.assertEqual(c.children[i].value, exp[i][4], f'children : {c.children}')
+        
+        for c, widgetsdict, expecting in [
+            (c_in_read, widgetsdict_in_read, [(False, None)]*3),
+            (c_in_edit, widgetsdict_in_edit, [(True, True)]*6),
+            (c_out_read, widgetsdict_out_read, [(False, None)]*3),
+            (
+                c_out_edit,
+                widgetsdict_out_edit,
+                [
+                    (True, True),
+                    (True, True),
+                    (False, None),
+                    (False, None)
+                    # les deux derniers seront à remplacer par (True, False)
+                    # le jour où il y aura plusieurs vocabulaires admissibles
+                    # pour dct:conformsTo
+                ]
+            )
+        ]:
+            with self.subTest(test = tests[c]):
+                for i in range(len(expecting)):
+                    with self.subTest(child_index = i):
+                        if not c.children[i]:
+                            self.assertFalse(c.children[i] in widgetsdict)
+                            continue
+                        self.assertEqual(
+                            widgetsdict[c.children[i]]['multiple sources'],
+                            expecting[i][0]
+                        )
+                        if expecting[i][0]:
+                            self.assertEqual(
+                                SourceLabels.MANUAL.trans(widgetsdict.langlist) in widgetsdict[c.children[i]]['sources'],
+                                expecting[i][1]
+                            )
 
     def test_local_template(self):
         """Génération du dictionnaire avec un modèle local et non issu de PlumePg.
