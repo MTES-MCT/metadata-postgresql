@@ -378,6 +378,10 @@ class WidgetsDict(dict):
                 # dans le formulaire, ou faire apparaître un
                 # groupe de valeurs sur une mono-valeur en
                 # lecture seule.
+            if computable:
+                prop_dict['delayed'] = True
+                if all(isinstance(v, BNode) for v in values):
+                    values.append(None)
             multilingual = bool(prop_dict.get('unilang')) \
                 and prop_dict.get('datatype') == RDF.langString \
                 and self.translation
