@@ -497,6 +497,25 @@ class WidgetKey:
         return self._is_ghost
     
     @property
+    def delayed(self):
+        """bool: La valeur de la clé sera-t-elle remplie ultérieurement ?
+        
+        Notes
+        -----
+        Cette propriété est en lecture seule. Elle est définie sur la
+        classe :py:class:`WidgetKey` pour simplifier les tests,
+        mais elle vaut toujours ``False`` quand la clé n'est pas une
+        clé-valeur.
+        
+        See Also
+        --------
+        ValueKey.delayed :
+            Réécriture de la propriété pour une clé-valeur.
+        
+        """
+        return False
+
+    @property
     def is_hidden_b(self):
         """bool: La clé est-elle un bouton masqué ?
         
@@ -1918,15 +1937,22 @@ class GroupKey(WidgetKey):
                 return True
         return False
     
-    def real_children(self):
+    def real_children(self, reverse=False):
         """Générateur sur les clés filles qui ne sont pas des fantômes (ni des boutons).
         
+        Parameters
+        ----------
+        reverse : bool, default False
+            Prend les derniers enfants en premier.
+
         Yields
         ------
         ValueKey or GroupKey
         
         """
-        for child in self.children:
+        for child in (
+            reversed(self.children) if reverse else self.children
+        ):
             if child:
                 yield child
     
@@ -3530,13 +3556,13 @@ class GroupOfValuesKey(GroupKey):
         for child in d:
             child.drop(append_book=True)
         for i in range(n):
-            self.button.add(append_book=True)
+            self.button.add(append_book=True, key_type=ValueKey)
             # à la recherche de la clé qui vient d'être ajoutée...
-            for child in self.real_children():
+            for child in self.real_children(reverse=True):
                 if child.m_twin and not child.is_main_twin:
                     continue
                 if not child in old_children and not child in l:
-                    if isinstance(child, GroupOfPropertiesKey):
+                    if isinstance(child, GroupOfPropertiesKey) and child.m_twin:
                         child.switch_twin(append_book=True)
                         l.append(child.m_twin)
                     else:
@@ -3862,9 +3888,15 @@ class ValueKey(ObjectKey):
         # inhibe la création de clés-valeurs fantôme sans
         # valeur, sauf à ce que delayed vaille True
         parent = kwargs.get('parent')
-        if not kwargs.get('value') and (kwargs.get('is_ghost', False) \
-            or (parent is not None and parent.is_ghost)) and \
-            not kwargs.get('delayed', False):
+        if (
+            (
+                kwargs.get('value') is None
+                or str(kwargs.get('value')) == ''
+            ) and (
+                kwargs.get('is_ghost', False)
+                or (parent is not None and parent.is_ghost)
+            ) and not kwargs.get('delayed', False)
+        ):
             return
         return super().__new__(cls)
     
@@ -3890,6 +3922,7 @@ class ValueKey(ObjectKey):
         self._value_language = None
         self._value_source = None
         self._value_unit = None
+        self._delayed = None
     
     def _computed_attributes(self, **kwargs):
         super()._computed_attributes(**kwargs)
@@ -3913,6 +3946,7 @@ class ValueKey(ObjectKey):
         self.value_language = kwargs.get('value_language')
         self.value_source = kwargs.get('value_source')
         self.value_unit = None
+        self.delayed = kwargs.get('delayed', False)
 
     @property
     def key_object(self):
@@ -3921,6 +3955,21 @@ class ValueKey(ObjectKey):
         """
         return 'edit'
     
+    @property
+    def delayed(self):
+        """bool: La valeur de la clé sera-t-elle remplie ultérieurement ?
+        
+        Notes
+        -----
+        Réécriture de la propriété :py:attr:`WidgetKey.delayed`.
+        
+        """
+        return self._delayed
+    
+    @delayed.setter
+    def delayed(self, value):
+        self._delayed = bool(value)
+
     @property
     def rowspan(self):
         """int: Nombre de lignes de la grille occupées par la clé.
@@ -5060,8 +5109,11 @@ class PlusButtonKey(WidgetKey):
         """
         self.parent.button = None
 
-    def add(self, append_book=False):
+    def add(self, append_book=False, key_type=None):
         """Ajoute une clé vierge dans le groupe parent du bouton.
+
+        La nouvelle clé est une copie du dernier enfant non 
+        fantômatique du groupe.
         
         Parameters
         ----------
@@ -5069,6 +5121,9 @@ class PlusButtonKey(WidgetKey):
             Si ``True``, le carnet d'action n'est pas réinitialisé
             avant exécution, mais complété avec les nouvelles
             opérations réalisées.
+        key_type : {None, ValueKey, GroupOfPropertiesKey}, optional
+            Si renseigné, la méthode s'assurera d'ajouter une clé
+            du type considéré.
         
         Returns
         -------
@@ -5076,15 +5131,33 @@ class PlusButtonKey(WidgetKey):
             Le carnet d'actions qui permettra de matérialiser
             la création de la clé.
         
+        Raises
+        ------
+        IntegrityBreach
+            Si `key_type` est renseigné et que le groupe ne contient
+            aucune clé du type considéré, ou si aucune clé n'a pu être
+            dupliquée.
+
         """
         if not append_book:
             WidgetKey.clear_actionsbook()
-        for child in self.parent.real_children():
-            child.copy(parent=self.parent, empty=True)
-            break
+        for child in self.parent.real_children(reverse=True):
+            if not key_type or isinstance(child, key_type):
+                child.copy(parent=self.parent, empty=True)
+                break
+        else:
+            if key_type:
+                raise IntegrityBreach(
+                    f'Le groupe ne contient aucune clé de type "{key_type}".',
+                    widgetkey=self
+                )
+            else:
+                raise IntegrityBreach(
+                    f'Le groupe ne contient aucune clé duplicable.',
+                    widgetkey=self
+                )
         return WidgetKey.unload_actionsbook(preserve_book=append_book)
     
-
 class TranslationButtonKey(PlusButtonKey):
     """Bouton de traduction.
     
