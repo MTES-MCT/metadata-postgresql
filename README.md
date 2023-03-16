@@ -64,7 +64,7 @@ Documentation technique : https://mtes-mct.github.io/metadata-postgresql.
 
 ## Crédits
 
-© République Française, 2022.
+© République Française, 2022-2023.
 
 ### Éditeur
 
