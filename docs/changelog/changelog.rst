@@ -2,8 +2,9 @@ Notes de version
 ================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
+   v0_7_0_beta
    v0_6_0_beta
    v0_5_0_beta
    v0_4_1_beta
