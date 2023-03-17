@@ -102,11 +102,16 @@ class MainPlugin(object):
          self.navigateurTreeView2 = self.navigateur2.findChild(QTreeView)
          self.navigateurTreeView2.setObjectName(self.mNav2)
          self.navigateurTreeView2.clicked.connect(self.returnLayerBeforeClickedBrowser)
-         #3 
-         self.navigateurasgardMenuDock          = iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)[0]
-         self.navigateurasgardMenuDockTreeView  = self.navigateurasgardMenuDock.findChild(QTreeView)
-         self.navigateurasgardMenuDockTreeView.setObjectName(self.mNavAsgardMenu)
+         #3
+         # When AsgardMenu non activate 
+         if len(iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)) > 0 : 
+            self.navigateurasgardMenuDock          = iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)[0]
+            self.navigateurasgardMenuDockTreeView  = self.navigateurasgardMenuDock.findChild(QTreeView)
+            self.navigateurasgardMenuDockTreeView.setObjectName(self.mNavAsgardMenu)
+         else : 
+            self.navigateurasgardMenuDock = None  
       except :
+         self.navigateurasgardMenuDock = None  
          pass   
 
       #
@@ -128,7 +133,7 @@ class MainPlugin(object):
       
       self._myExploBrowser           = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],  self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
       self._myExploBrowser2          = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-      self._myExploBrowserAsgardMenu = MyExploBrowserAsgardMenu(self.navigateurasgardMenuDock.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+      if self.navigateurasgardMenuDock != None : self._myExploBrowserAsgardMenu = MyExploBrowserAsgardMenu(self.navigateurasgardMenuDock.findChildren(QTreeView)[0], self.dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
       return
               
   #==========================

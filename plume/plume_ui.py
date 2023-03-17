@@ -276,7 +276,7 @@ class Ui_Dialog_plume(object):
         #Active Tooltip
         self._myExploBrowser           = MyExploBrowser(self.navigateur.findChildren(QTreeView)[0],               self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
         self._myExploBrowser2          = MyExploBrowser(self.navigateur2.findChildren(QTreeView)[0],              self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
-        self._myExploBrowserAsgardMenu = MyExploBrowserAsgardMenu(self.navigateurasgardMenuDock.findChild(QTreeView),       self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
+        if self.navigateurasgardMenuDock != None : self._myExploBrowserAsgardMenu = MyExploBrowserAsgardMenu(self.navigateurasgardMenuDock.findChild(QTreeView),       self._dicTooltipExiste, self.activeTooltip, self.activeTooltipColorText, self.activeTooltipColorBackground, self.langList, iconSourceTooltip,  self.activeTooltipLogo,  self.activeTooltipCadre,  self.activeTooltipColor, self.activeTooltipWithtitle)
         
         #==========================
         #Instanciation des "shape, template, vocabulary, mode" 
@@ -644,10 +644,12 @@ class Ui_Dialog_plume(object):
         self.navigateurTreeView2.setObjectName(self.mNav2)
         self.navigateurTreeView2.clicked.connect(self.retrieveInfoLayerBrowser)
         #3 
-        self.navigateurasgardMenuDock          = iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)[0]
-        self.navigateurasgardMenuDockTreeView  = self.navigateurasgardMenuDock.findChild(QTreeView)
-        self.navigateurasgardMenuDockTreeView.setObjectName(self.mNavAsgardMenu)
-
+        if len(iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)) > 0 : 
+           self.navigateurasgardMenuDock          = iface.mainWindow().findChildren(QWidget, self.mNavAsgardMenu)[0]
+           self.navigateurasgardMenuDockTreeView  = self.navigateurasgardMenuDock.findChild(QTreeView)
+           self.navigateurasgardMenuDockTreeView.setObjectName(self.mNavAsgardMenu)
+        else :   
+           self.navigateurasgardMenuDock = None
         return
 
     #---------------------------
@@ -719,7 +721,7 @@ class Ui_Dialog_plume(object):
            self.proxy_model = self.navigateurTreeView.model()
         elif mNav == self.mNav2 :
            self.proxy_model = self.navigateurTreeView2.model()
-        elif mNav == self.mNavAsgardMenu :
+        elif mNav == self.mNavAsgardMenu and self.navigateurasgardMenuDock != None :
            self.proxy_model = self.navigateurasgardMenuDockTreeView.model()
         # DL
         self.modelDefaut = iface.browserModel() 
@@ -957,8 +959,10 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setEnabled(False)
         self.plumeVerrou.setEnabled(False)
         self.plumeVerrou.setChecked(False)
-        self.paramColor.setVisible(False if bibli_plume.ifActivateRightsToManageModels(self) else True)
-        self.paramColorModele.setVisible(True if bibli_plume.ifActivateRightsToManageModels(self) else False)
+        #Permet d'afficher si ifActivateRightsToManageModels = True
+        self.mIfActivateRightsToManageModels = bibli_plume.ifActivateRightsToManageModels(self)
+        self.paramColor.setVisible(False if self.mIfActivateRightsToManageModels else True)
+        self.paramColorModele.setVisible(True if self.mIfActivateRightsToManageModels else False)
 
         #====================
         #====================

@@ -153,7 +153,10 @@ class Ui_Dialog_ColorBloc(object):
         self.tab_widget_Templates = QWidget()
         self.tab_widget_Templates.setObjectName("tab_widget_Templatesr")
         labelTab_Templates = QtWidgets.QApplication.translate("colorbloc_ui", "  Templates  ", None)
-        self.tabWidget.addTab(self.tab_widget_Templates,labelTab_Templates)
+
+        #Affichage de l'onglet Templates for color Background en fonction des droits
+        if self.mDialog .mIfActivateRightsToManageModels : self.tabWidget.addTab(self.tab_widget_Templates,labelTab_Templates)
+        
         #-
         self.groupBox_tab_widget_Templates = QtWidgets.QGroupBox(self.tab_widget_Templates)
         self.groupBox_tab_widget_Templates.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))

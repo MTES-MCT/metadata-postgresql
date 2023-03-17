@@ -76,9 +76,9 @@ def genereButtonsWithDict(dicParamButton ) :
     return _button
 
 #==========================
-def ifActivateRightsToManageModels(self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
+def ifActivateRightsToManageModels(_self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
     mKeySql = queries.query_is_template_admin()
-    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(_self, _self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
     r = False # for Test A supprimer
     return r
 
