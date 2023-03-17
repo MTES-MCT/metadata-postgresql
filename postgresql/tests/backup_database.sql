@@ -86,9 +86,14 @@ INSERT INTO z_plume.meta_categorie (label, description, datatype, is_long_text)
         'xsd:string', True) ;
 
 -- et référencement dans le modèle "Classique"
-INSERT INTO z_plume.meta_template_categories (tpl_label, loccat_path) (
-    SELECT 'Classique', path FROM z_plume.meta_categorie
+INSERT INTO z_plume.meta_template_categories (tpl_id, loccat_path) (
+    SELECT tpl_id, path FROM z_plume.meta_categorie, z_plume.meta_template
         WHERE label = 'Notes ADL'
+            AND tpl_id = (
+                SELECT tpl_id 
+                    FROM z_plume.meta_template 
+                    WHERE tpl_label = 'Classique'
+            )
     ) ;
 
 -- modification d'une catégorie commune pour tous les modèles
@@ -99,8 +104,12 @@ UPDATE z_plume.meta_shared_categorie
 -- modification d'une catégorie commune pour le seul modèle "Classique"
 UPDATE z_plume.meta_template_categories
     SET label = 'Résumé' -- au lieu de "Description"
-    WHERE tpl_label = 'Classique'
-       AND shrcat_path = 'dct:description' ;
+    WHERE tpl_id = (
+            SELECT tpl_id 
+                FROM z_plume.meta_template 
+                WHERE tpl_label = 'Classique'
+        )
+        AND shrcat_path = 'dct:description' ;
 
 -- modifcation du paramétrage du modèle
 UPDATE z_plume.meta_template
@@ -111,30 +120,59 @@ UPDATE z_plume.meta_template
 
 -- création du modèle
 INSERT INTO z_plume.meta_template (tpl_label, sql_filter, priority)
-    VALUES ('Classique bis', 'pg_has_role(''g_urba'', ''USAGE'')
-        AND NOT pg_has_role(''g_admin'', ''USAGE'')', 50) ;
+    VALUES (
+        'Classique bis',
+        'pg_has_role(''g_urba'', ''USAGE'')
+            AND NOT pg_has_role(''g_admin'', ''USAGE'')',
+        50
+    ) ;
 
 -- définition d'onglets
-INSERT INTO z_plume.meta_tab (tab, tab_num)
+INSERT INTO z_plume.meta_tab (tab_label, tab_num)
     VALUES ('Principal', 1), ('Secondaire', 2) ;
 
 -- association de catégories au modèle
-INSERT INTO z_plume.meta_template_categories (tpl_label, shrcat_path) (
-    SELECT 'Classique bis', shrcat_path
+INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path) (
+    SELECT (
+            SELECT tpl_id 
+                FROM z_plume.meta_template 
+                WHERE tpl_label = 'Classique bis'
+        ),
+        shrcat_path
         FROM z_plume.meta_template_categories
-        WHERE tpl_label = 'Classique'
+        WHERE tpl_id = (
+                SELECT tpl_id 
+                    FROM z_plume.meta_template 
+                    WHERE tpl_label = 'Classique'
+            )
     ) ;
 
 -- paramétrage des catégories
 UPDATE z_plume.meta_template_categories
-    SET tab = 'Secondaire',
+    SET tab_id = (
+            SELECT tab_id
+                FROM z_plume.meta_tab
+                WHERE tab_label = 'Secondaire'
+        ),
         is_read_only = True
-    WHERE tpl_label = 'Classique bis' ;
+    WHERE tpl_id = (
+            SELECT tpl_id 
+                FROM z_plume.meta_template 
+                WHERE tpl_label = 'Classique bis'
+        ) ;
 
 UPDATE z_plume.meta_template_categories
-    SET tab = 'Principal',
+    SET tab_id = (
+            SELECT tab_id
+                FROM z_plume.meta_tab
+                WHERE tab_label = 'Principal'
+        ),
         is_read_only = False
-    WHERE tpl_label = 'Classique bis'
+    WHERE tpl_id = (
+            SELECT tpl_id 
+                FROM z_plume.meta_template 
+                WHERE tpl_label = 'Classique bis'
+        )
         AND shrcat_path IN ('adms:versionNotes', 'dct:title',
             'dct:description', 'dct:modified', 'dct:provenance',
             'dct:provenance / rdfs:label') ;
@@ -180,9 +218,16 @@ BEGIN
     ASSERT (SELECT string_agg(label, ', ') = 'Notes ADL'
         FROM z_plume.meta_local_categorie), 'échec assertion #3' ;
     
-    ASSERT (SELECT label = 'Résumé'
-        FROM z_plume.meta_template_categories
-        WHERE shrcat_path = 'dct:description' AND tpl_label = 'Classique'),
+    ASSERT (
+        SELECT label = 'Résumé'
+            FROM z_plume.meta_template_categories
+            WHERE shrcat_path = 'dct:description'
+                AND tpl_id = (
+                    SELECT tpl_id 
+                        FROM z_plume.meta_template 
+                        WHERE tpl_label = 'Classique'
+                )
+        ),
         'échec assertion #4' ;
 
     ASSERT (SELECT comment = 'Modèle pré-configuré personnalisé.'
@@ -192,11 +237,22 @@ BEGIN
     ASSERT 'Classique bis' IN (SELECT tpl_label FROM z_plume.meta_template),
         'échec assertion #6' ;
 
-    ASSERT 'Secondaire' IN (SELECT tab FROM z_plume.meta_tab), 'échec assertion #7' ;
+    ASSERT 'Secondaire' IN (SELECT tab_label FROM z_plume.meta_tab), 'échec assertion #7' ;
     
-    ASSERT (SELECT tab = 'Principal' AND is_read_only = False
-        FROM z_plume.meta_template_categories
-        WHERE tpl_label = 'Classique bis' AND shrcat_path = 'adms:versionNotes'),
+    ASSERT (
+        SELECT tab_id = (
+                SELECT tab_id
+                    FROM z_plume.meta_tab
+                    WHERE tab_label = 'Principal'
+            ) AND is_read_only = False
+            FROM z_plume.meta_template_categories
+            WHERE tpl_id = (
+                        SELECT tpl_id 
+                            FROM z_plume.meta_template 
+                            WHERE tpl_label = 'Classique bis'
+                    )
+                AND shrcat_path = 'adms:versionNotes'
+        ),
         'échec assertion #8' ;
 
     RETURN True ;
