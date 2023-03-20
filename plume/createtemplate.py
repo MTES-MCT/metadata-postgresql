@@ -1509,7 +1509,7 @@ class TREEVIEWMODELE(QTreeWidget):
         if index.data(0) != None : 
            self.treeMenu = QMenu(self)
            #-
-           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\plus_button.svg")          
+           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)  #Supprimer le modèle
            self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_add)
@@ -1660,7 +1660,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         
         if len(self.mListCategories) == 0 : 
            self.treeMenu = QMenu(self)
-           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\plus_button.svg")          
+           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add category", None)  #Supprimer le modèle
            self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_add)
@@ -1671,7 +1671,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         else :   
            if index.data(0) != None : 
               self.treeMenu = QMenu(self)
-              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\plus_button.svg")          
+              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
               treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add category", None)  #Supprimer le modèle
               self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
               self.treeMenu.addAction(self.treeAction_add)
@@ -1803,7 +1803,7 @@ class TREEVIEWONGLET(QTreeWidget):
         
         if len(self.mListTabs) == 0 : 
            self.treeMenu = QMenu(self)
-           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\plus_button.svg")          
+           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add tab", None)  #Supprimer le modèle
            self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_add)
@@ -1814,7 +1814,7 @@ class TREEVIEWONGLET(QTreeWidget):
         else :   
            if index.data(0) != None : 
               self.treeMenu = QMenu(self)
-              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\plus_button.svg")          
+              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
               treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add tab", None)  #Supprimer le modèle
               self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
               self.treeMenu.addAction(self.treeAction_add)

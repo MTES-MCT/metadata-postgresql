@@ -1087,7 +1087,7 @@ class Ui_Dialog_ColorBloc(object):
         #--
         self.pushButton = QtWidgets.QPushButton(self.DialogColorBloc)
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setGeometry(QtCore.QRect(self.DialogColorBloc.width() / 2 - 100, self.DialogColorBloc.height() - 60, 80, 25))
+        self.pushButton.setGeometry(QtCore.QRect(int(self.DialogColorBloc.width() / 2 - 100), int(self.DialogColorBloc.height() - 60), int(80), int(25)))
         self.pushButton.clicked.connect(lambda : self.functionSave())
         self.layout_groupBox_buttons.addWidget(self.pushButton, 0, 1, Qt.AlignTop)
         #----------
