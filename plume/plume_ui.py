@@ -388,7 +388,7 @@ class Ui_Dialog_plume(object):
            #**********************
            elif mItemLine1 == "Traduction" :
               #Interroge l'utilisateur si modifications
-              if self.zoneConfirmMessage :
+              if self.mode == "edit" and self.zoneConfirmMessage :
                  if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
                     if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel : 
                        self.plumeTranslation.setChecked(False if self.plumeTranslation.isChecked() else True)  
@@ -436,7 +436,7 @@ class Ui_Dialog_plume(object):
            # If suppression d'une couche active pour les métadonnées affichées
 
            #Interroge l'utilisateur si modifications
-           if self.zoneConfirmMessage :
+           if self.mode == "edit" and self.zoneConfirmMessage :
               if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
                  if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel :
                     self.plumeTemplate.setText(self.plumeTemplate.text())
@@ -484,7 +484,7 @@ class Ui_Dialog_plume(object):
            # If suppression d'une couche active pour les métadonnées affichées
 
            #Interroge l'utilisateur si modifications
-           if self.zoneConfirmMessage :
+           if self.mode == "edit" and self.zoneConfirmMessage :
               if self.mDicObjetsInstancies.modified or bibli_plume.ifChangeValues(self.mDicObjetsInstancies) :
                  if QMessageBox.question(None, "Confirmation", QtWidgets.QApplication.translate("plume_ui", "If you continue, unsaved changes will be lost."),QMessageBox.Ok|QMessageBox.Cancel) ==  QMessageBox.Cancel :
                     self.plumeChoiceLang.setText(self.plumeChoiceLang.text())
