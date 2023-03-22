@@ -919,8 +919,9 @@ class Ui_Dialog_plume(object):
         
     #==========================
     def clickImportCSW(self):
-        d = doimportcsw.Dialog(self)
-        d.exec_()
+        with self.safe_pg_connection():
+            d = doimportcsw.Dialog(self)
+            d.exec_()
         return
         
     #==========================
