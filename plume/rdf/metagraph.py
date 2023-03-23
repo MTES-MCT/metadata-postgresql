@@ -6,11 +6,15 @@ from pathlib import Path
 from time import strftime, localtime
 
 from plume.rdf.rdflib import Graph, URIRef, BNode, Literal
-from plume.rdf.namespaces import PlumeNamespaceManager, DCAT, RDF, SH, \
-    LOCAL, PLUME, DCT, FOAF, XSD, PREDICATE_MAP, CLASS_MAP
-from plume.rdf.utils import abspath, DatasetId, graph_from_file, get_datasetid, \
-    export_extension_from_format, export_format_from_extension, export_formats, \
-    forbidden_char, data_from_file
+from plume.rdf.namespaces import (
+    PlumeNamespaceManager, DCAT, RDF, SH, LOCAL, PLUME, DCT, FOAF,
+    XSD, PREDICATE_MAP, CLASS_MAP
+)
+from plume.rdf.utils import (
+    abspath, DatasetId, graph_from_file, get_datasetid,
+    export_extension_from_format, export_format_from_extension,
+    export_formats, forbidden_char, data_from_file
+)
 from plume.iso.map import IsoToDcat
 
 
@@ -31,6 +35,12 @@ class Metagraph(Graph):
         ``False`` pour un graphe de métadonnées généré par
         désérialisation d'un dictionnaire de widgets (méthode
         :py:meth:`plume.rdf.widgetsdict.WidgetsDict.build_metagraph`).
+    rewritten : bool
+        ``True`` si le graphe est issu d'une source externe. Concrètement,
+        les constructeurs :py:func:`clean_metagraph`, :py:func:`copy_metagraph`
+        et :py:func:`metagraph_from_iso` mettent cet attribut à ``True``
+        sur les graphes qu'elles génèrent. Il vaudra ``False`` dans tous
+        les autres cas.
     langlist : tuple(str)
         Tuple des langues autorisées pour les traductions, hérité
         le cas échéant du dictionnaire de widgets à partir duquel
@@ -47,6 +57,7 @@ class Metagraph(Graph):
     def __init__(self):
         super().__init__(namespace_manager=PlumeNamespaceManager())
         self.fresh = True
+        self.rewritten = False
         self.langlist = ('fr', 'en')
 
     def __str__(self):
@@ -529,6 +540,7 @@ def clean_metagraph(raw_graph, old_metagraph=None):
     
     """
     metagraph = Metagraph()
+    metagraph.rewritten = True
     raw_datasetid = get_datasetid(raw_graph)
     old_datasetid = old_metagraph.datasetid if old_metagraph else None
     datasetid = DatasetId(old_datasetid)
@@ -582,6 +594,7 @@ def copy_metagraph(src_metagraph=None, old_metagraph=None):
     old_datasetid = old_metagraph.datasetid if old_metagraph else None
     datasetid = DatasetId(old_datasetid)
     metagraph = Metagraph()
+    metagraph.rewritten = True
     
     # cas où le graphe à copier ne contiendrait pas
     # de descriptif de dataset, on renvoie un graphe contenant
@@ -615,7 +628,7 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, preserve='always'):
     old_metagraph : Metagraph, optional
         Le graphe contenant les métadonnées actuelles de l'objet
         PostgreSQL considéré, dont on récupèrera l'identifiant.
-    preserve : {'always', 'if exists', 'never'}, optional
+    preserve : {'always', 'if blank', 'never'}, optional
         Mode de fusion de l'ancien et du nouveau graphe :
         
         * Si `preserve` vaut ``'never'``, le graphe est
@@ -651,6 +664,7 @@ def metagraph_from_iso(raw_xml, old_metagraph=None, preserve='always'):
     old_datasetid = old_metagraph.datasetid if old_metagraph else None
     metagraph = Metagraph()
     metagraph.datasetid = old_datasetid
+    metagraph.rewritten = True
 
     if raw_xml:
         iso = IsoToDcat(raw_xml, datasetid=metagraph.datasetid)
@@ -676,7 +690,7 @@ def metagraph_from_iso_file(filepath, old_metagraph=None, preserve='never'):
     old_metagraph : Metagraph, optional
         Le graphe contenant les métadonnées actuelles de l'objet
         PostgreSQL considéré, dont on récupèrera l'identifiant.
-    preserve : {'never', 'if exists', 'always'}, optional
+    preserve : {'never', 'if blank', 'always'}, optional
         Mode de fusion de l'ancien et du nouveau graphe :
         
         * Si `preserve` vaut ``'never'``, le graphe est
