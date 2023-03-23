@@ -180,6 +180,8 @@ class MainPlugin(object):
       d.exec_()
 
   def unload(self):
+      self.menu.deleteLater() 
+      self.toolbar.deleteLater()
       pass  
 
 
