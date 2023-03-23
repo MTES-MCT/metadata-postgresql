@@ -78,9 +78,10 @@ conn.close()
 
 Lorsque l'utilisateur désactive le mode édition sans avoir sauvegardé, une boîte de dialogue apparaît pour lui demander de confirmer (en le prévenant que ses modifications seront alors perdues) ou d'annuler. Ce comportement pouvant vite devenir lassant, un paramètre utilisateur devra permettre d'inhiber l'affichage de ces messages.
 
-Il n'est pas possible d'établir de manière certaine si les métadonnées ont réellement été modifiées, mais on pourra épargner à l'utilisateur l'étape de confirmation quand aucune des deux conditions ci-après n'est remplie, puisqu'il est alors certain qu'il n'y a aucun changement :
-- Parmi les clés du dictionnaire de widgets correspondant à des widgets de saisie, il en existe au moins une telle que la valeur saisie dans le widget est différente de celle contenue dans la clé `'value'` du dictionnaire interne.
-- L'attribut `modified` du dictionnaire de widgets vaut `True`. Cet attribut, qui vaut toujours `False` à l'initialisation du dictionnaire de widgets, est mis à `True` par toutes les méthodes de manipulation des clés (ajout, suppression, changement de langue, changement d'unité, intégration de valeur calculée...). Il est susceptible de créer des faux positifs : par exemple, ce n'est pas parce qu'une clé est ajoutée dans un groupe de valeurs qu'une valeur y sera effectivement saisie.
+Il n'est pas possible d'établir de manière certaine si les métadonnées ont réellement été modifiées, mais on pourra épargner à l'utilisateur l'étape de confirmation quand aucune des conditions ci-après n'est remplie, puisqu'il est alors certain qu'il n'y a aucun changement :
+1. Parmi les clés du dictionnaire de widgets correspondant à des widgets de saisie, il en existe au moins une telle que la valeur saisie dans le widget est différente de celle contenue dans la clé `'value'` du dictionnaire interne.
+2. L'attribut `modified` du dictionnaire de widgets vaut `True`. Cet attribut, qui vaut toujours `False` à l'initialisation du dictionnaire de widgets, est mis à `True` par toutes les méthodes de manipulation des clés (ajout, suppression, changement de langue, changement d'unité, intégration de valeur calculée...). Il est susceptible de créer des faux positifs : par exemple, ce n'est pas parce qu'une clé est ajoutée dans un groupe de valeurs qu'une valeur y sera effectivement saisie.
+3. L'attribut `rewritten` du graphe de métadonnées (l'argument `metagraph` de `plume.rdf.widgetsdict.WidgetsDict`) vaut `True`. Ce sera le cas si et seulement si le graphe a été généré par import depuis une source externe, copier/coller d'une fiche de métadonnées ou réinitialisation, c'est-à-dire tous les procédés qui produisent un graphe a priori non cohérent avec les métadonnées stockées sur le serveur PostgreSQL.
 
 ## Sauvegarde
 
@@ -223,6 +224,8 @@ L'idéal serait que le texte d'aide s'adapte selon que le mode traduction est ac
 | non | `if not translation` | *Activer les fonctions de traduction* |
 | oui | `if translation` | *Désactiver les fonctions de traduction* |
 
+[Comme pour le passage du mode édition au mode lecture](#caractéristiques-du-bouton), l'utilisateur devra être averti qu'il risque de perdre les changements non enregistrés lorsqu'il active ou désactive le mode traduction. Seule différence, la troisième condition d'apparition (attribut `plume.rdf.metagraph.Metagraph.rewritten` valant `True`) ne s'applique pas ici, car le nouveau dictionnaire de widgets peut sans problème être généré à partir du graphe "réécrit", pour permettre à l'utilisateur de mieux contrôler le résultat avant de décider s'il souhaite le sauvegarder.
+
 ### Initialisation
 
 Ce paramètre pourra être systématiquement sauvegardé dans le fichier `QGIS3.ini`, et initialisé à l'activation du mode édition à partir de la valeur récupérée dans les fichiers de configuration (ou `False` à défaut).
@@ -258,6 +261,10 @@ Le nom du modèle courant est affiché à côté de l'icône. Dans le menu, il e
 
 Texte d'aide : *Choisir un modèle de formulaire*.
 
+Lorsque le mode édition est actif, et uniquement dans ce cas[^chgtauto], l'utilisateur devra être averti qu'il risque de perdre ses modifications non enregistrées en cliquant sur ce bouton. Ces avertissements sont gérés de la même manière que pour la [(dés)activation du mode traduction](#activation-du-mode-traduction).
+
+[^chgtauto]: Il peut arriver que le dictionnaire de widgets soit modifié en mode lecture, notamment dans le cas où le modèle de fiche de métadonnées utilisé prévoit le calcul automatique de certaines informations. Cependant il n'est pas pertinent d'avertir l'utilisateur dans ce cas, considérant qu'il n'a pas la possibilité de sauvegarder les changements tant qu'il est en mode lecture.
+
 ### Initialisation
 
 La démarche à suivre à l'ouverture d'une fiche de métadonnées est décrite dans [Modèles de formulaire](./modeles_de_formulaire.md#import-par-le-plugin). On commencera par récupérer les paramètres `preferedTemplate` et `enforcePreferedTemplate` dans les fichiers de configuration, si tant est qu'ils soient présents.
@@ -281,6 +288,8 @@ Le code de la langue courante est affiché sur le bouton (pas d'icône). Dans le
 ![selected_brown.svg](../../plume/icons/general/selected_brown.svg).
 
 Texte d'aide : *Modifier la langue principale des métadonnées*.
+
+Lorsque le mode édition est actif, et uniquement dans ce cas[^chgtauto], l'utilisateur devra être averti qu'il risque de perdre ses modifications non enregistrées en cliquant sur ce bouton. Ces avertissements sont gérés de la même manière que pour la [(dés)activation du mode traduction](#activation-du-mode-traduction).
 
 ### Initialisation
 
