@@ -3,10 +3,13 @@ import unittest
 
 from plume.rdf.rdflib import isomorphic, URIRef, Literal
 from plume.rdf.utils import abspath, data_from_file, DatasetId
-from plume.rdf.metagraph import Metagraph, metagraph_from_file, copy_metagraph, \
-    metagraph_from_iso, clean_metagraph, metagraph_from_iso_file
+from plume.rdf.metagraph import (
+    Metagraph, metagraph_from_file, copy_metagraph, metagraph_from_iso,
+    clean_metagraph, metagraph_from_iso_file, graph_from_file
+)
 from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF
 from plume.rdf.widgetsdict import WidgetsDict
+from plume.pg.description import PgDescription
 
 class MetagraphTestCase(unittest.TestCase):
 
@@ -490,7 +493,77 @@ class MetagraphTestCase(unittest.TestCase):
             abspath('rdf/tests/samples/iso_ignf_bdaltir_2_0.xml')
         )
         self.assertTrue((metagraph.datasetid, DCT.title, Literal('BD ALTI®', lang='fr')) in metagraph)
+
+    def test_metagraph_rewritten(self):
+        """Vérifie que l'attribut rewritten du graphe vaut True ssi le graphe est issu d'une source externe."""
+        iso_filepath = abspath(
+            'rdf/tests/samples/iso_geolittoral_sentier_du_littoral.xml'
+        )
+        dcat_filepath = abspath(
+            'rdf/tests/samples/dcat_eurostat_bilan_nutritif_brut_terre_agricole.rdf'
+        )
+
+        # nouveau graphe
+        old_metagraph = Metagraph()
+        self.assertFalse(old_metagraph.rewritten)
+
+        # metagraph_from_iso
+        raw_xml = data_from_file(iso_filepath)
+        for preserve in ('always', 'if blank', 'never'):
+            with self.subTest(preserve=preserve):
+                new_metagraph = metagraph_from_iso(
+                    raw_xml,
+                    old_metagraph=old_metagraph,
+                    preserve=preserve
+                )
+                self.assertTrue(new_metagraph.rewritten)
         
+        # metagraph_from_iso_file
+        for preserve in ('always', 'if blank', 'never'):
+            with self.subTest(preserve=preserve):
+                new_metagraph = metagraph_from_iso_file(
+                    iso_filepath,
+                    old_metagraph=old_metagraph,
+                    preserve=preserve
+                )
+                self.assertTrue(new_metagraph.rewritten)
+        
+        # metagraph_from_file
+        new_metagraph = metagraph_from_file(
+            dcat_filepath,
+            old_metagraph=old_metagraph
+        )
+        self.assertTrue(new_metagraph.rewritten)
+
+        # clean_metagraph
+        raw_graph = graph_from_file(dcat_filepath)
+        new_metagraph = clean_metagraph(
+            raw_graph,
+            old_metagraph=old_metagraph
+        )
+        self.assertTrue(new_metagraph.rewritten)
+
+        # copy_metagraph (sans source)
+        new_metagraph = copy_metagraph(
+            old_metagraph=old_metagraph
+        )
+        self.assertTrue(new_metagraph.rewritten)
+
+        # copy_metagraph (avec source)
+        new_metagraph = copy_metagraph(
+            src_metagraph = Metagraph(),
+            old_metagraph=old_metagraph
+        )
+        self.assertTrue(new_metagraph.rewritten)
+
+        # graphe issu d'un descriptif PostgreSQL
+        pgdescr = PgDescription()
+        self.assertFalse(pgdescr.metagraph.rewritten)
+
+        # graphe construit à partir d'un dictionnaire de widgets
+        widgetsdict = WidgetsDict(metagraph=new_metagraph)
+        new_metagraph = widgetsdict.build_metagraph()
+        self.assertFalse(new_metagraph.rewritten)
 
 if __name__ == '__main__':
     unittest.main()
