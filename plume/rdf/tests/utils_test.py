@@ -3,12 +3,13 @@ import unittest
 from uuid import uuid4
 
 from plume.rdf.rdflib import Literal, URIRef
-from plume.rdf.utils import sort_by_language, pick_translation, \
-    path_from_n3, int_from_duration, duration_from_int, str_from_duration, \
-    wkt_with_srid, split_rdf_wkt, str_from_datetime, str_from_date, \
-    str_from_time, datetime_from_str, date_from_str, time_from_str, \
-    str_from_decimal, decimal_from_str, main_datatype, \
-    export_format_from_extension, export_formats
+from plume.rdf.utils import (
+    sort_by_language, pick_translation, path_from_n3, int_from_duration,
+    duration_from_int, str_from_duration, wkt_with_srid, split_rdf_wkt, 
+    str_from_datetime, str_from_date, str_from_time, datetime_from_str, 
+    date_from_str, time_from_str, str_from_decimal, decimal_from_str, 
+    main_datatype, export_format_from_extension, export_formats, no_logging
+)
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
 nsm = PlumeNamespaceManager()
@@ -212,7 +213,8 @@ class UtilsTestCase(unittest.TestCase):
         self.assertIsNone(str_from_decimal(None))
         self.assertIsNone(str_from_decimal('chose'))
         self.assertIsNone(str_from_decimal(Literal('chose')))
-        self.assertIsNone(str_from_decimal(Literal('chose', datatype=XSD.decimal)))
+        with no_logging():
+            self.assertIsNone(str_from_decimal(Literal('chose', datatype=XSD.decimal)))
 
     def test_str_from_time(self):
         """Représentation d'une heure sous forme de chaîne de caractères.
@@ -229,7 +231,8 @@ class UtilsTestCase(unittest.TestCase):
         self.assertIsNone(str_from_time(None))
         self.assertIsNone(str_from_time('chose'))
         self.assertIsNone(str_from_time(Literal('chose')))
-        self.assertIsNone(str_from_time(Literal('chose', datatype=XSD.time)))
+        with no_logging():
+            self.assertIsNone(str_from_time(Literal('chose', datatype=XSD.time)))
 
     def test_str_from_date(self):
         """Représentation d'une date sous forme de chaîne de caractères.
@@ -240,17 +243,18 @@ class UtilsTestCase(unittest.TestCase):
             '12/02/2022'
             )
         self.assertEqual(
-            str_from_date(Literal('2022-02-12T03:00:00', datatype=XSD.date)),
-            '12/02/2022'
-            ),
-        self.assertEqual(
             str_from_date(Literal('2022-02-12T03:00:00', datatype=XSD.dateTime)),
             '12/02/2022'
             )
         self.assertIsNone(str_from_date(None))
         self.assertIsNone(str_from_date('chose'))
         self.assertIsNone(str_from_date(Literal('chose')))
-        self.assertIsNone(str_from_date(Literal('chose', datatype=XSD.date)))
+        with no_logging():
+            self.assertIsNone(str_from_date(Literal('chose', datatype=XSD.date)))
+            self.assertEqual(
+                str_from_date(Literal('2022-02-12T03:00:00', datatype=XSD.date)),
+                '12/02/2022'
+                )
 
     def test_str_from_datetime(self):
         """Représentation d'une date avec heure sous forme de chaîne de caractères.
@@ -265,18 +269,18 @@ class UtilsTestCase(unittest.TestCase):
             '12/02/2022 03:00:00'
             )
         self.assertEqual(
-            str_from_datetime(Literal('2022-02-12', datatype=XSD.dateTime)),
-            '12/02/2022 00:00:00'
-            )
-        self.assertEqual(
             str_from_datetime(Literal('2022-02-12', datatype=XSD.date)),
             '12/02/2022 00:00:00'
             )
         self.assertIsNone(str_from_datetime(None))
         self.assertIsNone(str_from_datetime('chose'))
         self.assertIsNone(str_from_datetime(Literal('chose')))
-        self.assertIsNone(str_from_datetime(Literal('chose', datatype=XSD.dateTime)))
-        self.assertIsNone(str_from_datetime(Literal('2022-15-12', datatype=XSD.dateTime)))
+        with no_logging():
+            self.assertIsNone(str_from_datetime(Literal('chose', datatype=XSD.dateTime)))
+            self.assertIsNone(str_from_datetime(Literal('2022-15-12', datatype=XSD.dateTime)))
+            self.assertIsNone(str_from_datetime(Literal('2022-02-12', datatype=XSD.dateTime)))
+            # Literal avec ill_typed valant True, mais '12/02/2022 00:00:00'
+            # serait aussi un résultat admissible
 
     def test_split_rdf_wkt(self):
         """Extraction du référentiel et de la géométrie d'un WKT RDF.
@@ -391,7 +395,7 @@ class UtilsTestCase(unittest.TestCase):
             (2, 'ans')
             )
         self.assertEqual(
-            int_from_duration(Literal('PYT1H', datatype=XSD.duration)),
+            int_from_duration(Literal('PT1H', datatype=XSD.duration)),
             (1, 'heures')
             )
         self.assertEqual(
@@ -422,7 +426,8 @@ class UtilsTestCase(unittest.TestCase):
             Literal('-PT3M', datatype=XSD.duration))
         self.assertIsNone(duration_from_int(3, 'chose'))
         self.assertIsNone(duration_from_int(3, None))
-        self.assertIsNone(duration_from_int('chose', 'min.'))
+        with no_logging():
+            self.assertIsNone(duration_from_int('chose', 'min.'))
 
     def test_str_from_duration(self):
         """Jolie représentation textuelle d'une durée.
@@ -437,7 +442,7 @@ class UtilsTestCase(unittest.TestCase):
             ('1 an')
             )
         self.assertEqual(
-            str_from_duration(Literal('PYT1H3M', datatype=XSD.duration)),
+            str_from_duration(Literal('PT1H3M', datatype=XSD.duration)),
             ('1 heure')
             )
         self.assertEqual(
