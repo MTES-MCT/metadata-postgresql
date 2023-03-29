@@ -2,12 +2,14 @@
 
 """
 import re
+import logging
 from pathlib import Path
 from uuid import UUID, uuid4
 from html import escape
 from datetime import datetime, date, time
 from locale import setlocale, LC_NUMERIC, str as locstr
 from decimal import Decimal
+from contextlib import contextmanager
 
 from plume import __path__
 from plume.rdf.rdflib import Literal, URIRef, from_n3, Graph
@@ -113,6 +115,23 @@ class DatasetId(URIRef):
     
     def __init__(self, *uuids):
         self.uuid = UUID(str(self))
+
+@contextmanager
+def no_logging(level=logging.CRITICAL):
+    """Gestionnaire de contexte qui désactive temporairement la journalisation des erreurs.
+    
+    Parameters
+    ----------
+    level : int, default logging.CRITICAL
+        Niveau de sévérité jusqu'auquel l'émission des messages
+        doit être inhibée.
+
+    """
+    logging.disable(level)
+    try:
+        yield
+    finally:
+        logging.disable(logging.NOTSET)
 
 def data_from_file(filepath):
     """Renvoie le contenu d'un fichier.
@@ -579,8 +598,12 @@ def int_from_duration(duration):
     (2, 'ans')
     
     """
-    if not duration or not isinstance(duration, Literal) \
-        or not duration.datatype == XSD.duration:
+    if (
+        not duration
+        or not isinstance(duration, Literal)
+        or not duration.datatype == XSD.duration
+        or duration.ill_typed
+    ):
         return (None, None)
     
     r = re.split('T', str(duration).lstrip('P'))
@@ -633,7 +656,7 @@ def duration_from_int(value, unit):
     if isinstance(value, str) and re.match('^-?[0-9]+$', value):
         value = int(value)
     if not isinstance(value, int):
-        return None
+        return
     if value < 0:
         value = - value
         signe = '-'
@@ -641,12 +664,20 @@ def duration_from_int(value, unit):
         signe = ''
     date_map = {'ans': 'Y', 'mois': 'M', 'jours': 'D'}
     if unit in date_map:
-        return Literal('{}P{}{}'.format(signe, value, date_map[unit]),
-            datatype=XSD.duration)
+        l = Literal(
+            '{}P{}{}'.format(signe, value, date_map[unit]),
+            datatype=XSD.duration
+        )
+        if not l.ill_typed:
+            return l
     time_map = {'heures': 'H', 'min.': 'M', 'sec.': 'S'}
     if unit in time_map:
-        return Literal('{}PT{}{}'.format(signe, value, time_map[unit]),
-            datatype=XSD.duration)
+        l = Literal(
+            '{}PT{}{}'.format(signe, value, time_map[unit]),
+            datatype=XSD.duration
+        )
+        if not l.ill_typed:
+            return l
 
 def str_from_duration(duration):
     """Représentation d'une durée sous forme de chaîne de caractères.
@@ -708,8 +739,12 @@ def str_from_decimal(decimal):
     point) à utiliser.
     
     """
-    if decimal is None or not isinstance(decimal, Literal) \
-        or not decimal.datatype in (XSD.decimal, XSD.integer):
+    if (
+        decimal is None
+        or not isinstance(decimal, Literal)
+        or not decimal.datatype in (XSD.decimal, XSD.integer)
+        or decimal.ill_typed
+    ):
         return
     trans = decimal.toPython()
     if isinstance(trans, (float, Decimal, int)):
@@ -747,7 +782,9 @@ def decimal_from_str(value):
     clean_value = str(value).replace(' ', '').replace(',', '.')
     if not re.match('^([+]|-)?([0-9]+([.][0-9]*)?|[.][0-9]+)$', clean_value):
         return
-    return Literal(clean_value, datatype=XSD.decimal)
+    l = Literal(clean_value, datatype=XSD.decimal)
+    if not l.ill_typed:
+        return l
 
 def str_from_date(datelit):
     """Représentation d'une date sous forme de chaîne de caractères.
@@ -774,8 +811,12 @@ def str_from_date(datelit):
     ou qui n'est pas un littéral de type ``xsd:date``.
     
     """
-    if not datelit or not isinstance(datelit, Literal) \
-        or not datelit.datatype in (XSD.date, XSD.dateTime):
+    if (
+        not datelit
+        or not isinstance(datelit, Literal)
+        or not datelit.datatype in (XSD.date, XSD.dateTime)
+        or datelit.ill_typed
+    ):
         return
     trans = datelit.toPython()
     if isinstance(trans, (date, datetime)):
@@ -814,7 +855,9 @@ def date_from_str(value):
         value)
     if not r:
         return
-    return Literal(datetime.strptime(r[1], '%d/%m/%Y').date(), datatype=XSD.date)
+    l = Literal(datetime.strptime(r[1], '%d/%m/%Y').date(), datatype=XSD.date)
+    if not l.ill_typed:
+        return l
 
 def str_from_datetime(datetimelit):
     """Représentation d'une date avec heure sous forme de chaîne de caractères.
@@ -844,8 +887,12 @@ def str_from_datetime(datetimelit):
     les fuseaux horaires effacés.
     
     """
-    if not datetimelit or not isinstance(datetimelit, Literal) \
-        or not datetimelit.datatype in (XSD.dateTime, XSD.date):
+    if (
+        not datetimelit
+        or not isinstance(datetimelit, Literal)
+        or not datetimelit.datatype in (XSD.dateTime, XSD.date)
+        or datetimelit.ill_typed
+    ):
         return
     trans = datetimelit.toPython()
     if isinstance(trans, datetime):
@@ -898,7 +945,9 @@ def datetime_from_str(value):
     if not r:
         return
     value = '{} {}'.format(r[1], r[2] or '00:00:00')
-    return Literal(datetime.strptime(value, '%d/%m/%Y %H:%M:%S'), datatype=XSD.dateTime)
+    l = Literal(datetime.strptime(value, '%d/%m/%Y %H:%M:%S'), datatype=XSD.dateTime)
+    if not l.ill_typed:
+        return l
 
 def str_from_time(timelit):
     """Représentation d'une heure sous forme de chaîne de caractères.
@@ -926,8 +975,12 @@ def str_from_time(timelit):
     les fuseaux horaires effacés.
     
     """
-    if not timelit or not isinstance(timelit, Literal) \
-        or not timelit.datatype == XSD.time:
+    if (
+        not timelit
+        or not isinstance(timelit, Literal)
+        or not timelit.datatype == XSD.time
+        or timelit.ill_typed
+    ):
         return
     trans = timelit.toPython()
     if isinstance(trans, time):
@@ -964,7 +1017,9 @@ def time_from_str(value):
     r = re.match('^(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]|(24:00:00))', value)
     if not r:
         return
-    return Literal(datetime.strptime(r[1], '%H:%M:%S').time(), datatype=XSD.time)
+    l = Literal(datetime.strptime(r[1], '%H:%M:%S').time(), datatype=XSD.time)
+    if not l.ill_typed:
+        return l
 
 def wkt_with_srid(wkt, srid):
     """Ajoute un référentiel de coordonnées à la représentation WKT d'une géométrie.
