@@ -2,13 +2,11 @@
 # créé sept 2021
 import os.path
 import subprocess
-import logging
 import time
 from qgis.core import QgsSettings
 from PyQt5 import QtCore, QtGui, QtWidgets 
-from PyQt5.Qt import *
 from plume.config import (PLUME_VERSION) 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import ( QMessageBox, QProgressDialog, QPushButton )
 from qgis.core import QgsSettings
 import qgis
  
@@ -38,8 +36,15 @@ def manageLibrary() :
     mSettings.endGroup()
     mVersionPlumeBibli = mDicAutre["versionPlumeBibli"]
     mPython_version    = mDicAutre[python_version_cur]
-
-    if mVersionPlume != mVersionPlumeBibli or mVersionPlume != mPython_version :
+    #-- #issue 125                 
+    update_lib = False
+    if not (mVersionPlume != mVersionPlumeBibli or mVersionPlume != mPython_version) : 
+       try:
+          import plume.rdf.rdflib
+       except:
+          update_lib = True
+    #-- #issue 125                 
+    if (mVersionPlume != mVersionPlumeBibli or mVersionPlume != mPython_version) or update_lib :
        mPath = os.path.dirname(__file__)
        mPathPerso = mPath.replace("\\","/") + "/requirements.txt"
        #----------
@@ -96,7 +101,7 @@ def manageLibrary() :
           mSettings.endGroup()
           #------ BIBLI ----
     return
-
+    
 #==================================================
 def updatePip() :
     si = subprocess.STARTUPINFO() 
@@ -127,15 +132,15 @@ class ManagerPatienter() :
        icon.addPixmap(QtGui.QPixmap(iconSource), QtGui.QIcon.Normal, QtGui.QIcon.Off)
        #
        self.prgr_dialog = QProgressDialog(_mess, "",  0, 100)
-       self.prgr_dialog.setWindowModality(Qt.WindowModal)
+       self.prgr_dialog.setWindowModality(QtCore.Qt.WindowModal)
        self.prgr_dialog.setWindowIcon(icon)
        self.prgr_dialog.setFixedSize(300, 170)
        self.prgr_dialog.setMinimumDuration(0)
        self.prgr_dialog.mCancelButton = self.prgr_dialog.findChild(QPushButton)
        self.prgr_dialog.mCancelButton.setVisible(False)
        self.prgr_dialog.setCancelButtonText("OK")
-       self.prgr_dialog.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
-       self.prgr_dialog.setWindowFlag(Qt.WindowCloseButtonHint, False)
+       self.prgr_dialog.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
+       self.prgr_dialog.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
        self.prgr_dialog.setWindowTitle(_title)
        self.prgr_dialog.setAutoReset(False)
        self.prgr_dialog.setAutoClose(False)

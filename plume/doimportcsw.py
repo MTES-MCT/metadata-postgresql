@@ -1,13 +1,11 @@
 # (c) Didier  LECLERC 2021 CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
 # créé 2022
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QDialog, QTreeWidgetItemIterator
-from qgis.core import *
 
-from .importcsw import Ui_Dialog_ImportCSW
-from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+from plume.importcsw import Ui_Dialog_ImportCSW
+from plume.config import ( URLCSWDEFAUT )  
+from qgis.core import ( QgsSettings )
 
 class Dialog(QDialog, Ui_Dialog_ImportCSW):
       def __init__(self, Dialog):

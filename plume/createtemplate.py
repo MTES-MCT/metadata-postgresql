@@ -1,25 +1,25 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé 2022
 
-from . import bibli_plume
-from .bibli_plume import *
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.Qt import *
-from PyQt5.QtWidgets import (QTreeWidgetItemIterator)
+from PyQt5.QtWidgets import ( QMenu, QAction, \
+                              QTreeWidget, QTabWidget, QWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView, QGridLayout )
+from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime )
 #
-from . import bibli_plume
-from .bibli_plume import *
+from plume.bibli_plume import ( returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, genereButtonsWithDict, returnIcon, displayMess )
 #
-from plume.mapping_templates import load_mapping_read_meta_template_categories, load_mapping_read_meta_templates, load_mapping_read_meta_tabs, load_mapping_read_meta_categories
+from plume.mapping_templates import ( load_mapping_read_meta_template_categories, load_mapping_read_meta_templates, load_mapping_read_meta_tabs, load_mapping_read_meta_categories )
 #
+from plume.pg import queries
+from qgis.core import Qgis
 import re
 import json
 
 class Ui_Dialog_CreateTemplate(object):
     def setupUiCreateTemplate(self, DialogCreateTemplate, Dialog):
         #-
-        self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+        self.mDic_LH = returnAndSaveDialogParam(self, "Load")
         self.editStyle        = self.mDic_LH["QEdit"]              #style saisie
         self.labelBackGround  = self.mDic_LH["QLabelBackGround"] #QLabel    
         self.epaiQGroupBox    = self.mDic_LH["QGroupBoxEpaisseur"] #épaisseur QGroupBox
@@ -30,6 +30,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.colorTemplateOutVersIn  = self.mDic_LH["colorTemplateOutVersIn"]     
         self.sepLeftTemplate  = self.mDic_LH["sepLeftTemplate"]
         self.sepRightTemplate = self.mDic_LH["sepRightTemplate"]
+        self.fontCategorieInVersOut = int(self.mDic_LH["fontCategorieInVersOut"])
         #-
         #-
         #- Fichier de mapping table ihm
@@ -63,7 +64,7 @@ class Ui_Dialog_CreateTemplate(object):
         #----------
         self.label_2 = QtWidgets.QLabel(self.DialogCreateTemplate)
         self.label_2.setGeometry(QtCore.QRect(100, 30, self.lScreenDialog - 100, 30))
-        self.label_2.setAlignment(Qt.AlignLeft)        
+        self.label_2.setAlignment(QtCore.Qt.AlignLeft)        
         font = QtGui.QFont()
         font.setPointSize(12) 
         font.setWeight(50) 
@@ -142,7 +143,7 @@ class Ui_Dialog_CreateTemplate(object):
 
         self.labelListeModeleCategorie = QtWidgets.QLabel()
         self.labelListeModeleCategorie.setText(titlegroupBoxListeModeleCategorie)
-        self.layoutListeModeleCategorie.addWidget(self.labelListeModeleCategorie, 0 ,0, Qt.AlignTop)
+        self.layoutListeModeleCategorie.addWidget(self.labelListeModeleCategorie, 0 ,0, QtCore.Qt.AlignTop)
         self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie, 1 , 0)
 
         #self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie)
@@ -213,13 +214,13 @@ class Ui_Dialog_CreateTemplate(object):
         self.labelCategorieIn.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", "Categories belonging", None))   #Catégories appartenant
          
         #------ TREEVIEW CATEGORIES OUT
-        self.layoutListeCategorieOut.addWidget(self.labelCategorieOut, 0 ,0, Qt.AlignTop)
+        self.layoutListeCategorieOut.addWidget(self.labelCategorieOut, 0 ,0, QtCore.Qt.AlignTop)
         self.layoutListeCategorieOut.addWidget(self.mTreeListeCategorieOut, 1 , 0)
         #-
         self.mTreeListeCategorieOut.clear()
         
         #------ TREEVIEW CATEGORIES IN 
-        self.layoutListeCategorieIn.addWidget(self.labelCategorieIn, 0 ,2, Qt.AlignTop)
+        self.layoutListeCategorieIn.addWidget(self.labelCategorieIn, 0 ,2, QtCore.Qt.AlignTop)
         self.layoutListeCategorieIn.addWidget(self.mTreeListeCategorieIn, 1 ,2)
         #-
         self.mTreeListeCategorieIn.clear()
@@ -266,7 +267,7 @@ class Ui_Dialog_CreateTemplate(object):
 
         self.buttonAdd = QtWidgets.QToolButton()
         self.buttonAdd.setObjectName("buttonAdd")
-        self.buttonAdd.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
+        self.buttonAdd.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify the attributes associated with the model, as well as the categories used or not used.", None)  
         self.buttonAdd.setToolTip(mbuttonAddToolTip)
         self.buttonAdd.clicked.connect(lambda : self.functionAddCmodele())
@@ -294,10 +295,10 @@ class Ui_Dialog_CreateTemplate(object):
         self.pushButtonAnnuler = QtWidgets.QPushButton()
         self.pushButtonAnnuler.setObjectName("pushButtonAnnuler")
         self.pushButtonAnnuler.clicked.connect(self.DialogCreateTemplate.reject)
-        self.layout_groupBox_buttons.addWidget(self.pushButtonAnnuler, 1, 2, Qt.AlignTop)
+        self.layout_groupBox_buttons.addWidget(self.pushButtonAnnuler, 1, 2, QtCore.Qt.AlignTop)
         #--
         #----------
-        self.DialogCreateTemplate.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(bibli_plume.returnVersion()) + ")")
+        self.DialogCreateTemplate.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", self.zMessTitle, None))
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", "Cancel", None))
         #  Onglet ASSOCIATION
@@ -367,7 +368,7 @@ class Ui_Dialog_CreateTemplate(object):
         #Button Add
         self.buttonAddModele = QtWidgets.QToolButton()
         self.buttonAddModele.setObjectName("buttonAddModele")
-        self.buttonAddModele.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
+        self.buttonAddModele.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify a model as well as these attributes.", None)
         self.buttonAddModele.setToolTip(mbuttonAddToolTip)
         self.buttonAddModele.clicked.connect(lambda : self.functionUpdateModele())
@@ -396,10 +397,10 @@ class Ui_Dialog_CreateTemplate(object):
         self.mListCategories = [row[0] for row in r]
 
         if len(self.mListCategories)  > 0 : 
-           listeCategorieCol1, listeCategorieCol2 = returnList_Id_Label( self.mListCategories )
-           self.categorieActif = listeCategorieCol1[0] #Pour la première initialisation
+           self.listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
+           self.categorieActif = self.listeRessourceCategorie[0] #Pour la première initialisation
         else :   
-           listeCategorieCol1, listeCategorieCol3 = [], []
+           self.listeRessourceCategorie = []
            self.categorieActif = ""
 
         self.voletsRessource.addItem(self.zoneCategorie, QtWidgets.QApplication.translate("CreateTemplate_ui", "List of Categories"))
@@ -419,7 +420,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBoxAttributsCategories.setLayout(self.layoutAttributsCategories)
         self.layoutZoneCategorie.addWidget(self.groupBoxAttributsCategories)
 
-        self.mTreeListeRessourceCategorie.afficheCATEGORIE(self, listeCategorieCol1, listeCategorieCol2)
+        self.mTreeListeRessourceCategorie.afficheCATEGORIE(self, self.listeRessourceCategorie)
         #=====================================
         # [ == scrolling == ]
         self.scroll_bar_AttributsCategorie = QtWidgets.QScrollArea() 
@@ -441,7 +442,7 @@ class Ui_Dialog_CreateTemplate(object):
         #Button Add
         self.buttonAddCategorie = QtWidgets.QToolButton()
         self.buttonAddCategorie.setObjectName("buttonAddCategorie")
-        self.buttonAddCategorie.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
+        self.buttonAddCategorie.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify a category as well as these attributes.", None)
         self.buttonAddCategorie.setToolTip(mbuttonAddToolTip)
         self.buttonAddCategorie.clicked.connect(lambda : self.functionAddCategorie())
@@ -510,7 +511,7 @@ class Ui_Dialog_CreateTemplate(object):
         #Button Add
         self.buttonAddOnglet = QtWidgets.QToolButton()
         self.buttonAddOnglet.setObjectName("buttonAddOnglet")
-        self.buttonAddOnglet.setIcon(QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
+        self.buttonAddOnglet.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify a tab as well as these attributes.", None)
         self.buttonAddOnglet.setToolTip(mbuttonAddToolTip)
         self.buttonAddOnglet.clicked.connect(lambda : self.functionAddOnglet())
@@ -534,7 +535,7 @@ class Ui_Dialog_CreateTemplate(object):
           if mIndex == 0 :
              mSaveItemCurrent = None
              if self.mTreeListeModeleCategorie.currentItem() != None :
-                mSaveItemCurrent = self.mTreeListeModeleCategorie.currentItem().data(0, Qt.DisplayRole)     #item Libelle Courant
+                mSaveItemCurrent = self.mTreeListeModeleCategorie.currentItem().data(0, QtCore.Qt.DisplayRole)     #item Libelle Courant
 
              #------ DATA template 
              self.mTreeListeModeleCategorie.clear()
@@ -568,7 +569,7 @@ class Ui_Dialog_CreateTemplate(object):
        
        mTestExisteModele = returnListObjAttributsId(self, self.groupBoxAttributsModele, self.mapping_templates)[0]
        if mTestExisteModele.text() == "" :
-          bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
           self.mTreeListeRessourceModele.ihmsPlumeUpdateModele(self.Dialog, mTestExisteModele.text())
        return
@@ -579,7 +580,7 @@ class Ui_Dialog_CreateTemplate(object):
        zMess  = QtWidgets.QApplication.translate("CreateTemplate_ui", "You must enter a label.", None)
        mTestExisteCategorie = returnListObjAttributsId(self, self.groupBoxAttributsCategories, self.mapping_categories)[0]
        if mTestExisteCategorie.text() == "" :
-          bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
           self.mTreeListeRessourceCategorie.ihmsPlumeUpdateCategorie(self.Dialog, mTestExisteCategorie.text())
        return
@@ -589,9 +590,8 @@ class Ui_Dialog_CreateTemplate(object):
        zTitre = QtWidgets.QApplication.translate("CreateTemplate_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("CreateTemplate_ui", "You must enter a label.", None)
        mTestExisteOnglet = returnListObjAttributsId(self, self.groupBoxAttributsOnglets, self.mapping_tabs)[0]
-       print(mTestExisteOnglet.text())
        if mTestExisteOnglet.text() == "" :
-          bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
           self.mTreeListeRessourceOnglet.ihmsPlumeUpdateOnglet(self.Dialog, mTestExisteOnglet.text())
        return
@@ -602,6 +602,102 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBox_tab_widget_Association.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
         self.groupBox_tab_widget_Ressource.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
         return
+
+#==========================         
+#==========================         
+def returnListChildren(self, _labelClick, _listCategorie, _origine) : 
+    _dicTempoAppendReturn, _dicTempoDeletedReturn = [], []
+    i = 0
+    while i < len(_listCategorie) : 
+       _lib_label     =  _listCategorie[i]["_label"]
+       if _labelClick == _lib_label[0 : len(_labelClick)] : 
+          _dicTempoDelete = dict(zip( [                  "_displayLibelle",                    "_label",                    "_libelle",                    "_clickAsso",                    "mOrigine",                                        "mNoeud"], \
+                                      [_listCategorie[i]["_displayLibelle"], _listCategorie[i]["_label"], _listCategorie[i]["_libelle"], _listCategorie[i]["_clickAsso"], _listCategorie[i]["mOrigine"],                     _listCategorie[i]["mNoeud"] ] ))
+          _dicTempoAppend = dict(zip( [                  "_displayLibelle",                    "_label",                    "_libelle",                    "_clickAsso",                    "mOrigine",                                        "mNoeud"], \
+                                      [_listCategorie[i]["_displayLibelle"], _listCategorie[i]["_label"], _listCategorie[i]["_libelle"], _listCategorie[i]["_clickAsso"], ("CAT_OUT" if _origine == "CAT_IN" else "CAT_IN"), _listCategorie[i]["mNoeud"]] ))
+          _dicTempoAppendReturn.append(_dicTempoAppend)
+          _dicTempoDeletedReturn.append(_dicTempoDelete)
+       i += 1
+    return _dicTempoAppendReturn, _dicTempoDeletedReturn
+
+#==========================         
+#==========================         
+def returnListRessourceCategorie(self, mListCategories) : 
+    _listCategorieIn = []
+
+    i = 0
+    while i < len(self.mListCategories) : 
+       _lib_Categories     = self.mListCategories[i]["path"] 
+       _libelle_Categories = self.mListCategories[i]["label"]    #deuxième colonne dans les treeview pour le In 
+       _noeud              = "True" if self.mListCategories[i]["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+       path_elements       = re.split(r'\s*[/]\s*', _lib_Categories) #pour découper le chemin, 
+       paths               = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
+       
+       if self.mListCategories[i]["origin"] == "local" :
+          _displayLibelle = str(_libelle_Categories) + self.sepLeftTemplate + str(path_elements[ -1 ])    + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+       else :
+          _displayLibelle = str(path_elements[ -1 ])    + self.sepLeftTemplate + str(_libelle_Categories) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+
+       _dicTempo = dict(zip( ["_displayLibelle", "_label", "_libelle", "_clickAsso", "mOrigine", "mNoeud"], [_displayLibelle, _lib_Categories, _libelle_Categories, "", '', _noeud] ))
+       _listCategorieIn.append(_dicTempo)
+       i += 1
+    
+    return _listCategorieIn
+
+#==========================         
+#==========================         
+def ventileCatInCatOut(self, _mItemClicAssociation, mListTemplateCategories, mListCategories) : 
+    _listCategorieOut, _listCategorieIn = [], []
+
+    i = 0
+    while i < len(self.mListCategories) : 
+       _lib_Categories     = self.mListCategories[i]["path"] 
+       _libelle_Categories = self.mListCategories[i]["label"]    #deuxième colonne dans les treeview pour le In 
+       _noeud              = "True" if self.mListCategories[i]["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+       path_elements       = re.split(r'\s*[/]\s*', _lib_Categories) #pour découper le chemin, 
+       paths               = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
+
+       j = 0
+       mConditionInOut = False
+
+       while j < len(self.mListTemplateCategories) : 
+          _lib_Template_Categories = mListTemplateCategories[j]["shrcat_path"] if mListTemplateCategories[j]["shrcat_path"] != None else mListTemplateCategories[j]["loccat_path"]
+          
+          # _libelle (_label)  Nom du libellé de la catégorie + Nom de la catégorie (colonne 1 in QtreeWidget)
+          # _label      Nom de la catégorie                                         (colonne 2 in QtreeWidget)
+          # _libelle    Nom du libellé de la catégorie                              (colonne 3 in QtreeWidget) 
+          # _clickAsso  Nom du modèle cliqué
+          # mOrigine    Sens (In vers Out ou vice Versa
+          # mNoeud      Est-ce un Noeud
+          _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, _lib_Categories, self.mListCategories)[0]
+          _lib_Categories_in     = _returnAttribCategorie["path"]
+          _libelle_Categories_in = _returnAttribCategorie["label"]
+
+          if _returnAttribCategorie["origin"] == "local" :
+             _displayLibelle = str(_libelle_Categories_in) + self.sepLeftTemplate + str(path_elements[ -1 ])    + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+          else :
+             _displayLibelle = str(path_elements[ -1 ])    + self.sepLeftTemplate + str(_libelle_Categories_in) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+          
+          mConditionInOut = _lib_Categories == _lib_Template_Categories and str(mListTemplateCategories[j]["tpl_id"]) == _mItemClicAssociation
+          
+          _dicTempo = dict(zip( ["_displayLibelle", "_label", "_libelle", "_clickAsso", "mOrigine", "mNoeud"], [_displayLibelle, _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN' if mConditionInOut else 'CAT_OUT', _noeud] ))
+
+          # Ventilation Cat IN / Cat Out 
+          if mConditionInOut :
+             _listCategorieIn.append(_dicTempo)
+             break
+          j += 1
+       if not mConditionInOut : _listCategorieOut.append(_dicTempo)
+       i += 1
+    
+    return _listCategorieOut, _listCategorieIn
+
+#==========================         
+#===============================              
+def returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, libTemplateCategories, dicCategories) :
+    _returnLibelleTemplateCategorie = []
+    _returnLibelleTemplateCategorie = [ elemDic for elemDic in dicCategories if elemDic["path"] == libTemplateCategories ]  
+    return _returnLibelleTemplateCategorie
 
 #==========================         
 #==========================         
@@ -642,7 +738,7 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
          elif _type in ("QTimeEdit",) :
                __Val = mObj.time().toString("hh:mm:ss") if mObj.time().toString("hh:mm:ss") != "" else None 
          elif _type in ("QCheckBox",) :
-               __Val = ("true" if mObj.checkState() == Qt.Checked else "false") if  mObj.checkState() != Qt.PartiallyChecked else None 
+               __Val = ("true" if mObj.checkState() == QtCore.Qt.Checked else "false") if  mObj.checkState() != QtCore.Qt.PartiallyChecked else None 
 
          _returnListObjKeyValue[_zone] = __Val
 
@@ -660,7 +756,7 @@ def genereAttributs(self,  mapping, zoneLayout ) :
       # Libellé            "loccat_path"    : {"label" : "libelle loccat_path",     "tooltip" : "tooltip loccat_path",    "type" : "QLineEdit"},         
       mTextToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", mapping[mattrib]["tooltip"])
       _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet", "wordWrap" ]
-      _ListValues = [ QtWidgets.QLabel(), mapping[mattrib]["label"], "label_" + mattrib , mTextToolTip, Qt.AlignRight, "QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}", True ]
+      _ListValues = [ QtWidgets.QLabel(), mapping[mattrib]["label"], "label_" + mattrib , mTextToolTip, QtCore.Qt.AlignRight, "QLabel {  font-family:" + self.policeQGroupBox  +"; background-color:" + self.labelBackGround  +";}", True ]
       dicParamLabel = dict(zip(_Listkeys, _ListValues))
       _modCat_Lib_Attrib = genereLabelWithDict( dicParamLabel )
        
@@ -668,33 +764,33 @@ def genereAttributs(self,  mapping, zoneLayout ) :
       if dicLabelTooltip["type"]   == "QLineEdit" :
          okCreateZone = True
          _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet" ]
-         _ListValues = [ QtWidgets.QLineEdit(), "", "zone_" + mattrib, mTextToolTip, Qt.AlignRight, "QLineEdit {  font-family:" + self.policeQGroupBox  +";}" ]
+         _ListValues = [ QtWidgets.QLineEdit(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QLineEdit {  font-family:" + self.policeQGroupBox  +";}" ]
       elif dicLabelTooltip["type"] == "QCheckBox" :
          okCreateZone = True           
          _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet", "checked" ]
-         _ListValues = [ QtWidgets.QCheckBox(), "", "zone_" + mattrib, mTextToolTip, Qt.AlignRight, "QCheckBox {  font-family:" + self.policeQGroupBox  +";}", False ]
+         _ListValues = [ QtWidgets.QCheckBox(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QCheckBox {  font-family:" + self.policeQGroupBox  +";}", False ]
       elif dicLabelTooltip["type"] == "QComboBox" :
          okCreateZone = True
          mDicQcomboBox = ["Généralités", "Géométries", "Autres"]
          _Listkeys   = [ "typeWidget", "listItems", "currentText", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet" ]
-         _ListValues = [ QtWidgets.QComboBox(), mDicQcomboBox, mDicQcomboBox[1], "zone_" + mattrib, mTextToolTip, Qt.AlignRight, "QComboBox {  font-family:" + self.policeQGroupBox  +";}" ]
+         _ListValues = [ QtWidgets.QComboBox(), mDicQcomboBox, mDicQcomboBox[1], "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QComboBox {  font-family:" + self.policeQGroupBox  +";}" ]
          _Listkeys   = [ "typeWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet" ]
-         _ListValues = [ QtWidgets.QComboBox(), "zone_" + mattrib, mTextToolTip, Qt.AlignRight, "QComboBox {  font-family:" + self.policeQGroupBox  +";}" ]
+         _ListValues = [ QtWidgets.QComboBox(), "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QComboBox {  font-family:" + self.policeQGroupBox  +";}" ]
 
       if okCreateZone :
          dicParamButton = dict(zip(_Listkeys, _ListValues))
          _modCat_Attrib = genereButtonsWithDict( dicParamButton )
          
          if dicLabelTooltip["format"]   == "integer" :
-            _modCat_Attrib.setValidator(QIntValidator(_modCat_Attrib))
+            _modCat_Attrib.setValidator(QtGui.QIntValidator(_modCat_Attrib))
 
          if zoneLayout.objectName() == "layoutAttributsModeleCategorie" : 
             colonneLib, colonneAttrib = _col + 2, _col + 3        
          elif zoneLayout.objectName() in ["layoutAttributsModele", "layoutAttributsCategories", "layoutAttributsOnglets"] : 
             colonneLib, colonneAttrib = _col + 0, _col + 1
                     
-         zoneLayout.addWidget(_modCat_Lib_Attrib, _row, colonneLib,    Qt.AlignTop)
-         zoneLayout.addWidget(_modCat_Attrib    , _row, colonneAttrib, Qt.AlignTop)
+         zoneLayout.addWidget(_modCat_Lib_Attrib, _row, colonneLib,    QtCore.Qt.AlignTop)
+         zoneLayout.addWidget(_modCat_Attrib    , _row, colonneAttrib, QtCore.Qt.AlignTop)
          
       _row += 1
   return 
@@ -724,7 +820,6 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
        i += 1
     # Si _mapping_template_categories_id_association_id_categorie alors catégorie déplacé provenant de Out vers In
     initialiseValueOrBlank =  len(_mapping_template_categories_id_association_id_categorie)
-
     # Initialisation
     for mObj in _group :
         if (mObj.objectName()[5:] in _mapping_template_categories) :
@@ -734,7 +829,6 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
               __Val = ""
            else :    
               __Val = str(_mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ]) if _mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ] != None else "" 
-
            if _type in ("QLineEdit",) :
               mObj.setText(__Val if __Val != None else "")  
            elif _type in ("QTextEdit",) :
@@ -760,13 +854,13 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
               _displayFormat = 'hh:mm:ss'
               mObj.setTime(QTime.fromString( __Val, _displayFormat))       
            elif _type in ("QCheckBox",) :
-              mObj.setCheckState((Qt.Checked if str(__Val).lower() == 'true' else Qt.Unchecked) if __Val != None else Qt.PartiallyChecked)
+              mObj.setCheckState((QtCore.Qt.Checked if str(__Val).lower() == 'true' else QtCore.Qt.Unchecked) if __Val != None else QtCore.Qt.PartiallyChecked)
 
            mObj.setVisible(display)
     return
 
 #==========================         
-#==========================    
+#==========================  
 def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBoxAttributsModele, _mapping_template, _mListTemplates, display, _blank = None ) :
     _group = _groupBoxAttributsModele.children() 
     # Select for association et catégorie
@@ -823,7 +917,7 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
               _displayFormat = 'hh:mm:ss'
               mObj.setTime(QTime.fromString( __Val, _displayFormat))       
            elif _type in ("QCheckBox",) :
-              mObj.setCheckState((Qt.Checked if str(__Val).lower() == 'true' else Qt.Unchecked) if __Val != None else Qt.PartiallyChecked)
+              mObj.setCheckState((QtCore.Qt.Checked if str(__Val).lower() == 'true' else QtCore.Qt.Unchecked) if __Val != None else QtCore.Qt.PartiallyChecked)
 
            mObj.setVisible(display)
     return
@@ -855,6 +949,14 @@ def returnList_Id_Label( _mapping_template_categories ) :
     listeAssociationCol2 = list(reversed(listeAssociationCol2))
     return listeAssociationCol1, listeAssociationCol2
   
+#==========================         
+#==========================         
+def returnIfExisteCategorie( _mQtreeWidgetItem ) : 
+    _ret = True
+    if _mQtreeWidgetItem.font(0).bold()   : _ret = False 
+    if _mQtreeWidgetItem.font(0).italic() : _ret = False 
+    return _ret   
+
 #==========================         
 #==========================         
 def defineFont( param ) : #gras = 1, italic = 2 gras italic = 3
@@ -901,6 +1003,7 @@ class TREEVIEWASSOCIATION(QTreeWidget):
         self.colorTemplateOutVersIn           = _selfCreateTemplate.colorTemplateOutVersIn
         self.sepLeftTemplate                  = _selfCreateTemplate.sepLeftTemplate
         self.sepRightTemplate                 = _selfCreateTemplate.sepRightTemplate
+        self.fontCategorieInVersOut           = _selfCreateTemplate.fontCategorieInVersOut
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -913,7 +1016,7 @@ class TREEVIEWASSOCIATION(QTreeWidget):
             i += 1
  
         self.itemClicked.connect( self.ihmsPlumeASSOCIATION ) 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelPlumeASSOCIATION)
         self.expandAll()
         return
@@ -928,7 +1031,7 @@ class TREEVIEWASSOCIATION(QTreeWidget):
            self.treeMenu = QMenu(self)
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
            treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model / category association", None)  #Supprimer l'association modèle / Catégorie
-           self.treeAction_del = QAction(QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
+           self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_del)
            self.treeAction_del.setToolTip(treeAction_delTooltip)
            self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
@@ -938,8 +1041,8 @@ class TREEVIEWASSOCIATION(QTreeWidget):
         
     #===============================              
     def ihmsPlumeASSOCIATION(self, item, column): 
-        mItemClicAssociation        = item.data(0, Qt.DisplayRole)
-        mItemClicLibelleAssociation = item.data(1, Qt.DisplayRole)
+        mItemClicAssociation        = item.data(0, QtCore.Qt.DisplayRole)
+        mItemClicLibelleAssociation = item.data(1, QtCore.Qt.DisplayRole)
         self.modeleAssociationActif = mItemClicAssociation
         
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées == Cat Utilisées et Non Utilisées==              
@@ -950,11 +1053,13 @@ class TREEVIEWASSOCIATION(QTreeWidget):
         self.dicInVersOutDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
         self.dicOutVersInDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées
-            
+        
+        self.listCategorieOut, self.listCategorieIn = ventileCatInCatOut(self, mItemClicAssociation, self.mListTemplateCategories, self.mListCategories)
+
         self.mTreeListeCategorieIn.clear()
         self.mTreeListeCategorieOut.clear()
-        self.mTreeListeCategorieIn.affiche_CAT_IN_OUT(self,  mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut, action = True)
-        self.mTreeListeCategorieOut.affiche_CAT_IN_OUT(self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut)
+        self.mTreeListeCategorieIn.affiche_CAT_IN_OUT(  self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut, action = True)
+        self.mTreeListeCategorieOut.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut) # Uniquement pour instancier OneShot
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
         return
@@ -983,27 +1088,15 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
 
         #- Fichier de mapping table ihm
         self.mapping_template_categories = load_mapping_read_meta_template_categories
+        
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.menuContextuelPlume_CAT_IN_OUT) 
         return
 
     #===============================              
-    def returnLibelleCategorie(self, _mItemClicAssociation, _mListTemplateCategories) :
-        # Recherche pour mettre le libelle de la table des catégories et pas celui de la table des modèleCatégories
-        findLibCat = _mapping_template_categories[i]["shrcat_path"] if _mapping_template_categories[i]["shrcat_path"] != None else _mapping_template_categories[i]["loccat_path"]
-        j = 0
-        _label = ""
-        while j < len(_mListCategories) :
-           if findLibCat == _mListCategories[j]["path"]  :
-              _label = _mListCategories[j]["label"]
-              _node  = _mListCategories[j]["is_node"]
-              break
-           j += 1
-        # Recherche pour mettre le libelle de la table des catégories et pas celui de la table des modèleCatégories
-        return
-
-    #===============================              
-    def design_Items(self, _item, _mDicInVersOutDesign, _labelNewNoeud, _color) :
+    def design_Items(self, _item, _mDicInVersOutDesign, _label, _color) :
         if _mDicInVersOutDesign != None :
-           if _labelNewNoeud in _mDicInVersOutDesign :  #Design color 
+           if _label in _mDicInVersOutDesign :  #Design color 
               _item.setBackground(0, _color)
         return
 
@@ -1024,13 +1117,18 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         self.dicOutVersInDesign               = _selfCreateTemplate.dicOutVersInDesign # Pour la gestion des double clic et la regénération des données en antrée de l'algo
         self.sepLeftTemplate                  = _selfCreateTemplate.sepLeftTemplate
         self.sepRightTemplate                 = _selfCreateTemplate.sepRightTemplate
+        self.fontCategorieInVersOut           = _selfCreateTemplate.fontCategorieInVersOut
+        #---
+        self.self_Cat_In                      = self_Cat_In   #self_Cat_In                                                     
+        self.self_Cat_Out                     = self_Cat_Out  #self_Cat_Out 
+        #---
+        self.listCategorieOut                 = _selfCreateTemplate.listCategorieOut   # Liste des catégories non utilisées en fonction du click                                                     
+        self.listCategorieIn                  = _selfCreateTemplate.listCategorieIn    # Liste des catégories utilisées en fonction du click 
+        #---
 
         #---
-        _color_Out_InVersOut = QBrush(QtGui.QColor(self.colorTemplateInVersOut))
-        _color_In_OutVersIn  = QBrush(QtGui.QColor(self.colorTemplateOutVersIn))
-        #---
-        self.self_Cat_In  = _selfCreateTemplate.mTreeListeCategorieIn   #self_Cat_In                                                     
-        self.self_Cat_Out = _selfCreateTemplate.mTreeListeCategorieOut  #self_Cat_Out 
+        _color_Out_InVersOut = QtGui.QBrush(QtGui.QColor(self.colorTemplateInVersOut))
+        _color_In_OutVersIn  = QtGui.QBrush(QtGui.QColor(self.colorTemplateOutVersIn))
         #---
         self.header().setStretchLastSection(True)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1042,160 +1140,220 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         dictNoeudsArboIn  , rowNodeIn  = {}, 0 
         dictNoeudsArboOut , rowNodeOut = {}, 0 
 
-        if not action : return #Permet de ne pas repasser dans l'algo pour la création des QTreeWidgetItem
-        
+        if not action : return # Permet de ne pas repasser dans l'algo pour instancier les variables dans la création des QTreeWidgetItem
+        """
+        EXEMPLE
+        {'_displayLibelle': 'dcat:distribution *Distribution*',               {'_displayLibelle': 'dcat:contactPoint *Point de contact*', 
+         '_label'         : 'dcat:distribution',                               '_label'         : 'dcat:distribution / dcat:accessService / dcat:contactPoint', 
+         '_libelle'       : 'Distribution',                                    '_libelle'       : 'Point de contact', 
+         '_clickAsso'     : '23',                                              '_clickAsso'     : '23',
+         'mOrigine'       : 'CAT_IN',                                          'mOrigine'       : 'CAT_IN', 
+         'mNoeud'         : 'True'}                                            'mNoeud'         : 'True'}
+        """
+        # ======================================
+        # ======================================
+        #Create Arbo IN
         i = 0
-        while i < len(self.mListCategories) : 
-           _lib_Categories     = self.mListCategories[i]["path"] 
-           _libelle_Categories = self.mListCategories[i]["label"]    #deuxième colonne dans les treeview pour le In 
-           _noeud              = "True" if self.mListCategories[i]["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
-           path_elements   = re.split(r'\s*[/]\s*', _lib_Categories) #pour découper le chemin, 
-           paths           = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
 
-           j = 0
-           findInOut = False
-           while j < len(self.mListTemplateCategories) : 
-              _lib_Template_Categories = self.mListTemplateCategories[j]["shrcat_path"] if self.mListTemplateCategories[j]["shrcat_path"] != None else self.mListTemplateCategories[j]["loccat_path"]
-              #-
-              # Cat IN 
-              if _lib_Categories == _lib_Template_Categories and str(self.mListTemplateCategories[j]["tpl_id"]) == _mItemClicAssociation :
-                 # _libelle (_label)  Nom du libellé de la catégorie + Nom de la catégorie (colonne 1 in QtreeWidget)
-                 # _label      Nom de la catégorie                                         (colonne 2 in QtreeWidget)
-                 # _libelle    Nom du libellé de la catégorie                              (colonne 3 in QtreeWidget) 
-                 # _clickAsso  Nom du modèle cliqué
-                 # mOrigine    Sens (In vers Out ou vice Versa
-                 # mNoeud      Est-ce un Noeud
-                 
-                 _returnAttribCategorie = self.returnAttribCategoriesEnFonctionLibelleTemplateCategorie(_lib_Categories, self.mListCategories)[0]
-                 _lib_Categories_in     = _returnAttribCategorie["path"]
-                 _libelle_Categories_in = _returnAttribCategorie["label"]
+        while i < len(self.listCategorieIn) : 
+           _lib_Categories     = self.listCategorieIn[i]["_label"]                         # path origine 
+           _libelle_Categories = self.listCategorieIn[i]["_libelle"]                       # deuxième colonne dans les treeview pour le In 
+           _noeud              = self.listCategorieIn[i]["mNoeud"]                         # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+           path_elements   = re.split(r'\s*[/]\s*', _lib_Categories)                                          #pour découper le chemin, 
+           paths           = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
+           _label = self.listCategorieIn[i]["_label"]  # Id Cat
+           paramQTreeWidgetItem = [ self.listCategorieIn[i]["_displayLibelle"], self.listCategorieIn[i]["_label"], self.listCategorieIn[i]["_libelle"], self.listCategorieIn[i]["_clickAsso"], self.listCategorieIn[i]["mOrigine"], self.listCategorieIn[i]["mNoeud"] ]
+           nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
+           self.design_Items(nodeUser, self.dicOutVersInDesign, _label, _color_In_OutVersIn) #For colorisation
+           
+           # - Recherche dans le dictionnaire si existance de l'item en balayant les ancêtres (parents) Paths
+           if len(paths) == 0 :
+              self.self_Cat_In.insertTopLevelItems( rowNodeIn, [ nodeUser ] )
+              dictNoeudsArboIn[_label] = nodeUser
+              rowNodeIn += 1
+           else :
+              # ======================================
+              # Ajout des noeuds en fonction des ancêtres (parents) Paths
+              iElem = 0
+              while iElem < len(paths) : 
+                 newNoeud = paths[iElem]
+                 _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, newNoeud, self.mListCategories)[0]
+                 _lib_Categories_In     = _returnAttribCategorie["path"]
+                 _libelle_Categories_In = _returnAttribCategorie["label"]
+                 _noeud                  = "True" if _returnAttribCategorie["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+                 _path_elements_In   = re.split(r'\s*[/]\s*', _lib_Categories_In) #pour découper le chemin, 
 
                  if _returnAttribCategorie["origin"] == "local" :
-                    _displayLibelle = str(_libelle_Categories_in) + self.sepLeftTemplate + str(path_elements[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+                    _In_displayLibelleNewNoeud = str(_libelle_Categories_In) + self.sepLeftTemplate + str(_path_elements_In[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
                  else :
-                    _displayLibelle = str(path_elements[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_in) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+                    _In_displayLibelleNewNoeud = str(_path_elements_In[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_In) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
 
-                 _displayLibelle, _label, _libelle, _clickAsso, mOrigine, mNoeud = _displayLibelle, _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN', _noeud
-                 nodeUser = QTreeWidgetItem(None, [ _displayLibelle, _label, _libelle, _clickAsso, mOrigine, mNoeud ])
-                 self.design_Items(nodeUser, self.dicOutVersInDesign, _label, _color_In_OutVersIn) #For colorisation
-                  # - Recherche dans le dictionnaire si existance de l'item en balayant les ancêtres (parents)
-                 if len(paths) == 0 :
-                    self.self_Cat_In.insertTopLevelItems( rowNodeIn, [ nodeUser ] )
-                    dictNoeudsArboIn[_label]  = nodeUser
-                    rowNodeIn += 1
-                 else :
-                    iElem = 0
-                    while iElem < len(paths) : 
-                       newNoeud = paths[iElem]
-                       _returnAttribCategorie = self.returnAttribCategoriesEnFonctionLibelleTemplateCategorie(newNoeud, self.mListCategories)[0]
-                       _lib_Categories_in     = _returnAttribCategorie["path"]
-                       _libelle_Categories_in = _returnAttribCategorie["label"]
+                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _In_displayLibelleNewNoeud, _lib_Categories_In, _libelle_Categories_In, _mItemClicAssociation, 'CAT_IN', _noeud
+                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ]
+                 nodeUserNewNoeud = QTreeWidgetItem(None, paramQTreeWidgetItem)
+                 self.design_Items(nodeUserNewNoeud, self.dicOutVersInDesign, _labelNewNoeud, _color_In_OutVersIn) #For colorisation
+                 
+                 if newNoeud not in dictNoeudsArboIn : # Si l'ancêtre n'est pas dans le dictionnaire In
+                    nodeUserNewNoeud.setFont(0, defineFont(self.fontCategorieInVersOut))
 
-                       if _returnAttribCategorie["origin"] == "local" :
-                          _displayLibelle = str(_libelle_Categories_in) + self.sepLeftTemplate + str(path_elements[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
-                       else :
-                          _displayLibelle = str(path_elements[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_in) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
-
-                       _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _displayLibelle, _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN', _noeud 
-                       nodeUserNewNoeud = QTreeWidgetItem(None, [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ])
-                       self.design_Items(nodeUserNewNoeud, self.dicOutVersInDesign, _labelNewNoeud, _color_In_OutVersIn) #For colorisation
-
-                       if newNoeud not in dictNoeudsArboIn : # Si l'ancêtre n'est pas dans le dictionnaire IN 
-
-                          if len(paths) == 1 :
-                             self.self_Cat_In.insertTopLevelItems( rowNodeIn, [ nodeUserNewNoeud ] )
-                             rowNodeIn += 1
-                          else :
-                             dictNoeudsArboIn[ paths[iElem - 1] ].addChild( nodeUserNewNoeud )
-                             dictNoeudsArboIn[ paths[iElem - 1] ].setIcon(0, iconSource)
-                          dictNoeudsArboIn[ _labelNewNoeud ]  = nodeUserNewNoeud
-                       iElem += 1
-
-                    # Et enfin on ajoute ma catégorie   
-                    dictNoeudsArboIn[_labelNewNoeud].addChild( nodeUser )
-                    dictNoeudsArboIn[_labelNewNoeud].setIcon(0, iconSource)
-                    dictNoeudsArboIn[_label]  = nodeUser
-
-                 findInOut = True
-                 break
-              j += 1
-
-           #-
-           # Cat OUT 
-           if not findInOut :
-              _returnAttribCategorie = self.returnAttribCategoriesEnFonctionLibelleTemplateCategorie(_lib_Categories, self.mListCategories)[0]
-              _lib_Categories_out     = _returnAttribCategorie["path"]
-              _libelle_Categories_out = _returnAttribCategorie["label"]
-
-              if _returnAttribCategorie["origin"] == "local" :
-                 _Out_displayLibelle = str(_libelle_Categories_out) + self.sepLeftTemplate + str(path_elements[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
-              else :
-                 _Out_displayLibelle = str(path_elements[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_out) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
-
-              _displayLibelle,  _label, _libelle, _clickAsso, mOrigine, mNoeud = _Out_displayLibelle, _lib_Categories_out, _libelle_Categories_out, _mItemClicAssociation, 'CAT_OUT', _noeud  
-              nodeUser = QTreeWidgetItem(None, [ _displayLibelle,  _label, _libelle, _clickAsso, mOrigine, mNoeud ])
-              self.design_Items(nodeUser, self.dicInVersOutDesign, _label, _color_Out_InVersOut) #For colorisation
-              
-              # - Recherche dans le dictionnaire si existance de l'item en balayant les ancêtres (parents)
-              if len(paths) == 0 :
-                 self.self_Cat_Out.insertTopLevelItems( rowNodeOut, [ nodeUser ] )
-                 dictNoeudsArboOut[_label] = nodeUser
-                 rowNodeOut += 1
-              else :
-                 iElem = 0
-                 while iElem < len(paths) : 
-                    newNoeud = paths[iElem]
-                    _returnAttribCategorie = self.returnAttribCategoriesEnFonctionLibelleTemplateCategorie(newNoeud, self.mListCategories)[0]
-                    _lib_Categories_out     = _returnAttribCategorie["path"]
-                    _libelle_Categories_out = _returnAttribCategorie["label"]
-                    _path_elements_out   = re.split(r'\s*[/]\s*', _lib_Categories_out) #pour découper le chemin, 
-
-                    if _returnAttribCategorie["origin"] == "local" :
-                       _Out_displayLibelleNewNoeud = str(_libelle_Categories_out) + self.sepLeftTemplate + str(_path_elements_out[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+                    if iElem == 0 :
+                       self.self_Cat_In.insertTopLevelItems( rowNodeIn, [ nodeUserNewNoeud ] )
+                       self.design_Items(nodeUserNewNoeud, self.dicOutVersInDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+                       rowNodeIn += 1
                     else :
-                       _Out_displayLibelleNewNoeud = str(_path_elements_out[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_out) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
-
-                    _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _Out_displayLibelleNewNoeud, _lib_Categories_out, _libelle_Categories_out, _mItemClicAssociation, 'CAT_OUT', mNoeud
-                    nodeUserNewNoeud = QTreeWidgetItem(None, [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ])
-                    self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
-                    
-                    if newNoeud not in dictNoeudsArboOut : # Si l'ancêtre n'est pas dans le dictionnaire OUT
-
-                       if iElem == 0 :
-                          self.self_Cat_Out.insertTopLevelItems( rowNodeOut, [ nodeUserNewNoeud ] )
-                          self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
-                          rowNodeOut += 1
-                       else :
-                          dictNoeudsArboOut[ paths[iElem - 1] ].addChild( nodeUserNewNoeud )
-                          dictNoeudsArboOut[ paths[iElem - 1] ].setIcon(0, iconSource)
-                          self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
-                       dictNoeudsArboOut[ _labelNewNoeud ]  = nodeUserNewNoeud
-                    iElem += 1
-                    
-                 # Et enfin on ajoute ma catégorie   
-                 dictNoeudsArboOut[_labelNewNoeud].addChild( nodeUser )
-                 self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
-                 dictNoeudsArboOut[_labelNewNoeud].setIcon(0, iconSource)
-                 dictNoeudsArboOut[_label]  = nodeUser
+                       dictNoeudsArboIn[ paths[iElem - 1] ].addChild( nodeUserNewNoeud )
+                       dictNoeudsArboIn[ paths[iElem - 1] ].setIcon(0, iconSource)
+                       self.design_Items(nodeUserNewNoeud, self.dicOutVersInDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+                    dictNoeudsArboIn[ _labelNewNoeud ]  = nodeUserNewNoeud
+                 iElem += 1
+              # Ajout des noeuds en fonction des ancêtres (parents) Paths
+              # ======================================
+                 
+              # Et enfin on ajoute ma catégorie   
+              dictNoeudsArboIn[_labelNewNoeud].addChild( nodeUser )
+              self.design_Items(nodeUserNewNoeud, self.dicOutVersInDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+              dictNoeudsArboIn[_labelNewNoeud].setIcon(0, iconSource)
+              dictNoeudsArboIn[_label]  = nodeUser
 
            i += 1
-        #Create Arbo
+        #Create Arbo IN
+        # ======================================
+        # ======================================
+        #Create Arbo OUT
+        i = 0
+        while i < len(self.listCategorieOut) : 
+           _lib_Categories     = self.listCategorieOut[i]["_label"]                         # path origine 
+           _libelle_Categories = self.listCategorieOut[i]["_libelle"]                       # deuxième colonne dans les treeview pour le In 
+           _noeud              = self.listCategorieOut[i]["mNoeud"]                         # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+           path_elements   = re.split(r'\s*[/]\s*', _lib_Categories)                                          #pour découper le chemin, 
+           paths           = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
+           _label = self.listCategorieOut[i]["_label"]  # Id Cat
+           paramQTreeWidgetItem = [ self.listCategorieOut[i]["_displayLibelle"], self.listCategorieOut[i]["_label"], self.listCategorieOut[i]["_libelle"], self.listCategorieOut[i]["_clickAsso"], self.listCategorieOut[i]["mOrigine"], self.listCategorieOut[i]["mNoeud"] ]
+           nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
+           self.design_Items(nodeUser, self.dicInVersOutDesign, _label, _color_Out_InVersOut) #For colorisation
+           
+           # - Recherche dans le dictionnaire si existance de l'item en balayant les ancêtres (parents) Paths
+           if len(paths) == 0 :
+              self.self_Cat_Out.insertTopLevelItems( rowNodeOut, [ nodeUser ] )
+              dictNoeudsArboOut[_label] = nodeUser
+              rowNodeOut += 1
+           else :
+              # ======================================
+              # Ajout des noeuds en fonction des ancêtres (parents) Paths
+              iElem = 0
+              while iElem < len(paths) : 
+                 newNoeud = paths[iElem]
+                 _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, newNoeud, self.mListCategories)[0]
+                 _lib_Categories_out     = _returnAttribCategorie["path"]
+                 _libelle_Categories_out = _returnAttribCategorie["label"]
+                 _noeud                  = "True" if _returnAttribCategorie["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+                 _path_elements_out   = re.split(r'\s*[/]\s*', _lib_Categories_out) #pour découper le chemin, 
 
+                 if _returnAttribCategorie["origin"] == "local" :
+                    _Out_displayLibelleNewNoeud = str(_libelle_Categories_out) + self.sepLeftTemplate + str(_path_elements_out[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+                 else :
+                    _Out_displayLibelleNewNoeud = str(_path_elements_out[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_out) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+
+                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _Out_displayLibelleNewNoeud, _lib_Categories_out, _libelle_Categories_out, _mItemClicAssociation, 'CAT_OUT', _noeud
+                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ]
+                 nodeUserNewNoeud = QTreeWidgetItem(None, paramQTreeWidgetItem)
+                 self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+                 
+                 if newNoeud not in dictNoeudsArboOut : # Si l'ancêtre n'est pas dans le dictionnaire OUT
+                    nodeUserNewNoeud.setFont(0, defineFont(self.fontCategorieInVersOut))
+
+                    if iElem == 0 :
+                       self.self_Cat_Out.insertTopLevelItems( rowNodeOut, [ nodeUserNewNoeud ] )
+                       self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+                       rowNodeOut += 1
+                    else :
+                       dictNoeudsArboOut[ paths[iElem - 1] ].addChild( nodeUserNewNoeud )
+                       dictNoeudsArboOut[ paths[iElem - 1] ].setIcon(0, iconSource)
+                       self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+                    dictNoeudsArboOut[ _labelNewNoeud ]  = nodeUserNewNoeud
+                 iElem += 1
+              # Ajout des noeuds en fonction des ancêtres (parents) Paths
+              # ======================================
+                 
+              # Et enfin on ajoute ma catégorie   
+              dictNoeudsArboOut[_labelNewNoeud].addChild( nodeUser )
+              self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
+              dictNoeudsArboOut[_labelNewNoeud].setIcon(0, iconSource)
+              dictNoeudsArboOut[_label]  = nodeUser
+
+           i += 1
+        #Create Arbo OUT
+        # ======================================
+        # ======================================
         self.self_Cat_In.itemClicked.connect( self.ihmsPlume_CAT_IN_OUT ) 
         self.self_Cat_Out.itemClicked.connect( self.ihmsPlume_CAT_IN_OUT ) 
         return
 
     #===============================              
+    def menuContextuelPlume_CAT_IN_OUT(self, point):
+        index = self.indexAt(point)
+        if not index.isValid():
+           return
+        #-------
+        if index.data(0) != None : 
+           item = self.currentItem()
+           if item != None :
+              mOrigine      = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
+              self.treeMenu = QMenu(self)
+              #-
+              if returnIfExisteCategorie(item) : # Existe  
+                 if item.childCount() == 0 : 
+                    menuIcon = returnIcon(os.path.dirname(__file__) + ("\\icons\\buttons\\deplace_right.svg" if mOrigine == "CAT_OUT" else "\\icons\\buttons\\deplace_left.svg"))  
+                    libActionAndAction = QtWidgets.QApplication.translate("CreateTemplate_ui",  "Move category", None)       
+                    treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", libActionAndAction, None) #Déplacer la catégorie
+                    self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+                    self.treeMenu.addAction(self.treeAction_add)
+                    self.treeAction_add.setToolTip(treeAction_addTooltip)
+                    self.treeAction_add.triggered.connect( lambda : self.moveCatContextuel(item, "libActionAndAction") )
+                 elif item.childCount() > 0 : 
+                    menuIcon = returnIcon(os.path.dirname(__file__) + ("\\icons\\buttons\\deplace_right.svg" if mOrigine == "CAT_OUT" else "\\icons\\buttons\\deplace_left.svg"))           
+                    libActionAndAction1 = QtWidgets.QApplication.translate("CreateTemplate_ui",  "Move the category with its subcategories", None)       
+                    treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", libActionAndAction1, None) # Déplacer la catégorie avec ses sous catégories 
+                    self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+                    self.treeMenu.addAction(self.treeAction_add)
+                    self.treeAction_add.setToolTip(treeAction_addTooltip)
+                    self.treeAction_add.triggered.connect( lambda : self.moveCatContextuel(item, "libActionAndAction1") )
+                    #-
+                    menuIcon = returnIcon(os.path.dirname(__file__) + ("\\icons\\buttons\\deplace_right.svg" if mOrigine == "CAT_OUT" else "\\icons\\buttons\\deplace_left.svg"))           
+                    libActionAndAction2 = QtWidgets.QApplication.translate("CreateTemplate_ui",  "Move the category without its subcategories", None)       
+                    treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", libActionAndAction2, None) # Déplacer la catégorie sans ses sous catégories
+                    self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+                    self.treeMenu.addAction(self.treeAction_add)
+                    self.treeAction_add.setToolTip(treeAction_addTooltip)
+                    self.treeAction_add.triggered.connect( lambda : self.moveCatContextuel(item, "libActionAndAction2") )
+              else : # N'existe pas don en italic ou gras ou gras italic  
+                 if item.childCount() > 0 : 
+                    menuIcon = returnIcon(os.path.dirname(__file__) + ("\\icons\\buttons\\deplace_right.svg" if mOrigine == "CAT_OUT" else "\\icons\\buttons\\deplace_left.svg"))           
+                    libActionAndAction3 = QtWidgets.QApplication.translate("CreateTemplate_ui",  "Move subcategories", None)       
+                    treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", libActionAndAction3, None) # Déplacer les sous catégories
+                    self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+                    self.treeMenu.addAction(self.treeAction_add)
+                    self.treeAction_add.setToolTip(treeAction_addTooltip)
+                    self.treeAction_add.triggered.connect( lambda : self.moveCatContextuel(item, "libActionAndAction3") )
+              #-------
+              self.treeMenu.exec_(self.mapToGlobal(point))
+        return
+        
+    #===============================              
     def ihmsPlume_CAT_IN_OUT(self, item, column): 
-        mItemClic_CAT_IN_OUT = item.data(1, Qt.DisplayRole)  # id catégorie
-        mItemClicAssociation = item.data(3, Qt.DisplayRole)  # id association
-        mOrigine             = item.data(4, Qt.DisplayRole)  # Origine Cat In ou Cat OUT
+        mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
+        mItemClicAssociation = item.data(3, QtCore.Qt.DisplayRole)  # id association
+        mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
 
         if mOrigine == "CAT_IN" :
-           #Affiche les attributs
-           afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
-           #Initialise les attributs avec valeurs
-           initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
+           if returnIfExisteCategorie(item) : 
+              #Affiche les attributs
+              afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
+              #Initialise les attributs avec valeurs
+              initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
+           else :   
+              #Affiche les attributs
+              afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
         else :   
            #Efface les attributs
            afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
@@ -1213,6 +1371,121 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         return _ret
 
     #===============================              
+    def fontionTritDict(self, value):
+        return value['_label']
+
+    #===============================              
+    def moveCatContextuel(self, item, libActionAndAction = None):
+        if item == None : return 
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconSource = returnIcon(_pathIcons + "/plume.svg")  
+        _pathIcons2 = os.path.dirname(__file__) + "/icons/general"
+        iconSource2 = returnIcon(_pathIcons2 + "/verrou.svg")  
+
+        # _displayLibelle Libellé affiché de la catégorie (colonne 0 in QtreeWidget)
+        # _label          Nom de la catégorie             (colonne 1 in QtreeWidget)
+        # _libelle        Nom du libellé de la catégorie  (colonne 2 in QtreeWidget) 
+        # _clickAsso      Nom du modèle cliqué
+        # mOrigine        Sens (In vers Out ou vice Versa
+        # mNoeud          Est-ce un Noeud
+        mItemClic_displayLibelle_CAT_IN_OUT = item.data(0, QtCore.Qt.DisplayRole)  # Libellé affiché
+        mItemClic_CAT_IN_OUT         = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
+        mItemClic_libelle_CAT_IN_OUT = item.data(2, QtCore.Qt.DisplayRole)  # deuxième colonne dans les treeview
+        mItemClicAssociation         = item.data(3, QtCore.Qt.DisplayRole)  # id association
+        mOrigine                     = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
+        mNoeud                       = item.data(5, QtCore.Qt.DisplayRole)  # si c'est un noeud
+        """
+        EXEMPLE
+        {'_displayLibelle': 'dcat:distribution *Distribution*',               {'_displayLibelle': 'dcat:contactPoint *Point de contact*', 
+         '_label'         : 'dcat:distribution',                               '_label'         : 'dcat:distribution / dcat:accessService / dcat:contactPoint', 
+         '_libelle'       : 'Distribution',                                    '_libelle'       : 'Point de contact', 
+         '_clickAsso'     : '23',                                              '_clickAsso'     : '23',
+         'mOrigine'       : 'CAT_IN',                                          'mOrigine'       : 'CAT_IN', 
+         'mNoeud'         : 'True'}                                            'mNoeud'         : 'True'}
+
+                    libActionAndAction = "Move category"         
+                    libActionAndAction = "Move the category with its subcategories"         
+                    libActionAndAction = "Move the category without its subcategories"     
+                    libActionAndAction = "Move subcategories"        
+
+        """
+        _dicTempoDelete = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
+                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, mOrigine,   mNoeud ] ))
+        _dicTempoAppend = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
+                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, ("CAT_OUT" if mOrigine == "CAT_IN" else "CAT_IN"), mNoeud] ))
+        print(libActionAndAction)
+        #if libActionAndAction in ["Move the category with its subcategories", "Move category", "Move subcategories"] :
+        if libActionAndAction in ["libActionAndAction", "libActionAndAction1", "libActionAndAction3"] :
+           if mOrigine == "CAT_IN" :
+              # Gestion Item Click and Children 
+              _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieIn, "CAT_IN")
+              # 
+              iElem = 0
+              while iElem < len(_dicTempoAppendChildren) : 
+                  self.listCategorieOut.append(_dicTempoAppendChildren[iElem])
+                  try :
+                     _index = self.listCategorieIn.index(_dicTempoDeleteChildren[iElem])
+                     del self.listCategorieIn[_index]
+                  except : pass      
+
+                  self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
+                  if _dicTempoAppendChildren[iElem]["_label"] in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+                  iElem += 1
+              # Gestion Item Click and Children 
+              # -
+           else :   
+              # Gestion Item Click and Children 
+              _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieOut, "CAT_OUT")
+              # 
+              iElem = 0
+              while iElem < len(_dicTempoAppendChildren) : 
+                  self.listCategorieIn.append(_dicTempoAppendChildren[iElem])
+                  try :
+                     _index = self.listCategorieOut.index(_dicTempoDeleteChildren[iElem])
+                     del self.listCategorieOut[_index]
+                  except : pass      
+
+                  self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
+                  if _dicTempoAppendChildren[iElem]["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+                  iElem += 1
+              # Gestion Item Click and Children 
+              # -
+
+        #elif libActionAndAction == "Move the category without its subcategories" : 
+        elif libActionAndAction == "libActionAndAction2" :
+           if mOrigine == "CAT_IN" :
+              # 
+              self.listCategorieOut.append(_dicTempoAppend)
+              try :
+                 _index = self.listCategorieIn.index(_dicTempoDelete)
+                 del self.listCategorieIn[_index]
+              except : pass      
+
+              self.dicInVersOutDesign[_dicTempoAppend["_label"]] = mItemClicAssociation
+              if _dicTempoAppend["_label"] in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_dicTempoAppend["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+              # Gestion Item Click and Children 
+              # -
+           else :   
+              self.listCategorieIn.append(_dicTempoAppend)
+              try :
+                 _index = self.listCategorieOut.index(_dicTempoDelete)
+                 del self.listCategorieOut[_index]
+              except : pass      
+
+              self.dicOutVersInDesign[_dicTempoAppend["_label"]] = mItemClicAssociation
+              if _dicTempoAppend["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppend["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+              # -
+        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fontionTritDict, reverse=False)
+        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fontionTritDict, reverse=False)
+        # -
+        self.self_Cat_In.clear()
+        self.self_Cat_Out.clear()
+        self.self_Cat_In.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out, action = True)
+        #Efface les attributs
+        afficheAttributs( self._selfCreateTemplate, self._selfCreateTemplate.groupBoxAttributsModeleCategorie, self._selfCreateTemplate.mapping_template_categories, False )
+        return
+        
+    #===============================              
     def moveDoubleClicked(self, item, column):
         if item == None : return 
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
@@ -1220,222 +1493,82 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         _pathIcons2 = os.path.dirname(__file__) + "/icons/general"
         iconSource2 = returnIcon(_pathIcons2 + "/verrou.svg")  
 
-        # _label      Nom de la catégorie             (colonne 1 in QtreeWidget)
-        # _libelle    Nom du libellé de la catégorie  (colonne 2 in QtreeWidget) 
-        # _clickAsso  Nom du modèle cliqué
-        # mOrigine    Sens (In vers Out ou vice Versa
-        # mNoeud      Est-ce un Noeud
-        mItemClic_CAT_IN_OUT         = item.data(1, Qt.DisplayRole)  # id catégorie
-        mItemClic_libelle_CAT_IN_OUT = item.data(2, Qt.DisplayRole)  # deuxième colonne dans les treeview
-        mItemClicAssociation         = item.data(3, Qt.DisplayRole)  # id association
-        mOrigine                     = item.data(4, Qt.DisplayRole)  # Origine Cat In ou Cat OUT
-        mNoeud                       = True if item.data(5, Qt.DisplayRole) == "True" else False  # si c'est un noeud
-
-        self.mListTemplateCategories  = self._selfCreateTemplate.mListTemplateCategories
-        listNew = [] 
-
-        # Eclatement for ancêtres du clic IN
-        path_elements   = re.split(r'\s*[/]\s*', mItemClic_CAT_IN_OUT) #pour découper le chemin, 
-        paths           = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
+        # _displayLibelle Libellé affiché de la catégorie (colonne 0 in QtreeWidget)
+        # _label          Nom de la catégorie             (colonne 1 in QtreeWidget)
+        # _libelle        Nom du libellé de la catégorie  (colonne 2 in QtreeWidget) 
+        # _clickAsso      Nom du modèle cliqué
+        # mOrigine        Sens (In vers Out ou vice Versa
+        # mNoeud          Est-ce un Noeud
+        mItemClic_displayLibelle_CAT_IN_OUT = item.data(0, QtCore.Qt.DisplayRole)  # Libellé affiché
+        mItemClic_CAT_IN_OUT         = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
+        mItemClic_libelle_CAT_IN_OUT = item.data(2, QtCore.Qt.DisplayRole)  # deuxième colonne dans les treeview
+        mItemClicAssociation         = item.data(3, QtCore.Qt.DisplayRole)  # id association
+        mOrigine                     = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
+        mNoeud                       = item.data(5, QtCore.Qt.DisplayRole)  # si c'est un noeud
+        """
+        EXEMPLE
+        {'_displayLibelle': 'dcat:distribution *Distribution*',               {'_displayLibelle': 'dcat:contactPoint *Point de contact*', 
+         '_label'         : 'dcat:distribution',                               '_label'         : 'dcat:distribution / dcat:accessService / dcat:contactPoint', 
+         '_libelle'       : 'Distribution',                                    '_libelle'       : 'Point de contact', 
+         '_clickAsso'     : '23',                                              '_clickAsso'     : '23',
+         'mOrigine'       : 'CAT_IN',                                          'mOrigine'       : 'CAT_IN', 
+         'mNoeud'         : 'True'}                                            'mNoeud'         : 'True'}
+        """
+        _dicTempoDelete = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
+                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, mOrigine,   mNoeud ] ))
+        _dicTempoAppend = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
+                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, ("CAT_OUT" if mOrigine == "CAT_IN" else "CAT_IN"), mNoeud] ))
 
         if mOrigine == "CAT_IN" :
-           # =======================
-           d = list(self.mListTemplateCategories)
-           listNew = [] 
-           for elemDict in d :
-               if str(elemDict["tpl_id"]) == mItemClicAssociation : #Gestion du modèle template catégories sélectionné
-                  _lib_Template_Categories = elemDict["shrcat_path"] if elemDict["shrcat_path"] != None else elemDict["loccat_path"]
-                  _lib = _lib_Template_Categories
-                  
-                  #if mNoeud :
-                  # Eclatement for ancêtres dans la liste des mListTemplateCategories
-                  path_elements_lib_Template_Categories   = re.split(r'\s*[/]\s*', _lib_Template_Categories) #pour découper le chemin, 
-                  #paths_lib_Template_Categories           = [ ' / '.join(path_elements_lib_Template_Categories[:ii + 1] ) for ii in range(len(path_elements_lib_Template_Categories) - 1) ]  #Chemin des parents
-                  paths_lib_Template_Categories           = [ ' / '.join(path_elements_lib_Template_Categories[:ii + 1] ) for ii in range(len(path_elements_lib_Template_Categories) ) ]  #Chemin des parents
-                  _lib_Template_Categories = _lib_Template_Categories if len(paths_lib_Template_Categories) == 0 else paths_lib_Template_Categories[0]
-                  
-                  #if mItemClic_CAT_IN_OUT in _lib :
-                  if mItemClic_CAT_IN_OUT in paths_lib_Template_Categories :
-                     self.dicInVersOutDesign[_lib] = mItemClic_CAT_IN_OUT
-                     if _lib in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_lib]   # Suppprimer la clé dans l'autre dictionnaire 
+           # Gestion Item Click and Children 
+           _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieIn, "CAT_IN")
+           # 
+           iElem = 0
+           while iElem < len(_dicTempoAppendChildren) : 
+               self.listCategorieOut.append(_dicTempoAppendChildren[iElem])
+               try :
+                  _index = self.listCategorieIn.index(_dicTempoDeleteChildren[iElem])
+                  del self.listCategorieIn[_index]
+               except : pass      
 
-                     for elemPath in paths_lib_Template_Categories :
-                         self.dicInVersOutDesign[elemPath] = mItemClic_CAT_IN_OUT
-                         if elemPath in self.dicOutVersInDesign :  del self.dicOutVersInDesign[elemPath]   # Suppprimer la clé dans l'autre dictionnaire
+               self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
+               if _dicTempoAppendChildren[iElem]["_label"] in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+               iElem += 1
+           # Gestion Item Click and Children 
+           # -
+        else :   
+           # Gestion Item Click and Children 
+           _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieOut, "CAT_OUT")
+           # 
+           iElem = 0
+           while iElem < len(_dicTempoAppendChildren) : 
+               self.listCategorieIn.append(_dicTempoAppendChildren[iElem])
+               try :
+                  _index = self.listCategorieOut.index(_dicTempoDeleteChildren[iElem])
+                  del self.listCategorieOut[_index]
+               except : pass      
 
-                  else : 
-                     listNew.append(elemDict)
-                     self.dicInVersOutDesign[_lib] = mItemClic_CAT_IN_OUT
-                     if _lib in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_lib]   # Suppprimer la clé dans l'autre dictionnaire 
-               else :   
-                  listNew.append(elemDict)
-        elif mOrigine == "CAT_OUT" :
-           # =======================
-           # alimentation d'une liste avec les parent et les enfant du QTreeWidgetItem sélectionné
-           iterator = QTreeWidgetItemIterator(self.self_Cat_Out)
-           _mListOutVersInForAppend_Template_categories = []
-
-           finParentChildren = False
-           while iterator.value() :
-              
-              if not finParentChildren : 
-                 if item.text(1) == iterator.value().text(1) :
-                    __mItemClic_CAT_IN_OUT         =  iterator.value().text(1)  # id catégorie
-                    __mItemClic_libelle_CAT_IN_OUT =  iterator.value().text(2)  # deuxième colonne dans les treeview
-                    __mItemClicAssociation         =  iterator.value().text(3)  # id association
-                    __mOrigine                     =  iterator.value().text(4)  # Origine Cat In ou Cat OUT
-                    __mNoeud                       = True if  iterator.value().text(5) == "True" else False  # si c'est un noeud
-                    #
-                    _mListOutVersInForAppend_Template_categories.append(iterator.value())
-                    _mListeParentItemParent = self.returnValueItemParent(item, column)
-                    #
-                    finParentChildren = True
-
-              elif finParentChildren : 
-                 if iterator.value().parent() == None :
-                    break
-                 #
-                 if item.text(1) in iterator.value().text(1) :
-                    __mItemClic_CAT_IN_OUT         =  iterator.value().text(1)  # id catégorie
-                    __mItemClic_libelle_CAT_IN_OUT =  iterator.value().text(2)  # deuxième colonne dans les treeview
-                    __mItemClicAssociation         =  iterator.value().text(3)  # id association
-                    __mOrigine                     =  iterator.value().text(4)  # Origine Cat In ou Cat OUT
-                    __mNoeud                       = True if  iterator.value().text(5) == "True" else False  # si c'est un noeud
-                    _mListOutVersInForAppend_Template_categories.append(iterator.value())
-
-              iterator += 1
-           _temp = [ elem.text(1) for elem in _mListOutVersInForAppend_Template_categories ]
-           #liste des éléments (parents et enfants) à ajouter dans le template Catégories 
-           mListOutVersInForAppend_Template_categories = _mListeParentItemParent + _temp
-           
-           # alimentation de la liste mListTemplateCategories avec mListOutVersInForAppend_Template_categories
-           listNew = [] 
-           d                = list(self.mListTemplateCategories)
-           dElemDictCategories = list(self.mListCategories)
-
-           # =======================
-           iInsertTemplateCategories = 0
-           while iInsertTemplateCategories in range(len(d)) :
-              elemDict = d[iInsertTemplateCategories]
-              if str(elemDict["tpl_id"]) == mItemClicAssociation : #Gestion du modèle template catégories sélectionné
-                 _lib_Template_Categories = elemDict["shrcat_path"] if elemDict["shrcat_path"] != None else elemDict["loccat_path"]
-                 _lib = _lib_Template_Categories
-
-                 iElemDictOutVersIn = 0
-                 # Boucle sur les futures insertions
-                 while iElemDictOutVersIn in range(len(mListOutVersInForAppend_Template_categories)) :
-                    #Create structure Template_Categories
-                    elemDictAppend = {}
-                    for k, v in self.mapping_template_categories.items() : 
-                        elemDictAppend[k] = None        
-                           
-                    elemDictOutVersIn = mListOutVersInForAppend_Template_categories[iElemDictOutVersIn]
-
-                    #Find infos for catégorie insert
-                    for elemDictCategories in dElemDictCategories :
-                        if elemDictOutVersIn == elemDictCategories["path"] : 
-                           newAttrib = { \
-                                        'tplcat_id': elemDict["tplcat_id"], \
-                                        'tpl_id': int(mItemClicAssociation), \
-                                        'label': elemDictCategories["label"], \
-                                        'loccat_path' if elemDictCategories["origin"] == "local" else 'shrcat_path' : elemDictOutVersIn \
-                                       }
-                           elemDictAppend.update(newAttrib)
-                           # --
-                           listNew.insert(iInsertTemplateCategories + iElemDictOutVersIn, elemDictAppend)
-                           self.dicOutVersInDesign[elemDictOutVersIn] = mItemClicAssociation
-                           if elemDictOutVersIn in self.dicInVersOutDesign :  del self.dicInVersOutDesign[elemDictOutVersIn]   # Suppprimer la clé dans l'autre dictionnaire 
-                           break
-                    iElemDictOutVersIn += 1
-
-                    if ( _lib_Template_Categories not in listNew ) : listNew.append(elemDict)       
-              else :
-                 listNew.append(elemDict)       
-           
-              iInsertTemplateCategories += 1
-
-           # =======================
-           # =======================
-           # =======================
-           # Create Delta mListTemplates / mListTemplateCategories
-           mListTemplatesDELTA_mListTemplateCategories = []
-           for elemListTemplates in self.mListTemplates : 
-               findKey    = False
-               findKeyLib = elemListTemplates["tpl_id"]
-               for elemListTemplateCategorie in self.mListTemplateCategories :
-                  if findKeyLib == elemListTemplateCategorie["tpl_id"] : 
-                     findKey = True
-                     break
-               if not findKey : mListTemplatesDELTA_mListTemplateCategories.append(elemListTemplates)
-           # =======================
-           # =======================
-           # =======================
-           # Append Delta mListTemplates / mListTemplateCategories
-           # Ce sont les modèles sans catégories utilisées
-           # =======================
-           d_TC_Delta = list(mListTemplatesDELTA_mListTemplateCategories)
-           iInsertTemplate = 0
-           while iInsertTemplate in range(len(d_TC_Delta)) :
-              elemDict = d_TC_Delta[iInsertTemplate]
-              if str(elemDict["tpl_id"]) == mItemClicAssociation : #Gestion du modèle template catégories sélectionné
-                 _lib_Template_Categories = elemDict["tpl_id"]
-                 _lib = _lib_Template_Categories
-
-                 iElemDictOutVersIn = 0
-                 # Boucle sur les futures insertions
-                 while iElemDictOutVersIn in range(len(mListOutVersInForAppend_Template_categories)) :
-                    #Create structure Template_Categories
-                    elemDictAppend = {}
-                    for k, v in self.mapping_template_categories.items() : 
-                        elemDictAppend[k] = None        
-                           
-                    elemDictOutVersIn = mListOutVersInForAppend_Template_categories[iElemDictOutVersIn]
-
-                    #Find infos for catégorie insert
-                    for elemDictCategories in dElemDictCategories :
-                        if elemDictOutVersIn == elemDictCategories["path"] : 
-                           newAttrib = { \
-                                        'tplcat_id': "", \
-                                        'tpl_id': int(mItemClicAssociation), \
-                                        'label': elemDictCategories["label"], \
-                                        'loccat_path' if elemDictCategories["origin"] == "local" else 'shrcat_path' : elemDictOutVersIn \
-                                       }
-                           elemDictAppend.update(newAttrib)
-                           # --
-                           listNew.insert(iInsertTemplate + iElemDictOutVersIn, elemDictAppend)
-                           self.dicOutVersInDesign[elemDictOutVersIn] = mItemClicAssociation
-                           if elemDictOutVersIn in self.dicInVersOutDesign :  del self.dicInVersOutDesign[elemDictOutVersIn]   # Suppprimer la clé dans l'autre dictionnaire 
-                           break
-                    iElemDictOutVersIn += 1
-              iInsertTemplate += 1
-           # =======================
-           # =======================
-           # =======================
-
-        self._selfCreateTemplate.mListTemplateCategories = list(listNew)  # Contenu changé 
-        self.mListTemplateCategories          = self._selfCreateTemplate.mListTemplateCategories
-        self.mListCategories                  = self._selfCreateTemplate.mListCategories   
-        # == Cat Utilisées et Non Utilisées==
-        
-        self._selfCreateTemplate.mTreeListeCategorieIn.clear()
-        self._selfCreateTemplate.mTreeListeCategorieOut.clear()
-        self._selfCreateTemplate.mTreeListeCategorieIn.affiche_CAT_IN_OUT(self._selfCreateTemplate, mItemClicAssociation, self._selfCreateTemplate.mTreeListeCategorieIn, self._selfCreateTemplate.mTreeListeCategorieOut, self.dicInVersOutDesign, self.dicOutVersInDesign, action = True)
+               self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
+               if _dicTempoAppendChildren[iElem]["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+               iElem += 1
+           # Gestion Item Click and Children 
+           # -
+        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fontionTritDict, reverse=False)
+        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fontionTritDict, reverse=False)
+        # -
+        self.self_Cat_In.clear()
+        self.self_Cat_Out.clear()
+        self.self_Cat_In.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out, action = True)
         #Efface les attributs
-        afficheAttributs( self._selfCreateTemplate, self._selfCreateTemplate.groupBoxAttributsModeleCategorie, self._selfCreateTemplate.mapping_template_categories, False ) 
+        afficheAttributs( self._selfCreateTemplate, self._selfCreateTemplate.groupBoxAttributsModeleCategorie, self._selfCreateTemplate.mapping_template_categories, False )
         return
-
-    #===============================              
-    def returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, libTemplateCategories, dicCategories) :
-        _returnLibelleTemplateCategorie = []
-        _returnLibelleTemplateCategorie = [ elemDic for elemDic in dicCategories if elemDic["path"] == libTemplateCategories ]  
-        return _returnLibelleTemplateCategorie
 
     #===============================              
     def returnValueItemParent(self, item, column):          
         if item == None : return None 
         mReturnValueItemParent, mItem = [], item
         while True :
-           mReturnValueItemParent.append(mItem.data(1, Qt.DisplayRole))
+           mReturnValueItemParent.append(mItem.data(1, QtCore.Qt.DisplayRole))
            mParentItem = mItem.parent()
            if mParentItem != None :
               mItem = mParentItem
@@ -1452,7 +1585,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         if item == None : return None 
         mReturnValueItem, mItem = [], item
         while True :
-           mReturnValueItem.append(mItem.data(column, Qt.DisplayRole))
+           mReturnValueItem.append(mItem.data(column, QtCore.Qt.DisplayRole))
            mParentItem = mItem.parent()
            if mParentItem != None :
               mItem = mParentItem
@@ -1495,7 +1628,7 @@ class TREEVIEWMODELE(QTreeWidget):
             i += 1
  
         self.itemClicked.connect( self.ihmsPlumeMODELE ) 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelPlumeMODELE)
         self.expandAll()
         return
@@ -1511,14 +1644,14 @@ class TREEVIEWMODELE(QTreeWidget):
            #-
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)  #Supprimer le modèle
-           self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+           self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_add)
            self.treeAction_add.setToolTip(treeAction_addTooltip)
            self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
            #-
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
            treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model", None)  #Supprimer le modèle
-           self.treeAction_del = QAction(QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
+           self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_del)
            self.treeAction_del.setToolTip(treeAction_delTooltip)
            self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
@@ -1528,7 +1661,7 @@ class TREEVIEWMODELE(QTreeWidget):
         
     #===============================              
     def ihmsPlumeMODELE(self, item, column): 
-        mItemClicModele = item.data(0, Qt.DisplayRole)
+        mItemClicModele = item.data(0, QtCore.Qt.DisplayRole)
         self.modeleActif = mItemClicModele
         
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
@@ -1587,27 +1720,6 @@ class TREEVIEWMODELE(QTreeWidget):
         self._selfCreateTemplate.buttonAddModele.setVisible(False)
         return
 
-    #===============================              
-    def ihmsPlumeAddCSW(self, mDialog, mId):
-        #===============================              
-        iterator = QTreeWidgetItemIterator(self)
-        _mListID = []
-        while iterator.value() :
-           itemValueLibText = iterator.value().text(0)
-           if itemValueText != "" : 
-              if itemValueText not in URLCSWDEFAUT.split(",") and itemValueText != self.mLibNodeUrlDefaut and itemValueText != self.mLibNodeUrlUser  :
-                 _mListCSW.append(itemValueText)
-                 _mListLibCSW.append(itemValueLibText)
-           iterator += 1
-        url_list   =  _mListCSW 
-        label_list =  _mListLibCSW
-        
-        #===============================              
-        self.clear()
-        url_list, label_list = self.update_csw(url_list, label_list, mCsw, mLibCsw)
-        self.afficheCSW(url_list, label_list, self._mZoneUrl, self._mZoneLibUrl, self._mZoneUrlId )
-        return
-
 #========================================================     
 #========================================================     
 # Class pour le tree View Ressource CATEGORIE 
@@ -1617,37 +1729,96 @@ class TREEVIEWCATEGORIE(QTreeWidget):
     #===============================              
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
-        self.setColumnCount(2)
-        self.hideColumn (0)   # For hide ID
-        self.setHeaderLabels(["Noms", "Libellés"])
+        self.setColumnCount(6)
+        self.setHeaderLabels(["Identifiant et chemin"])  
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
         self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / delete a category", None)         #Click droit pour supprimer un Modèle
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.menuContextuelPlumeCATEGORIE) 
         return
 
     #===============================              
-    def afficheCATEGORIE(self, _selfCreateTemplate, listeCategorieCol1, listeCategorieCol2):
+    def afficheCATEGORIE(self, _selfCreateTemplate, listeRessourceCategorie):
+        _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        iconSource = returnIcon(_pathIcons + "/plume.svg")  
         self.groupBoxAttributsCategories          = _selfCreateTemplate.groupBoxAttributsCategories
         self.mapping_categories                   = _selfCreateTemplate.mapping_categories
-
-        self.mListCategories                      = _selfCreateTemplate.mListCategories
+        self.mListCategories                      = _selfCreateTemplate.mListCategories   
+        self.listeRessourceCategorie              = _selfCreateTemplate.listeRessourceCategorie
         self._selfCreateTemplate                  = _selfCreateTemplate
+        self.sepLeftTemplate                      = _selfCreateTemplate.sepLeftTemplate
+        self.sepRightTemplate                     = _selfCreateTemplate.sepRightTemplate
+        self.fontCategorieInVersOut               = _selfCreateTemplate.fontCategorieInVersOut
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+
+        # ======================================
+        # ======================================
+        dictNoeudsArboIn  , rowNodeIn  = {}, 0 
+        #Create Arbo 
         i = 0
-        while i in range(len(listeCategorieCol1)) :
-            nodeUrlUser = QTreeWidgetItem(None, [ str(listeCategorieCol1[i]), str(listeCategorieCol2[i]) ])
-            self.insertTopLevelItems( 0, [ nodeUrlUser ] )
-            nodeUrlUser.setToolTip(0, "{}".format(self.mnodeToolTip))
-            nodeUrlUser.setToolTip(1, "{}".format(self.mnodeToolTip))
-            i += 1
- 
+        while i < len(self.listeRessourceCategorie) : 
+           _lib_Categories     = self.listeRessourceCategorie[i]["_label"]                         # path origine 
+           _libelle_Categories = self.listeRessourceCategorie[i]["_libelle"]                       # deuxième colonne dans les treeview pour le In 
+           _noeud              = self.listeRessourceCategorie[i]["mNoeud"]                         # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+           path_elements       = re.split(r'\s*[/]\s*', _lib_Categories)                                          #pour découper le chemin, 
+           paths               = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
+           _label              = self.listeRessourceCategorie[i]["_label"]  # Id Cat
+           paramQTreeWidgetItem = [ self.listeRessourceCategorie[i]["_displayLibelle"], self.listeRessourceCategorie[i]["_label"], self.listeRessourceCategorie[i]["_libelle"], "", "", self.listeRessourceCategorie[i]["mNoeud"] ]
+           nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
+           
+           # - Recherche dans le dictionnaire si existance de l'item en balayant les ancêtres (parents) Paths
+           if len(paths) == 0 :
+              self.insertTopLevelItems( rowNodeIn, [ nodeUser ] )
+              dictNoeudsArboIn[_label] = nodeUser
+              rowNodeIn += 1
+           else :
+              # ======================================
+              # Ajout des noeuds en fonction des ancêtres (parents) Paths
+              iElem = 0
+              while iElem < len(paths) : 
+                 newNoeud = paths[iElem]
+                 _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, newNoeud, self.mListCategories)[0]
+                 _lib_Categories_In     = _returnAttribCategorie["path"]
+                 _libelle_Categories_In = _returnAttribCategorie["label"]
+                 _noeud                  = "True" if _returnAttribCategorie["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+                 _path_elements_In   = re.split(r'\s*[/]\s*', _lib_Categories_In) #pour découper le chemin, 
+
+                 if _returnAttribCategorie["origin"] == "local" :
+                    _In_displayLibelleNewNoeud = str(_libelle_Categories_In) + self.sepLeftTemplate + str(_path_elements_In[ -1 ]) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+                 else :
+                    _In_displayLibelleNewNoeud = str(_path_elements_In[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_In) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+
+                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _In_displayLibelleNewNoeud, _lib_Categories_In, _libelle_Categories_In, "", "", _noeud
+                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ]
+                 nodeUserNewNoeud = QTreeWidgetItem(None, paramQTreeWidgetItem)
+                 
+                 if newNoeud not in dictNoeudsArboIn : # Si l'ancêtre n'est pas dans le dictionnaire In
+                    nodeUserNewNoeud.setFont(0, defineFont(self.fontCategorieInVersOut))
+
+                    if iElem == 0 :
+                       self.insertTopLevelItems( rowNodeIn, [ nodeUserNewNoeud ] )
+                       rowNodeIn += 1
+                    else :
+                       dictNoeudsArboIn[ paths[iElem - 1] ].addChild( nodeUserNewNoeud )
+                       dictNoeudsArboIn[ paths[iElem - 1] ].setIcon(0, iconSource)
+                    dictNoeudsArboIn[ _labelNewNoeud ]  = nodeUserNewNoeud
+                 iElem += 1
+              # Ajout des noeuds en fonction des ancêtres (parents) Paths
+              # ======================================
+                 
+              # Et enfin on ajoute ma catégorie   
+              dictNoeudsArboIn[_labelNewNoeud].addChild( nodeUser )
+              dictNoeudsArboIn[_labelNewNoeud].setIcon(0, iconSource)
+              dictNoeudsArboIn[_label]  = nodeUser
+
+           i += 1
+        #Create Arbo 
+        
         self.itemClicked.connect( self.ihmsPlumeCATEGORIE ) 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelPlumeCATEGORIE)
-        self.expandAll()
         return
         
     #===============================              
@@ -1662,7 +1833,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
            self.treeMenu = QMenu(self)
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add category", None)  #Supprimer le modèle
-           self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+           self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_add)
            self.treeAction_add.setToolTip(treeAction_addTooltip)
            self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
@@ -1673,14 +1844,14 @@ class TREEVIEWCATEGORIE(QTreeWidget):
               self.treeMenu = QMenu(self)
               menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
               treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add category", None)  #Supprimer le modèle
-              self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+              self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
               self.treeMenu.addAction(self.treeAction_add)
               self.treeAction_add.setToolTip(treeAction_addTooltip)
               self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
               
               menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
               treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove category", None)  #Supprimer le modèle
-              self.treeAction_del = QAction(QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
+              self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
               self.treeMenu.addAction(self.treeAction_del)
               self.treeAction_del.setToolTip(treeAction_delTooltip)
               self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
@@ -1690,32 +1861,35 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         
     #===============================              
     def ihmsPlumeCATEGORIE(self, item, column): 
-        mItemClicCategorie = item.data(0, Qt.DisplayRole)
+        mItemClicCategorie = item.data(1, QtCore.Qt.DisplayRole)
         self.categorieActif = mItemClicCategorie
         
-        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
-        #------ DATA template 
-        mKeySql = queries.query_read_meta_categorie()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListCategories = [row[0] for row in r]
-        listeCategorieCol1, listeCategorieCol2 = returnList_Id_Label( self.mListCategories )
-        self.categorieActif = listeCategorieCol1[0] #Pour la première initialisation
-        #------
-        self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
-        #Affiche les attributs
-        afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, True ) 
-        self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
-        #Initialise les attributs avec valeurs
-        initialiseAttributsModelesCategoriesOnglets( self, mItemClicCategorie, self.groupBoxAttributsCategories, self.mapping_categories, self.mListCategories, True ) 
+        if returnIfExisteCategorie(item) : 
+           #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
+           #------ DATA template 
+           mKeySql = queries.query_read_meta_categorie()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListCategories = [row[0] for row in r]
+           listeCategorieCol1, listeCategorieCol2 = returnList_Id_Label( self.mListCategories )
+           self.categorieActif = listeCategorieCol1[0] #Pour la première initialisation
+           #------
+           self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
+           #Affiche les attributs
+           afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, True ) 
+           self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
+           #Initialise les attributs avec valeurs
+           initialiseAttributsModelesCategoriesOnglets( self, mItemClicCategorie, self.groupBoxAttributsCategories, self.mapping_categories, self.mListCategories, True )
+        else :    
+           #Affiche les attributs
+           afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, False ) 
+           self._selfCreateTemplate.buttonAddCategorie.setVisible(False)
         return
 
     #===============================              
     def ihmsPlumeUpdateCategorie(self, mDialog, mId):
         #===============================              
         dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategories, self.mapping_categories)
-        
-        print(dicForQuerieForAddCategorie)
-        
+       
         mKeySql = queries.query_insert_or_update_meta_categorie(dicForQuerieForAddCategorie)
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
         self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
@@ -1723,9 +1897,9 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         mKeySql = queries.query_read_meta_categorie()
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         self.mListCategories = [row[0] for row in r]
-        listeCategorieCol1, listeCategorieCol2 = returnList_Id_Label( self.mListCategories )
+        listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
         self.clear()
-        self.afficheCATEGORIE(self._selfCreateTemplate, listeCategorieCol1, listeCategorieCol2)
+        self.afficheCATEGORIE(self._selfCreateTemplate, listeRessourceCategorie)
         return
 
     #===============================              
@@ -1765,7 +1939,7 @@ class TREEVIEWONGLET(QTreeWidget):
         self.setHeaderLabels(["Noms", "Libellés"])
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
         self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / delete a model", None)         #Click droit pour supprimer un Modèle
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.menuContextuelPlumeONGLET) 
         return
 
@@ -1788,7 +1962,7 @@ class TREEVIEWONGLET(QTreeWidget):
             i += 1
  
         self.itemClicked.connect( self.ihmsPlumeONGLET ) 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelPlumeONGLET)
         self.expandAll()
         return
@@ -1805,7 +1979,7 @@ class TREEVIEWONGLET(QTreeWidget):
            self.treeMenu = QMenu(self)
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add tab", None)  #Supprimer le modèle
-           self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+           self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
            self.treeMenu.addAction(self.treeAction_add)
            self.treeAction_add.setToolTip(treeAction_addTooltip)
            self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
@@ -1816,14 +1990,14 @@ class TREEVIEWONGLET(QTreeWidget):
               self.treeMenu = QMenu(self)
               menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
               treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add tab", None)  #Supprimer le modèle
-              self.treeAction_add = QAction(QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+              self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
               self.treeMenu.addAction(self.treeAction_add)
               self.treeAction_add.setToolTip(treeAction_addTooltip)
               self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
               
               menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
               treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove tab", None)  #Supprimer le modèle
-              self.treeAction_del = QAction(QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
+              self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
               self.treeMenu.addAction(self.treeAction_del)
               self.treeAction_del.setToolTip(treeAction_delTooltip)
               self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
@@ -1833,7 +2007,7 @@ class TREEVIEWONGLET(QTreeWidget):
         
     #===============================              
     def ihmsPlumeONGLET(self, item, column): 
-        mItemClicOnglet = item.data(0, Qt.DisplayRole)
+        mItemClicOnglet = item.data(0, QtCore.Qt.DisplayRole)
         self.ongletActif = mItemClicOnglet
         
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              

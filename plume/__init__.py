@@ -2,5 +2,5 @@
 # créé sept 2021   
 
 def classFactory(iface):
-  from .plume import MainPlugin
+  from plume.plume import MainPlugin
   return MainPlugin(iface)

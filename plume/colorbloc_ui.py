@@ -1,14 +1,16 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 
-from . import bibli_plume
-from .bibli_plume import *
+from plume import bibli_plume
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.Qt import *
-from qgis.gui import QgsDateTimeEdit, QgsOpacityWidget
+from PyQt5.QtWidgets import ( QMenu, QAction, QTabWidget, QWidget, QGraphicsOpacityEffect, QCompleter, QColorDialog )
+from PyQt5.QtGui     import ( QFont, QPalette, QColor, QIcon )
+from PyQt5.QtCore    import ( Qt, QDate)
+from qgis.gui        import ( QgsDateTimeEdit, QgsOpacityWidget )
 
-from qgis.core import  QgsSettings
+from qgis.core import ( QgsSettings, Qgis, QgsApplication, QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsCircle, QgsPoint, QgsCircularString, QgsProject )
+from qgis.gui  import ( QgsMapTool, QgsRubberBand, QgsVertexMarker )
 
 class Ui_Dialog_ColorBloc(object):
         

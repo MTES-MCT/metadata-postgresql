@@ -1,18 +1,16 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé 2022
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAction, QMenu , QApplication
-from PyQt5.QtCore import *
-from PyQt5.QtGui import QIcon
-from PyQt5.QtGui import *
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui  import ( QIcon, QColor, QCursor )
+from PyQt5.QtCore import ( Qt )
 
-from qgis.core import *
-from qgis.gui import *
 import qgis
-from math import sqrt,pi,sin,cos
-from . import bibli_plume
-from .bibli_plume import *
+from qgis.core import ( Qgis, QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsCircle, QgsPoint, QgsCircularString, QgsProject )
+from qgis.gui  import ( QgsMapTool, QgsRubberBand, QgsVertexMarker )
+from math import sqrt, pi
+from plume.bibli_plume import ( displayMess )
 
 from plume.rdf.utils import split_rdf_wkt, wkt_with_srid
 
@@ -32,10 +30,12 @@ class GeometryMapTool(QgsMapTool ):
       self.firstPolygon = True  #Début du polygon  
       
       if self._mAction in ["rectangle",] : 
-         self.rubberBand = QgsRubberBand(self.canvas, True)
+         self.rubberBand = QgsRubberBand(self.canvas)
+         #self.rubberBand = QgsRubberBand(self.canvas, True)
          self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
       elif self._mAction in ["circle",] : 
-         self.rubberBand = QgsRubberBand(self.canvas, True)
+         self.rubberBand = QgsRubberBand(self.canvas)
+         #self.rubberBand = QgsRubberBand(self.canvas, True)
          self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
       elif self._mAction in ["point",] :
          self.rubberBand = QgsVertexMarker(self.canvas)
@@ -43,7 +43,8 @@ class GeometryMapTool(QgsMapTool ):
          self.rubberBand.setIconType(self.Dialog.mDicTypeObj[self.Dialog.geomPoint]) 
          self.rubberBand.setIconSize(int(self.Dialog.geomPointEpaisseur))
       elif self._mAction in ["polygon", "linestring"] : 
-         self.rubberBand = QgsRubberBand(self.canvas, True)
+         self.rubberBand = QgsRubberBand(self.canvas)
+         #self.rubberBand = QgsRubberBand(self.canvas, True)
          self.rubberBand.setWidth(int(self.Dialog.geomEpaisseur))
       self.rubberBand.setColor(QColor(self.Dialog.geomColor))
       self.etat = False
@@ -269,7 +270,8 @@ class GeometryMapTool(QgsMapTool ):
       self.rubberBand.setCenter(point1)
       return
   #-----
-  def point(self): return QgsGeometry.fromPointXY(QgsPointXY(self.startPoint.x(), self.startPoint.y())).asWkt(self.Dialog.geomPrecision)
+  def point(self):
+      return QgsGeometry.fromPointXY(QgsPointXY(self.startPoint.x(), self.startPoint.y())).asWkt(self.Dialog.geomPrecision) if self.startPoint != None else None
   #** -----
   #** -----
   #==================================================
@@ -307,7 +309,7 @@ class GeometryMapToolShow(QgsMapTool ):
              except: 
                 zTitre = QtWidgets.QApplication.translate("bibli_plume_tools_map", "PLUME : Warning", None)
                 zMess  = QtWidgets.QApplication.translate("bibli_plume_tools_map", "Invalid geometry or unsupported type.", None)  
-                bibli_plume.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+                displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
                 return
         
              # NB. le type de géométrie du QgsRubberBand est automatiquement défini par setToGeometry

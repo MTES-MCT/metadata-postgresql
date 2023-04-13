@@ -3,10 +3,8 @@
 
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.Qt import *
-
-from . import bibli_plume
-from .bibli_plume import *
+from PyQt5.QtCore import ( Qt )
+from plume.bibli_plume import ( returnVersion )
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog, mTypeErreur, zMessError_Erreur):
@@ -121,7 +119,7 @@ class Ui_Dialog(object):
         MonHtml2 += self.zMessError_Erreur.replace("\n","<br>").strip()
         MonHtml += MonHtml2
         MonHtml += "</i></p></body></html>"
-        Dialog.setWindowTitle("plume - (" + str(bibli_plume.returnVersion()) + ")")
+        Dialog.setWindowTitle("plume - (" + str(returnVersion()) + ")")
         self.textEdit.setHtml(QtWidgets.QApplication.translate("erreur_ui", MonHtml, None))
         self.label_2.setText(QtWidgets.QApplication.translate("erreur_ui", mMessErreur, None))
         #if self.mTypeErreur != "plume" :

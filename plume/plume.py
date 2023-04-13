@@ -1,17 +1,14 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import ( QSettings, QLocale, QFileInfo, QFileInfo, QCoreApplication, QTranslator )
 
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QPlainTextEdit, QDialog, QStyle, 
-                             QDockWidget, QTreeView, QGridLayout, QTabWidget, QWidget, QDesktopWidget, QSizePolicy, 
-                             QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyleFactory, QStyle)
+from PyQt5.QtWidgets import (QAction, QMenu , QDockWidget, QTreeView, QWidget)
 from PyQt5.QtGui import QIcon
 
-from qgis.core import *
-from qgis.gui import *
 import os
+import sys
 from plume.bibli_install import manageLibrary
 from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 
@@ -30,12 +27,14 @@ if QFileInfo(localePath).exists():
 # Generation de la traduction selon la langue choisie
 #===================================================
 # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
+
 manageLibrary()
+    
 # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
 #===================================================
 
-from . import doplume_ui
-from . import bibli_plume
+from plume import doplume_ui
+from plume import bibli_plume
 from .bibli_plume import *
 
 class MainPlugin(object):
@@ -170,11 +169,6 @@ class MainPlugin(object):
          bibli_plume.saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
       return
 
-  #==========================
-  def clickAbout(self):
-      d = doabout.Dialog()
-      d.exec_()
-
   def clickIHMplume2(self):
       d = doplume_ui.Dialog(self.dicTooltipExiste)
       d.exec_()
@@ -184,7 +178,3 @@ class MainPlugin(object):
       self.toolbar.deleteLater()
       pass  
 
-
-
-
-  

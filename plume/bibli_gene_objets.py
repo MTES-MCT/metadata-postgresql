@@ -1,18 +1,16 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, QCompleter, QDateEdit, QDateTimeEdit, QCheckBox, QWidget, QStyleFactory, QStyle, QGridLayout, QSizePolicy, QGraphicsOpacityEffect) 
-from PyQt5.QtCore import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import (QAction, QMenu, QCompleter, QCheckBox, QWidget, QGraphicsOpacityEffect) 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtGui import *
-from qgis.gui import *
 from qgis.gui import QgsDateTimeEdit   
 import os
-from . import bibli_plume
-from .bibli_plume import *
-from .bibli_plume_tools_map import *
-import psycopg2
+import qgis  
+from plume import bibli_plume
+from plume.bibli_plume import ( executeSql )
+from qgis.core import (Qgis, QgsApplication, QgsWkbTypes, QgsWkbTypes, QgsGeometry )
+from plume.bibli_plume_tools_map import ( GeometryMapTool, GeometryMapToolShow, majVisuButton, eraseRubberBand )
 from plume.pg import queries
 from plume.rdf.utils import wkt_with_srid                  
 
@@ -134,7 +132,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
                               }")
        #--
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan, Qt.AlignTop)
+       _mParentEnCours.addWidget(_mObjetGroupBox, row, column, rowSpan, columnSpan, QtCore.Qt.AlignTop)
        #--                        
        _mObjet = QtWidgets.QGridLayout()
        _mObjet.setContentsMargins(0, 0, 0, 0)
@@ -149,7 +147,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        """                              
        #AJOUT 30 JANVIER 2022
        if _valueObjet['object'] in ['group of properties', 'group of values', 'translation group'] :
-          _mObjetGroupBox.setContextMenuPolicy(Qt.CustomContextMenu)
+          _mObjetGroupBox.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
           _mObjetGroupBox.customContextMenuRequested.connect(lambda  : self.menuContextuelQGroupBox(_keyObjet, _mObjetGroupBox, QPoint( 15, 15)))
        #AJOUT 30 JANVIER 2022
        """                              
@@ -198,7 +196,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if (_valueObjet['hidden']) : _mObjetQSaisie.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget') 
-       _mParentEnCours.addWidget(_mObjetQSaisie, row, column, rowSpan, columnSpan, Qt.AlignTop)
+       _mParentEnCours.addWidget(_mObjetQSaisie, row, column, rowSpan, columnSpan, QtCore.Qt.AlignTop)
        #--                        
        if _valueObjet['main widget type'] in ("QTextEdit") :
           _mObjetQSaisie.setMinimumSize(QtCore.QSize(100, 15 * rowSpan)) # Pour obtenir des QTexEdit suffisament haut
@@ -227,24 +225,24 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if _valueObjet['type validator'] != None :
           mTypeValidator = _valueObjet['type validator']
           if mTypeValidator == 'QIntValidator':
-             _mObjetQSaisie.setValidator(QIntValidator(_mObjetQSaisie))
+             _mObjetQSaisie.setValidator(QtGui.QIntValidator(_mObjetQSaisie))
           elif mTypeValidator == 'QDoubleValidator':
-             _mObjetQSaisie.setValidator(QDoubleValidator(_mObjetQSaisie))
+             _mObjetQSaisie.setValidator(QtGui.QDoubleValidator(_mObjetQSaisie))
        #Mandatory                        
        if valueExiste('is mandatory', _valueObjet) : _mObjetQSaisie.setProperty("mandatoryField", True if _valueObjet['is mandatory'] else False)
        #QRegularExpression                        
        if _valueObjet['regex validator pattern'] != None :
-          re = QRegularExpression(_valueObjet['regex validator pattern'])
+          re = QtCore.QRegularExpression(_valueObjet['regex validator pattern'])
           if _valueObjet['regex validator flags']:
               if "i" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QRegularExpression.CaseInsensitiveOption)
+                 re.setPatternOptions(QtCore.QRegularExpression.CaseInsensitiveOption)
               if "s" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QRegularExpression.DotMatchesEverythingOption)
+                 re.setPatternOptions(QtCore.QRegularExpression.DotMatchesEverythingOption)
               if "m" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QRegularExpression.MultilineOption)
+                 re.setPatternOptions(QtCore.QRegularExpression.MultilineOption)
               if "x" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QRegularExpression.ExtendedPatternSyntaxOption)
-          _mObjetQSaisie.setValidator(QRegularExpressionValidator(re, _mObjetQSaisie))
+                 re.setPatternOptions(QtCore.QRegularExpression.ExtendedPatternSyntaxOption)
+          _mObjetQSaisie.setValidator(QtGui.QRegularExpressionValidator(re, _mObjetQSaisie))
        
        #========== 
        #QCOMBOBOX 
@@ -255,14 +253,14 @@ def generationObjets(self, _keyObjet, _valueObjet) :
              #Tooltip for items QCOMBOBOX                        
              i = 0
              while i < len(_thesaurus) :
-                _mObjetQSaisie.setItemData(i, _thesaurus[i], Qt.ToolTipRole)
+                _mObjetQSaisie.setItemData(i, _thesaurus[i], QtCore.Qt.ToolTipRole)
                 i+=1
               
           bibli_plume.updateObjetWithValue(_mObjetQSaisie, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
           _mObjetQSaisie.setEditable(True)
           #-
           mCompleter = QCompleter(_thesaurus, self)
-          mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+          mCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
           #mCompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
           _mObjetQSaisie.setCompleter(mCompleter)
        #==========
@@ -279,12 +277,12 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQLabel = QtWidgets.QLabel()
        _mObjetQLabel.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        _mObjetQLabel.setObjectName(str(_keyObjet))
-       _mObjetQLabel.setTextInteractionFlags(Qt.TextSelectableByMouse) # for select text"
+       _mObjetQLabel.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse) # for select text"
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQLabel.setVisible(False)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan, Qt.AlignTop)
+       _mParentEnCours.addWidget(_mObjetQLabel, row, column, rowSpan, columnSpan, QtCore.Qt.AlignTop)
        #Valeur                        
        bibli_plume.updateObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        #Tooltip                        
@@ -333,7 +331,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQDateEdit.setCalendarPopup(True)
         #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, Qt.AlignTop)
+       _mParentEnCours.addWidget(_mObjetQDateEdit, row, column, rowSpan, columnSpan, QtCore.Qt.AlignTop)
         #Valeur 
        if valueExiste('value', _valueObjet) :
            bibli_plume.updateObjetWithValue(_mObjetQDateEdit, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
@@ -416,7 +414,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #_mObjetQDateTime.setCalendarPopup(True)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQDateTime, row, column, rowSpan, columnSpan, Qt.AlignLeft)
+       _mParentEnCours.addWidget(_mObjetQDateTime, row, column, rowSpan, columnSpan, QtCore.Qt.AlignLeft)
        #Valeur
        if valueExiste('value', _valueObjet) :  
           bibli_plume.updateObjetWithValue(_mObjetQDateTime, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
@@ -469,7 +467,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQTime.setMaximumWidth(130)
        #--                        
        row, column, rowSpan, columnSpan = self.mDicObjetsInstancies.widget_placement(_keyObjet, 'main widget')
-       _mParentEnCours.addWidget(_mObjetQTime, row, column, rowSpan, columnSpan, Qt.AlignLeft)
+       _mParentEnCours.addWidget(_mObjetQTime, row, column, rowSpan, columnSpan, QtCore.Qt.AlignLeft)
        #Valeur
        if valueExiste('value', _valueObjet) :  
           bibli_plume.updateObjetWithValue(_mObjetQTime, _valueObjet)  #  Mets à jour la valeur de l'objet en fonction de son type                       
@@ -500,7 +498,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if _valueObjet['object'] == "translation button" : 
           #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border: none;}")
           #_mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)  
-          #_mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+          #_mObjetQToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
        elif _valueObjet['object'] == "plus button" :
           # == QICON  
           _mObjetQToolButton.setIcon(QIcon(  changeColorIcon(self, _keyObjet, "buttonPlus", _mListeIconsButtonPlusMinus)  ))
@@ -623,7 +621,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mListActions.append(_mObjetQMenuItem)
        
        _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
-       _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+       _mObjetQToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
@@ -653,7 +651,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
        _mObjetQToolButton.setIcon(QIcon(_iconSourcesBlank))
        h = _mObjetQToolButton.iconSize().height()
-       _mObjetQToolButton.setIconSize(QSize(1, h))
+       _mObjetQToolButton.setIconSize(QtCore.QSize(1, h))
        #_mObjetQToolButton.setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; width:2.5em; border-style:" + _editStyle  + "; border : none;}")  
        _mObjetQToolButton.setAutoRaise(True)
 
@@ -673,7 +671,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mListActions.append(_mObjetQMenuItem)
        
        _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
-       _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+       _mObjetQToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
@@ -704,7 +702,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQToolButton.setStyleSheet("QToolButton {  font-family:" + self.policeQGroupBox  +";}")
        _mObjetQToolButton.setIcon(QIcon(_iconSourcesBlank))
        h = _mObjetQToolButton.iconSize().height()
-       _mObjetQToolButton.setIconSize(QSize(1, h))
+       _mObjetQToolButton.setIconSize(QtCore.QSize(1, h))
        #MenuQToolButton                        
        _mObjetQMenu = QMenu()
        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
@@ -721,7 +719,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
            _mListActions.append(_mObjetQMenuItem)
        
        _mObjetQToolButton.setPopupMode(_mObjetQToolButton.InstantPopup)
-       _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+       _mObjetQToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
        _mObjetQToolButton.setMenu(_mObjetQMenu)
        #--                        
        #Masqué /Visible Générale                               
@@ -760,7 +758,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        else :
           #MenuQToolButton                        
           _mObjetQToolButton.setPopupMode(_mObjetQToolButton.DelayedPopup)       # InstantPopup  MenuButtonPopup DelayedPopup
-          _mObjetQToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+          _mObjetQToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
           
           _mObjetQMenu = QMenu()
           majVisuButton(self, self, _mObjetQToolButton, self.dic_geoToolsShow, _keyObjet, _valueObjet) 
@@ -1204,7 +1202,7 @@ def regenerationMenuQToolButton(self, _ret, _language, _selectItem, _iconSources
        #__valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].MenuButtonPopup)
        #__valueObjet['switch source widget'].setStyleSheet("QToolButton { font-family:" + self.policeQGroupBox  +"; border-style:" + self.editStyle  +" ; border: none;}")
        __valueObjet['switch source widget'].setPopupMode(__valueObjet['switch source widget'].InstantPopup)
-       __valueObjet['switch source widget'].setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+       __valueObjet['switch source widget'].setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
        __valueObjet['switch source widget'].setAutoRaise(True)
        __valueObjet['switch source widget'].setMenu(_mObjetQMenu)
 
@@ -1246,7 +1244,7 @@ def regenerationMenu(self, _ret, _language, _langList, _iconSourcesSelect) :
            _mListActions.append(_mObjetQMenuItem)
     
        __valueObjet['language widget'].setPopupMode(__valueObjet['language widget'].InstantPopup)
-       __valueObjet['language widget'].setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+       __valueObjet['language widget'].setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
        __valueObjet['language widget'].setAutoRaise(True)
        __valueObjet['language widget'].setMenu(_mObjetQMenu)
 
@@ -1356,7 +1354,7 @@ def changeColorIcon(self, __keyObjet, _buttonPlusMinus, listIconTemp) :
 # Apparence action sur QToolButton
 def apparence_mObjetQToolButton(self, __keyObjet, __iconSources, __Text):
     _mToolButton = self.mDicObjetsInstancies[__keyObjet]['switch source widget']
-    _mToolButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+    _mToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
     _mActionDefaut = QAction()
     _mActionDefaut.setIcon(QIcon(__iconSources));
     _mActionDefaut.setText(__Text)

@@ -1,24 +1,22 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé 2022
 
-from . import bibli_plume
-from .bibli_plume import *
-import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.Qt import *
+from PyQt5.QtWidgets import ( QMenu, QAction, \
+                              QTreeWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView )
+from PyQt5.QtGui     import ( QIcon, QDrag )
+from PyQt5.QtCore    import ( Qt, QUrl, QEventLoop, QByteArray )
+from qgis.core import Qgis
+
+from plume.bibli_plume import ( returnIcon, returnVersion, displayMess, returnObjetsMeta, saveObjetTranslation, returnAndSaveDialogParam )
+
+import os.path
 #
-from . import bibli_plume
-from .bibli_plume import *
-#
-from . import bibli_gene_objets
-from .bibli_gene_objets import *
-#
-from plume.rdf.metagraph import Metagraph, metagraph_from_iso
+from plume.rdf.metagraph import metagraph_from_iso
 from plume.iso import csw 
 from qgis.core import QgsNetworkContentFetcher
 #
-from qgis.core import  QgsSettings
-from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, LIBURLCSWDEFAUT, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+from plume.config import ( LIBURLCSWDEFAUT, URLCSWDEFAUT )  
 
 class Ui_Dialog_ImportCSW(object):
     def setupUiImportCSW(self, DialogImportCSW, Dialog):
@@ -65,7 +63,7 @@ class Ui_Dialog_ImportCSW(object):
         if Dialog.libUrlCswDefaut.split(",")[0]   != "" : self.libUrlCswDefautGEOIDE   = Dialog.libUrlCswDefaut.split(",")[0]
         if Dialog.libUrlCswDefaut.split(",")[1]   != "" : self.libUrlCswDefautIGN      = Dialog.libUrlCswDefaut.split(",")[1]
 
-        mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+        mDic_LH = returnAndSaveDialogParam(self, "Load")
         Dialog.urlCsw = mDic_LH["urlCsw"]             #Liste des urlcsw sauvegardées
         mListurlCsw = Dialog.urlCsw.split(",")
         self.urlCsw = Dialog.urlCsw
@@ -276,7 +274,7 @@ class Ui_Dialog_ImportCSW(object):
         self.layout_groupBox_buttons.addWidget(self.pushButtonAnnuler, 0, 3,  Qt.AlignTop)
         #--
         #----------
-        self.DialogImportCSW.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(bibli_plume.returnVersion()) + ")")
+        self.DialogImportCSW.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("ImportCSW_ui", self.zMessTitle, None))
         self.pushButton.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Import", None))
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("ImportCSW_ui", "Cancel", None))
@@ -315,7 +313,7 @@ class Ui_Dialog_ImportCSW(object):
        zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "You must enter a URL of a CSW service.", None)
        if self.mZoneUrl.text() == "" or self.mZoneLibUrl.text() == "":
-          bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
           self.mTreeCSW.ihmsPlumeAddCSW(self.Dialog , self.mZoneUrl.text(), self.mZoneLibUrl.text())
        return
@@ -325,7 +323,7 @@ class Ui_Dialog_ImportCSW(object):
        zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "You must enter a URL of a CSW service and a metadata record identifier.", None) 
        if self.mZoneUrl.text() == "" or self.mZoneUrlId.text() == "" :
-          bibli_plume.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :
           #options d'imports
           mOptions = "always"
@@ -358,8 +356,8 @@ class Ui_Dialog_ImportCSW(object):
           self.Dialog.metagraph = metagraph
 
           #Regénère l'IHM
-          bibli_plume.saveObjetTranslation(self.Dialog.translation)
-          self.Dialog.generationALaVolee(bibli_plume.returnObjetsMeta(self.Dialog))
+          saveObjetTranslation(self.Dialog.translation)
+          self.Dialog.generationALaVolee(returnObjetsMeta(self.Dialog))
           self.close()
        return
 
@@ -413,7 +411,7 @@ class TREEVIEWCSW(QTreeWidget):
         self._mZoneUrl    = _mZoneUrl
         self._mZoneLibUrl = _mZoneLibUrl
         self._mZoneUrlId = _mZoneUrlId
-        iconGestion = bibli_plume.returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\plume.svg")  
+        iconGestion = returnIcon(os.path.dirname(__file__) + "\\icons\\logo\\plume.svg")  
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)

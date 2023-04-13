@@ -1,15 +1,11 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+
 from PyQt5.QtWidgets import QDialog
-from qgis.core import *
 
 from .plume_ui import Ui_Dialog_plume
-from . import bibli_plume
-from .bibli_plume import *
+from plume.bibli_plume import ( returnAndSaveDialogParam )
 
 class Dialog(QDialog, Ui_Dialog_plume):
       def __init__(self, _dicTooltipExiste):
@@ -18,7 +14,7 @@ class Dialog(QDialog, Ui_Dialog_plume):
 
       def reject(self):
           try :
-            bibli_plume.returnAndSaveDialogParam(self, "Save")
+            returnAndSaveDialogParam(self, "Save")
           except:
             pass
             

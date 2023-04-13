@@ -3,14 +3,12 @@
 
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.Qt import *
 
-from . import bibli_plume
-from .bibli_plume import *
+from plume.bibli_plume import ( returnAndSaveDialogParam, returnVersion, executeSql )
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
-        self.mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+        self.mDic_LH = returnAndSaveDialogParam(self, "Load")
         self.editStyle        = self.mDic_LH["QEdit"]              #style saisie
         self.labelBackGround  = self.mDic_LH["QLabelBackGround"] #QLabel    
         self.epaiQGroupBox    = self.mDic_LH["QGroupBoxEpaisseur"] #épaisseur QGroupBox
@@ -43,7 +41,7 @@ class Ui_Dialog(object):
         #----------
         self.label_2 = QtWidgets.QLabel(self.Dialog)
         self.label_2.setGeometry(QtCore.QRect(100, 30, self.lScreenDialog - 100, 30))
-        self.label_2.setAlignment(Qt.AlignLeft)        
+        self.label_2.setAlignment(QtCore.Qt.AlignLeft)        
         font = QtGui.QFont()
         font.setPointSize(12) 
         font.setWeight(50) 
@@ -137,7 +135,7 @@ class Ui_Dialog(object):
         MonHtml += "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
         MonHtml += "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8pt;\"><span style=\" font-weight:600;\">"
         mVERSION = " = version 1.6"
-        MonHtml1 = QtWidgets.QApplication.translate("about", "Plume", None) + "  (" + str(bibli_plume.returnVersion()) + ")"
+        MonHtml1 = QtWidgets.QApplication.translate("about", "Plume", None) + "  (" + str(returnVersion()) + ")"
         MonHtml += MonHtml1
         MonHtml += "</span>" 
         MonHtml2 = "<br><br>"
@@ -172,7 +170,7 @@ class Ui_Dialog(object):
         MonHtml += MonHtml7
         MonHtml += "</i></p></body></html>"
 
-        Dialog.setWindowTitle(QtWidgets.QApplication.translate("about", "PLUME (Metadata storage in PostGreSQL)", None) + "  (" + str(bibli_plume.returnVersion()) + ")")
+        Dialog.setWindowTitle(QtWidgets.QApplication.translate("about", "PLUME (Metadata storage in PostGreSQL)", None) + "  (" + str(returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("about", "Plume", None))
         self.textEdit.setHtml(QtWidgets.QApplication.translate("about", MonHtml, None))
         self.textEditDLLL = mLinkDL + "<br>" + mLinkLL

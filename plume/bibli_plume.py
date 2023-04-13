@@ -1,16 +1,17 @@
 # (c) Didier  LECLERC 2020 CMSIG MTE-MCTRCT/SG/SNUM/UNI/DRC Site de Rouen
 # créé sept 2021
 
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit, QMainWindow, QWidget, QDockWidget, QTreeView, QTreeWidget) 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import QIcon
-from PyQt5.QtGui import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import ( QMessageBox, QFileDialog, QWidget, QDockWidget, QTreeView, QTreeWidget, QDockWidget, QTreeView, QWidget ) 
+from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt, QFile, QSize )
+
+from PyQt5.QtGui import ( QIcon, QKeySequence )
                      
-from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayerCache, QgsFeatureRequest, QgsSettings, QgsDataSourceUri, QgsCredentials
+from qgis.core import ( QgsProject, QgsSettings, QgsDataSourceUri )
 from qgis.utils import iface
 
 from plume.config import (PLUME_VERSION)  
+from distutils.version import StrictVersion
 
 #==================================================
 #==================================================
@@ -26,16 +27,14 @@ from plume.pg import queries
 
 from . import doerreur
 
-from qgis.gui import (QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel)
+from qgis.gui import ( QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel )
 from qgis.utils import iface
 
 from qgis.core import *
 from qgis.gui import *
 import qgis                              
 import os                       
-import datetime
 import os.path
-import time
 
 
 #==========================         
@@ -78,8 +77,8 @@ def genereButtonsWithDict(dicParamButton ) :
 #==========================
 def ifActivateRightsToManageModels(_self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
     mKeySql = queries.query_is_template_admin()
-    #r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(_self, _self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    r = False # for Test A supprimer
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(_self, _self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+    #r = False # for Test A supprimer
     return r
 
 #==========================
@@ -1034,6 +1033,7 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutreColor["colorTemplateOutVersIn"]      = "#fffab9"
        mDicAutreColor["sepLeftTemplate"]             = "("
        mDicAutreColor["sepRightTemplate"]            = ")"
+       mDicAutreColor["fontCategorieInVersOut"]      = 2
        mDicAutreColor["opacityValue"]                = 1.0
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
