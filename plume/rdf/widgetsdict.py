@@ -500,7 +500,9 @@ class WidgetsDict(dict):
                     if isinstance(value, (URIRef, Literal)):
                         # source de la valeur
                         if val_dict.get('sources') and isinstance(value, URIRef):
-                            val_dict['value_source'] = Thesaurus.concept_source(value)
+                            val_dict['value_source'] = Thesaurus.concept_source(
+                                value, val_dict.get('sources')
+                            )
                         # value_language est déduit de value à l'initialisation
                         # de la clé, le cas échéant
                         val_dict['value'] = value
@@ -1294,7 +1296,7 @@ class WidgetsDict(dict):
             e = e_list[i]
             if k.sources and e.value:
                 if not e.source:
-                    e.source = Thesaurus.concept_source(e.value)
+                    e.source = Thesaurus.concept_source(e.value, k.sources)
                 if not e.source or not e.source in k.sources:
                     continue
                     # les valeurs non référencées ne sont pas conservées
