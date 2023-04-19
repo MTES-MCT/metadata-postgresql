@@ -60,11 +60,12 @@ from datetime import datetime
 
 from plume.rdf.utils import abspath, pick_translation
 from plume.rdf.rdflib import Graph, URIRef, Literal
-from plume.rdf.thesaurus import VOCABULARY
+from plume.rdf.thesaurus import VocabularyGraph
 from plume.rdf.metagraph import SHAPE
 from plume.rdf.namespaces import PLUME, SKOS, DCT, SH, \
     RDF, RDFS, PlumeNamespaceManager
 
+VOCABULARY = VocabularyGraph.all_vocabularies()
 
 class RegisterApi:
     """Requêteur sur le registre de Plume.
@@ -422,7 +423,7 @@ class ConceptDefinition(ObjectDefinition):
     ----------
     iri : rdflib.term.URIRef
         L'IRI du concept, présumé référencé dans 
-        :py:data:`plume.rdf.thesaurus.VOCABULARY`.
+        :py:data:`plume.rdf.thesaurus.VOCABULARIES`.
     
     Raises
     ------
