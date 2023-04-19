@@ -1,0 +1,51 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/completed> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "production of the data has been completed"@en ;
+    skos:prefLabel "completed"@en,
+        "achevé"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/historicalArchive> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data has been stored in an offline storage facility"@en ;
+    skos:prefLabel "historical archive"@en,
+        "archivé"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/obsolete> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data is no longer relevant"@en ;
+    skos:prefLabel "obsolete"@en,
+        "obsolète"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/onGoing> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data is continually being updated"@en ;
+    skos:prefLabel "on going"@en,
+        "vivant"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/planned> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "fixed date has been established upon or by which the data will be created or updated"@en ;
+    skos:prefLabel "planned"@en,
+        "programmé"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/required> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data needs to be generated or updated"@en ;
+    skos:prefLabel "required"@en,
+        "à venir"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/underDevelopment> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    skos:definition "data is currently in the process of being created"@en ;
+    skos:prefLabel "under development"@en,
+        "en production"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> a skos:ConceptScheme ;
+    skos:prefLabel "Status of the dataset (ISO 19139)"@en,
+        "État du jeu de données (ISO 19139)"@fr ;
+    foaf:page <https://standards.iso.org/iso/19139/resources/gmxCodelists.xml> .
