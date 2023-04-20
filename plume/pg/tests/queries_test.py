@@ -55,7 +55,7 @@ class PlumePgTestCase(unittest.TestCase):
             with conn.cursor() as cur:
                 cur.execute(create_tests)
                 cur.execute("""
-                    DROP EXTENSION IF EXISTS plume_pg ;
+                    DROP EXTENSION IF EXISTS plume_pg CASCADE ;
                     CREATE EXTENSION plume_pg CASCADE ;
                     """)  
         conn.close()
