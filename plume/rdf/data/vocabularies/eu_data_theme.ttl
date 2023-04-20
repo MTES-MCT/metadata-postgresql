@@ -1,0 +1,71 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-theme/AGRI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Agriculture, fisheries, forestry and food"@en,
+        "Agriculture, pêche, sylviculture et alimentation"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/ECON> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Economy and finance"@en,
+        "Économie et finances"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/EDUC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Education, culture and sport"@en,
+        "Éducation, culture et sport"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/ENER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Energy"@en,
+        "Énergie"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/ENVI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Environment"@en,
+        "Environnement"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/GOVE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Government and public sector"@en,
+        "Gouvernement et secteur public"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/HEAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Health"@en,
+        "Santé"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/INTR> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "International issues"@en,
+        "Questions internationales"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/JUST> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Justice, legal system and public safety"@en,
+        "Justice, système juridique et sécurité publique"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/REGI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Regions and cities"@en,
+        "Régions et villes"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/SOCI> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Population and society"@en,
+        "Population et société"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Science and technology"@en,
+        "Science et technologie"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme/TRAN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+    skos:prefLabel "Transport"@en,
+        "Transports"@fr .
+
+<http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
+    skos:prefLabel "Data theme (EU)"@en,
+        "Thème de données (UE)"@fr .
+

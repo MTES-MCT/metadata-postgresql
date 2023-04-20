@@ -1,0 +1,31 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/dataset-status/COMPLETED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "completed"@en,
+        "achevé"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/DEPRECATED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "deprecated"@en,
+        "obsolète"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/DEVELOP> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "under development"@en,
+        "en production"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/DISCONT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "discontinued"@en,
+        "abandonné"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status/WITHDRAWN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/dataset-status> ;
+    skos:prefLabel "withdrawn"@en,
+        "retiré"@fr .
+
+<http://publications.europa.eu/resource/authority/dataset-status> a skos:ConceptScheme ;
+    skos:prefLabel "Dataset status (EU)"@en,
+        "Statut du jeu de données (UE)"@fr .
+

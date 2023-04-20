@@ -1,0 +1,51 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(a) of the INSPIRE Directive (confidentiality of the proceedings of public authorities)"@en,
+        "Accès public restreint en application de l'article 13(1)(a) de la Directive INSPIRE (confidentialité des travaux des autorités publiques)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1b> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(b) of the INSPIRE Directive (international relations, public security or national defence)"@en,
+        "Accès public restreint en application de l'article 13(1)(b) de la Directive INSPIRE (relations internationales, sécurité publique ou défense nationale)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1c> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(c) of the INSPIRE Directive (course of justice)"@en,
+        "Accès public restreint en application de l'article 13(1)(c) de la Directive INSPIRE (bonne marche de la justice)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1d> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(d) of the INSPIRE Directive (confidentiality of commercial or industrial information)"@en,
+        "Accès public restreint en application de l'article 13(1)(d) de la Directive INSPIRE (confidentialité des informations commerciales ou industrielles)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1e> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(e) of the INSPIRE Directive (intellectual property rights)"@en,
+        "Accès public restreint en application de l'article 13(1)(e) de la Directive INSPIRE (droits de propriété intellectuelle)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1f> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(f) of the INSPIRE Directive (confidentiality of personal data)"@en,
+        "Accès public restreint en application de l'article 13(1)(f) de la Directive INSPIRE (confidentialité des données à caractère personnel)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1g> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(g) of the INSPIRE Directive (interests or protection of any person who supplied the information)"@en,
+        "Accès public restreint en application de l'article 13(1)(g) de la Directive INSPIRE (intérêts ou protection de toute personne qui a fourni les informations)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1h> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "Public access limited according to Article 13(1)(h) of the INSPIRE Directive (protection of the environment to which such information relates)"@en,
+        "Accès public restreint en application de l'article 13(1)(h) de la Directive INSPIRE (protection de l'environnement auquel ces informations ont trait)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> ;
+    skos:prefLabel "No limitations to public access"@en,
+        "Pas de restriction d'accès public selon INSPIRE"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess> a skos:ConceptScheme ;
+    skos:prefLabel "Limitations on public access (INSPIRE)"@en,
+        "Restriction d'accès public (INSPIRE)"@fr .
+

@@ -1,0 +1,61 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://purl.org/adms/publishertype/Academia-ScientificOrganisation> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Academia/Scientific organisation"@en,
+        "Université / Organisation scientifique"@fr .
+
+<http://purl.org/adms/publishertype/Company> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Company"@en,
+        "Entreprise"@fr .
+
+<http://purl.org/adms/publishertype/IndustryConsortium> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Industry consortium"@en,
+        "Consortium industriel"@fr .
+
+<http://purl.org/adms/publishertype/LocalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Local Authority"@en,
+        "Autorité locale"@fr .
+
+<http://purl.org/adms/publishertype/NationalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "National authority"@en,
+        "Autorité nationale"@fr .
+
+<http://purl.org/adms/publishertype/NonGovernmentalOrganisation> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Non-Governmental Organisation"@en,
+        "Organisation non-gouvernementale"@fr .
+
+<http://purl.org/adms/publishertype/NonProfitOrganisation> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Non-Profit Organisation"@en,
+        "Organisation à but non lucratif"@fr .
+
+<http://purl.org/adms/publishertype/PrivateIndividual(s)> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Private Individual(s)"@en,
+        "Particulier (s)"@fr .
+
+<http://purl.org/adms/publishertype/RegionalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Regional authority"@en,
+        "Autorité régionale"@fr .
+
+<http://purl.org/adms/publishertype/StandardisationBody> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Standardisation body"@en,
+        "Organisme de normalisation"@fr .
+
+<http://purl.org/adms/publishertype/SupraNationalAuthority> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/publishertype/1.0> ;
+    skos:prefLabel "Supra-national authority"@en,
+        "Autorité supranationale"@fr .
+
+<http://purl.org/adms/publishertype/1.0> a skos:ConceptScheme ;
+    skos:prefLabel "Publisher type (EU)"@en,
+        "Types d'entité en charge de la publication (UE)"@fr .
+

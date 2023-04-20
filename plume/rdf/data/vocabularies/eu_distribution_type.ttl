@@ -1,0 +1,26 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
+    skos:prefLabel "Downloadable file"@en,
+        "Fichier téléchargeable"@fr .
+
+<http://publications.europa.eu/resource/authority/distribution-type/FEED_INFO> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
+    skos:prefLabel "Information feed"@en,
+        "Fil d'information (RSS, etc.)"@fr .
+
+<http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
+    skos:prefLabel "Visualization"@en,
+        "Visualisation"@fr .
+
+<http://publications.europa.eu/resource/authority/distribution-type/WEB_SERVICE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
+    skos:prefLabel "Web service/API"@en,
+        "Service web/API"@fr .
+
+<http://publications.europa.eu/resource/authority/distribution-type> a skos:ConceptScheme ;
+    skos:prefLabel "Distribution type (EU)"@en,
+        "Type de distribution (UE)"@fr .
+

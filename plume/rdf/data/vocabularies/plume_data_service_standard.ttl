@@ -1,0 +1,49 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://tools.ietf.org/html/rfc4287> a skos:Concept ;
+    dct:identifier "atom" ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "ATOM Syndication Format"@en .
+
+<http://www.opengis.net/def/interface/ogcapi-features> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC API - Features"@en ;
+    foaf:page <https://www.ogc.org/standards/ogcapi-features> .
+
+<http://www.opengis.net/def/serviceType/ogc/csw> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC Catalogue Service for the Web (CSW)"@en ;
+    foaf:page <http://www.ogc.org/standards/cat> .
+
+<http://www.opengis.net/def/serviceType/ogc/sos> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC Sensor Observation Service (SOS)"@en ;
+    foaf:page <http://www.ogc.org/standards/sos> .
+
+<http://www.opengis.net/def/serviceType/ogc/wcs> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC Web Coverage Service (WCS)"@en ;
+    foaf:page <http://www.ogc.org/standards/wcs> .
+
+<http://www.opengis.net/def/serviceType/ogc/wfs> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC Web Feature Service (WFS)"@en ;
+    foaf:page <http://www.ogc.org/standards/wfs> .
+
+<http://www.opengis.net/def/serviceType/ogc/wms> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC Web Map Service (WMS)"@en ;
+    foaf:page <https://www.ogc.org/standards/wms> .
+
+<http://www.opengis.net/def/serviceType/ogc/wmts> a skos:Concept ;
+    skos:inScheme plume:DataServiceStandard ;
+    skos:prefLabel "OGC Web Map Tile Service (WMTS)"@en ;
+    foaf:page <https://www.ogc.org/standards/wmts> .
+
+plume:DataServiceStandard a skos:ConceptScheme ;
+    skos:prefLabel "Data Service Standards"@en,
+        "Standards de services de données"@fr .
+

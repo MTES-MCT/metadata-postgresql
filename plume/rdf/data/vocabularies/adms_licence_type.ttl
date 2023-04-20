@@ -1,0 +1,76 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://purl.org/adms/licencetype/Attribution> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Attribution"@en,
+        "Attribution"@fr .
+
+<http://purl.org/adms/licencetype/GrantBack> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Grant back"@en,
+        "Rétrocéder"@fr .
+
+<http://purl.org/adms/licencetype/JurisdictionWithinTheEU> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Jurisdiction within the EU"@en,
+        "Compétence dans l'UE"@fr .
+
+<http://purl.org/adms/licencetype/KnownPatentEncumbrance> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Known patent encumbrance"@en,
+        "Charge de brevet connue"@fr .
+
+<http://purl.org/adms/licencetype/NoDerivativeWork> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "No derivative work"@en,
+        "Aucun travail dérivé"@fr .
+
+<http://purl.org/adms/licencetype/NominalCost> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Nominal cost"@en,
+        "Coût nominal"@fr .
+
+<http://purl.org/adms/licencetype/NonCommercialUseOnly> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Non-commercial use only"@en,
+        "A usage non commercial seulement"@fr .
+
+<http://purl.org/adms/licencetype/OtherRestrictiveClauses> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Other restrictive clauses"@en,
+        "Autres clauses restrictives"@fr .
+
+<http://purl.org/adms/licencetype/PublicDomain> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Public domain"@en,
+        "Domaine public"@fr .
+
+<http://purl.org/adms/licencetype/ReservedNames-Endorsement-OfficialStatus> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Reserved names / endorsement / official status"@en,
+        "Noms réservés / Approbation / Statut officiel"@fr .
+
+<http://purl.org/adms/licencetype/RoyaltiesRequired> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Royalties required"@en,
+        "Droits d'auteur requis"@fr .
+
+<http://purl.org/adms/licencetype/ShareAlike-Compatible> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Share-alike / copyleft on source code or with compatibility exceptions for larger work and interoperability"@en,
+        "Share Alike / copyleft sur le code source ou avec exceptions de compatibilité pour les grands travaux et l'interopérabilité"@fr .
+
+<http://purl.org/adms/licencetype/ShareAlike-NotCompatible> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Share-alike / copyleft - not compatible/interoperable with other copyleft licences"@en,
+        "Share-alike / copyleft - pas compatibles / Interopérabilité avec d'autres licences copyleft"@fr .
+
+<http://purl.org/adms/licencetype/UnknownIPR> a skos:Concept ;
+    skos:inScheme <http://purl.org/adms/licencetype/1.1> ;
+    skos:prefLabel "Unknown IPR"@en,
+        "Droits de propriété intellectuelle inconnus"@fr .
+
+<http://purl.org/adms/licencetype/1.1> a skos:ConceptScheme ;
+    skos:prefLabel "Licence type (EU)"@en,
+        "Types de licence (UE)"@fr .
+

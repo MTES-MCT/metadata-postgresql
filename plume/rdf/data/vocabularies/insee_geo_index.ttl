@@ -1,0 +1,45 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://id.insee.fr/geo/arrondissement> a skos:Concept ;
+    skos:inScheme plume:InseeGeoIndex ;
+    skos:prefLabel "French arrondissement"@en,
+        "Arrondissement"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Arrondissement_français> .
+
+<http://id.insee.fr/geo/commune> a skos:Concept ;
+    skos:inScheme plume:InseeGeoIndex ;
+    skos:prefLabel "French commune"@en,
+        "Commune ou arrondissement urbain (code INSEE)"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Commune_(France)> .
+
+<http://id.insee.fr/geo/departement> a skos:Concept ;
+    skos:inScheme plume:InseeGeoIndex ;
+    skos:prefLabel "French departement"@en,
+        "Département"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Département_français> .
+
+<http://id.insee.fr/geo/pays/france> a skos:Concept ;
+    skos:inScheme plume:InseeGeoIndex ;
+    skos:prefLabel "France"@en,
+        "France"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/France> .
+
+<http://id.insee.fr/geo/region> a skos:Concept ;
+    skos:inScheme plume:InseeGeoIndex ;
+    skos:prefLabel "French region"@en,
+        "Région"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Région_française> .
+
+<http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
+    skos:inScheme plume:InseeGeoIndex ;
+    skos:prefLabel "Mainland France"@en,
+        "France métropolitaine"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine> .
+
+plume:InseeGeoIndex a skos:ConceptScheme ;
+    skos:prefLabel "INSEE Gazetteer"@en,
+        "Index géographique de l'INSEE"@fr ;
+    foaf:page <http://id.insee.fr> .
+

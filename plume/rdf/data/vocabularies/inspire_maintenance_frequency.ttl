@@ -1,0 +1,66 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/annually> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Annually"@en,
+        "Annuelle"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/asNeeded> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "As needed"@en,
+        "D'autant que de besoin"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/biannually> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Biannually"@en,
+        "Deux fois par an"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/continual> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Continual"@en,
+        "Continue"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/daily> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Daily"@en,
+        "Quotidienne"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/fortnightly> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Fortnightly"@en,
+        "Deux fois par mois"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/irregular> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Irregular"@en,
+        "Irrégulière"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/monthly> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Monthly"@en,
+        "Mensuelle"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/notPlanned> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Not planned"@en,
+        "Non planifiée"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/quarterly> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Quarterly"@en,
+        "Trimestrielle"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/unknown> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Unknown"@en,
+        "Indéterminée"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/weekly> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> ;
+    skos:prefLabel "Weekly"@en,
+        "Hebdomadaire"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency> a skos:ConceptScheme ;
+    skos:prefLabel "Maintenance frequency (INSPIRE)"@en,
+        "Fréquence d'actualisation (INSPIRE)"@fr .
+

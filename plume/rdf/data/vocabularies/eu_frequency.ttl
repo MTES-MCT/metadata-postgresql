@@ -1,0 +1,151 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "annual"@en,
+        "annuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "semiannual"@en,
+        "semestriel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL_3> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "three times a year"@en,
+        "trois fois par an"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIDECENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "bidecennial"@en,
+        "tous les vingt ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "biennial"@en,
+        "biennal"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIHOURLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "bihourly"@en,
+        "toutes les deux heures"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIMONTHLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "bimonthly"@en,
+        "bimestriel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/BIWEEKLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "biweekly"@en,
+        "tous les quinze jours"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/CONT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "continuous"@en,
+        "continuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/DAILY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "daily"@en,
+        "quotidien"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/DAILY_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "twice a day"@en,
+        "deux fois par jour"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/DECENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "decennial"@en,
+        "tous les dix ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/HOURLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "hourly"@en,
+        "toutes les heures"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/IRREG> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "irregular"@en,
+        "irrégulier"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "monthly"@en,
+        "mensuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "semimonthly"@en,
+        "bimensuel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY_3> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "three times a month"@en,
+        "trois fois par mois"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/NEVER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "never"@en,
+        "jamais"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/OTHER> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "other"@en,
+        "autre"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/QUADRENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "quadrennial"@en,
+        "tous les quatre ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/QUARTERLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "quarterly"@en,
+        "trimestriel"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/QUINQUENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "quinquennial"@en,
+        "tous les cinq ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIDECENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "tridecennial"@en,
+        "tous les trente ans"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIENNIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "triennial"@en,
+        "triennal"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIHOURLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "trihourly"@en,
+        "toutes les trois heures"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/UNKNOWN> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "unknown"@en,
+        "inconnu"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "weekly"@en,
+        "hebdomadaire"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY_2> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "semiweekly"@en,
+        "bihebdomadaire"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY_3> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+    skos:prefLabel "three times a week"@en,
+        "trois fois par semaine"@fr .
+
+<http://publications.europa.eu/resource/authority/frequency> a skos:ConceptScheme ;
+    skos:prefLabel "Frequency (EU)"@en,
+        "Fréquences (UE)"@fr .
+
