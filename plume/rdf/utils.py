@@ -1351,4 +1351,33 @@ def export_format_from_extension(extension, default_format=None):
                 rdf_format = k
     return rdf_format
 
+class MetaCollection(type):
+    """Méta-classe gérant l'accès à une collection d'objets.
+    
+    Pour les classes créées avec cette méta-classe, les objets
+    sont à la fois créés et rappelés via ``cls[key]``, où ``cls``
+    est le nom de la classe et ``key`` une clé identifiant l'objet.
+    Celle-ci doit être pouvoir être utilisée pour générer un nouvel
+    objet. S'il s'agit d'un tuple, ``*key`` est passé au constructeur,
+    sinon ``key`` est passé tel quel.
+
+    À noter que les objets ne sont pas répertoriés automatiquement
+    lorsque le constructeur de la classe est appelé directement, ce 
+    qui est donc déconseillé.
+
+    """
+
+    COLLECTION = {}
+
+    def __getitem__(cls, key):
+        if key in cls.COLLECTION:
+            return cls.COLLECTION[key]
+        
+        if isinstance(key, tuple):
+            item = cls(*key)
+        else:
+            item = cls(key)
+        
+        cls.COLLECTION[key] = item
+        return item 
 

@@ -7,18 +7,22 @@ un super-utilisateur.
 
 """
 
-import unittest, psycopg2
+import unittest
+import psycopg2
 
 from plume.rdf.utils import data_from_file, abspath
 from plume.rdf.rdflib import URIRef
 from plume.rdf.namespaces import RDF, DCAT
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.pg.template import TemplateDict, search_template, \
-    LocalTemplatesCollection
+from plume.pg.template import (
+    TemplateDict, search_template, LocalTemplatesCollection
+)
 from plume.pg.description import PgDescription
 from plume.pg.tests.connection import ConnectionString
-from plume.pg.queries import query_list_templates, query_get_categories, \
-     query_template_tabs, query_evaluate_local_templates
+from plume.pg.queries import (
+    query_list_templates, query_get_categories,
+    query_template_tabs, query_evaluate_local_templates
+)
 
 class TemplateTestCase(unittest.TestCase):
 

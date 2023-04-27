@@ -1,0 +1,30 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE> a skos:Concept ;
+    skos:definition "Data is available for a few years, medium term planning."@en ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:prefLabel "available"@en,
+        "disponible"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability/EXPERIMENTAL> a skos:Concept ;
+    skos:definition "Data is available on a trial basis for a short period, short term planning."@en ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:prefLabel "experimental"@en,
+        "expérimental"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability/STABLE> a skos:Concept ;
+    skos:definition "Data will remain available in the long term."@en ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:prefLabel "stable"@en,
+        "stable"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability/TEMPORARY> a skos:Concept ;
+    skos:definition "Data can disappear at any time, no planning."@en ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/planned-availability> ;
+    skos:prefLabel "temporary"@en,
+        "temporaire"@fr .
+
+<http://publications.europa.eu/resource/authority/planned-availability> a skos:ConceptScheme ;
+    skos:prefLabel "Planned availability (EU)"@en,
+        "Disponibilité prévue (UE)"@fr .
+

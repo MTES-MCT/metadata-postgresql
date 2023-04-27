@@ -1,0 +1,31 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/access-right/CONFIDENTIAL> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "confidential"@en,
+        "confidentiel"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/NON_PUBLIC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "non-public"@en,
+        "non public"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/PUBLIC> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "public"@en,
+        "public"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/RESTRICTED> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "restricted"@en,
+        "restreint"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right/SENSITIVE> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/access-right> ;
+    skos:prefLabel "sensitive"@en,
+        "sensible"@fr .
+
+<http://publications.europa.eu/resource/authority/access-right> a skos:ConceptScheme ;
+    skos:prefLabel "Access right (EU)"@en,
+        "Droits d'accès (UE)"@fr .
+

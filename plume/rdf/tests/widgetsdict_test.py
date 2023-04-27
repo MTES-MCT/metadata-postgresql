@@ -7,12 +7,15 @@ un super-utilisateur.
 
 """
 
-import unittest, psycopg2, re
+import unittest
+import psycopg2
+import re
 from datetime import datetime, date
 
 from plume.rdf.widgetsdict import WidgetsDict
-from plume.rdf.namespaces import DCAT, DCT, OWL, LOCAL, XSD, VCARD, FOAF, \
-    PLUME, LOCAL, RDF, RDFS
+from plume.rdf.namespaces import (
+    DCAT, DCT, OWL, LOCAL, XSD, VCARD, FOAF, PLUME, LOCAL, RDF, RDFS
+)
 from plume.rdf.widgetkey import GroupOfPropertiesKey, ValueKey, GroupOfValuesKey
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.rdflib import isomorphic, Literal, URIRef
@@ -214,11 +217,13 @@ class WidgetsDictTestCase(unittest.TestCase):
                 if not k in d:
                     self.assertFalse(v)
         # widget de saisie avec aide à la saisie des géométries
+        # (catégorie appartenant à un bloc masqué par défaut)
         key = widgetsdict.root.search_from_path(DCT.spatial / DCAT.bbox)
         d = {
             'main widget type': 'QTextEdit',
             'label': "Rectangle d'emprise",
             'has label': True,
+            'hidden': True,
             'help text': "Rectangle d'emprise (BBox), au format textuel WKT.",
             'object': 'edit',
             'geo tools': ['show', 'bbox', 'rectangle'],

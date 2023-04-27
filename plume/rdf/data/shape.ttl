@@ -74,7 +74,8 @@ plume:DatasetShape
         sh:class skos:Concept ;
         plume:ontology <http://publications.europa.eu/resource/authority/data-theme>,
             <http://inspire.ec.europa.eu/theme>,
-            <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory> ;
+            <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory>,
+            <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
         sh:order 4 ;
     ] ;
     sh:property [
@@ -89,9 +90,12 @@ plume:DatasetShape
         sh:path dct:spatial ;
         sh:name "Couverture géographique"@fr ;
         sh:description "Territoire·s décrit·s par le jeu de données."@fr ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Location ;
         sh:order 9 ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory>,
+            <http://publications.europa.eu/resource/authority/atu> ;
     ] ;
     sh:property [
         sh:path dct:temporal ;
@@ -622,7 +626,8 @@ plume:DistributionShape
         sh:maxCount 1 ;
         sh:order 31 ;
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense>,
-            <http://publications.europa.eu/resource/authority/licence> ;
+            <http://publications.europa.eu/resource/authority/licence>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense> ;
     ] ;
     sh:property [
         sh:path dct:accessRights ;

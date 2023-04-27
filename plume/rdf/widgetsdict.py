@@ -17,15 +17,19 @@ descriptifs des champs...
 """
 
 from plume.rdf.rdflib import Literal, URIRef, BNode
-from plume.rdf.utils import sort_by_language, DatasetId, forbidden_char, \
-    owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing, \
-    tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration, \
-    str_from_datetime, str_from_date, str_from_time, datetime_from_str, \
-    date_from_str, time_from_str, decimal_from_str, str_from_decimal, \
+from plume.rdf.utils import (
+    sort_by_language, DatasetId, forbidden_char,
+    owlthing_from_email, owlthing_from_tel, text_with_link, email_from_owlthing,
+    tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration,
+    str_from_datetime, str_from_date, str_from_time, datetime_from_str,
+    date_from_str, time_from_str, decimal_from_str, str_from_decimal,
     main_datatype
-from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
-    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
-    PlusButtonKey, ObjectKey, RootKey, TabKey, GroupKey
+)
+from plume.rdf.widgetkey import (
+    WidgetKey, ValueKey, GroupOfPropertiesKey, GroupOfValuesKey,
+    TranslationGroupKey, TranslationButtonKey, PlusButtonKey, ObjectKey,
+    RootKey, TabKey, GroupKey
+)
 from plume.rdf.internaldict import InternalDict
 from plume.rdf.actionsbook import ActionsBook
 from plume.rdf.exceptions import IntegrityBreach, ForbiddenOperation
@@ -500,7 +504,9 @@ class WidgetsDict(dict):
                     if isinstance(value, (URIRef, Literal)):
                         # source de la valeur
                         if val_dict.get('sources') and isinstance(value, URIRef):
-                            val_dict['value_source'] = Thesaurus.concept_source(value)
+                            val_dict['value_source'] = Thesaurus.concept_source(
+                                value, val_dict.get('sources')
+                            )
                         # value_language est déduit de value à l'initialisation
                         # de la clé, le cas échéant
                         val_dict['value'] = value
@@ -1294,7 +1300,7 @@ class WidgetsDict(dict):
             e = e_list[i]
             if k.sources and e.value:
                 if not e.source:
-                    e.source = Thesaurus.concept_source(e.value)
+                    e.source = Thesaurus.concept_source(e.value, k.sources)
                 if not e.source or not e.source in k.sources:
                     continue
                     # les valeurs non référencées ne sont pas conservées

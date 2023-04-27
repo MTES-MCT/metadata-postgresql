@@ -3,10 +3,10 @@ import unittest
 
 from plume.rdf.rdflib import URIRef
 from plume.rdf.namespaces import DCT, RDFS, DCAT
-from plume.rdf.actionsbook import ActionsBook
-from plume.rdf.widgetkey import RootKey, ObjectKey, GroupOfPropertiesKey, \
-     TranslationGroupKey, ValueKey, WidgetKey, TranslationButtonKey, \
-     GroupOfValuesKey
+from plume.rdf.widgetkey import (
+    RootKey, GroupOfPropertiesKey, TranslationGroupKey, ValueKey,
+    WidgetKey, TranslationButtonKey
+)
 
 class ActionsBookTestCase(unittest.TestCase):
 

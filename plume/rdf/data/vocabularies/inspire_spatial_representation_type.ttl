@@ -1,0 +1,36 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/grid> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Grid"@en,
+        "Grille (données maillées, raster...)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/stereoModel> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Stereo model"@en,
+        "Modèle stéréoscopique"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/textTable> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Text table"@en,
+        "Table de texte"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/tin> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "TIN (Triangulated irregular network)"@en,
+        "TIN (Réseau triangulé irrégulier)"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Vector"@en,
+        "Vecteur"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/video> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> ;
+    skos:prefLabel "Video"@en,
+        "Vidéo"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType> a skos:ConceptScheme ;
+    skos:prefLabel "Spatial representation type (INSPIRE)"@en,
+        "Type de représentation géographique (INSPIRE)"@fr .
+

@@ -30,7 +30,7 @@ from unittest import TestLoader, TestSuite, TextTestRunner
 from plume.pg.tests import description_test, queries_test, \
     template_test, computer_test
 from plume.rdf.tests import actionsbook_test, metagraph_test, \
-    properties_test, utils_test, widgetkey_test, widgetsdict_test
+    properties_test, utils_test, widgetkey_test, widgetsdict_test, thesaurus_test
 from plume.iso.tests import map_test
 
 TESTS = {
@@ -41,6 +41,7 @@ TESTS = {
     actionsbook_test: ['actionsbook', 'rdf'],
     metagraph_test: ['metagraph', 'rdf'],
     properties_test: ['properties', 'rdf'],
+    thesaurus_test: ['thesaurus', 'rdf'],
     utils_test: ['utils', 'rdf'],
     widgetkey_test: ['widgetkey', 'rdf'],
     widgetsdict_test: ['widgetsdict', 'rdf'],

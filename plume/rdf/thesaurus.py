@@ -1,23 +1,120 @@
 """Répertoire des thésaurus.
 
+Tout nouveau vocabulaire utilisable doit être ajouté sous la forme
+d'un fichier encodé en turtle dans le répertoire ``plume/rdf/data/vocabularies``.
+Le ou les IRI des ensembles qu'il contient doivent également 
+être listés dans :py:data:``VOCABULARIES``, pour expliciter le lien
+avec le fichier susmentionné. 
+
 """
 
 from locale import strxfrm, setlocale, LC_COLLATE
 
+from plume.rdf.rdflib import Graph, URIRef
 from plume.rdf.exceptions import UnknownSource
-from plume.rdf.namespaces import FOAF, SKOS
-from plume.rdf.utils import abspath, pick_translation, graph_from_file
+from plume.rdf.namespaces import FOAF, SKOS, PlumeNamespaceManager
+from plume.rdf.utils import abspath, pick_translation, graph_from_file, MetaCollection
 
-VOCABULARY = graph_from_file(abspath('rdf/data/vocabulary.ttl'))
-"""Graphe contenant le vocabulaire de tous les thésaurus.
+VOCABULARIES = {
+    'http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode': 'iso_19139_progress_code.ttl',
+    'http://publications.europa.eu/resource/authority/dataset-status': 'eu_dataset_status.ttl',
+    'http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType': 'inspire_spatial_representation_type.ttl',
+    'http://publications.europa.eu/resource/authority/file-type': 'eu_file_type.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard': 'plume_data_service_standard.ttl',
+    'http://publications.europa.eu/resource/authority/distribution-type': 'eu_distribution_type.ttl',
+    'http://publications.europa.eu/resource/authority/licence': 'eu_licence.ttl',
+    'http://publications.europa.eu/resource/authority/dataset-type': 'eu_dataset_type.ttl',
+    'http://publications.europa.eu/resource/authority/data-service-type': 'eu_data_service_type.ttl',
+    'http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency': 'inspire_maintenance_frequency.ttl',
+    'http://publications.europa.eu/resource/authority/planned-availability': 'eu_planned_availability.ttl',
+    'http://inspire.ec.europa.eu/metadata-codelist/TopicCategory': 'inspire_topic_category.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister': 'plume_standard_register.ttl',
+    'http://www.opengis.net/def/crs/EPSG/0': 'ogc_epsg.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense': 'plume_crpa_authorized_license.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations': 'plume_crpa_access_limitations.ttl',
+    'http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess': 'inspire_limitations_on_public_access.ttl',
+    'http://inspire.ec.europa.eu/theme': 'inspire_theme.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex': 'insee_geo_index.ttl',
+    'http://publications.europa.eu/resource/authority/data-theme': 'eu_data_theme.ttl',
+    'http://publications.europa.eu/resource/authority/access-right': 'eu_access_right.ttl',
+    'http://purl.org/adms/licencetype/1.1': 'adms_licence_type.ttl',
+    'http://purl.org/adms/publishertype/1.0': 'adms_publisher_type.ttl',
+    'http://publications.europa.eu/resource/authority/frequency': 'eu_frequency.ttl',
+    'http://publications.europa.eu/resource/authority/language': 'eu_language.ttl',
+    'http://publications.europa.eu/resource/authority/atu': 'eu_administrative_territory_unit.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance': 'eu_administrative_territory_unit_france.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres': 'ecospheres_theme.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory': 'insee_individual_territories.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense': 'spdx_license.ttl'
+}
 
-"""
-  
-class Thesaurus:
-    """Thésaurus.
+class VocabularyGraph(Graph, metaclass=MetaCollection):
+    """Graphe contenant le vocabulaire d'un thésaurus.
     
-    Tout nouveau thésaurus généré est mémorisé pour gagner en temps
-    de calcul.
+    Pour obtenir le graphe de vocabulaire associé à
+    l'IRI d'un ensemble de concepts ``iri`` :
+
+        >>> graph = VocabularyGraph[iri]
+
+    Si le vocabulaire avait déjà été mobilisé auparavant,
+    son graphe est récupéré dans les données en mémoire,
+    sinon il est chargé depuis le fichier qui contient les
+    données. Pour cela, ``iri`` doit être répertorié dans
+    :py:data:`VOCABULARIES` (sous la forme d'une chaîne de
+    caractères), avec en valeur le nom du fichier du 
+    répertoire ``plume/rdf/data/vocabularies`` où se trouvent
+    les données. Dans le cas contraire, une erreur 
+    :py:class:`plume.rdf.exceptions.UnknownSource` est émise.
+
+    Attributes
+    ----------
+    iri : rdflib.term.URIRef
+        L'IRI de l'ensemble de concepts qui identifie
+        le vocabulaire.
+    
+    """
+
+    def __init__(self, iri):
+        super().__init__(namespace_manager=PlumeNamespaceManager())
+
+        file = VOCABULARIES.get(str(iri))
+        if not file:
+            raise UnknownSource(iri)
+        
+        filepath = abspath('rdf/data/vocabularies') / file
+        if not filepath.exists() or not filepath.is_file():
+            raise UnknownSource(iri)
+        
+        raw_graph = graph_from_file(filepath)
+        self += raw_graph
+        self.iri = iri
+
+    def all_vocabularies():
+        """Renvoie un graphe contenant tous les vocabulaires connus.
+        
+        Returns
+        -------
+        rdflib.graph.Graph
+        
+        """
+        graph = Graph(namespace_manager=PlumeNamespaceManager())
+        for str_iri in VOCABULARIES:
+            graph += VocabularyGraph[URIRef(str_iri)]
+        return graph
+
+class Thesaurus(metaclass=MetaCollection):
+    """Thésaurus.
+
+    Un thésaurus est défini par un vocabulaire et une liste
+    de langues. Celle-ci doit permettre de sélectionner les
+    libellés les plus appropriés pour l'utilisateur.
+    
+    Pour accéder à un thésaurus déjà chargé ou le générer :
+
+        >>> Thesaurus[(iri, langlist)]
+
+    Tout nouveau thésaurus généré de cette façon est mémorisé pour
+    gagner en temps de calcul.
     
     Parameters
     ----------
@@ -37,7 +134,7 @@ class Thesaurus:
         L'IRI du thésaurus.
     langlist : tuple(str)
         Le tuple de langues pour lequel le thésaurus a été généré.
-    values : list
+    values : list(str)
         La liste des termes du thésaurus.
     iri_from_str : dict
         Dictionnaire dont les clés sont les libellés des termes du
@@ -51,22 +148,9 @@ class Thesaurus:
     
     """
     
-    collection = {}
-    """Accès à l'ensemble des thésaurus déjà compilés.
-    
-    `collection` est un dictionnaire dont les clés sont des tuples
-    (`iri`, `langlist`) et les valeurs l'objet :py:class:`Thesaurus`
-    lui-même.
-    
-    """
-    
     @classmethod
     def get_values(cls, thesaurus):
         """Cherche ou génère un thésaurus et renvoie la liste de ses termes.
-        
-        Autant que possible, cette méthode va chercher les termes dans le
-        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -87,7 +171,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`VOCABULARY`.
+            mais n'est pas répertorié dans :py:data:`VOCABULARIES`.
         
         Examples
         --------
@@ -96,20 +180,12 @@ class Thesaurus:
         ['', 'Licence Ouverte version 2.0', 'ODC Open Database License (ODbL) version 1.0']
         
         """
-        if thesaurus in cls.collection:
-            return cls.collection[thesaurus].values
-        t = Thesaurus(*thesaurus)
-        if t:
-            return t.values
-        raise UnknownSource(thesaurus[0])
+        t = Thesaurus[thesaurus]
+        return t.values
     
     @classmethod
     def get_label(cls, thesaurus):
         """Cherche ou génère un thésaurus et renvoie son libellé.
-        
-        Autant que possible, cette méthode va chercher le libellé dans le
-        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -129,7 +205,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`VOCABULARY`.
+            mais n'est pas répertorié dans :py:data:`VOCABULARIES`.
         
         Examples
         --------
@@ -138,20 +214,12 @@ class Thesaurus:
         "Restrictions d'accès en application du Code des relations entre le public et l'administration"
         
         """
-        if thesaurus in cls.collection:
-            return cls.collection[thesaurus].label
-        t = Thesaurus(*thesaurus)
-        if t:
-            return t.label
-        raise UnknownSource(thesaurus[0])
+        t = Thesaurus[thesaurus]
+        return t.label
     
     @classmethod
     def concept_iri(cls, thesaurus, concept_str):
         """Cherche ou génère un thésaurus et renvoie l'IRI d'un concept.
-        
-        Autant que possible, cette méthode va chercher l'IRI dans le
-        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -175,7 +243,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`VOCABULARY`.
+            mais n'est pas répertorié dans :py:data:`VOCABULARIES`.
         
         Examples
         --------
@@ -187,20 +255,12 @@ class Thesaurus:
         rdflib.term.URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations/L311-6-1-vp')
         
         """
-        if thesaurus in cls.collection:
-            return cls.collection[thesaurus].iri_from_str.get(concept_str)
-        t = Thesaurus(*thesaurus)
-        if t:
-            return t.iri_from_str.get(concept_str)
-        raise UnknownSource(thesaurus[0])
+        t = Thesaurus[thesaurus]
+        return t.iri_from_str.get(concept_str)
     
     @classmethod
     def concept_str(cls, thesaurus, concept_iri):
         """Cherche ou génère un thésaurus et renvoie le libellé d'un concept.
-        
-        Autant que possible, cette méthode va chercher le libellé dans le
-        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -224,7 +284,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`VOCABULARY`.
+            mais n'est pas répertorié dans :py:data:`VOCABULARIES`.
         
         Examples
         --------
@@ -236,20 +296,12 @@ class Thesaurus:
         'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
         
         """
-        if thesaurus in cls.collection:
-            return cls.collection[thesaurus].str_from_iri.get(concept_iri)
-        t = Thesaurus(*thesaurus)
-        if t:
-            return t.str_from_iri.get(concept_iri)
-        raise UnknownSource(thesaurus[0])
+        t = Thesaurus[thesaurus]
+        return t.str_from_iri.get(concept_iri)
     
     @classmethod
     def concept_link(cls, thesaurus, concept_iri):
         """Cherche ou génère un thésaurus et renvoie le lien d'un concept.
-        
-        Autant que possible, cette méthode va chercher le lien dans le
-        répertoire des thésaurus déjà compilés (:py:attr:`Thesaurus.collection`),
-        à défaut le thésaurus est compilé à partir de :py:data:`VOCABULARY`.
         
         Parameters
         ----------
@@ -272,7 +324,7 @@ class Thesaurus:
         ------
         UnknownSource
             Si le thésaurus non seulement n'avait pas déjà été compilé,
-            mais n'existe même pas dans :py:data:`VOCABULARY`.
+            mais n'est pas répertorié dans :py:data:`VOCABULARIES`.
         
         Examples
         --------
@@ -284,49 +336,36 @@ class Thesaurus:
         rdflib.term.URIRef('https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037269056')
         
         """
-        if thesaurus in cls.collection:
-            return cls.collection[thesaurus].links_from_iri.get(concept_iri)
-        t = Thesaurus(*thesaurus)
-        if t:
-            return t.links_from_iri.get(concept_iri)
-        raise UnknownSource(thesaurus[0])
+        t = Thesaurus[thesaurus]
+        return t.links_from_iri.get(concept_iri)
     
     @classmethod
-    def concept_source(cls, concept_iri):
+    def concept_source(cls, concept_iri, scheme_iris):
         """Renvoie l'IRI du thésaurus référençant l'IRI considérée.
         
         Parameters
         ----------
         concept_iri : rdflib.term.URIRef
             L'IRI d'un terme présumé issu d'un thésaurus.
+        scheme_iris : list(rdflib.term.URIRef)
+            Les IRI des ensembles auxquels l'URI est présumé
+            appartenir, soit ceux qui sont autorisés pour la
+            catégorie de métadonnées considérée. Pour des questions
+            d'optimisation, il est préférable que les premiers
+            ensembles listés soient les plus petits et/ou les
+            plus susceptibles de contenir le concept considéré.
 
         Returns
         -------
         rdflib.term.URIRef
-        
-        Notes
-        -----
-        Cette méthode se borne à interroger :py:data:`VOCABULARY`.
-        Elle n'exploite pas le répertoire des thésaurus.
+            Le bon IRI parmis ceux qui étaient listés dans
+            `scheme_iris`.
         
         """
-        return VOCABULARY.value(concept_iri, SKOS.inScheme)
-    
-    @classmethod
-    def add(cls, iri, langlist, thesaurus):
-        """Ajoute un thésaurus au répertoire des thésaurus compilés.
-        
-        Parameters
-        ----------
-        iri : rdflib.term.URIRef
-            L'IRI du thésaurus considéré.
-        langlist : tuple(str)
-            Le tuple de langues pour lequel le thésaurus a été généré.
-        thesaurus : Thesaurus
-            Le thésaurus en tant que tel.
-        
-        """
-        cls.collection.update({(iri, langlist): thesaurus})
+        for iri in scheme_iris:
+            vocabulary = VocabularyGraph[iri]
+            if source := vocabulary.value(concept_iri, SKOS.inScheme):
+                return source
     
     def __init__(self, iri, langlist):
         self.iri = iri
@@ -335,25 +374,26 @@ class Thesaurus:
         self.iri_from_str = {}
         self.str_from_iri = {}
         self.links_from_iri = {}
+        self.graph = VocabularyGraph[iri]
         
-        slabels = [o for o in VOCABULARY.objects(iri, SKOS.prefLabel)]
+        slabels = [o for o in self.graph.objects(iri, SKOS.prefLabel)]
         if slabels:
             t = pick_translation(slabels, langlist)
             self.label = str(t)
         else:
             raise UnknownSource(iri)
         
-        concepts = [c for c in VOCABULARY.subjects(SKOS.inScheme, iri)] 
+        concepts = [c for c in self.graph.subjects(SKOS.inScheme, iri)] 
 
         if concepts:
             for c in concepts:
-                clabels = [o for o in VOCABULARY.objects(c, SKOS.prefLabel)]
+                clabels = [o for o in self.graph.objects(c, SKOS.prefLabel)]
                 if clabels:
                     t = pick_translation(clabels, langlist)
                     self.values.append(str(t))
                     self.iri_from_str.update({str(t): c})
                     self.str_from_iri.update({c: str(t)})
-                    page = VOCABULARY.value(c, FOAF.page)
+                    page = self.graph.value(c, FOAF.page)
                     self.links_from_iri.update({c: page or c})
 
             if self.values:
@@ -361,7 +401,6 @@ class Thesaurus:
                 self.values.sort(
                     key=lambda x: strxfrm(x)
                     )
-        self.values.insert(0, '')       
-        Thesaurus.add(iri, langlist, self)
+        self.values.insert(0, '')
     
 

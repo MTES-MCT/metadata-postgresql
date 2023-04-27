@@ -1,0 +1,176 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/theme/ac> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Atmospheric conditions"@en,
+        "Conditions atmosphériques"@fr .
+
+<http://inspire.ec.europa.eu/theme/ad> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Addresses"@en,
+        "Adresses"@fr .
+
+<http://inspire.ec.europa.eu/theme/af> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Agricultural and aquaculture facilities"@en,
+        "Installations agricoles et aquacoles"@fr .
+
+<http://inspire.ec.europa.eu/theme/am> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Area management/restriction/regulation zones and reporting units"@en,
+        "Zones de gestion"@fr .
+
+<http://inspire.ec.europa.eu/theme/au> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Administrative units"@en,
+        "Unités administratives"@fr .
+
+<http://inspire.ec.europa.eu/theme/br> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Bio-geographical regions"@en,
+        "Régions biogéographiques"@fr .
+
+<http://inspire.ec.europa.eu/theme/bu> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Buildings"@en,
+        "Bâtiments"@fr .
+
+<http://inspire.ec.europa.eu/theme/cp> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Cadastral parcels"@en,
+        "Parcelles cadastrales"@fr .
+
+<http://inspire.ec.europa.eu/theme/ef> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Environmental monitoring facilities"@en,
+        "Installations de suivi environnemental"@fr .
+
+<http://inspire.ec.europa.eu/theme/el> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Elevation"@en,
+        "Altitude"@fr .
+
+<http://inspire.ec.europa.eu/theme/er> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Energy resources"@en,
+        "Sources d'énergie"@fr .
+
+<http://inspire.ec.europa.eu/theme/ge> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Geology"@en,
+        "Géologie"@fr .
+
+<http://inspire.ec.europa.eu/theme/gg> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Geographical grid systems"@en,
+        "Systèmes de maillage géographique"@fr .
+
+<http://inspire.ec.europa.eu/theme/gn> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Geographical names"@en,
+        "Dénominations géographiques"@fr .
+
+<http://inspire.ec.europa.eu/theme/hb> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Habitats and biotopes"@en,
+        "Habitats et biotopes"@fr .
+
+<http://inspire.ec.europa.eu/theme/hh> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Human health and safety"@en,
+        "Santé et sécurité des personnes"@fr .
+
+<http://inspire.ec.europa.eu/theme/hy> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Hydrography"@en,
+        "Hydrographie"@fr .
+
+<http://inspire.ec.europa.eu/theme/lc> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Land cover"@en,
+        "Occupation des terres"@fr .
+
+<http://inspire.ec.europa.eu/theme/lu> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Land use"@en,
+        "Usage des sols"@fr .
+
+<http://inspire.ec.europa.eu/theme/mf> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Meteorological geographical features"@en,
+        "Caractéristiques géographiques météorologiques"@fr .
+
+<http://inspire.ec.europa.eu/theme/mr> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Mineral resources"@en,
+        "Ressources minérales"@fr .
+
+<http://inspire.ec.europa.eu/theme/nz> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Natural risk zones"@en,
+        "Zones à risque naturel"@fr .
+
+<http://inspire.ec.europa.eu/theme/of> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Oceanographic geographical features"@en,
+        "Caractéristiques géographiques océanographiques"@fr .
+
+<http://inspire.ec.europa.eu/theme/oi> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Orthoimagery"@en,
+        "Ortho-imagerie"@fr .
+
+<http://inspire.ec.europa.eu/theme/pd> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Population distribution — demography"@en,
+        "Répartition de la population — démographie"@fr .
+
+<http://inspire.ec.europa.eu/theme/pf> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Production and industrial facilities"@en,
+        "Lieux de production et sites industriels"@fr .
+
+<http://inspire.ec.europa.eu/theme/ps> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Protected sites"@en,
+        "Sites protégés"@fr .
+
+<http://inspire.ec.europa.eu/theme/rs> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Coordinate reference systems"@en,
+        "Référentiels de coordonnées"@fr .
+
+<http://inspire.ec.europa.eu/theme/sd> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Species distribution"@en,
+        "Répartition des espèces"@fr .
+
+<http://inspire.ec.europa.eu/theme/so> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Soil"@en,
+        "Sols"@fr .
+
+<http://inspire.ec.europa.eu/theme/sr> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Sea regions"@en,
+        "Régions maritimes"@fr .
+
+<http://inspire.ec.europa.eu/theme/su> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Statistical units"@en,
+        "Unités statistiques"@fr .
+
+<http://inspire.ec.europa.eu/theme/tn> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Transport networks"@en,
+        "Réseaux de transport"@fr .
+
+<http://inspire.ec.europa.eu/theme/us> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/theme> ;
+    skos:prefLabel "Utility and governmental services"@en,
+        "Services d'utilité publique et services publics"@fr .
+
+<http://inspire.ec.europa.eu/theme> a skos:ConceptScheme ;
+    skos:prefLabel "Theme (INSPIRE)"@en,
+        "Thème (INSPIRE)"@fr .
+

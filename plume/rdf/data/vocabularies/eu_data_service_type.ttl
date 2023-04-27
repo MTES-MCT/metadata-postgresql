@@ -1,0 +1,26 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/data-service-type/API> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "API"@en,
+        "API"@fr .
+
+<http://publications.europa.eu/resource/authority/data-service-type/DOWNLOAD> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "Download"@en,
+        "Téléchargement"@fr .
+
+<http://publications.europa.eu/resource/authority/data-service-type/HUMAN_INTERACTION> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "Human interaction service"@en,
+        "Service avec interface utilisateur de requête"@fr .
+
+<http://publications.europa.eu/resource/authority/data-service-type/SPARQL_ENDPOINT> a skos:Concept ;
+    skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
+    skos:prefLabel "SPARQL endpoint"@en,
+        "Point d'accès SPARQL"@fr .
+
+<http://publications.europa.eu/resource/authority/data-service-type> a skos:ConceptScheme ;
+    skos:prefLabel "Data service type (EU)"@en,
+        "Types de services de données (UE)"@fr .
+

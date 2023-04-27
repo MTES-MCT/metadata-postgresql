@@ -1,0 +1,17 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://spdx.org/licenses/ODbL-1.0> a skos:Concept ;
+    skos:inScheme plume:CrpaAuthorizedLicense ;
+    skos:prefLabel "ODC Open Database License (ODbL) version 1.0"@fr .
+
+<http://spdx.org/licenses/etalab-2.0> a skos:Concept ;
+    skos:inScheme plume:CrpaAuthorizedLicense ;
+    skos:prefLabel "Licence Ouverte version 2.0"@fr .
+
+plume:CrpaAuthorizedLicense a skos:ConceptScheme ;
+    skos:prefLabel "Authorized licenses for public informations detained by french administrations"@en,
+        "Licences admises pour les informations publiques des administrations françaises"@fr ;
+    foaf:page <https://www.data.gouv.fr/fr/pages/legal/licences> .
+
