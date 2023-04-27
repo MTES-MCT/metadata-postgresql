@@ -1,5 +1,6 @@
 
-import unittest, psycopg2
+import unittest
+import psycopg2
 
 from plume.pg.computer import datetime_parser, has_computation_method
 from plume.rdf.properties import PlumeProperty

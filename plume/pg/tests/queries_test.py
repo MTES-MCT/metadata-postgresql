@@ -12,7 +12,8 @@ l'extension est désinstallée et réinstallée, etc.).
 
 """
 
-import unittest, psycopg2
+import unittest
+import psycopg2
 from datetime import datetime
 
 from plume.pg.tests.connection import ConnectionString
@@ -33,8 +34,7 @@ from plume.pg.queries import (
     query_delete_meta_template, query_delete_meta_template_categories,
     query_plume_pg_import_sample_template, query_plume_pg_create, query_plume_pg_drop,
     query_plume_pg_update, query_plume_pg_status, query_stamp_recording_disable,
-    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable,
-    query_update_any_table
+    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable
 )
 from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict

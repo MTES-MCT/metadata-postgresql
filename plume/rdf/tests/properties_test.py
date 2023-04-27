@@ -7,7 +7,8 @@ un super-utilisateur.
 
 """
 
-import unittest, psycopg2
+import unittest
+import psycopg2
 
 from plume.rdf.rdflib import URIRef, Literal, from_n3
 from plume.rdf.properties import class_properties, PlumeProperty

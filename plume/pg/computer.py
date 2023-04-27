@@ -10,8 +10,10 @@ from plume.rdf.utils import CRS_NS
 from plume.rdf.namespaces import DCT
 from plume.rdf.properties import PlumeProperty
 from plume.rdf.widgetkey import WidgetKey
-from plume.pg.queries import query_get_srid_list, query_get_comment_fragments, \
+from plume.pg.queries import (
+    query_get_srid_list, query_get_comment_fragments,
     query_get_creation_date, query_get_modification_date
+)
 
 class ComputationMethod():
     """Méthode de calcul de métadonnées côté serveur.

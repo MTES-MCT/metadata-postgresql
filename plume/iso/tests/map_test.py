@@ -6,7 +6,7 @@ from plume.rdf.utils import (
     owlthing_from_tel
 )
 from plume.iso.map import (
-    IsoToDcat, find_iri, find_literal, parse_xml, ISO_NS
+    find_iri, find_literal, parse_xml, ISO_NS
 )
 from plume.rdf.namespaces import DCT, FOAF, DCAT
 from plume.rdf.rdflib import Literal, URIRef

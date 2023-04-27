@@ -3,12 +3,14 @@ import unittest
 from uuid import uuid4
 
 from plume.rdf.rdflib import URIRef, Literal
-from plume.rdf.namespaces import RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD, \
-    GSP, PLUME
-from plume.rdf.widgetkey import WidgetKey, ValueKey, GroupOfPropertiesKey, \
-    GroupOfValuesKey, TranslationGroupKey, TranslationButtonKey, \
-    PlusButtonKey, RootKey, TabKey
-from plume.rdf.actionsbook import ActionsBook
+from plume.rdf.namespaces import (
+    RDFS, DCT, DCAT, FOAF, RDF, OWL, SKOS, XSD, GSP
+)
+from plume.rdf.widgetkey import (
+    WidgetKey, ValueKey, GroupOfPropertiesKey, GroupOfValuesKey,
+    TranslationGroupKey, TranslationButtonKey, PlusButtonKey, RootKey,
+    TabKey
+)
 
 class WidgetKeyTestCase(unittest.TestCase):
 
