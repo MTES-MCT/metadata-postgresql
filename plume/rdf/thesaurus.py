@@ -40,7 +40,12 @@ VOCABULARIES = {
     'http://purl.org/adms/licencetype/1.1': 'adms_licence_type.ttl',
     'http://purl.org/adms/publishertype/1.0': 'adms_publisher_type.ttl',
     'http://publications.europa.eu/resource/authority/frequency': 'eu_frequency.ttl',
-    'http://publications.europa.eu/resource/authority/language': 'eu_language.ttl'
+    'http://publications.europa.eu/resource/authority/language': 'eu_language.ttl',
+    'http://publications.europa.eu/resource/authority/atu': 'eu_administrative_territory_unit.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance': 'eu_administrative_territory_unit_france.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres': 'ecospheres_theme.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory': 'insee_individual_territories.ttl',
+    'http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense': 'spdx_license.ttl'
 }
 
 class VocabularyGraph(Graph, metaclass=MetaCollection):
@@ -69,7 +74,9 @@ class VocabularyGraph(Graph, metaclass=MetaCollection):
     
     """
 
-    def __new__(cls, iri):
+    def __init__(self, iri):
+        super().__init__(namespace_manager=PlumeNamespaceManager())
+
         file = VOCABULARIES.get(str(iri))
         if not file:
             raise UnknownSource(iri)
@@ -77,11 +84,9 @@ class VocabularyGraph(Graph, metaclass=MetaCollection):
         filepath = abspath('rdf/data/vocabularies') / file
         if not filepath.exists() or not filepath.is_file():
             raise UnknownSource(iri)
-
-        return graph_from_file(filepath)
-    
-    def __init__(self, iri):
-        super().__init__(namespace_manager=PlumeNamespaceManager())
+        
+        raw_graph = graph_from_file(filepath)
+        self += raw_graph
         self.iri = iri
 
     def all_vocabularies():
@@ -99,6 +104,10 @@ class VocabularyGraph(Graph, metaclass=MetaCollection):
 
 class Thesaurus(metaclass=MetaCollection):
     """Thésaurus.
+
+    Un thésaurus est défini par un vocabulaire et une liste
+    de langues. Celle-ci doit permettre de sélectionner les
+    libellés les plus appropriés pour l'utilisateur.
     
     Pour accéder à un thésaurus déjà chargé ou le générer :
 
@@ -125,7 +134,7 @@ class Thesaurus(metaclass=MetaCollection):
         L'IRI du thésaurus.
     langlist : tuple(str)
         Le tuple de langues pour lequel le thésaurus a été généré.
-    values : list
+    values : list(str)
         La liste des termes du thésaurus.
     iri_from_str : dict
         Dictionnaire dont les clés sont les libellés des termes du
