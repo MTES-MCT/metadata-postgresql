@@ -1,0 +1,761 @@
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR01> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 1er arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR02> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 2e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR03> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 3e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR04> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 4e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR05> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 5e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR06> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 6e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR07> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 7e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR08> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 8e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR09> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 9e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR10> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 10e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR11> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 11e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR12> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 12e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR13> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 13e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR14> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 14e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR15> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 15e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR16> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 16e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR17> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 17e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR18> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 18e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR19> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 19e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_AR_PAR20> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Paris, 20e arrondissement"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_CSP_BLM> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Saint Barthélémy"@en,
+        "Saint-Barthélémy"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_CSP_MAF> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Saint Martin"@en,
+        "Saint-Martin"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_CSP_PYF> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "French Polynesia"@en,
+        "Polynésie française"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_CSP_SPM> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Saint Pierre and Miquelon"@en,
+        "Saint-Pierre-et-Miquelon"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_CSP_WLF> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Wallis and Futuna"@en,
+        "Wallis-et-Futuna"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_001> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Ain"@en,
+        "Département de l'Ain"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_002> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Aisne"@en,
+        "Département de l'Aisne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_003> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Allier"@en,
+        "Département de l'Allier"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_004> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Alpes-de-Haute-Provence"@en,
+        "Département des Alpes-de-Haute-Provence"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_005> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Hautes-Alpes"@en,
+        "Département des Hautes-Alpes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_006> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Alpes-Maritimes"@en,
+        "Département des Alpes-Maritimes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_007> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Ardèche"@en,
+        "Département de l'Ardèche"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_008> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Ardennes"@en,
+        "Département des Ardennes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_009> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Ariège"@en,
+        "Département de l'Ariège"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_010> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Aube"@en,
+        "Département de l'Aube"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_011> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Aude"@en,
+        "Département de l'Aude"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_012> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Aveyron"@en,
+        "Département de l'Aveyron"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_013> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Bouches-du-Rhône"@en,
+        "Département des Bouches-du-Rhône"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_014> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Calvados"@en,
+        "Département du Calvados"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_015> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Cantal"@en,
+        "Département du Cantal"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_016> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Charente"@en,
+        "Département de la Charente"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_017> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Charente-Maritime"@en,
+        "Département de la Charente-Maritime"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_018> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Cher"@en,
+        "Département du Cher"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_019> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Corrèze"@en,
+        "Département de la Corrèze"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_021> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Côte-d'Or"@en,
+        "Département de la Côte-d'Or"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_022> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Côtes-d'Armor"@en,
+        "Département des Côtes-d'Armor"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_023> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Creuse"@en,
+        "Département de la Creuse"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_024> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Dordogne"@en,
+        "Département de la Dordogne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_025> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Doubs"@en,
+        "Département du Doubs"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_026> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Drôme"@en,
+        "Département de la Drôme"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_027> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Eure"@en,
+        "Départment de l'Eure"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_028> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Eure-et-Loir"@en,
+        "Département de l'Eure-et-Loir"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_029> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Finistère"@en,
+        "Département du Finistère"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_02A> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Corse-du-Sud"@en,
+        "Département de la Corse-du-Sud"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_02B> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Corse"@en,
+        "Département de la Haute-Corse"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_030> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Gard"@en,
+        "Département du Gard"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_031> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Garonne"@en,
+        "Département de la Haute-Garonne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_032> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Gers"@en,
+        "Département du Gers"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_033> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Gironde"@en,
+        "Département de la Gironde"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_034> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Hérault"@en,
+        "Département de l'Hérault"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_035> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Ille-et-Vilaine"@en,
+        "Département de l'Ille-et-Vilaine"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_036> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Indre"@en,
+        "Département de l'Indre"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_037> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Indre-et-Loire"@en,
+        "Département de l'Indre-et-Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_038> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Isère"@en,
+        "Département de l'Isère"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_039> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Jura"@en,
+        "Département du Jura"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_040> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Landes"@en,
+        "Département des Landes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_041> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Loir-et-Cher"@en,
+        "Département du Loir-et-Cher"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_042> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Loire"@en,
+        "Département de la Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_043> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Loire"@en,
+        "Département de la Haute-Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_044> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Loire-Atlantique"@en,
+        "Département de Loire-Atlantique"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_045> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Loiret"@en,
+        "Département du Loiret"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_046> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Lot"@en,
+        "Département du Lot"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_047> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Lot-et-Garonne"@en,
+        "Département du Lot-et-Garonne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_048> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Lozère"@en,
+        "Département de la Lozère"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_049> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Maine-et-Loire"@en,
+        "Département du Maine-et-Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_050> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Manche"@en,
+        "Département de la Manche"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_051> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Marne"@en,
+        "Département de la Marne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_052> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Marne"@en,
+        "Département de la Haute-Marne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_053> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Mayenne"@en,
+        "Département de Mayenne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_054> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Meurthe-et-Moselle"@en,
+        "Département de la Meurthe-et-Moselle"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_055> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Meuse"@en,
+        "Département de la Meuse"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_056> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Morbihan"@en,
+        "Département du Morbihan"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_057> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Moselle"@en,
+        "Département de la Moselle"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_058> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Nièvre"@en,
+        "Département de la Nièvre"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_059> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Nord"@en,
+        "Département du Nord"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_060> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Oise"@en,
+        "Département de l'Oise"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_061> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Orne"@en,
+        "Département de l'Orne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_062> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Pas-de-Calais"@en,
+        "Département du Pas-de-Calais"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_063> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Puy-de-Dôme"@en,
+        "Département du Puy-de-Dôme"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_064> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Pyrénées-Atlantiques"@en,
+        "Département des Pyrénées-Atlantiques"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_065> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Hautes-Pyrénées"@en,
+        "Département des Hautes-Pyrénées"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_066> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Pyrénées-Orientales"@en,
+        "Département des Pyrénées-Orientales"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_067> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Bas-Rhin"@en,
+        "Département du Bas-Rhin"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_068> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haut-Rhin"@en,
+        "Département du Haut-Rhin"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_069D> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Rhône"@en,
+        "Département du Rhône"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_070> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Saône"@en,
+        "Département de la Haute-Saône"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_071> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Saône-et-Loire"@en,
+        "Département de la Saône-et-Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_072> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Sarthe"@en,
+        "Département de la Sarthe"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_073> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Savoie"@en,
+        "Département de la Savoie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_074> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Savoie"@en,
+        "Département de la Haute-Savoie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_075> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Paris"@en,
+        "Département de Paris"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_076> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Seine-Maritime"@en,
+        "Département de la Seine-Maritime"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_077> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Seine-et-Marne"@en,
+        "Département de la Seine-et-Marne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_078> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Yvelines"@en,
+        "Département des Yvelines"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_079> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Deux-Sèvres"@en,
+        "Département des Deux-Sèvres"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_080> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Somme"@en,
+        "Département de la Somme"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_081> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Tarn"@en,
+        "Département du Tarn"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_082> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Tarn-et-Garonne"@en,
+        "Département du Tarn-et-Garonne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_083> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Var"@en,
+        "Département du Var"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_084> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Vaucluse"@en,
+        "Département du Vaucluse"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_085> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Vendée"@en,
+        "Département de la Vendée"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_086> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Vienne"@en,
+        "Département de la Vienne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_087> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Haute-Vienne"@en,
+        "Département de la Haute-Vienne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_088> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Vosges"@en,
+        "Département des Vosges"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_089> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Yonne"@en,
+        "Département de l'Yonne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_090> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Territoire de Belfort"@en,
+        "Département du Territoire de Belfort"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_091> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Essonne"@en,
+        "Département de l'Essonne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_092> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Hauts-de-Seine"@en,
+        "Département des Hauts-de-Seine"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_093> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Seine-Saint-Denis"@en,
+        "Département de la Seine-Saint-Denis"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_094> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Val-de-Marne"@en,
+        "Département du Val-de-Marne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_095> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Department of Val-d'Oise"@en,
+        "Département du Val-d'Oise"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_971> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Guadeloupe"@en,
+        "Guadeloupe"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_972> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Martinique"@en,
+        "Martinique"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_973> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Guyane"@en,
+        "Guyane"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_974> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Réunion"@en,
+        "Réunion"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_DPT_976> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Mayotte"@en,
+        "Mayotte"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_ACAL> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Alsace-Champagne-Ardenne-Lorraine"@en,
+        "Région Alsace-Champagne-Ardenne-Lorraine"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_AL> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Alsace"@en,
+        "Région Alsace"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_ALPC> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Aquitaine-Limousin-Poitou-Charentes"@en,
+        "Région Aquitaine-Limousin-Poitou-Charentes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_AQ> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Aquitaine"@en,
+        "Région Aquitaine"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_ARA> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Auvergne-Rhône-Alpes"@en,
+        "Région Auvergne-Rhône-Alpes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_AV> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Auvergne"@en,
+        "Région Auvergne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_BFRC> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Burgundy-Franche-Comté"@en,
+        "Région Bourgogne-Franche-Comté"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_BNORM> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Lower Normandy"@en,
+        "Région Basse-Normandie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_BRE> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Brittany"@en,
+        "Région Bretagne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_BRG> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Burgundy"@en,
+        "Région Bourgogne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_CA> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Champagne-Ardenne"@en,
+        "Région Champagne-Ardenne"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_CNTR> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Centre (France)"@en,
+        "Région Centre (France)"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_CORSE> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Corse"@en,
+        "Région Corse"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_CVAL> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Centre-Val de Loire"@en,
+        "Région Centre-Val de Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_FRCT> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Franche-Comté"@en,
+        "Région Franche-Comté"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_HNORM> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Upper Normandy"@en,
+        "Région Haute-Normandie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_IF> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Île-de-France"@en,
+        "Région Île-de-France"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_LM> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Limousin"@en,
+        "Région Limousin"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_LR> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Lorraine"@en,
+        "Région Lorraine"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_LRMP> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Languedoc-Roussillon-Midi-Pyrénées"@en,
+        "Région Languedoc-Roussillon-Midi-Pyrénées"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_MP> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Midi-Pyrénées"@en,
+        "Région Midi-Pyrénées"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_NORM> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region Normandy"@en,
+        "Région Normandie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_NORPAS> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Nord-Pas-de-Calais"@en,
+        "Région Nord-Pas-de-Calais"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_PACA> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Provence-Alpes-Côte d'Azur"@en,
+        "Région Provence-Alpes-Côte d'Azur"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_PC> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Poitou-Charentes"@en,
+        "Région Poitou-Charentes"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_PICAR> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Picardy"@en,
+        "Région Picardie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_PL> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Pays-de-la-Loire"@en,
+        "Région Pays-de-la-Loire"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_PNPC> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Nord-Pas-de-Calais-Picardie"@en,
+        "Région Nord-Pas-de-Calais-Picardie"@fr .
+
+<http://publications.europa.eu/resource/authority/atu/FRA_RG_RA> a skos:Concept ;
+    skos:inScheme plume:EuAdministrativeTerritoryUnitFrance ;
+    skos:prefLabel "Region of Rhône-Alpes"@en,
+        "Région Rhône-Alpes"@fr .
+
+plume:EuAdministrativeTerritoryUnitFrance a skos:ConceptScheme ;
+    skos:prefLabel "French Administrative territorial unit (EU)"@en,
+        "Unité territoriale administrative française (UE)"@fr .

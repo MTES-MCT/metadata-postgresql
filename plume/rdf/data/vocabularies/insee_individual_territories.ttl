@@ -1,0 +1,18 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://id.insee.fr/geo/pays/france> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
+    skos:prefLabel "France"@fr .
+
+<http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
+    skos:prefLabel "France métropolitaine"@fr .
+
+<http://id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise> a skos:Concept ;
+    skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
+    skos:prefLabel "Territoire de la République française"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> a skos:ConceptScheme ;
+    skos:prefLabel "Singular Territory (INSEE)"@en,
+        "Territoire singulier (INSEE)"@fr .
+
