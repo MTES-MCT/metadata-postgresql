@@ -1367,7 +1367,9 @@ class MetaCollection(type):
 
     """
 
-    COLLECTION = {}
+    def __init__(cls, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        cls.COLLECTION = {}
 
     def __getitem__(cls, key):
         if key in cls.COLLECTION:
