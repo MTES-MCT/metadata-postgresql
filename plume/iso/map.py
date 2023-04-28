@@ -545,8 +545,9 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
                     if value_str:
                         break
                 # est-ce une étiquette ?
-                value = Thesaurus.concept_iri(thesaurus, value)
-                if value:
+                value_iri = Thesaurus.concept_iri(thesaurus, value)
+                if value_iri:
+                    value = value_iri
                     break
             else:
                 # non référencé
