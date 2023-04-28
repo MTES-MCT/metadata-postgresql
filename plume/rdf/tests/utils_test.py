@@ -8,11 +8,54 @@ from plume.rdf.utils import (
     duration_from_int, str_from_duration, wkt_with_srid, split_rdf_wkt, 
     str_from_datetime, str_from_date, str_from_time, datetime_from_str, 
     date_from_str, time_from_str, str_from_decimal, decimal_from_str, 
-    main_datatype, export_format_from_extension, export_formats, no_logging
+    main_datatype, export_format_from_extension, export_formats, no_logging,
+    MetaCollection
 )
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
 nsm = PlumeNamespaceManager()
+
+class MetaCollectionTestCase(unittest.TestCase):
+
+    def test_collection_access(self):
+        """Accès à la collection d'objets.
+
+        """
+        class MetaCollectionTestCaseClassX(metaclass=MetaCollection):
+            def __init__(self, x):
+                self.x = x
+        self.assertTrue(hasattr(MetaCollectionTestCaseClassX, 'COLLECTION'))
+        self.assertEqual(MetaCollectionTestCaseClassX.COLLECTION, {})
+        objX1 = MetaCollectionTestCaseClassX[1]
+        self.assertEqual(objX1.x, 1)
+        self.assertEqual(MetaCollectionTestCaseClassX.COLLECTION, {1: objX1})
+        objX1b = MetaCollectionTestCaseClassX[1]
+        self.assertTrue(objX1b is objX1)
+        objX2 = MetaCollectionTestCaseClassX[2]
+        self.assertFalse(objX1 is objX2)
+        self.assertEqual(MetaCollectionTestCaseClassX.COLLECTION, {1: objX1, 2: objX2})
+    
+    def test_multiple_collections(self):
+        """Usage de la méta-classe par plusieurs classes.
+
+        """
+        class MetaCollectionTestCaseClassA(metaclass=MetaCollection):
+            def __init__(self, x):
+                self.x = x
+        class MetaCollectionTestCaseClassB(metaclass=MetaCollection):
+            def __init__(self, y):
+                self.y = y
+        self.assertFalse(MetaCollectionTestCaseClassA.COLLECTION is MetaCollectionTestCaseClassB.COLLECTION)
+        objA1 = MetaCollectionTestCaseClassA[1]
+        self.assertEqual(MetaCollectionTestCaseClassA.COLLECTION, {1: objA1})
+        self.assertEqual(MetaCollectionTestCaseClassB.COLLECTION, {})
+        objB1 = MetaCollectionTestCaseClassB[1]
+        self.assertEqual(MetaCollectionTestCaseClassA.COLLECTION, {1: objA1})
+        self.assertEqual(MetaCollectionTestCaseClassB.COLLECTION, {1: objB1})
+        self.assertFalse(objA1 is objB1)
+        objB2 = MetaCollectionTestCaseClassB[2]
+        self.assertEqual(MetaCollectionTestCaseClassA.COLLECTION, {1: objA1})
+        self.assertEqual(MetaCollectionTestCaseClassB.COLLECTION, {1: objB1, 2: objB2})
 
 class UtilsTestCase(unittest.TestCase):
 
