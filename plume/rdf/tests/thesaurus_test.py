@@ -68,6 +68,7 @@ class ThesaurusTestCase(unittest.TestCase):
     def test_get_thesaurus(self):
         """Accès répété à un thésaurus."""
         thesaurus_1 = Thesaurus[(URIRef('http://purl.org/adms/licencetype/1.1'), ('fr',))]
+        self.assertTrue(isinstance(thesaurus_1, Thesaurus))
         self.assertEqual(thesaurus_1.label, 'Types de licence (UE)')
         self.assertEqual(thesaurus_1.iri, URIRef('http://purl.org/adms/licencetype/1.1'))
         self.assertEqual(thesaurus_1.langlist, ('fr',))
