@@ -387,7 +387,9 @@ class IsoToDcat:
                     l += triples
         return l
 
-def find_literal(elem, path, subject, predicate, multi=False, datatype=None, language=None):
+def find_literal(
+    elem, path, subject, predicate, multi=False, datatype=None, language=None
+):
     """Extrait des valeurs litérales d'un XML et les renvoie sous forme de triples.
     
     Parameters
@@ -399,7 +401,9 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
         Le chemin de l'information recherchée dans le XML.
         Il est possible de fournir une liste de chemins, auquel
         cas la fonction s'appliquera successivement à tous les
-        chemins listés.
+        chemins listés. XPath n'est pas pris en charge, mais il est
+        possible de viser la valeur d'un attribut en ajoutant son
+        nom précédé de ``'@'`` à la fin du chemin.
     subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
         L'identifiant du graphe ou le noeud anonyme sujet
         des triples à renvoyer.
@@ -428,15 +432,17 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
         return l
     
     if isinstance(path, list):
-        cpath = path.copy()
-        cpath.reverse()
-        epath = cpath.pop()
-        cpath.reverse()
+        epath = path[0]
     else:
         epath = path
-        
+    
+    if '@' in epath:
+        epath, attr = epath.split('@', 1)
+    else:
+        attr = None
+
     for sub in elem.findall(epath, namespaces=ISO_NS):
-        value = sub.text
+        value = sub.get(attr) if attr else sub.text
         if not value:
             continue
         if language:
@@ -448,9 +454,9 @@ def find_literal(elem, path, subject, predicate, multi=False, datatype=None, lan
         if not multi:
             break
     
-    if isinstance(path, list) and (multi or not l):
+    if isinstance(path, list) and len(path) > 1 and (multi or not l):
         l += find_literal(
-            elem, cpath, subject, predicate, multi=multi,
+            elem, path[1:], subject, predicate, multi=multi,
             datatype=datatype, language=language
         )
 
@@ -468,7 +474,9 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         Le chemin de l'information recherchée dans le XML.
         Il est possible de fournir une liste de chemins, auquel
         cas la fonction s'appliquera successivement à tous les
-        chemins listés.
+        chemins listés. XPath n'est pas pris en charge, mais il est
+        possible de viser la valeur d'un attribut en ajoutant son
+        nom précédé de ``'@'`` à la fin du chemin.
     subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
         L'identifiant du graphe ou le noeud anonyme sujet
         des triples à renvoyer.
@@ -491,6 +499,8 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         La fonction ne présume pas de la nature de la valeur recueillie
         dans le XML, elle lui cherchera une correspondance en tant qu'IRI et
         en tant qu'étiquette.
+        Il est possible de fournir une liste de thésaurus. Dans ce cas,
+        la fonction les parcourt tous jusqu'à trouver une correspondance.
     
     Returns
     -------
@@ -505,38 +515,49 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         return l
     
     if isinstance(path, list):
-        cpath = path.copy()
-        cpath.reverse()
-        epath = cpath.pop()
-        cpath.reverse()
+        epath = path[0]
     else:
         epath = path
         
+    if '@' in epath:
+        epath, attr = epath.split('@', 1)
+    else:
+        attr = None
+    
+    if isinstance(thesaurus, list) or not thesaurus:
+        l_thesaurus = thesaurus 
+    else:
+        l_thesaurus = [thesaurus]
+
     for sub in elem.findall(epath, namespaces=ISO_NS):
-        value = sub.text
+        value = sub.get(attr) if attr else sub.text
         if not value or (
             not thesaurus and forbidden_char(value)
         ):
             continue
         if transform:
             value = transform(value)
-        if thesaurus:
-            if not forbidden_char(value):
-                # est-ce un IRI ?
-                value_str = Thesaurus.concept_str(thesaurus, URIRef(value))
-            if not value_str:
+        if l_thesaurus:
+            for thesaurus in l_thesaurus:
+                if not forbidden_char(value):
+                    # est-ce un IRI ?
+                    value_str = Thesaurus.concept_str(thesaurus, URIRef(value))
+                    if value_str:
+                        break
                 # est-ce une étiquette ?
                 value = Thesaurus.concept_iri(thesaurus, value)
-            if not value:
+                if value:
+                    break
+            else:
                 # non référencé
                 continue
         l.append((subject, predicate, URIRef(value)))
         if not multi:
             break
     
-    if isinstance(path, list) and (multi or not l):
+    if isinstance(path, list) and len(path) > 1 and (multi or not l):
         l += find_iri(
-            elem, cpath, subject, predicate, multi=multi,
+            elem, path[1:], subject, predicate, multi=multi,
             transform=transform, thesaurus=thesaurus
         )
 
