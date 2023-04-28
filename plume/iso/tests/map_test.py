@@ -101,6 +101,24 @@ class IsoMapTestCase(unittest.TestCase):
             ]
         )
 
+    def test_find_literal_with_attribute(self):
+        """Récupération de la valeur d'un attribut."""
+        dataset_id = DatasetId()
+
+        ids = find_literal(
+            IsoMapTestCase.IGN_BDALTI, 
+            './gmd:language/gmd:LanguageCode@codeListValue',
+            dataset_id,
+            DCT.language,
+            multi=False
+        )
+        self.assertListEqual(
+            ids,
+            [
+                (dataset_id, DCT.language, Literal('fre'))
+            ]
+        )
+
     def test_find_iri(self):
         simple_xml = parse_xml(
             """<?xml version="1.0" encoding="UTF-8"?>
@@ -116,6 +134,7 @@ class IsoMapTestCase(unittest.TestCase):
                 <f>john.smith@somewhere.com</f>
                 <g>http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/boundaries</g>
                 <h>Boundaries</h>
+                <i epsg="http://www.opengis.net/def/crs/EPSG/0/3857">EPSG 2975 : RGR92 / UTM zone 40S (La Réunion)</i>
             </gmd:MD_Metadata>
             """
         )
@@ -230,6 +249,83 @@ class IsoMapTestCase(unittest.TestCase):
             ]
         )
 
+        # avec une liste de thésaurus
+        iris = find_iri(
+            simple_xml,
+            './h',
+            dataset_id,
+            DCAT.theme,
+            thesaurus=[
+                (
+                    URIRef('http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency'),
+                    ('fr',)
+                ),
+                (
+                    URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory'),
+                    ('en',)
+                )
+            ]
+        )
+        self.assertListEqual(
+            iris,
+            [
+                (
+                    dataset_id,
+                    DCAT.theme,
+                    URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/boundaries')
+                )
+            ]
+        )
+
+        # avec un attribut
+        iris = find_iri(
+            simple_xml,
+            './i@epsg',
+            dataset_id,
+            DCT.conformsTo,
+            thesaurus=(
+                URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+                ('fr', 'en')
+            ),
+            multi=True
+        )
+        self.assertListEqual(
+            iris,
+            [
+                (
+                    dataset_id,
+                    DCT.conformsTo,
+                    URIRef('http://www.opengis.net/def/crs/EPSG/0/3857')
+                )
+            ]
+        )
+
+        iris = find_iri(
+            simple_xml,
+            ['./i@epsg', './i'],
+            dataset_id,
+            DCT.conformsTo,
+            thesaurus=(
+                URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+                ('fr', 'en')
+            ),
+            multi=True
+        )
+        self.assertListEqual(
+            iris,
+            [
+                (
+                    dataset_id,
+                    DCT.conformsTo,
+                    URIRef('http://www.opengis.net/def/crs/EPSG/0/3857')
+                ),
+                (
+                    dataset_id,
+                    DCT.conformsTo,
+                    URIRef('http://www.opengis.net/def/crs/EPSG/0/2975')
+                )
+            ]
+        )
 
 if __name__ == '__main__':
     unittest.main()
