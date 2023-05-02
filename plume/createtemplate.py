@@ -5,9 +5,11 @@ import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import ( QMenu, QAction, \
                               QTreeWidget, QTabWidget, QWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView, QGridLayout )
-from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime )
+from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt )
+from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem )
+
 #
-from plume.bibli_plume import ( returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, genereButtonsWithDict, returnIcon, displayMess )
+from plume.bibli_plume import ( GenereButtonsWithDictWithEvent, returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, genereButtonsWithDict, returnIcon, displayMess )
 #
 from plume.mapping_templates import ( load_mapping_read_meta_template_categories, load_mapping_read_meta_templates, load_mapping_read_meta_tabs, load_mapping_read_meta_categories )
 #
@@ -86,6 +88,7 @@ class Ui_Dialog_CreateTemplate(object):
                                       QTabBar::tab:selected {\
                                       background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); } \
                                      ")
+        self.flagNewModele, self.flagNewOnglet, self.flagNewCategorie = False, False, False
         self.tabWidget.tabBarClicked.connect(self.functionChangeTab)
         #--------------------------
         self.tab_widget_Association = QWidget()
@@ -100,12 +103,12 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBox_tab_widget_Association.setStyleSheet("QGroupBox { border: 0px solid green }")
         #-
         self.layout_tab_widget_Association = QtWidgets.QGridLayout()
-        self.layout_tab_widget_Association.setContentsMargins(10, 10, 10, 10)
-        self.layout_tab_widget_Association.setRowStretch(0, 4)
-        self.layout_tab_widget_Association.setRowStretch(1, 4)
-        self.layout_tab_widget_Association.setRowStretch(2, 4)
+        self.layout_tab_widget_Association.setContentsMargins(0, 0, 0, 0)
+        self.layout_tab_widget_Association.setRowStretch(0, 0.5)
+        self.layout_tab_widget_Association.setRowStretch(1, 5)
+        self.layout_tab_widget_Association.setRowStretch(2, 3)
         self.layout_tab_widget_Association.setRowStretch(3, 1)
-        self.layout_tab_widget_Association.setRowStretch(4, 1.5)
+        self.layout_tab_widget_Association.setRowStretch(4, 1)
         self.tab_widget_Association.setLayout(self.layout_tab_widget_Association)
         #--------------------------
         self.tab_widget_Ressource = QWidget()
@@ -130,25 +133,29 @@ class Ui_Dialog_CreateTemplate(object):
         #Liste modeles / catégories
         self.groupBoxListeModeleCategorie = QtWidgets.QGroupBox(self.tab_widget_Association)
         self.groupBoxListeModeleCategorie.setObjectName("groupBoxListeModeleCategorie") 
-        self.groupBoxListeModeleCategorie.setStyleSheet("QGroupBox { border: px solid grey }")
+        self.groupBoxListeModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid grey }")
         titlegroupBoxListeModeleCategorie = QtWidgets.QApplication.translate("CreateTemplate_ui", "Existing models", None)      #{Modèles existants}
         #self.groupBoxListeModeleCategorie.setTitle(titlegroupBoxListeModeleCategorie)
         #-
         self.layoutListeModeleCategorie = QtWidgets.QGridLayout()
         self.groupBoxListeModeleCategorie.setLayout(self.layoutListeModeleCategorie)
-        self.layout_tab_widget_Association.addWidget(self.groupBoxListeModeleCategorie, 0, 0, 1, 3)
+        self.layout_tab_widget_Association.addWidget(self.groupBoxListeModeleCategorie, 0, 0, 1, 1)
         #-
         #------ TREEVIEW   
-        self.mTreeListeModeleCategorie = TREEVIEWASSOCIATION()
-
+        #self.mTreeListeModeleCategorie = TREEVIEWASSOCIATION()
+        self.comboListeModeleCategorie = QtWidgets.QComboBox()
+        self.comboListeModeleCategorie.setObjectName("comboAdresse")
+        #
         self.labelListeModeleCategorie = QtWidgets.QLabel()
         self.labelListeModeleCategorie.setText(titlegroupBoxListeModeleCategorie)
         self.layoutListeModeleCategorie.addWidget(self.labelListeModeleCategorie, 0 ,0, QtCore.Qt.AlignTop)
-        self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie, 1 , 0)
+        #self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie, 1 , 0)
+        self.layoutListeModeleCategorie.addWidget(self.comboListeModeleCategorie, 1 , 0)
 
         #self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie)
         #-
-        self.mTreeListeModeleCategorie.clear()
+        #self.mTreeListeModeleCategorie.clear()
+        self.comboListeModeleCategorie.clear()
 
         #------
         #------ DATA template_categories 
@@ -182,7 +189,21 @@ class Ui_Dialog_CreateTemplate(object):
         self.mTreeListeCategorieOut = TREEVIEW_CAT_IN_OUT()
 
         #------ DATA 
-        self.mTreeListeModeleCategorie.afficheASSOCIATION(self, listeAssociationCol1, listeAssociationCol2)
+        #self.mTreeListeModeleCategorie.afficheASSOCIATION(self, listeAssociationCol1, listeAssociationCol2)
+        self.modelComboListeModeleCategorie = QStandardItemModel()
+        listeAssociationCol1 = list(reversed(listeAssociationCol1))
+        listeAssociationCol1.insert(0,"")
+        listeAssociationCol2 = list(reversed(listeAssociationCol2))
+        listeAssociationCol2.insert(0,"")
+
+        i = 0
+        while i in range(len(listeAssociationCol1)) :
+            modelComboListeModeleCategorie1 = QStandardItem(str(listeAssociationCol1[i]))
+            modelComboListeModeleCategorie2 = QStandardItem(str(listeAssociationCol2[i]))
+            self.modelComboListeModeleCategorie.appendRow([ modelComboListeModeleCategorie2, modelComboListeModeleCategorie1 ])
+            i += 1
+        self.comboListeModeleCategorie.setModel(self.modelComboListeModeleCategorie) 
+        self.comboListeModeleCategorie.currentIndexChanged.connect(lambda : self.ihmsPlumeASSOCIATION( self ) )
         #------ DATA 
 
         #------
@@ -194,7 +215,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutListeCategorieOut = QtWidgets.QGridLayout()
         #-
         self.groupBoxListeCategorieOut.setLayout(self.layoutListeCategorieOut)
-        self.layout_tab_widget_Association.addWidget(self.groupBoxListeCategorieOut, 1, 0, 2, 1)
+        self.layout_tab_widget_Association.addWidget(self.groupBoxListeCategorieOut, 1, 0, 1, 1)
         #------ 
         #Liste catégories In
         self.groupBoxListeCategorieIn = QtWidgets.QGroupBox()
@@ -224,6 +245,28 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutListeCategorieIn.addWidget(self.mTreeListeCategorieIn, 1 ,2)
         #-
         self.mTreeListeCategorieIn.clear()
+
+        #Affichage de l'aide pour les attributs
+        self.groupBoxdisplayHelpFocus = QtWidgets.QGroupBox()
+        self.groupBoxdisplayHelpFocus.setObjectName("groupBoxdisplayHelpFocus")
+        
+        #self.groupBoxdisplayHelpFocus.setStyleSheet("QGroupBox { background: linear-gradient(to right, #eef2f3, #8e9eab); border-radius: 9px; margin-top: 0.5em;}")
+        self.groupBoxdisplayHelpFocus.setStyleSheet("QGroupBox { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); \
+                                                                 border-radius: 9px; margin-top: 0.5em;}")
+        self.groupBoxdisplayHelpFocus.setVisible(False)
+        #-
+        self.layoutDisplayHelpFocus = QtWidgets.QGridLayout()
+        self.layoutDisplayHelpFocus.setObjectName("layoutDisplayHelpFocus")
+        self.groupBoxdisplayHelpFocus.setLayout(self.layoutDisplayHelpFocus)
+        self.layout_tab_widget_Association.addWidget(self.groupBoxdisplayHelpFocus, 2, 0, 1, 1)
+        #-
+        mText = "je suis sur le focus de la zone " 
+        _Listkeys   = [ "typeWidget",       "textWidget", "nameWidget", "aligneWidget", "wordWrap" ]
+        _ListValues = [ QtWidgets.QLabel(), mText,        "label_" ,     QtCore.Qt.AlignCenter, True ]
+        dicParamLabel = dict(zip(_Listkeys, _ListValues))
+        self.zoneDisplayHelpFocus = genereLabelWithDict( dicParamLabel )
+        self.layoutDisplayHelpFocus.addWidget( self.zoneDisplayHelpFocus, 0, 1)
+        #-
 
         #Liste ATTRIBUTS modeles / catégories
         self.groupBoxAttributsModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid grey;}")
@@ -270,7 +313,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.buttonAdd.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify the attributes associated with the model, as well as the categories used or not used.", None)  
         self.buttonAdd.setToolTip(mbuttonAddToolTip)
-        self.buttonAdd.clicked.connect(lambda : self.functionAddCmodele())
+        self.buttonAdd.clicked.connect(lambda : self.functionUpdateModeleCategorie())
         self.layout_groupBox_buttonAdd.addWidget(self.buttonAdd, 1, 2)
         #Button Add
         #------
@@ -528,17 +571,56 @@ class Ui_Dialog_CreateTemplate(object):
 
         #  Onglet RESSOURCE
         #============================================================
+
+
+    #===============================              
+    def ihmsPlumeASSOCIATION(self, _selfCreateTemplate ) : 
+        if self.comboListeModeleCategorie.currentIndex() == -1 : return
+        mItemClicLibelleAssociation = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),0).text()    
+        mItemClicAssociation        = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),1).text()
+        
+        self.groupBoxdisplayHelpFocus.setVisible(False)
+        if mItemClicLibelleAssociation == "" : 
+           self.mTreeListeCategorieIn.clear()
+           self.mTreeListeCategorieOut.clear()
+           afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+           return
+
+        self._selfCreateTemplate    = _selfCreateTemplate
+        self.modeleAssociationActif = mItemClicAssociation
+        
+        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées == Cat Utilisées et Non Utilisées==              
+        #------ DATA template_categories 
+        mKeySql = queries.query_read_meta_template_categories()
+        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+        self.mListTemplateCategories = [row[0] for row in r]
+        self.dicInVersOutDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
+        self.dicOutVersInDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
+        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées
+        
+        self.listCategorieOut, self.listCategorieIn = ventileCatInCatOut(self, mItemClicAssociation, self.mListTemplateCategories, self.mListCategories)
+
+        self.mTreeListeCategorieIn.clear()
+        self.mTreeListeCategorieOut.clear()
+        self.mTreeListeCategorieIn.affiche_CAT_IN_OUT(  self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut, action = True)
+        self.mTreeListeCategorieOut.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut) # Uniquement pour instancier OneShot
+        #Efface les attributs
+        afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+        return
     
     #===============================              
     def functionChangeTab(self, mIndex):
        if mIndex != -1 :
           if mIndex == 0 :
-             mSaveItemCurrent = None
-             if self.mTreeListeModeleCategorie.currentItem() != None :
-                mSaveItemCurrent = self.mTreeListeModeleCategorie.currentItem().data(0, QtCore.Qt.DisplayRole)     #item Libelle Courant
+             # Gestion des flags pour maj si new modele, catégorie, onglet
+             _cont = False  
+             if (self.flagNewModele or self.flagNewCategorie or self.flagNewOnglet) : _cont = True
+             self.flagNewModele, self.flagNewOnglet, self.flagNewCategorie = False, False, False
+             if not _cont : return  
+             # Gestion des flags pour maj si new modele, catégorie, onglet
 
              #------ DATA template 
-             self.mTreeListeModeleCategorie.clear()
+             self.comboListeModeleCategorie.clear()
              mKeySql = queries.query_read_meta_template()
              r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
              self.mListTemplates = [row[0] for row in r]
@@ -549,17 +631,81 @@ class Ui_Dialog_CreateTemplate(object):
       
              listeAssociationCol1, listeAssociationCol2 = returnList_Id_Label( self.mListTemplates )
              self.modeleAssociationActif = listeAssociationCol1[0] #Pour la première initialisation 
+
              #------ DATA 
-             self.mTreeListeModeleCategorie.afficheASSOCIATION(self, listeAssociationCol1, listeAssociationCol2)
-                
-             if mSaveItemCurrent != None :
-                iterator = QTreeWidgetItemIterator(self.mTreeListeModeleCategorie)
-                while iterator.value() :
-                   if iterator.value().text(0) == mSaveItemCurrent : 
-                      self.mTreeListeModeleCategorie.setCurrentItem(iterator.value())           #itemCourant
-                      break
-                   iterator += 1
-                #------ DATA 
+             self.modelComboListeModeleCategorie = QStandardItemModel()
+             listeAssociationCol1 = list(reversed(listeAssociationCol1))
+             listeAssociationCol1.insert(0,"")
+             listeAssociationCol2 = list(reversed(listeAssociationCol2))
+             listeAssociationCol2.insert(0,"")
+
+             i = 0
+             while i in range(len(listeAssociationCol1)) :
+                 modelComboListeModeleCategorie1 = QStandardItem(str(listeAssociationCol1[i]))
+                 modelComboListeModeleCategorie2 = QStandardItem(str(listeAssociationCol2[i]))
+                 self.modelComboListeModeleCategorie.appendRow([ modelComboListeModeleCategorie2, modelComboListeModeleCategorie1 ])
+                 i += 1
+             self.comboListeModeleCategorie.setModel(self.modelComboListeModeleCategorie) 
+             self.comboListeModeleCategorie.currentIndexChanged.connect(lambda : self.ihmsPlumeASSOCIATION( self ) )
+             #------ DATA 
+
+             if hasattr(self, "mSaveItemCurrent") : self.comboListeModeleCategorie.setCurrentIndex(self.mSaveItemCurrent)
+          elif mIndex == 1 :
+             self.mSaveItemCurrent = self.comboListeModeleCategorie.currentIndex()
+       return
+
+    #===============================              
+    def functionUpdateModeleCategorie(self):
+       self.flagNewModele = True
+       # Si les attributs sont visible, je gère la sauveagarde par rapport à la catégorie sélectionnée
+       if ifAttributsVisible( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories ) :  
+          dicForQuerieForAddModeleCategorie = returnListObjKeyValue(self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTabs)
+          mKeySql = queries.query_insert_or_update_meta_template_categories(dicForQuerieForAddModeleCategorie)
+          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+          #- Réinit
+          mKeySql = queries.query_read_meta_template_categories()
+          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+          self._selfCreateTemplate.mListTemplateCategories = [row[0] for row in r]
+
+       # Sinon, je gère le passage des In en Out et Vice Versa
+       else :
+          print("A faire")
+          
+          """
+          Chercher tplcat_id en fonction de tpl_id et shrcat_path
+
+          dicForQuerieForAddModeleCategorie = returnListObjKeyValue(self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTabs)
+
+          Ensuite, gestion d'une catégorie commune et locale shrcat_path et loccat_path
+          
+          """
+          
+          _dicInVersOutDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicInVersOutDesign
+          _dicOutVersInDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicOutVersInDesign
+
+          if len(_dicInVersOutDesign) != 0 : 
+             # Delete
+             for elemKey, elemValue in _dicInVersOutDesign.items() :
+                 _data = {}
+                 _data["tpl_id"]      = int(elemValue) 
+                 _data["shrcat_path"] = elemKey 
+                 print(_data)
+                 mKeySql = queries.query_delete_meta_template_categories(_data)
+                 r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+
+          if len(_dicOutVersInDesign) != 0 : 
+             # Insert Or Update
+             for elemKey, elemValue in _dicOutVersInDesign.items() :
+                 _data = {}
+                 _data["tpl_id"]      = int(elemValue) 
+                 _data["shrcat_path"] = elemKey 
+                 mKeySql = queries.query_insert_or_update_meta_template_categories(_data)
+                 r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+
+          # Save       
+          self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+          print("A faire")
        return
 
     #===============================              
@@ -571,6 +717,7 @@ class Ui_Dialog_CreateTemplate(object):
        if mTestExisteModele.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
+          self.flagNewModele = True
           self.mTreeListeRessourceModele.ihmsPlumeUpdateModele(self.Dialog, mTestExisteModele.text())
        return
 
@@ -582,6 +729,7 @@ class Ui_Dialog_CreateTemplate(object):
        if mTestExisteCategorie.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
+          self.flagNewCategorie = True
           self.mTreeListeRessourceCategorie.ihmsPlumeUpdateCategorie(self.Dialog, mTestExisteCategorie.text())
        return
 
@@ -593,6 +741,7 @@ class Ui_Dialog_CreateTemplate(object):
        if mTestExisteOnglet.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
+          self.flagNewOnglet = True
           self.mTreeListeRessourceOnglet.ihmsPlumeUpdateOnglet(self.Dialog, mTestExisteOnglet.text())
        return
 
@@ -712,7 +861,7 @@ def returnListObjAttributsId(self,  _groupBoxAttributs, mapping ) :
 
 #==========================         
 #==========================         
-def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
+def returnListObjKeyValue(self,  _groupBoxAttributs, mapping, _mListTabs = None ) :
   _group = _groupBoxAttributs.children() 
   _returnListObjKeyValue = {}
   for mObj in _group :
@@ -720,8 +869,9 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
       _value = ""
 
       if (_zone in mapping) :
-         _type   = mapping[_zone]["type"]
-         _format = mapping[_zone]["format"]
+         _type      = mapping[_zone]["type"]
+         _format    = mapping[_zone]["format"]
+         _qcombobox = mapping[_zone]["dicListItems"] 
          __Val   = _zone
    
          if _type in ("QLineEdit",) :
@@ -730,7 +880,13 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
          elif _type in ("QTextEdit",) :
                __Val = mObj.toPlainText() if mObj.toPlainText() != "" else None 
          elif _type in ("QComboBox",) :
-               __Val = mObj.currentText() if mObj.currentText() != "" else None 
+               __Val = mObj.currentText() if (mObj.currentText() != "" and mObj.currentText() != "Aucun") else None
+               #Gestion de l'ID 
+               if __Val != None :
+                  if _qcombobox == "tabs" :
+                     __Val = [ elem["tab_id"] for elem in _mListTabs if str(elem["tab_label"]) == __Val ][0]
+               #Gestion de l'ID 
+         
          elif _type in ("QDateEdit",) :
                __Val = mObj.date().toString("dd/MM/yyyy") if mObj.date().toString("dd/MM/yyyy") != "" else None 
          elif _type in ("QDateTimeEdit",) :
@@ -779,8 +935,8 @@ def genereAttributs(self,  mapping, zoneLayout ) :
 
       if okCreateZone :
          dicParamButton = dict(zip(_Listkeys, _ListValues))
-         _modCat_Attrib = genereButtonsWithDict( dicParamButton )
-         
+         _modCat_Attrib = GenereButtonsWithDictWithEvent( self, dicParamButton )._button
+                 
          if dicLabelTooltip["format"]   == "integer" :
             _modCat_Attrib.setValidator(QtGui.QIntValidator(_modCat_Attrib))
 
@@ -794,6 +950,14 @@ def genereAttributs(self,  mapping, zoneLayout ) :
          
       _row += 1
   return 
+
+#==========================         
+#==========================         
+def ifAttributsVisible(self,  _groupBoxAttributs, _mapping ) :
+  _group = _groupBoxAttributs.children() 
+  for mObj in _group :
+      if (mObj.objectName()[5:] in _mapping) or (mObj.objectName()[6:] in _mapping) :
+         return (True if mObj.isVisible() else False)
 
 #==========================         
 #==========================         
@@ -1062,6 +1226,7 @@ class TREEVIEWASSOCIATION(QTreeWidget):
         self.mTreeListeCategorieOut.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut) # Uniquement pour instancier OneShot
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocus.setVisible(False)
         return
 
     #===============================              
@@ -1105,6 +1270,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         self._selfCreateTemplate              = _selfCreateTemplate  
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource = returnIcon(_pathIcons + "/plume.svg")  
+        self.groupBoxdisplayHelpFocus         = _selfCreateTemplate.groupBoxdisplayHelpFocus        
         self.groupBoxAttributsModeleCategorie = _selfCreateTemplate.groupBoxAttributsModeleCategorie
         self.mListTemplates                   = _selfCreateTemplate.mListTemplates
         self.mListTemplateCategories          = _selfCreateTemplate.mListTemplateCategories
@@ -1287,6 +1453,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         # ======================================
         self.self_Cat_In.itemClicked.connect( self.ihmsPlume_CAT_IN_OUT ) 
         self.self_Cat_Out.itemClicked.connect( self.ihmsPlume_CAT_IN_OUT ) 
+        self.self_Cat_In.currentItemChanged.connect( self.ihmsPlume_CAT_IN_OUTCurrentIndexChanged )                                                      
         return
 
     #===============================              
@@ -1340,11 +1507,19 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         return
         
     #===============================              
+    def ihmsPlume_CAT_IN_OUTCurrentIndexChanged(self, itemCurrent, itemPrevious):
+        if itemCurrent == None : return 
+        self.ihmsPlume_CAT_IN_OUT( itemCurrent, self.currentColumn() )
+        return
+        
+    #===============================              
     def ihmsPlume_CAT_IN_OUT(self, item, column): 
+        if item == None : return 
         mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
         mItemClicAssociation = item.data(3, QtCore.Qt.DisplayRole)  # id association
         mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocus.setVisible(False)
         if mOrigine == "CAT_IN" :
            if returnIfExisteCategorie(item) : 
               #Affiche les attributs
@@ -1371,7 +1546,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         return _ret
 
     #===============================              
-    def fontionTritDict(self, value):
+    def fonctionTritDict(self, value):
         return value['_label']
 
     #===============================              
@@ -1475,8 +1650,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
               self.dicOutVersInDesign[_dicTempoAppend["_label"]] = mItemClicAssociation
               if _dicTempoAppend["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppend["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
               # -
-        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fontionTritDict, reverse=False)
-        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fontionTritDict, reverse=False)
+        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fonctionTritDict, reverse=False)
+        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fonctionTritDict, reverse=False)
         # -
         self.self_Cat_In.clear()
         self.self_Cat_Out.clear()
@@ -1553,8 +1728,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                iElem += 1
            # Gestion Item Click and Children 
            # -
-        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fontionTritDict, reverse=False)
-        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fontionTritDict, reverse=False)
+        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fonctionTritDict, reverse=False)
+        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fonctionTritDict, reverse=False)
         # -
         self.self_Cat_In.clear()
         self.self_Cat_Out.clear()
@@ -1718,6 +1893,7 @@ class TREEVIEWMODELE(QTreeWidget):
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, False ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(False)
+        self._selfCreateTemplate.flagNewModele = True
         return
 
 #========================================================     
@@ -1923,6 +2099,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, False ) 
         self._selfCreateTemplate.buttonAddCategorie.setVisible(False)
+        self._selfCreateTemplate.flagNewCategorie = True
         return
 
 #========================================================     
@@ -2064,4 +2241,5 @@ class TREEVIEWONGLET(QTreeWidget):
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsOnglets, self.mapping_tabs, False ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(False)
+        self._selfCreateTemplate.flagNewOnglet = True
         return
