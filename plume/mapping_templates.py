@@ -5,9 +5,10 @@ Permet en fonction du nom de la table et du nom de l'attribut, d'obtenir le libe
 
 load_mapping_read_meta_template_categories  =  \
       {"tpl_id"         : {"label" : "identifiant",             "tooltip" : "tooltip identifiant",    "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "integer"},
+       "tplcat_id"      : {"label" : "libelle tplcat_id",       "tooltip" : "tooltip tplcat_id",      "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},
        "shrcat_path"    : {"label" : "libelle shrcat_path",     "tooltip" : "tooltip shrcat_path",    "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},
        "loccat_path"    : {"label" : "libelle loccat_path",     "tooltip" : "tooltip loccat_path",    "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},         
-       "label"          : {"label" : "libelle label",           "tooltip" : "tooltip label",          "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},              
+       "label"          : {"label" : "libelle label",           "tooltip" : "tooltip label",          "type" : "QLineEdit", "dicListItems" : "", "id" : "OK", "format" : "text"},              
        "description"    : {"label" : "libelle description",     "tooltip" : "tooltip description",    "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},         
        "special"        : {"label" : "libelle special",         "tooltip" : "tooltip special",        "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},          
        "datatype"       : {"label" : "libelle datatype",        "tooltip" : "tooltip datatype",       "type" : "QLineEdit", "dicListItems" : "", "id" : "", "format" : "text"},         

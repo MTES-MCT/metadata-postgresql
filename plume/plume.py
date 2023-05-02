@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import (QAction, QMenu , QDockWidget, QTreeView, QWidget)
 from PyQt5.QtGui import QIcon
 
 import os
-import sys
 from plume.bibli_install import manageLibrary
 from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
 

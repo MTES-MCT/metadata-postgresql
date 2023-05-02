@@ -34,7 +34,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     _iconMinusTempGoProperties = _pathIconsUser + "/color_button_Minus_GoProperties.svg"
     _iconMinusTempGoValues     = _pathIconsUser + "/color_button_Minus_GoValues.svg"
     _iconMinusTempTgroup       = _pathIconsUser + "/color_button_Minus_Tgroup.svg"
-    _iconSourcesGeoButton      = _pathIcons + "/geo_button.svg"
     #-
     _pathIconsgeo = os.path.dirname(__file__) + "/icons/buttons/geo"
     _iconSourcesGeo_bbox_pg       = _pathIconsgeo + "/bbox_pg.svg"
