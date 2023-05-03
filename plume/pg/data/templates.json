@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-12-07 à 11:00:59."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-03 à 12:57:14."
         ]
     },
     "Classique": {
@@ -422,7 +422,8 @@
                 [
                     "http://publications.europa.eu/resource/authority/data-theme",
                     "http://inspire.ec.europa.eu/theme",
-                    "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
+                    "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory",
+                    "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres"
                 ],
                 null,
                 null,
@@ -523,6 +524,7 @@
                 "false",
                 false,
                 [
+                    "http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance",
                     "http://www.opengis.net/def/crs/EPSG/0"
                 ],
                 null,
@@ -792,8 +794,8 @@
                 "shared",
                 "Couverture géographique",
                 "Territoire·s décrit·s par le jeu de données.",
-                null,
-                true,
+                "url",
+                false,
                 null,
                 false,
                 null,
@@ -802,7 +804,11 @@
                 true,
                 "false",
                 false,
-                null,
+                [
+                    "http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory",
+                    "http://publications.europa.eu/resource/authority/atu"
+                ],
                 null,
                 null,
                 9,
@@ -1049,7 +1055,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-12-07 à 11:00:59."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-03 à 12:57:14."
         ]
     },
     "Donnée externe": {
@@ -1301,7 +1307,8 @@
                 false,
                 [
                     "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense",
-                    "http://publications.europa.eu/resource/authority/licence"
+                    "http://publications.europa.eu/resource/authority/licence",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense"
                 ],
                 null,
                 null,
@@ -1397,7 +1404,8 @@
                 [
                     "http://publications.europa.eu/resource/authority/data-theme",
                     "http://inspire.ec.europa.eu/theme",
-                    "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory"
+                    "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory",
+                    "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres"
                 ],
                 null,
                 null,
@@ -1625,8 +1633,8 @@
                 "shared",
                 "Couverture géographique",
                 "Territoire·s décrit·s par le jeu de données.",
-                null,
-                true,
+                "url",
+                false,
                 null,
                 false,
                 null,
@@ -1635,7 +1643,11 @@
                 true,
                 "false",
                 false,
-                null,
+                [
+                    "http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory",
+                    "http://publications.europa.eu/resource/authority/atu"
+                ],
                 null,
                 null,
                 9,
@@ -1886,7 +1898,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2022-12-07 à 11:00:59."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-03 à 12:57:14."
         ]
     }
 }
