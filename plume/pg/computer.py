@@ -7,7 +7,7 @@ from datetime import datetime
 
 from plume.rdf.rdflib import URIRef
 from plume.rdf.utils import CRS_NS
-from plume.rdf.namespaces import DCT
+from plume.rdf.namespaces import DCT, PLUME
 from plume.rdf.properties import PlumeProperty
 from plume.rdf.widgetkey import WidgetKey
 from plume.pg.queries import (
@@ -216,7 +216,7 @@ def crs_parser(crs_auth, crs_code):
     """
     if not crs_auth in CRS_NS or not crs_code or \
         not re.match('^[a-zA-Z0-9.]+$', crs_code):
-        return
+        return ComputationResult()
     value = URIRef('{}{}'.format(CRS_NS[crs_auth], crs_code))
     return ComputationResult(value=value)
 
@@ -224,7 +224,10 @@ METHODS = {
     DCT.conformsTo : ComputationMethod(
         query_builder=query_get_srid_list,
         dependances=['postgis'],
-        sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')],
+        sources=[
+            PLUME.OgcEpsgFrance,
+            URIRef('http://www.opengis.net/def/crs/EPSG/0')
+        ],
         parser=crs_parser,
         description='Import des référentiels de coordonnées déclarés ' \
             'pour les champs de géométrie de la table ou vue'
