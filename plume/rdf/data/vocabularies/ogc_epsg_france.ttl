@@ -1,0 +1,52 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://www.opengis.net/def/crs/EPSG/0/2154> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 2154 : RGF93 / Lambert-93 (France métropolitaine)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/2972> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 2972 : RGFG95 / UTM zone 22N (Guyane)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/2975> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 2975 : RGR92 / UTM zone 40S (La Réunion)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/3857> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 3857 : WGS 84 / Pseudo-Mercator"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/4326> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 4326 : WGS 84"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/4467> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 4467 : RGSPM06 / UTM zone 21N (Saint-Pierre-et-Miquelon)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/4471> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 4471 : RGM04 / UTM zone 38S (Mayotte)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/5490> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 5490 : RGAF09 / UTM zone 20N (Antilles françaises)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/7082> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 7082 : RGTAAF07 / Terre Adelie Polar Stereographic (Terres australes et antarctiques françaises)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/8903> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 8903 : RGWF96 / UTM zone 1S (Iles Wallis et Futuna)"@fr .
+
+<http://www.opengis.net/def/crs/EPSG/0/9794> a skos:Concept ;
+    skos:inScheme plume:OgcEpsgFrance ;
+    skos:prefLabel "EPSG 9794 : RGF93 v2b / Lambert-93 (France métropolitaine)"@fr .
+
+plume:OgcEpsgFrance a skos:ConceptScheme ;
+    skos:prefLabel "EPSG Coordinate reference system in use on French territory (OGC)"@en,
+        "Système de référence de coordonnées EPSG utilisé sur le territoire français (OGC)"@fr .
+
