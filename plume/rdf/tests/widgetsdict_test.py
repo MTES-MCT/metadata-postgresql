@@ -2290,8 +2290,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('''
                     CREATE TABLE z_plume.table_test (
                         geom1 geometry(POINT, 2154),
-                        "GEOM 2" geometry(POINT, 4326),
-                        geom3 geometry(POLYGON, 2000),
+                        "GEOM 2" geometry(POINT, 2000),
+                        geom3 geometry(POLYGON, 37001),
                         geom4 text,
                         geom5 geometry(POLYGON, 2154)
                         ) ;
@@ -2302,8 +2302,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
         conn.close()
-        self.assertListEqual(result, [('EPSG', '2000'), ('EPSG', '2154'),
-            ('EPSG', '4326')])
+        self.assertListEqual(result, [('EPSG', '2000'), ('EPSG', '2154'), ('ESRI', '37001')])
         
         r1g = c.children[0]
         r1v = c.children[1]
@@ -2322,30 +2321,33 @@ class WidgetsDictTestCase(unittest.TestCase):
         
         # --- intégration ---
         actionsdict = widgetsdict.computing_update(c, result)
-        # les clés r1v/r1g ont été supprimées car l'EPSG 2000 qui aurait
-        # dû y être référencé n'a pas passé la validation
-        r2g = c.children[0]
-        r2v = c.children[1]
-        r3g = c.children[2]
-        r3v = c.children[3]
+        self.assertEqual(len(c.children), 4)
+        r2g = c.children[2]
+        r2v = c.children[3]
+        self.assertEqual(r1v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2000'))
+        self.assertEqual(r1v.value_source, URIRef('http://www.opengis.net/def/crs/EPSG/0'))
         self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
-        self.assertEqual(r3v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
-        self.assertTrue(all(o in actionsdict['new keys'] for o in (r2v, r2g, r3v, r3g)))
-        self.assertTrue(all(o in (r2v, r2g, r3v, r3g) or o.generation > r2v.generation for o in actionsdict['new keys']))
-        self.assertListEqual(actionsdict['widgets to delete'], ['<r1v QComboBox dct:conformsTo>',
-            '<r1v-minus QToolButton dct:conformsTo>', '<r1v-source QToolButton dct:conformsTo>',
-            '<r1g QGroupBox dct:conformsTo>', '<r1g-minus QToolButton dct:conformsTo>',
-            '<r1g-source QToolButton dct:conformsTo>'])
-        self.assertListEqual(actionsdict['actions to delete'], ['<r1v-source QAction n°1',
-            '<r1v-source QAction n°2', '<r1g-source QAction n°1', '<r1g-source QAction n°2'])
-        self.assertListEqual(actionsdict['menus to delete'], ['<r1v-source QMenu dct:conformsTo>',
-            '<r1g-source QMenu dct:conformsTo>'])
+        self.assertEqual(
+            r2v.value_source, 
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance')
+        )
+        self.assertTrue(all(o in actionsdict['new keys'] for o in (r2v, r2g)))
+        self.assertTrue(
+            all(o in (r2v, r2g) or o.generation > r2v.generation 
+                for o in actionsdict['new keys'])
+        )
+        self.assertListEqual(actionsdict['widgets to show'], ['<r1v-minus QToolButton dct:conformsTo>'])
         self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
             '<P QToolButton dct:conformsTo>', 2, 0, 1, 1)])
+        self.assertListEqual(actionsdict['switch source menu to update'], [r1v])
+        self.assertListEqual(actionsdict['concepts list to update'], [r1v])
+        self.assertListEqual(actionsdict['value to update'], [r1v])
         for a, l in actionsdict.items():
             with self.subTest(action = a):
-                if not a in  ('new keys', 'widgets to move', 'widgets to delete',
-                    'actions to delete', 'menus to delete'):
+                if not a in  (
+                    'new keys', 'widgets to show', 'widgets to move', 'switch source menu to update',
+                    'concepts list to update', 'value to update'
+                ):
                     self.assertFalse(l)
         
         metadata = """
@@ -2360,8 +2362,8 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
             uuid:{uuid} a dcat:Dataset ;
-                dct:conformsTo <http://www.opengis.net/def/crs/EPSG/0/2154>,
-                    <http://www.opengis.net/def/crs/EPSG/0/4326> ;
+                dct:conformsTo <http://www.opengis.net/def/crs/EPSG/0/2000>,
+                    <http://www.opengis.net/def/crs/EPSG/0/2154> ;
                 dct:identifier "{uuid}" .
             """.format(uuid=widgetsdict.datasetid.uuid)
         metagraph = Metagraph().parse(data=metadata)
@@ -2538,11 +2540,8 @@ class WidgetsDictTestCase(unittest.TestCase):
                 [
                     (True, True),
                     (True, True),
-                    (False, None),
-                    (False, None)
-                    # les deux derniers seront à remplacer par (True, False)
-                    # le jour où il y aura plusieurs vocabulaires admissibles
-                    # pour dct:conformsTo
+                    (True, False),
+                    (True, False)
                 ]
             )
         ]:
