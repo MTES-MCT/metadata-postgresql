@@ -1473,6 +1473,7 @@ DECLARE
     e_detl text ;
     cat_list_ref text[] ;
     mod_list_ref text[] ;
+    all_cat_info_ref text ;
 BEGIN
 
     -- installation directe
@@ -1482,6 +1483,12 @@ BEGIN
     SELECT
         array_agg(path ORDER BY path)
         INTO cat_list_ref
+        FROM z_plume.meta_shared_categorie ;
+    
+    SELECT jsonb_pretty(
+        jsonb_agg(to_jsonb(meta_shared_categorie.*) ORDER BY path)
+    )
+        INTO all_cat_info_ref
         FROM z_plume.meta_shared_categorie ;
 
     PERFORM z_plume.meta_import_sample_template() ;
@@ -1498,12 +1505,24 @@ BEGIN
     ALTER EXTENSION plume_pg UPDATE ;
 
     -- mêmes chemins dans la table des catégories communes ?
-    ASSERT cat_list_ref = (SELECT array_agg(path ORDER BY path)
-        FROM z_plume.meta_shared_categorie), 'échec assertion #1 (liste des catégories)' ;
+    ASSERT cat_list_ref = (
+        SELECT array_agg(path ORDER BY path)
+        FROM z_plume.meta_shared_categorie
+    ), 'échec assertion #1 (liste des catégories)' ;
+
+    -- même contenu dans la table des catégories communes ?
+    ASSERT all_cat_info_ref = (
+        SELECT jsonb_pretty(
+            jsonb_agg(to_jsonb(meta_shared_categorie.*) ORDER BY path)
+        )
+        FROM z_plume.meta_shared_categorie
+    ), 'échec assertion #2 (propriétés des catégories)' ;
 
     -- modèles pré-configurés correctement mis à jour ?
-    ASSERT mod_list_ref = (SELECT array_agg(shrcat_path ORDER BY tplcat_id)
-        FROM z_plume.meta_template_categories), 'échec assertion #2 (modèles préconfigurés)' ;
+    ASSERT mod_list_ref = (
+        SELECT array_agg(shrcat_path ORDER BY tplcat_id)
+        FROM z_plume.meta_template_categories
+    ), 'échec assertion #3 (modèles préconfigurés)' ;
 
     RETURN True ;
     
