@@ -22,7 +22,7 @@ class VocabulariesTestCase(unittest.TestCase):
     def test_all_vocabularies_loadable(self):
         """Vérifie que tous les vocabulaires listés dans VOCABULARIES peuvent être chargés."""
         for iri in VOCABULARIES:
-            vocabulary = VocabularyGraph[URIRef(iri)]
+            vocabulary = VocabularyGraph[iri]
             self.assertTrue(len(vocabulary), f'Failed to load vocabulary <{iri}>')
     
     def test_all_shape_vocabularies_are_registered(self):
@@ -30,7 +30,7 @@ class VocabulariesTestCase(unittest.TestCase):
         for s, p, o in SHAPE:
             if p == PLUME.ontology:
                 self.assertTrue(
-                    str(o) in VOCABULARIES,
+                    o in VOCABULARIES,
                     f"Vocabulary <{str(o)}> isn't registered in VOCABULARIES"
                 )
     
@@ -44,7 +44,7 @@ class VocabulariesTestCase(unittest.TestCase):
             if iri in exceptions:
                 continue
             self.assertTrue(
-                (None, PLUME.ontology, URIRef(iri)) in SHAPE,
+                (None, PLUME.ontology, iri) in SHAPE,
                 f"Vocabulary <{iri}> isn't used"
             )
 
@@ -98,7 +98,7 @@ class ThesaurusTestCase(unittest.TestCase):
     def test_all_thesaurus_in_french(self):
         """Vérifie que tous les thésaurus ont au moins une valeur lorsqu'ils sont chargés en français."""
         for iri in VOCABULARIES:
-            thesaurus = Thesaurus[(URIRef(iri), ('fr',))]
+            thesaurus = Thesaurus[(iri, ('fr',))]
             self.assertTrue(len(thesaurus.values) > 1, f'Thesaurus <{iri}> is empty')
 
     def test_get_values(self):
