@@ -12,41 +12,49 @@ from locale import strxfrm, setlocale, LC_COLLATE
 
 from plume.rdf.rdflib import Graph, URIRef
 from plume.rdf.exceptions import UnknownSource
-from plume.rdf.namespaces import FOAF, SKOS, PlumeNamespaceManager
+from plume.rdf.namespaces import FOAF, SKOS, PLUME, PlumeNamespaceManager
 from plume.rdf.utils import abspath, pick_translation, graph_from_file, MetaCollection
 
 VOCABULARIES = {
-    'http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode': 'iso_19139_progress_code.ttl',
-    'http://publications.europa.eu/resource/authority/dataset-status': 'eu_dataset_status.ttl',
-    'http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType': 'inspire_spatial_representation_type.ttl',
-    'http://publications.europa.eu/resource/authority/file-type': 'eu_file_type.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard': 'plume_data_service_standard.ttl',
-    'http://publications.europa.eu/resource/authority/distribution-type': 'eu_distribution_type.ttl',
-    'http://publications.europa.eu/resource/authority/licence': 'eu_licence.ttl',
-    'http://publications.europa.eu/resource/authority/dataset-type': 'eu_dataset_type.ttl',
-    'http://publications.europa.eu/resource/authority/data-service-type': 'eu_data_service_type.ttl',
-    'http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency': 'inspire_maintenance_frequency.ttl',
-    'http://publications.europa.eu/resource/authority/planned-availability': 'eu_planned_availability.ttl',
-    'http://inspire.ec.europa.eu/metadata-codelist/TopicCategory': 'inspire_topic_category.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister': 'plume_standard_register.ttl',
-    'http://www.opengis.net/def/crs/EPSG/0': 'ogc_epsg.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense': 'plume_crpa_authorized_license.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations': 'plume_crpa_access_limitations.ttl',
-    'http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess': 'inspire_limitations_on_public_access.ttl',
-    'http://inspire.ec.europa.eu/theme': 'inspire_theme.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex': 'insee_geo_index.ttl',
-    'http://publications.europa.eu/resource/authority/data-theme': 'eu_data_theme.ttl',
-    'http://publications.europa.eu/resource/authority/access-right': 'eu_access_right.ttl',
-    'http://purl.org/adms/licencetype/1.1': 'adms_licence_type.ttl',
-    'http://purl.org/adms/publishertype/1.0': 'adms_publisher_type.ttl',
-    'http://publications.europa.eu/resource/authority/frequency': 'eu_frequency.ttl',
-    'http://publications.europa.eu/resource/authority/language': 'eu_language.ttl',
-    'http://publications.europa.eu/resource/authority/atu': 'eu_administrative_territory_unit.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance': 'eu_administrative_territory_unit_france.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres': 'ecospheres_theme.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory': 'insee_individual_territories.ttl',
-    'http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense': 'spdx_license.ttl'
+    PLUME.ISO19139ProgressCode: 'iso_19139_progress_code.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/dataset-status'): 'eu_dataset_status.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType'): 'inspire_spatial_representation_type.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/file-type'): 'eu_file_type.ttl',
+    PLUME.DataServiceStandard: 'plume_data_service_standard.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/distribution-type'): 'eu_distribution_type.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/licence'): 'eu_licence.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/dataset-type'): 'eu_dataset_type.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/data-service-type'): 'eu_data_service_type.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency'): 'inspire_maintenance_frequency.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/planned-availability'): 'eu_planned_availability.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory'): 'inspire_topic_category.ttl',
+    PLUME.StandardsRegister: 'plume_standard_register.ttl',
+    URIRef('http://www.opengis.net/def/crs/EPSG/0'): 'ogc_epsg.ttl',
+    PLUME.CrpaAuthorizedLicense: 'plume_crpa_authorized_license.ttl',
+    PLUME.CrpaAccessLimitations: 'plume_crpa_access_limitations.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess'): 'inspire_limitations_on_public_access.ttl',
+    URIRef('http://inspire.ec.europa.eu/theme'): 'inspire_theme.ttl',
+    PLUME.InseeGeoIndex: 'insee_geo_index.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/data-theme'): 'eu_data_theme.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/access-right'): 'eu_access_right.ttl',
+    URIRef('http://purl.org/adms/licencetype/1.1'): 'adms_licence_type.ttl',
+    URIRef('http://purl.org/adms/publishertype/1.0'): 'adms_publisher_type.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/frequency'): 'eu_frequency.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/language'): 'eu_language.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/atu'): 'eu_administrative_territory_unit.ttl',
+    PLUME.EuAdministrativeTerritoryUnitFrance: 'eu_administrative_territory_unit_france.ttl',
+    URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres'): 'ecospheres_theme.ttl',
+    PLUME.InseeIndividualTerritory: 'insee_individual_territories.ttl',
+    PLUME.SpdxLicense: 'spdx_license.ttl',
+    PLUME.OgcEpsgFrance: 'ogc_epsg_france.ttl'
 }
+"""Déclaration des vocabulaires de Plume.
+
+Les clés sont les URI des ensembles de concepts définis par chacun des vocabulaires,
+les valeurs sont les noms des fichiers correspondants, présumés exister dans le
+répertoire ``plume/rdf/data/vocabularies``.
+
+"""
 
 class VocabularyGraph(Graph, metaclass=MetaCollection):
     """Graphe contenant le vocabulaire d'un thésaurus.
@@ -77,7 +85,7 @@ class VocabularyGraph(Graph, metaclass=MetaCollection):
     def __init__(self, iri):
         super().__init__(namespace_manager=PlumeNamespaceManager())
 
-        file = VOCABULARIES.get(str(iri))
+        file = VOCABULARIES.get(iri)
         if not file:
             raise UnknownSource(iri)
         
@@ -98,8 +106,8 @@ class VocabularyGraph(Graph, metaclass=MetaCollection):
         
         """
         graph = Graph(namespace_manager=PlumeNamespaceManager())
-        for str_iri in VOCABULARIES:
-            graph += VocabularyGraph[URIRef(str_iri)]
+        for iri in VOCABULARIES:
+            graph += VocabularyGraph[iri]
         return graph
 
 class Thesaurus(metaclass=MetaCollection):
