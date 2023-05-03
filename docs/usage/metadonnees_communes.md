@@ -6,9 +6,9 @@
 | `owl:versionInfo` | Version | Numéro de version ou millésime du jeu de données. |  |
 | `dct:description` | Description | Description du jeu de données. |  |
 | `plume:isExternal` | Donnée externe | Ce jeu de données est-il la reproduction de données produites par un tiers ? Une donnée issue d'une source externe mais ayant fait l'objet d'améliorations notables n'est plus une donnée externe. |  |
-| `dcat:theme` | Thèmes | Classification thématique du jeu de données. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](http://inspire.ec.europa.eu/theme), [Catégories thématiques ISO 19115 (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/TopicCategory) |
+| `dcat:theme` | Thèmes | Classification thématique du jeu de données. | [Thème de données (UE)](http://publications.europa.eu/resource/authority/data-theme), [Thème (INSPIRE)](http://inspire.ec.europa.eu/theme), [Catégories thématiques ISO 19115 (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/TopicCategory), [Thème (Ecosphères)](http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres) |
 | `dcat:keyword` | Mots-clés libres | Mots ou très brèves expressions représentatives du jeu de données, à l'usage des moteurs de recherche. |  |
-| `dct:spatial` | Couverture géographique | Territoire·s décrit·s par le jeu de données. |  |
+| `dct:spatial` | Couverture géographique | Territoire·s décrit·s par le jeu de données. | [Unité territoriale administrative française (UE)](http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance), [Territoire singulier (INSEE)](http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory), [Unité territoriale administrative (UE)](http://publications.europa.eu/resource/authority/atu) |
 | `dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex) |
 | `dct:spatial / dct:identifier` | Code géographique | Code du département, code INSEE de la commune, etc. |  |
 | `dct:spatial / skos:prefLabel` | Libellé | Dénomination explicite du lieu. |  |
@@ -26,7 +26,7 @@
 | `dct:provenance` | Généalogie | Sources et méthodes mises en œuvre pour produire les données. |  |
 | `dct:provenance / rdfs:label` | Texte | Informations sur l'origine des données : sources, méthodes de recueil ou de traitement... |  |
 | `adms:versionNotes` | Note de version | Différences entre la version courante des données et les versions antérieures. |  |
-| `dct:conformsTo` | Conforme à | Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0) |
+| `dct:conformsTo` | Conforme à | Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données. | [Système de référence de coordonnées EPSG utilisé sur le territoire français (OGC)](http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance), [Système de référence de coordonnées EPSG (OGC)](http://www.opengis.net/def/crs/EPSG/0) |
 | `dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister) |
 | `dct:conformsTo / dct:identifier` | Identifiant | Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. |  |
 | `dct:conformsTo / dct:title` | Libellé | Libellé explicite du standard. |  |
@@ -125,7 +125,7 @@
 | `dcat:distribution / dcat:accessService` | Service | Service donnant accès aux données. |  |
 | `dcat:distribution / dcat:accessService / dct:title` | Libellé | Nom explicite du service de données. |  |
 | `dcat:distribution / dcat:accessService / dcat:endpointURL` | URL de base | URL de base du service de données, sans aucun paramètre. |  |
-| `dcat:distribution / dcat:accessService / dct:conformsTo` | Conforme à | Standard ou référentiel de coordonnées auquel se conforme le service. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0), [Standards de services de données](http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard) |
+| `dcat:distribution / dcat:accessService / dct:conformsTo` | Conforme à | Standard ou référentiel de coordonnées auquel se conforme le service. | [Système de référence de coordonnées EPSG utilisé sur le territoire français (OGC)](http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance), [Système de référence de coordonnées EPSG (OGC)](http://www.opengis.net/def/crs/EPSG/0), [Standards de services de données](http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard) |
 | `dcat:distribution / dcat:accessService / dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister) |
 | `dcat:distribution / dcat:accessService / dct:conformsTo / dct:identifier` | Identifiant | Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. |  |
 | `dcat:distribution / dcat:accessService / dct:conformsTo / dct:title` | Libellé | Libellé explicite du standard. |  |
@@ -184,7 +184,7 @@
 | `dcat:distribution / dcat:accessService / dcat:temporalResolution` | Résolution temporelle | Résolution temporelle des données mises à disposition par le service. |  |
 | `dcat:distribution / adms:representationTechnique` | Mode de représentation géographique | Type de représentation technique de l'information géographique présentée par la distribution, le cas échéant. | [Type de représentation géographique (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType) |
 | `dcat:distribution / foaf:page` | Documentation | Documentation ou page internet contenant des informations relative à la distribution. |  |
-| `dcat:distribution / dct:conformsTo` | Conforme à | Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données de la distribution. | [Registre EPSG de l'OGC (systèmes de coordonnées)](http://www.opengis.net/def/crs/EPSG/0) |
+| `dcat:distribution / dct:conformsTo` | Conforme à | Standard, schéma, référentiel de coordonnées, etc. auquel se conforment les données de la distribution. | [Système de référence de coordonnées EPSG utilisé sur le territoire français (OGC)](http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance), [Système de référence de coordonnées EPSG (OGC)](http://www.opengis.net/def/crs/EPSG/0) |
 | `dcat:distribution / dct:conformsTo / skos:inScheme` | Registre | Registre de référence auquel appartient le standard. | [Registre de standards](http://registre.data.developpement-durable.gouv.fr/plume/StandardsRegister) |
 | `dcat:distribution / dct:conformsTo / dct:identifier` | Identifiant | Identifiant du standard, s'il y a lieu. Pour un système de coordonnées géographiques, il s'agit du code EPSG. |  |
 | `dcat:distribution / dct:conformsTo / dct:title` | Libellé | Libellé explicite du standard. |  |
@@ -201,7 +201,7 @@
 | `dcat:distribution / dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Résolution des données de la distribution, exprimée en mètres. |  |
 | `dcat:distribution / dct:rights` | Propriété intellectuelle | Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données. |  |
 | `dcat:distribution / dct:rights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
-| `dcat:distribution / dct:license` | Licence | Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution. | [Licences admises pour les informations publiques des administrations françaises](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence) |
+| `dcat:distribution / dct:license` | Licence | Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution. | [Licences admises pour les informations publiques des administrations françaises](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence), [Licence (SPDX)](http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense) |
 | `dcat:distribution / dct:license / dct:type` | Type | Caractéristiques de la licence. | [Types de licence (UE)](http://purl.org/adms/licencetype/1.1) |
 | `dcat:distribution / dct:license / rdfs:label` | Termes | Termes de la licence. |  |
 | `dcat:distribution / dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès à la distribution. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) |
