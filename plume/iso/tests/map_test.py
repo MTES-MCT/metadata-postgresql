@@ -8,7 +8,7 @@ from plume.rdf.utils import (
 from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS
 )
-from plume.rdf.namespaces import DCT, FOAF, DCAT
+from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME
 from plume.rdf.rdflib import Literal, URIRef
 
 class IsoMapTestCase(unittest.TestCase):
@@ -305,10 +305,16 @@ class IsoMapTestCase(unittest.TestCase):
             ['./i@epsg', './i'],
             dataset_id,
             DCT.conformsTo,
-            thesaurus=(
-                URIRef('http://www.opengis.net/def/crs/EPSG/0'),
-                ('fr', 'en')
-            ),
+            thesaurus=[
+                (
+                    URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+                    ('fr', 'en')
+                ),
+                (
+                    PLUME.OgcEpsgFrance,
+                    ('fr', 'en')
+                )
+            ],
             multi=True
         )
         self.assertListEqual(
