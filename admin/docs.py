@@ -22,7 +22,7 @@ def shared_metadata_as_page():
     """Met à jour le tableau des métadonnées communes de la documentation.
     
     """
-    filepath = abspath('').parents[0] / 'docs/source/usage/metadonnees_communes.md'
+    filepath = abspath('').parents[0] / 'docs/usage/metadonnees_communes.md'
     categories = table_from_shape(no_cast=True)
     page = '# Métadonnées communes\n\n' \
         '| Chemin | Nom | Description | Thésaurus |\n' \
@@ -37,3 +37,4 @@ def shared_metadata_as_page():
     page += '\n'
     with open(filepath, 'w', encoding='utf-8') as dest:
         dest.write(page)
+
