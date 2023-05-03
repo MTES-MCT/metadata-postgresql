@@ -41,7 +41,50 @@
 --
 -- objets créés par le script : néant.
 --
--- objets modifiés par le script : néant.
+-- objets modifiés par le script :
+-- - Table: z_plume.meta_shared_categorie
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+-- Table: z_plume.meta_shared_categorie
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = sources || ARRAY[
+        'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres'
+    ]
+    WHERE sources IS NOT NULL AND path = 'dcat:theme' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET description = 'Classification thématique du jeu de données.'
+    WHERE path = 'dcat:theme' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET is_node = False,
+        sources = ARRAY[
+            'http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance',
+            'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory',
+            'http://publications.europa.eu/resource/authority/atu'
+        ],
+        special = 'url'
+    WHERE path = 'dct:spatial' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance'] || sources
+    WHERE sources IS NOT NULL AND path in (
+        'dct:conformsTo',
+        'dcat:distribution / dcat:accessService / dct:conformsTo',
+        'dcat:distribution / dct:conformsTo'
+    ) ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET compute = ARRAY['manual']
+    WHERE path = 'dct:conformsTo' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = sources || ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense']
+    WHERE sources IS NOT NULL AND path = 'dcat:distribution / dct:license' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET label = 'Statut',
+        description = 'Maturité de la distribution.'
+    WHERE path = 'dcat:distribution / adms:status' ;
