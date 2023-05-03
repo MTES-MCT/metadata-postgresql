@@ -185,7 +185,8 @@ plume:DatasetShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Standard ;
         sh:order 22 ;
-        plume:ontology <http://www.opengis.net/def/crs/EPSG/0> ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
+            <http://www.opengis.net/def/crs/EPSG/0> ;
         plume:compute "manual" ;
     ] ;
     sh:property [
@@ -560,7 +561,8 @@ plume:DistributionShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Standard ;
         sh:order 17 ;
-        plume:ontology <http://www.opengis.net/def/crs/EPSG/0> ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
+            <http://www.opengis.net/def/crs/EPSG/0> ;
     ] ;
     sh:property [
         sh:path cnt:characterEncoding ;
@@ -1107,7 +1109,8 @@ plume:DataServiceShape
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Standard ;
         sh:order 2 ;
-        plume:ontology <http://www.opengis.net/def/crs/EPSG/0>,
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
+            <http://www.opengis.net/def/crs/EPSG/0>,
             <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
     ] ;
     sh:property [
