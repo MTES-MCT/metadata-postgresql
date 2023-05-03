@@ -2,7 +2,7 @@
 
 Cette page récapitule les actions à réaliser pour maintenir et modifier différents aspects du fonctionnement de Plume.
 
-[Exécution des tests](#exécution-des-tests) • [Générer un ZIP propre du plugin](#générer-un-zip-propre-du-plugin) • [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes) • [Ajouter une option de configuration des catégories de métadonnées](#ajouter-une-option-de-configuration-des-catégories-de-métadonnées) • [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-ré-configurés-de-plumepg) • [Gestion des dépendances](#gestion-des-dépendances)
+[Exécution des tests](#exécution-des-tests) • [Générer un ZIP propre du plugin](#générer-un-zip-propre-du-plugin) • [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes) • [Ajouter une option de configuration des catégories de métadonnées](#ajouter-une-option-de-configuration-des-catégories-de-métadonnées) • [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-ré-configurés-de-plumepg) • [Gestion des dépendances](#gestion-des-dépendances) • [Exporter toutes les icônes de Plume au format PNG](#exporter-toutes-les-icônes-de-plume-au-format-png) • [Ajouter un vocabulaire](#ajouter-un-vocabulaire)
 
 ## Exécution des tests
 
@@ -332,9 +332,8 @@ Une fois *PlumePg* modifiée, on pourra mettre à jour ce fichier avec la comman
 
 ```python
 
-from admin.plume_pg import store_sample_templates
-
-store_sample_templates()
+>>> from admin.plume_pg import store_sample_templates
+>>> store_sample_templates()
 
 ```
 
@@ -344,9 +343,8 @@ Plume incorpore les bibliothèques python nécessaires à son fonctionnement qui
 
 ```python
 
-from importlib.metadata import requires
-
-requires('rdflib')
+>>> from importlib.metadata import requires
+>>> requires('rdflib')
 
 ``` 
 
@@ -361,11 +359,111 @@ En veillant au préalable à ce qu'Inskape soit disponible, et son fichier de bi
 
 ```python
 
-from admin.pictures import all_svg_as_png
-
-all_svg_as_png()
+>>> from admin.pictures import all_svg_as_png
+>>> all_svg_as_png()
 
 ```
 
 Les images sont stockées dans le répertoire `pictures` à la racine.
+
+
+## Ajouter un vocabulaire
+
+### Formalisation du vocabulaire
+
+Les vocabulaires de Plume prennent la forme de fichiers RDF encodés en turtle, utilisant principalement le vocabulaire SKOS.
+
+Un vocabulaire contient ainsi : 
+- Un unique objet `skos:ConceptScheme` (ensemble de concepts), qui représente le vocabulaire dans son ensemble. Celui-ci doit avoir au moins une propriété `skos:prefLabel` fournissant un libellé (d'autant que possible en français), et il est possible d'ajouter des traductions dans d'autres langues. Celles-ci sont utilisées lorsque l'utilisateur modifie la langue principale de saisie des métadonnées dans l'interface de Plume. Il est souhaitable que le libellé indique la source du vocabulaire entre parenthèses : `(EU)` pour les vocabulaires de la commission européenne, `(INSPIRE)` pour les vocabulaires du registre INSPIRE, `(OGC)` pour les vocabulaires de l'OGC, etc.
+
+    Exemple : 
+    ```turtle
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .  
+
+    <http://publications.europa.eu/resource/authority/licence> a skos:ConceptScheme ;
+        skos:prefLabel "Licence (EU)"@en,
+            "Licences (UE)"@fr .
+    ```
+
+    Optionnellement, un vocabulaire peut avoir une page web associée, spécifiée par la propriété `foaf:page`. Cette page doit contenir des informations non techniques permettant aux utilisateurs de comprendre comment bien utiliser le vocabulaire.
+
+    Dans l'exemple qui suit, la page correspond à l'article du code des relations entre le public et l'administration qui liste les licences autorisées pour les administrations :
+    ```turtle
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .  
+
+    plume:CrpaAccessLimitations a skos:ConceptScheme ;
+        skos:prefLabel "Limitations of public access according to French Code des relations entre le public et l'administration"@en,
+            "Restrictions d'accès en application du Code des relations entre le public et l'administration"@fr ;
+        foaf:page <https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000031366350/LEGISCTA000031367696> .
+    ```
+    Lorsque le vocabulaire est importé intégralement depuis un registre tiers, l'URI de l'ensemble de concepts est celui du registre d'origine. Pour les vocabulaires créés spécialement pour Plume, y compris lorsqu'il s'agit d'extraits de vocabulaires plus larges, il est possible de définir un URI dans l'espace de nommage de Plume, `http://registre.data.developpement-durable.gouv.fr/plume/` (prefixe `plume`), avec un identifiant explicite en notation [*camel case*](https://fr.wikipedia.org/wiki/Camel_case). C'est ce qui a été fait dans l'exemple ci-avant.
+
+- Un objet `skos:Concept` (concept) pour chaque terme du vocabulaire. Il doit obligatoirement avoir :
+    - Une propriété `skos:inScheme` dont l'objet est l'ensemble de concepts susmentionné.
+    - Une propriété `skos:prefLabel` fournissant un libellé, de préférence en français.
+
+    Exemple :
+
+    ```turtle
+    <https://spdx.org/licenses/etalab-2.0> a skos:Concept ;
+        skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense> ;
+        skos:prefLabel "etalab-2.0 : Etalab Open License 2.0"@en,
+            "Licence Ouverte version 2.0"@fr .
+    ```
+
+    Optionnellement, il est possible de fournir des traductions du libellé dans d'autres langues, toujours avec `skos:prefLabel`. Il est également souhaitable, dans la mesure du possible, d'associer une page web au terme de vocabulaire avec la propriété `foaf:page`. Ces pages servent à générer les hyperliens qui apparaissent dans les fiches de métadonnées en mode lecture. À défaut, c'est l'URI qui est utilisé.
+
+    Lorsqu'il existe déjà un URI pour le terme de vocabulaire, celui-ci doit autant que possible être conservé. Les ensembles de concepts définis dans l'espace de nommage de Plume ont vocation à être publié sur le registre de Plume, ce qui implique de créer pour chaque concept un URI dans l'espace de nommage de Plume. D'une manière générale, cela est fait automatiquement en juxtaposant l'URI de l'ensemble de concepts et le dernier élément de l'URI originelle du concept.
+
+    Par exemple, l'alias du concept `<http://www.opengis.net/def/serviceType/ogc/wms>` dans le registre de Plume est `<http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard>` + `wms`, soit `<http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard\wms>`.
+
+    Lorsque le dernier élément de l'URI originelle n'est pas adapté pour cet usage, il est possible de forcer l'utilisation d'un autre identifiant via la propriété `dct:identifier`.
+
+    Exemple :
+
+    ```turtle
+    @prefix dct: <http://purl.org/dc/terms/> ..
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+    <http://tools.ietf.org/html/rfc4287> a skos:Concept ;
+        dct:identifier "atom" ;
+        skos:inScheme plume:DataServiceStandard ;
+        skos:prefLabel "ATOM Syndication Format"@en .
+    ```
+
+### Déclaration du vocabulaire
+
+Les fichiers contenant les vocabulaires doivent être placés dans le répertoire [`plume/rdf/data/vocabularies`](../../plume/rdf/data/vocabularies). Autant que possible, leur nom doit correspondre à celui de l'ensemble de concepts qu'ils définissent, écrit en minuscules avec des tirets bas comme séparateurs. Par exemple, le fichier contenant le vocabulaire `<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode>` est nommé `iso_19139_progress_code.ttl`.
+
+Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de concepts doit être déclaré à deux endroits : 
+* Dans le dictionnaire `plume.rdf.thesaurus.VOCABULARIES`, qui fait la correspondance entre l'URI de l'ensemble de concepts et le nom du fichier qui contient ses termes.
+* Dans le schéma des métadonnées communes, [`plume/rdf/data/shape.ttl`](../../plume/rdf/data/shape.ttl). Pour indiquer qu'une catégorie de métadonnées - nécessairement de nature `sh:BlankNodeOrIRI` ou `sh:IRI` - prend ses valeurs dans un ou plusieurs vocabulaires, on déclarera les URI de ces derniers comme objets de la propriété `plume:ontology`.
+    
+    Exemple :
+
+    ```turtle
+    @prefix adms: <http://www.w3.org/ns/adms#> .
+    @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+    @prefix sh: <http://www.w3.org/ns/shacl#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+    sh:property [
+        sh:path adms:status ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        plume:ontology <http://publications.europa.eu/resource/authority/dataset-status>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode> ;
+    ] ;
+    ```
+
+À noter que l'un des tests de la recette de Plume a pour objet de vérifier que tout vocabulaire qui apparaît dans le schéma des métadonnées communes est aussi dans `plume.rdf.thesaurus.VOCABULARIES` et réciproquement. L'existence du fichier est également contrôlée.
+
+
+### Mise à jour du registre
+
+Les vocabulaires de Plume - en pratique, tout vocabulaire dont l'URI de l'ensemble de concepts est défini dans l'espace de nommage de Plume - doivent ensuite être copiés sur le registre de Plume, afin de permettre la résolution de leurs URI sur internet. C'est l'objet du module [`admin.register`](../../admin/register.py).
+
+
 
