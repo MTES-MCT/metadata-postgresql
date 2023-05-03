@@ -538,14 +538,14 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         if transform:
             value = transform(value)
         if l_thesaurus:
-            for thesaurus in l_thesaurus:
+            for s_thesaurus in l_thesaurus:
                 if not forbidden_char(value):
                     # est-ce un IRI ?
-                    value_str = Thesaurus.concept_str(thesaurus, URIRef(value))
+                    value_str = Thesaurus.concept_str(s_thesaurus, URIRef(value))
                     if value_str:
                         break
                 # est-ce une étiquette ?
-                value_iri = Thesaurus.concept_iri(thesaurus, value)
+                value_iri = Thesaurus.concept_iri(s_thesaurus, value)
                 if value_iri:
                     value = value_iri
                     break
