@@ -424,6 +424,12 @@ class ConceptDefinition(ObjectDefinition):
     iri : rdflib.term.URIRef
         L'IRI du concept, présumé référencé dans 
         :py:data:`plume.rdf.thesaurus.VOCABULARIES`.
+    scheme_iri : rdflib.term.URIRef, optional
+        L'IRI de l'ensemble auquel appartient le concept.
+        Si non renseigné, le constructeur ira chercher 
+        l'information dans le graphe. À noter qu'il est
+        essentiel de fournir cette information lorsque
+        le concept considéré apparaît dans plusieurs ensembles.
     
     Raises
     ------
@@ -434,13 +440,13 @@ class ConceptDefinition(ObjectDefinition):
     
     """
     
-    def __init__(self, iri):
+    def __init__(self, iri, scheme_iri=None):
         graph = Graph(namespace_manager=PlumeNamespaceManager())
         if str(iri).startswith(str(PLUME)):
             objid = str(iri).replace(str(PLUME), 'plume/')
             s = iri
         else:
-            scheme = VOCABULARY.value(iri, SKOS.inScheme)
+            scheme = scheme_iri or VOCABULARY.value(iri, SKOS.inScheme)
             if not str(scheme).startswith(str(PLUME)):
                 raise ValueError("Le concept '{}' n'appartient pas à un " \
                     'thésaurus créé par Plume.'.format(iri))
@@ -631,8 +637,8 @@ class DefinitionsCollection(dict):
             if str(iri).startswith(str(PLUME)): 
                 od = ConceptSchemeDefinition(iri)
                 self[od.objid] = od
-        for iri, p, s in VOCABULARY.triples((None, SKOS.inScheme, None)):
-            if str(iri).startswith(str(PLUME)) or str(s).startswith(str(PLUME)): 
-                od = ConceptDefinition(iri)
+        for iri, p, scheme_iri in VOCABULARY.triples((None, SKOS.inScheme, None)):
+            if str(iri).startswith(str(PLUME)) or str(scheme_iri).startswith(str(PLUME)): 
+                od = ConceptDefinition(iri, scheme_iri)
                 self[od.objid] = od
     
