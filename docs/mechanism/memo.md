@@ -123,6 +123,11 @@ Le résultat doit être copié dans le script de création de l'extension, soit 
 
 Pour le script de mise à jour depuis la version précédente, il sera généralement préférable de limiter les commandes aux catégories effectivement modifiées.
 
+### Mise à jour des modèles pré-configurés
+
+Par précaution, on veillera également à actualiser les fichiers JSON qui contiennent une copie locale des modèles pré-configurés de *PlumePg*. Cf. [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-pré-configurés-de-plumepg).
+
+
 ## Ajouter une option de configuration des catégories de métadonnées
 
 Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier {py:file}`/plume/rdf/data/shape.ttl`), désérialisation du schéma métadonnées communes (module {py:mod}`plume.rdf.properties`), modèles de formulaires (extension [*PlumePg*], dont le code se trouve dans le répertoire {py:file}`/postgresql`), import des modèles de formulaire (module {py:mod}`plume.pg.queries`), désérialisation des modèles de formulaire (module {py:mod}`plume.pg.template`), arbre des clés (module {py:widgetkey}`plume.rdf.widgetkey`), dictionnaire interne (module {py:mod}`plume.rdf.internaldict`), dictionnaire de widgets (module {py:mod}`plume.rdf.widgetsdict`), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
@@ -459,7 +464,9 @@ Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de c
 
 À noter que l'un des tests de la recette de Plume a pour objet de vérifier que tout vocabulaire qui apparaît dans le schéma des métadonnées communes est aussi dans {py:data}`plume.rdf.thesaurus.VOCABULARIES` et réciproquement. L'existence du fichier est également contrôlée.
 
+Les modifications apportées au schéma des métadonnées communes doivent ensuite être répercutées dans d'autres sections du code. Cf. [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes).
 
 ### Mise à jour du registre
 
 Les vocabulaires de Plume - en pratique, tout vocabulaire dont l'URI de l'ensemble de concepts est défini dans l'espace de nommage de Plume - doivent ensuite être copiés sur le registre de Plume, afin de permettre la résolution de leurs URI sur internet. C'est l'objet du module {py:mod}`admin.register`.
+
