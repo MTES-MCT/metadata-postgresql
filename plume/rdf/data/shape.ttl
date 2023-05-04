@@ -186,7 +186,8 @@ plume:DatasetShape
         sh:class dct:Standard ;
         sh:order 22 ;
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
-            <http://www.opengis.net/def/crs/EPSG/0> ;
+            <http://www.opengis.net/def/crs/EPSG/0>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
         plume:compute "manual" ;
     ] ;
     sh:property [
@@ -506,7 +507,8 @@ plume:DistributionShape
         sh:class dct:MediaTypeOrExtent ;
         sh:maxCount 1 ;
         sh:order 11 ;
-        plume:ontology <http://publications.europa.eu/resource/authority/file-type> ;
+        plume:ontology <http://publications.europa.eu/resource/authority/file-type>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
     ] ;
     sh:property [
         sh:path dcat:compressFormat ;
@@ -516,7 +518,8 @@ plume:DistributionShape
         sh:class dct:MediaType ;
         sh:maxCount 1 ;
         sh:order 12 ;
-        plume:ontology <http://publications.europa.eu/resource/authority/file-type> ;
+        plume:ontology <http://publications.europa.eu/resource/authority/file-type>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
     ] ;
     sh:property [
         sh:path dcat:packageFormat ;
@@ -526,7 +529,8 @@ plume:DistributionShape
         sh:class dct:MediaType ;
         sh:maxCount 1 ;
         sh:order 13 ;
-        plume:ontology <http://publications.europa.eu/resource/authority/file-type> ;
+        plume:ontology <http://publications.europa.eu/resource/authority/file-type>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
     ] ;
     sh:property [
         sh:path dcat:accessService ;
@@ -562,7 +566,8 @@ plume:DistributionShape
         sh:class dct:Standard ;
         sh:order 17 ;
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
-            <http://www.opengis.net/def/crs/EPSG/0> ;
+            <http://www.opengis.net/def/crs/EPSG/0>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
     ] ;
     sh:property [
         sh:path cnt:characterEncoding ;
@@ -1111,7 +1116,8 @@ plume:DataServiceShape
         sh:order 2 ;
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
             <http://www.opengis.net/def/crs/EPSG/0>,
-            <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard> ;
+            <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
     ] ;
     sh:property [
         sh:path dcat:endpointDescription ;
