@@ -8,10 +8,10 @@ import xml.etree.ElementTree as etree
 
 from plume.rdf.utils import (
     DatasetId, abspath, forbidden_char,
-    owlthing_from_email, owlthing_from_tel
+    owlthing_from_email, owlthing_from_tel, CRS_NS
 )
 from plume.rdf.namespaces import (
-    DCAT, DCT, FOAF, RDF, RDFS, SKOS, VCARD, XSD, GEODCAT
+    DCAT, DCT, FOAF, RDF, RDFS, VCARD, XSD, GEODCAT, PLUME
 )
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
@@ -31,6 +31,18 @@ ISO_NS = {
     'gmx': 'http://www.isotc211.org/2005/gmx',
     'xlink': 'http://www.w3.org/1999/xlink'
     }
+
+SUB_NS = {
+    'http://librairies.ign.fr/geoportail/resources/IGNF.xml#': 'https://registre.ign.fr/ign/IGNF/crs/IGNF/',
+    'http://registre.ign.fr/ign/IGNF/IGNF.xml#': 'https://registre.ign.fr/ign/IGNF/crs/IGNF/',
+    'https://registre.ign.fr/ign/IGNF/IGNF.xml#': 'https://registre.ign.fr/ign/IGNF/crs/IGNF/',
+    'http://registre.ign.fr/ign/IGNF/crs/IGNF/': 'https://registre.ign.fr/ign/IGNF/crs/IGNF/'
+}
+"""Substitution d'espaces de nommage.
+
+Les clés sont les espaces de nommage à remplacer par leurs valeurs.
+
+"""
 
 
 class IsoToDcat:
@@ -169,33 +181,29 @@ class IsoToDcat:
         une liste vide est renvoyée.
         
         """
-        l = []
-        for elem in self.isoxml.findall('./gmd:referenceSystemInfo/'
-            'gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/'
-            'gmd:RS_Identifier/gmd:code', namespaces=ISO_NS):
-            epsg = None
-            epsg_txt = elem.findtext('./gmx:Anchor',
-                namespaces=ISO_NS)
-            if not epsg_txt:
-                epsg_txt = elem.findtext('./gco:CharacterString',
-                    namespaces=ISO_NS)
-            if not epsg_txt:
-                continue
-            if epsg_txt.isdigit():
-                epsg = epsg_txt
-            else:
-                r = re.search('EPSG:([0-9]*)', epsg_txt)
-                if r:
-                    epsg = r[1]
-            node = BNode()
-            l += [(self.datasetid, DCT.conformsTo, node),
-                (node, SKOS.inScheme, URIRef('http://www.opengis.net/def/crs/EPSG/0'))]
-            if epsg:
-                l.append((node, DCT.identifier, Literal(epsg)))
-            if epsg_txt != epsg:
-                l.append((node, DCT.title, Literal(epsg_txt,
-                    lang=self.language)))
-        return l
+        return find_iri(
+            self.isoxml,
+            [
+                './gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/'
+                'gmd:referenceSystemIdentifier/gmd:RS_Identifier/'
+                'gmd:code/gmx:Anchor@xlink:href',
+                './gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/'
+                'gmd:referenceSystemIdentifier/gmd:RS_Identifier/'
+                'gmd:code/gmx:Anchor',
+                './gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/'
+                'gmd:referenceSystemIdentifier/gmd:RS_Identifier/'
+                'gmd:code/gco:CharacterString'
+            ],
+            self.datasetid,
+            DCT.conformsTo,
+            transform=normalize_crs,
+            multi=True,
+            thesaurus=[
+                (PLUME.OgcEpsgFrance, (self.language,)),
+                (URIRef('http://www.opengis.net/def/crs/EPSG/0'), (self.language,)),
+                (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs'), (self.language,))
+            ]
+        )
 
     @property
     def map_dates(self):
@@ -446,19 +454,28 @@ def find_literal(
         if not value:
             continue
         if language:
-            l.append((subject, predicate, Literal(value, lang=language)))
+            triple = (subject, predicate, Literal(value, lang=language))
+            if not triple in l:
+                l.append(triple)
         elif datatype and datatype != XSD.string:
-            l.append((subject, predicate, Literal(value, datatype=datatype)))
+            triple = (subject, predicate, Literal(value, datatype=datatype))
+            if not triple in l:
+                l.append(triple)
         else:
-            l.append((subject, predicate, Literal(value)))
+            triple = (subject, predicate, Literal(value))
+            if not triple in l:
+                l.append(triple)
         if not multi:
             break
     
     if isinstance(path, list) and len(path) > 1 and (multi or not l):
-        l += find_literal(
+        triples = find_literal(
             elem, path[1:], subject, predicate, multi=multi,
             datatype=datatype, language=language
         )
+        for triple in triples:
+            if not triple in l:
+                l.append(triple)
 
     return l
 
@@ -530,13 +547,19 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         l_thesaurus = [thesaurus]
 
     for sub in elem.findall(epath, namespaces=ISO_NS):
-        value = sub.get(attr) if attr else sub.text
+        value = sub.get(wns(attr)) if attr else sub.text
         if not value or (
             not thesaurus and forbidden_char(value)
         ):
             continue
+        for old_ns, new_ns in SUB_NS.items():
+            if value.startswith(old_ns):
+                value = value.replace(old_ns, new_ns)
+                break
         if transform:
             value = transform(value)
+            if not value:
+                continue
         if l_thesaurus:
             for s_thesaurus in l_thesaurus:
                 if not forbidden_char(value):
@@ -552,15 +575,20 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
             else:
                 # non référencé
                 continue
-        l.append((subject, predicate, URIRef(value)))
+        triple = (subject, predicate, URIRef(value))
+        if not triple in l:
+            l.append(triple)
         if not multi:
             break
     
     if isinstance(path, list) and len(path) > 1 and (multi or not l):
-        l += find_iri(
+        triples = find_iri(
             elem, path[1:], subject, predicate, multi=multi,
             transform=transform, thesaurus=thesaurus
         )
+        for triple in triples:
+            if not triple in l:
+                l.append(triple)
 
     return l    
 
@@ -614,4 +642,45 @@ def parse_xml(raw_xml):
     except:
         return etree.Element(wns('gmd:MD_Metadata')) 
 
+def normalize_crs(crs_str):
+    """Recherche un code de référentiel de coordonnées dans une chaîne de caractères et le normalise.
 
+    La fonction ne saura traiter que :
+
+    * Les URI de codes EPSG.
+    * Les valeurs numériques, qui sont alors présumées être des codes EPSG.
+    * Un code inclut dans une chaîne de caractères, à condition qu'il soit précédé
+      d'un code d'autorité connu. Par exemple ``'EPSG:'`` ou ``'EPSG '`` pour un
+      code EPSG.
+
+    Dans les autres cas, elle renvoie la chaîne de caractères fournie en entrée.
+
+    La fonction produit des chaînes de caractères dont :py:func:`find_iri` se 
+    chargera de faire des URI. C'est également elle qui devra vérifier que les 
+    URI résultants sont effectivement référencés dans les vocabulaires de Plume,
+    la présente fonction ne réalise aucun contrôle.
+
+    Parameters
+    ----------
+    crs_str : str
+        Chaîne de caractères présumée contenir un code de référentiel
+        de coordonnées.
+
+    Returns
+    -------
+    str or None
+        ``None`` lorsque la fonction n'a pas renconnu de code.
+
+    """
+    if not crs_str:
+        return crs_str
+    if crs_str.isdigit():
+        # on présume qu'il s'agit d'un code EPSG
+        return CRS_NS['EPSG'] + crs_str
+    if any(crs_str.startswith(ns) for ns in CRS_NS.values()):
+        return crs_str
+    for auth, ns in CRS_NS.items():
+        r = re.search(rf'{auth}\s*:?:?\s*([a-zA-Z0-9]+(?:[.][a-zA-Z0-9]+)?)', crs_str)
+        if r:
+            return ns + r[1]
+    return crs_str
