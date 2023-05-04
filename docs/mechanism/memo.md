@@ -6,9 +6,9 @@ Cette page récapitule les actions à réaliser pour maintenir et modifier diff�
 
 ## Exécution des tests
 
-Le module `admin.tests` compile les tests de tous les modules de Plume.
+Le module {py:mod}`admin.tests` compile les tests de tous les modules de Plume.
 
-On pourra soit exécuter le fichier `/admin/tests.py` comme un script, ce qui lancera l'ensemble des tests, soit utiliser la fonction `admin.tests.run`.
+On pourra soit exécuter le fichier {file}`/admin/tests.py` comme un script, ce qui lancera l'ensemble des tests, soit utiliser la fonction {py:func}`admin.tests.run`.
 
 Pour lancer tous les tests :
 
@@ -19,7 +19,7 @@ Pour lancer tous les tests :
 
 ```
 
-Pour lancer uniquement les tests de certains modules ou packages, il faut les lister en argument (uniquement le dernier niveau d'arborescence). Par exemple, la commande suivante exécute les tests de tous les modules du package `plume.pg`, ainsi que les tests du module `plume.rdf.widgetkey` :
+Pour lancer uniquement les tests de certains modules ou packages, il faut les lister en argument (uniquement le dernier niveau d'arborescence). Par exemple, la commande suivante exécute les tests de tous les modules du package `plume.pg`, ainsi que les tests du module {py:mod}`plume.rdf.widgetkey` :
 
 ```python
 
@@ -32,7 +32,6 @@ L'exécution des tests nécessite de se connecter à une base PostgreSQL avec un
 - la version de PostgreSQL est supérieure ou égale à PostgreSQL 10.
 - l'extension *PlumePg* (`plume_pg`) est disponible dans sa dernière version ainsi qu'en version 0.0.1, avec tous les fichiers de mise à jour pour passer de l'une à l'autre ;
 - si requise pour l'installation de *PlumePg*[^pgcrypto], l'extension `pgcrypto` est active ;
-- la bibliothèque de tests de *PlumePg* est installée (fichier `/postgresql/tests/plume_pg_test.sql`) ;
 - l'extension *PostGIS* (`postgis`) est active ;
 - l'extension [*Asgard*](https://github.com/MTES-MCT/asgard-postgresql) (`asgard`) est disponible sur le serveur dans une version supérieure ou égale à 1.3.2, mais **non active**.
 
@@ -56,7 +55,7 @@ Par défaut, le fichier ZIP est créé à la racine du dépôt, mais on pourra f
 
 ### Schéma des métadonnées communes
 
-Les catégories communes sont définies dans le fichier [`/plume/rdf/data/shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl), dit *schéma des métadonnées communes*. La première étape consiste à éditer manuellement ce fichier  (RDF encodé en turtle).
+Les catégories communes sont définies dans le fichier {file}`/plume/rdf/data/shape.ttl`, dit *schéma des métadonnées communes*. La première étape consiste à éditer manuellement ce fichier  (RDF encodé en turtle).
 
 *TODO: détailler le paramétrage des catégories (informations obligatoires selon le type RDF, etc.).*
 
@@ -72,7 +71,7 @@ Si la modification implique l'usage d'un espace de nommage qui n'avait encore ja
 
 Le préfixe ne devra comporter que des lettres minuscules.
 
-Il faudra ensuite le déclarer dans le module [`plume.rdf.namespaces`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/rdf/namespaces.py), qui gère les espaces de nommage de Plume. Cette opération est importante car Plume utilise la notation N3 pour les exports et, surtout, dans les modèles de formulaire.
+Il faudra ensuite le déclarer dans le module {py:mod}`plume.rdf.namespaces`, qui gère les espaces de nommage de Plume. Cette opération est importante car Plume utilise la notation N3 pour les exports et, surtout, dans les modèles de formulaire.
 
 Concrètement, il s'agit d'ajouter un objet `rdflib.namespace.Namespace` à ceux déjà définis au début du fichier.
 
@@ -100,7 +99,7 @@ La clé de `namespaces` devra être identique au préfixe utilisé dans `shape.t
 
 ### Mise à jour de la liste des métadonnées communes de la documentation technique
 
-La liste des métadonnées communes présentée dans le fichier [`/docs/source/usage/metadonnees_communes.md`](../usage/metadonnees_communes.md) est mise à jour par la commande suivante :
+La liste des métadonnées communes présentée dans le fichier [`/docs/usage/metadonnees_communes.md`](../usage/metadonnees_communes.md) est mise à jour par la commande suivante :
 
 ```python
 
@@ -120,17 +119,17 @@ La commande suivante permet de générer la commande `INSERT` qui ajoute toutes 
 
 ```
 
-Le résultat doit être copié dans le script de création de l'extension, soit un fichier `plume_pg--x.x.x.sql` du répertoire [`/postgresql`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/postgresql) portant le numéro de la version à venir de l'extension.
+Le résultat doit être copié dans le script de création de l'extension, soit un fichier `plume_pg--x.x.x.sql` du répertoire {py:file}`/postgresql` portant le numéro de la version à venir de l'extension.
 
 Pour le script de mise à jour depuis la version précédente, il sera généralement préférable de limiter les commandes aux catégories effectivement modifiées.
 
 ## Ajouter une option de configuration des catégories de métadonnées
 
-Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier [`shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl)), désérialisation du schéma métadonnées communes (module [`plume.rdf.properties`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/properties.py)), modèles de formulaires (extension [*PlumePg*](https://github.com/MTES-MCT/metadata-postgresql/tree/main/postgresql)), import des modèles de formulaire (module [`plume.pg.queries`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/queries.py)), désérialisation des modèles de formulaire (module [`plume.pg.template`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/template.py)), arbre des clés (module [`plume.rdf.widgetkey`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetkey.py)), dictionnaire interne (module [`plume.rdf.internaldict`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/internaldict.py)), dictionnaire de widgets (module [`plume.rdf.widgetsdict`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetsdict.py)), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
+Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier {py:file}`/plume/rdf/data/shape.ttl`), désérialisation du schéma métadonnées communes (module {py:mod}`plume.rdf.properties`), modèles de formulaires (extension [*PlumePg*], dont le code se trouve dans le répertoire {py:file}`/postgresql`), import des modèles de formulaire (module {py:mod}`plume.pg.queries`), désérialisation des modèles de formulaire (module {py:mod}`plume.pg.template`), arbre des clés (module {py:widgetkey}`plume.rdf.widgetkey`), dictionnaire interne (module {py:mod}`plume.rdf.internaldict`), dictionnaire de widgets (module {py:mod}`plume.rdf.widgetsdict`), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
 
 ### Schéma des métadonnées communes
 
-Sauf à ce que l'option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l'associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier [`shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl).
+Sauf à ce que l'option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l'associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier {py:file}`/plume/rdf/data/shape.ttl`.
 
 Si elle n'est pas nativement prévue par le language [SHACL](https://www.w3.org/TR/shacl/), on utilisera l'espace de nommage `http://registre.data.developpement-durable.gouv.fr/plume/`, dont le préfixe est `plume`. Par convention, le nom de l'option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu'il s'agit d'une propriété et non d'une classe.
 
@@ -164,7 +163,7 @@ L'option peut avoir plusieurs valeurs, il faudra juste penser à le déclarer da
 
 ### Désérialisation du schéma des métadonnées communes
 
-C'est la fonction `read_shape_property` du module [`plume.rdf.properties`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/properties.py) qui a la charge de lire et d'interpréter le contenu du fichier [`shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl). Elle a besoin de connaître à l'avance les options à rechercher.
+C'est la fonction {py:func}`~plume.rdf.properties.read_shape_property` du module {py:mod}`plume.rdf.properties` qui a la charge de lire et d'interpréter le contenu du fichier {py:file}`/plume/rdf/data/shape.ttl`. Elle a besoin de connaître à l'avance les options à rechercher.
 
 On ajoutera donc à son dictionnaire `prop_map` la nouvelle option : 
 
@@ -187,9 +186,9 @@ Le plus souvent, une nouvelle option de configuration se manifestera dans *Plume
 
 Si le champ n'admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à `z_plume.meta_datatype`.
 
-Pour l'actualisation des informations relatives aux métadonnées communes incluses dans *PlumePg*, on se reportera à [Mise à jour des catégories communes dans les scripts de *PlumePg*](#mise-à-jour-des-catégories-communes-dans-les-scripts-de-plumepg). Il faudra néanmoins commencer par modifier les fonctions `admin.plume_pg._table_from_shape` et `admin.plume_pg.query_from_shape` pour qu'elles prennent en compte le nouveau champ.
+Pour l'actualisation des informations relatives aux métadonnées communes incluses dans *PlumePg*, on se reportera à [Mise à jour des catégories communes dans les scripts de *PlumePg*](#mise-à-jour-des-catégories-communes-dans-les-scripts-de-plumepg). Il faudra néanmoins commencer par modifier les fonctions {py:func}`admin.plume_pg._table_from_shape` et {py:func}`admin.plume_pg.query_from_shape` pour qu'elles prennent en compte le nouveau champ.
 
-Dans `admin.plume_pg._table_from_shape`, il s'agira d'ajouter le champ au tuple `category`. Dans le cas général, `prop_dict.get('option')` suffit (où `option` est le nom python de l'option de configuration). S'il est nécessaire de caster la valeur, on utilisera la même syntaxe que pour `geo_tool` :
+Dans {py:func}`admin.plume_pg._table_from_shape`, il s'agira d'ajouter le champ au tuple `category`. Dans le cas général, `prop_dict.get('option')` suffit (où `option` est le nom python de l'option de configuration). S'il est nécessaire de caster la valeur, on utilisera la même syntaxe que pour `geo_tool` :
 
 ```python
 
@@ -205,13 +204,13 @@ Dans `admin.plume_pg._table_from_shape`, il s'agira d'ajouter le champ au tuple 
 
 ```
 
-Dans `admin.plume_pg.query_from_shape` on ajoute le champ supplémentaire à ceux qui apparaissent dans la commande `INSERT`, en prenant soin de respecter l'ordre du tuple `category` de `admin.plume_pg._table_from_shape`.
+Dans {py:func}`admin.plume_pg.query_from_shape` on ajoute le champ supplémentaire à ceux qui apparaissent dans la commande `INSERT`, en prenant soin de respecter l'ordre du tuple `category` de {py:func}`admin.plume_pg._table_from_shape`.
 
 ### Import des modèles de formulaires
 
 Pour que le nouveau champ des tables et vues de *PlumePg* soit exploité, encore faut-il que son contenu soit importé par Plume.
 
-Ceci suppose de l'ajouter dans la requête définie par la fonction `query_get_categories` du module [`plume.pg.queries`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/queries.py) :
+Ceci suppose de l'ajouter dans la requête définie par la fonction {py:func}`~plume.pg.queries.query_get_categories` du module {py:mod}`plume.pg.queries` :
 
 ```sql
 
@@ -228,9 +227,9 @@ Psycopg ne reconnaissant pas les types personnalisés, il est préférable de ca
 
 ### Désérialisation des modèles de formulaire
 
-C'est maintenant la fonction d'initialisation de la classe [`plume.pg.template.TemplateDict`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/template.py) qu'il s'agit d'ajuster.
+C'est maintenant la fonction d'initialisation de la classe {py:class}`plume.pg.template.TemplateDict` qu'il s'agit d'ajuster.
 
-La boucle `for` nomme les colonnes du résultat de la requête `query_get_categories` susmentionnée. Il faut donc y ajouter le nouveau champ, en s'assurant de respecter l'ordre de `query_get_categories`.
+La boucle `for` nomme les colonnes du résultat de la requête {py:func}`~plume.pg.queries.query_get_categories` susmentionnée. Il faut donc y ajouter le nouveau champ, en s'assurant de respecter l'ordre de {py:func}`~plume.pg.queries.query_get_categories`.
 
 ```python
 
@@ -253,7 +252,7 @@ Puis le déclarer dans le dictionnaire `config` :
 
 La clé de `config` doit impérativement porter le nom [déclaré dans `read_shape_property`](#désérialisation-du-schéma-des-métadonnées-communes) (premier élément du tuple de `prop_map`).
 
-*NB. D'une manière générale, la validation et les conversions sont plutôt du ressort du module [`plume.rdf.widgetkey`](/plume/rdf/widgetkey.py), le constructeur de `TemplateDict` tend donc à reprendre telles quelles les informations issues du modèle. Il peut cependant être nécessaire de retraiter les valeurs à ce niveau dans le cas particulier d'une option pour laquelle les valeurs issues du modèle ne remplacent pas simplement les valeurs du schéma des métadonnées communes, mais nécessitent d'être comparées (cf. paragraphe suivant), ce qui supposent que les formats soient comparables.*
+*NB. D'une manière générale, la validation et les conversions sont plutôt du ressort du module {py:mod}`plume.rdf.widgetkey`, le constructeur de {py:class}`plume.pg.template.TemplateDict` tend donc à reprendre telles quelles les informations issues du modèle. Il peut cependant être nécessaire de retraiter les valeurs à ce niveau dans le cas particulier d'une option pour laquelle les valeurs issues du modèle ne remplacent pas simplement les valeurs du schéma des métadonnées communes, mais nécessitent d'être comparées (cf. paragraphe suivant), ce qui supposent que les formats soient comparables.*
 
 ### Croisement du schéma et du modèle
 
@@ -261,13 +260,13 @@ Par défaut, Plume considère que si une catégorie apparaît à la fois dans le
 - les options de configuration définies dans le modèle prévalent sur celle du schéma ;
 - les options du schéma s'appliquent quand le modèle ne dit rien.
 
-S'il était nécessaire d'avoir un comportement différent pour l'option considérée, c'est la fonction `merge_property_dict` du module [`plume.rdf.properties`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/properties.py) qui devrait être modifiée en ce sens.
+S'il était nécessaire d'avoir un comportement différent pour l'option considérée, c'est la fonction {py:func}`~plume.rdf.properties.merge_property_dict` du module {py:mod}`plume.rdf.properties` qui devrait être modifiée en ce sens.
 
 ### Arbre des clés
 
 L'arbre des clés est la colonne vertébrale de Plume. Il porte la structure des formulaires de saisie, garantie leur cohérence et permet leur évolution dynamique selon les commandes de l'utilisateur.
 
-Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  (`plume.rdf.widgetkey.ValueKey` et autres classes de clés héritant de [`plume.rdf.widgetkey.WidgetKey`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/widgetkey.py)) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour [la clé de `config`](#désérialisation-des-modèles-de-formulaire) et/ou [le premier élément du tuple de `prop_map`](#désérialisation-du-schéma-des-métadonnées-communes), soit `'geo_tools'` dans le cas des fonctionnalités d'aide à la saisie des géométries.
+Avec les opérations précédentes, on aura fait en sorte que les constructeurs des clés  ({py:class}`plume.rdf.widgetkey.ValueKey` et autres classes de clés héritant de {py:class}`plume.rdf.widgetkey.WidgetKey`) reçoivent en paramètre la valeur de la nouvelle option. Le nom de ce paramètre est celui qui a été utilisé pour [la clé de `config`](#désérialisation-des-modèles-de-formulaire) et/ou [le premier élément du tuple de `prop_map`](#désérialisation-du-schéma-des-métadonnées-communes), soit `'geo_tools'` dans le cas des fonctionnalités d'aide à la saisie des géométries.
 
 Ce que font les clés de cette information peut être très variable. Pour `geo_tools`, il s'agissait de définir un nouveau bouton annexe et ses caractéristiques, et cela a nécessité les opérations suivantes.
 
@@ -324,9 +323,9 @@ La documentation technique, et particulièrement sa page [Création d'un nouveau
 
 ## Modifier les modèles pré-configurés de *PlumePg*
 
-Les modèles pré-configurés de l'extension PostgreSQL *PlumePg* sont définis dans le code de l'extension (fichier `plume_pg--x.x.x.sql` du répertoire [`/postgresql`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/postgresql)) et plus précisément dans le corps de la fonction `z_plume.meta_import_sample_template(text)`. Comme pour tout changement dans le code de *PlumePg*, leur modification devra donner lieu à une nouvelle version de *PlumePg*, outillée par un fichier `plume_pg--x.x.x-y.y.y.sql` permettant de passer de la version `x.x.x` à la version `y.y.y`.
+Les modèles pré-configurés de l'extension PostgreSQL *PlumePg* sont définis dans le code de l'extension (fichier `plume_pg--x.x.x.sql` du répertoire {file}`/postgresql`) et plus précisément dans le corps de la fonction `z_plume.meta_import_sample_template(text)`. Comme pour tout changement dans le code de *PlumePg*, leur modification devra donner lieu à une nouvelle version de *PlumePg*, outillée par un fichier `plume_pg--x.x.x-y.y.y.sql` permettant de passer de la version `x.x.x` à la version `y.y.y`.
 
-Plume inclut par ailleurs des copies locales des modèles pré-configurés, qui permettent de bénéficier de quelques modèles basiques même si *PlumePg* n'est pas installée sur la base contenant la table ou vue à documenter. Ils sont stockés dans le fichier [`/plume/pg/data/templates.json`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/pg/data/templates.json).
+Plume inclut par ailleurs des copies locales des modèles pré-configurés, qui permettent de bénéficier de quelques modèles basiques même si *PlumePg* n'est pas installée sur la base contenant la table ou vue à documenter. Ils sont stockés dans le fichier {file}`/plume/pg/data/templates.json`.
 
 Une fois *PlumePg* modifiée, on pourra mettre à jour ce fichier avec la commande suivante :
 
@@ -348,7 +347,7 @@ Plume incorpore les bibliothèques python nécessaires à son fonctionnement qui
 
 ``` 
 
-Les installateurs *wheel* des packages doivent être placés dans le répertoire `/plume/bibli_install`. Les bibliothèques avec leur version de référence sont listées par le fichier [`/plume/requirements.txt`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/requirements.txt).
+Les installateurs *wheel* des packages doivent être placés dans le répertoire {file}`/plume/bibli_install`. Les bibliothèques avec leur version de référence sont listées par le fichier {file}`/plume/requirements.txt`.
 
 Pour que les mises à jour se fassent, il est nécessaire que la valeur du paramètre de configuration `plume.config.PLUME_VERSION` corresponde toujours au numéro de la version courante. Plume - plus précisément `plume.bibli_install.manageLibrary` - compare cette chaîne de caractères avec la valeur inscrite dans le fichier `QGIS3.ini` de l'utilisateur pour la version de QGIS courante. Par exemple, si Plume a été lancé sous QGIS 3.22.8, le paramètre utilisateur considéré est `Generale/3-22-8`. Lorsque ce paramètre est absent du fichier de configuration utilisateur (cas par exemple d'une nouvelle installation) ou s'il ne correspond pas à la valeur de `plume.config.PLUME_VERSION`, la mise à jour des dépendances selon `requirements.txt` est lancée et le numéro de version de Plume est enregistré dans le fichier `QGIS3.ini`, de manière à ce que ce processus ne s'exécute plus tant que Plume n'aura pas été mis à jour.
 
@@ -435,11 +434,11 @@ Un vocabulaire contient ainsi :
 
 ### Déclaration du vocabulaire
 
-Les fichiers contenant les vocabulaires doivent être placés dans le répertoire [`plume/rdf/data/vocabularies`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/vocabularies). Autant que possible, leur nom doit correspondre à celui de l'ensemble de concepts qu'ils définissent, écrit en minuscules avec des tirets bas comme séparateurs. Par exemple, le fichier contenant le vocabulaire `<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode>` est nommé `iso_19139_progress_code.ttl`.
+Les fichiers contenant les vocabulaires doivent être placés dans le répertoire {file}`/plume/rdf/data/vocabularies`. Autant que possible, leur nom doit correspondre à celui de l'ensemble de concepts qu'ils définissent, écrit en minuscules avec des tirets bas comme séparateurs. Par exemple, le fichier contenant le vocabulaire `<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode>` est nommé `iso_19139_progress_code.ttl`.
 
 Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de concepts doit être déclaré à deux endroits : 
-* Dans le dictionnaire `plume.rdf.thesaurus.VOCABULARIES`, qui fait la correspondance entre l'URI de l'ensemble de concepts et le nom du fichier qui contient ses termes.
-* Dans le schéma des métadonnées communes, [`plume/rdf/data/shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl). Pour indiquer qu'une catégorie de métadonnées - nécessairement de nature `sh:BlankNodeOrIRI` ou `sh:IRI` - prend ses valeurs dans un ou plusieurs vocabulaires, on déclarera les URI de ces derniers comme objets de la propriété `plume:ontology`.
+* Dans le dictionnaire {py:data}`plume.rdf.thesaurus.VOCABULARIES`, qui fait la correspondance entre l'URI de l'ensemble de concepts et le nom du fichier qui contient ses termes.
+* Dans le schéma des métadonnées communes, {file}`/plume/rdf/data/shape.ttl`. Pour indiquer qu'une catégorie de métadonnées - nécessairement de nature `sh:BlankNodeOrIRI` ou `sh:IRI` - prend ses valeurs dans un ou plusieurs vocabulaires, on déclarera les URI de ces derniers comme objets de la propriété `plume:ontology`.
     
     Exemple :
 
@@ -458,7 +457,7 @@ Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de c
     ] ;
     ```
 
-À noter que l'un des tests de la recette de Plume a pour objet de vérifier que tout vocabulaire qui apparaît dans le schéma des métadonnées communes est aussi dans `plume.rdf.thesaurus.VOCABULARIES` et réciproquement. L'existence du fichier est également contrôlée.
+À noter que l'un des tests de la recette de Plume a pour objet de vérifier que tout vocabulaire qui apparaît dans le schéma des métadonnées communes est aussi dans {py:data}`plume.rdf.thesaurus.VOCABULARIES` et réciproquement. L'existence du fichier est également contrôlée.
 
 
 ### Mise à jour du registre
