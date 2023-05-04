@@ -226,7 +226,8 @@ METHODS = {
         dependances=['postgis'],
         sources=[
             PLUME.OgcEpsgFrance,
-            URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            PLUME.IgnCrs
         ],
         parser=crs_parser,
         description='Import des référentiels de coordonnées déclarés ' \
