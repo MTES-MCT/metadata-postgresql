@@ -18,7 +18,7 @@ from plume.rdf.namespaces import RDF, DCAT, XSD
 CRS_NS = {
     'EPSG': 'http://www.opengis.net/def/crs/EPSG/0/',
     'OGC': 'http://www.opengis.net/def/crs/OGC/1.3/',
-    'IGNF': 'https://registre.ign.fr/ign/IGNF/IGNF.xml#'
+    'IGNF': 'https://registre.ign.fr/ign/IGNF/crs/IGNF/'
     }
 """Espaces de nommage des référentiels de coordonnées.
 
