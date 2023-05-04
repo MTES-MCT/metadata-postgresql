@@ -69,11 +69,22 @@ UPDATE z_plume.meta_shared_categorie
     WHERE path = 'dct:spatial' ;
 
 UPDATE z_plume.meta_shared_categorie
-    SET sources = ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance'] || sources
+    SET sources = ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance']
+        || sources
+        || ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs']
     WHERE sources IS NOT NULL AND path in (
         'dct:conformsTo',
         'dcat:distribution / dcat:accessService / dct:conformsTo',
         'dcat:distribution / dct:conformsTo'
+    ) ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = sources
+        || ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType']
+    WHERE sources IS NOT NULL AND path in (
+        'dcat:distribution / dct:format',
+        'dcat:distribution / dcat:compressFormat',
+        'dcat:distribution / dcat:packageFormat'
     ) ;
 
 UPDATE z_plume.meta_shared_categorie
