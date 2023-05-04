@@ -463,4 +463,4 @@ Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de c
 
 ### Mise à jour du registre
 
-Les vocabulaires de Plume - en pratique, tout vocabulaire dont l'URI de l'ensemble de concepts est défini dans l'espace de nommage de Plume - doivent ensuite être copiés sur le registre de Plume, afin de permettre la résolution de leurs URI sur internet. C'est l'objet du module <inv:*:py:mod:#admin.register>.
+Les vocabulaires de Plume - en pratique, tout vocabulaire dont l'URI de l'ensemble de concepts est défini dans l'espace de nommage de Plume - doivent ensuite être copiés sur le registre de Plume, afin de permettre la résolution de leurs URI sur internet. C'est l'objet du module {py:mod}`admin.register`.
