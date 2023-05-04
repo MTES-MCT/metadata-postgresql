@@ -319,7 +319,7 @@ Si la nouvelle option suppose l'ajout de widgets annexes dans le formulaire, il 
 
 ### Génération du formulaire
 
-La documentation technique, et particulièrement sa page [Création d'un nouveau widget](./creation_widgets.html), devra être complétée d'autant que de besoin pour expliquer comment la nouvelle option de configuration doit être considérée lors de la génération du formulaire.
+La documentation technique, et particulièrement sa page [Création d'un nouveau widget](../usage/creation_widgets.md), devra être complétée d'autant que de besoin pour expliquer comment la nouvelle option de configuration doit être considérée lors de la génération du formulaire.
 
 
 ## Modifier les modèles pré-configurés de *PlumePg*
@@ -435,11 +435,11 @@ Un vocabulaire contient ainsi :
 
 ### Déclaration du vocabulaire
 
-Les fichiers contenant les vocabulaires doivent être placés dans le répertoire [`plume/rdf/data/vocabularies`](../../plume/rdf/data/vocabularies). Autant que possible, leur nom doit correspondre à celui de l'ensemble de concepts qu'ils définissent, écrit en minuscules avec des tirets bas comme séparateurs. Par exemple, le fichier contenant le vocabulaire `<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode>` est nommé `iso_19139_progress_code.ttl`.
+Les fichiers contenant les vocabulaires doivent être placés dans le répertoire [`plume/rdf/data/vocabularies`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/vocabularies). Autant que possible, leur nom doit correspondre à celui de l'ensemble de concepts qu'ils définissent, écrit en minuscules avec des tirets bas comme séparateurs. Par exemple, le fichier contenant le vocabulaire `<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode>` est nommé `iso_19139_progress_code.ttl`.
 
 Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de concepts doit être déclaré à deux endroits : 
 * Dans le dictionnaire `plume.rdf.thesaurus.VOCABULARIES`, qui fait la correspondance entre l'URI de l'ensemble de concepts et le nom du fichier qui contient ses termes.
-* Dans le schéma des métadonnées communes, [`plume/rdf/data/shape.ttl`](../../plume/rdf/data/shape.ttl). Pour indiquer qu'une catégorie de métadonnées - nécessairement de nature `sh:BlankNodeOrIRI` ou `sh:IRI` - prend ses valeurs dans un ou plusieurs vocabulaires, on déclarera les URI de ces derniers comme objets de la propriété `plume:ontology`.
+* Dans le schéma des métadonnées communes, [`plume/rdf/data/shape.ttl`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/plume/rdf/data/shape.ttl). Pour indiquer qu'une catégorie de métadonnées - nécessairement de nature `sh:BlankNodeOrIRI` ou `sh:IRI` - prend ses valeurs dans un ou plusieurs vocabulaires, on déclarera les URI de ces derniers comme objets de la propriété `plume:ontology`.
     
     Exemple :
 
@@ -463,7 +463,4 @@ Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de c
 
 ### Mise à jour du registre
 
-Les vocabulaires de Plume - en pratique, tout vocabulaire dont l'URI de l'ensemble de concepts est défini dans l'espace de nommage de Plume - doivent ensuite être copiés sur le registre de Plume, afin de permettre la résolution de leurs URI sur internet. C'est l'objet du module [`admin.register`](../../admin/register.py).
-
-
-
+Les vocabulaires de Plume - en pratique, tout vocabulaire dont l'URI de l'ensemble de concepts est défini dans l'espace de nommage de Plume - doivent ensuite être copiés sur le registre de Plume, afin de permettre la résolution de leurs URI sur internet. C'est l'objet du module <inv:*:py:mod:#admin.register>.
