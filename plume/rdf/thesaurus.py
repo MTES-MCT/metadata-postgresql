@@ -46,7 +46,9 @@ VOCABULARIES = {
     URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres'): 'ecospheres_theme.ttl',
     PLUME.InseeIndividualTerritory: 'insee_individual_territories.ttl',
     PLUME.SpdxLicense: 'spdx_license.ttl',
-    PLUME.OgcEpsgFrance: 'ogc_epsg_france.ttl'
+    PLUME.OgcEpsgFrance: 'ogc_epsg_france.ttl',
+    PLUME.IgnCrs: 'ign_crs.ttl',
+    PLUME.IanaMediaType: 'iana_media_type.ttl'
 }
 """Déclaration des vocabulaires de Plume.
 
