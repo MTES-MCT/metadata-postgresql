@@ -379,7 +379,7 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(
             wkt_with_srid('POINT(651796.32814998598769307 6862298.58582336455583572)',
                 'IGNF:RGM04UTM38S'),
-            '<https://registre.ign.fr/ign/IGNF/IGNF.xml#RGM04UTM38S> ' \
+            '<https://registre.ign.fr/ign/IGNF/crs/IGNF/RGM04UTM38S> ' \
             'POINT(651796.32814998598769307 6862298.58582336455583572)'
             )
         self.assertIsNone(wkt_with_srid(None, 'IGNF:RGM04UTM38S'))
