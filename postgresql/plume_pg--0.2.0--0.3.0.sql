@@ -39,12 +39,31 @@
 --
 -- schéma contenant les objets : z_plume
 --
--- objets créés par le script : néant.
+-- objets créés par le script :
+-- - Function: z_plume.stamp_create_triggers(text, text[], text[])
 --
 -- objets modifiés par le script :
 -- - Table: z_plume.meta_shared_categorie
+-- - Table: z_plume.meta_categorie
+-- - Table: z_plume.meta_template_categories
+-- - View: z_plume.meta_template_categories_full
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+/* 1 - MODELES DE FORMULAIRES 
+   3 - DATES DE MODIFICATION */
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+----------------------------------------
+------ 1 - MODELES DE FORMULAIRES ------
+----------------------------------------
+
+/* 1.1 - TABLE DE CATEGORIES
+   1.4 - ASSOCIATION DES CATEGORIES AUX MODELES */
+
+
+------ 1.1 - TABLE DE CATEGORIES ------
 
 -- Table: z_plume.meta_shared_categorie
 
@@ -112,6 +131,9 @@ ALTER TABLE z_plume.meta_categorie
 ALTER TABLE z_plume.meta_template_categories
     ALTER COLUMN unilang TYPE boolean USING (unilang::boolean) ;
 
+
+------ 1.4 - ASSOCIATION DES CATEGORIES AUX MODELES ------
+
 -- View: z_plume.meta_template_categories_full
 
 CREATE VIEW z_plume.meta_template_categories_full AS (
@@ -176,4 +198,111 @@ COMMENT ON COLUMN z_plume.meta_template_categories_full.template_order IS 'Ordre
 COMMENT ON COLUMN z_plume.meta_template_categories_full.is_read_only IS 'True si la catégorie est en lecture seule.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, à défaut, dans un onglet "Général".' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+
+---------------------------------------
+------ 3 - DATES DE MODIFICATION ------
+---------------------------------------
+
+/* 3.3 - MAINTENANCE */
+
+----- 3.3 - MAINTENANCE ------
+
+-- Function: z_plume.stamp_create_triggers(text, text[], text[])
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_create_triggers(
+        target_schema text DEFAULT NULL,
+        schemas_include text[] DEFAULT NULL,
+        schemas_exclude text[] DEFAULT NULL
+    )
+    RETURNS TABLE (schema_name name, table_name name, result text)
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Crée sur les tables des schémas cibles des déclencheurs qui assureront la mise à jour de leurs dates de modification.
+
+    Concrètement, cette fonction exécute z_plume.stamp_create_trigger(oid)
+    sur une sélection de schémas spécifiés par l'opérateur. Si aucun
+    paramètre n'est fourni, tous les schémas sont considérés à l'exception
+    des schémas système (dont le nom commence par 'pg_') et du schéma
+    information_schema.
+
+    Si le rôle qui exécute la fonction n'est pas propriétaire
+    de certaines des tables de ces schémas, leurs triggers ne seront
+    pas créés. La fonction n'échoue pas, mais renverra False avec
+    des messages explicitant les erreurs rencontrées.
+
+    La fonction ne considère que les tables simples.
+
+    Parameters
+    ----------
+    target_schema : text, optional
+        L'identifiant d'un schéma sur les tables duquel des déclencheurs
+        doivent être créés.
+    schemas_include : text[], optional
+        Une liste d'identifiants de schémas sur les tables desquels des
+        déclencheurs doivent être créés. Ce paramètre n'est pas considéré
+        si target_schema est fourni.
+    schemas_exclude : text[], optional
+        Si spécifié, la fonction crée des déclencheurs sur tous les schémas
+        hors schémas système, information_schema et les schémas qu'il liste.
+        Ce paramètre n'est pas considéré si target_schema ou schemas_include est
+        fourni.
+
+    Returns
+    -------
+    table (schema_name : text, table_name : text, result : text)
+        Une table avec trois attributs :
+        
+        * "schema_name" est le nom du schéma.
+        * "table_name" est le nom de la table.
+        * "result" est le résultat de la tentative de création du 
+          déclencheur. Il peut valoir 'success' si la création a réussi,
+          'failure' si elle a échoué (le détail de l'erreur sera alors 
+          précisé par des messages) ou 'trigger already exists' si le 
+          déclencheur existait déjà, la fonction n'ayant alors aucun effet.
+
+    Exemples
+    --------
+    SELECT * FROM z_plume.stamp_create_triggers()
+    SELECT * FROM z_plume.stamp_create_triggers('c_bibliotheque')
+    SELECT * FROM z_plume.stamp_create_triggers(schemas_exclude := 'c_bibliotheque')
+    
+*/
+DECLARE
+    rel record ;
+    res boolean ;
+BEGIN
+
+    FOR rel in (
+        SELECT nspname AS schema_name, pg_class.relname, pg_class.oid
+            FROM pg_catalog.pg_namespace
+                LEFT JOIN pg_catalog.pg_class
+                    ON pg_namespace.oid = pg_class.relnamespace
+            WHERE (
+                target_schema IS NOT NULL AND target_schema = nspname::text
+                OR schemas_include IS NOT NULL AND nspname = ANY(schemas_include)
+                OR schemas_exclude IS NOT NULL AND NOT nspname = ANY(schemas_exclude)
+            )
+            AND NOT nspname ~ '^pg_' AND NOT nspname = 'information_schema'
+            AND relkind = 'r'
+    )
+    LOOP
+        IF rel.oid IN (
+            SELECT tgrelid FROM pg_catalog.pg_trigger
+                WHERE tgname = 'plume_stamp_data_edit'
+            )
+        THEN
+            RETURN QUERY
+                SELECT rel.schema_name, rel.relname, 'trigger already exists' ;
+        ELSE
+            SELECT z_plume.stamp_create_trigger(rel.oid) INTO res ;
+            RETURN QUERY
+                SELECT rel.schema_name, rel.relname,
+                    CASE WHEN res THEN 'success' ELSE 'failure' END ;
+        END IF ;
+    END LOOP ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_create_triggers(text, text[], text[]) IS 'Crée sur les tables des schémas cibles des déclencheurs qui assureront la mise à jour de leurs dates de modification.' ;
 

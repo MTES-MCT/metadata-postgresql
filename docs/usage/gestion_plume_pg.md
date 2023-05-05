@@ -169,6 +169,48 @@ DELETE FROM z_plume.stamp_timestamp WHERE relid = 'schema_name.table_name'::regc
 
 ```
 
+### Reprise de l'existant
+
+Que `plume_stamp_table_creation` soit actif ou non, les déclencheurs `plume_stamp_data_edit` qui mettent à jour la date de dernière modification lorsque le contenu de leur table est modifié ne sont pas automatiquement créés sur les tables existantes.
+
+Plutôt que de lancer sur chaque table la fonction `z_plume.stamp_create_trigger`, il est possible d'utiliser la fonction `z_plume.stamp_create_triggers`, qui permet de créer les déclencheurs pour toutes les tables d'un ou plusieurs schémas déterminés.
+
+Pour créer des déclencheurs `plume_stamp_data_edit` sur les tables de tous les schémas hors schémas système (`information_schema` et tous les schémas dont le nom commence par `'pg_'`) :
+
+```sql
+
+SELECT * FROM z_plume.stamp_create_triggers() ;
+
+```
+
+Pour créer les déclencheurs sur les tables d'un schéma :
+
+```sql
+
+SELECT * FROM z_plume.stamp_create_triggers('schema_name') ;
+
+```
+
+Pour créer les déclencheurs sur les tables de plusieurs schémas :
+
+```sql
+
+SELECT * FROM z_plume.stamp_create_triggers(schemas_include:=ARRAY['schema_name_1', 'schema_name_2']) ;
+
+```
+
+Pour créer les déclencheurs sur les tables de tous les schémas sauf exceptions listées :
+
+```sql
+
+SELECT * FROM z_plume.stamp_create_triggers(schemas_exclude:=ARRAY['public', 'schema_name']) ;
+
+```
+
+La fonction renvoie la liste des tables des schémas cibles, en indiquant dans le champ `result` si la création du déclencheur sur la table a réussi (`'success'`), si elle a échoué (`'failure'`, le détail de l'erreur sera alors 
+précisé par des messages) ou si le déclencheur existait déjà (`'trigger already exists'`), la fonction n'ayant alors aucun effet.
+
+
 ### Intégration directe dans les métadonnées
 
 Pour ne pas trop affecter les performances et laisser au producteur de la donnée la maîtrise de ces informations, les dates ne sont pas immédiatement mises à jour dans les fiches de métadonnées, seulement dans la table `stamp_timestamp`, qui peut être considérée comme un espace de stockage temporaire. Le plugin QGIS permet de les importer facilement lors de l'édition d'une fiche, soit à la demande en cliquant sur un bouton, soit automatiquement à l'ouverture de la fiche (cf. [Métadonnées calculées](./metadonnees_calculees.md)).

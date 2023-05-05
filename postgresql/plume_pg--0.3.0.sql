@@ -78,6 +78,7 @@
 -- - Function: z_plume.stamp_table_drop()
 -- - Event trigger: plume_stamp_table_drop
 -- - Function: z_plume.stamp_clean_timestamp()
+-- - Function: z_plume.stamp_create_triggers(text, text[], text[])
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1973,6 +1974,106 @@ END
 $BODY$ ;
 
 COMMENT ON FUNCTION z_plume.stamp_clean_timestamp() IS 'Supprime les enregistrements de la table stamp_timestamp correspondant à des tables qui n''existent plus.' ;
+
+
+-- Function: z_plume.stamp_create_triggers(text, text[], text[])
+
+CREATE OR REPLACE FUNCTION z_plume.stamp_create_triggers(
+        target_schema text DEFAULT NULL,
+        schemas_include text[] DEFAULT NULL,
+        schemas_exclude text[] DEFAULT NULL
+    )
+    RETURNS TABLE (schema_name name, table_name name, result text)
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Crée sur les tables des schémas cibles des déclencheurs qui assureront la mise à jour de leurs dates de modification.
+
+    Concrètement, cette fonction exécute z_plume.stamp_create_trigger(oid)
+    sur une sélection de schémas spécifiés par l'opérateur. Si aucun
+    paramètre n'est fourni, tous les schémas sont considérés à l'exception
+    des schémas système (dont le nom commence par 'pg_') et du schéma
+    information_schema.
+
+    Si le rôle qui exécute la fonction n'est pas propriétaire
+    de certaines des tables de ces schémas, leurs triggers ne seront
+    pas créés. La fonction n'échoue pas, mais renverra False avec
+    des messages explicitant les erreurs rencontrées.
+
+    La fonction ne considère que les tables simples.
+
+    Parameters
+    ----------
+    target_schema : text, optional
+        L'identifiant d'un schéma sur les tables duquel des déclencheurs
+        doivent être créés.
+    schemas_include : text[], optional
+        Une liste d'identifiants de schémas sur les tables desquels des
+        déclencheurs doivent être créés. Ce paramètre n'est pas considéré
+        si target_schema est fourni.
+    schemas_exclude : text[], optional
+        Si spécifié, la fonction crée des déclencheurs sur tous les schémas
+        hors schémas système, information_schema et les schémas qu'il liste.
+        Ce paramètre n'est pas considéré si target_schema ou schemas_include est
+        fourni.
+
+    Returns
+    -------
+    table (schema_name : text, table_name : text, result : text)
+        Une table avec trois attributs :
+        
+        * "schema_name" est le nom du schéma.
+        * "table_name" est le nom de la table.
+        * "result" est le résultat de la tentative de création du 
+          déclencheur. Il peut valoir 'success' si la création a réussi,
+          'failure' si elle a échoué (le détail de l'erreur sera alors 
+          précisé par des messages) ou 'trigger already exists' si le 
+          déclencheur existait déjà, la fonction n'ayant alors aucun effet.
+
+    Exemples
+    --------
+    SELECT * FROM z_plume.stamp_create_triggers()
+    SELECT * FROM z_plume.stamp_create_triggers('c_bibliotheque')
+    SELECT * FROM z_plume.stamp_create_triggers(schemas_exclude := 'c_bibliotheque')
+    
+*/
+DECLARE
+    rel record ;
+    res boolean ;
+BEGIN
+
+    FOR rel in (
+        SELECT nspname AS schema_name, pg_class.relname, pg_class.oid
+            FROM pg_catalog.pg_namespace
+                LEFT JOIN pg_catalog.pg_class
+                    ON pg_namespace.oid = pg_class.relnamespace
+            WHERE (
+                target_schema IS NOT NULL AND target_schema = nspname::text
+                OR schemas_include IS NOT NULL AND nspname = ANY(schemas_include)
+                OR schemas_exclude IS NOT NULL AND NOT nspname = ANY(schemas_exclude)
+            )
+            AND NOT nspname ~ '^pg_' AND NOT nspname = 'information_schema'
+            AND relkind = 'r'
+    )
+    LOOP
+        IF rel.oid IN (
+            SELECT tgrelid FROM pg_catalog.pg_trigger
+                WHERE tgname = 'plume_stamp_data_edit'
+            )
+        THEN
+            RETURN QUERY
+                SELECT rel.schema_name, rel.relname, 'trigger already exists' ;
+        ELSE
+            SELECT z_plume.stamp_create_trigger(rel.oid) INTO res ;
+            RETURN QUERY
+                SELECT rel.schema_name, rel.relname,
+                    CASE WHEN res THEN 'success' ELSE 'failure' END ;
+        END IF ;
+    END LOOP ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.stamp_create_triggers(text, text[], text[]) IS 'Crée sur les tables des schémas cibles des déclencheurs qui assureront la mise à jour de leurs dates de modification.' ;
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

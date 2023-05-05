@@ -1715,3 +1715,112 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t021() IS 'PlumePg (recette). TEST : Préservation des onglets lors d''une montée de version.' ;
 
+-- Function: z_plume_recette.t022()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t022()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    res record ;
+    to_exclude text[] ;
+BEGIN
+
+    CREATE ROLE plume_testeur_1 ;
+    CREATE ROLE plume_testeur_2 ;
+    CREATE ROLE plume_testeur_3 ;
+    GRANT plume_testeur_1 TO plume_testeur_3 ;
+
+    SELECT array_agg(nspname::text) INTO to_exclude
+        FROM pg_namespace WHERE NOT nspname = 'pg_catalog' ;
+
+    CREATE SCHEMA c_bibliotheque AUTHORIZATION plume_testeur_1 ;
+    CREATE SCHEMA "C Librairie" AUTHORIZATION plume_testeur_2 ;
+    CREATE TABLE c_bibliotheque.journal_du_mur (id serial PRIMARY KEY, entree text) ;
+    ALTER TABLE c_bibliotheque.journal_du_mur OWNER TO plume_testeur_1 ;
+    CREATE TABLE "C Librairie"."JournalDuMur" (id serial PRIMARY KEY, entree text) ;
+    ALTER TABLE "C Librairie"."JournalDuMur" OWNER TO plume_testeur_2 ;
+
+    ALTER EVENT TRIGGER plume_stamp_table_creation ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification ENABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop ENABLE ;
+
+    INSERT INTO c_bibliotheque.journal_du_mur (entree) VALUES ('Il fait nuit.') ;
+    ASSERT (SELECT count(*) FROM z_plume.stamp_timestamp) = 0, 'échec assertion #1' ;
+
+    SET ROLE plume_testeur_3 ;
+    FOR res IN (SELECT * FROM z_plume.stamp_create_triggers('C Librairie'))
+    LOOP
+        ASSERT res.table_name::text = 'JournalDuMur', 'échec assertion #2.1' ;
+        ASSERT res.schema_name::text = 'C Librairie', 'échec assertion #2.2' ;
+        ASSERT res.result = 'failure', 'échec assertion #2.3' ;
+    END LOOP ;
+    FOR res IN (SELECT * FROM z_plume.stamp_create_triggers(schemas_include:=ARRAY['c_bibliotheque']))
+    LOOP
+        ASSERT res.table_name::text = 'journal_du_mur', 'échec assertion #3.1' ;
+        ASSERT res.schema_name::text = 'c_bibliotheque', 'échec assertion #3.2' ;
+        ASSERT res.result = 'success', 'échec assertion #3.3' ;
+    END LOOP ;
+
+    RESET ROLE ;
+
+    INSERT INTO c_bibliotheque.journal_du_mur (entree) VALUES ('Il fait toujours nuit.') ;
+    ASSERT (
+        SELECT count(*) FROM z_plume.stamp_timestamp
+            WHERE relid = 'c_bibliotheque.journal_du_mur'::regclass
+                AND modified IS NOT NULL
+        ) = 1, 'échec assertion #3.4' ;
+    ASSERT (SELECT count(*) FROM z_plume.stamp_timestamp) = 1, 'échec assertion #3.5' ;
+    
+    FOR res IN (SELECT * FROM z_plume.stamp_create_triggers(schemas_exclude:=to_exclude))
+    LOOP
+        IF res.schema_name::text = 'c_bibliotheque'
+        THEN
+            ASSERT res.table_name::text = 'journal_du_mur', 'échec assertion #4.1' ;
+            ASSERT res.result = 'trigger already exists', 'échec assertion #4.2' ;
+        ELSIF res.schema_name::text = 'C Librairie'
+        THEN
+            ASSERT res.table_name::text = 'JournalDuMur', 'échec assertion #5.1' ;
+            ASSERT res.result = 'success', 'échec assertion #5.2' ;
+        ELSE
+            ASSERT False, 'échec assertion #6' ;
+        END IF ;
+    END LOOP ;
+
+    INSERT INTO "C Librairie"."JournalDuMur" (entree) VALUES ('Il fait jour.') ;
+    ASSERT (
+        SELECT count(*) FROM z_plume.stamp_timestamp
+            WHERE relid = '"C Librairie"."JournalDuMur"'::regclass
+                AND modified IS NOT NULL
+        ) = 1, 'échec assertion #7.1' ;
+    ASSERT (SELECT count(*) FROM z_plume.stamp_timestamp) = 2, 'échec assertion #7.2' ;
+
+    DROP SCHEMA "C Librairie" CASCADE ;
+    DROP SCHEMA c_bibliotheque CASCADE ;
+
+    ASSERT (SELECT count(*) FROM z_plume.stamp_timestamp) = 0, 'échec assertion #8' ;
+
+    DROP ROLE plume_testeur_1 ;
+    DROP ROLE plume_testeur_2 ;
+    DROP ROLE plume_testeur_3 ;
+
+    ALTER EVENT TRIGGER plume_stamp_table_creation DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_modification DISABLE ;
+    ALTER EVENT TRIGGER plume_stamp_table_drop DISABLE ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t022() IS 'PlumePg (recette). TEST : Création massive des déclencheurs pour le suivi de la mise à jour des données.' ;
