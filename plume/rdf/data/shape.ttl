@@ -75,7 +75,8 @@ plume:DatasetShape
         plume:ontology <http://publications.europa.eu/resource/authority/data-theme>,
             <http://inspire.ec.europa.eu/theme>,
             <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory>,
-            <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
+            <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres>,
+            <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
         sh:order 4 ;
     ] ;
     sh:property [
