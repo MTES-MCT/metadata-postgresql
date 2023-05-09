@@ -7,9 +7,9 @@ from plume.rdf.utils import (
 )
 from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
-    IsoToDcat
+    IsoToDcat, normalize_language, find_values
 )
-from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME
+from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS
 from plume.rdf.rdflib import Literal, URIRef
 
 class IsoMapTestCase(unittest.TestCase):
@@ -43,6 +43,47 @@ class IsoMapTestCase(unittest.TestCase):
             with self.subTest(file=f'{isoxml_name}.xml'):
                 self.assertIsNotNone(isoxml.find('gmd:identificationInfo', ISO_NS))
     
+    def test_find_values(self):
+        """Récupération de valeurs dans un XML."""
+        self.assertListEqual(
+            find_values(
+                self.CSW_GEOIDE_ZAC_75, 
+                './gmd:language/gmd:LanguageCode'
+            ),
+            [
+                'fre'
+            ]
+        )
+        self.assertListEqual(
+            find_values(
+                self.CSW_GEOIDE_ZAC_75, 
+                './gmd:language/gmd:LanguageCode@codeList'
+            ),
+            [
+                'http://www.loc.gov/standards/iso639-2/'
+            ]
+        )
+        self.assertListEqual(
+            find_values(
+                self.CSW_GEOIDE_ZAC_75, 
+                [
+                    './gmd:language/gmd:LanguageCode@codeList',
+                    './gmd:language/gmd:LanguageCode'
+                ]
+            ),
+            [
+                'http://www.loc.gov/standards/iso639-2/',
+                'fre'
+            ]
+        )
+        self.assertListEqual(
+            find_values(
+                self.CSW_GEOIDE_ZAC_75, 
+                './gmd:language/nowhere'
+            ),
+            []
+        )
+
     def test_find_literal_with_list_of_paths(self):
         dataset_id = DatasetId()
 
@@ -388,6 +429,64 @@ class IsoMapTestCase(unittest.TestCase):
             normalize_crs('IGNF:RGAF09UTM20.MART87'),
             'https://registre.ign.fr/ign/IGNF/crs/IGNF/RGAF09UTM20.MART87'
         )
+    
+    def test_normalize_language(self):
+        """Transformation des codes de langues en potentielles URI."""
+
+        self.assertEqual(
+            normalize_language('fre'),
+            'http://publications.europa.eu/resource/authority/language/FRA'
+        )
+
+        self.assertEqual(
+            normalize_language('fra'),
+            'http://publications.europa.eu/resource/authority/language/FRA'
+        )
+
+        self.assertEqual(
+            normalize_language('FRA'),
+            'http://publications.europa.eu/resource/authority/language/FRA'
+        )
+
+        self.assertEqual(
+            normalize_language('fr'),
+            'http://publications.europa.eu/resource/authority/language/FRA'
+        )
+
+        self.assertEqual(
+            normalize_language('FR'),
+            'http://publications.europa.eu/resource/authority/language/FRA'
+        )
+
+        self.assertEqual(
+            normalize_language('eng'),
+            'http://publications.europa.eu/resource/authority/language/ENG'
+        )
+
+        self.assertEqual(
+            normalize_language('ENG'),
+            'http://publications.europa.eu/resource/authority/language/ENG'
+        )
+
+        self.assertEqual(
+            normalize_language('en'),
+            'http://publications.europa.eu/resource/authority/language/ENG'
+        )
+
+        self.assertEqual(
+            normalize_language('EN'),
+            'http://publications.europa.eu/resource/authority/language/ENG'
+        )
+
+        self.assertEqual(
+            normalize_language(None),
+            None
+        )
+
+        self.assertEqual(
+            normalize_language('quelque chose'),
+            None
+        )
 
 class IsoToDcatTestCase(unittest.TestCase):
     
@@ -451,6 +550,183 @@ class IsoToDcatTestCase(unittest.TestCase):
                 self.assertListEqual(
                     sorted(itd.map_epsg),
                     sorted(samples[sample])
+                )
+
+    def test_map_language(self):
+        """Récupération des langues des données dans les fichiers de test."""
+        dataset_id = DatasetId()
+
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                self.assertListEqual(
+                    itd.map_language,
+                    [
+                        (
+                            dataset_id,
+                            DCT.language,
+                            URIRef('http://publications.europa.eu/resource/authority/language/FRA')
+                        )
+                    ]
+                )
+
+    def test_map_representation_type(self):
+        """Récupération du type de représentation dans les fichiers de test."""
+        dataset_id = DatasetId()
+
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                if sample is self.IGN_BDALTI:
+                    value = URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/grid')
+                else:
+                    value = URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector')
+                self.assertListEqual(
+                    itd.map_representation_type,
+                    [
+                        (
+                            dataset_id,
+                            ADMS.representationTechnique,
+                            value
+                        )
+                    ]
+                )
+
+    def test_map_categories(self):
+        """Récupération de la catégorie ISO dans les fichiers de test."""
+        dataset_id = DatasetId()
+
+        values = {
+            self.IGN_BDALTI: [
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/elevation'),
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/environment'),
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/geoscientificInformation'),
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/intelligenceMilitary')
+            ],
+            self.CSW_DATARA_FOND_AB: [
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/climatologyMeteorologyAtmosphere')
+            ],
+            self.CSW_GEOIDE_ZAC_75 : [
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/planningCadastre')
+            ],
+            self.CSW_GEOLITTORAL_SENTIER: [
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/transportation')
+            ]
+        }
+
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                
+                self.assertListEqual(
+                    sorted(itd.map_categories),
+                    [(dataset_id, DCAT.theme, value) for value in sorted(values[sample])]
+                )
+
+    def test_map_title(self):
+        """Récupération du libellé du jeu de données dans les fichiers de test."""
+        dataset_id = DatasetId()
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                self.assertTrue(itd.map_title)
+
+    def test_map_description(self):
+        """Récupération du descriptif du jeu de données dans les fichiers de test."""
+        dataset_id = DatasetId()
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                self.assertTrue(itd.map_description)
+
+    def test_map_bbox(self):
+        """Récupération du rectangle d'emprise du jeu de données dans les fichiers de test."""
+        dataset_id = DatasetId()
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                self.assertTrue(itd.map_bbox)
+
+    def test_metadata_language(self):
+        """Récupération de la langue des métadonnées dans les fichiers de test."""
+        dataset_id = DatasetId()
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+                self.assertEqual(itd.metadata_language, 'fr')
+
+    def test_map_keywords(self):
+        """Récupération des thèmes INSPIRE et mots clés libres dans les fichiers de test."""
+        dataset_id = DatasetId()
+
+        keywords = {
+            self.IGN_BDALTI: [
+                'altitude',
+                'Modèle Numérique de Terrain',
+                'précision altimétrique'
+            ],
+            self.CSW_DATARA_FOND_AB: [
+                'Auvergne-Rhône-Alpes',
+                'AUVERGNE-RHONE-ALPES',
+                'Qualité - Pollution',
+                'Spécification locale',
+                'DREAL Auvergne-Rhône-Alpes',
+                'Grand public'
+            ],
+            self.CSW_GEOIDE_ZAC_75 : [
+                'Aménagement Urbanisme/Zonages Planification',
+                'données ouvertes'
+            ],
+            self.CSW_GEOLITTORAL_SENTIER: [
+                'Tronçon littoral',
+                '/Activités et Usages/Loisirs',
+                '/Données dérivées/Produits composites',
+                '/Métropole',
+                '/Outre-mer/Antilles',
+                '/Outre-mer/Guyane',
+                '/Outre-mer/St-Pierre-et-Miquelon'
+            ]
+        }
+
+        inspire_themes = {
+            self.IGN_BDALTI: [
+                URIRef('http://inspire.ec.europa.eu/theme/el')
+            ],
+            self.CSW_DATARA_FOND_AB: [
+                URIRef('http://inspire.ec.europa.eu/theme/hh')
+            ],
+            self.CSW_GEOIDE_ZAC_75 : [
+                URIRef('http://inspire.ec.europa.eu/theme/lu')
+            ],
+            self.CSW_GEOLITTORAL_SENTIER: [
+                URIRef('http://inspire.ec.europa.eu/theme/tn')
+            ]
+        }
+
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                itd = IsoToDcat(sample, datasetid=dataset_id)
+
+                self.assertListEqual(
+                    sorted(itd.map_keywords),
+                    sorted(
+                        [
+                            (dataset_id, DCAT.theme, value)
+                            for value in inspire_themes[sample]
+                        ] +
+                        [
+                            (dataset_id, DCAT.keyword, Literal(value, lang='fr'))
+                            for value in sorted(keywords[sample])
+                        ]
+                    )
                 )
 
 if __name__ == '__main__':
