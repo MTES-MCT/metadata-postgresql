@@ -1,0 +1,30 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialScope/national> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
+    skos:prefLabel "National"@en,
+        "National"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialScope/regional> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
+    skos:prefLabel "Regional"@en,
+        "Régional"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialScope/local> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
+    skos:prefLabel "Local"@en,
+        "Local"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialScope/global> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
+    skos:prefLabel "Global"@en,
+        "Mondial"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialScope/european> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
+    skos:prefLabel "European"@en,
+        "Européen"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> a skos:ConceptScheme ;
+    skos:prefLabel "Spatial scope (INSPIRE)"@en,
+        "Champ géographique (INSPIRE)"@fr .
