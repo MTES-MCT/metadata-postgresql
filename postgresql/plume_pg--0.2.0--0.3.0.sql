@@ -69,7 +69,8 @@
 
 UPDATE z_plume.meta_shared_categorie
     SET sources = sources || ARRAY[
-        'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres'
+        'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres',
+        'http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'
     ]
     WHERE sources IS NOT NULL AND path = 'dcat:theme' ;
 
