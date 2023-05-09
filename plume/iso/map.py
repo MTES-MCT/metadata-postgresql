@@ -8,10 +8,12 @@ import xml.etree.ElementTree as etree
 
 from plume.rdf.utils import (
     DatasetId, abspath, forbidden_char,
-    owlthing_from_email, owlthing_from_tel, CRS_NS
+    owlthing_from_email, owlthing_from_tel, CRS_NS,
+    FRA_URI
 )
 from plume.rdf.namespaces import (
-    DCAT, DCT, FOAF, RDF, RDFS, VCARD, XSD, GEODCAT, PLUME
+    DCAT, DCT, FOAF, RDF, RDFS, VCARD, XSD, GEODCAT, PLUME,
+    ADMS, GSP
 )
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
@@ -43,7 +45,6 @@ SUB_NS = {
 Les clés sont les espaces de nommage à remplacer par leurs valeurs.
 
 """
-
 
 class IsoToDcat:
     """Transcripteur ISO 19139 / GeoDCAT-AP.
@@ -173,6 +174,63 @@ class IsoToDcat:
             self.datasetid, DCT.description, language=self.language)
 
     @property
+    def map_language(self):
+        """list of tuples: Triples contenant la ou les langues des données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        return find_iri(
+            self.isoxml,
+            [
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:language/gmd:LanguageCode@codeListValue',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:language/gmd:LanguageCode',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:language/gco:CharacterString'
+            ],
+            self.datasetid,
+            DCT.language,
+            transform=normalize_language,
+            multi=True,
+            thesaurus= (
+                URIRef('http://publications.europa.eu/resource/authority/language'),
+                (self.language,)
+            )
+        )
+    
+    @property
+    def map_representation_type(self):
+        """list of tuples: Triples contenant le mode de représentation géographique.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        return find_iri(
+            self.isoxml,
+            [
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:spatialRepresentationType/'
+                'gmd:MD_SpatialRepresentationTypeCode@codeListValue',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:spatialRepresentationType/gco:CharacterString'
+            ],
+            self.datasetid,
+            ADMS.representationTechnique,
+            thesaurus= (
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType'),
+                (self.language,)
+            )
+        )
+
+    @property
     def map_epsg(self):
         """list of tuples: Triples contenant le ou les référentiels de coordonnées du jeu de données.
         
@@ -245,29 +303,115 @@ class IsoToDcat:
         
         """
         l = []
+
+        vocabularies_ref = {
+            URIRef('http://inspire.ec.europa.eu/theme'): ['INSPIRE themes'],
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'): ['INSPIRE Spatial Scope']
+        }
+
         for elem in self.isoxml.findall('./gmd:identificationInfo/'
-            'gmd:MD_DataIdentification/gmd:descriptiveKeywords',
+            'gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords',
             namespaces=ISO_NS):
-            t = elem.findtext('./gmd:MD_Keywords/gmd:thesaurusName/'
-                'gmd:CI_Citation/gmd:title/gco:CharacterString',
-                namespaces=ISO_NS)
-            for subelem in elem.findall('./gmd:MD_Keywords/gmd:keyword',
+            raw_vocabulary = find_value(
+                elem,
+                [
+                    './gmd:thesaurusName/gmd:CI_Citation/'
+                    'gmd:title/gmx:Anchor@xlink:href',
+                    './gmd:thesaurusName/gmd:CI_Citation/'
+                    'gmd:title/gmx:Anchor',
+                    './gmd:thesaurusName/gmd:CI_Citation/'
+                    'gmd:title/gco:CharacterString'
+                ]
+            )
+            thesaurus = None
+            if raw_vocabulary:
+                for vocabulary in vocabularies_ref:
+                    if (
+                        raw_vocabulary == str(vocabulary) 
+                        or any(x in raw_vocabulary for x in vocabularies_ref[vocabulary])
+                    ):
+                        thesaurus = (vocabulary, (self.language,))
+                        break
+
+            for subelem in elem.findall('.gmd:keyword',
                 namespaces=ISO_NS):
+                if thesaurus:
+                    triples = find_iri(
+                        subelem,
+                        [
+                            './gmx:Anchor@xlink:href',
+                            './gmx:Anchor',
+                            './gco:CharacterString'
+                        ],
+                        self.datasetid,
+                        DCAT.theme,
+                        thesaurus=thesaurus
+                    )
+                    if triples:
+                        l += triples
+                        continue
                 keyword = subelem.findtext('./gco:CharacterString',
                     namespaces=ISO_NS)
-                if t and 'INSPIRE themes' in t:
-                    keyword_iri = Thesaurus.concept_iri((
-                        URIRef('http://inspire.ec.europa.eu/theme'),
-                        (self.language,)), keyword)
-                    if keyword_iri:
-                        l.append((self.datasetid, DCAT.theme, keyword_iri))
-                        continue
                 for k in keyword.split(','):
                     k = k.strip()
                     if k:
                         l.append((self.datasetid, DCAT.keyword,
                             Literal(k, lang=self.language)))
         return l
+
+    @property
+    def map_bbox(self):
+        """list of tuples: Triples contenant l'emprise géographique.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        west = find_value(
+            self.isoxml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:extent/gmd:EX_Extent/'
+            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
+            'gmd:westBoundLongitude/gco:Decimal'
+        )
+        east = find_value(
+            self.isoxml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:extent/gmd:EX_Extent/'
+            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
+            'gmd:eastBoundLongitude/gco:Decimal'
+        )
+        south=find_value(
+            self.isoxml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:extent/gmd:EX_Extent/'
+            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
+            'gmd:southBoundLatitude/gco:Decimal'
+        )
+        north=find_value(
+            self.isoxml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:extent/gmd:EX_Extent/'
+            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
+            'gmd:northBoundLatitude/gco:Decimal'
+        )
+        if any(c is None for c in (west, east, south, north)):
+            return []
+        bbox = (
+            'POLYGON(('
+            f'{west} {north},'
+            f'{west} {south},'
+            f'{east} {south},'
+            f'{east} {north},'
+            f'{west} {north}))'
+        )
+        node = BNode()
+        return [
+            (self.datasetid, DCT.spatial, node),
+            (node, DCT.type, DCT.Location),
+            (node, DCAT.bbox, Literal(bbox, datatype=GSP.wktLiteral))
+        ]
 
     @property
     def map_categories(self):
@@ -278,25 +422,25 @@ class IsoToDcat:
         une liste vide est renvoyée.
         
         """
-        l = []
-        for elem in self.isoxml.findall('./gmd:identificationInfo/'
-            'gmd:MD_DataIdentification/gmd:topicCategory',
-            namespaces=ISO_NS):
-            code = elem.findtext('./gmd:MD_TopicCategoryCode',
-                namespaces=ISO_NS)
-            if not code:
-                continue
-            iri = URIRef('http://inspire.ec.europa.eu/metadata-codelist/'
-                'TopicCategory/{}'.format(code))
-            label = Thesaurus.concept_str((URIRef('http://inspire.ec.'
-                'europa.eu/metadata-codelist/TopicCategory'),
-                (self.language,)), iri)
-            if not label:
-                # on ne conserve que les codes qui existent dans le
-                # thésaurus
-                continue
-            l.append((self.datasetid, DCAT.theme, iri))
-        return l
+        return find_iri(
+            self.isoxml,
+            [
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:topicCategory/'
+                'gmd:MD_TopicCategoryCode@codeListValue',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:topicCategory/gmd:MD_TopicCategoryCode',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:topicCategory/gco:CharacterString'
+            ],
+            self.datasetid,
+            DCAT.theme,
+            multi=True,
+            thesaurus=(
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory'),
+                (self.language,)
+            )
+        )
 
     @property
     def map_provenance(self):
@@ -394,6 +538,94 @@ class IsoToDcat:
                     triples.append((node, RDF.type, FOAF.Agent))
                     l += triples
         return l
+
+def find_values(
+    elem, path, multi=True
+):
+    """Extrait des valeurs d'un XML.
+    
+    Parameters
+    ----------
+    elem : xml.etree.ElementTree.Element
+        Un élément XML présumé contenir l'information
+        recherchée.
+    path : str or list(str)
+        Le chemin de l'information recherchée dans le XML.
+        Il est possible de fournir une liste de chemins, auquel
+        cas la fonction s'appliquera successivement à tous les
+        chemins listés. XPath n'est pas pris en charge, mais il est
+        possible de viser la valeur d'un attribut en ajoutant son
+        nom précédé de ``'@'`` à la fin du chemin.
+    multi : bool, default True
+        La propriété admet-elle plusieurs valeurs ? Si ``False``,
+        la fonction s'arrête dès qu'une valeur a été trouvée,
+        même si le XML en contenait plusieurs.
+    
+    Returns
+    -------
+    list
+        Une liste de valeurs, ou une liste vide si le chemin cherché
+        n'était pas présent dans le XML.
+    
+    """
+    l = []
+    if not path:
+        return l
+    
+    if isinstance(path, list):
+        epath = path[0]
+    else:
+        epath = path
+    
+    if '@' in epath:
+        epath, attr = epath.split('@', 1)
+    else:
+        attr = None
+
+    for sub in elem.findall(epath, namespaces=ISO_NS):
+        value = sub.get(attr) if attr else sub.text
+        if not value in (None, ''):
+            l.append(value)
+        if not multi:
+            break
+    
+    if isinstance(path, list) and len(path) > 1 and (multi or not l):
+        values = find_values(
+            elem, path[1:], multi=multi
+        )
+        for value in values:
+            if not value in l:
+                l.append(value)
+
+    return l
+
+def find_value(
+    elem, path
+):
+    """Extrait une valeur d'un XML.
+    
+    Parameters
+    ----------
+    elem : xml.etree.ElementTree.Element
+        Un élément XML présumé contenir l'information
+        recherchée.
+    path : str or list(str)
+        Le chemin de l'information recherchée dans le XML.
+        Il est possible de fournir une liste de chemins, auquel
+        cas la fonction s'appliquera successivement à tous les
+        chemins listés. XPath n'est pas pris en charge, mais il est
+        possible de viser la valeur d'un attribut en ajoutant son
+        nom précédé de ``'@'`` à la fin du chemin.
+    
+    Returns
+    -------
+    str or None
+        La valeur si elle existe.
+    
+    """
+    values = find_values(elem=elem, path=path, multi=False)
+    if values:
+        return values[0]
 
 def find_literal(
     elem, path, subject, predicate, multi=False, datatype=None, language=None
@@ -562,11 +794,26 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
                 continue
         if l_thesaurus:
             for s_thesaurus in l_thesaurus:
+
+                # est-ce un IRI ?
                 if not forbidden_char(value):
-                    # est-ce un IRI ?
                     value_str = Thesaurus.concept_str(s_thesaurus, URIRef(value))
                     if value_str:
                         break
+                
+                # est-ce la partie identifiante d'un IRI ?
+                if (
+                    not any(c in value for c in ('/', '#', ':'))
+                    and not forbidden_char(value)
+                ):
+                    value_iri = URIRef(
+                        '{}/{}'.format(str(s_thesaurus[0].rstrip('/')), value)
+                    )
+                    value_str = Thesaurus.concept_str(s_thesaurus, value_iri)
+                    if value_str:
+                        value = value_iri
+                        break
+                
                 # est-ce une étiquette ?
                 value_iri = Thesaurus.concept_iri(s_thesaurus, value)
                 if value_iri:
@@ -684,3 +931,55 @@ def normalize_crs(crs_str):
         if r:
             return ns + r[1]
     return crs_str
+
+def normalize_language(language_str):
+    """Transforme un code de langue en URI.
+    
+    Pour l'heure, le traitement est très basique :
+
+    * Si le code est ``'fr'``, ``'fre'`` ou ``'fra'``, la fonction
+      renvoie l'URI correspondant au français dans le vocabulaire
+      de la commission européenne.
+    * Sinon, elle juxtapose le code à l'espace de nommage du
+      vocabulaire des langues de la commission européenne.
+    
+    La fonction produit des chaînes de caractères dont :py:func:`find_iri` se 
+    chargera de faire des URI. C'est également elle qui devra vérifier que les 
+    URI résultants sont effectivement référencés dans les vocabulaires de Plume,
+    la présente fonction ne réalise aucun contrôle.
+
+    Parameters
+    ----------
+    language_str : str
+        Chaîne de caractères présumée contenir un code de référentiel
+        de coordonnées.
+
+    Returns
+    -------
+    str or None
+        ``None`` lorsque l'argument de la fonction n'était pas un code
+        sur trois caractères ou un code sur deux caractères pouvant
+        être retranscrit sur trois caractères.
+    
+    """
+    if not language_str:
+        return
+    if language_str.lower() in ('fra', 'fre', 'fr'):
+        return str(FRA_URI)
+    if not re.match('^[a-zA-Z]{3}$', language_str):
+        if re.match('^[a-zA-Z]{2}$', language_str):
+            if not IsoToDcat.ISO639_LANGUAGE_CODES:
+                IsoToDcat.load_language_codes()
+            for alpha3, alpha2 in IsoToDcat.ISO639_LANGUAGE_CODES.items():
+                if alpha2.lower() == language_str.lower():
+                    language_str = alpha3
+                    break
+            else:
+                return
+        else:
+            return
+    return (
+        'http://publications.europa.eu/resource/authority/language/'
+        + language_str.upper()
+    )
+
