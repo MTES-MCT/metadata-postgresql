@@ -70,6 +70,11 @@ par la clé ``extension``.
 
 """
 
+FRA_URI = URIRef('http://publications.europa.eu/resource/authority/language/FRA')
+"""URI de référence pour représenter la langue française.
+
+"""
+
 class DatasetId(URIRef):
     """Identifiant de jeu de données.
     
