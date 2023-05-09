@@ -48,7 +48,8 @@ VOCABULARIES = {
     PLUME.SpdxLicense: 'spdx_license.ttl',
     PLUME.OgcEpsgFrance: 'ogc_epsg_france.ttl',
     PLUME.IgnCrs: 'ign_crs.ttl',
-    PLUME.IanaMediaType: 'iana_media_type.ttl'
+    PLUME.IanaMediaType: 'iana_media_type.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'): 'inspire_spatial_scope.ttl'
 }
 """Déclaration des vocabulaires de Plume.
 
