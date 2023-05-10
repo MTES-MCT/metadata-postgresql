@@ -13,7 +13,10 @@ from locale import strxfrm, setlocale, LC_COLLATE
 from plume.rdf.rdflib import Graph, URIRef
 from plume.rdf.exceptions import UnknownSource
 from plume.rdf.namespaces import FOAF, SKOS, PLUME, PlumeNamespaceManager
-from plume.rdf.utils import abspath, pick_translation, graph_from_file, MetaCollection
+from plume.rdf.utils import (
+    abspath, pick_translation, graph_from_file, MetaCollection,
+    almost_included
+)
 
 VOCABULARIES = {
     PLUME.ISO19139ProgressCode: 'iso_19139_progress_code.ttl',
@@ -49,7 +52,8 @@ VOCABULARIES = {
     PLUME.OgcEpsgFrance: 'ogc_epsg_france.ttl',
     PLUME.IgnCrs: 'ign_crs.ttl',
     PLUME.IanaMediaType: 'iana_media_type.ttl',
-    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'): 'inspire_spatial_scope.ttl'
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'): 'inspire_spatial_scope.ttl',
+    PLUME.ISO3166CodesCollection : 'iso_3166_codes_collection.ttl'
 }
 """Déclaration des vocabulaires de Plume.
 
@@ -378,6 +382,47 @@ class Thesaurus(metaclass=MetaCollection):
             if source := vocabulary.value(concept_iri, SKOS.inScheme):
                 return source
     
+    @classmethod
+    def look_up_label(cls, thesaurus, label, comparator=almost_included):
+        """Cherche un IRI par comparaison approchée de son label.
+
+        Parameters
+        ----------
+        thesaurus : tuple(rdflib.term.URIRef, tuple(str))
+            Source. Tuple dont le premier élément est l'IRI de la source,
+            le second un tuple de langues pour lequel le thésaurus doit
+            être généré. Lorsque plusieurs traductions sont disponibles,
+            les langues qui apparaissent en premier dans le tuple
+            seront privilégiées.
+        label : str
+            Chaîne de caractère à rapproche d'un libellé du thésaurus.
+        comparator : function, optional
+            Fonction à utiliser pour la comparaison. Elle doit prendre
+            exactement deux arguments, le label recherché et un label
+            de référence dont on veut tester la correspondance, et
+            renvoyer un booléen. Par défaut, la fonction utilisée est
+            :py:func:``plume.rdf.utils.almost_included`` qui se base 
+            sur l'inclusion approchée du label recherché dans le label
+            de référence, en ignorant la casse et les caractères spéciaux.
+        
+        Returns
+        -------
+        rdflib.term.URIRef
+            L'IRI du concept. Peut être ``None``, si le thésaurus existe
+            mais que la chaîne de caractères n'y est pas répertoriée.
+        
+        Raises
+        ------
+        UnknownSource
+            Si le thésaurus non seulement n'avait pas déjà été compilé,
+            mais n'est pas répertorié dans :py:data:`VOCABULARIES`.
+
+        """
+        thesaurus_labels = cls.get_values(thesaurus)
+        for thesaurus_label in thesaurus_labels:
+            if comparator(label, thesaurus_label):
+                return cls.concept_iri(thesaurus, thesaurus_label)
+
     def __init__(self, iri, langlist):
         self.iri = iri
         self.langlist = langlist
