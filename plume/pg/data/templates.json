@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-05 à 14:43:40."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-10 à 18:42:05."
         ]
     },
     "Classique": {
@@ -423,7 +423,8 @@
                     "http://publications.europa.eu/resource/authority/data-theme",
                     "http://inspire.ec.europa.eu/theme",
                     "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory",
-                    "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres"
+                    "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres",
+                    "http://inspire.ec.europa.eu/metadata-codelist/SpatialScope"
                 ],
                 null,
                 null,
@@ -856,7 +857,8 @@
                 false,
                 false,
                 [
-                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection"
                 ],
                 null,
                 null,
@@ -1056,7 +1058,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-05 à 14:43:40."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-10 à 18:42:05."
         ]
     },
     "Donnée externe": {
@@ -1406,7 +1408,8 @@
                     "http://publications.europa.eu/resource/authority/data-theme",
                     "http://inspire.ec.europa.eu/theme",
                     "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory",
-                    "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres"
+                    "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres",
+                    "http://inspire.ec.europa.eu/metadata-codelist/SpatialScope"
                 ],
                 null,
                 null,
@@ -1695,7 +1698,8 @@
                 false,
                 false,
                 [
-                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection"
                 ],
                 null,
                 null,
@@ -1899,7 +1903,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-05 à 14:43:40."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-10 à 18:42:05."
         ]
     }
 }
