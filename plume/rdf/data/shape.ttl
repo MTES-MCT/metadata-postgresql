@@ -884,7 +884,8 @@ plume:LocationShape
         sh:class skos:ConceptScheme ;
         sh:maxCount 1 ;
         sh:order 0 ;
-        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex> ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection> ;
     ] ;
     sh:property [
         sh:path dct:identifier ;
