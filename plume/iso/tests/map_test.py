@@ -644,14 +644,14 @@ class IsoToDcatTestCase(unittest.TestCase):
                 itd = IsoToDcat(sample, datasetid=dataset_id)
                 self.assertTrue(itd.map_description)
 
-    def test_map_bbox(self):
+    def test_map_location(self):
         """Récupération du rectangle d'emprise du jeu de données dans les fichiers de test."""
         dataset_id = DatasetId()
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
                 itd = IsoToDcat(sample, datasetid=dataset_id)
-                self.assertTrue(itd.map_bbox)
+                self.assertTrue(itd.map_location)
 
     def test_metadata_language(self):
         """Récupération de la langue des métadonnées dans les fichiers de test."""
