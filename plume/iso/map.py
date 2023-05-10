@@ -9,11 +9,11 @@ import xml.etree.ElementTree as etree
 from plume.rdf.utils import (
     DatasetId, abspath, forbidden_char,
     owlthing_from_email, owlthing_from_tel, CRS_NS,
-    FRA_URI
+    FRA_URI, all_words_included
 )
 from plume.rdf.namespaces import (
     DCAT, DCT, FOAF, RDF, RDFS, VCARD, XSD, GEODCAT, PLUME,
-    ADMS, GSP
+    ADMS, GSP, SKOS
 )
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
@@ -360,7 +360,7 @@ class IsoToDcat:
         return l
 
     @property
-    def map_bbox(self):
+    def map_location(self):
         """list of tuples: Triples contenant l'emprise géographique.
         
         Cette propriété est recalculée à chaque interrogation à partir
@@ -368,50 +368,110 @@ class IsoToDcat:
         une liste vide est renvoyée.
         
         """
-        west = find_value(
-            self.isoxml,
+        l = []
+        for elem in self.isoxml.findall(
             './gmd:identificationInfo/gmd:MD_DataIdentification/'
-            'gmd:extent/gmd:EX_Extent/'
-            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
-            'gmd:westBoundLongitude/gco:Decimal'
-        )
-        east = find_value(
-            self.isoxml,
-            './gmd:identificationInfo/gmd:MD_DataIdentification/'
-            'gmd:extent/gmd:EX_Extent/'
-            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
-            'gmd:eastBoundLongitude/gco:Decimal'
-        )
-        south=find_value(
-            self.isoxml,
-            './gmd:identificationInfo/gmd:MD_DataIdentification/'
-            'gmd:extent/gmd:EX_Extent/'
-            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
-            'gmd:southBoundLatitude/gco:Decimal'
-        )
-        north=find_value(
-            self.isoxml,
-            './gmd:identificationInfo/gmd:MD_DataIdentification/'
-            'gmd:extent/gmd:EX_Extent/'
-            'gmd:geographicElement/gmd:EX_GeographicBoundingBox/'
-            'gmd:northBoundLatitude/gco:Decimal'
-        )
-        if any(c is None for c in (west, east, south, north)):
-            return []
-        bbox = (
-            'POLYGON(('
-            f'{west} {north},'
-            f'{west} {south},'
-            f'{east} {south},'
-            f'{east} {north},'
-            f'{west} {north}))'
-        )
-        node = BNode()
-        return [
-            (self.datasetid, DCT.spatial, node),
-            (node, DCT.type, DCT.Location),
-            (node, DCAT.bbox, Literal(bbox, datatype=GSP.wktLiteral))
-        ]
+            'gmd:extent/gmd:EX_Extent',
+            namespaces=ISO_NS
+        ):
+
+            geo_label = find_value(
+                elem, './gmd:description/gco:CharacterString'
+            )
+            num_id = 0
+            num_geo = 0
+            first_node = BNode()
+
+            for id_elem in elem.findall(
+                './gmd:geographicElement/gmd:EX_GeographicDescription/'
+                'gmd:geographicIdentifier/gmd:MD_Identifier',
+                namespaces=ISO_NS
+            ):
+                geo_iris = find_iri(
+                    id_elem,
+                    './gmd:code/gco:CharacterString',
+                    self.datasetid,
+                    DCT.spatial,
+                    thesaurus=[
+                        (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance'), (self.language,)),
+                        (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory'), (self.language,)),
+                        (URIRef('http://publications.europa.eu/resource/authority/atu'), (self.language,))
+                    ]
+                )
+                if geo_iris:
+                    l += geo_iris
+                    geo_label = None
+                    continue
+
+                node = first_node if num_id == 0 else BNode()
+                code = find_literal(id_elem, './gmd:code/gco:CharacterString', node, DCT.identifier, datatype=XSD.string)
+                if code:
+                    scheme = find_iri(
+                        id_elem,
+                        './gmd:authority/gmd:CI_Citation/gmd:title/gco:CharacterString',
+                        node,
+                        SKOS.inScheme,
+                        thesaurus=[
+                            (PLUME.ISO3166CodesCollection, (self.language,)),
+                            (PLUME.InseeGeoIndex, (self.language,))
+                        ],
+                        comparator=all_words_included
+                    )
+                    if code and scheme:
+                        l.append((self.datasetid, DCT.spatial, node))
+                        l += code + scheme
+                        num_id += 1
+
+            for geo_elem in elem.findall(
+                './gmd:geographicElement/gmd:EX_GeographicBoundingBox',
+                namespaces=ISO_NS
+            ):
+                west = find_value(
+                    geo_elem,
+                    './gmd:westBoundLongitude/gco:Decimal'
+                )
+                east = find_value(
+                    geo_elem,
+                    './gmd:eastBoundLongitude/gco:Decimal'
+                )
+                south=find_value(
+                    geo_elem,
+                    './gmd:southBoundLatitude/gco:Decimal'
+                )
+                north=find_value(
+                    geo_elem,
+                    './gmd:northBoundLatitude/gco:Decimal'
+                )
+                if any(c is None for c in (west, east, south, north)):
+                    continue
+                bbox = (
+                    'POLYGON(('
+                    f'{west} {north},'
+                    f'{west} {south},'
+                    f'{east} {south},'
+                    f'{east} {north},'
+                    f'{west} {north}))'
+                )
+                node = first_node if num_geo == 0 else BNode()
+                l += [
+                    (node, DCT.type, DCT.Location),
+                    (node, DCAT.bbox, Literal(bbox, datatype=GSP.wktLiteral))
+                ]
+                if num_id == 0 or num_geo > 0:
+                    l.append((self.datasetid, DCT.spatial, node))
+                num_geo += 1
+
+            if geo_label:
+                if num_id + num_geo == 0:
+                    l.append((self.datasetid, DCT.spatial, first_node))
+                if num_id > 1 or num_geo > 1:
+                    node = BNode()
+                else:
+                    node = first_node
+                l.append(
+                    (node, SKOS.prefLabel, Literal(geo_label, lang=self.language))
+                )
+        return l
 
     @property
     def map_categories(self):
@@ -711,7 +771,10 @@ def find_literal(
 
     return l
 
-def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesaurus=None):
+def find_iri(
+    elem, path, subject, predicate, multi=False, transform=None, thesaurus=None,
+    comparator=None
+):
     """Extrait des IRI d'un XML et les renvoie sous forme de triples.
     
     Parameters
@@ -750,6 +813,10 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
         en tant qu'étiquette.
         Il est possible de fournir une liste de thésaurus. Dans ce cas,
         la fonction les parcourt tous jusqu'à trouver une correspondance.
+    comparator : function, optional
+        Pour autoriser des correspondances approximatives sur les libellés,
+        ce paramètre doit indiquer la fonction à utiliser.
+        Cf. :py:meth:`Thesaurus.look_up_label` pour plus de précisions.
     
     Returns
     -------
@@ -819,6 +886,15 @@ def find_iri(elem, path, subject, predicate, multi=False, transform=None, thesau
                 if value_iri:
                     value = value_iri
                     break
+
+                # est-ce une étiquette (comparaison approchée) ?
+                if comparator:
+                    value_iri = Thesaurus.look_up_label(
+                        s_thesaurus, value, comparator=comparator
+                    )
+                    if value_iri:
+                        value = value_iri
+                        break
             else:
                 # non référencé
                 continue
