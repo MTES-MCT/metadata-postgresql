@@ -2,8 +2,7 @@
 @prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-<http://www.opengis.net/def/crs/EPSG/0> a skos:Concept,
-        skos:ConceptScheme ;
+<http://www.opengis.net/def/crs/EPSG/0> a skos:Concept ;
     dct:identifier "OGC-EPSG" ;
     skos:inScheme plume:StandardsRegister ;
     skos:prefLabel "EPSG Coordinate reference system (OGC)"@en,
