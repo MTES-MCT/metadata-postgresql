@@ -4,39 +4,27 @@
 
 <http://id.insee.fr/geo/arrondissement> a skos:Concept ;
     skos:inScheme plume:InseeGeoIndex ;
-    skos:prefLabel "French arrondissement"@en,
-        "Arrondissement"@fr ;
+    skos:prefLabel "French arrondissement code (INSEE)"@en,
+        "Code d'arrondissement (INSEE)"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Arrondissement_français> .
 
 <http://id.insee.fr/geo/commune> a skos:Concept ;
     skos:inScheme plume:InseeGeoIndex ;
-    skos:prefLabel "French commune"@en,
-        "Commune ou arrondissement urbain (code INSEE)"@fr ;
+    skos:prefLabel "French commune code (INSEE)"@en,
+        "Code de commune ou arrondissement urbain (INSEE)"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Commune_(France)> .
 
 <http://id.insee.fr/geo/departement> a skos:Concept ;
     skos:inScheme plume:InseeGeoIndex ;
-    skos:prefLabel "French departement"@en,
-        "Département"@fr ;
+    skos:prefLabel "French departement code (INSEE)"@en,
+        "Code de département (INSEE)"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Département_français> .
-
-<http://id.insee.fr/geo/pays/france> a skos:Concept ;
-    skos:inScheme plume:InseeGeoIndex ;
-    skos:prefLabel "France"@en,
-        "France"@fr ;
-    foaf:page <https://fr.wikipedia.org/wiki/France> .
 
 <http://id.insee.fr/geo/region> a skos:Concept ;
     skos:inScheme plume:InseeGeoIndex ;
-    skos:prefLabel "French region"@en,
-        "Région"@fr ;
+    skos:prefLabel "French region code (INSEE)"@en,
+        "Code de région (INSEE)"@fr ;
     foaf:page <https://fr.wikipedia.org/wiki/Région_française> .
-
-<http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
-    skos:inScheme plume:InseeGeoIndex ;
-    skos:prefLabel "Mainland France"@en,
-        "France métropolitaine"@fr ;
-    foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine> .
 
 plume:InseeGeoIndex a skos:ConceptScheme ;
     skos:prefLabel "INSEE Gazetteer"@en,
