@@ -9,7 +9,7 @@ from plume.rdf.utils import (
     str_from_datetime, str_from_date, str_from_time, datetime_from_str, 
     date_from_str, time_from_str, str_from_decimal, decimal_from_str, 
     main_datatype, export_format_from_extension, export_formats, no_logging,
-    MetaCollection
+    MetaCollection, almost_included, all_words_included
 )
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
@@ -493,6 +493,26 @@ class UtilsTestCase(unittest.TestCase):
             ('1 mois')
             )
         self.assertEqual(str_from_duration(Literal('P2Y')), None)
+
+    def test_almost_included(self):
+        """Contrôle d'inclusion approximatif (tous les mots dans l'ordre)."""
+        self.assertTrue(almost_included('abc', 'abcde'))
+        self.assertTrue(almost_included('bc', 'abcde'))
+        self.assertTrue(almost_included('de', 'abcde'))
+        self.assertTrue(almost_included('a-b-c', 'a##b--c d?§efg'))
+        self.assertTrue(almost_included('A-b-c', 'a##b--c d?§efg'))
+        self.assertTrue(almost_included('a-b-c', 'a##B--C d?§efg'))
+        self.assertTrue(almost_included('!!!a-b-c?????', 'a##B--C d?§efg'))
+        self.assertFalse(almost_included('abc', 'wwwww'))
+        self.assertFalse(almost_included('a b c', 'abcde'))
+        self.assertFalse(almost_included('', 'abcde'))
+        self.assertFalse(almost_included(None, 'abcde'))
+        self.assertFalse(almost_included('....', 'abcde'))
+
+    def test_all_words_included(self):
+        """Contrôle d'inclusion approximatif (tous les mots dans le désordre)."""
+        self.assertTrue(all_words_included('!!!ax-bxb-cxcc?????', 'bxb-a##B--C d?§efg-AX ; cXcc'))
+        self.assertFalse(all_words_included('!!!ax-bxb-cxcc?????', 'a##B--C d?§efg-AX ; cXcc'))
 
 if __name__ == '__main__':
     unittest.main()
