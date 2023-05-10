@@ -5,7 +5,7 @@
 import unittest
 
 from plume.rdf.rdflib import URIRef
-from plume.rdf.utils import abspath
+from plume.rdf.utils import abspath, all_words_included
 from plume.rdf.metagraph import SHAPE
 from plume.rdf.namespaces import PLUME, RDF, SKOS
 from plume.rdf.thesaurus import VOCABULARIES, VocabularyGraph, Thesaurus
@@ -157,6 +157,18 @@ class ThesaurusTestCase(unittest.TestCase):
             label,
             'Communicable au seul intéressé - atteinte à la protection de la vie privée (CRPA, L311-6 1°)'
         )
+
+        label = Thesaurus.concept_str(
+            (
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection'),
+                ('fr',)
+            ),
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha3')
+        )
+        self.assertEqual(
+            label,
+            'Code de pays sur trois caractères (ISO 3166-1 alpha-3)'
+        )      
     
     def test_concept_link(self):
         """Récupération de l'URL associée à un terme de vocabulaire."""
@@ -186,6 +198,43 @@ class ThesaurusTestCase(unittest.TestCase):
             scheme_iri,
             URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations')
         )
+
+    def test_look_up_label(self):
+        """Recherche approché d'un IRI par son label."""
+        iri = Thesaurus.look_up_label(
+            (
+                PLUME.ISO3166CodesCollection,
+                ('fr', 'en')
+            ),
+            'ISO 3166-1 alpha 3'
+        )
+        self.assertEqual(
+            iri,
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha3')
+        )
+
+        iri = Thesaurus.look_up_label(
+            (
+                PLUME.ISO3166CodesCollection,
+                ('fr', 'en')
+            ),
+            'ISO 3166 alpha 3',
+            comparator=all_words_included
+        )
+        self.assertEqual(
+            iri,
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha3')
+        )
+
+        iri = Thesaurus.look_up_label(
+            (
+                PLUME.ISO3166CodesCollection,
+                ('fr', 'en')
+            ),
+            'ISO 3166 alpha 8',
+            comparator=all_words_included
+        )
+        self.assertIsNone(iri)
 
 if __name__ == '__main__':
     unittest.main()
