@@ -1,0 +1,34 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha2> a skos:Concept ;
+    skos:inScheme plume:ISO3166CodesCollection ;
+    skos:prefLabel "Two-letter country code (ISO 3166-1 alpha-2)"@en,
+        "Code de pays sur deux caractères (ISO 3166-1 alpha-2)"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha3> a skos:Concept ;
+    skos:inScheme plume:ISO3166CodesCollection ;
+    skos:prefLabel "Three-letter country code (ISO 3166-1 alpha-3)"@en,
+        "Code de pays sur trois caractères (ISO 3166-1 alpha-3)"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeNumeric3> a skos:Concept ;
+    skos:inScheme plume:ISO3166CodesCollection ;
+    skos:prefLabel "Three-digit numeric country code (ISO 3166-1 numeric-3)"@en,
+        "Code de pays à trois chiffres (ISO 3166-1 numeric-3)"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha4> a skos:Concept ;
+    skos:inScheme plume:ISO3166CodesCollection ;
+    skos:prefLabel "Code representing a country name no longer in use (ISO 3166-3 alpha-4)"@en,
+        "Code pour un nom de pays qui n'est plus utilisé (ISO 3166-3 alpha-4)"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/SubdivisionCode> a skos:Concept ;
+    skos:inScheme plume:ISO3166CodesCollection ;
+    skos:prefLabel "Subdivision code (ISO 3166-2)"@en,
+        "Code de subdivision (ISO 3166-2)"@fr .
+
+plume:ISO3166CodesCollection a skos:ConceptScheme ;
+    skos:prefLabel "Geographic codes collection (ISO 3166)"@en,
+        "Série de codes géographiques (ISO 3166)"@fr ;
+    foaf:page <https://www.iso.org/iso-3166-country-codes.html> .
+
