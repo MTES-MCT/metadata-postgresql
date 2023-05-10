@@ -1356,6 +1356,68 @@ def export_format_from_extension(extension, default_format=None):
                 rdf_format = k
     return rdf_format
 
+def almost_included(included, including):
+    """Détermine si une chaîne de caractères est incluse dans une autre, en ignorant les caractères non alpha-numériques et la casse.
+
+    La fonction renvoie toujours ``'False'`` si l'un
+    des arguments est une chaîne de caractères vides
+    ou ``'None'``, ou ne contient aucun caractère
+    alpha-numérique.
+
+    Parameters
+    ----------
+    included : str
+        La chaîne de caractères dont on veut
+        tester l'inclusion.
+    including : str
+        La chaîne de caractères dans laquelle
+        on veut tester l'inclusion.
+    
+    Returns
+    -------
+    bool
+
+    """
+    if not included or not including:
+        return False
+    included = re.sub(r'[^\w]+', '-', included).strip('-')
+    including = re.sub(r'[^\w]+', '-', including).strip('-')
+    if not included or not including:
+        return False
+    return included.lower() in including.lower()
+
+def all_words_included(included, including):
+    """Détermine si tous les mots d'une chaîne de caractères sont inclus dans un autre.
+    
+    La fonction renvoie toujours ``'False'`` si l'un
+    des arguments est une chaîne de caractères vides
+    ou ``'None'``, ou ne contient aucun caractère
+    alpha-numérique.
+
+    Parameters
+    ----------
+    included : str
+        La chaîne de caractères dont on veut
+        tester l'inclusion.
+    including : str
+        La chaîne de caractères dans laquelle
+        on veut tester l'inclusion.
+    
+    Returns
+    -------
+    bool
+
+    """
+    if not included or not including:
+        return False
+    included = re.sub(r'[^\w]+', '-', included).strip('-').lower()
+    including = re.sub(r'[^\w]+', '-', including).strip('-').lower()
+    if not included or not including:
+        return False
+    included_words = included.split('-')
+    including_words = including.split('-')
+    return all(w in including_words for w in included_words)
+
 class MetaCollection(type):
     """Méta-classe gérant l'accès à une collection d'objets.
     
