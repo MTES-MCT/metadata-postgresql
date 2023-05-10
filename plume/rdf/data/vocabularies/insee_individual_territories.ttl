@@ -1,12 +1,15 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://id.insee.fr/geo/pays/france> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
-    skos:prefLabel "France"@fr .
+    skos:prefLabel "France"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/France> .
 
 <http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
-    skos:prefLabel "France métropolitaine"@fr .
+    skos:prefLabel "France métropolitaine"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine> .
 
 <http://id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
