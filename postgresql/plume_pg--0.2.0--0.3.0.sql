@@ -92,7 +92,7 @@ UPDATE z_plume.meta_shared_categorie
     SET sources = ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance']
         || sources
         || ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs']
-    WHERE sources IS NOT NULL AND path in (
+    WHERE sources IS NOT NULL AND path IN (
         'dct:conformsTo',
         'dcat:distribution / dcat:accessService / dct:conformsTo',
         'dcat:distribution / dct:conformsTo'
@@ -101,7 +101,7 @@ UPDATE z_plume.meta_shared_categorie
 UPDATE z_plume.meta_shared_categorie
     SET sources = sources
         || ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType']
-    WHERE sources IS NOT NULL AND path in (
+    WHERE sources IS NOT NULL AND path IN (
         'dcat:distribution / dct:format',
         'dcat:distribution / dcat:compressFormat',
         'dcat:distribution / dcat:packageFormat'
@@ -119,6 +119,15 @@ UPDATE z_plume.meta_shared_categorie
     SET label = 'Statut',
         description = 'Maturité de la distribution.'
     WHERE path = 'dcat:distribution / adms:status' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = sources || ARRAY[
+        'http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection'
+    ]
+    WHERE sources IS NOT NULL AND path IN (
+        'dcat:distribution / dcat:accessService / dct:spatial / skos:inScheme',
+        'dct:spatial / skos:inScheme'
+     ) ;
 
 DROP VIEW z_plume.meta_template_categories_full ;
 
