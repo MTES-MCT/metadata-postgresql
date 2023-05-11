@@ -4,6 +4,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (QAction, QMenu, QCompleter, QCheckBox, QWidget, QGraphicsOpacityEffect) 
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import ( Qt )
 from qgis.gui import QgsDateTimeEdit   
 import os
 import qgis  
@@ -34,7 +35,6 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     _iconMinusTempGoProperties = _pathIconsUser + "/color_button_Minus_GoProperties.svg"
     _iconMinusTempGoValues     = _pathIconsUser + "/color_button_Minus_GoValues.svg"
     _iconMinusTempTgroup       = _pathIconsUser + "/color_button_Minus_Tgroup.svg"
-    _iconSourcesGeoButton      = _pathIcons + "/geo_button.svg"
     #-
     _pathIconsgeo = os.path.dirname(__file__) + "/icons/buttons/geo"
     _iconSourcesGeo_bbox_pg       = _pathIconsgeo + "/bbox_pg.svg"
@@ -277,7 +277,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        _mObjetQLabel = QtWidgets.QLabel()
        _mObjetQLabel.setStyleSheet("QLabel {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  +" ; border-width: 0px;}")
        _mObjetQLabel.setObjectName(str(_keyObjet))
-       _mObjetQLabel.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse) # for select text"
+       _mObjetQLabel.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse) # for select text"
        #Masqué /Visible Générale                               
        if (_valueObjet['hidden']) : _mObjetQLabel.setVisible(False)
        #--                        

@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import (QAction, QMenu , QDockWidget, QTreeView, QWidget)
 from PyQt5.QtGui import QIcon
 
 import os
-import sys
-from plume.bibli_install import manageLibrary
 from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+from qgis.utils import iface
+from plume.bibli_install import manageLibrary
 
 #===================================================
 # Generation de la traduction selon la langue choisie   
@@ -26,16 +26,16 @@ if QFileInfo(localePath).exists():
   QCoreApplication.installTranslator(translator)
 # Generation de la traduction selon la langue choisie
 #===================================================
-# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
 
+#===================================================
+# Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
 manageLibrary()
-    
 # Gestion des bibliothèques, notamment installe RDFLib si n'est pas déjà disponible
 #===================================================
 
 from plume import doplume_ui
-from plume import bibli_plume
-from .bibli_plume import *
+from plume.bibli_plume import ( MyExploBrowser, MyExploBrowserAsgardMenu,  
+                                returnVersion, listUserParam, returnAndSaveDialogParam, saveinitializingDisplay )
 
 class MainPlugin(object):
   def __init__(self, iface):
@@ -48,10 +48,10 @@ class MainPlugin(object):
   def initGui(self):
      #Construction du menu
      self.menu=QMenu("plume")
-     self.menu.setTitle(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA") + "  (" + str(bibli_plume.returnVersion()) + ")")
+     self.menu.setTitle(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA") + "  (" + str(returnVersion()) + ")")
      _pathIcons = os.path.dirname(__file__) + "/icons/logo"
      menuIcon          = _pathIcons + "/plume.svg"
-     self.plume2 = QAction(QIcon(menuIcon),"PLUGIN METADATA (Metadata storage in PostGreSQL)" + "  (" + str(bibli_plume.returnVersion()) + ")",self.iface.mainWindow())
+     self.plume2 = QAction(QIcon(menuIcon),"PLUGIN METADATA (Metadata storage in PostGreSQL)" + "  (" + str(returnVersion()) + ")",self.iface.mainWindow())
      self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) "))
      self.plume2.triggered.connect(self.clickIHMplume2)
      #Construction du menu
@@ -81,7 +81,7 @@ class MainPlugin(object):
   #==========================
   def initializingDisplayPlume(self):
       #tooltip
-      mDic_LH = bibli_plume.returnAndSaveDialogParam(self, "Load")
+      mDic_LH = returnAndSaveDialogParam(self, "Load")
       self.mDic_LH = mDic_LH
       # For the Dock AsgardMenu Gestion des toolTip
       self.asgardMenuDock               = mDic_LH["asgardMenuDock"]
@@ -143,9 +143,9 @@ class MainPlugin(object):
          if self.layer:
             if self.layer.dataProvider().name() == 'postgres':
                layerBeforeClicked = (self.layer, "qgis")
-         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
+         saveinitializingDisplay("write", layerBeforeClicked)
       except :
-         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked)
+         saveinitializingDisplay("write", layerBeforeClicked)
       return
 
   #==========================
@@ -164,9 +164,9 @@ class MainPlugin(object):
             if item.providerKey() == 'postgres' :
                self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
                layerBeforeClicked = (self.layer, "postgres")
-         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
+         saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
       except :
-         bibli_plume.saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
+         saveinitializingDisplay("write", layerBeforeClicked, index, mNav)
       return
 
   def clickIHMplume2(self):

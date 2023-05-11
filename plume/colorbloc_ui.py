@@ -9,8 +9,8 @@ from PyQt5.QtGui     import ( QFont, QPalette, QColor, QIcon )
 from PyQt5.QtCore    import ( Qt, QDate)
 from qgis.gui        import ( QgsDateTimeEdit, QgsOpacityWidget )
 
-from qgis.core import ( QgsSettings, Qgis, QgsApplication, QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsCircle, QgsPoint, QgsCircularString, QgsProject )
-from qgis.gui  import ( QgsMapTool, QgsRubberBand, QgsVertexMarker )
+from qgis.core import ( QgsSettings, QgsApplication )
+from qgis.gui  import ( QgsRubberBand )
 
 class Ui_Dialog_ColorBloc(object):
         
@@ -2016,7 +2016,7 @@ class Ui_Dialog_ColorBloc(object):
                 "#fee9e9",
                 "#ddddbe",
                 "#ddddbe",
-                "#fffab9"
+                "#ddddbe"
                 ] 
         mDicDashBoard = dict(zip(listBlocsKey, listBlocsValue))
  

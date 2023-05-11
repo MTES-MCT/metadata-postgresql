@@ -5,9 +5,11 @@ import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import ( QMenu, QAction, \
                               QTreeWidget, QTabWidget, QWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView, QGridLayout )
-from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime )
+from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt )
+from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem )
+
 #
-from plume.bibli_plume import ( returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, genereButtonsWithDict, returnIcon, displayMess )
+from plume.bibli_plume import ( GenereButtonsWithDictWithEvent, returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, genereButtonsWithDict, returnIcon, displayMess )
 #
 from plume.mapping_templates import ( load_mapping_read_meta_template_categories, load_mapping_read_meta_templates, load_mapping_read_meta_tabs, load_mapping_read_meta_categories )
 #
@@ -86,6 +88,7 @@ class Ui_Dialog_CreateTemplate(object):
                                       QTabBar::tab:selected {\
                                       background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); } \
                                      ")
+        self.flagNewModele, self.flagNewOnglet, self.flagNewCategorie = False, False, False
         self.tabWidget.tabBarClicked.connect(self.functionChangeTab)
         #--------------------------
         self.tab_widget_Association = QWidget()
@@ -100,12 +103,12 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBox_tab_widget_Association.setStyleSheet("QGroupBox { border: 0px solid green }")
         #-
         self.layout_tab_widget_Association = QtWidgets.QGridLayout()
-        self.layout_tab_widget_Association.setContentsMargins(10, 10, 10, 10)
-        self.layout_tab_widget_Association.setRowStretch(0, 4)
-        self.layout_tab_widget_Association.setRowStretch(1, 4)
-        self.layout_tab_widget_Association.setRowStretch(2, 4)
+        self.layout_tab_widget_Association.setContentsMargins(0, 0, 0, 0)
+        self.layout_tab_widget_Association.setRowStretch(0, 0.5)
+        self.layout_tab_widget_Association.setRowStretch(1, 5)
+        self.layout_tab_widget_Association.setRowStretch(2, 3)
         self.layout_tab_widget_Association.setRowStretch(3, 1)
-        self.layout_tab_widget_Association.setRowStretch(4, 1.5)
+        self.layout_tab_widget_Association.setRowStretch(4, 1)
         self.tab_widget_Association.setLayout(self.layout_tab_widget_Association)
         #--------------------------
         self.tab_widget_Ressource = QWidget()
@@ -130,25 +133,64 @@ class Ui_Dialog_CreateTemplate(object):
         #Liste modeles / catégories
         self.groupBoxListeModeleCategorie = QtWidgets.QGroupBox(self.tab_widget_Association)
         self.groupBoxListeModeleCategorie.setObjectName("groupBoxListeModeleCategorie") 
-        self.groupBoxListeModeleCategorie.setStyleSheet("QGroupBox { border: px solid grey }")
-        titlegroupBoxListeModeleCategorie = QtWidgets.QApplication.translate("CreateTemplate_ui", "Existing models", None)      #{Modèles existants}
-        #self.groupBoxListeModeleCategorie.setTitle(titlegroupBoxListeModeleCategorie)
+        self.groupBoxListeModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid grey }")
+        titleListeModeleCategorie = QtWidgets.QApplication.translate("CreateTemplate_ui", "Existing models", None)                                #{Modèles existants}
+        titleDiskSaveAndReinit    = QtWidgets.QApplication.translate("CreateTemplate_ui", "Choice of metadata for the selected model", None)      #{Modèles existants}
         #-
         self.layoutListeModeleCategorie = QtWidgets.QGridLayout()
         self.groupBoxListeModeleCategorie.setLayout(self.layoutListeModeleCategorie)
-        self.layout_tab_widget_Association.addWidget(self.groupBoxListeModeleCategorie, 0, 0, 1, 3)
+        self.layout_tab_widget_Association.addWidget(self.groupBoxListeModeleCategorie, 0, 0, 1, 2)
         #-
+        self.layoutListeModeleCategorie.setColumnStretch(0, 1)
+        self.layoutListeModeleCategorie.setColumnStretch(1, 1)
+        self.layoutListeModeleCategorie.setColumnStretch(2, 1)
+        self.layoutListeModeleCategorie.setColumnStretch(3, 1)
+        self.layoutListeModeleCategorie.setColumnStretch(4, 1)
+        self.layoutListeModeleCategorie.setColumnStretch(5, 1)
+
         #------ TREEVIEW   
-        self.mTreeListeModeleCategorie = TREEVIEWASSOCIATION()
-
+        self.comboListeModeleCategorie = QtWidgets.QComboBox()
+        self.comboListeModeleCategorie.setObjectName("comboAdresse")
+        # Label
         self.labelListeModeleCategorie = QtWidgets.QLabel()
-        self.labelListeModeleCategorie.setText(titlegroupBoxListeModeleCategorie)
-        self.layoutListeModeleCategorie.addWidget(self.labelListeModeleCategorie, 0 ,0, QtCore.Qt.AlignTop)
-        self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie, 1 , 0)
-
-        #self.layoutListeModeleCategorie.addWidget(self.mTreeListeModeleCategorie)
+        self.labelListeModeleCategorie.setText(titleListeModeleCategorie)
+        self.labelDiskSaveAndReinit = QtWidgets.QLabel()
+        self.labelDiskSaveAndReinit.setText(titleDiskSaveAndReinit)                                        
+        #------
+        #Button Save Out vers In and Réinit
+        self.buttonSaveOutVersIn = QtWidgets.QToolButton()
+        self.buttonSaveOutVersIn.setObjectName("buttonSaveOutVersIn")
+        self.buttonSaveOutVersIn.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
+        mbuttonSaveOutVersInToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify used or unused categories associated with the model.", None)  #Modifier les catégories utilisées ou non utilisées associés au modèle.
+        self.buttonSaveOutVersIn.setToolTip(mbuttonSaveOutVersInToolTip)
+        self.buttonSaveOutVersIn.clicked.connect(lambda : self.functionUpdateModeleCategorie("buttonSaveOutVersIn"))
+        self.buttonSaveOutVersIn.setVisible(True)
         #-
-        self.mTreeListeModeleCategorie.clear()
+        self.buttonReinitOutVersIn = QtWidgets.QToolButton()
+        self.buttonReinitOutVersIn.setObjectName("buttonReinitOutVersIn")
+        self.buttonReinitOutVersIn.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\reinit.svg"))
+        mbuttonReinitOutVersIn = QtWidgets.QApplication.translate("CreateTemplate_ui", "Resetting the selected model.", None)  #Réinitialisation du modèle sélectionné.
+        self.buttonReinitOutVersIn.setToolTip(mbuttonReinitOutVersIn)
+        self.buttonReinitOutVersIn.clicked.connect(lambda : self.functionUpdateModeleCategorie("buttonReinitOutVersIn"))  
+        self.buttonReinitOutVersIn.setVisible(True)
+        #Button Save Out vers In and Réinit
+        #------
+        self.layoutListeModeleCategorie.addWidget(self.labelListeModeleCategorie, 0 , 0, QtCore.Qt.AlignTop)
+        self.layoutListeModeleCategorie.addWidget(self.comboListeModeleCategorie, 1 , 0, 1, 2)
+        #-
+        self.groupBoxLabelButtonSaveAndReinit = QtWidgets.QGroupBox()
+        self.groupBoxLabelButtonSaveAndReinit.setObjectName("groupBoxLabelButtonSaveAndReinit") 
+        self.groupBoxLabelButtonSaveAndReinit.setStyleSheet("QGroupBox { border: 0px solid green }")
+        self.layoutLabelButtonSaveAndReinit = QtWidgets.QHBoxLayout()
+        self.groupBoxLabelButtonSaveAndReinit.setLayout(self.layoutLabelButtonSaveAndReinit)
+        self.layoutListeModeleCategorie.addWidget(self.groupBoxLabelButtonSaveAndReinit, 2, 0, 1, 6, Qt.AlignCenter)
+        self.layoutLabelButtonSaveAndReinit.setContentsMargins(0, 20, 0, 0)
+
+        self.layoutLabelButtonSaveAndReinit.addWidget(self.labelDiskSaveAndReinit, 0, Qt.AlignLeft)
+        self.layoutLabelButtonSaveAndReinit.addWidget(self.buttonSaveOutVersIn,    0, Qt.AlignLeft)
+        self.layoutLabelButtonSaveAndReinit.addWidget(self.buttonReinitOutVersIn,  0, Qt.AlignLeft)
+        #-
+        self.comboListeModeleCategorie.clear()
 
         #------
         #------ DATA template_categories 
@@ -182,7 +224,20 @@ class Ui_Dialog_CreateTemplate(object):
         self.mTreeListeCategorieOut = TREEVIEW_CAT_IN_OUT()
 
         #------ DATA 
-        self.mTreeListeModeleCategorie.afficheASSOCIATION(self, listeAssociationCol1, listeAssociationCol2)
+        self.modelComboListeModeleCategorie = QStandardItemModel()
+        listeAssociationCol1 = list(reversed(listeAssociationCol1))
+        listeAssociationCol1.insert(0,"")
+        listeAssociationCol2 = list(reversed(listeAssociationCol2))
+        listeAssociationCol2.insert(0,"")
+
+        i = 0
+        while i in range(len(listeAssociationCol1)) :
+            modelComboListeModeleCategorie1 = QStandardItem(str(listeAssociationCol1[i]))
+            modelComboListeModeleCategorie2 = QStandardItem(str(listeAssociationCol2[i]))
+            self.modelComboListeModeleCategorie.appendRow([ modelComboListeModeleCategorie2, modelComboListeModeleCategorie1 ])
+            i += 1
+        self.comboListeModeleCategorie.setModel(self.modelComboListeModeleCategorie) 
+        self.comboListeModeleCategorie.currentIndexChanged.connect(lambda : self.ihmsPlumeASSOCIATION( self ) )
         #------ DATA 
 
         #------
@@ -194,7 +249,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutListeCategorieOut = QtWidgets.QGridLayout()
         #-
         self.groupBoxListeCategorieOut.setLayout(self.layoutListeCategorieOut)
-        self.layout_tab_widget_Association.addWidget(self.groupBoxListeCategorieOut, 1, 0, 2, 1)
+        self.layout_tab_widget_Association.addWidget(self.groupBoxListeCategorieOut, 1, 0, 1, 1)
         #------ 
         #Liste catégories In
         self.groupBoxListeCategorieIn = QtWidgets.QGroupBox()
@@ -208,22 +263,42 @@ class Ui_Dialog_CreateTemplate(object):
         #-
 
         #------ Déclare TREEVIEW
-        self.labelCategorieOut = QtWidgets.QLabel()
-        self.labelCategorieOut.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", "Categories not belonging", None))   #Catégories n'appartenant pas
-        self.labelCategorieIn = QtWidgets.QLabel()
-        self.labelCategorieIn.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", "Categories belonging", None))   #Catégories appartenant
+        _labelCategorieOut = QtWidgets.QApplication.translate("CreateTemplate_ui", "Categories not belonging", None)   #Catégories n'appartenant pas
+        _labelCategorieIn  = QtWidgets.QApplication.translate("CreateTemplate_ui", "Categories belonging", None)   #Catégories appartenant
+        self._origineHeaderLabelsIn  = [ "CAT_IN" , _labelCategorieOut, _labelCategorieIn ]
+        self._origineHeaderLabelsOut = [ "CAT_OUT", _labelCategorieOut, _labelCategorieIn ]
+
          
         #------ TREEVIEW CATEGORIES OUT
-        self.layoutListeCategorieOut.addWidget(self.labelCategorieOut, 0 ,0, QtCore.Qt.AlignTop)
         self.layoutListeCategorieOut.addWidget(self.mTreeListeCategorieOut, 1 , 0)
         #-
         self.mTreeListeCategorieOut.clear()
         
         #------ TREEVIEW CATEGORIES IN 
-        self.layoutListeCategorieIn.addWidget(self.labelCategorieIn, 0 ,2, QtCore.Qt.AlignTop)
         self.layoutListeCategorieIn.addWidget(self.mTreeListeCategorieIn, 1 ,2)
         #-
         self.mTreeListeCategorieIn.clear()
+
+        #Affichage de l'aide pour les attributs
+        self.groupBoxdisplayHelpFocus = QtWidgets.QGroupBox()
+        self.groupBoxdisplayHelpFocus.setObjectName("groupBoxdisplayHelpFocus")
+        
+        self.groupBoxdisplayHelpFocus.setStyleSheet("QGroupBox { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); \
+                                                                 border-radius: 9px; margin-top: 0.5em;}")
+        self.groupBoxdisplayHelpFocus.setVisible(False)
+        #-
+        self.layoutDisplayHelpFocus = QtWidgets.QGridLayout()
+        self.layoutDisplayHelpFocus.setObjectName("layoutDisplayHelpFocus")
+        self.groupBoxdisplayHelpFocus.setLayout(self.layoutDisplayHelpFocus)
+        self.layout_tab_widget_Association.addWidget(self.groupBoxdisplayHelpFocus, 2, 0, 1, 1)
+        #-
+        mText = "je suis sur le focus de la zone " 
+        _Listkeys   = [ "typeWidget",       "textWidget", "nameWidget", "aligneWidget", "wordWrap" ]
+        _ListValues = [ QtWidgets.QLabel(), mText,        "label_" ,     QtCore.Qt.AlignCenter, True ]
+        dicParamLabel = dict(zip(_Listkeys, _ListValues))
+        self.zoneDisplayHelpFocus = genereLabelWithDict( dicParamLabel )
+        self.layoutDisplayHelpFocus.addWidget( self.zoneDisplayHelpFocus, 0, 1)
+        #-
 
         #Liste ATTRIBUTS modeles / catégories
         self.groupBoxAttributsModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid grey;}")
@@ -250,28 +325,28 @@ class Ui_Dialog_CreateTemplate(object):
 
         #Button Add
         #-
-        self.groupBox_buttonAdd = QtWidgets.QGroupBox()
-        self.groupBox_buttonAdd.setObjectName("groupBox_buttonAdd")
-        self.groupBox_buttonAdd.setStyleSheet("QGroupBox { border: 0px solid green }")
+        self.groupBox_buttonSaveAttribModeleCategorie = QtWidgets.QGroupBox()
+        self.groupBox_buttonSaveAttribModeleCategorie.setObjectName("groupBox_buttonSaveAttribModeleCategorie")
+        self.groupBox_buttonSaveAttribModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid green }")
         #-
-        self.layout_groupBox_buttonAdd = QtWidgets.QGridLayout()
-        self.layout_groupBox_buttonAdd.setContentsMargins(0, 0, 0, 0)
-        self.groupBox_buttonAdd.setLayout(self.layout_groupBox_buttonAdd)
-        self.layout_tab_widget_Association.addWidget(self.groupBox_buttonAdd, 3 ,0 , 1, 2)
+        self.layout_groupBox_buttonSaveAttribModeleCategorie = QtWidgets.QGridLayout()
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.setContentsMargins(0, 0, 0, 0)
+        self.groupBox_buttonSaveAttribModeleCategorie.setLayout(self.layout_groupBox_buttonSaveAttribModeleCategorie)
+        self.layout_tab_widget_Association.addWidget(self.groupBox_buttonSaveAttribModeleCategorie, 3 ,0 , 1, 2)
         #-
-        self.layout_groupBox_buttonAdd.setColumnStretch(0, 3)
-        self.layout_groupBox_buttonAdd.setColumnStretch(1, 1)
-        self.layout_groupBox_buttonAdd.setColumnStretch(2, 1)
-        self.layout_groupBox_buttonAdd.setColumnStretch(3, 1)
-        self.layout_groupBox_buttonAdd.setColumnStretch(4, 3)
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(0, 3)
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(1, 1)
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(2, 1)
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(3, 1)
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(4, 3)                                                  
 
-        self.buttonAdd = QtWidgets.QToolButton()
-        self.buttonAdd.setObjectName("buttonAdd")
-        self.buttonAdd.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
-        mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify the attributes associated with the model, as well as the categories used or not used.", None)  
-        self.buttonAdd.setToolTip(mbuttonAddToolTip)
-        self.buttonAdd.clicked.connect(lambda : self.functionAddCmodele())
-        self.layout_groupBox_buttonAdd.addWidget(self.buttonAdd, 1, 2)
+        self.buttonSaveAttribModeleCategorie = QtWidgets.QToolButton()
+        self.buttonSaveAttribModeleCategorie.setObjectName("buttonSaveAttribModeleCategorie")
+        self.buttonSaveAttribModeleCategorie.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
+        mbuttonSaveAttribModeleCategorieToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify the attributes associated with the model.", None)  
+        self.buttonSaveAttribModeleCategorie.setToolTip(mbuttonSaveAttribModeleCategorieToolTip)
+        self.buttonSaveAttribModeleCategorie.clicked.connect(lambda : self.functionUpdateModeleCategorie("buttonSaveAttribModeleCategorie"))
+        self.layout_groupBox_buttonSaveAttribModeleCategorie.addWidget(self.buttonSaveAttribModeleCategorie, 1, 3, 1, 3, Qt.AlignCenter)
         #Button Add
         #------
 
@@ -301,6 +376,10 @@ class Ui_Dialog_CreateTemplate(object):
         self.DialogCreateTemplate.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", self.zMessTitle, None))
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", "Cancel", None))
+        # 
+        afficheLabelAndLibelle(self, False, False, False, False)
+        self.buttonSaveOutVersIn.setEnabled(False)
+        self.buttonReinitOutVersIn.setEnabled(False)
         #  Onglet ASSOCIATION
         #============================================================
         
@@ -528,17 +607,61 @@ class Ui_Dialog_CreateTemplate(object):
 
         #  Onglet RESSOURCE
         #============================================================
+
+    #===============================              
+    def ihmsPlumeASSOCIATION(self, _selfCreateTemplate ) : 
+        if self.comboListeModeleCategorie.currentIndex() == -1 : return
+        mItemClicLibelleAssociation = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),0).text()    
+        mItemClicAssociation        = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),1).text()
+        
+        self.groupBoxdisplayHelpFocus.setVisible(False)
+        if mItemClicLibelleAssociation == "" : 
+           self.mTreeListeCategorieIn.clear()
+           self.mTreeListeCategorieOut.clear()
+           afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False )
+           # 
+           afficheLabelAndLibelle(self, False, False, False, False)
+           return
+
+        self._selfCreateTemplate    = _selfCreateTemplate
+        self.modeleAssociationActif = mItemClicAssociation
+        
+        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées == Cat Utilisées et Non Utilisées==              
+        #------ DATA template_categories 
+        mKeySql = queries.query_read_meta_template_categories()
+        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+        self.mListTemplateCategories = [row[0] for row in r]
+        self.dicInVersOutDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
+        self.dicOutVersInDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
+        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées
+        
+        self.listCategorieOut, self.listCategorieIn = ventileCatInCatOut(self, mItemClicAssociation, self.mListTemplateCategories, self.mListCategories)
+
+        self.mTreeListeCategorieIn.clear()
+        self.mTreeListeCategorieOut.clear()
+        self.mTreeListeCategorieIn.affiche_CAT_IN_OUT(  self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut, action = True, header = self._origineHeaderLabelsIn)
+        self.mTreeListeCategorieOut.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut,                header = self._origineHeaderLabelsOut) # Uniquement pour instancier OneShot
+        #Efface les attributs
+        afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False )
+        # 
+        afficheLabelAndLibelle(self, True, True, True, False)
+        self.buttonSaveOutVersIn.setEnabled(False)
+        self.buttonReinitOutVersIn.setEnabled(False)
+        return
     
     #===============================              
     def functionChangeTab(self, mIndex):
        if mIndex != -1 :
           if mIndex == 0 :
-             mSaveItemCurrent = None
-             if self.mTreeListeModeleCategorie.currentItem() != None :
-                mSaveItemCurrent = self.mTreeListeModeleCategorie.currentItem().data(0, QtCore.Qt.DisplayRole)     #item Libelle Courant
+             # Gestion des flags pour maj si new modele, catégorie, onglet
+             _cont = False  
+             if (self.flagNewModele or self.flagNewCategorie or self.flagNewOnglet) : _cont = True
+             self.flagNewModele, self.flagNewOnglet, self.flagNewCategorie = False, False, False
+             if not _cont : return  
+             # Gestion des flags pour maj si new modele, catégorie, onglet
 
              #------ DATA template 
-             self.mTreeListeModeleCategorie.clear()
+             self.comboListeModeleCategorie.clear()
              mKeySql = queries.query_read_meta_template()
              r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
              self.mListTemplates = [row[0] for row in r]
@@ -549,17 +672,75 @@ class Ui_Dialog_CreateTemplate(object):
       
              listeAssociationCol1, listeAssociationCol2 = returnList_Id_Label( self.mListTemplates )
              self.modeleAssociationActif = listeAssociationCol1[0] #Pour la première initialisation 
+
              #------ DATA 
-             self.mTreeListeModeleCategorie.afficheASSOCIATION(self, listeAssociationCol1, listeAssociationCol2)
-                
-             if mSaveItemCurrent != None :
-                iterator = QTreeWidgetItemIterator(self.mTreeListeModeleCategorie)
-                while iterator.value() :
-                   if iterator.value().text(0) == mSaveItemCurrent : 
-                      self.mTreeListeModeleCategorie.setCurrentItem(iterator.value())           #itemCourant
-                      break
-                   iterator += 1
-                #------ DATA 
+             self.modelComboListeModeleCategorie = QStandardItemModel()
+             listeAssociationCol1 = list(reversed(listeAssociationCol1))
+             listeAssociationCol1.insert(0,"")
+             listeAssociationCol2 = list(reversed(listeAssociationCol2))
+             listeAssociationCol2.insert(0,"")
+
+             i = 0
+             while i in range(len(listeAssociationCol1)) :
+                 modelComboListeModeleCategorie1 = QStandardItem(str(listeAssociationCol1[i]))
+                 modelComboListeModeleCategorie2 = QStandardItem(str(listeAssociationCol2[i]))
+                 self.modelComboListeModeleCategorie.appendRow([ modelComboListeModeleCategorie2, modelComboListeModeleCategorie1 ])
+                 i += 1
+             self.comboListeModeleCategorie.setModel(self.modelComboListeModeleCategorie) 
+             self.comboListeModeleCategorie.currentIndexChanged.connect(lambda : self.ihmsPlumeASSOCIATION( self ) )
+             #------ DATA 
+
+             if hasattr(self, "mSaveItemCurrent") : self.comboListeModeleCategorie.setCurrentIndex(self.mSaveItemCurrent)
+          elif mIndex == 1 :
+             self.mSaveItemCurrent = self.comboListeModeleCategorie.currentIndex()
+       return
+
+    #===============================              
+    def functionUpdateModeleCategorie(self, mActionButton):    # mActionButton = buttonSaveOutVersIn buttonReinitOutVersIn buttonSaveAttribModeleCategorie
+       self.flagNewModele = True
+       # Si les attributs sont visibles, je gère la sauvegarde par rapport à la catégorie sélectionnée
+       #if ifAttributsVisible( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories ) :  
+
+       if mActionButton == "buttonSaveAttribModeleCategorie" :  
+          dicForQuerieForAddModeleCategorie = returnListObjKeyValue(self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTabs)
+          mKeySql = queries.query_insert_or_update_meta_template_categories(dicForQuerieForAddModeleCategorie)
+          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+          self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+          #- Réinit
+          mKeySql = queries.query_read_meta_template_categories()
+          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+          self._selfCreateTemplate.mListTemplateCategories = [row[0] for row in r]
+          #Réinstancier les variables dans les deux treeview 
+          self._selfCreateTemplate.mTreeListeCategorieIn.mListTemplateCategories = self._selfCreateTemplate.mListTemplateCategories
+          self._selfCreateTemplate.mTreeListeCategorieOut.mListTemplateCategories = self._selfCreateTemplate.mListTemplateCategories
+
+       # je gère le passage des In en Out et Vice Versa
+       elif mActionButton == "buttonSaveOutVersIn" :  
+          _dicInVersOutDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicInVersOutDesign
+          _dicOutVersInDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicOutVersInDesign
+
+          if len(_dicInVersOutDesign) != 0 : 
+             # Delete
+             listDelete = returnListObjKeyValueEnFonctionDesCatInCatOut(self, self.mListTemplateCategories, self.mapping_template_categories, _dicInVersOutDesign, "CAT_IN" )
+             for elemDelete in listDelete :
+                 mKeySql = queries.query_delete_meta_template_categories(elemDelete)
+                 r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
+
+          if len(_dicOutVersInDesign) != 0 : 
+             # Insert Or Update
+             listAppend = returnListObjKeyValueEnFonctionDesCatInCatOut(self, self.mListTemplateCategories, self.mapping_template_categories, _dicOutVersInDesign, "CAT_OUT" )
+             for elemAppend in listAppend :
+                 mKeySql = queries.query_insert_or_update_meta_template_categories(elemAppend)
+                 r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+
+          # Save       
+          self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+          # Réintialise les treeviews CatIn et CatOUT avec les nouvelles valeurs et sans la colorisation des backGrounds       
+          self.ihmsPlumeASSOCIATION( self )
+
+       # je gère le passage des In en Out et Vice Versa
+       elif mActionButton == "buttonReinitOutVersIn" :  
+          self.ihmsPlumeASSOCIATION( self )
        return
 
     #===============================              
@@ -571,6 +752,7 @@ class Ui_Dialog_CreateTemplate(object):
        if mTestExisteModele.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
+          self.flagNewModele = True
           self.mTreeListeRessourceModele.ihmsPlumeUpdateModele(self.Dialog, mTestExisteModele.text())
        return
 
@@ -582,6 +764,7 @@ class Ui_Dialog_CreateTemplate(object):
        if mTestExisteCategorie.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
+          self.flagNewCategorie = True
           self.mTreeListeRessourceCategorie.ihmsPlumeUpdateCategorie(self.Dialog, mTestExisteCategorie.text())
        return
 
@@ -593,6 +776,7 @@ class Ui_Dialog_CreateTemplate(object):
        if mTestExisteOnglet.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
+          self.flagNewOnglet = True
           self.mTreeListeRessourceOnglet.ihmsPlumeUpdateOnglet(self.Dialog, mTestExisteOnglet.text())
        return
 
@@ -611,14 +795,22 @@ def returnListChildren(self, _labelClick, _listCategorie, _origine) :
     while i < len(_listCategorie) : 
        _lib_label     =  _listCategorie[i]["_label"]
        if _labelClick == _lib_label[0 : len(_labelClick)] : 
-          _dicTempoDelete = dict(zip( [                  "_displayLibelle",                    "_label",                    "_libelle",                    "_clickAsso",                    "mOrigine",                                        "mNoeud"], \
-                                      [_listCategorie[i]["_displayLibelle"], _listCategorie[i]["_label"], _listCategorie[i]["_libelle"], _listCategorie[i]["_clickAsso"], _listCategorie[i]["mOrigine"],                     _listCategorie[i]["mNoeud"] ] ))
-          _dicTempoAppend = dict(zip( [                  "_displayLibelle",                    "_label",                    "_libelle",                    "_clickAsso",                    "mOrigine",                                        "mNoeud"], \
-                                      [_listCategorie[i]["_displayLibelle"], _listCategorie[i]["_label"], _listCategorie[i]["_libelle"], _listCategorie[i]["_clickAsso"], ("CAT_OUT" if _origine == "CAT_IN" else "CAT_IN"), _listCategorie[i]["mNoeud"]] ))
+          _dicTempoDelete = dict(zip( [                  "_displayLibelle",                    "_label",                    "_libelle",                    "_clickAsso",                    "mOrigine",                                        "mNoeud", "_local"], \
+                                      [_listCategorie[i]["_displayLibelle"], _listCategorie[i]["_label"], _listCategorie[i]["_libelle"], _listCategorie[i]["_clickAsso"], _listCategorie[i]["mOrigine"],                     _listCategorie[i]["mNoeud"], _listCategorie[i]["_local"] ]))
+          _dicTempoAppend = dict(zip( [                  "_displayLibelle",                    "_label",                    "_libelle",                    "_clickAsso",                    "mOrigine",                                        "mNoeud", "_local"], \
+                                      [_listCategorie[i]["_displayLibelle"], _listCategorie[i]["_label"], _listCategorie[i]["_libelle"], _listCategorie[i]["_clickAsso"], ("CAT_OUT" if _origine == "CAT_IN" else "CAT_IN"), _listCategorie[i]["mNoeud"], _listCategorie[i]["_local"] ]))
           _dicTempoAppendReturn.append(_dicTempoAppend)
           _dicTempoDeletedReturn.append(_dicTempoDelete)
        i += 1
     return _dicTempoAppendReturn, _dicTempoDeletedReturn
+
+#==========================         
+def afficheLabelAndLibelle(_selfCreateTemplate, etat_labelDiskSaveAndReinit, etat_buttonSaveOutVersIn, etat_buttonReinitOutVersIn, etat_buttonSaveAttribModeleCategorie) :
+    _selfCreateTemplate.labelDiskSaveAndReinit.setVisible(etat_labelDiskSaveAndReinit)
+    _selfCreateTemplate.buttonSaveOutVersIn.setVisible(etat_buttonSaveOutVersIn)
+    _selfCreateTemplate.buttonReinitOutVersIn.setVisible(etat_buttonReinitOutVersIn)
+    _selfCreateTemplate.buttonSaveAttribModeleCategorie.setVisible(etat_buttonSaveAttribModeleCategorie)
+    return 
 
 #==========================         
 #==========================         
@@ -680,7 +872,7 @@ def ventileCatInCatOut(self, _mItemClicAssociation, mListTemplateCategories, mLi
           
           mConditionInOut = _lib_Categories == _lib_Template_Categories and str(mListTemplateCategories[j]["tpl_id"]) == _mItemClicAssociation
           
-          _dicTempo = dict(zip( ["_displayLibelle", "_label", "_libelle", "_clickAsso", "mOrigine", "mNoeud"], [_displayLibelle, _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN' if mConditionInOut else 'CAT_OUT', _noeud] ))
+          _dicTempo = dict(zip( ["_displayLibelle", "_label", "_libelle", "_clickAsso", "mOrigine", "mNoeud", "_local"], [_displayLibelle, _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN' if mConditionInOut else 'CAT_OUT', _noeud, _returnAttribCategorie["origin"]] ))
 
           # Ventilation Cat IN / Cat Out 
           if mConditionInOut :
@@ -712,7 +904,7 @@ def returnListObjAttributsId(self,  _groupBoxAttributs, mapping ) :
 
 #==========================         
 #==========================         
-def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
+def returnListObjKeyValue(self,  _groupBoxAttributs, mapping, _mListTabs = None ) :
   _group = _groupBoxAttributs.children() 
   _returnListObjKeyValue = {}
   for mObj in _group :
@@ -720,8 +912,9 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
       _value = ""
 
       if (_zone in mapping) :
-         _type   = mapping[_zone]["type"]
-         _format = mapping[_zone]["format"]
+         _type      = mapping[_zone]["type"]
+         _format    = mapping[_zone]["format"]
+         _qcombobox = mapping[_zone]["dicListItems"] 
          __Val   = _zone
    
          if _type in ("QLineEdit",) :
@@ -730,7 +923,13 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
          elif _type in ("QTextEdit",) :
                __Val = mObj.toPlainText() if mObj.toPlainText() != "" else None 
          elif _type in ("QComboBox",) :
-               __Val = mObj.currentText() if mObj.currentText() != "" else None 
+               __Val = mObj.currentText() if (mObj.currentText() != "" and mObj.currentText() != "Aucun") else None
+               #Gestion de l'ID 
+               if __Val != None :
+                  if _qcombobox == "tabs" :
+                     __Val = [ elem["tab_id"] for elem in _mListTabs if str(elem["tab_label"]) == __Val ][0]
+               #Gestion de l'ID 
+         
          elif _type in ("QDateEdit",) :
                __Val = mObj.date().toString("dd/MM/yyyy") if mObj.date().toString("dd/MM/yyyy") != "" else None 
          elif _type in ("QDateTimeEdit",) :
@@ -743,7 +942,39 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping ) :
          _returnListObjKeyValue[_zone] = __Val
 
   return _returnListObjKeyValue
-    
+
+#==========================         
+#==========================         
+def returnListObjKeyValueEnFonctionDesCatInCatOut(self, _mListTemplateCategories, _mapping, _dicInVersOut_OR_dicOutVersIn, _mOrigine ) :
+
+    if _mOrigine == "CAT_IN" :
+       _returnListObjKeyValue = []
+       # Boucle for TemplateCategories
+       for elemDic_TemplateCategories in _mListTemplateCategories :
+           # Boucle for _dicInVersOut_OR_dicOutVersIn
+           for key_dicInVersOut_OR_dicOutVersIn, value_dicInVersOut_OR_dicOutVersIn in _dicInVersOut_OR_dicOutVersIn.items() :
+              if value_dicInVersOut_OR_dicOutVersIn[1] == "shared" : # If cat commune 
+                 _cond1 = elemDic_TemplateCategories["shrcat_path"]  == key_dicInVersOut_OR_dicOutVersIn
+              elif value_dicInVersOut_OR_dicOutVersIn[1] == "local" :# If cat locale
+                 _cond1 = elemDic_TemplateCategories["loccat_path"]  == key_dicInVersOut_OR_dicOutVersIn
+              _cond2 = elemDic_TemplateCategories["tpl_id"]       == int(value_dicInVersOut_OR_dicOutVersIn[0])
+
+              if _cond1 and _cond2 :
+                 _req = { "tplcat_id" : elemDic_TemplateCategories["tplcat_id"] }  # je prends tplcat_id pour les delete
+                 _returnListObjKeyValue.append(_req)
+
+    elif _mOrigine == "CAT_OUT" :
+       _returnListObjKeyValue = []
+       # Boucle for _dicInVersOut_OR_dicOutVersIn
+       for key_dicInVersOut_OR_dicOutVersIn, value_dicInVersOut_OR_dicOutVersIn in _dicInVersOut_OR_dicOutVersIn.items() :
+           if value_dicInVersOut_OR_dicOutVersIn[1] == "shared" : # If cat commune 
+              _req = { "shrcat_path" : key_dicInVersOut_OR_dicOutVersIn, "tpl_id" : int(value_dicInVersOut_OR_dicOutVersIn[0]) } 
+           elif value_dicInVersOut_OR_dicOutVersIn[1] == "local" :# If cat locale
+              _req = { "loccat_path" : key_dicInVersOut_OR_dicOutVersIn, "tpl_id" : int(value_dicInVersOut_OR_dicOutVersIn[0]) } 
+           _returnListObjKeyValue.append(_req)
+          
+    return _returnListObjKeyValue
+
 #==========================         
 #==========================         
 def genereAttributs(self,  mapping, zoneLayout ) :
@@ -779,8 +1010,8 @@ def genereAttributs(self,  mapping, zoneLayout ) :
 
       if okCreateZone :
          dicParamButton = dict(zip(_Listkeys, _ListValues))
-         _modCat_Attrib = genereButtonsWithDict( dicParamButton )
-         
+         _modCat_Attrib = GenereButtonsWithDictWithEvent( self, dicParamButton )._button
+                 
          if dicLabelTooltip["format"]   == "integer" :
             _modCat_Attrib.setValidator(QtGui.QIntValidator(_modCat_Attrib))
 
@@ -794,6 +1025,26 @@ def genereAttributs(self,  mapping, zoneLayout ) :
          
       _row += 1
   return 
+
+#==========================         
+#==========================  
+# Recherche d'un dictionnaire dans la liste des dictionnaires sur l'id _label  
+# Retourne l'index de l'élément recherché   
+# param1 : __dicTempoDeleteChildrenKey = _dicTempoAppendChildren[iElem]["_label"]  
+def returnIndexInListeCategorie( __dicTempoDeleteChildrenKey, _mListCategories ) :
+    i = 0
+    while i < len(_mListCategories) :
+       if __dicTempoDeleteChildrenKey == _mListCategories[i]["_label"] :
+          return i
+       i += 1
+
+#==========================         
+#==========================         
+def ifAttributsVisible(self,  _groupBoxAttributs, _mapping ) :
+  _group = _groupBoxAttributs.children() 
+  for mObj in _group :
+      if (mObj.objectName()[5:] in _mapping) or (mObj.objectName()[6:] in _mapping) :
+         return (True if mObj.isVisible() else False)
 
 #==========================         
 #==========================         
@@ -972,106 +1223,6 @@ def defineFont( param ) : #gras = 1, italic = 2 gras italic = 3
 
 #========================================================     
 #========================================================     
-# Class pour le tree View Association 
-class TREEVIEWASSOCIATION(QTreeWidget):
-    customMimeType = "text/plain"
-
-    #===============================              
-    def __init__(self, *args):
-        QTreeWidget.__init__(self, *args)
-        self.setColumnCount(2)
-        self.hideColumn (0)   # For hide ID
-        self.setHeaderLabels(["Id", "Libellés"])
-        self.setSelectionMode(QAbstractItemView.SingleSelection	)  
-        self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to delete a Model / Categories association", None)         #Click droit pour supprimer une association Modèle / Catégories
-
-        #- Fichier de mapping table ihm
-        self.mapping_template_categories = load_mapping_read_meta_template_categories
-        return
-               
-    #===============================              
-    def afficheASSOCIATION(self, _selfCreateTemplate, listeAssociationCol1, listeAssociationCol2):
-        self.groupBoxAttributsModeleCategorie = _selfCreateTemplate.groupBoxAttributsModeleCategorie
-        self.mListTemplates                   = _selfCreateTemplate.mListTemplates
-        self.mListTemplateCategories          = _selfCreateTemplate.mListTemplateCategories
-        self.mListCategories                  = _selfCreateTemplate.mListCategories    
-        self.mListTabs                        = _selfCreateTemplate.mListTabs   
-        self.mTreeListeCategorieOut           = _selfCreateTemplate.mTreeListeCategorieOut
-        self.mTreeListeCategorieIn            = _selfCreateTemplate.mTreeListeCategorieIn
-        self._selfCreateTemplate              = _selfCreateTemplate
-        self.colorTemplateInVersOut           = _selfCreateTemplate.colorTemplateInVersOut
-        self.colorTemplateOutVersIn           = _selfCreateTemplate.colorTemplateOutVersIn
-        self.sepLeftTemplate                  = _selfCreateTemplate.sepLeftTemplate
-        self.sepRightTemplate                 = _selfCreateTemplate.sepRightTemplate
-        self.fontCategorieInVersOut           = _selfCreateTemplate.fontCategorieInVersOut
-        #---
-        self.header().setStretchLastSection(False)
-        self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-        i = 0
-        while i in range(len(listeAssociationCol1)) :
-            nodeUrlUser = QTreeWidgetItem(None, [ listeAssociationCol1[i], str(listeAssociationCol2[i]) ])
-            self.insertTopLevelItems( 0, [ nodeUrlUser ] )
-            nodeUrlUser.setToolTip(0, "{}".format(self.mnodeToolTip))
-            nodeUrlUser.setToolTip(1, "{}".format(self.mnodeToolTip))
-            i += 1
- 
-        self.itemClicked.connect( self.ihmsPlumeASSOCIATION ) 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect( self.menuContextuelPlumeASSOCIATION)
-        self.expandAll()
-        return
-
-    #===============================              
-    def menuContextuelPlumeASSOCIATION(self, point):
-        index = self.indexAt(point)
-        if not index.isValid():
-           return
-        #-------
-        if index.data(0) != None : 
-           self.treeMenu = QMenu(self)
-           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
-           treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model / category association", None)  #Supprimer l'association modèle / Catégorie
-           self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
-           self.treeMenu.addAction(self.treeAction_del)
-           self.treeAction_del.setToolTip(treeAction_delTooltip)
-           self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
-           #-------
-           self.treeMenu.exec_(self.mapToGlobal(point))
-        return
-        
-    #===============================              
-    def ihmsPlumeASSOCIATION(self, item, column): 
-        mItemClicAssociation        = item.data(0, QtCore.Qt.DisplayRole)
-        mItemClicLibelleAssociation = item.data(1, QtCore.Qt.DisplayRole)
-        self.modeleAssociationActif = mItemClicAssociation
-        
-        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées == Cat Utilisées et Non Utilisées==              
-        #------ DATA template_categories 
-        mKeySql = queries.query_read_meta_template_categories()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTemplateCategories = [row[0] for row in r]
-        self.dicInVersOutDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
-        self.dicOutVersInDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
-        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées
-        
-        self.listCategorieOut, self.listCategorieIn = ventileCatInCatOut(self, mItemClicAssociation, self.mListTemplateCategories, self.mListCategories)
-
-        self.mTreeListeCategorieIn.clear()
-        self.mTreeListeCategorieOut.clear()
-        self.mTreeListeCategorieIn.affiche_CAT_IN_OUT(  self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut, action = True)
-        self.mTreeListeCategorieOut.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.mTreeListeCategorieIn, self.mTreeListeCategorieOut) # Uniquement pour instancier OneShot
-        #Efface les attributs
-        afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
-        return
-
-    #===============================              
-    def ihmsPlumeDel(self): 
-        current_item = self.currentItem()   #itemCourant
-        self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
-        return
-
-#========================================================     
-#========================================================     
 # Class pour le tree View Catégories IN and OUT 
 class TREEVIEW_CAT_IN_OUT(QTreeWidget):
     customMimeType = "text/plain"
@@ -1079,8 +1230,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
     #===============================              
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
+        self.setHeaderLabels([""])  
         self.setColumnCount(1)
-        self.setHeaderLabels(["Identifiant et chemin"])  
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
         self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to delete a Model / Categories association", None)         #Click droit pour supprimer une association Modèle / Catégories
 
@@ -1101,10 +1252,12 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         return
 
     #===============================              
-    def affiche_CAT_IN_OUT(self, _selfCreateTemplate, _mItemClicAssociation, self_Cat_In, self_Cat_Out, mDicInVersOutDesign = None, mDicOutVersInDesign = None, action = False) :
+    def affiche_CAT_IN_OUT(self, _selfCreateTemplate, _mItemClicAssociation, self_Cat_In, self_Cat_Out, mDicInVersOutDesign = None, mDicOutVersInDesign = None, action = False, header = None ) :
         self._selfCreateTemplate              = _selfCreateTemplate  
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource = returnIcon(_pathIcons + "/plume.svg")  
+        self.setHeaderLabels([ header[2] if header[0] == "CAT_IN" else header[1] ])  
+        self.groupBoxdisplayHelpFocus         = _selfCreateTemplate.groupBoxdisplayHelpFocus        
         self.groupBoxAttributsModeleCategorie = _selfCreateTemplate.groupBoxAttributsModeleCategorie
         self.mListTemplates                   = _selfCreateTemplate.mListTemplates
         self.mListTemplateCategories          = _selfCreateTemplate.mListTemplateCategories
@@ -1122,10 +1275,15 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         self.self_Cat_In                      = self_Cat_In   #self_Cat_In                                                     
         self.self_Cat_Out                     = self_Cat_Out  #self_Cat_Out 
         #---
-        self.listCategorieOut                 = _selfCreateTemplate.listCategorieOut   # Liste des catégories non utilisées en fonction du click                                                     
-        self.listCategorieIn                  = _selfCreateTemplate.listCategorieIn    # Liste des catégories utilisées en fonction du click 
+        self.listCategorieOut                 = _selfCreateTemplate.listCategorieOut # Liste des catégories non utilisées en fonction du click                                                     
+        self.listCategorieIn                  = _selfCreateTemplate.listCategorieIn  # Liste des catégories utilisées en fonction du click
+        self._origineHeaderLabelsIn           = self._selfCreateTemplate._origineHeaderLabelsIn 
+        self._origineHeaderLabelsOut          = self._selfCreateTemplate._origineHeaderLabelsOut 
         #---
-
+        self.labelDiskSaveAndReinit           = self._selfCreateTemplate.labelDiskSaveAndReinit 
+        self.buttonSaveOutVersIn              = self._selfCreateTemplate.buttonSaveOutVersIn 
+        self.buttonReinitOutVersIn            = self._selfCreateTemplate.buttonReinitOutVersIn 
+        self.buttonSaveAttribModeleCategorie                        = self._selfCreateTemplate.buttonSaveAttribModeleCategorie 
         #---
         _color_Out_InVersOut = QtGui.QBrush(QtGui.QColor(self.colorTemplateInVersOut))
         _color_In_OutVersIn  = QtGui.QBrush(QtGui.QColor(self.colorTemplateOutVersIn))
@@ -1148,7 +1306,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
          '_libelle'       : 'Distribution',                                    '_libelle'       : 'Point de contact', 
          '_clickAsso'     : '23',                                              '_clickAsso'     : '23',
          'mOrigine'       : 'CAT_IN',                                          'mOrigine'       : 'CAT_IN', 
-         'mNoeud'         : 'True'}                                            'mNoeud'         : 'True'}
+         'mNoeud'         : 'True',                                            'mNoeud'         : 'True',
+         '_local'         : 'local'}                                           '_local'         : 'shared'}
         """
         # ======================================
         # ======================================
@@ -1159,10 +1318,11 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
            _lib_Categories     = self.listCategorieIn[i]["_label"]                         # path origine 
            _libelle_Categories = self.listCategorieIn[i]["_libelle"]                       # deuxième colonne dans les treeview pour le In 
            _noeud              = self.listCategorieIn[i]["mNoeud"]                         # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+           _local              = self.listCategorieIn[i]["_local"]                         # si c'est une catgéogorie local ou shared 
            path_elements   = re.split(r'\s*[/]\s*', _lib_Categories)                                          #pour découper le chemin, 
            paths           = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
            _label = self.listCategorieIn[i]["_label"]  # Id Cat
-           paramQTreeWidgetItem = [ self.listCategorieIn[i]["_displayLibelle"], self.listCategorieIn[i]["_label"], self.listCategorieIn[i]["_libelle"], self.listCategorieIn[i]["_clickAsso"], self.listCategorieIn[i]["mOrigine"], self.listCategorieIn[i]["mNoeud"] ]
+           paramQTreeWidgetItem = [ self.listCategorieIn[i]["_displayLibelle"], self.listCategorieIn[i]["_label"], self.listCategorieIn[i]["_libelle"], self.listCategorieIn[i]["_clickAsso"], self.listCategorieIn[i]["mOrigine"], self.listCategorieIn[i]["mNoeud"], self.listCategorieIn[i]["_local"] ]
            nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
            self.design_Items(nodeUser, self.dicOutVersInDesign, _label, _color_In_OutVersIn) #For colorisation
            
@@ -1180,7 +1340,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                  _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, newNoeud, self.mListCategories)[0]
                  _lib_Categories_In     = _returnAttribCategorie["path"]
                  _libelle_Categories_In = _returnAttribCategorie["label"]
-                 _noeud                  = "True" if _returnAttribCategorie["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+                 _local_Categories_In   = _returnAttribCategorie["origin"]
+                 _noeud                 = "True" if _returnAttribCategorie["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
                  _path_elements_In   = re.split(r'\s*[/]\s*', _lib_Categories_In) #pour découper le chemin, 
 
                  if _returnAttribCategorie["origin"] == "local" :
@@ -1188,8 +1349,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                  else :
                     _In_displayLibelleNewNoeud = str(_path_elements_In[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_In) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
 
-                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _In_displayLibelleNewNoeud, _lib_Categories_In, _libelle_Categories_In, _mItemClicAssociation, 'CAT_IN', _noeud
-                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ]
+                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud, _local_CategoriesNewNoeud = _In_displayLibelleNewNoeud, _lib_Categories_In, _libelle_Categories_In, _mItemClicAssociation, 'CAT_IN', _noeud, _local_Categories_In
+                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud, _local_CategoriesNewNoeud ]
                  nodeUserNewNoeud = QTreeWidgetItem(None, paramQTreeWidgetItem)
                  self.design_Items(nodeUserNewNoeud, self.dicOutVersInDesign, _labelNewNoeud, _color_In_OutVersIn) #For colorisation
                  
@@ -1225,10 +1386,11 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
            _lib_Categories     = self.listCategorieOut[i]["_label"]                         # path origine 
            _libelle_Categories = self.listCategorieOut[i]["_libelle"]                       # deuxième colonne dans les treeview pour le In 
            _noeud              = self.listCategorieOut[i]["mNoeud"]                         # si c'est un noeud pour être utilisé dans le double click, In vers Out 
+           _local              = self.listCategorieOut[i]["_local"]                         # si c'est une catgéogorie local ou shared 
            path_elements   = re.split(r'\s*[/]\s*', _lib_Categories)                                          #pour découper le chemin, 
            paths           = [ ' / '.join(path_elements[:ii + 1] ) for ii in range(len(path_elements) - 1) ]  #Chemin des parents
            _label = self.listCategorieOut[i]["_label"]  # Id Cat
-           paramQTreeWidgetItem = [ self.listCategorieOut[i]["_displayLibelle"], self.listCategorieOut[i]["_label"], self.listCategorieOut[i]["_libelle"], self.listCategorieOut[i]["_clickAsso"], self.listCategorieOut[i]["mOrigine"], self.listCategorieOut[i]["mNoeud"] ]
+           paramQTreeWidgetItem = [ self.listCategorieOut[i]["_displayLibelle"], self.listCategorieOut[i]["_label"], self.listCategorieOut[i]["_libelle"], self.listCategorieOut[i]["_clickAsso"], self.listCategorieOut[i]["mOrigine"], self.listCategorieOut[i]["mNoeud"], self.listCategorieOut[i]["_local"] ]
            nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
            self.design_Items(nodeUser, self.dicInVersOutDesign, _label, _color_Out_InVersOut) #For colorisation
            
@@ -1246,6 +1408,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                  _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, newNoeud, self.mListCategories)[0]
                  _lib_Categories_out     = _returnAttribCategorie["path"]
                  _libelle_Categories_out = _returnAttribCategorie["label"]
+                 _local_Categories_out   = _returnAttribCategorie["origin"]
                  _noeud                  = "True" if _returnAttribCategorie["is_node"] else "False"  # si c'est un noeud pour être utilisé dans le double click, In vers Out 
                  _path_elements_out   = re.split(r'\s*[/]\s*', _lib_Categories_out) #pour découper le chemin, 
 
@@ -1254,8 +1417,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                  else :
                     _Out_displayLibelleNewNoeud = str(_path_elements_out[ -1 ]) + self.sepLeftTemplate + str(_libelle_Categories_out) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
 
-                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud = _Out_displayLibelleNewNoeud, _lib_Categories_out, _libelle_Categories_out, _mItemClicAssociation, 'CAT_OUT', _noeud
-                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud ]
+                 _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud, _local_CategoriesNewNoeud = _Out_displayLibelleNewNoeud, _lib_Categories_out, _libelle_Categories_out, _mItemClicAssociation, 'CAT_OUT', _noeud, _local_Categories_out
+                 paramQTreeWidgetItem = [ _displayLibelleNewNoeud, _labelNewNoeud, _libelleNewNoeud, _clickAssoNewNoeud, mOrigineNewNoeud, _noeudNewNoeud, _local_CategoriesNewNoeud ]
                  nodeUserNewNoeud = QTreeWidgetItem(None, paramQTreeWidgetItem)
                  self.design_Items(nodeUserNewNoeud, self.dicInVersOutDesign, _labelNewNoeud, _color_Out_InVersOut) #For colorisation
                  
@@ -1287,6 +1450,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         # ======================================
         self.self_Cat_In.itemClicked.connect( self.ihmsPlume_CAT_IN_OUT ) 
         self.self_Cat_Out.itemClicked.connect( self.ihmsPlume_CAT_IN_OUT ) 
+        self.self_Cat_In.currentItemChanged.connect( self.ihmsPlume_CAT_IN_OUTCurrentIndexChanged )                                                      
         return
 
     #===============================              
@@ -1298,7 +1462,31 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         if index.data(0) != None : 
            item = self.currentItem()
            if item != None :
-              mOrigine      = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
+              mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
+              mItemClicAssociation = item.data(3, QtCore.Qt.DisplayRole)  # id association
+              mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
+              #-------
+              self.groupBoxdisplayHelpFocus.setVisible(False)
+              if mOrigine == "CAT_IN" :
+                 if returnIfExisteCategorie(item) : 
+                    #Affiche les attributs
+                    afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
+                    #Initialise les attributs avec valeurs
+                    initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
+                    afficheLabelAndLibelle(self, True, True, True, True) 
+                 else :   
+                    #Affiche les attributs
+                    afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+                    afficheLabelAndLibelle(self, True, True, True, False) 
+                 # 
+              else :   
+                 #Efface les attributs
+                 afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+                 afficheLabelAndLibelle(self, True, True, True, False) 
+
+              self.buttonSaveOutVersIn.setEnabled(  False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
+              self.buttonReinitOutVersIn.setEnabled(False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
+              #-------
               self.treeMenu = QMenu(self)
               #-
               if returnIfExisteCategorie(item) : # Existe  
@@ -1326,7 +1514,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                     self.treeMenu.addAction(self.treeAction_add)
                     self.treeAction_add.setToolTip(treeAction_addTooltip)
                     self.treeAction_add.triggered.connect( lambda : self.moveCatContextuel(item, "libActionAndAction2") )
-              else : # N'existe pas don en italic ou gras ou gras italic  
+              else : # N'existe pas donc en italic ou gras ou gras italic  
                  if item.childCount() > 0 : 
                     menuIcon = returnIcon(os.path.dirname(__file__) + ("\\icons\\buttons\\deplace_right.svg" if mOrigine == "CAT_OUT" else "\\icons\\buttons\\deplace_left.svg"))           
                     libActionAndAction3 = QtWidgets.QApplication.translate("CreateTemplate_ui",  "Move subcategories", None)       
@@ -1340,23 +1528,38 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         return
         
     #===============================              
+    def ihmsPlume_CAT_IN_OUTCurrentIndexChanged(self, itemCurrent, itemPrevious):
+        if itemCurrent == None : return 
+        self.ihmsPlume_CAT_IN_OUT( itemCurrent, self.currentColumn() )
+        return
+        
+    #===============================              
     def ihmsPlume_CAT_IN_OUT(self, item, column): 
+        if item == None : return 
         mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
         mItemClicAssociation = item.data(3, QtCore.Qt.DisplayRole)  # id association
         mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocus.setVisible(False)
         if mOrigine == "CAT_IN" :
            if returnIfExisteCategorie(item) : 
               #Affiche les attributs
               afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
               #Initialise les attributs avec valeurs
               initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
+              afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, True) 
            else :   
               #Affiche les attributs
               afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+              afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, False) 
+           # 
         else :   
            #Efface les attributs
            afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+           afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, False) 
+
+        self._selfCreateTemplate.buttonSaveOutVersIn.setEnabled(  False if (len(self._selfCreateTemplate.dicInVersOutDesign) == 0 and len(self._selfCreateTemplate.dicOutVersInDesign) == 0) else True)
+        self._selfCreateTemplate.buttonReinitOutVersIn.setEnabled(False if (len(self._selfCreateTemplate.dicInVersOutDesign) == 0 and len(self._selfCreateTemplate.dicOutVersInDesign) == 0) else True)
         return
 
     #===============================              
@@ -1371,7 +1574,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         return _ret
 
     #===============================              
-    def fontionTritDict(self, value):
+    def fonctionTritDict(self, value):
         return value['_label']
 
     #===============================              
@@ -1388,12 +1591,14 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         # _clickAsso      Nom du modèle cliqué
         # mOrigine        Sens (In vers Out ou vice Versa
         # mNoeud          Est-ce un Noeud
+        # local ou shared
         mItemClic_displayLibelle_CAT_IN_OUT = item.data(0, QtCore.Qt.DisplayRole)  # Libellé affiché
         mItemClic_CAT_IN_OUT         = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
         mItemClic_libelle_CAT_IN_OUT = item.data(2, QtCore.Qt.DisplayRole)  # deuxième colonne dans les treeview
         mItemClicAssociation         = item.data(3, QtCore.Qt.DisplayRole)  # id association
         mOrigine                     = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
         mNoeud                       = item.data(5, QtCore.Qt.DisplayRole)  # si c'est un noeud
+        mlocal                       = item.data(6, QtCore.Qt.DisplayRole)  # local ou shared
         """
         EXEMPLE
         {'_displayLibelle': 'dcat:distribution *Distribution*',               {'_displayLibelle': 'dcat:contactPoint *Point de contact*', 
@@ -1401,7 +1606,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
          '_libelle'       : 'Distribution',                                    '_libelle'       : 'Point de contact', 
          '_clickAsso'     : '23',                                              '_clickAsso'     : '23',
          'mOrigine'       : 'CAT_IN',                                          'mOrigine'       : 'CAT_IN', 
-         'mNoeud'         : 'True'}                                            'mNoeud'         : 'True'}
+         'mNoeud'         : 'True',                                            'mNoeud'         : 'True',
+         '_local'         : 'local'}                                           '_local'         : 'shared'}
 
                     libActionAndAction = "Move category"         
                     libActionAndAction = "Move the category with its subcategories"         
@@ -1409,80 +1615,76 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                     libActionAndAction = "Move subcategories"        
 
         """
-        _dicTempoDelete = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
-                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, mOrigine,   mNoeud ] ))
-        _dicTempoAppend = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
-                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, ("CAT_OUT" if mOrigine == "CAT_IN" else "CAT_IN"), mNoeud] ))
-        print(libActionAndAction)
+        _dicTempoDeleteChildren = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud", "_local"], \
+                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, mOrigine, mNoeud, mlocal ] ))
+        _dicTempoAppendChildren = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud", "_local"], \
+                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, ("CAT_OUT" if mOrigine == "CAT_IN" else "CAT_IN"), mNoeud, mlocal] ))
         #if libActionAndAction in ["Move the category with its subcategories", "Move category", "Move subcategories"] :
         if libActionAndAction in ["libActionAndAction", "libActionAndAction1", "libActionAndAction3"] :
+
            if mOrigine == "CAT_IN" :
               # Gestion Item Click and Children 
-              _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieIn, "CAT_IN")
+              _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieIn, mOrigine)
               # 
               iElem = 0
               while iElem < len(_dicTempoAppendChildren) : 
                   self.listCategorieOut.append(_dicTempoAppendChildren[iElem])
-                  try :
-                     _index = self.listCategorieIn.index(_dicTempoDeleteChildren[iElem])
-                     del self.listCategorieIn[_index]
-                  except : pass      
+                  _index = returnIndexInListeCategorie( _dicTempoAppendChildren[iElem]["_label"], self.listCategorieIn )
+                  del self.listCategorieIn[_index]
 
-                  self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
-                  if _dicTempoAppendChildren[iElem]["_label"] in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+                  self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]] = (mItemClicAssociation, mlocal) 
+                  if _dicTempoAppendChildren[iElem]["_label"] in self.dicOutVersInDesign : del self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
                   iElem += 1
               # Gestion Item Click and Children 
               # -
-           else :   
+           elif mOrigine == "CAT_OUT" :   
               # Gestion Item Click and Children 
-              _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieOut, "CAT_OUT")
+              _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieOut, mOrigine)
               # 
               iElem = 0
               while iElem < len(_dicTempoAppendChildren) : 
                   self.listCategorieIn.append(_dicTempoAppendChildren[iElem])
-                  try :
-                     _index = self.listCategorieOut.index(_dicTempoDeleteChildren[iElem])
-                     del self.listCategorieOut[_index]
-                  except : pass      
+                  _index = returnIndexInListeCategorie( _dicTempoAppendChildren[iElem]["_label"], self.listCategorieOut )
+                  del self.listCategorieOut[_index]
 
-                  self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
+                  self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]] = (mItemClicAssociation, mlocal)
                   if _dicTempoAppendChildren[iElem]["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
                   iElem += 1
               # Gestion Item Click and Children 
-              # -
 
-        #elif libActionAndAction == "Move the category without its subcategories" : 
         elif libActionAndAction == "libActionAndAction2" :
-           if mOrigine == "CAT_IN" :
-              # 
-              self.listCategorieOut.append(_dicTempoAppend)
-              try :
-                 _index = self.listCategorieIn.index(_dicTempoDelete)
-                 del self.listCategorieIn[_index]
-              except : pass      
 
-              self.dicInVersOutDesign[_dicTempoAppend["_label"]] = mItemClicAssociation
-              if _dicTempoAppend["_label"] in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_dicTempoAppend["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+           if mOrigine == "CAT_IN" :
+              self.listCategorieOut.append(_dicTempoAppendChildren)
+              _index = returnIndexInListeCategorie( _dicTempoAppendChildren["_label"], self.listCategorieIn )
+              del self.listCategorieIn[_index]
+
+              self.dicInVersOutDesign[_dicTempoAppendChildren["_label"]] = (mItemClicAssociation, mlocal) 
+              if _dicTempoAppendChildren["_label"] in self.dicOutVersInDesign : del self.dicOutVersInDesign[_dicTempoAppendChildren["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
               # Gestion Item Click and Children 
               # -
-           else :   
-              self.listCategorieIn.append(_dicTempoAppend)
-              try :
-                 _index = self.listCategorieOut.index(_dicTempoDelete)
-                 del self.listCategorieOut[_index]
-              except : pass      
+           elif mOrigine == "CAT_OUT" :   
+              self.listCategorieIn.append(_dicTempoAppendChildren)
+              _index = returnIndexInListeCategorie( _dicTempoAppendChildren["_label"], self.listCategorieOut )
+              del self.listCategorieOut[_index]
 
-              self.dicOutVersInDesign[_dicTempoAppend["_label"]] = mItemClicAssociation
-              if _dicTempoAppend["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppend["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
-              # -
-        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fontionTritDict, reverse=False)
-        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fontionTritDict, reverse=False)
+              self.dicOutVersInDesign[_dicTempoAppendChildren["_label"]] = (mItemClicAssociation, mlocal)
+              if _dicTempoAppendChildren["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppendChildren["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+              # Gestion Item Click and Children 
+
+        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fonctionTritDict, reverse=False)
+        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fonctionTritDict, reverse=False)
         # -
         self.self_Cat_In.clear()
         self.self_Cat_Out.clear()
-        self.self_Cat_In.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out, action = True)
+        self.self_Cat_In.affiche_CAT_IN_OUT(  self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out, action = True, header = self._origineHeaderLabelsIn)
+        self.self_Cat_Out.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out,                header = self._origineHeaderLabelsOut) # Uniquement pour instancier OneShot
         #Efface les attributs
         afficheAttributs( self._selfCreateTemplate, self._selfCreateTemplate.groupBoxAttributsModeleCategorie, self._selfCreateTemplate.mapping_template_categories, False )
+        #
+        afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, False) 
+        self._selfCreateTemplate.buttonSaveOutVersIn.setEnabled(  False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
+        self._selfCreateTemplate.buttonReinitOutVersIn.setEnabled(False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
         return
         
     #===============================              
@@ -1499,12 +1701,14 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         # _clickAsso      Nom du modèle cliqué
         # mOrigine        Sens (In vers Out ou vice Versa
         # mNoeud          Est-ce un Noeud
+        # local ou shared
         mItemClic_displayLibelle_CAT_IN_OUT = item.data(0, QtCore.Qt.DisplayRole)  # Libellé affiché
         mItemClic_CAT_IN_OUT         = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
         mItemClic_libelle_CAT_IN_OUT = item.data(2, QtCore.Qt.DisplayRole)  # deuxième colonne dans les treeview
         mItemClicAssociation         = item.data(3, QtCore.Qt.DisplayRole)  # id association
         mOrigine                     = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
         mNoeud                       = item.data(5, QtCore.Qt.DisplayRole)  # si c'est un noeud
+        mlocal                       = item.data(6, QtCore.Qt.DisplayRole)  # local ou shared
         """
         EXEMPLE
         {'_displayLibelle': 'dcat:distribution *Distribution*',               {'_displayLibelle': 'dcat:contactPoint *Point de contact*', 
@@ -1512,55 +1716,54 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
          '_libelle'       : 'Distribution',                                    '_libelle'       : 'Point de contact', 
          '_clickAsso'     : '23',                                              '_clickAsso'     : '23',
          'mOrigine'       : 'CAT_IN',                                          'mOrigine'       : 'CAT_IN', 
-         'mNoeud'         : 'True'}                                            'mNoeud'         : 'True'}
+         'mNoeud'         : 'True',                                            'mNoeud'         : 'True',
+         '_local'         : 'local'}                                           '_local'         : 'shared'}
         """
-        _dicTempoDelete = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
-                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, mOrigine,   mNoeud ] ))
-        _dicTempoAppend = dict(zip( ["_displayLibelle",                  "_label",              "_libelle",                  "_clickAsso",         "mOrigine", "mNoeud"], \
-                              [mItemClic_displayLibelle_CAT_IN_OUT, mItemClic_CAT_IN_OUT, mItemClic_libelle_CAT_IN_OUT, mItemClicAssociation, ("CAT_OUT" if mOrigine == "CAT_IN" else "CAT_IN"), mNoeud] ))
-
+        _dicTempoAppendChildren, _dicTempoDeleteChildren = [], []
         if mOrigine == "CAT_IN" :
            # Gestion Item Click and Children 
-           _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieIn, "CAT_IN")
+           _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieIn, mOrigine)
            # 
            iElem = 0
            while iElem < len(_dicTempoAppendChildren) : 
                self.listCategorieOut.append(_dicTempoAppendChildren[iElem])
-               try :
-                  _index = self.listCategorieIn.index(_dicTempoDeleteChildren[iElem])
-                  del self.listCategorieIn[_index]
-               except : pass      
+               _index = returnIndexInListeCategorie( _dicTempoAppendChildren[iElem]["_label"], self.listCategorieIn )
+               del self.listCategorieIn[_index]
 
-               self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
-               if _dicTempoAppendChildren[iElem]["_label"] in self.dicOutVersInDesign :  del self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
+               self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]] = (mItemClicAssociation, mlocal) 
+               if _dicTempoAppendChildren[iElem]["_label"] in self.dicOutVersInDesign : del self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
                iElem += 1
            # Gestion Item Click and Children 
            # -
-        else :   
+        elif mOrigine == "CAT_OUT" :   
            # Gestion Item Click and Children 
-           _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieOut, "CAT_OUT")
+           _dicTempoAppendChildren, _dicTempoDeleteChildren = returnListChildren(self, mItemClic_CAT_IN_OUT, self.listCategorieOut, mOrigine)
            # 
            iElem = 0
            while iElem < len(_dicTempoAppendChildren) : 
                self.listCategorieIn.append(_dicTempoAppendChildren[iElem])
-               try :
-                  _index = self.listCategorieOut.index(_dicTempoDeleteChildren[iElem])
-                  del self.listCategorieOut[_index]
-               except : pass      
+               _index = returnIndexInListeCategorie( _dicTempoAppendChildren[iElem]["_label"], self.listCategorieOut )
+               del self.listCategorieOut[_index]
 
-               self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]] = mItemClicAssociation
+               self.dicOutVersInDesign[_dicTempoAppendChildren[iElem]["_label"]] = (mItemClicAssociation, mlocal)
                if _dicTempoAppendChildren[iElem]["_label"] in self.dicInVersOutDesign :  del self.dicInVersOutDesign[_dicTempoAppendChildren[iElem]["_label"]]   # Suppprimer la clé dans l'autre dictionnaire
                iElem += 1
            # Gestion Item Click and Children 
            # -
-        self.listCategorieIn  = sorted(self.listCategorieIn, key = self.fontionTritDict, reverse=False)
-        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fontionTritDict, reverse=False)
+           
+        self.listCategorieIn  = sorted(self.listCategorieIn,  key = self.fonctionTritDict, reverse=False)
+        self.listCategorieOut = sorted(self.listCategorieOut, key = self.fonctionTritDict, reverse=False)
         # -
         self.self_Cat_In.clear()
         self.self_Cat_Out.clear()
-        self.self_Cat_In.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out, action = True)
+        self.self_Cat_In.affiche_CAT_IN_OUT(  self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out, action = True, header = self._origineHeaderLabelsIn)
+        self.self_Cat_Out.affiche_CAT_IN_OUT( self, mItemClicAssociation, self.self_Cat_In, self.self_Cat_Out,                header = self._origineHeaderLabelsOut) # Uniquement pour instancier OneShot
         #Efface les attributs
         afficheAttributs( self._selfCreateTemplate, self._selfCreateTemplate.groupBoxAttributsModeleCategorie, self._selfCreateTemplate.mapping_template_categories, False )
+        #
+        afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, False) 
+        self._selfCreateTemplate.buttonSaveOutVersIn.setEnabled(  False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
+        self._selfCreateTemplate.buttonReinitOutVersIn.setEnabled(False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
         return
 
     #===============================              
@@ -1718,6 +1921,7 @@ class TREEVIEWMODELE(QTreeWidget):
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, False ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(False)
+        self._selfCreateTemplate.flagNewModele = True
         return
 
 #========================================================     
@@ -1923,6 +2127,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, False ) 
         self._selfCreateTemplate.buttonAddCategorie.setVisible(False)
+        self._selfCreateTemplate.flagNewCategorie = True
         return
 
 #========================================================     
@@ -2064,4 +2269,5 @@ class TREEVIEWONGLET(QTreeWidget):
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsOnglets, self.mapping_tabs, False ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(False)
+        self._selfCreateTemplate.flagNewOnglet = True
         return

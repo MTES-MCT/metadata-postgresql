@@ -3,7 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import ( QMessageBox, QFileDialog, QWidget, QDockWidget, QTreeView, QTreeWidget, QDockWidget, QTreeView, QWidget ) 
-from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt, QFile, QSize )
+from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt, QFile, QSize, QEvent )
 
 from PyQt5.QtGui import ( QIcon, QKeySequence )
                      
@@ -74,11 +74,50 @@ def genereButtonsWithDict(dicParamButton ) :
            if k == "shorCutWidget" : _button.setShortcut(QKeySequence(v))
     return _button
 
+#==========================         
+class GenereButtonsWithDictWithEvent( ) :
+    def __init__(self, _selfCreateTemplate, dicParamButton) :
+        self._selfCreateTemplate = _selfCreateTemplate
+        self.dicParamButton = dicParamButton
+        self.setupUi()
+
+    def setupUi(self) :
+        for k, v in self.dicParamButton.items() :
+            if v != "" :
+               if k == "typeWidget"    : _button = v
+               if k == "qSizePolicy"   : _button.setSizePolicy(v, v)
+               if k == "iconWidget"    : _button.setIcon(QIcon(v))
+               if k == "nameWidget"    : _button.setObjectName(v)
+               if k == "toolTipWidget" : _button.setToolTip(v)
+               if k == "actionWidget"  : _button.clicked.connect(v)
+               if k == "autoRaise"     : _button.setAutoRaise(v)
+               if k == "checkable"     : _button.setCheckable(v)
+               if k == "checked"       : _button.setChecked(v)
+               #-- combobox
+               if k == "listItems"     : _button.addItems(v)
+               if k == "currentText"   : _button.setCurrentText(v)
+               #-- Text
+               if k == "textWidget"    : _button.setText(v)
+               #-- StyleSheet
+               if k == "styleSheet"    : _button.setStyleSheet(v)
+               #-- Raccourci
+               if k == "shorCutWidget" : _button.setShortcut(QKeySequence(v))
+        _button.setFocusPolicy(Qt.StrongFocus)
+        _button.focusInEvent = self.displayHelpWithFocus
+        self._button = _button
+        
+    def displayHelpWithFocus(self, event) :
+        if event.type() == QEvent.FocusIn:
+           self._selfCreateTemplate.groupBoxdisplayHelpFocus.setVisible(True)
+           #           
+           mText = "je suis sur le focus de la zone " + str(self._button.objectName() )
+           self._selfCreateTemplate.zoneDisplayHelpFocus.setText(mText)
+       
 #==========================
 def ifActivateRightsToManageModels(_self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
     mKeySql = queries.query_is_template_admin()
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(_self, _self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    #r = False # for Test A supprimer
+    r = False # for Test A supprimer
     return r
 
 #==========================
@@ -1030,7 +1069,7 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutreColor["geomColor"]                   = "#a38e63"
        mDicAutreColor["opacity"]                     = "#ddddbe"
        mDicAutreColor["colorTemplateInVersOut"]      = "#ddddbe"
-       mDicAutreColor["colorTemplateOutVersIn"]      = "#fffab9"
+       mDicAutreColor["colorTemplateOutVersIn"]      = "#ddddbe"
        mDicAutreColor["sepLeftTemplate"]             = "("
        mDicAutreColor["sepRightTemplate"]            = ")"
        mDicAutreColor["fontCategorieInVersOut"]      = 2
