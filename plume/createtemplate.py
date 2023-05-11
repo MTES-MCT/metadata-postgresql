@@ -168,7 +168,7 @@ class Ui_Dialog_CreateTemplate(object):
         #-
         self.buttonReinitOutVersIn = QtWidgets.QToolButton()
         self.buttonReinitOutVersIn.setObjectName("buttonReinitOutVersIn")
-        self.buttonReinitOutVersIn.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\reinit.svg"))
+        self.buttonReinitOutVersIn.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\reset.svg"))
         mbuttonReinitOutVersIn = QtWidgets.QApplication.translate("CreateTemplate_ui", "Resetting the selected model.", None)  #Réinitialisation du modèle sélectionné.
         self.buttonReinitOutVersIn.setToolTip(mbuttonReinitOutVersIn)
         self.buttonReinitOutVersIn.clicked.connect(lambda : self.functionUpdateModeleCategorie("buttonReinitOutVersIn"))  
@@ -1583,7 +1583,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource = returnIcon(_pathIcons + "/plume.svg")  
         _pathIcons2 = os.path.dirname(__file__) + "/icons/general"
-        iconSource2 = returnIcon(_pathIcons2 + "/verrou.svg")  
+        iconSource2 = returnIcon(_pathIcons2 + "/lock.svg")  
 
         # _displayLibelle Libellé affiché de la catégorie (colonne 0 in QtreeWidget)
         # _label          Nom de la catégorie             (colonne 1 in QtreeWidget)
@@ -1693,7 +1693,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource = returnIcon(_pathIcons + "/plume.svg")  
         _pathIcons2 = os.path.dirname(__file__) + "/icons/general"
-        iconSource2 = returnIcon(_pathIcons2 + "/verrou.svg")  
+        iconSource2 = returnIcon(_pathIcons2 + "/lock.svg")  
 
         # _displayLibelle Libellé affiché de la catégorie (colonne 0 in QtreeWidget)
         # _label          Nom de la catégorie             (colonne 1 in QtreeWidget)
