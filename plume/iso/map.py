@@ -389,7 +389,11 @@ class IsoToDcat:
             ):
                 geo_iris = find_iri(
                     id_elem,
-                    './gmd:code/gco:CharacterString',
+                    [
+                        './gmx:Anchor@xlink:href',
+                        './gmx:Anchor',
+                        './gco:CharacterString'
+                    ],
                     self.datasetid,
                     DCT.spatial,
                     thesaurus=[
@@ -400,7 +404,6 @@ class IsoToDcat:
                 )
                 if geo_iris:
                     l += geo_iris
-                    geo_label = None
                     continue
 
                 node = first_node if num_id == 0 else BNode()
@@ -453,19 +456,20 @@ class IsoToDcat:
                     f'{west} {north}))'
                 )
                 node = first_node if num_geo == 0 else BNode()
-                l += [
-                    (node, DCT.type, DCT.Location),
-                    (node, DCAT.bbox, Literal(bbox, datatype=GSP.wktLiteral))
-                ]
+                l.append((node, DCAT.bbox, Literal(bbox, datatype=GSP.wktLiteral)))
                 if num_id == 0 or num_geo > 0:
+                    l.append((node, DCT.type, DCT.Location))
                     l.append((self.datasetid, DCT.spatial, node))
                 num_geo += 1
 
             if geo_label:
                 if num_id + num_geo == 0:
+                    l.append((first_node, DCT.type, DCT.Location))
                     l.append((self.datasetid, DCT.spatial, first_node))
                 if num_id > 1 or num_geo > 1:
                     node = BNode()
+                    l.append((node, DCT.type, DCT.Location))
+                    l.append((self.datasetid, DCT.spatial, node))
                 else:
                     node = first_node
                 l.append(
