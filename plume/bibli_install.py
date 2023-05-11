@@ -3,12 +3,13 @@
 import os.path
 import subprocess
 import time
-from qgis.core import QgsSettings
+from qgis.core import ( QgsSettings, QgsApplication )
 from PyQt5 import QtCore, QtGui, QtWidgets 
 from plume.config import (PLUME_VERSION) 
 from PyQt5.QtWidgets import ( QMessageBox, QProgressDialog, QPushButton )
 from qgis.core import QgsSettings
 import qgis
+import os
  
 #==================================================
 def manageLibrary() :
@@ -43,6 +44,7 @@ def manageLibrary() :
           import plume.rdf.rdflib
        except:
           update_lib = True
+
     #-- #issue 125                 
     if (mVersionPlume != mVersionPlumeBibli or mVersionPlume != mPython_version) or update_lib :
        mPath = os.path.dirname(__file__)
@@ -103,11 +105,15 @@ def manageLibrary() :
     return
     
 #==================================================
+def getPathPip() :
+    return dict( os.environ, PATH = os.environ['PATH'] + ( (";" + QgsApplication.systemEnvVars()['PYTHONHOME'].replace("\\","/") + "/scripts") if 'PYTHONHOME' in QgsApplication.systemEnvVars() else "" ) )
+
+#==================================================
 def updatePip() :
     si = subprocess.STARTUPINFO() 
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '0', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, startupinfo=si) 
+       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '0', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, startupinfo=si, env = getPathPip()) 
     except subprocess.CalledProcessError as err :
        return False
     return True
@@ -117,7 +123,7 @@ def updateRequierement(mPathPerso) :
     si = subprocess.STARTUPINFO() 
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '-r', mPathPerso], check=True, startupinfo=si)
+       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '-r', mPathPerso], check=True, startupinfo=si, env = getPathPip() )
     except subprocess.CalledProcessError as err:
        return  False
     return True
