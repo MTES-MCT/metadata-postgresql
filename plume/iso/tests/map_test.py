@@ -9,8 +9,9 @@ from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
     IsoToDcat, normalize_language, find_values
 )
-from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS
+from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS, SKOS
 from plume.rdf.rdflib import Literal, URIRef
+from plume.rdf.metagraph import metagraph_from_iso
 
 class IsoMapTestCase(unittest.TestCase):
     
@@ -644,7 +645,7 @@ class IsoToDcatTestCase(unittest.TestCase):
                 itd = IsoToDcat(sample, datasetid=dataset_id)
                 self.assertTrue(itd.map_description)
 
-    def test_map_location(self):
+    def test_map_location_basic(self):
         """Récupération du rectangle d'emprise du jeu de données dans les fichiers de test."""
         dataset_id = DatasetId()
         for sample_name in self.ALL:
@@ -652,6 +653,27 @@ class IsoToDcatTestCase(unittest.TestCase):
                 sample = self.ALL[sample_name]
                 itd = IsoToDcat(sample, datasetid=dataset_id)
                 self.assertTrue(itd.map_location)
+    
+    def test_map_location_ign(self):
+        """Contrôle des valeurs obtenues lors de la récupération du rectangle d'emprise dans le fichier de tests IGN."""
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        dataset_id = metagraph.datasetid
+        spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_nodes), 13)
+        glp_node = None
+        for node in spatial_nodes:
+            if (node, DCT.identifier, Literal('GLP')) in metagraph:
+                glp_node = node
+        self.assertIsNotNone(glp_node)
+        self.assertTrue((glp_node, DCAT.bbox, None) in metagraph)
+        self.assertTrue((glp_node, SKOS.prefLabel, Literal('Guadeloupe', lang='fr')) in metagraph)
+        self.assertTrue(
+            (
+                glp_node,
+                SKOS.inScheme,
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection/CountryCodeAlpha3')
+            ) in metagraph
+        )
 
     def test_metadata_language(self):
         """Récupération de la langue des métadonnées dans les fichiers de test."""
