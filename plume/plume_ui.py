@@ -192,9 +192,9 @@ class Ui_Dialog_plume(object):
         _iconSourcesSave          = _pathIcons + "/save.svg"
         _iconSourcesTemplate      = _pathIcons + "/template.svg"
         _iconSourcesTranslation   = _pathIcons + "/translation.svg"
-        _iconSourcesParam         = _pathIcons + "/custom.svg"
+        _iconSourcesParam         = _pathIcons + "/configuration.svg"
         _iconSourcesInterrogation = _pathIcons + "/info.svg"
-        _iconSourcesVerrou        = _pathIcons + "/verrou.svg"
+        _iconSourcesVerrou        = _pathIcons + "/lock.svg"
         _pathIconsQComboBox       = os.path.dirname(__file__) + "/icons/buttons"
         _iconQComboBox            = _pathIconsQComboBox + "/drop_down_arrow.svg"
         self._iconQComboBox = _iconQComboBox.replace("\\","/")
