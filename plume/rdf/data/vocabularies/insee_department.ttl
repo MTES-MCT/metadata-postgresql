@@ -1,0 +1,513 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://id.insee.fr/geo/departement/01> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/84680e6f-2e99-44c9-a9ba-2e96a2ae48b7> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Ain"@fr .
+
+<http://id.insee.fr/geo/departement/02> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/8b195d1f-8676-4c06-873c-ee5b6d66a23f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Aisne"@fr .
+
+<http://id.insee.fr/geo/departement/03> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/2cac54dd-bfc6-42f2-a14e-9848aca615f8> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Allier"@fr .
+
+<http://id.insee.fr/geo/departement/04> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/179b6382-6cbe-4dce-84c6-babab2ab4072> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Alpes-de-Haute-Provence"@fr .
+
+<http://id.insee.fr/geo/departement/05> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/4b0642d5-8596-4c7c-8d44-9d8c011a295d> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Hautes-Alpes"@fr .
+
+<http://id.insee.fr/geo/departement/06> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/f18b4c44-0711-4562-975f-3031491da615> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Alpes-Maritimes"@fr .
+
+<http://id.insee.fr/geo/departement/07> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/638877e3-b623-4f0c-9edc-0e39e93a944f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Ardèche"@fr .
+
+<http://id.insee.fr/geo/departement/08> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/db31b809-e602-44f6-a7c5-05907af2bd36> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Ardennes"@fr .
+
+<http://id.insee.fr/geo/departement/09> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/ed312031-2409-431a-b1d0-7f2c3c317395> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Ariège"@fr .
+
+<http://id.insee.fr/geo/departement/10> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/a8e76039-fbda-4ad3-b71c-36142ac7d84f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Aube"@fr .
+
+<http://id.insee.fr/geo/departement/11> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/87930345-b296-42d8-bd65-8bcfec80b3fa> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Aude"@fr .
+
+<http://id.insee.fr/geo/departement/12> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/1624ef06-3f52-4346-a05b-a4f9d430fd92> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Aveyron"@fr .
+
+<http://id.insee.fr/geo/departement/13> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/076b614a-0df0-4058-8cae-b768480a673f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Bouches-du-Rhône"@fr .
+
+<http://id.insee.fr/geo/departement/14> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/b01dce92-b91f-4648-80e7-536bd1823c2c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Calvados"@fr .
+
+<http://id.insee.fr/geo/departement/15> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/aa5572b4-ba15-41d8-a0de-7dd90d7ec39b> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Cantal"@fr .
+
+<http://id.insee.fr/geo/departement/16> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/c1632a2f-4bc8-4397-85f8-0c6ab21cb64b> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Charente"@fr .
+
+<http://id.insee.fr/geo/departement/17> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/7a8b72df-7547-41d9-9477-a8eb01c10804> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Charente-Maritime"@fr .
+
+<http://id.insee.fr/geo/departement/18> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/7c2fd9ef-83e9-4fe0-bcf2-1b062042ac7a> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Cher"@fr .
+
+<http://id.insee.fr/geo/departement/19> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/d0e664ba-7dd4-4249-b005-4704fd8d8104> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Corrèze"@fr .
+
+<http://id.insee.fr/geo/departement/21> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/5a1a6fc3-f1bb-4d70-a0d5-3673d621f1ce> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Côte-d'Or"@fr .
+
+<http://id.insee.fr/geo/departement/22> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/f07f6a49-9dce-4f2d-a99e-5d61eedf2827> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Côtes-d'Armor"@fr .
+
+<http://id.insee.fr/geo/departement/23> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/353873a3-8a44-4e7a-860a-739e511f3ee7> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Creuse"@fr .
+
+<http://id.insee.fr/geo/departement/24> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/e27cdbdb-cc4f-467f-9f8c-d60b799da7e5> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Dordogne"@fr .
+
+<http://id.insee.fr/geo/departement/25> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/02a64b31-3d10-4784-84ec-2b75d725d602> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Doubs"@fr .
+
+<http://id.insee.fr/geo/departement/26> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/f4e636cd-22c9-4b62-817d-b384965bcf1b> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Drôme"@fr .
+
+<http://id.insee.fr/geo/departement/27> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/3038a0ec-c80a-4928-afc3-62a4ee9a6c5d> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Eure"@fr .
+
+<http://id.insee.fr/geo/departement/28> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/93aca780-1cb8-45f6-9fd7-3f5c3dfe8dbc> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Eure-et-Loir"@fr .
+
+<http://id.insee.fr/geo/departement/29> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/c9a64ff2-3e80-44b3-8224-a322cb838f30> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Finistère"@fr .
+
+<http://id.insee.fr/geo/departement/2A> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/9de761ab-a07a-4ba9-934d-6f753129b924> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Corse-du-Sud"@fr .
+
+<http://id.insee.fr/geo/departement/2B> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/cff23136-dbda-4870-905c-58942c3bc9be> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Corse"@fr .
+
+<http://id.insee.fr/geo/departement/30> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/b6168b3e-9c83-4c64-9595-c1c1926b522f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Gard"@fr .
+
+<http://id.insee.fr/geo/departement/31> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/c77569fe-6c4a-42c7-88af-d7145b3aa48f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Garonne"@fr .
+
+<http://id.insee.fr/geo/departement/32> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/7357e721-4730-4635-9fe8-4899b0261e5b> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Gers"@fr .
+
+<http://id.insee.fr/geo/departement/33> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/bee9c7ed-221a-46be-9e42-8b815ce285c4> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Gironde"@fr .
+
+<http://id.insee.fr/geo/departement/34> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/a82518c0-bced-4c05-86a3-8d61efcaa232> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Hérault"@fr .
+
+<http://id.insee.fr/geo/departement/35> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/0ccd93c6-4740-4a16-9487-8e82be46a1c7> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Ille-et-Vilaine"@fr .
+
+<http://id.insee.fr/geo/departement/36> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/1881a325-4331-41ba-b807-6ac5deb9dced> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Indre"@fr .
+
+<http://id.insee.fr/geo/departement/37> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/6f46003b-330d-4996-b393-be225f468927> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Indre-et-Loire"@fr .
+
+<http://id.insee.fr/geo/departement/38> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/3a4bb8dc-71a7-4473-8a59-d138d8b1ef50> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Isère"@fr .
+
+<http://id.insee.fr/geo/departement/39> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/be208a7a-533a-403e-9373-db803fc6728b> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Jura"@fr .
+
+<http://id.insee.fr/geo/departement/40> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/375673af-f735-4304-8655-01964a7be12a> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Landes"@fr .
+
+<http://id.insee.fr/geo/departement/41> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/183f5512-c89b-4479-979e-a944870addb5> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Loir-et-Cher"@fr .
+
+<http://id.insee.fr/geo/departement/42> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/dbc42c2f-cc52-46a1-84c5-5ab59c44ec03> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Loire"@fr .
+
+<http://id.insee.fr/geo/departement/43> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/8c3901ab-9f83-411c-9679-ba22b220f339> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Loire"@fr .
+
+<http://id.insee.fr/geo/departement/44> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/4761bb5b-2684-47af-809d-5459d8539302> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Loire-Atlantique"@fr .
+
+<http://id.insee.fr/geo/departement/45> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/b5ead09a-5263-4635-94ee-aa7e1ccbd41e> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Loiret"@fr .
+
+<http://id.insee.fr/geo/departement/46> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/dbb175d9-0997-44bc-9d3c-a6f17e61f141> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Lot"@fr .
+
+<http://id.insee.fr/geo/departement/47> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/7fe0dec5-86cb-4437-bed7-b729633abec3> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Lot-et-Garonne"@fr .
+
+<http://id.insee.fr/geo/departement/48> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/ae1df568-6374-49c3-b464-deaf06c460b3> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Lozère"@fr .
+
+<http://id.insee.fr/geo/departement/49> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/e7f49648-56ed-41ab-a70b-a612422799b7> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Maine-et-Loire"@fr .
+
+<http://id.insee.fr/geo/departement/50> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/4c8cb5a2-6cda-4ab6-b180-c496e6d3d3dd> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Manche"@fr .
+
+<http://id.insee.fr/geo/departement/51> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/5bd27c2f-eb0c-4ed5-9be1-5fa3dfd63e6a> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Marne"@fr .
+
+<http://id.insee.fr/geo/departement/52> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/cbd705a7-0d80-4bde-a073-d3e64b479bae> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Marne"@fr .
+
+<http://id.insee.fr/geo/departement/53> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/c19482f0-6dd0-4cde-939f-0bc48553c157> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Mayenne"@fr .
+
+<http://id.insee.fr/geo/departement/54> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/761f468e-c041-4626-9b54-524d48de532b> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Meurthe-et-Moselle"@fr .
+
+<http://id.insee.fr/geo/departement/55> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/a31c20f1-29f2-4a58-970a-9b91ae8aace2> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Meuse"@fr .
+
+<http://id.insee.fr/geo/departement/56> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/2b16a315-574f-4452-9c55-7f7ca012d7d7> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Morbihan"@fr .
+
+<http://id.insee.fr/geo/departement/57> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/829f6473-e54d-496f-9c7d-bd34acdf212c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Moselle"@fr .
+
+<http://id.insee.fr/geo/departement/58> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/3feb9f7f-c208-4bbf-8f5b-46c61dbcf217> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Nièvre"@fr .
+
+<http://id.insee.fr/geo/departement/59> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/1cabcdea-d4dc-4df1-96c2-ed1db0fa594c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Nord"@fr .
+
+<http://id.insee.fr/geo/departement/60> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/488d603e-1ad3-4135-97df-ea01535d63d2> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Oise"@fr .
+
+<http://id.insee.fr/geo/departement/61> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/b2d181d4-f75a-4fb1-8e27-dc22cb2c3468> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Orne"@fr .
+
+<http://id.insee.fr/geo/departement/62> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/bf898ead-5a21-4964-aab6-8c51ffd5d89e> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Pas-de-Calais"@fr .
+
+<http://id.insee.fr/geo/departement/63> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/a5aedd31-9278-4505-850d-641997047b42> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Puy-de-Dôme"@fr .
+
+<http://id.insee.fr/geo/departement/64> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/4723b562-b592-42c7-b624-34830fc19296> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Pyrénées-Atlantiques"@fr .
+
+<http://id.insee.fr/geo/departement/65> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/209672ec-0451-419e-adc0-619cadc2f298> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Hautes-Pyrénées"@fr .
+
+<http://id.insee.fr/geo/departement/66> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/85f92734-0bae-4812-b859-9b1d0422aeac> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Pyrénées-Orientales"@fr .
+
+<http://id.insee.fr/geo/departement/67> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/e62b35df-f168-4dfa-b60f-ef6cdb3279a0> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Bas-Rhin"@fr .
+
+<http://id.insee.fr/geo/departement/68> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/f431fd7c-5ec4-43d7-949d-f601ea03397a> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haut-Rhin"@fr .
+
+<http://id.insee.fr/geo/departement/69> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/8782c0ee-dc75-4fad-aac1-7470109fb0fa> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Rhône"@fr .
+
+<http://id.insee.fr/geo/departement/70> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/28ef2156-9a14-4d9d-a34b-5a4547dcd770> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Saône"@fr .
+
+<http://id.insee.fr/geo/departement/71> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/0285b2e7-0593-4854-9a47-120d5768a79d> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Saône-et-Loire"@fr .
+
+<http://id.insee.fr/geo/departement/72> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/17b2bca9-bb15-457b-834b-ceab9041240c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Sarthe"@fr .
+
+<http://id.insee.fr/geo/departement/73> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/50590a56-da61-4963-9c86-432ed63dc083> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Savoie"@fr .
+
+<http://id.insee.fr/geo/departement/74> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/8dfbed51-33ee-4f64-9a1b-476077a450b4> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Savoie"@fr .
+
+<http://id.insee.fr/geo/departement/75> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/973f58f8-e45f-468d-b91f-03d28bcd08ee> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Paris"@fr .
+
+<http://id.insee.fr/geo/departement/76> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/58a92569-96cf-4a17-b1cc-1a4788bda23f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Seine-Maritime"@fr .
+
+<http://id.insee.fr/geo/departement/77> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/d4da996f-4159-43df-b2ec-ee107c9a1010> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Seine-et-Marne"@fr .
+
+<http://id.insee.fr/geo/departement/78> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/693c468c-26e6-4fc4-98c1-bba143f7b8d3> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Yvelines"@fr .
+
+<http://id.insee.fr/geo/departement/79> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/260e696c-f34e-429c-82c5-3c9a367d4f7f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Deux-Sèvres"@fr .
+
+<http://id.insee.fr/geo/departement/80> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/c2c4a2e8-8d4c-4dd8-be3c-a05f1c914b6c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Somme"@fr .
+
+<http://id.insee.fr/geo/departement/81> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/f30d4384-d4e7-4f39-9621-90d1b50e72f7> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Tarn"@fr .
+
+<http://id.insee.fr/geo/departement/82> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/ae484d01-10d7-49cc-8a72-2c9159b49d62> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Tarn-et-Garonne"@fr .
+
+<http://id.insee.fr/geo/departement/83> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/3c6b7d54-939d-43ad-b91a-2628e048cd75> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Var"@fr .
+
+<http://id.insee.fr/geo/departement/84> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/b7667de8-a912-436c-9ab5-5641f2a9c51d> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Vaucluse"@fr .
+
+<http://id.insee.fr/geo/departement/85> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/0a4c2b68-2dee-4a1f-8498-5a295ad79631> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Vendée"@fr .
+
+<http://id.insee.fr/geo/departement/86> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/387f5118-fdb2-4607-afc6-1a9a5160b56d> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Vienne"@fr .
+
+<http://id.insee.fr/geo/departement/87> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/df1f6ac1-b480-43ac-bc88-b41427b4081c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Haute-Vienne"@fr .
+
+<http://id.insee.fr/geo/departement/88> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/381511e9-8343-4a5c-9723-5b86da35fb9f> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Vosges"@fr .
+
+<http://id.insee.fr/geo/departement/89> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/f2366472-58ea-440b-87a8-24cb44676af1> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Yonne"@fr .
+
+<http://id.insee.fr/geo/departement/90> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/3df7b77b-cbfd-4152-b8e9-1c0f4f2d34a4> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Territoire de Belfort"@fr .
+
+<http://id.insee.fr/geo/departement/91> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/4fa83910-71e4-412f-83dc-d143647e36d4> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Essonne"@fr .
+
+<http://id.insee.fr/geo/departement/92> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/653b03ce-3103-4efb-ad89-3f961d986be6> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Hauts-de-Seine"@fr .
+
+<http://id.insee.fr/geo/departement/93> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/42e5b3f2-6d71-4b7a-84d8-05275eaeb0ce> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Seine-Saint-Denis"@fr .
+
+<http://id.insee.fr/geo/departement/94> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/6fe1d0ad-65ba-480d-9cc8-1eb76f9f178d> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Val-de-Marne"@fr .
+
+<http://id.insee.fr/geo/departement/95> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/d32e14f8-e8b7-4dbd-a6af-d1ac33f4e51e> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Val-d'Oise"@fr .
+
+<http://id.insee.fr/geo/departement/971> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/bddb7eb1-e8db-4b01-818f-967057b8bbea> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Guadeloupe"@fr .
+
+<http://id.insee.fr/geo/departement/972> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/d423d69b-3557-41f6-9469-9ed0f3db412a> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Martinique"@fr .
+
+<http://id.insee.fr/geo/departement/973> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/a540250f-42d9-496a-9078-cabe94025e85> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Guyane"@fr .
+
+<http://id.insee.fr/geo/departement/974> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/9ead25bc-0ba7-49d8-a997-da17f87074db> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "La Réunion"@fr .
+
+<http://id.insee.fr/geo/departement/976> a skos:Concept ;
+    skos:exactMatch <http://id.insee.fr/geo/departement/7f7fe4af-ae1c-4641-80ef-5c8199aea45c> ;
+    skos:inScheme <http://id.insee.fr/geo/departement> ;
+    skos:prefLabel "Mayotte"@fr .
+
+<http://id.insee.fr/geo/departement> a skos:ConceptScheme ;
+    skos:prefLabel "French department (INSEE)"@en,
+        "Département français (INSEE)"@fr ;
+    foaf:page <https://fr.wikipedia.org/wiki/Département_français> .
+
