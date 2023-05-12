@@ -675,6 +675,14 @@ class IsoToDcatTestCase(unittest.TestCase):
             ) in metagraph
         )
 
+    def test_map_location_geoide(self):
+        """Contrôle des valeurs obtenues lors de la récupération du rectangle d'emprise dans le fichier de tests GéoIDE."""
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        dataset_id = metagraph.datasetid
+        spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_objects), 1)
+        self.assertEqual(spatial_objects[0], URIRef('http://id.insee.fr/geo/departement/75'))
+
     def test_metadata_language(self):
         """Récupération de la langue des métadonnées dans les fichiers de test."""
         dataset_id = DatasetId()
