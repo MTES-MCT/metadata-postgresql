@@ -7,7 +7,7 @@ from plume.rdf.utils import (
 )
 from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
-    IsoToDcat, normalize_language, find_values
+    IsoToDcat, normalize_language, find_values, normalize_decimal
 )
 from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS, SKOS
 from plume.rdf.rdflib import Literal, URIRef
@@ -373,6 +373,20 @@ class IsoMapTestCase(unittest.TestCase):
             ]
         )
 
+    def test_normalize_decimal(self):
+        """Contrôle le fonctionnement de la fonction de normalisation des décimaux."""
+        self.assertEqual(normalize_decimal('18'), '18')
+        self.assertEqual(normalize_decimal('0'), '0')
+        self.assertEqual(normalize_decimal('18.20'), '18.20')
+        self.assertEqual(normalize_decimal('+18.20'), '+18.20')
+        self.assertEqual(normalize_decimal('18,20'), '18.20')
+        self.assertEqual(normalize_decimal('1,800.20'), '1800.20')
+        self.assertEqual(normalize_decimal('-1 800.20'), '-1800.20')
+        self.assertEqual(normalize_decimal('1 800,20'), '1800.20')
+        self.assertEqual(normalize_decimal('.20'), '.20')
+        self.assertIsNone(normalize_decimal(''))
+        self.assertIsNone(normalize_decimal(None))
+
     def test_normalize_crs(self):
         """Vérifie que la fonction qui extrait un référentiel de coordonnées d'une chaîne de caractères réagit bien dans les cas de figure anticipés."""
 
@@ -549,7 +563,7 @@ class IsoToDcatTestCase(unittest.TestCase):
                 sample = self.ALL[sample_name]
                 itd = IsoToDcat(sample, datasetid=dataset_id)
                 self.assertListEqual(
-                    sorted(itd.map_epsg),
+                    sorted(itd.map_crs),
                     sorted(samples[sample])
                 )
 
@@ -655,7 +669,7 @@ class IsoToDcatTestCase(unittest.TestCase):
                 self.assertTrue(itd.map_location)
     
     def test_map_location_ign(self):
-        """Contrôle des valeurs obtenues lors de la récupération du rectangle d'emprise dans le fichier de tests IGN."""
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test IGN."""
         metagraph = metagraph_from_iso(self.IGN_BDALTI)
         dataset_id = metagraph.datasetid
         spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
@@ -676,12 +690,157 @@ class IsoToDcatTestCase(unittest.TestCase):
         )
 
     def test_map_location_geoide(self):
-        """Contrôle des valeurs obtenues lors de la récupération du rectangle d'emprise dans le fichier de tests GéoIDE."""
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test GéoIDE."""
         metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
         dataset_id = metagraph.datasetid
         spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_objects), 1)
         self.assertEqual(spatial_objects[0], URIRef('http://id.insee.fr/geo/departement/75'))
+
+    def test_map_location_datara(self):
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test datARA."""
+        metagraph = metagraph_from_iso(self.CSW_DATARA_FOND_AB)
+        dataset_id = metagraph.datasetid
+        spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_nodes), 1)
+        self.assertEqual(metagraph.value(spatial_nodes[0], SKOS.prefLabel), Literal('AUVERGNE-RHONE-ALPES', lang='fr'))
+        self.assertTrue((spatial_nodes[0], DCAT.bbox, None) in metagraph)
+    
+    def test_map_location_geolittoral(self):
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test Géolittoral."""
+        metagraph = metagraph_from_iso(self.CSW_GEOLITTORAL_SENTIER)
+        dataset_id = metagraph.datasetid
+        spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_nodes), 5)
+        self.assertTrue(all((spatial_node, DCAT.bbox, None) in metagraph for spatial_node in spatial_nodes))
+
+    def test_map_location_complex_1(self):
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans un XML artificiel complexe (1)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco">
+   <gmd:identificationInfo>
+      <gmd:MD_DataIdentification>
+         <gmd:extent>
+            <gmd:EX_Extent>
+               <gmd:description>
+                  <gco:CharacterString>France</gco:CharacterString>
+               </gmd:description>
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicBoundingBox>
+                     <gmd:westBoundLongitude>
+                        <gco:Decimal>-5.857279826455812</gco:Decimal>
+                     </gmd:westBoundLongitude>
+                     <gmd:eastBoundLongitude>
+                        <gco:Decimal>10.666157673544188</gco:Decimal>
+                     </gmd:eastBoundLongitude>
+                     <gmd:southBoundLatitude>
+                        <gco:Decimal>41.15261992754145</gco:Decimal>
+                     </gmd:southBoundLatitude>
+                     <gmd:northBoundLatitude>
+                        <gco:Decimal>51.43245199253582</gco:Decimal>
+                     </gmd:northBoundLatitude>
+                  </gmd:EX_GeographicBoundingBox>
+               </gmd:geographicElement>
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicBoundingBox>
+                     <gmd:westBoundLongitude>
+                        <gco:Decimal>-61,949</gco:Decimal>
+                     </gmd:westBoundLongitude>
+                     <gmd:eastBoundLongitude>
+                        <gco:Decimal>-60,915</gco:Decimal>
+                     </gmd:eastBoundLongitude>
+                     <gmd:southBoundLatitude>
+                        <gco:Decimal>15,648</gco:Decimal>
+                     </gmd:southBoundLatitude>
+                     <gmd:northBoundLatitude>
+                        <gco:Decimal>16,647</gco:Decimal>
+                     </gmd:northBoundLatitude>
+                  </gmd:EX_GeographicBoundingBox>
+               </gmd:geographicElement>
+            </gmd:EX_Extent>
+         </gmd:extent>
+      </gmd:MD_DataIdentification>
+   </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        dataset_id = metagraph.datasetid
+        spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_nodes), 3)
+        bboxes = list(metagraph.objects(dataset_id, DCT.spatial / DCAT.bbox))
+        self.assertEqual(len(bboxes), 2)
+        labels = list(metagraph.objects(dataset_id, DCT.spatial / SKOS.prefLabel))
+        self.assertEqual(len(labels), 1)
+
+    def test_map_location_complex_2(self):
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans un XML artificiel complexe (2)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <gmd:identificationInfo>
+      <gmd:MD_DataIdentification>
+         <gmd:extent>
+            <gmd:EX_Extent>
+               <gmd:description>
+                  <gco:CharacterString>France</gco:CharacterString>
+               </gmd:description>
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicDescription>
+                     <gmd:geographicIdentifier>
+                        <gmd:MD_Identifier>
+                           <gmd:code>
+                              <gco:CharacterString>http://id.insee.fr/geo/departement/75</gco:CharacterString>
+                           </gmd:code>
+                        </gmd:MD_Identifier>
+                     </gmd:geographicIdentifier>
+                  </gmd:EX_GeographicDescription>
+               </gmd:geographicElement>
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicDescription>
+                     <gmd:geographicIdentifier>
+                        <gmd:MD_Identifier>
+                           <gmd:code>
+                              <gmx:Anchor xlink:href="http://id.insee.fr/geo/departement/94">94</gmx:Anchor>
+                           </gmd:code>
+                        </gmd:MD_Identifier>
+                     </gmd:geographicIdentifier>
+                  </gmd:EX_GeographicDescription>
+               </gmd:geographicElement>
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicBoundingBox>
+                     <gmd:westBoundLongitude>
+                        <gco:Decimal>-61.949</gco:Decimal>
+                     </gmd:westBoundLongitude>
+                     <gmd:eastBoundLongitude>
+                        <gco:Decimal>-60.915</gco:Decimal>
+                     </gmd:eastBoundLongitude>
+                     <gmd:southBoundLatitude>
+                        <gco:Decimal>15.648</gco:Decimal>
+                     </gmd:southBoundLatitude>
+                     <gmd:northBoundLatitude>
+                        <gco:Decimal>16.647</gco:Decimal>
+                     </gmd:northBoundLatitude>
+                  </gmd:EX_GeographicBoundingBox>
+               </gmd:geographicElement>
+            </gmd:EX_Extent>
+         </gmd:extent>
+      </gmd:MD_DataIdentification>
+   </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        dataset_id = metagraph.datasetid
+        spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_objects), 3)
+        self.assertTrue(URIRef('http://id.insee.fr/geo/departement/75') in spatial_objects)
+        self.assertTrue(URIRef('http://id.insee.fr/geo/departement/94') in spatial_objects)
+        bboxes = list(metagraph.objects(dataset_id, DCT.spatial / DCAT.bbox))
+        self.assertEqual(len(bboxes), 1)
+        labels = list(metagraph.objects(dataset_id, DCT.spatial / SKOS.prefLabel))
+        self.assertEqual(len(labels), 1)
+        self.assertEqual(
+            list(metagraph.subjects(DCT.spatial / DCAT.bbox, None)),
+            list(metagraph.subjects(DCT.spatial / SKOS.prefLabel, None))
+        )
 
     def test_metadata_language(self):
         """Récupération de la langue des métadonnées dans les fichiers de test."""
