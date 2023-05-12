@@ -231,7 +231,7 @@ class IsoToDcat:
         )
 
     @property
-    def map_epsg(self):
+    def map_crs(self):
         """list of tuples: Triples contenant le ou les référentiels de coordonnées du jeu de données.
         
         Cette propriété est recalculée à chaque interrogation à partir
@@ -440,21 +440,29 @@ class IsoToDcat:
                 './gmd:geographicElement/gmd:EX_GeographicBoundingBox',
                 namespaces=ISO_NS
             ):
-                west = find_value(
-                    geo_elem,
-                    './gmd:westBoundLongitude/gco:Decimal'
+                west = normalize_decimal(
+                    find_value(
+                        geo_elem,
+                        './gmd:westBoundLongitude/gco:Decimal'
+                    )
                 )
-                east = find_value(
-                    geo_elem,
-                    './gmd:eastBoundLongitude/gco:Decimal'
+                east = normalize_decimal(
+                    find_value(
+                        geo_elem,
+                        './gmd:eastBoundLongitude/gco:Decimal'
+                    )
                 )
-                south=find_value(
-                    geo_elem,
-                    './gmd:southBoundLatitude/gco:Decimal'
+                south = normalize_decimal(
+                    find_value(
+                        geo_elem,
+                        './gmd:southBoundLatitude/gco:Decimal'
+                    )
                 )
-                north=find_value(
-                    geo_elem,
-                    './gmd:northBoundLatitude/gco:Decimal'
+                north = normalize_decimal(
+                    find_value(
+                        geo_elem,
+                        './gmd:northBoundLatitude/gco:Decimal'
+                    )
                 )
                 if any(c is None for c in (west, east, south, north)):
                     continue
@@ -1073,4 +1081,31 @@ def normalize_language(language_str):
         'http://publications.europa.eu/resource/authority/language/'
         + language_str.upper()
     )
+
+def normalize_decimal(decimal_str):
+    """Normalise une valeur décimale.
+    
+    La fonction s'assure notamment de l'absence de virgule.
+
+    Parameters
+    ----------
+    language_str : str
+        Chaîne de caractères présumée correspondre à un nombre décimal.
+    
+    Returns
+    -------
+    str or None
+        ``None`` lorsque l'argument de la fonction n'a pas la forme d'un
+        nombre décimal.
+    
+    """
+    if decimal_str in (None, ''):
+        return
+    if '.' in decimal_str:
+        decimal_str = decimal_str.replace(',', '')
+    else:
+        decimal_str = decimal_str.replace(',', '.')
+    decimal_str = decimal_str.replace(' ', '')
+    if re.match(r'^(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)$', decimal_str):
+        return decimal_str
 
