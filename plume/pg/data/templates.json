@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-10 à 18:42:05."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-12 à 12:17:13."
         ]
     },
     "Classique": {
@@ -808,8 +808,11 @@
                 false,
                 [
                     "http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance",
+                    "http://id.insee.fr/geo/departement",
+                    "http://id.insee.fr/geo/region",
                     "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory",
-                    "http://publications.europa.eu/resource/authority/atu"
+                    "http://publications.europa.eu/resource/authority/atu",
+                    "http://id.insee.fr/geo/commune"
                 ],
                 null,
                 null,
@@ -1058,7 +1061,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-10 à 18:42:05."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-12 à 12:17:13."
         ]
     },
     "Donnée externe": {
@@ -1649,8 +1652,11 @@
                 false,
                 [
                     "http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance",
+                    "http://id.insee.fr/geo/departement",
+                    "http://id.insee.fr/geo/region",
                     "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory",
-                    "http://publications.europa.eu/resource/authority/atu"
+                    "http://publications.europa.eu/resource/authority/atu",
+                    "http://id.insee.fr/geo/commune"
                 ],
                 null,
                 null,
@@ -1903,7 +1909,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-10 à 18:42:05."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-12 à 12:17:13."
         ]
     }
 }
