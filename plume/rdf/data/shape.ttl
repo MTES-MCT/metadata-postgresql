@@ -95,8 +95,11 @@ plume:DatasetShape
         sh:class dct:Location ;
         sh:order 9 ;
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance>,
+            <http://id.insee.fr/geo/departement>,
+            <http://id.insee.fr/geo/region>,
             <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory>,
-            <http://publications.europa.eu/resource/authority/atu> ;
+            <http://publications.europa.eu/resource/authority/atu>,
+            <http://id.insee.fr/geo/commune> ;
     ] ;
     sh:property [
         sh:path dct:temporal ;
