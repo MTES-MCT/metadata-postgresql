@@ -380,6 +380,7 @@ class IsoToDcat:
             )
             num_id = 0
             num_geo = 0
+            num_iri = 0
             first_node = BNode()
 
             for id_elem in elem.findall(
@@ -390,20 +391,24 @@ class IsoToDcat:
                 geo_iris = find_iri(
                     id_elem,
                     [
-                        './gmx:Anchor@xlink:href',
-                        './gmx:Anchor',
-                        './gco:CharacterString'
+                        './gmd:code/gmx:Anchor@xlink:href',
+                        './gmd:code/gmx:Anchor',
+                        './gmd:code/gco:CharacterString'
                     ],
                     self.datasetid,
                     DCT.spatial,
                     thesaurus=[
+                        (URIRef('http://id.insee.fr/geo/departement'), (self.language,)),
+                        (URIRef('http://id.insee.fr/geo/region'), (self.language,)),
                         (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance'), (self.language,)),
                         (URIRef('http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory'), (self.language,)),
-                        (URIRef('http://publications.europa.eu/resource/authority/atu'), (self.language,))
+                        (URIRef('http://publications.europa.eu/resource/authority/atu'), (self.language,)),
+                        (URIRef('http://id.insee.fr/geo/commune'), (self.language,))
                     ]
                 )
                 if geo_iris:
                     l += geo_iris
+                    num_iri += 1
                     continue
 
                 node = first_node if num_id == 0 else BNode()
@@ -424,6 +429,12 @@ class IsoToDcat:
                         l.append((self.datasetid, DCT.spatial, node))
                         l += code + scheme
                         num_id += 1
+
+            if num_iri == 1:
+                # s'il y exactement un IRI, on considère que les autres
+                # informations sont redondantes avec lui, sinon on les
+                # garde
+                continue
 
             for geo_elem in elem.findall(
                 './gmd:geographicElement/gmd:EX_GeographicBoundingBox',
