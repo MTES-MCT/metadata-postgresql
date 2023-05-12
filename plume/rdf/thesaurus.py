@@ -53,7 +53,10 @@ VOCABULARIES = {
     PLUME.IgnCrs: 'ign_crs.ttl',
     PLUME.IanaMediaType: 'iana_media_type.ttl',
     URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'): 'inspire_spatial_scope.ttl',
-    PLUME.ISO3166CodesCollection : 'iso_3166_codes_collection.ttl'
+    PLUME.ISO3166CodesCollection : 'iso_3166_codes_collection.ttl',
+    URIRef('http://id.insee.fr/geo/departement'): 'insee_department.ttl',
+    URIRef('http://id.insee.fr/geo/region'): 'insee_region.ttl',
+    URIRef('http://id.insee.fr/geo/commune'): 'insee_commune.ttl'
 }
 """Déclaration des vocabulaires de Plume.
 
