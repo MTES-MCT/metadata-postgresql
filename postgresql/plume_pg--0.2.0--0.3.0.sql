@@ -82,8 +82,11 @@ UPDATE z_plume.meta_shared_categorie
     SET is_node = False,
         sources = ARRAY[
             'http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance',
+            'http://id.insee.fr/geo/departement',
+            'http://id.insee.fr/geo/region',
             'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory',
-            'http://publications.europa.eu/resource/authority/atu'
+            'http://publications.europa.eu/resource/authority/atu',
+            'http://id.insee.fr/geo/commune'
         ],
         special = 'url'
     WHERE path = 'dct:spatial' ;
