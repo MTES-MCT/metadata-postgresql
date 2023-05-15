@@ -9,7 +9,7 @@ from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
     IsoToDcat, normalize_language, find_values, normalize_decimal
 )
-from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS, SKOS
+from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD
 from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.metagraph import metagraph_from_iso
 
@@ -515,6 +515,7 @@ class IsoToDcatTestCase(unittest.TestCase):
             abspath('rdf/tests/samples/iso_datara_territoire_fonds_air_bois.xml')
         )
         cls.CSW_GEOIDE_ZAC_75 = data_from_file(abspath('rdf/tests/samples/iso_geoide_zac_paris.xml'))
+        cls.CSW_GEOIDE_CUCS_75 = data_from_file(abspath('rdf/tests/samples/iso_geoide_quartiers_cucs_paris.xml'))
         cls.CSW_GEOLITTORAL_SENTIER = data_from_file(
             abspath('rdf/tests/samples/iso_geolittoral_sentier_du_littoral.xml')
         )
@@ -851,6 +852,20 @@ class IsoToDcatTestCase(unittest.TestCase):
                 itd = IsoToDcat(sample, datasetid=dataset_id)
                 self.assertEqual(itd.metadata_language, 'fr')
 
+    def test_map_temporal(self):
+        """Récupération de l'étendue temporelle.
+        
+        C'est une métadonnée assez peu utilisée, elle n'est pas présente
+        dans tous les jeux de données de test.
+
+        """
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_CUCS_75)
+        dataset_id = metagraph.datasetid
+        temporal = list(metagraph.objects(dataset_id, DCT.temporal))
+        self.assertEqual(len(temporal), 1)
+        self.assertEqual(metagraph.value(temporal[0], DCAT.startDate), Literal('2007-01-01', datatype=XSD.date))
+        self.assertEqual(metagraph.value(temporal[0], DCAT.endDate), Literal('2014-12-31', datatype=XSD.date))
+    
     def test_map_keywords(self):
         """Récupération des thèmes INSPIRE et mots clés libres dans les fichiers de test."""
         dataset_id = DatasetId()
