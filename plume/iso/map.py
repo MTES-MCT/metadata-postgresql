@@ -265,7 +265,7 @@ class IsoToDcat:
 
     @property
     def map_dates(self):
-        """list of tuples: Triples contenant les dates du jeu de données.
+        """list of tuples: Triples contenant les dates de référence du jeu de données.
         
         Cette propriété est recalculée à chaque interrogation à partir
         du XML. Si l'information n'était pas disponible dans le XML,
@@ -291,6 +291,39 @@ class IsoToDcat:
             l += find_literal(elem, './gmd:CI_Date/gmd:date/'
                 'gco:Date', self.datasetid, type_map[code],
                 datatype=XSD.date)
+        return l
+    
+    @property
+    def map_temporal(self):
+        """list of tuples: Triples contenant l'étendue temporelle du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        l = []
+        for elem in self.isoxml.findall(
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:extent/gmd:EX_Extent/'
+            'gmd:temporalElement/gmd:EX_TemporalExtent/'
+            'gmd:extent/gml:TimePeriod',
+            namespaces=ISO_NS
+        ):
+            node = BNode()
+            start_date = find_literal(
+                elem, './gml:beginPosition', node,
+                DCAT.startDate, datatype=XSD.date
+            )
+            end_date = find_literal(
+                elem, './gml:endPosition', node,
+                DCAT.endDate, datatype=XSD.date
+            )
+            if start_date or end_date:
+                l += start_date + end_date + [
+                    (self.datasetid, DCT.temporal, node),
+                    (node, RDF.type, DCT.PeriodOfTime)
+                ]
         return l
 
     @property
