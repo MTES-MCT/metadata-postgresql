@@ -369,7 +369,6 @@ def path_from_n3(path_n3, nsm):
         été reconnus.
     
     """
-    namespaces = nsm.namespaces()
     l = re.split(r"\s*[/]\s*", path_n3)
     path = None
     for elem in l:
