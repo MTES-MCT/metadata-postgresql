@@ -13,7 +13,7 @@ from plume.rdf.utils import (
 )
 from plume.rdf.namespaces import (
     DCAT, DCT, FOAF, RDF, RDFS, VCARD, XSD, GEODCAT, PLUME,
-    ADMS, GSP, SKOS
+    ADMS, GSP, SKOS, OWL
 )
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
@@ -277,20 +277,36 @@ class IsoToDcat:
             'creation': DCT.created,
             'revision': DCT.modified,
             'publication': DCT.issued
-            }
-        for elem in self.isoxml.findall('./gmd:identificationInfo/'
-            'gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/'
-            'gmd:date', namespaces=ISO_NS):
-            c = elem.find('./gmd:CI_Date/gmd:dateType/'
-                'gmd:CI_DateTypeCode', namespaces=ISO_NS)
-            if c is None:
-                continue
-            code = c.text or c.get('codeListValue')
+        }
+        for elem in self.isoxml.findall(
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:citation/gmd:CI_Citation/'
+            'gmd:date/gmd:CI_Date',
+            namespaces=ISO_NS
+        ):
+            code = find_value(
+                elem,
+                [
+                    './gmd:dateType/gmd:CI_DateTypeCode@codeListValue',
+                    './gmd:dateType/gmd:CI_DateTypeCode'
+                ]
+            )
             if not code or not code in type_map:
                 continue
-            l += find_literal(elem, './gmd:CI_Date/gmd:date/'
-                'gco:Date', self.datasetid, type_map[code],
-                datatype=XSD.date)
+            l += find_literal(
+                elem, 
+                [
+                    './gmd:date/gco:Date',
+                    './gmd:date/gco:DateTime'
+                ],
+                self.datasetid,
+                type_map[code],
+                datatype=XSD.date
+            )
+            # XSD.date est renseigné pour le type, mais find_literal
+            # (grâce à date_or_datetime_to_literal) fera en sorte
+            # que le type soit XSD.dateTime ou XSD.date selon le format
+            # effectif de la date, même s'il était mal spécifié dans le XML.
         return l
     
     @property
@@ -577,6 +593,24 @@ class IsoToDcat:
         return triples
 
     @property
+    def map_version(self):
+        """list of tuples: Triples contenant la version du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        return find_literal(
+            self.isoxml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:citation/gmd:CI_Citation/'
+            'gmd:edition/gco:CharacterString',
+            self.datasetid,
+            OWL.versionInfo
+        )
+
+    @property
     def map_organizations(self):
         """list of tuples: Triples contenant les informations relatives aux organisations responsables.
         
@@ -806,9 +840,14 @@ def find_literal(
             if not triple in l:
                 l.append(triple)
         elif datatype and datatype != XSD.string:
-            triple = (subject, predicate, Literal(value, datatype=datatype))
-            if not triple in l:
-                l.append(triple)
+            if datatype in (XSD.date, XSD.dateTime):
+                lit = date_or_datetime_to_literal(value)
+            else:
+                lit = Literal(value, datatype=datatype)
+            if lit and not lit.ill_typed:
+                triple = (subject, predicate, lit)
+                if not triple in l:
+                    l.append(triple)
         else:
             triple = (subject, predicate, Literal(value))
             if not triple in l:
@@ -1115,6 +1154,8 @@ def normalize_language(language_str):
         + language_str.upper()
     )
 
+_DECIMAL_REGEXP = re.compile(r'^(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)$')
+
 def normalize_decimal(decimal_str):
     """Normalise une valeur décimale.
     
@@ -1139,6 +1180,50 @@ def normalize_decimal(decimal_str):
     else:
         decimal_str = decimal_str.replace(',', '.')
     decimal_str = decimal_str.replace(' ', '')
-    if re.match(r'^(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)$', decimal_str):
+    if re.match(_DECIMAL_REGEXP, decimal_str):
         return decimal_str
 
+_DATE_REGEXP = re.compile(
+        '^-?([1-9][0-9]{3,}|0[0-9]{3})'
+        '-(0[1-9]|1[0-2])'
+        '-(0[1-9]|[12][0-9]|3[01])'
+        r'(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$'
+    )
+_DATETIME_REGEXP = re.compile(
+        '^-?([1-9][0-9]{3,}|0[0-9]{3})'
+        '-(0[1-9]|1[0-2])'
+        '-(0[1-9]|[12][0-9]|3[01])'
+        r'T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?|(24:00:00(\.0+)?))'
+        r'(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$'
+    )
+
+def date_or_datetime_to_literal(date_str):
+    """Renvoie la représentation RDF d'une date, avec ou sans heure, exprimée comme chaîne de caractères.
+    
+    Cette fonction produira une valeur littérale de type
+    ``xsd:date`` si la valeur fournie en argument était une date sans
+    heure, ``xsd:dateTime`` s'il s'agissait d'une date avec heure.
+
+    Parameters
+    ----------
+    value : str
+        Représentation ISO d'une date, avec ou sans heure, avec 
+        ou sans fuseau horaire.
+    
+    Returns
+    -------
+    rdflib.term.Literal
+        Un littéral de type ``xsd:dateTime`` ou ``xsd:date``.
+    
+    Examples
+    --------
+    >>> date_or_datetime_to_literal('2022-02-13T15:30:14')
+    rdflib.term.Literal('2022-02-13T15:30:14', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
+    
+    """
+    if not date_str:
+        return
+    if re.match(_DATE_REGEXP, date_str):
+        return Literal(date_str, datatype=XSD.date)
+    if re.match(_DATETIME_REGEXP, date_str):
+        return Literal(date_str, datatype=XSD.dateTime)
