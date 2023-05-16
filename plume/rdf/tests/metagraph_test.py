@@ -7,7 +7,9 @@ from plume.rdf.metagraph import (
     Metagraph, metagraph_from_file, copy_metagraph, metagraph_from_iso,
     clean_metagraph, metagraph_from_iso_file, graph_from_file
 )
-from plume.rdf.namespaces import DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF
+from plume.rdf.namespaces import (
+    DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF, ADMS
+)
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.pg.description import PgDescription
 
@@ -308,6 +310,7 @@ class MetagraphTestCase(unittest.TestCase):
         
         """
         metadata = """
+            @prefix adms: <http://www.w3.org/ns/adms#> .
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
             @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -318,6 +321,7 @@ class MetagraphTestCase(unittest.TestCase):
             uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
                 dct:title "Zones d'aménagement concerté de Paris (75)"@fr ;
                 owl:versionInfo "millésime janvier 2022" ;
+                adms:versionNotes "L'excellent millésime de janvier 2022 !"@fr ;
                 dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" .
             """
         old_metagraph = Metagraph().parse(data=metadata)
@@ -328,26 +332,34 @@ class MetagraphTestCase(unittest.TestCase):
             lang='fr')
         modified = Literal('2020-01-21', datatype=XSD.date)
         millesime = Literal('millésime janvier 2022')
+        geoide_version = Literal('11')
+        version_notes = Literal("L'excellent millésime de janvier 2022 !", lang='fr')
         # --- never ---
         metagraph = metagraph_from_iso(raw_xml, old_metagraph, preserve='never')
         datasetid = metagraph.datasetid
         self.assertTrue((datasetid, DCT.title, title) in metagraph)
         self.assertFalse((datasetid, DCT.title, title_bis) in metagraph)
-        self.assertFalse((datasetid, OWL.versionInfo, None) in metagraph)
+        self.assertTrue((datasetid, OWL.versionInfo, geoide_version) in metagraph)
+        self.assertFalse((datasetid, OWL.versionInfo, millesime) in metagraph)
+        self.assertFalse((datasetid, ADMS.versionNotes, version_notes) in metagraph)
         self.assertTrue((datasetid, DCT.modified, modified) in metagraph)
         # --- if blank ---
         metagraph = metagraph_from_iso(raw_xml, old_metagraph, preserve='if blank')
         datasetid = metagraph.datasetid
         self.assertTrue((datasetid, DCT.title, title) in metagraph)
         self.assertFalse((datasetid, DCT.title, title_bis) in metagraph)
-        self.assertTrue((datasetid, OWL.versionInfo, millesime) in metagraph)
+        self.assertTrue((datasetid, OWL.versionInfo, geoide_version) in metagraph)
+        self.assertFalse((datasetid, OWL.versionInfo, millesime) in metagraph)
+        self.assertTrue((datasetid, ADMS.versionNotes, version_notes) in metagraph)
         self.assertTrue((datasetid, DCT.modified, modified) in metagraph)
         # --- always ---
         metagraph = metagraph_from_iso(raw_xml, old_metagraph, preserve='always')
         datasetid = metagraph.datasetid
         self.assertFalse((datasetid, DCT.title, title) in metagraph)
         self.assertTrue((datasetid, DCT.title, title_bis) in metagraph)
+        self.assertFalse((datasetid, OWL.versionInfo, geoide_version) in metagraph)
         self.assertTrue((datasetid, OWL.versionInfo, millesime) in metagraph)
+        self.assertTrue((datasetid, ADMS.versionNotes, version_notes) in metagraph)
         self.assertTrue((datasetid, DCT.modified, modified) in metagraph)
         
     
