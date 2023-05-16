@@ -7,9 +7,12 @@ from plume.rdf.utils import (
 )
 from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
-    IsoToDcat, normalize_language, find_values, normalize_decimal
+    IsoToDcat, normalize_language, find_values, normalize_decimal,
+    date_or_datetime_to_literal
 )
-from plume.rdf.namespaces import DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD
+from plume.rdf.namespaces import (
+    DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL
+)
 from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.metagraph import metagraph_from_iso
 
@@ -502,6 +505,46 @@ class IsoMapTestCase(unittest.TestCase):
             normalize_language('quelque chose'),
             None
         )
+    
+    def test_date_or_datetime_to_literal(self):
+        """Création d'une valeur littérale du bon type pour représenter une date."""
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16'),
+            Literal('2022-05-16', datatype=XSD.date)
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16T20:30:10'),
+            Literal('2022-05-16T20:30:10', datatype=XSD.dateTime)
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16T20:30:10.001'),
+            Literal('2022-05-16T20:30:10.001', datatype=XSD.dateTime)
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16Z'),
+            Literal('2022-05-16Z', datatype=XSD.date)
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16-01:30'),
+            Literal('2022-05-16-01:30', datatype=XSD.date)
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16T20:30:10+14:00'),
+            Literal('2022-05-16T20:30:10+14:00', datatype=XSD.dateTime)
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal('2022-05-16XXX'),
+            None
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal(''),
+            None
+        )
+        self.assertEqual(
+            date_or_datetime_to_literal(None),
+            None
+        )
+
 
 class IsoToDcatTestCase(unittest.TestCase):
     
@@ -851,6 +894,50 @@ class IsoToDcatTestCase(unittest.TestCase):
                 sample = self.ALL[sample_name]
                 itd = IsoToDcat(sample, datasetid=dataset_id)
                 self.assertEqual(itd.metadata_language, 'fr')
+
+    def test_map_version(self):
+        """Récupération du nom/numéro de version."""
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_CUCS_75)
+        dataset_id = metagraph.datasetid
+        versions = list(metagraph.objects(dataset_id, OWL.versionInfo))
+        self.assertListEqual(versions, [Literal('1')])
+
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        dataset_id = metagraph.datasetid
+        versions = list(metagraph.objects(dataset_id, OWL.versionInfo))
+        self.assertListEqual(versions, [Literal('Version 2.0')])
+
+    def test_map_dates(self):
+        """Récupération des dates de référence."""
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        dataset_id = metagraph.datasetid
+        dates = list(metagraph.objects(dataset_id, DCT.issued))
+        self.assertListEqual(dates, [Literal('2015-02-03', datatype=XSD.date)])
+
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        dataset_id = metagraph.datasetid
+        dates = list(metagraph.objects(dataset_id, DCT.issued))
+        self.assertListEqual(dates, [Literal('2017-01-11', datatype=XSD.date)])
+        dates = list(metagraph.objects(dataset_id, DCT.created))
+        self.assertListEqual(dates, [Literal('2011-01-01', datatype=XSD.date)])
+        dates = list(metagraph.objects(dataset_id, DCT.modified))
+        self.assertListEqual(dates, [Literal('2020-01-21', datatype=XSD.date)])
+
+        metagraph = metagraph_from_iso(self.CSW_GEOLITTORAL_SENTIER)
+        dataset_id = metagraph.datasetid
+        dates = list(metagraph.objects(dataset_id, DCT.issued))
+        self.assertListEqual(dates, [Literal('2016-08-29', datatype=XSD.date)])
+        dates = list(metagraph.objects(dataset_id, DCT.created))
+        self.assertListEqual(dates, [Literal('2016-08-29', datatype=XSD.date)])
+        dates = list(metagraph.objects(dataset_id, DCT.modified))
+        self.assertListEqual(dates, [Literal('2020-04-09', datatype=XSD.date)])
+
+        metagraph = metagraph_from_iso(self.CSW_DATARA_FOND_AB)
+        dataset_id = metagraph.datasetid
+        dates = list(metagraph.objects(dataset_id, DCT.issued))
+        self.assertListEqual(dates, [Literal('2020-04-16', datatype=XSD.date)])
+        dates = list(metagraph.objects(dataset_id, DCT.modified))
+        self.assertListEqual(dates, [Literal('2020-11-19T13:59:52', datatype=XSD.dateTime)])
 
     def test_map_temporal(self):
         """Récupération de l'étendue temporelle.
