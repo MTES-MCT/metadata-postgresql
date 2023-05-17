@@ -1197,6 +1197,57 @@ _DATETIME_REGEXP = re.compile(
         r'(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$'
     )
 
+def to_spatial_resolution_in_meters(value, unit):
+    """Convertit en mètres une résolution spatiale potentiellement exprimée dans une autre unité.
+
+    Parameters
+    ----------
+    scale : str
+        Chaîne de caractères correspondant à une valeur décimale,
+        représentant une échelle équivalente.
+    
+    Returns
+    -------
+    float
+
+    """
+    if not isinstance(value, (float, int)):
+        value = normalize_decimal(value)
+        if value is None:
+            return
+    value = float(value)
+    factor = {
+        'qm': 1e-30,
+        'rm': 1e-27,
+        'ym': 1e-24,
+        'zm': 1e-21,
+        'am': 1e-18,
+        'fm': 1e-15,
+        'pm': 1e-12,
+        'nm': 1e-9,
+        'µm': 1e-6,
+        'dmm': 1e-4,
+        'mm': 0.001,
+        'cm': 0.01,
+        'dm': 0.1,
+        'm': 1,
+        'dam': 10,
+        'hm': 100,
+        'km': 1000,
+        'mam': 1e4,
+        'Mm': 1e6,
+        'Gm': 1e9,
+        'Tm': 1e12,
+        'Pm': 1e15,
+        'Em': 1e18,
+        'Zm': 1e21,
+        'Ym': 1e24,
+        'Rm': 1e27,
+        'Qm': 1e30
+    }
+    if unit in factor:
+        return value * factor[unit]
+    
 def date_or_datetime_to_literal(date_str):
     """Renvoie la représentation RDF d'une date, avec ou sans heure, exprimée comme chaîne de caractères.
     
@@ -1206,7 +1257,7 @@ def date_or_datetime_to_literal(date_str):
 
     Parameters
     ----------
-    value : str
+    date_str : str
         Représentation ISO d'une date, avec ou sans heure, avec 
         ou sans fuseau horaire.
     
