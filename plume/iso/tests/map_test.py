@@ -8,7 +8,7 @@ from plume.rdf.utils import (
 from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
     IsoToDcat, normalize_language, find_values, normalize_decimal,
-    date_or_datetime_to_literal
+    date_or_datetime_to_literal, to_spatial_resolution_in_meters
 )
 from plume.rdf.namespaces import (
     DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL
@@ -545,6 +545,14 @@ class IsoMapTestCase(unittest.TestCase):
             None
         )
 
+    def test_to_spatial_resolution_in_meters(self):
+        """Conversion en mètres des résolutions spatiales exprimées dans d'autres unités."""
+        self.assertEqual(to_spatial_resolution_in_meters(1, 'm'), 1)
+        self.assertEqual(to_spatial_resolution_in_meters(2.5, 'cm'), 0.025)
+        self.assertEqual(to_spatial_resolution_in_meters('1500', 'km'), 1500000)
+        self.assertEqual(to_spatial_resolution_in_meters('xxx', 'km'), None)
+        self.assertEqual(to_spatial_resolution_in_meters('1500', 'xxx'), None)
+        self.assertEqual(to_spatial_resolution_in_meters(None, 'km'), None)
 
 class IsoToDcatTestCase(unittest.TestCase):
     
