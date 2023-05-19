@@ -11,10 +11,12 @@ from plume.iso.map import (
     date_or_datetime_to_literal, to_spatial_resolution_in_meters
 )
 from plume.rdf.namespaces import (
-    DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL
+    DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL, DQV,
+    GEODCAT
 )
 from plume.rdf.rdflib import Literal, URIRef
 from plume.rdf.metagraph import metagraph_from_iso
+from plume.rdf.widgetsdict import WidgetsDict
 
 class IsoMapTestCase(unittest.TestCase):
     
@@ -1027,6 +1029,44 @@ class IsoToDcatTestCase(unittest.TestCase):
                         ]
                     )
                 )
+
+    def test_map_spatial_resolution_as_scale(self):
+        """Récupération de la résolution spatiale dans le cas d'une échelle équivalente."""
+        samples = {
+            self.CSW_DATARA_FOND_AB: 1.0/25000,
+            self.CSW_GEOIDE_ZAC_75 : 1.0/2000,
+            self.CSW_GEOLITTORAL_SENTIER: 1.0/5000
+        }
+        for sample, value in samples.items():       
+            metagraph = metagraph_from_iso(sample)
+            widgetsdict = WidgetsDict(metagraph=metagraph)
+            metagraph = widgetsdict.build_metagraph()
+            dataset_id = metagraph.datasetid
+            resolution_nodes = list(metagraph.objects(dataset_id, DQV.hasQualityMeasurement))
+            self.assertEqual(len(resolution_nodes), 1)
+            self.assertEqual(
+                metagraph.value(resolution_nodes[0], DQV.isMeasurementOf),
+                GEODCAT.spatialResolutionAsScale
+            )
+            self.assertEqual(
+                metagraph.value(resolution_nodes[0], DQV.value).toPython(),
+                value
+            )
+
+    def test_map_spatial_resolution_as_distance(self):
+        """Récupération de la résolution spatiale dans le cas d'une distance."""
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        resolution_values = list(metagraph.objects(dataset_id, DCAT.spatialResolutionInMeters))
+        self.assertEqual(len(resolution_values), 3)
+        expected = [
+            Literal(25.0, datatype=XSD.decimal),
+            Literal(75.0, datatype=XSD.decimal),
+            Literal(250.0, datatype=XSD.decimal)
+        ]
+        self.assertListEqual(resolution_values, expected)
 
 if __name__ == '__main__':
     unittest.main()
