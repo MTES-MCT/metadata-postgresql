@@ -20,6 +20,7 @@ OWL = Namespace('http://www.w3.org/2002/07/owl#')
 PROV = Namespace('http://www.w3.org/ns/prov#')
 RDF = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
+SDMX_ATTR = Namespace('http://purl.org/linked-data/sdmx/2009/attribute#')
 SDO = Namespace('http://schema.org/')
 SH = Namespace('http://www.w3.org/ns/shacl#')
 SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
@@ -51,7 +52,8 @@ NAMESPACES = {
     'vcard': VCARD,
     'xsd': XSD,
     'plume': PLUME,
-    'uuid': LOCAL
+    'uuid': LOCAL,
+    'sdmx-attribute': SDMX_ATTR
     }
 
 PREDICATE_MAP = {

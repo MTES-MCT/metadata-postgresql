@@ -13,6 +13,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdmx-attribute: <http://purl.org/linked-data/sdmx/2009/attribute#> .
 @prefix sdo: <http://schema.org/> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
@@ -202,6 +203,14 @@ plume:DatasetShape
         sh:datatype xsd:decimal ;
         sh:maxCount 1 ;
         sh:order 24 ;
+    ] ;
+    sh:property [
+        sh:path dqv:hasQualityMeasurement ;
+        sh:name "Résolution spatiale"@fr ;
+        sh:description "Spécification du niveau de détail des données."@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class dqv:QualityMeasurement ;
+        sh:order 25 ;
     ] ;
     sh:property [
         sh:path dcat:temporalResolution ;
@@ -1272,5 +1281,39 @@ plume:DataServiceShape
         sh:order 84 ;
     ] .
 
-
+plume:QualityMeasurementShape
+    a sh:NodeShape ;
+    sh:targetClass dqv:QualityMeasurement ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [
+        sh:path dqv:isMeasurementOf ;
+        sh:name "Indicateur"@fr ;
+        sh:description "Critère d'évaluation de la résolution."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:maxCount 1 ;
+        sh:class dqv:Metric ;
+        sh:order 0 ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric> ;
+    ]  ;
+    sh:property [
+        sh:path dqv:value ;
+        sh:name "Valeur"@fr ;
+        sh:description "Valeur de la résolution."@fr ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:decimal ;
+        sh:maxCount 1 ;
+        sh:order 1 ;
+    ] ;
+    sh:property [
+        sh:path sdmx-attribute:unitMeasure ;
+        sh:name "Unité de mesure"@fr ;
+        sh:description "Unité dans laquelle est exprimée la résolution, le cas échéant."@fr ;
+        sh:nodeKind sh:IRI ;
+        sh:maxCount 1 ;
+        sh:class skos:Concept ;
+        sh:order 2 ;
+        plume:ontology <http://publications.europa.eu/resource/authority/measurement-unit>,
+            <http://qudt.org/vocab/unit> ;
+    ] .
 

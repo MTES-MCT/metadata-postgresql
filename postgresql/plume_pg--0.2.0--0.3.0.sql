@@ -132,6 +132,18 @@ UPDATE z_plume.meta_shared_categorie
         'dct:spatial / skos:inScheme'
      ) ;
 
+INSERT INTO z_plume.meta_shared_categorie (
+        path, origin, label, description, special,
+        is_node, datatype, is_long_text, rowspan,
+        placeholder, input_mask, is_multiple, unilang,
+        is_mandatory, sources, geo_tools, compute,
+        template_order
+    ) VALUES
+    ('dqv:hasQualityMeasurement', 'shared', 'Résolution spatiale', 'Spécification du niveau de détail des données.', NULL, true, NULL, false, NULL, NULL, NULL, true, false, false, NULL, NULL, NULL, 25),
+    ('dqv:hasQualityMeasurement / dqv:isMeasurementOf', 'shared', 'Indicateur', 'Critère d''évaluation de la résolution.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric'], NULL, NULL, 0),
+    ('dqv:hasQualityMeasurement / dqv:value', 'shared', 'Valeur', 'Valeur de la résolution.', NULL, false, 'xsd:decimal', false, NULL, NULL, NULL, false, false, false, NULL, NULL, NULL, 1),
+    ('dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure', 'shared', 'Unité de mesure', 'Unité dans laquelle est exprimée la résolution, le cas échéant.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://publications.europa.eu/resource/authority/measurement-unit','http://qudt.org/vocab/unit'], NULL, NULL, 2) ;
+
 DROP VIEW z_plume.meta_template_categories_full ;
 
 -- Table: z_plume.meta_categorie

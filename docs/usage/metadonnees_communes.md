@@ -37,6 +37,10 @@
 | `dct:conformsTo / dct:created` | Date de création | Date de création du standard. |  |
 | `dct:conformsTo / foaf:page` | Page internet | Chemin d'accès au standard ou URL d'une page contenant des informations sur le standard. |  |
 | `dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Plus petite distance significative dans le contexte du jeu de données, exprimée en mètres. |  |
+| `dqv:hasQualityMeasurement` | Résolution spatiale | Spécification du niveau de détail des données. |  |
+| `dqv:hasQualityMeasurement / dqv:isMeasurementOf` | Indicateur | Critère d'évaluation de la résolution. | [Indicateur de mesure de qualité (GeoDCAT)](http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric) |
+| `dqv:hasQualityMeasurement / dqv:value` | Valeur | Valeur de la résolution. |  |
+| `dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure` | Unité de mesure | Unité dans laquelle est exprimée la résolution, le cas échéant. | [Unité de mesure (UE)](http://publications.europa.eu/resource/authority/measurement-unit), [Unités de mesure (QUDT)](http://qudt.org/vocab/unit) |
 | `dcat:temporalResolution` | Résolution temporelle | Plus petit pas de temps significatif dans le contexte du jeu de données. |  |
 | `dct:accessRights` | Conditions d'accès | Contraintes réglementaires limitant l'accès aux données. | [Restriction d'accès public (INSPIRE)](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess), [Droits d'accès (UE)](http://publications.europa.eu/resource/authority/access-right), [Restrictions d'accès en application du Code des relations entre le public et l'administration](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) |
 | `dct:accessRights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |

@@ -1,0 +1,31 @@
+@prefix geodcat: <http://data.europa.eu/930/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+geodcat:spatialResolutionAsAngularDistance a skos:Concept ;
+    skos:inScheme plume:GeoDCATMetric ;
+    skos:prefLabel "Spatial resolution as angular distance"@en,
+        "Résolution spatiale exprimée par une distance angulaire"@fr ;
+    skos:definition "Spatial resolution expressed as angular distance (ISO 19115-1:2014), by using decimal degrees."@en .
+
+geodcat:spatialResolutionAsDistance a skos:Concept ;
+    skos:inScheme plume:GeoDCATMetric ;
+    skos:prefLabel "Spatial resolution as distance"@en,
+        "Résolution spatiale exprimée par une distance"@fr ;
+    skos:definition "Spatial resolution expressed as distance. It corresponds to the notion of spatial resolution as \"ground distance\" of ISO 19115:2003 and \"horizontal ground distance\" of ISO 19115-1:2014."@en .
+
+geodcat:spatialResolutionAsScale a skos:Concept ;
+    skos:inScheme plume:GeoDCATMetric ;
+    skos:prefLabel "Spatial resolution as equivalent scale"@en,
+        "Résolution spatiale exprimée par une échelle équivalente"@fr ;
+    skos:definition "Spatial resolution expressed as equivalent scale (ISO 19115:2003, ISO 19115-1:2014), by using a representative fraction (e.g., 1:1,000, 1:1,000,000)."@en .
+
+geodcat:spatialResolutionAsVerticalDistance a skos:Concept ;
+    skos:inScheme plume:GeoDCATMetric ;
+    skos:prefLabel "Spatial resolution as vertical distance"@en,
+        "Résolution spatiale exprimée par une distance verticale"@fr ;
+    skos:definition "Spatial resolution expressed as vertical distance (ISO 19115-1:2014)."@en .
+
+plume:GeoDCATMetric a skos:ConceptScheme ;
+    skos:prefLabel "Metric (GeoDCAT)"@en,
+        "Indicateur de mesure de qualité (GeoDCAT)"@fr .

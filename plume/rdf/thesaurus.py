@@ -56,7 +56,10 @@ VOCABULARIES = {
     PLUME.ISO3166CodesCollection : 'iso_3166_codes_collection.ttl',
     URIRef('http://id.insee.fr/geo/departement'): 'insee_department.ttl',
     URIRef('http://id.insee.fr/geo/region'): 'insee_region.ttl',
-    URIRef('http://id.insee.fr/geo/commune'): 'insee_commune.ttl'
+    URIRef('http://id.insee.fr/geo/commune'): 'insee_commune.ttl',
+    URIRef('http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric'): 'geodcat_metric.ttl',
+    URIRef('http://qudt.org/vocab/unit'): 'qudt_unit.ttl',
+    URIRef('http://publications.europa.eu/resource/authority/measurement-unit'): 'eu_measurement_unit.ttl'
 }
 """Déclaration des vocabulaires de Plume.
 
