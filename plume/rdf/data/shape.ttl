@@ -201,7 +201,6 @@ plume:DatasetShape
         sh:description "Plus petite distance significative dans le contexte du jeu de données, exprimée en mètres."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:decimal ;
-        sh:maxCount 1 ;
         sh:order 24 ;
     ] ;
     sh:property [
@@ -625,8 +624,15 @@ plume:DistributionShape
         sh:description "Résolution des données de la distribution, exprimée en mètres."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:decimal ;
-        sh:maxCount 1 ;
         sh:order 24 ;
+    ] ;
+    sh:property [
+        sh:path dqv:hasQualityMeasurement ;
+        sh:name "Résolution spatiale"@fr ;
+        sh:description "Spécification du niveau de détail de la distribution."@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class dqv:QualityMeasurement ;
+        sh:order 25 ;
     ] ;
     sh:property [
         sh:path dct:rights ;
@@ -1260,8 +1266,15 @@ plume:DataServiceShape
         sh:description "Résolution des données mises à disposition par le service, exprimée en mètres."@fr ;
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:decimal ;
-        sh:maxCount 1 ;
         sh:order 82 ;
+    ] ;
+    sh:property [
+        sh:path dqv:hasQualityMeasurement ;
+        sh:name "Résolution spatiale"@fr ;
+        sh:description "Spécification du niveau de détail des données mises à disposition par le service."@fr ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class dqv:QualityMeasurement ;
+        sh:order 83 ;
     ] ;
     sh:property [
         sh:path dct:temporal ;
@@ -1269,7 +1282,7 @@ plume:DataServiceShape
         sh:description "Période pour laquelle des données sont mises à disposition par le service."@fr ;
         sh:nodeKind sh:BlankNode ;
         sh:class dct:PeriodOfTime ;
-        sh:order 83 ;
+        sh:order 85 ;
     ] ;
     sh:property [
         sh:path dcat:temporalResolution ;
@@ -1278,7 +1291,7 @@ plume:DataServiceShape
         sh:nodeKind sh:Literal ;
         sh:datatype xsd:duration ;
         sh:maxCount 1 ;
-        sh:order 84 ;
+        sh:order 86 ;
     ] .
 
 plume:QualityMeasurementShape
