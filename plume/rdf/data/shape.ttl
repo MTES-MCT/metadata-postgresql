@@ -101,6 +101,8 @@ plume:DatasetShape
             <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory>,
             <http://publications.europa.eu/resource/authority/atu>,
             <http://id.insee.fr/geo/commune> ;
+        plume:disabledOntology <http://id.insee.fr/geo/commune>,
+            <http://publications.europa.eu/resource/authority/atu> ;
     ] ;
     sh:property [
         sh:path dct:temporal ;
@@ -193,6 +195,7 @@ plume:DatasetShape
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
             <http://www.opengis.net/def/crs/EPSG/0>,
             <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
+        plume:disabledOntology <http://www.opengis.net/def/crs/EPSG/0> ;
         plume:compute "manual" ;
     ] ;
     sh:property [
@@ -521,6 +524,7 @@ plume:DistributionShape
         sh:order 11 ;
         plume:ontology <http://publications.europa.eu/resource/authority/file-type>,
             <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
+        plume:disabledOntology <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
     ] ;
     sh:property [
         sh:path dcat:compressFormat ;
@@ -532,6 +536,7 @@ plume:DistributionShape
         sh:order 12 ;
         plume:ontology <http://publications.europa.eu/resource/authority/file-type>,
             <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
+        plume:disabledOntology <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
     ] ;
     sh:property [
         sh:path dcat:packageFormat ;
@@ -543,6 +548,7 @@ plume:DistributionShape
         sh:order 13 ;
         plume:ontology <http://publications.europa.eu/resource/authority/file-type>,
             <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
+        plume:disabledOntology <http://registre.data.developpement-durable.gouv.fr/plume/IanaMediaType> ;
     ] ;
     sh:property [
         sh:path dcat:accessService ;
@@ -580,6 +586,7 @@ plume:DistributionShape
         plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
             <http://www.opengis.net/def/crs/EPSG/0>,
             <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
+        plume:disabledOntology <http://www.opengis.net/def/crs/EPSG/0> ;
     ] ;
     sh:property [
         sh:path cnt:characterEncoding ;
@@ -1138,6 +1145,7 @@ plume:DataServiceShape
             <http://www.opengis.net/def/crs/EPSG/0>,
             <http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard>,
             <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
+        plume:disabledOntology <http://www.opengis.net/def/crs/EPSG/0> ;
     ] ;
     sh:property [
         sh:path dcat:endpointDescription ;
@@ -1256,9 +1264,17 @@ plume:DataServiceShape
         sh:path dct:spatial ;
         sh:name "Couverture géographique"@fr ;
         sh:description "Territoire couvert par le service."@fr ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:Location ;
         sh:order 81 ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance>,
+            <http://id.insee.fr/geo/departement>,
+            <http://id.insee.fr/geo/region>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory>,
+            <http://publications.europa.eu/resource/authority/atu>,
+            <http://id.insee.fr/geo/commune> ;
+        plume:disabledOntology <http://id.insee.fr/geo/commune>,
+            <http://publications.europa.eu/resource/authority/atu> ;
     ] ;
     sh:property [
         sh:path dcat:spatialResolutionInMeters ;
@@ -1328,5 +1344,6 @@ plume:QualityMeasurementShape
         sh:order 2 ;
         plume:ontology <http://publications.europa.eu/resource/authority/measurement-unit>,
             <http://qudt.org/vocab/unit> ;
+        plume:disabledOntology <http://qudt.org/vocab/unit> ;
     ] .
 

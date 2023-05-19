@@ -47,6 +47,7 @@
 -- - Table: z_plume.meta_categorie
 -- - Table: z_plume.meta_template_categories
 -- - View: z_plume.meta_template_categories_full
+-- - Function: z_plume.meta_import_sample_template(text)
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -60,7 +61,8 @@
 ----------------------------------------
 
 /* 1.1 - TABLE DE CATEGORIES
-   1.4 - ASSOCIATION DES CATEGORIES AUX MODELES */
+   1.4 - ASSOCIATION DES CATEGORIES AUX MODELES
+   1.5 - IMPORT DE MODELES PRE-CONFIGURES */
 
 
 ------ 1.1 - TABLE DE CATEGORIES ------
@@ -89,7 +91,10 @@ UPDATE z_plume.meta_shared_categorie
             'http://id.insee.fr/geo/commune'
         ],
         special = 'url'
-    WHERE path = 'dct:spatial' ;
+    WHERE path IN (
+        'dct:spatial',
+        'dcat:distribution / dcat:accessService / dct:spatial'
+    ) ;
 
 UPDATE z_plume.meta_shared_categorie
     SET sources = ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance']
@@ -130,7 +135,15 @@ UPDATE z_plume.meta_shared_categorie
     WHERE sources IS NOT NULL AND path IN (
         'dcat:distribution / dcat:accessService / dct:spatial / skos:inScheme',
         'dct:spatial / skos:inScheme'
-     ) ;
+    ) ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET is_multiple = true 
+    WHERE path IN (
+        'dcat:spatialResolutionInMeters',
+        'dcat:distribution / dcat:spatialResolutionInMeters',
+        'dcat:distribution / dcat:accessService / dcat:spatialResolutionInMeters'
+    ) ;
 
 INSERT INTO z_plume.meta_shared_categorie (
         path, origin, label, description, special,
@@ -142,7 +155,22 @@ INSERT INTO z_plume.meta_shared_categorie (
     ('dqv:hasQualityMeasurement', 'shared', 'Résolution spatiale', 'Spécification du niveau de détail des données.', NULL, true, NULL, false, NULL, NULL, NULL, true, false, false, NULL, NULL, NULL, 25),
     ('dqv:hasQualityMeasurement / dqv:isMeasurementOf', 'shared', 'Indicateur', 'Critère d''évaluation de la résolution.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric'], NULL, NULL, 0),
     ('dqv:hasQualityMeasurement / dqv:value', 'shared', 'Valeur', 'Valeur de la résolution.', NULL, false, 'xsd:decimal', false, NULL, NULL, NULL, false, false, false, NULL, NULL, NULL, 1),
-    ('dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure', 'shared', 'Unité de mesure', 'Unité dans laquelle est exprimée la résolution, le cas échéant.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://publications.europa.eu/resource/authority/measurement-unit','http://qudt.org/vocab/unit'], NULL, NULL, 2) ;
+    ('dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure', 'shared', 'Unité de mesure', 'Unité dans laquelle est exprimée la résolution, le cas échéant.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://publications.europa.eu/resource/authority/measurement-unit','http://qudt.org/vocab/unit'], NULL, NULL, 2),
+    ('dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement', 'shared', 'Résolution spatiale', 'Spécification du niveau de détail des données mises à disposition par le service.', NULL, true, NULL, false, NULL, NULL, NULL, true, false, false, NULL, NULL, NULL, 83),
+    ('dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement / dqv:isMeasurementOf', 'shared', 'Indicateur', 'Critère d''évaluation de la résolution.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric'], NULL, NULL, 0),
+    ('dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement / dqv:value', 'shared', 'Valeur', 'Valeur de la résolution.', NULL, false, 'xsd:decimal', false, NULL, NULL, NULL, false, false, false, NULL, NULL, NULL, 1),
+    ('dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure', 'shared', 'Unité de mesure', 'Unité dans laquelle est exprimée la résolution, le cas échéant.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://publications.europa.eu/resource/authority/measurement-unit','http://qudt.org/vocab/unit'], NULL, NULL, 2),
+    ('dcat:distribution / dqv:hasQualityMeasurement', 'shared', 'Résolution spatiale', 'Spécification du niveau de détail de la distribution.', NULL, true, NULL, false, NULL, NULL, NULL, true, false, false, NULL, NULL, NULL, 25),
+    ('dcat:distribution / dqv:hasQualityMeasurement / dqv:isMeasurementOf', 'shared', 'Indicateur', 'Critère d''évaluation de la résolution.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric'], NULL, NULL, 0),
+    ('dcat:distribution / dqv:hasQualityMeasurement / dqv:value', 'shared', 'Valeur', 'Valeur de la résolution.', NULL, false, 'xsd:decimal', false, NULL, NULL, NULL, false, false, false, NULL, NULL, NULL, 1),
+    ('dcat:distribution / dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure', 'shared', 'Unité de mesure', 'Unité dans laquelle est exprimée la résolution, le cas échéant.', 'url', false, NULL, false, NULL, NULL, NULL, false, false, false, ARRAY['http://publications.europa.eu/resource/authority/measurement-unit','http://qudt.org/vocab/unit'], NULL, NULL, 2) ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET template_order = 85
+    WHERE path = 'dcat:distribution / dcat:accessService / dct:temporal' ;
+UPDATE z_plume.meta_shared_categorie
+    SET template_order = 86
+    WHERE path = 'dcat:distribution / dcat:accessService / dcat:temporalResolution' ;
 
 DROP VIEW z_plume.meta_template_categories_full ;
 
@@ -223,6 +251,234 @@ COMMENT ON COLUMN z_plume.meta_template_categories_full.template_order IS 'Ordre
 COMMENT ON COLUMN z_plume.meta_template_categories_full.is_read_only IS 'True si la catégorie est en lecture seule.' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.tab IS 'Nom de l''onglet du formulaire où placer la catégorie. Cette information n''est considérée que pour les catégories locales et les catégories communes de premier niveau (par exemple "dcat:distribution / dct:issued" ira nécessairement dans le même onglet que "dcat:distribution"). Pour celles-ci, si aucun onglet n''est fourni, la catégorie ira toujours dans le premier onglet cité pour le modèle ou, à défaut, dans un onglet "Général".' ;
 COMMENT ON COLUMN z_plume.meta_template_categories_full.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres. Le cas échéant, cette valeur se substituera pour le modèle considéré à la valeur renseignée dans le schéma des métadonnées communes.' ;
+
+------ 1.5 - IMPORT DE MODELES PRE-CONFIGURES -------
+
+-- Function: z_plume.meta_import_sample_template(text)
+
+CREATE OR REPLACE FUNCTION z_plume.meta_import_sample_template(
+        tpl_label text default NULL::text
+        )
+    RETURNS TABLE (label text, summary text)
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Importe l'un des modèles de formulaires pré-configurés (ou tous si l'argument n'est pas renseigné).
+
+    Réexécuter la fonction sur un modèle déjà répertorié aura
+    pour effet de le réinitialiser.
+    
+    Si le nom de modèle fourni en argument est inconnu, la
+    fonction n'a aucun effet et renverra une table vide.
+
+    Parameters
+    ----------
+    tpl_label : text, optional
+        Nom du modèle à importer.
+
+    Returns
+    -------
+    table (label : text, summary : text)
+        La fonction renvoie une table listant les modèles
+        effectivement importés.
+        Le champ "label" contient le nom du modèle.
+        Le champ "summary" fournit un résumé des opérations
+        réalisées. À ce stade, il vaudra 'created' pour un modèle
+        qui n'était pas encore répertorié et 'updated' pour un
+        modèle déjà répertorié.
+
+*/
+DECLARE
+    tpl record ;
+    tplcat record ;
+BEGIN
+
+    -- boucle sur les modèles :
+    FOR tpl IN SELECT * FROM (
+        VALUES
+            (
+                'Donnée externe',
+                '$1 ~ ANY(ARRAY[''^r_'', ''^e_''])',
+                '[{"plume:isExternal": true}]'::jsonb,
+                10,
+                format(
+                    'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
+                    now()::date,
+                    left(now()::time::text, 8)
+                    )
+            ),
+            (
+                'Classique',
+                '$1 ~ ''^c_''',
+                NULL,
+                5,
+                format(
+                    'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
+                    now()::date,
+                    left(now()::time::text, 8)
+                    )
+            ),
+            (
+                'Basique', NULL, NULL, 0,
+                format(
+                    'Modèle pré-configuré importé via z_plume.meta_import_sample_template() le %s à %s.',
+                    now()::date,
+                    left(now()::time::text, 8)
+                    )
+            )
+        ) AS t (tpl_label, sql_filter, md_conditions, priority, comment)
+        WHERE meta_import_sample_template.tpl_label IS NULL
+            OR meta_import_sample_template.tpl_label = t.tpl_label
+    LOOP
+    
+        DELETE FROM z_plume.meta_template
+            WHERE meta_template.tpl_label = tpl.tpl_label ;
+            
+        IF FOUND
+        THEN
+            RETURN QUERY SELECT tpl.tpl_label, 'updated' ;
+        ELSE
+            RETURN QUERY SELECT tpl.tpl_label, 'created' ;
+        END IF ;
+        
+        INSERT INTO z_plume.meta_template
+            (tpl_label, sql_filter, md_conditions, priority, comment)
+            VALUES (tpl.tpl_label, tpl.sql_filter, tpl.md_conditions, tpl.priority, tpl.comment) ;
+        
+        -- boucle sur les associations modèles-catégories :
+        FOR tplcat IN SELECT * FROM (
+            VALUES
+                -- (nom du modèle, chemin de la catégorie, vocabulaires à utiliser
+                -- s'il y a lieu de restreindre la liste)
+                ('Basique', 'dct:description', NULL),
+                ('Basique', 'dct:modified', NULL),
+                ('Basique', 'dct:temporal', NULL),
+                ('Basique', 'dct:temporal / dcat:startDate', NULL),
+                ('Basique', 'dct:temporal / dcat:endDate', NULL),
+                ('Basique', 'dct:title', NULL),
+                ('Basique', 'owl:versionInfo', NULL),
+                
+                ('Classique', 'adms:versionNotes', NULL),
+                ('Classique', 'dcat:contactPoint', NULL),
+                ('Classique', 'dcat:contactPoint / vcard:fn', NULL),
+                ('Classique', 'dcat:contactPoint / vcard:hasEmail', NULL),
+                ('Classique', 'dcat:contactPoint / vcard:hasTelephone', NULL),
+                ('Classique', 'dcat:contactPoint / vcard:hasURL', NULL),
+                ('Classique', 'dcat:contactPoint / vcard:organization-name', NULL),
+                ('Classique', 'dcat:keyword', NULL),
+                ('Classique', 'dcat:landingPage', NULL),
+                ('Classique', 'dcat:spatialResolutionInMeters', NULL),
+                ('Classique', 'dcat:theme', NULL),
+                ('Classique', 'dct:accessRights', NULL),
+                ('Classique', 'dct:accessRights / rdfs:label', NULL),
+                ('Classique', 'dct:accrualPeriodicity', NULL),
+                ('Classique', 'dct:conformsTo', ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance', 'http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs']),
+                ('Classique', 'dct:conformsTo / dct:description', NULL),
+                ('Classique', 'dct:conformsTo / dct:title', NULL),
+                ('Classique', 'dct:conformsTo / dct:issued', NULL),
+                ('Classique', 'dct:conformsTo / foaf:page', NULL),
+                ('Classique', 'dct:conformsTo / owl:versionInfo', NULL),
+                ('Classique', 'dct:created', NULL),
+                ('Classique', 'dct:description', NULL),
+                ('Classique', 'dct:identifier', NULL),
+                ('Classique', 'dct:modified', NULL),
+                ('Classique', 'dct:provenance', NULL),
+                ('Classique', 'dct:provenance / rdfs:label', NULL),
+                ('Classique', 'dct:spatial', ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance', 'http://id.insee.fr/geo/departement', 'http://id.insee.fr/geo/region', 'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory']),
+                ('Classique', 'dct:spatial / dct:identifier', NULL),
+                ('Classique', 'dct:spatial / skos:inScheme', NULL),
+                ('Classique', 'dct:spatial / skos:prefLabel', NULL),
+                ('Classique', 'dct:temporal', NULL),
+                ('Classique', 'dct:temporal / dcat:startDate', NULL),
+                ('Classique', 'dct:temporal / dcat:endDate', NULL),
+                ('Classique', 'dct:title', NULL),
+                ('Classique', 'foaf:page', NULL),
+                ('Classique', 'owl:versionInfo', NULL),
+                ('Classique', 'plume:isExternal', NULL),
+                
+                ('Donnée externe', 'adms:versionNotes', NULL),
+                ('Donnée externe', 'dcat:contactPoint', NULL),
+                ('Donnée externe', 'dcat:contactPoint / vcard:fn', NULL),
+                ('Donnée externe', 'dcat:contactPoint / vcard:hasEmail', NULL),
+                ('Donnée externe', 'dcat:contactPoint / vcard:hasTelephone', NULL),
+                ('Donnée externe', 'dcat:contactPoint / vcard:hasURL', NULL),
+                ('Donnée externe', 'dcat:contactPoint / vcard:organization-name', NULL),
+                ('Donnée externe', 'dcat:distribution', NULL),
+                ('Donnée externe', 'dcat:distribution / dcat:accessURL', NULL),
+                ('Donnée externe', 'dcat:distribution / dct:issued', NULL),
+                ('Donnée externe', 'dcat:distribution / dct:license', NULL),
+                ('Donnée externe', 'dcat:distribution / dct:license / rdfs:label', NULL),
+                ('Donnée externe', 'dcat:keyword', NULL),
+                ('Donnée externe', 'dcat:landingPage', NULL),
+                ('Donnée externe', 'dcat:theme', NULL),
+                ('Donnée externe', 'dct:accessRights', NULL),
+                ('Donnée externe', 'dct:accessRights / rdfs:label', NULL),
+                ('Donnée externe', 'dct:accrualPeriodicity', NULL),
+                ('Donnée externe', 'dct:description', NULL),
+                ('Donnée externe', 'dct:modified', NULL),
+                ('Donnée externe', 'dct:provenance', NULL),
+                ('Donnée externe', 'dct:provenance / rdfs:label', NULL),
+                ('Donnée externe', 'dct:publisher', NULL),
+                ('Donnée externe', 'dct:publisher / foaf:name', NULL),
+                ('Donnée externe', 'dct:temporal', NULL),
+                ('Donnée externe', 'dct:temporal / dcat:startDate', NULL),
+                ('Donnée externe', 'dct:temporal / dcat:endDate', NULL),
+                ('Donnée externe', 'dct:title', NULL),
+                ('Donnée externe', 'dct:spatial', ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance', 'http://id.insee.fr/geo/departement', 'http://id.insee.fr/geo/region', 'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory']),
+                ('Donnée externe', 'dct:spatial / dct:identifier', NULL),
+                ('Donnée externe', 'dct:spatial / skos:inScheme', NULL),
+                ('Donnée externe', 'dct:spatial / skos:prefLabel', NULL),
+                ('Donnée externe', 'foaf:page', NULL),
+                ('Donnée externe', 'owl:versionInfo', NULL),
+                ('Donnée externe', 'plume:isExternal', NULL)
+            ) AS t (tpl_label, shrcat_path, sources)
+            WHERE t.tpl_label = tpl.tpl_label
+        LOOP
+        
+            INSERT INTO z_plume.meta_template_categories
+                (tpl_id, shrcat_path, sources) (
+                    SELECT meta_template.tpl_id, tplcat.shrcat_path, tplcat.sources
+                        FROM z_plume.meta_template
+                        WHERE meta_template.tpl_label = tpl.tpl_label
+                ) ;
+        
+        END LOOP ;
+    
+    END LOOP ;
+
+    RETURN ;
+    
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.meta_import_sample_template(text) IS 'Importe l''un des modèles de formulaires pré-configurés (ou tous si l''argument n''est pas renseigné).' ;
+
+-- Table: z_plume.meta_template_categories
+
+UPDATE z_plume.meta_template_categories
+    SET sources = ARRAY[
+        'http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance',
+        'http://id.insee.fr/geo/departement',
+        'http://id.insee.fr/geo/region',
+        'http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory'
+    ]
+    WHERE meta_template_categories.tpl_id IN (
+        SELECT meta_template.tpl_id
+            FROM z_plume.meta_template
+            WHERE tpl_label IN ('Données externe', 'Classique')
+        ) AND shrcat_path = 'dct:spatial' ;
+
+UPDATE z_plume.meta_template_categories
+    SET sources = ARRAY[
+        'http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance',
+        'http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs'
+    ]
+    WHERE meta_template_categories.tpl_id IN (
+        SELECT meta_template.tpl_id
+            FROM z_plume.meta_template
+            WHERE tpl_label = 'Classique'
+        ) AND shrcat_path = 'dct:conformsTo' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ---------------------------------------
 ------ 3 - DATES DE MODIFICATION ------

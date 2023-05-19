@@ -462,7 +462,30 @@ Une fois le vocabulaire placé dans le bon répertoire, l'URI de l'ensemble de c
     ] ;
     ```
 
-À noter que l'un des tests de la recette de Plume a pour objet de vérifier que tout vocabulaire qui apparaît dans le schéma des métadonnées communes est aussi dans {py:data}`plume.rdf.thesaurus.VOCABULARIES` et réciproquement. L'existence du fichier est également contrôlée.
+Si le vocabulaire est particulièrement volumineux et que tous ses termes ne sont pas pertinents pour la saisie des métadonnées, il est recommandé de le désactiver par défaut en l'ajoutant en objet de
+la propriété `plume:disabledOntology`.
+
+Exemple :
+
+```turtle
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+sh:property [
+    sh:path dct:conformsTo ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:class dct:Standard ;
+    plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>,
+        <http://www.opengis.net/def/crs/EPSG/0>,
+        <http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs> ;
+    plume:disabledOntology <http://www.opengis.net/def/crs/EPSG/0> ;
+]
+```
+
+Si une partie des termes est plus utile que le reste, il est possible de créer un extrait du vocabulaire, en utilisant l'espace de nommage de Plume pour nommer le sous-ensemble de concepts. C'est ce qui a été fait dans l'exemple précédent, où `<http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance>` est un extrait de `<http://www.opengis.net/def/crs/EPSG/0>` limité aux référentiels de coordonnées en usage sur le territoire français.
+
+À noter que l'un des tests de la recette de Plume a pour objet de vérifier que tout vocabulaire qui apparaît dans le schéma des métadonnées communes est aussi dans {py:data}`plume.rdf.thesaurus.VOCABULARIES` et réciproquement. L'existence du fichier .ttl est également contrôlée.
 
 Les modifications apportées au schéma des métadonnées communes doivent ensuite être répercutées dans d'autres sections du code. Cf. [Modifier les catégories de métadonnées communes](#modifier-les-catégories-de-métadonnées-communes).
 

@@ -28,7 +28,7 @@ class VocabulariesTestCase(unittest.TestCase):
     def test_all_shape_vocabularies_are_registered(self):
         """Vérifie que tous les vocabulaires utilisés par SHAPE sont référencés dans VOCABULARIES."""
         for s, p, o in SHAPE:
-            if p == PLUME.ontology:
+            if p in (PLUME.ontology, PLUME.disabledOntology):
                 self.assertTrue(
                     o in VOCABULARIES,
                     f"Vocabulary <{str(o)}> isn't registered in VOCABULARIES"

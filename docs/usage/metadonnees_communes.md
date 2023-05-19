@@ -174,7 +174,7 @@
 | `dcat:distribution / dcat:accessService / dct:rightsHolder / foaf:workplaceHomepage` | Site internet | Site internet. |  |
 | `dcat:distribution / dcat:accessService / dct:issued` | Date d'ouverture | Date d'ouverture du service. |  |
 | `dcat:distribution / dcat:accessService / dct:language` | Langues | Langue·s prises en charge par le service. | [Langues (UE)](http://publications.europa.eu/resource/authority/language) |
-| `dcat:distribution / dcat:accessService / dct:spatial` | Couverture géographique | Territoire couvert par le service. |  |
+| `dcat:distribution / dcat:accessService / dct:spatial` | Couverture géographique | Territoire couvert par le service. | [Unité territoriale administrative française (UE)](http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance), [Département français (INSEE)](http://id.insee.fr/geo/departement), [Région française (INSEE)](http://id.insee.fr/geo/region), [Territoire singulier (INSEE)](http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory), [Unité territoriale administrative (UE)](http://publications.europa.eu/resource/authority/atu), [Commune française (INSEE)](http://id.insee.fr/geo/commune) |
 | `dcat:distribution / dcat:accessService / dct:spatial / skos:inScheme` | Index géographique | Type de lieu, index de référence pour l'identifiant (commune, département...). | [Index géographique de l'INSEE](http://registre.data.developpement-durable.gouv.fr/plume/InseeGeoIndex), [Série de codes géographiques (ISO 3166)](http://registre.data.developpement-durable.gouv.fr/plume/ISO3166CodesCollection) |
 | `dcat:distribution / dcat:accessService / dct:spatial / dct:identifier` | Code géographique | Code du département, code INSEE de la commune, etc. |  |
 | `dcat:distribution / dcat:accessService / dct:spatial / skos:prefLabel` | Libellé | Dénomination explicite du lieu. |  |
@@ -182,6 +182,10 @@
 | `dcat:distribution / dcat:accessService / dct:spatial / dcat:centroid` | Centroïde | Localisant du centre géographique des données, au format textuel WKT. |  |
 | `dcat:distribution / dcat:accessService / dct:spatial / locn:geometry` | Géométrie | Emprise géométrique, au format textuel WKT. |  |
 | `dcat:distribution / dcat:accessService / dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Résolution des données mises à disposition par le service, exprimée en mètres. |  |
+| `dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement` | Résolution spatiale | Spécification du niveau de détail des données mises à disposition par le service. |  |
+| `dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement / dqv:isMeasurementOf` | Indicateur | Critère d'évaluation de la résolution. | [Indicateur de mesure de qualité (GeoDCAT)](http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric) |
+| `dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement / dqv:value` | Valeur | Valeur de la résolution. |  |
+| `dcat:distribution / dcat:accessService / dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure` | Unité de mesure | Unité dans laquelle est exprimée la résolution, le cas échéant. | [Unité de mesure (UE)](http://publications.europa.eu/resource/authority/measurement-unit), [Unités de mesure (QUDT)](http://qudt.org/vocab/unit) |
 | `dcat:distribution / dcat:accessService / dct:temporal` | Couverture temporelle | Période pour laquelle des données sont mises à disposition par le service. |  |
 | `dcat:distribution / dcat:accessService / dct:temporal / dcat:startDate` | Date de début | Date de début de la période. |  |
 | `dcat:distribution / dcat:accessService / dct:temporal / dcat:endDate` | Date de fin | Date de fin de la période. |  |
@@ -203,6 +207,10 @@
 | `dcat:distribution / dcat:byteSize` | Taille en bytes | Taille en bytes de la distribution. |  |
 | `dcat:distribution / dcat:temporalResolution` | Résolution temporelle | Plus petit pas de temps significatif dans le contexte de la distribution. |  |
 | `dcat:distribution / dcat:spatialResolutionInMeters` | Résolution spatiale en mètres | Résolution des données de la distribution, exprimée en mètres. |  |
+| `dcat:distribution / dqv:hasQualityMeasurement` | Résolution spatiale | Spécification du niveau de détail de la distribution. |  |
+| `dcat:distribution / dqv:hasQualityMeasurement / dqv:isMeasurementOf` | Indicateur | Critère d'évaluation de la résolution. | [Indicateur de mesure de qualité (GeoDCAT)](http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric) |
+| `dcat:distribution / dqv:hasQualityMeasurement / dqv:value` | Valeur | Valeur de la résolution. |  |
+| `dcat:distribution / dqv:hasQualityMeasurement / sdmx-attribute:unitMeasure` | Unité de mesure | Unité dans laquelle est exprimée la résolution, le cas échéant. | [Unité de mesure (UE)](http://publications.europa.eu/resource/authority/measurement-unit), [Unités de mesure (QUDT)](http://qudt.org/vocab/unit) |
 | `dcat:distribution / dct:rights` | Propriété intellectuelle | Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données. |  |
 | `dcat:distribution / dct:rights / rdfs:label` | Mention | Description des contraintes réglementaires et des modalités pratiques pour s'y conformer. |  |
 | `dcat:distribution / dct:license` | Licence | Licence sous laquelle est publiée la distribution ou conditions d'utilisation de la distribution. | [Licences admises pour les informations publiques des administrations françaises](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense), [Licences (UE)](http://publications.europa.eu/resource/authority/licence), [Licence (SPDX)](http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense) |

@@ -186,8 +186,11 @@ def merge_property_dict(shape_dict, template_dict):
             # formes
     if 'order_idx' in template_dict:
         shape_dict['order_idx'] = (template_dict['order_idx'][0], shape_dict['order_idx'][1])
-    if shape_dict.get('sources') and template_dict.get('sources'):
-        sources = shape_dict['sources'].copy()
+    if shape_dict.get('ontology') and template_dict.get('sources'):
+        # on utilise tous les vocabulaires listés par plume:ontology,
+        # afin de permettre au modèle de réactiver des vocabulaires
+        # qui sont inactifs par défaut
+        sources = shape_dict['ontology'].copy()
         for s in sources.copy():
             if not s in template_dict['sources']:
                 sources.remove(s)
@@ -279,10 +282,11 @@ def read_shape_property(shape_node):
         SH.pattern: ('regex_validator', False),
         SH.flags: ('regex_validator_flags', False),
         PLUME.transform: ('transform', False),
-        PLUME.ontology: ('sources', True),
+        PLUME.ontology: ('ontology', True),
         PLUME.longText: ('is_long_text', False),
         PLUME.geoTool: ('geo_tools', True),
-        PLUME.compute: ('compute', True)
+        PLUME.compute: ('compute', True),
+        PLUME.disabledOntology: ('disabled_ontology', True)
         }
         # le booléen indique si la propriété
         # peut prendre des valeurs multiples
@@ -296,5 +300,14 @@ def read_shape_property(shape_node):
     p['is_mandatory'] = int(p.get('min', 0)) > 0
     p['is_multiple'] = int(p.get('max', 99)) > 1
     p['order_idx'] = (9999, int(p.get('shape_order', 9999)))
+    sources = p.get('ontology')
+    if sources:
+        sources = sources.copy()
+        if disabled_sources := p.get('disabled_ontology'):
+            for disabled_source in disabled_sources:
+                if disabled_source in sources:
+                    sources.remove(disabled_source)
+        if sources:
+            p['sources'] = sources
     return p
 

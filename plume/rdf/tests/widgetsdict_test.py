@@ -1351,6 +1351,9 @@ class WidgetsDictTestCase(unittest.TestCase):
         c = g.children[0]
         self.assertTrue(c.m_twin)
         self.assertTrue("Système de référence de coordonnées EPSG (OGC)" in widgetsdict[c]['sources'])
+        # NB: actif parce que dct:conformsTo a été ajoutée au modèle sans restreindre la liste
+        # des vocabulaires autorisés.
+        self.assertTrue("Système de référence de coordonnées EPSG utilisé sur le territoire français (OGC)" in widgetsdict[c]['sources'])
         self.assertTrue(widgetsdict[c]['multiple sources'])
         # on pourrait aussi ne pas avoir de clé-valeur jumelle dans
         # ce cas. Les deux tests précédents servent seulement à confirmer
@@ -2290,10 +2293,10 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('''
                     CREATE TABLE z_plume.table_test (
                         geom1 geometry(POINT, 2154),
-                        "GEOM 2" geometry(POINT, 2000),
                         geom3 geometry(POLYGON, 37001),
                         geom4 text,
-                        geom5 geometry(POLYGON, 2154)
+                        "GEOM 5" geometry(MULTILINESTRING, 4326),
+                        geom6 geometry(POLYGON, 2154)
                         ) ;
                     ''')
                 query = widgetsdict.computing_query(c, 'z_plume', 'table_test')
@@ -2302,7 +2305,10 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
         conn.close()
-        self.assertListEqual(result, [('EPSG', '2000'), ('EPSG', '2154'), ('ESRI', '37001')])
+        self.assertListEqual(
+            result,
+            [('EPSG', '2154'), ('EPSG', '4326'), ('ESRI', '37001')]
+        )
         
         r1g = c.children[0]
         r1v = c.children[1]
@@ -2324,9 +2330,12 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertEqual(len(c.children), 4)
         r2g = c.children[2]
         r2v = c.children[3]
-        self.assertEqual(r1v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2000'))
-        self.assertEqual(r1v.value_source, URIRef('http://www.opengis.net/def/crs/EPSG/0'))
-        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+        self.assertEqual(r1v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+        self.assertEqual(
+            r1v.value_source, 
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance')
+        )
+        self.assertEqual(r2v.value, URIRef('http://www.opengis.net/def/crs/EPSG/0/4326'))
         self.assertEqual(
             r2v.value_source, 
             URIRef('http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance')
@@ -2339,14 +2348,11 @@ class WidgetsDictTestCase(unittest.TestCase):
         self.assertListEqual(actionsdict['widgets to show'], ['<r1v-minus QToolButton dct:conformsTo>'])
         self.assertListEqual(actionsdict['widgets to move'], [('<QGridLayout dct:conformsTo>',
             '<P QToolButton dct:conformsTo>', 2, 0, 1, 1)])
-        self.assertListEqual(actionsdict['switch source menu to update'], [r1v])
-        self.assertListEqual(actionsdict['concepts list to update'], [r1v])
         self.assertListEqual(actionsdict['value to update'], [r1v])
         for a, l in actionsdict.items():
             with self.subTest(action = a):
                 if not a in  (
-                    'new keys', 'widgets to show', 'widgets to move', 'switch source menu to update',
-                    'concepts list to update', 'value to update'
+                    'new keys', 'widgets to show', 'widgets to move', 'value to update'
                 ):
                     self.assertFalse(l)
         
@@ -2362,8 +2368,8 @@ class WidgetsDictTestCase(unittest.TestCase):
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
             uuid:{uuid} a dcat:Dataset ;
-                dct:conformsTo <http://www.opengis.net/def/crs/EPSG/0/2000>,
-                    <http://www.opengis.net/def/crs/EPSG/0/2154> ;
+                dct:conformsTo <http://www.opengis.net/def/crs/EPSG/0/2154>,
+                    <http://www.opengis.net/def/crs/EPSG/0/4326> ;
                 dct:identifier "{uuid}" .
             """.format(uuid=widgetsdict.datasetid.uuid)
         metagraph = Metagraph().parse(data=metadata)

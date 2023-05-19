@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-12 à 12:17:13."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-19 à 18:32:55."
         ]
     },
     "Classique": {
@@ -393,7 +393,7 @@
                 null,
                 null,
                 null,
-                false,
+                true,
                 false,
                 false,
                 null,
@@ -526,7 +526,6 @@
                 false,
                 [
                     "http://registre.data.developpement-durable.gouv.fr/plume/OgcEpsgFrance",
-                    "http://www.opengis.net/def/crs/EPSG/0",
                     "http://registre.data.developpement-durable.gouv.fr/plume/IgnCrs"
                 ],
                 null,
@@ -810,9 +809,7 @@
                     "http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance",
                     "http://id.insee.fr/geo/departement",
                     "http://id.insee.fr/geo/region",
-                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory",
-                    "http://publications.europa.eu/resource/authority/atu",
-                    "http://id.insee.fr/geo/commune"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory"
                 ],
                 null,
                 null,
@@ -1061,7 +1058,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-12 à 12:17:13."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-19 à 18:32:55."
         ]
     },
     "Donnée externe": {
@@ -1654,9 +1651,7 @@
                     "http://registre.data.developpement-durable.gouv.fr/plume/EuAdministrativeTerritoryUnitFrance",
                     "http://id.insee.fr/geo/departement",
                     "http://id.insee.fr/geo/region",
-                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory",
-                    "http://publications.europa.eu/resource/authority/atu",
-                    "http://id.insee.fr/geo/commune"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory"
                 ],
                 null,
                 null,
@@ -1909,7 +1904,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-12 à 12:17:13."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-19 à 18:32:55."
         ]
     }
 }

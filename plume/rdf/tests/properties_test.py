@@ -26,6 +26,23 @@ class PlumePropertyTestCase(unittest.TestCase):
         """
         cls.connection_string = ConnectionString()
 
+    def test_disabled_vocabularies(self):
+        """Contrôle de l'effectivité de la désactivation des vocabulaires censés l'être."""
+        nsm = PlumeNamespaceManager()
+        properties, predicates = class_properties(
+            rdfclass=DCAT.Dataset, nsm=nsm, base_path=None
+        )
+        for prop in properties:
+            if prop.n3_path == 'dct:spatial':
+                # vocabulaire désactivé
+                self.assertTrue(URIRef('http://id.insee.fr/geo/commune') in prop.prop_dict['ontology'])
+                self.assertTrue(URIRef('http://id.insee.fr/geo/commune') in prop.prop_dict['disabled_ontology'])
+                self.assertFalse(URIRef('http://id.insee.fr/geo/commune') in prop.prop_dict['sources'])
+                # vocabulaire actif
+                self.assertTrue(URIRef('http://id.insee.fr/geo/region') in prop.prop_dict['ontology'])
+                self.assertFalse(URIRef('http://id.insee.fr/geo/region') in prop.prop_dict['disabled_ontology'])
+                self.assertTrue(URIRef('http://id.insee.fr/geo/region') in prop.prop_dict['sources'])
+
     def test_class_properties_with_template(self):
         """Génération des catégories communes de la classe dcat:Dataset, avec personnalisation par un modèle.
         
@@ -56,6 +73,10 @@ class PlumePropertyTestCase(unittest.TestCase):
                         (100, 'dct:spatial / locn:geometry', 102, 10),
                         (100, 'dcat:theme', 102, 5),
                         (100, 'dct:language', 102, 6) ;
+                    INSERT INTO z_plume.meta_template_categories
+                        (tpl_id, shrcat_path, tab_id, template_order, sources)
+                        VALUES
+                        (100, 'dct:conformsTo', 102, 7, NULL) ;
                     UPDATE z_plume.meta_template_categories
                         SET sources = ARRAY['http://publications.europa.eu/resource/authority/data-theme']
                         WHERE tpl_id = 100 AND shrcat_path = 'dcat:theme' ;
@@ -141,6 +162,9 @@ class PlumePropertyTestCase(unittest.TestCase):
                 self.assertTrue(p.prop_dict['is_read_only'])
             if p.n3_path == 'dct:spatial':
                 t += 1
+            if p.n3_path == 'dct:conformsTo':
+                t += 1
+                self.assertTrue(URIRef('http://www.opengis.net/def/crs/EPSG/0') in p.prop_dict['sources'])
             # catégorie commune hors modèle
             if p.n3_path == 'dct:created':
                 t += 1
@@ -161,7 +185,7 @@ class PlumePropertyTestCase(unittest.TestCase):
             self.assertEqual(p.prop_dict['label'], 'Notes')
             self.assertTrue(p.prop_dict['is_long_text'])
             self.assertEqual(p.prop_dict['tab'], 'Secondaire')
-        self.assertEqual(t, 8)
+        self.assertEqual(t, 9)
         # catégorie non référencée
         p = PlumeProperty(origin='unknown', nsm=nsm,
             predicate=URIRef('urn:uuid:479fd670-32c5-4ade-a26d-0268b0ce5046'))

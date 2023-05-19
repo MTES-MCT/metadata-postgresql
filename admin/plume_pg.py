@@ -61,7 +61,7 @@ def _table_from_shape(categories, rdfclass, path=None, no_cast=False):
         kind = prop_dict.get('kind')
         datatype = prop_dict.get('datatype')
         order_idx = prop_dict.get('order_idx')
-        sources = prop_dict.get('sources')
+        sources = prop_dict.get('ontology')
         geo_tools = prop_dict.get('geo_tools')
         compute = prop_dict.get('compute')
         rowspan = prop_dict.get('rowspan')
