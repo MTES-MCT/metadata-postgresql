@@ -132,8 +132,7 @@ Les propriétés suivantes ne sont pas prises en charge par Plume :
 | *media type* | `dcat:mediaType` | La différence avec le format (`dct:format`) est difficile à rendre intelligible dans le contexte de Plume. Pour les données mises à disposition via des services (incluant les flux Atom, etc.), on exprimera plutôt ces informations via les propriétés du service, lui-même introduit par `dcat:accessService`. Si cette propriété est présente dans des métadonnées importées, elle est mappée vers `dct:format`. |
 | *checksum* | `spdx:checksum` | Pourrait être ajouté ultérieurement si finalement utile. |
 | *has policy* | `odrl:hasPolicy` | |
-| *spatial resolution* | `dqv:hasQualityMeasurement` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters`. |
-| *spatial resolution as text* | `rdfs:comment` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters` (et la propriété `dct:provenance` du `dcat:Dataset` s'il est besoin d'ajouter des commentaires). |
+| *spatial resolution as text* | `rdfs:comment` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters` et `dqv:hasQualityMeasurement`. |
 
 Les propriétés suivantes sont modifiées par Plume :
 
@@ -338,8 +337,7 @@ Les propriétés suivantes ne sont pas prises en charge par Plume :
 | *qualified attribution* | `prov:qualifiedAttribution` | Sans grand intérêt pour les services dans le contexte de Plume. De plus, comme pour les jeux de données, on privilégie l'usage des propriétés qui définissent directement des organisations pour chaque rôle (comme recommandé par GeoDCAT-AP). |
 | *service category* | `dct:type` | Le registre INSPIRE associé à cette propriété - [Classification des services de données géographiques](https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceCategory) - contient une longue liste de catégories de services dont l'objet n'est le plus souvent pas de mettre à diposition des données. Si cette information peut être utile pour décrire les services en général, elle semble sans grand intérêt dans le contexte de Plume, où les seuls services présentés sont ceux qui donnent accès à des distributions. _NB : Il reste bien une propriété `dct:type` pour les services, mais sa [source de vocabulaire contrôlé](http://publications.europa.eu/resource/authority/data-service-type) est issue du registre UE._ |
 | *service type* | `dct:type` | Le registre INSPIRE associé à cette propriété - [Type de service de données géographiques](https://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType) - propose une catégorisation très vague, sans intérêt dans le contexte de Plume. _NB : Il reste bien une propriété `dct:type` pour les services, mais sa source de vocabulaire contrôlé est issue du [registre UE](https://op.europa.eu/s/vM9M)._ |
-| *spatial resolution* | `dqv:hasQualityMeasurement` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters`. |
-| *spatial resolution as text* | `rdfs:comment` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters`. |
+| *spatial resolution as text* | `rdfs:comment` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters` et `dqv:hasQualityMeasurement`. |
 | *theme / category* | `dcat:theme` | Catégorisation sans intérêt dans le contexte de Plume. |
 | *topic category* | `dct:subject` | Catégorisation sans intérêt dans le contexte de Plume. |
 | *update / modification date* | `dct:modified` | Information difficile à obtenir et sans intérêt dans le contexte de Plume. |
