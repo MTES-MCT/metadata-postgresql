@@ -13,7 +13,7 @@ from plume.rdf.utils import (
 )
 from plume.rdf.namespaces import (
     DCAT, DCT, FOAF, RDF, RDFS, VCARD, XSD, GEODCAT, PLUME,
-    ADMS, GSP, SKOS, OWL
+    ADMS, GSP, SKOS, OWL, DQV
 )
 from plume.rdf.rdflib import URIRef, Literal, BNode
 from plume.rdf.thesaurus import Thesaurus
@@ -689,6 +689,66 @@ class IsoToDcat:
                     l += triples
         return l
 
+    @property
+    def map_spatial_resolution(self):
+        """list of tuples: Triples contenant la résolution spatiale.
+
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+
+        La résolution spatiale est représentée via la propriété
+        ``dcat:spatialResolutionInMeters`` si elle est fournie
+        sous la forme d'une distance (qui est alors convertie
+        en mètres), via ``dqv:hasQualityMeasurement`` si elle
+        est fournie sous la forme d'une échelle équivalente. À noter
+        que les échelles équivalentes de GeoDCAT-AP sont exprimées
+        par un nombre décimal, pas par le seul dénominateur de la
+        fraction.
+
+        Les intervalles d'échelles sont aussi imparfaitement pris
+        en charge par Plume que dans les XML ISO : les deux
+        valeurs apparaîtront sans être explicitement décrites
+        comme un intervalle.
+
+        Les distances sans unité sont présumées être en mètres.
+        
+        """
+        l = []
+        # échelle équivalente
+        denominators = find_values(
+            self.isoxml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:spatialResolution/gmd:MD_Resolution/'
+            'gmd:equivalentScale/gmd:MD_RepresentativeFraction/'
+            'gmd:denominator/gco:Integer'
+        )
+        for denominator in denominators:
+            scale = denominator_to_float(denominator)
+            if not scale:
+                continue
+            node = BNode()
+            l += [
+                (self.datasetid, DQV.hasQualityMeasurement, node),
+                (node, RDF.type, DQV.QualityMeasurement),
+                (node, DQV.value, Literal(scale, datatype=XSD.decimal)),
+                (node, DQV.isMeasurementOf, GEODCAT.spatialResolutionAsScale)
+            ]
+        # distance
+        for elem in self.isoxml.findall(
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:spatialResolution/gmd:MD_Resolution/'
+            'gmd:distance/gco:Distance',
+            namespaces=ISO_NS
+        ):
+            unit = elem.get('uom') or 'm'
+            value = to_spatial_resolution_in_meters(elem.text, unit)
+            if value:
+                lit = Literal(value, datatype=XSD.decimal)
+                if not lit.ill_typed:
+                    l.append((self.datasetid, DCAT.spatialResolutionInMeters, lit))
+        return l
+
 def find_values(
     elem, path, multi=True
 ):
@@ -778,7 +838,8 @@ def find_value(
         return values[0]
 
 def find_literal(
-    elem, path, subject, predicate, multi=False, datatype=None, language=None
+    elem, path, subject, predicate, multi=False, datatype=None, language=None,
+    transform=None
 ):
     """Extrait des valeurs litérales d'un XML et les renvoie sous forme de triples.
     
@@ -809,6 +870,11 @@ def find_literal(
         et RDF.langString ne doivent pas être spécifiés.
     language : str, optional
         Le cas échéant, la langue de la valeur.
+    transform : function, optional
+        Le cas échéant, une fonction de formatage à appliquer aux objets
+        des triples. Elle doit prendre un unique argument, la valeur
+        de l'objet, et renvoyer soit une valeur qui pourra être convertie
+        en instance de `rdflib.term.Literal`, soit ``None``.
     
     Returns
     -------
@@ -835,6 +901,10 @@ def find_literal(
         value = sub.get(attr) if attr else sub.text
         if not value:
             continue
+        if transform:
+            value = transform(value)
+            if not value:
+                continue
         if language:
             triple = (subject, predicate, Literal(value, lang=language))
             if not triple in l:
@@ -897,7 +967,8 @@ def find_iri(
     transform : function, optional
         Le cas échéant, une fonction de formatage à appliquer aux objets
         des triples. Elle doit prendre un unique argument, la valeur
-        de l'objet, et renvoyer un URI.
+        de l'objet, et renvoyer soit une valeur qui pourra être convertie
+        en instance de `rdflib.term.URIRef`, soit ``None``.
     thesaurus : tuple(rdflib.term.URIRef, tuple(str))
         Source de vocabulaire contrôlée pour les objets des triples.
         Il s'agit d'un tuple dont le premier élément est l'IRI de la
@@ -1202,7 +1273,7 @@ def to_spatial_resolution_in_meters(value, unit):
 
     Parameters
     ----------
-    scale : str
+    value : str
         Chaîne de caractères correspondant à une valeur décimale,
         représentant une échelle équivalente.
     
@@ -1278,3 +1349,23 @@ def date_or_datetime_to_literal(date_str):
         return Literal(date_str, datatype=XSD.date)
     if re.match(_DATETIME_REGEXP, date_str):
         return Literal(date_str, datatype=XSD.dateTime)
+
+def denominator_to_float(denominator):
+    """Renvoie le nombre décimal correspondant à la fraction dont le dénominateur est fourni en argument.
+
+    Parameters
+    ----------
+    denominator : str or int or float
+        Une valeur numérique. 0 ou toute autre
+        valeur invalide sera silencieusement 
+        éliminée, la fonction renvoyant alors ``None``.
+    
+    Returns
+    -------
+    float
+    
+    """
+    denominator = normalize_decimal(denominator)
+    if not denominator:
+        return
+    return 1 / float(denominator)
