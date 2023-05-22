@@ -46,6 +46,12 @@ Les clés sont les espaces de nommage à remplacer par leurs valeurs.
 
 """
 
+DATE_TYPE_CODE_MAP = {
+    'creation': DCT.created,
+    'revision': DCT.modified,
+    'publication': DCT.issued
+}
+
 class IsoToDcat:
     """Transcripteur ISO 19139 / GeoDCAT-AP.
     
@@ -273,11 +279,6 @@ class IsoToDcat:
         
         """
         l = []
-        type_map = {
-            'creation': DCT.created,
-            'revision': DCT.modified,
-            'publication': DCT.issued
-        }
         for elem in self.isoxml.findall(
             './gmd:identificationInfo/gmd:MD_DataIdentification/'
             'gmd:citation/gmd:CI_Citation/'
@@ -291,7 +292,7 @@ class IsoToDcat:
                     './gmd:dateType/gmd:CI_DateTypeCode'
                 ]
             )
-            if not code or not code in type_map:
+            if not code or not code in DATE_TYPE_CODE_MAP:
                 continue
             l += find_literal(
                 elem, 
@@ -300,7 +301,7 @@ class IsoToDcat:
                     './gmd:date/gco:DateTime'
                 ],
                 self.datasetid,
-                type_map[code],
+                DATE_TYPE_CODE_MAP[code],
                 datatype=XSD.date
             )
             # XSD.date est renseigné pour le type, mais find_literal
@@ -583,15 +584,110 @@ class IsoToDcat:
         une liste vide est renvoyée.
         
         """
-        node = BNode()
-        triples = find_literal(self.isoxml, './gmd:dataQualityInfo/'
-            'gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/'
-            'gmd:statement/gco:CharacterString', node, RDFS.label,
-            language=self.language)
+        triples = find_literal(
+            self.isoxml,
+            './gmd:dataQualityInfo/gmd:DQ_DataQuality/'
+            'gmd:lineage/gmd:LI_Lineage/'
+            'gmd:statement/gco:CharacterString',
+            None,
+            RDFS.label,
+            multi=True,
+            language=self.language
+        )
         if triples:
-            triples.append((self.datasetid, DCT.provenance, node))
+            for subject in list_subjects(triples):
+                triples.append((self.datasetid, DCT.provenance, subject))
         return triples
 
+    @property
+    def map_conforms_to(self):
+        """list of tuples: Triples contenant les informations sur la conformité des données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+
+        La fonction ne contrôle pas le champ (scope) de la conformité -
+        ``dataset``, ``series``, etc - l'information est considérée 
+        comme valable pour le jeu de données dans tous les cas.
+
+        Elle vérifie le résultat du test de conformité, conservant
+        l'information si ``gmd:pass`` ne vaut pas ``false``. Ce choix,
+        pragmatique et contestable, tient compte du fait que peu de
+        jeux de données ont un résultat de conformité explicite.
+
+        Les explications libres sur la conformité (``gmd:explanation``)
+        ne sont pas retranscrites.
+
+        """
+        l = []
+        for elem in self.isoxml.findall(
+            './gmd:dataQualityInfo/gmd:DQ_DataQuality/'
+            'gmd:report/gmd:DQ_DomainConsistency/'
+            'gmd:result/gmd:DQ_ConformanceResult',
+            namespaces=ISO_NS
+        ):
+            result = find_value(
+                elem,
+                './gmd:pass/gco:Boolean'
+            )
+            if result and result.lower() == 'false':
+                continue
+
+            for specification_elem in elem.findall(
+                './gmd:specification/gmd:CI_Citation',
+                namespaces=ISO_NS
+            ):
+                node = BNode()
+                titles = find_literal(
+                    specification_elem,
+                    [
+                        './gmd:title/gco:CharacterString',
+                        './gmd:title/gmx:Anchor@xlink:title',
+                        './gmd:title/gmx:Anchor'
+                    ],
+                    node,
+                    DCT.title,
+                    language=self.language
+                )
+                if not titles:
+                    continue
+                l += titles
+                l.append((self.datasetid, DCT.conformsTo, node))
+
+                l += find_iri(
+                    specification_elem,
+                    './gmd:title/gmx:Anchor@xlink:href',
+                    node,
+                    FOAF.page
+                )
+
+                for date_elem in specification_elem.findall(
+                    './gmd:date/gmd:CI_Date',
+                    namespaces=ISO_NS
+                ):
+                    code = find_value(
+                        date_elem,
+                        [
+                            './gmd:dateType/gmd:CI_DateTypeCode@codeListValue',
+                            './gmd:dateType/gmd:CI_DateTypeCode'
+                        ]
+                    )
+                    if not code or not code in DATE_TYPE_CODE_MAP:
+                        continue
+                    l += find_literal(
+                        date_elem, 
+                        [
+                            './gmd:date/gco:Date',
+                            './gmd:date/gco:DateTime'
+                        ],
+                        node,
+                        DATE_TYPE_CODE_MAP[code],
+                        datatype=XSD.date
+                    )
+        return l
+
+            
     @property
     def map_version(self):
         """list of tuples: Triples contenant la version du jeu de données.
@@ -855,9 +951,11 @@ def find_literal(
         chemins listés. XPath n'est pas pris en charge, mais il est
         possible de viser la valeur d'un attribut en ajoutant son
         nom précédé de ``'@'`` à la fin du chemin.
-    subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
+    subject : plume.rdf.utils.DatasetId or rdflib.term.BNode or None
         L'identifiant du graphe ou le noeud anonyme sujet
-        des triples à renvoyer.
+        des triplets à renvoyer. Si la valeur de ce paramètre est 
+        explicitement fixée à ``None``, la fonction générera un 
+        nouveau noeud anonyme pour chaque triplet renvoyé.
     predicate : rdflib.term.URIRef
         La propriété qui sera le prédicat des triples
         renvoyés.
@@ -884,6 +982,7 @@ def find_literal(
     
     """
     l = []
+    subject_ref = subject
     if not path:
         return l
     
@@ -898,7 +997,9 @@ def find_literal(
         attr = None
 
     for sub in elem.findall(epath, namespaces=ISO_NS):
-        value = sub.get(attr) if attr else sub.text
+        value = sub.get(wns(attr)) if attr else sub.text
+        if not subject_ref:
+            subject = BNode()
         if not value:
             continue
         if transform:
@@ -907,7 +1008,7 @@ def find_literal(
                 continue
         if language:
             triple = (subject, predicate, Literal(value, lang=language))
-            if not triple in l:
+            if not triple[2] in list_objects(l):
                 l.append(triple)
         elif datatype and datatype != XSD.string:
             if datatype in (XSD.date, XSD.dateTime):
@@ -916,22 +1017,22 @@ def find_literal(
                 lit = Literal(value, datatype=datatype)
             if lit and not lit.ill_typed:
                 triple = (subject, predicate, lit)
-                if not triple in l:
+                if not triple[2] in list_objects(l):
                     l.append(triple)
         else:
             triple = (subject, predicate, Literal(value))
-            if not triple in l:
+            if not triple[2] in list_objects(l):
                 l.append(triple)
         if not multi:
             break
     
     if isinstance(path, list) and len(path) > 1 and (multi or not l):
         triples = find_literal(
-            elem, path[1:], subject, predicate, multi=multi,
+            elem, path[1:], subject_ref, predicate, multi=multi,
             datatype=datatype, language=language
         )
         for triple in triples:
-            if not triple in l:
+            if not triple[2] in list_objects(l):
                 l.append(triple)
 
     return l
@@ -954,9 +1055,11 @@ def find_iri(
         chemins listés. XPath n'est pas pris en charge, mais il est
         possible de viser la valeur d'un attribut en ajoutant son
         nom précédé de ``'@'`` à la fin du chemin.
-    subject : plume.rdf.utils.DatasetId or rdflib.term.BNode
+    subject : plume.rdf.utils.DatasetId or rdflib.term.BNode or None
         L'identifiant du graphe ou le noeud anonyme sujet
-        des triples à renvoyer.
+        des triplets à renvoyer. Si la valeur de ce paramètre est 
+        explicitement fixée à ``None``, la fonction générera un 
+        nouveau noeud anonyme pour chaque triplet renvoyé.
     predicate : rdflib.term.URIRef
         La propriété qui sera le prédicat des triples
         renvoyés.
@@ -993,6 +1096,7 @@ def find_iri(
     
     """
     l = []
+    subject_ref = subject
     if not path:
         return l
     
@@ -1012,6 +1116,8 @@ def find_iri(
         l_thesaurus = [thesaurus]
 
     for sub in elem.findall(epath, namespaces=ISO_NS):
+        if not subject_ref:
+            subject = BNode()
         value = sub.get(wns(attr)) if attr else sub.text
         if not value or (
             not thesaurus and forbidden_char(value)
@@ -1065,18 +1171,18 @@ def find_iri(
                 # non référencé
                 continue
         triple = (subject, predicate, URIRef(value))
-        if not triple in l:
+        if not triple[2] in list_objects(l):
             l.append(triple)
         if not multi:
             break
     
     if isinstance(path, list) and len(path) > 1 and (multi or not l):
         triples = find_iri(
-            elem, path[1:], subject, predicate, multi=multi,
+            elem, path[1:], subject_ref, predicate, multi=multi,
             transform=transform, thesaurus=thesaurus
         )
         for triple in triples:
-            if not triple in l:
+            if not triple[2] in list_objects(l):
                 l.append(triple)
 
     return l    
@@ -1369,3 +1475,33 @@ def denominator_to_float(denominator):
     if not denominator:
         return
     return 1 / float(denominator)
+
+def list_objects(triples):
+    """Renvoie la liste des objets d'une liste de triplets.
+    
+    Parameters
+    ----------
+    triples : list(tuple)
+        Une liste de triplets.
+    
+    Returns
+    -------
+    list(rdflib.term.URIRef or rdflib.term.Literal or rdflib.term.BNode)
+
+    """
+    return [triple[2] for triple in triples or []]
+
+def list_subjects(triples):
+    """Renvoie la liste des sujets d'une liste de triplets.
+    
+    Parameters
+    ----------
+    triples : list(tuple)
+        Une liste de triplets.
+    
+    Returns
+    -------
+    list(rdflib.term.URIRef or rdflib.term.Literal or rdflib.term.BNode)
+
+    """
+    return [triple[0] for triple in triples or []]
