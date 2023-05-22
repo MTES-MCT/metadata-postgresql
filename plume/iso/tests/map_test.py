@@ -8,13 +8,14 @@ from plume.rdf.utils import (
 from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
     IsoToDcat, normalize_language, find_values, normalize_decimal,
-    date_or_datetime_to_literal, to_spatial_resolution_in_meters
+    date_or_datetime_to_literal, to_spatial_resolution_in_meters,
+    list_objects, list_subjects
 )
 from plume.rdf.namespaces import (
     DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL, DQV,
-    GEODCAT
+    GEODCAT, RDFS
 )
-from plume.rdf.rdflib import Literal, URIRef
+from plume.rdf.rdflib import Literal, URIRef, BNode
 from plume.rdf.metagraph import metagraph_from_iso
 from plume.rdf.widgetsdict import WidgetsDict
 
@@ -556,6 +557,32 @@ class IsoMapTestCase(unittest.TestCase):
         self.assertEqual(to_spatial_resolution_in_meters('1500', 'xxx'), None)
         self.assertEqual(to_spatial_resolution_in_meters(None, 'km'), None)
 
+    def test_list_subjects(self):
+        """Liste des sujets d'un ensemble de triplets."""
+        nodes = [BNode(), BNode(), BNode()]
+        triples = [
+            (nodes[0], RDFS.label, Literal('bla')),
+            (nodes[1], RDFS.label, Literal('bla bla')),
+            (nodes[2], RDFS.label, Literal('bla bla bla'))
+        ]
+        self.assertListEqual(
+            list_subjects(triples),
+            nodes
+        )
+    
+    def test_list_objects(self):
+        """Liste des objets d'un ensemble de triplets."""
+        nodes = [BNode(), BNode(), BNode()]
+        triples = [
+            (nodes[0], RDFS.label, Literal('bla')),
+            (nodes[1], RDFS.label, Literal('bla bla')),
+            (nodes[2], RDFS.label, Literal('bla bla bla'))
+        ]
+        self.assertListEqual(
+            list_objects(triples),
+            [Literal('bla'), Literal('bla bla'), Literal('bla bla bla')]
+        )
+
 class IsoToDcatTestCase(unittest.TestCase):
     
     @classmethod
@@ -569,6 +596,7 @@ class IsoToDcatTestCase(unittest.TestCase):
         )
         cls.CSW_GEOIDE_ZAC_75 = data_from_file(abspath('rdf/tests/samples/iso_geoide_zac_paris.xml'))
         cls.CSW_GEOIDE_CUCS_75 = data_from_file(abspath('rdf/tests/samples/iso_geoide_quartiers_cucs_paris.xml'))
+        cls.CSW_GEOIDE_LOT_PPR_MONTARDON = data_from_file(abspath('rdf/tests/samples/iso_geoide_lot_ppr_montardon.xml'))
         cls.CSW_GEOLITTORAL_SENTIER = data_from_file(
             abspath('rdf/tests/samples/iso_geolittoral_sentier_du_littoral.xml')
         )
@@ -750,6 +778,14 @@ class IsoToDcatTestCase(unittest.TestCase):
         spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_objects), 1)
         self.assertEqual(spatial_objects[0], URIRef('http://id.insee.fr/geo/departement/75'))
+    
+    def test_map_location_geoide_commune(self):
+        """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test GéoIDE (cas d'un code de commune)."""
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_LOT_PPR_MONTARDON)
+        dataset_id = metagraph.datasetid
+        spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
+        self.assertEqual(len(spatial_objects), 1)
+        self.assertEqual(spatial_objects[0], URIRef('http://id.insee.fr/geo/commune/64399'))
 
     def test_map_location_datara(self):
         """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test datARA."""
@@ -1067,6 +1103,126 @@ class IsoToDcatTestCase(unittest.TestCase):
             Literal(250.0, datatype=XSD.decimal)
         ]
         self.assertListEqual(resolution_values, expected)
+
+    def test_map_provenance_one_value(self):
+        """Récupération de la généalogie.
+        
+        Le test sur le jeu de données IGN vérifie à la fois la récupération
+        de plusieurs valeurs et l'élimination des valeurs dupliquées.
+
+        """
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        provenance_nodes = list(metagraph.objects(dataset_id, DCT.provenance))
+        self.assertEqual(len(provenance_nodes), 1)
+        for node in provenance_nodes:
+            self.assertTrue((node, RDFS.label, None) in metagraph)
+
+    def test_map_provenance_multiple_values(self):
+        """Récupération de la généalogie.
+        
+        Le test sur le jeu de données IGN vérifie à la fois la récupération
+        de plusieurs valeurs et l'élimination des valeurs dupliquées.
+
+        """
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        provenance_nodes = list(metagraph.objects(dataset_id, DCT.provenance))
+        self.assertEqual(len(provenance_nodes), 2)
+        for node in provenance_nodes:
+            self.assertTrue((node, RDFS.label, None) in metagraph)
+    
+    def test_map_conforms_to(self):
+        """Récupération de la conformité aux standards."""
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        expected = [
+            (
+                Literal('RÉGLEMENT (UE) N°1089/2010', lang='fr'),
+                Literal('2010-11-23', datatype=XSD.date)
+            ),
+            (
+                Literal('INSPIRE Data Specification on Elevation – Technical Guidelines', lang='fr'),
+                Literal('2013-01-21', datatype=XSD.date)
+            )
+        ]
+        for node in metagraph.objects(dataset_id, DCT.conformsTo):
+            title = metagraph.value(node, DCT.title)
+            issued = metagraph.value(node, DCT.issued)
+            if title and issued and (title, issued) in expected:
+                expected.remove((title, issued))
+        self.assertFalse(expected)
+
+    def test_map_conforms_to_not_passed(self):
+        """Vérifie que les informations sur la conformité aux standards ne sont pas récupérées lorsque les données sont marquées comme non conformes."""
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_LOT_PPR_MONTARDON)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        for node in metagraph.objects(dataset_id, DCT.conformsTo):
+            self.assertFalse((node, DCT.title, Literal('Plan-de-prevention-des-risques-PPRN-PPRT', lang='fr')) in metagraph)
+
+        # témoin de la possibilité de récupérer le standard
+        # pour GéoIDE
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        self.assertTrue(
+            any(
+                (node, DCT.title, Literal('Règlement (UE) No 1088/2010', lang='fr')) in metagraph
+                for node in metagraph.objects(dataset_id, DCT.conformsTo)
+            )
+        )
+    
+    def test_map_conforms_to_with_url(self):
+        """Récupération de l'URL de consultation du standard."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:dataQualityInfo>
+    <gmd:DQ_DataQuality>
+      <gmd:report>
+        <gmd:DQ_DomainConsistency>
+          <gmd:result>
+            <gmd:DQ_ConformanceResult>
+              <gmd:specification>
+                <gmd:CI_Citation>
+                  <gmd:title>
+                    <gmx:Anchor xlink:href="http://cnig.gouv.fr/IMG/pdf/cnig_eclext_v1_1.pdf" xlink:title="Géostandard d'éclairage extérieur v1.1" />
+                  </gmd:title>
+                </gmd:CI_Citation>
+              </gmd:specification>
+              <gmd:pass>
+                <gco:Boolean>true</gco:Boolean>
+              </gmd:pass>
+            </gmd:DQ_ConformanceResult>
+          </gmd:result>
+        </gmd:DQ_DomainConsistency>
+      </gmd:report>
+    </gmd:DQ_DataQuality>
+  </gmd:dataQualityInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        ctrl = False
+        for node in metagraph.objects(dataset_id, DCT.conformsTo):
+            title = metagraph.value(node, DCT.title)
+            url = metagraph.value(node, FOAF.page)
+            if (
+                title == Literal("Géostandard d'éclairage extérieur v1.1", lang='fr') and
+                url == URIRef('http://cnig.gouv.fr/IMG/pdf/cnig_eclext_v1_1.pdf')
+            ):
+                ctrl = True
+        self.assertTrue(ctrl)
 
 if __name__ == '__main__':
     unittest.main()
