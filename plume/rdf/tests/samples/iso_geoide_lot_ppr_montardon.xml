@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" xmlns:apiso="http://www.opengis.net/cat/csw/apiso/1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dct="http://purl.org/dc/terms/" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd">
+  <gmd:MD_Metadata xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.isotc211.org/2005/gmx http://schemas.opengis.net/iso/19139/20060504/gmx/gmx.xsd">
+    <gmd:fileIdentifier>
+      <gco:CharacterString>fr-120066022-ldd-a2086c57-1888-4270-a5b7-84c67b83585e</gco:CharacterString>
+    </gmd:fileIdentifier>
+    <gmd:language>
+      <gmd:LanguageCode codeListValue="fre" codeList="http://www.loc.gov/standards/iso639-2/">fre</gmd:LanguageCode>
+    </gmd:language>
+    <gmd:characterSet>
+      <gmd:MD_CharacterSetCode codeListValue="UTF-8" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_CharacterSetCode">UTF-8</gmd:MD_CharacterSetCode>
+    </gmd:characterSet>
+    <gmd:parentIdentifier>
+      <gco:CharacterString>fr-120066022-sjdd-830abfe6-ae1a-4daf-b97d-51d63b8b8798</gco:CharacterString>
+    </gmd:parentIdentifier>
+    <gmd:hierarchyLevel>
+      <gmd:MD_ScopeCode codeListValue="dataset" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_ScopeCode">dataset</gmd:MD_ScopeCode>
+    </gmd:hierarchyLevel>
+    <gmd:hierarchyLevelName>
+      <gco:CharacterString>lot de données</gco:CharacterString>
+    </gmd:hierarchyLevelName>
+    <gmd:contact>
+      <gmd:CI_ResponsibleParty>
+        <gmd:organisationName>
+          <gco:CharacterString>DDTM 64 (Direction Départementale des Territoires et de la Mer des Pyrénées-Atlantiques)</gco:CharacterString>
+        </gmd:organisationName>
+        <gmd:contactInfo>
+          <gmd:CI_Contact>
+            <gmd:phone>
+              <gmd:CI_Telephone>
+                <gmd:voice>
+                  <gco:CharacterString>0559808600</gco:CharacterString>
+                </gmd:voice>
+                <gmd:facsimile>
+                  <gco:CharacterString>0559808705</gco:CharacterString>
+                </gmd:facsimile>
+              </gmd:CI_Telephone>
+            </gmd:phone>
+            <gmd:address>
+              <gmd:CI_Address>
+                <gmd:deliveryPoint>
+                  <gco:CharacterString>Boulevard Tourasse
+Cité administrative</gco:CharacterString>
+                </gmd:deliveryPoint>
+                <gmd:city>
+                  <gco:CharacterString>PAU</gco:CharacterString>
+                </gmd:city>
+                <gmd:postalCode>
+                  <gco:CharacterString>64032</gco:CharacterString>
+                </gmd:postalCode>
+                <gmd:country>
+                  <gco:CharacterString>France</gco:CharacterString>
+                </gmd:country>
+                <gmd:electronicMailAddress>
+                  <gco:CharacterString>ddtm-mot@pyrenees-atlantiques.gouv.fr</gco:CharacterString>
+                </gmd:electronicMailAddress>
+              </gmd:CI_Address>
+            </gmd:address>
+            <gmd:hoursOfService>
+              <gco:CharacterString>9h-12h et 14h-17h</gco:CharacterString>
+            </gmd:hoursOfService>
+          </gmd:CI_Contact>
+        </gmd:contactInfo>
+        <gmd:role>
+          <gmd:CI_RoleCode codeListValue="pointOfContact" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_RoleCode">pointOfContact</gmd:CI_RoleCode>
+        </gmd:role>
+      </gmd:CI_ResponsibleParty>
+    </gmd:contact>
+    <gmd:dateStamp>
+      <gco:DateTime>2019-03-26T22:54:01.099+01:00</gco:DateTime>
+    </gmd:dateStamp>
+    <gmd:metadataStandardName>
+      <gco:CharacterString>ISO 19115</gco:CharacterString>
+    </gmd:metadataStandardName>
+    <gmd:metadataStandardVersion>
+      <gco:CharacterString>2003 Cor.1:2006</gco:CharacterString>
+    </gmd:metadataStandardVersion>
+    <gmd:referenceSystemInfo>
+      <gmd:MD_ReferenceSystem>
+        <gmd:referenceSystemIdentifier>
+          <gmd:RS_Identifier>
+            <gmd:code>
+              <gmx:Anchor xlink:href="http://www.opengis.net/def/crs/EPSG/0/2154" xlink:title="RGF93 - Lambert 93">2154</gmx:Anchor>
+            </gmd:code>
+            <gmd:codeSpace>
+              <gco:CharacterString>EPSG</gco:CharacterString>
+            </gmd:codeSpace>
+          </gmd:RS_Identifier>
+        </gmd:referenceSystemIdentifier>
+      </gmd:MD_ReferenceSystem>
+    </gmd:referenceSystemInfo>
+    <gmd:identificationInfo>
+      <gmd:MD_DataIdentification>
+        <gmd:citation>
+          <gmd:CI_Citation>
+            <gmd:title>
+              <gco:CharacterString>PPR MONTARDON (64DDTM20050014) - Plan de Prévention des risques naturels (PPRN) de la commune de MONTARDON (64399) - département des Pyrénées-Atlantiques</gco:CharacterString>
+            </gmd:title>
+            <gmd:date>
+              <gmd:CI_Date>
+                <gmd:date>
+                  <gco:Date>2015-12-16</gco:Date>
+                </gmd:date>
+                <gmd:dateType>
+                  <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                </gmd:dateType>
+              </gmd:CI_Date>
+            </gmd:date>
+            <gmd:identifier>
+              <gmd:RS_Identifier>
+                <gmd:code>
+                  <gco:CharacterString>fr-120066022-orphan-17e2c25c-98b2-4e72-b5a3-4d5f3bd9dcb8</gco:CharacterString>
+                </gmd:code>
+                <gmd:codeSpace>
+                  <gco:CharacterString>http://catalogue.geo-ide.developpement-durable.gouv.fr</gco:CharacterString>
+                </gmd:codeSpace>
+              </gmd:RS_Identifier>
+            </gmd:identifier>
+            <gmd:series uuidref="fr-120066022-sjdd-830abfe6-ae1a-4daf-b97d-51d63b8b8798" />
+          </gmd:CI_Citation>
+        </gmd:citation>
+        <gmd:abstract>
+          <gco:CharacterString>Le standard de données COVADIS sur les plans de prévention des risques comporte toutes les spécifications techniques et organisationnelles de stockage au format numérique des données géographiques représentées dans les plans de prévention des risques (PPR). Les risques majeurs regroupent les huit risques naturels principaux prévisibles sur le territoire national : les inondations, les séismes, les éruptions volcaniques, les mouvements de terrain, les risques littoraux, les avalanches, les feux de forêt, les cyclones et les tempêtes, et quatre risques technologiques : le risque nucléaire, le risque industriel, le risque de transport de matières dangereuses et le risque de rupture de barrage. 
+Les plans de prévention des risques (PPR) ont été institués par la loi du 2 février 1995 relative au renforcement de la protection de l'environnement. L'outil PPR s'insère dans le cadre de la loi du 22 juillet 1987 relative à l'organisation de la sécurité civile, à la protection de la forêt contre l'incendie et à la prévention des risques majeurs. L'élaboration d'un PPR relève de la compétence de l'État. Elle est décidée par le Préfet.
+Qu'ils soient naturels, technologiques ou multirisques, les plans de prévention des risques présentent des similitudes. Ils contiennent trois catégories d'information :
+• La cartographie réglementaire se traduit par une délimitation géographique du territoire concerné par le risque. Cette délimitation définit des zones dans lesquelles s'appliquent des règlements spécifiques. Ces règlements ont valeur de servitude et imposent des prescriptions variant en fonction du niveau d'aléa auquel la zone est exposée. Les zones sont représentées sur un plan de zonage qui couvre entièrement le périmètre d'étude.
+• Les aléas à l'origine du risque figurent dans des documents d'aléas qui peuvent être insérés dans le rapport de présentation ou annexés au PPR. Ces documents servent à cartographier les différents niveaux d'intensité de chaque aléa pris en compte dans le plan de prévention des risques.
+• Les enjeux identifiés lors de l'élaboration du PPR peuvent également être annexés au document approuvé sous forme de cartes. 
+Ces similitudes entre les différents types de PPR et la volonté d'atteindre un bon niveau de standardisation des données PPR ont conduit la COVADIS à opter pour un standard de données unique, suffisamment générique pour traiter les différents types de plan de prévention des risques (plans de prévention des risques naturels PPRN, plans de prévention des risques technologiques PPRT). Ce standard de données ne consiste pas en une modélisation complète d'un dossier de plan de prévention des risques. Le périmètre de ce document est circonscrit aux données géographiques figurant dans les PPR qu'elles soient de nature réglementaire ou non. Le standard PPR n'a pas non plus pour objet de standardiser la connaissance des aléas.L'enjeu est de disposer d'une description pour un stockage homogène des données géographiques des PPR car ces données intéressent plusieurs métiers au sein des ministères en charge de l'agriculture, d'une part, et de l'écologie, et du développement durable, d'autre part.</gco:CharacterString>
+        </gmd:abstract>
+        <gmd:purpose>
+          <gco:CharacterString>Les plans de prévention des risques naturels ou technologiques constituent un des outils de la politique de prévention des risques menée par l'État. Le PPR est un dossier réglementaire de prévention qui fait connaître les zones à risques aux populations et aux aménageurs et définit les mesures pour réduire la vulnérabilité. Un PPR contient des données géographiques sur un territoire donné qui sont très utiles à la gestion de crise, la gestion foncière ou immobilière et l'urbanisme. Cependant, un PPR n'est pas un document opérationnel de gestion de crise. Les documents d'urbanisme approuvés doivent notamment annexer le plan de zonages du PPR dès que ce dernier est approuvé.Le standard de données Plan de Prévention des Risques (PPR) doit servir aux échanges de données entre les acteurs de ces différents domaines.La standard de données doit améliorer la disponibilité des données géographiques produites dans le cadre des procédures PPRT ou PPRN. Quelques cas d'utilisation simples ont été identifiés :• définir un scénario d'échange des données de PPR utilisant des règles de structuration partagées ;• homogénéiser les pratiques des services et améliorer les échanges de données entre les acteurs de leurs différents domaines d'application ;• proposer des spécifications techniques pour structurer les données géographiques produites au moment de l'élaboration du PPR ;• faciliter la cartographie des plans de prévention des risques majeurs prescrits ou approuvés sur un territoire donné ;• diffuser vers le public des cartes représentant les zones réglementaires des PPR et les zones soumises à l'aléa de façon homogène ;• conserver la trace des aléas et des enjeux qui ont été utilisés pour élaborer le plan de zonage et le règlement du PPR. Ces données sont intéressantes, notamment en cas de révision du PPR.S'il faut disposer de ces données dans l'infrastructure de données des ministères, un autre enjeu de ce standard est de faciliter la remontée des données PPR vers les applications de porter-à-connaissance sur les risques et de suivi de la politique de prévention des risques.</gco:CharacterString>
+        </gmd:purpose>
+        <gmd:pointOfContact>
+          <gmd:CI_ResponsibleParty>
+            <gmd:organisationName>
+              <gco:CharacterString>DDTM 64 (Direction Départementale des Territoires et de la Mer des Pyrénées-Atlantiques)</gco:CharacterString>
+            </gmd:organisationName>
+            <gmd:contactInfo>
+              <gmd:CI_Contact>
+                <gmd:phone>
+                  <gmd:CI_Telephone>
+                    <gmd:voice>
+                      <gco:CharacterString>0559808600</gco:CharacterString>
+                    </gmd:voice>
+                    <gmd:facsimile>
+                      <gco:CharacterString>0559808705</gco:CharacterString>
+                    </gmd:facsimile>
+                  </gmd:CI_Telephone>
+                </gmd:phone>
+                <gmd:address>
+                  <gmd:CI_Address>
+                    <gmd:deliveryPoint>
+                      <gco:CharacterString>Boulevard Tourasse
+Cité administrative</gco:CharacterString>
+                    </gmd:deliveryPoint>
+                    <gmd:city>
+                      <gco:CharacterString>PAU</gco:CharacterString>
+                    </gmd:city>
+                    <gmd:postalCode>
+                      <gco:CharacterString>64032</gco:CharacterString>
+                    </gmd:postalCode>
+                    <gmd:country>
+                      <gco:CharacterString>France</gco:CharacterString>
+                    </gmd:country>
+                    <gmd:electronicMailAddress>
+                      <gco:CharacterString>ddtm-mot@pyrenees-atlantiques.gouv.fr</gco:CharacterString>
+                    </gmd:electronicMailAddress>
+                  </gmd:CI_Address>
+                </gmd:address>
+                <gmd:hoursOfService>
+                  <gco:CharacterString>9h-12h et 14h-17h</gco:CharacterString>
+                </gmd:hoursOfService>
+              </gmd:CI_Contact>
+            </gmd:contactInfo>
+            <gmd:role>
+              <gmd:CI_RoleCode codeListValue="pointOfContact" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_RoleCode">pointOfContact</gmd:CI_RoleCode>
+            </gmd:role>
+          </gmd:CI_ResponsibleParty>
+        </gmd:pointOfContact>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>Risque/Inondation</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode" />
+            </gmd:type>
+            <gmd:thesaurusName>
+              <gmd:CI_Citation>
+                <gmd:title>
+                  <gco:CharacterString>Arborescence thématique de la COVADIS</gco:CharacterString>
+                </gmd:title>
+                <gmd:date>
+                  <gmd:CI_Date>
+                    <gmd:date>
+                      <gco:Date>2009-04-06</gco:Date>
+                    </gmd:date>
+                    <gmd:dateType>
+                      <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                    </gmd:dateType>
+                  </gmd:CI_Date>
+                </gmd:date>
+              </gmd:CI_Citation>
+            </gmd:thesaurusName>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>Zones de gestion, de restriction ou de réglementation et unités de déclaration</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode" />
+            </gmd:type>
+            <gmd:thesaurusName>
+              <gmd:CI_Citation>
+                <gmd:title>
+                  <gco:CharacterString>GEMET - INSPIRE themes, version 1.0</gco:CharacterString>
+                </gmd:title>
+                <gmd:date>
+                  <gmd:CI_Date>
+                    <gmd:date>
+                      <gco:Date>2008-06-01</gco:Date>
+                    </gmd:date>
+                    <gmd:dateType>
+                      <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                    </gmd:dateType>
+                  </gmd:CI_Date>
+                </gmd:date>
+              </gmd:CI_Citation>
+            </gmd:thesaurusName>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>Zones à risque naturel</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode" />
+            </gmd:type>
+            <gmd:thesaurusName>
+              <gmd:CI_Citation>
+                <gmd:title>
+                  <gco:CharacterString>GEMET - INSPIRE themes, version 1.0</gco:CharacterString>
+                </gmd:title>
+                <gmd:date>
+                  <gmd:CI_Date>
+                    <gmd:date>
+                      <gco:Date>2008-06-01</gco:Date>
+                    </gmd:date>
+                    <gmd:dateType>
+                      <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                    </gmd:dateType>
+                  </gmd:CI_Date>
+                </gmd:date>
+              </gmd:CI_Citation>
+            </gmd:thesaurusName>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>Risque/Zonages Risque naturel</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode" />
+            </gmd:type>
+            <gmd:thesaurusName>
+              <gmd:CI_Citation>
+                <gmd:title>
+                  <gco:CharacterString>Arborescence thématique de la COVADIS</gco:CharacterString>
+                </gmd:title>
+                <gmd:date>
+                  <gmd:CI_Date>
+                    <gmd:date>
+                      <gco:Date>2009-04-06</gco:Date>
+                    </gmd:date>
+                    <gmd:dateType>
+                      <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                    </gmd:dateType>
+                  </gmd:CI_Date>
+                </gmd:date>
+              </gmd:CI_Citation>
+            </gmd:thesaurusName>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>Usage des sols</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode" />
+            </gmd:type>
+            <gmd:thesaurusName>
+              <gmd:CI_Citation>
+                <gmd:title>
+                  <gco:CharacterString>GEMET - INSPIRE themes, version 1.0</gco:CharacterString>
+                </gmd:title>
+                <gmd:date>
+                  <gmd:CI_Date>
+                    <gmd:date>
+                      <gco:Date>2008-06-01</gco:Date>
+                    </gmd:date>
+                    <gmd:dateType>
+                      <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                    </gmd:dateType>
+                  </gmd:CI_Date>
+                </gmd:date>
+              </gmd:CI_Citation>
+            </gmd:thesaurusName>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>aléa ; enjeux ; inondation ; aménagement ; urbanisme ; prescription ; prévention ; servitude ; risque ; multi-risque</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode">theme</gmd:MD_KeywordTypeCode>
+            </gmd:type>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:descriptiveKeywords>
+          <gmd:MD_Keywords>
+            <gmd:keyword>
+              <gco:CharacterString>données ouvertes</gco:CharacterString>
+            </gmd:keyword>
+            <gmd:type>
+              <gmd:MD_KeywordTypeCode codeListValue="theme" codeList="standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_KeywordTypeCode">theme</gmd:MD_KeywordTypeCode>
+            </gmd:type>
+          </gmd:MD_Keywords>
+        </gmd:descriptiveKeywords>
+        <gmd:resourceConstraints>
+          <gmd:MD_Constraints>
+            <gmd:useLimitation>
+              <gco:CharacterString>Avertissement : 
+Les données diffusées sont informatives et non opposables au tiers. Les données SIG ont été standardisées à partir
+des données numériques ayant servis à l'élaboration des PPRn approuvés. Nous ne garantissons pas leur exhaustivité et leur exactitude
+par rapport aux documents opposables. 
+Les documents officiels et opposables aux tiers peuvent être consultés à la Mairie ou à la préfecture.</gco:CharacterString>
+            </gmd:useLimitation>
+          </gmd:MD_Constraints>
+        </gmd:resourceConstraints>
+        <gmd:resourceConstraints>
+          <gmd:MD_LegalConstraints>
+            <gmd:useLimitation>
+              <gco:CharacterString>Voir les conditions particulières applicables à chaque jeu de données</gco:CharacterString>
+            </gmd:useLimitation>
+            <gmd:useLimitation>
+              <gco:CharacterString>Utilisation libre sous réserve de mentionner la DDTM64 et la date de sa dernière mise à jour.</gco:CharacterString>
+            </gmd:useLimitation>
+            <gmd:useLimitation>
+              <gco:CharacterString>Licence Ouverte 1.0 http://www.data.gouv.fr/Licence-Ouverte-Open-Licence.</gco:CharacterString>
+            </gmd:useLimitation>
+            <gmd:useLimitation>
+              <gco:CharacterString>Aucun des articles de la loi ne peut être invoqué pour justifier d'une restriction d'accès public.</gco:CharacterString>
+            </gmd:useLimitation>
+            <gmd:accessConstraints>
+              <gmd:MD_RestrictionCode codeListValue="otherRestrictions" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_RestrictionCode">otherRestrictions</gmd:MD_RestrictionCode>
+            </gmd:accessConstraints>
+            <gmd:useConstraints>
+              <gmd:MD_RestrictionCode codeListValue="license" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_RestrictionCode">license</gmd:MD_RestrictionCode>
+            </gmd:useConstraints>
+            <gmd:otherConstraints>
+              <gco:CharacterString>Pas de restriction d'accès public selon INSPIRE</gco:CharacterString>
+            </gmd:otherConstraints>
+          </gmd:MD_LegalConstraints>
+        </gmd:resourceConstraints>
+        <gmd:aggregationInfo>
+          <gmd:MD_AggregateInformation>
+            <gmd:aggregateDataSetIdentifier>
+              <gmd:MD_Identifier>
+                <gmd:code>
+                  <gco:CharacterString>fr-120066022-jdd-e27b7eda-5fa6-4592-acb6-67832f7dfc40</gco:CharacterString>
+                </gmd:code>
+              </gmd:MD_Identifier>
+            </gmd:aggregateDataSetIdentifier>
+            <gmd:associationType>
+              <gmd:DS_AssociationTypeCode codeListValue="partOfSeamlessDatabase" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_AssociationTypeCode">partOfSeamlessDatabase</gmd:DS_AssociationTypeCode>
+            </gmd:associationType>
+            <gmd:initiativeType>
+              <gmd:DS_InitiativeTypeCode codeListValue="collection" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_InitiativeTypeCode">collection</gmd:DS_InitiativeTypeCode>
+            </gmd:initiativeType>
+          </gmd:MD_AggregateInformation>
+        </gmd:aggregationInfo>
+        <gmd:aggregationInfo>
+          <gmd:MD_AggregateInformation>
+            <gmd:aggregateDataSetIdentifier>
+              <gmd:MD_Identifier>
+                <gmd:code>
+                  <gco:CharacterString>fr-120066022-jdd-c7d21cb3-7ed2-4309-903e-1dea66d611e8</gco:CharacterString>
+                </gmd:code>
+              </gmd:MD_Identifier>
+            </gmd:aggregateDataSetIdentifier>
+            <gmd:associationType>
+              <gmd:DS_AssociationTypeCode codeListValue="partOfSeamlessDatabase" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_AssociationTypeCode">partOfSeamlessDatabase</gmd:DS_AssociationTypeCode>
+            </gmd:associationType>
+            <gmd:initiativeType>
+              <gmd:DS_InitiativeTypeCode codeListValue="collection" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_InitiativeTypeCode">collection</gmd:DS_InitiativeTypeCode>
+            </gmd:initiativeType>
+          </gmd:MD_AggregateInformation>
+        </gmd:aggregationInfo>
+        <gmd:aggregationInfo>
+          <gmd:MD_AggregateInformation>
+            <gmd:aggregateDataSetIdentifier>
+              <gmd:MD_Identifier>
+                <gmd:code>
+                  <gco:CharacterString>fr-120066022-jdd-241e699b-f62c-493f-bf41-29f6da4ba985</gco:CharacterString>
+                </gmd:code>
+              </gmd:MD_Identifier>
+            </gmd:aggregateDataSetIdentifier>
+            <gmd:associationType>
+              <gmd:DS_AssociationTypeCode codeListValue="partOfSeamlessDatabase" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_AssociationTypeCode">partOfSeamlessDatabase</gmd:DS_AssociationTypeCode>
+            </gmd:associationType>
+            <gmd:initiativeType>
+              <gmd:DS_InitiativeTypeCode codeListValue="collection" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_InitiativeTypeCode">collection</gmd:DS_InitiativeTypeCode>
+            </gmd:initiativeType>
+          </gmd:MD_AggregateInformation>
+        </gmd:aggregationInfo>
+        <gmd:aggregationInfo>
+          <gmd:MD_AggregateInformation>
+            <gmd:aggregateDataSetIdentifier>
+              <gmd:MD_Identifier>
+                <gmd:code>
+                  <gco:CharacterString>fr-120066022-jdd-7b0a7d61-8b03-4756-8849-45955e4d6f4b</gco:CharacterString>
+                </gmd:code>
+              </gmd:MD_Identifier>
+            </gmd:aggregateDataSetIdentifier>
+            <gmd:associationType>
+              <gmd:DS_AssociationTypeCode codeListValue="partOfSeamlessDatabase" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_AssociationTypeCode">partOfSeamlessDatabase</gmd:DS_AssociationTypeCode>
+            </gmd:associationType>
+            <gmd:initiativeType>
+              <gmd:DS_InitiativeTypeCode codeListValue="collection" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_InitiativeTypeCode">collection</gmd:DS_InitiativeTypeCode>
+            </gmd:initiativeType>
+          </gmd:MD_AggregateInformation>
+        </gmd:aggregationInfo>
+        <gmd:aggregationInfo>
+          <gmd:MD_AggregateInformation>
+            <gmd:aggregateDataSetIdentifier>
+              <gmd:MD_Identifier>
+                <gmd:code>
+                  <gco:CharacterString>fr-120066022-jdd-58860759-4f5b-4cd9-92ef-4b6463fe9454</gco:CharacterString>
+                </gmd:code>
+              </gmd:MD_Identifier>
+            </gmd:aggregateDataSetIdentifier>
+            <gmd:associationType>
+              <gmd:DS_AssociationTypeCode codeListValue="partOfSeamlessDatabase" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_AssociationTypeCode">partOfSeamlessDatabase</gmd:DS_AssociationTypeCode>
+            </gmd:associationType>
+            <gmd:initiativeType>
+              <gmd:DS_InitiativeTypeCode codeListValue="collection" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#DS_InitiativeTypeCode">collection</gmd:DS_InitiativeTypeCode>
+            </gmd:initiativeType>
+          </gmd:MD_AggregateInformation>
+        </gmd:aggregationInfo>
+        <gmd:spatialRepresentationType>
+          <gmd:MD_SpatialRepresentationTypeCode codeListValue="vector" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode">vector</gmd:MD_SpatialRepresentationTypeCode>
+        </gmd:spatialRepresentationType>
+        <gmd:language>
+          <gmd:LanguageCode codeListValue="fre" codeList="http://www.loc.gov/standards/iso639-2/">fre</gmd:LanguageCode>
+        </gmd:language>
+        <gmd:characterSet>
+          <gmd:MD_CharacterSetCode codeListValue="utf8" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_CharacterSetCode">utf8</gmd:MD_CharacterSetCode>
+        </gmd:characterSet>
+        <gmd:topicCategory>
+          <gmd:MD_TopicCategoryCode>planningCadastre</gmd:MD_TopicCategoryCode>
+        </gmd:topicCategory>
+        <gmd:topicCategory>
+          <gmd:MD_TopicCategoryCode>geoscientificInformation</gmd:MD_TopicCategoryCode>
+        </gmd:topicCategory>
+        <gmd:extent>
+          <gmd:EX_Extent>
+            <gmd:description>
+              <gco:CharacterString>MONTARDON</gco:CharacterString>
+            </gmd:description>
+            <gmd:geographicElement>
+              <gmd:EX_GeographicDescription>
+                <gmd:geographicIdentifier>
+                  <gmd:MD_Identifier>
+                    <gmd:code>
+                      <gco:CharacterString>http://id.insee.fr/geo/commune/64399</gco:CharacterString>
+                    </gmd:code>
+                  </gmd:MD_Identifier>
+                </gmd:geographicIdentifier>
+              </gmd:EX_GeographicDescription>
+            </gmd:geographicElement>
+            <gmd:geographicElement>
+              <gmd:EX_GeographicBoundingBox>
+                <gmd:westBoundLongitude>
+                  <gco:Decimal>-0.32536644</gco:Decimal>
+                </gmd:westBoundLongitude>
+                <gmd:eastBoundLongitude>
+                  <gco:Decimal>-0.37994623</gco:Decimal>
+                </gmd:eastBoundLongitude>
+                <gmd:southBoundLatitude>
+                  <gco:Decimal>43.34681320</gco:Decimal>
+                </gmd:southBoundLatitude>
+                <gmd:northBoundLatitude>
+                  <gco:Decimal>43.38634109</gco:Decimal>
+                </gmd:northBoundLatitude>
+              </gmd:EX_GeographicBoundingBox>
+            </gmd:geographicElement>
+          </gmd:EX_Extent>
+        </gmd:extent>
+      </gmd:MD_DataIdentification>
+    </gmd:identificationInfo>
+    <gmd:distributionInfo>
+      <gmd:MD_Distribution>
+        <gmd:distributionFormat>
+          <gmd:MD_Format>
+            <gmd:name>
+              <gco:CharacterString>MapInfo TAB</gco:CharacterString>
+            </gmd:name>
+            <gmd:version>
+              <gco:CharacterString />
+            </gmd:version>
+          </gmd:MD_Format>
+        </gmd:distributionFormat>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:unitsOfDistribution>
+              <gco:CharacterString>Accès aux métadonnées</gco:CharacterString>
+            </gmd:unitsOfDistribution>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>http://catalogue.geo-ide.developpement-durable.gouv.fr/catalogue/srv/fre/catalog.search#/metadata/fr-120066022-ldd-a2086c57-1888-4270-a5b7-84c67b83585e</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                  <gco:CharacterString>WWW:DOWNLOAD-1.0-http--download</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                  <gco:CharacterString>Vue HTML des métadonnées sur internet</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>https://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset?REQUEST=GetRecordById&amp;SERVICE=CSW&amp;VERSION=2.0.2&amp;RESULTTYPE=results&amp;elementSetName=full&amp;TYPENAMES=gmd:MD_Metadata&amp;OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd&amp;ID=fr-120066022-ldd-a2086c57-1888-4270-a5b7-84c67b83585e</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                  <gco:CharacterString>WWW:DOWNLOAD-1.0-http--download</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                  <gco:CharacterString>Vue XML des métadonnées</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:unitsOfDistribution>
+              <gco:CharacterString>Autres ressources en ligne</gco:CharacterString>
+            </gmd:unitsOfDistribution>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>http://geostandards.developpement-durable.gouv.fr/afficherPageStandard.do?id=15</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                  <gco:CharacterString>WWW:LINK-1.0-http--link</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                  <gco:CharacterString>Standard de données COVADIS : Plan de prévention des risques PPRN PPRT</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:unitsOfDistribution>
+              <gco:CharacterString>Accès aux données</gco:CharacterString>
+            </gmd:unitsOfDistribution>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?id=fr-120066022-orphan-17e2c25c-98b2-4e72-b5a3-4d5f3bd9dcb8&amp;dataType=datasetAggregate</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                  <gco:CharacterString>WWW:DOWNLOAD-1.0-http--download</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                  <gco:CharacterString>Téléchargement simple (Atom) du lot et des documents associés via internet</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:unitsOfDistribution>
+              <gco:CharacterString>Accès aux données</gco:CharacterString>
+            </gmd:unitsOfDistribution>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>https://atom.geo-ide.e2.rie.gouv.fr/atomArchive/GetResource?id=fr-120066022-orphan-17e2c25c-98b2-4e72-b5a3-4d5f3bd9dcb8&amp;dataType=datasetAggregate</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                  <gco:CharacterString>WWW:DOWNLOAD-1.0-http--download</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                  <gco:CharacterString>Téléchargement simple (Atom) du lot et des documents associés via intranet</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:unitsOfDistribution>
+              <gco:CharacterString>URL de base des services wms/wfs</gco:CharacterString>
+            </gmd:unitsOfDistribution>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>https://ogc.geo-ide.developpement-durable.gouv.fr/wxs?map=/opt/data/carto/geoide-catalogue/1.4/org_38070/fr-120066022-orphan-17e2c25c-98b2-4e72-b5a3-4d5f3bd9dcb8.internet.map</gmd:URL>
+                </gmd:linkage>
+                <gmd:name>
+                  <gco:CharacterString>URL de base des services wms/wfs sur internet</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:unitsOfDistribution>
+              <gco:CharacterString>URL de base des services wms/wfs</gco:CharacterString>
+            </gmd:unitsOfDistribution>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>https://ogc.geo-ide.e2.rie.gouv.fr/wxs?map=/opt/data/carto/geoide-catalogue/1.4/org_38070/fr-120066022-orphan-17e2c25c-98b2-4e72-b5a3-4d5f3bd9dcb8.intranet.map</gmd:URL>
+                </gmd:linkage>
+                <gmd:name>
+                  <gco:CharacterString>URL de base des services wms/wfs sur intranet</gco:CharacterString>
+                </gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+      </gmd:MD_Distribution>
+    </gmd:distributionInfo>
+    <gmd:dataQualityInfo>
+      <gmd:DQ_DataQuality>
+        <gmd:scope>
+          <gmd:DQ_Scope>
+            <gmd:level>
+              <gmd:MD_ScopeCode codeListValue="dataset" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#MD_ScopeCode">dataset</gmd:MD_ScopeCode>
+            </gmd:level>
+          </gmd:DQ_Scope>
+        </gmd:scope>
+        <gmd:report>
+          <gmd:DQ_DomainConsistency>
+            <gmd:result>
+              <gmd:DQ_ConformanceResult>
+                <gmd:specification>
+                  <gmd:CI_Citation>
+                    <gmd:title>
+                      <gco:CharacterString>Plan-de-prevention-des-risques-PPRN-PPRT</gco:CharacterString>
+                    </gmd:title>
+                    <gmd:date>
+                      <gmd:CI_Date>
+                        <gmd:date>
+                          <gco:Date>2014-07-03</gco:Date>
+                        </gmd:date>
+                        <gmd:dateType>
+                          <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                        </gmd:dateType>
+                      </gmd:CI_Date>
+                    </gmd:date>
+                  </gmd:CI_Citation>
+                </gmd:specification>
+                <gmd:explanation>
+                  <gco:CharacterString />
+                </gmd:explanation>
+                <gmd:pass>
+                  <gco:Boolean>false</gco:Boolean>
+                </gmd:pass>
+              </gmd:DQ_ConformanceResult>
+            </gmd:result>
+          </gmd:DQ_DomainConsistency>
+        </gmd:report>
+        <gmd:lineage>
+          <gmd:LI_Lineage>
+            <gmd:statement>
+              <gco:CharacterString>Mise au standard COVADIS des données numériques des PPRn des départements de la région Aquitaine.
+Les périmètres correspondent à ceux disponible dans les données traitées. En cas d'absence de cette données le périmètre est extrait à partir des limites communales de la BD CARTO en version 2013</gco:CharacterString>
+            </gmd:statement>
+          </gmd:LI_Lineage>
+        </gmd:lineage>
+      </gmd:DQ_DataQuality>
+    </gmd:dataQualityInfo>
+    <gmd:applicationSchemaInfo>
+      <gmd:MD_ApplicationSchemaInformation>
+        <gmd:name>
+          <gmd:CI_Citation>
+            <gmd:title>
+              <gco:CharacterString>Plan-de-prevention-des-risques-PPRN-PPRT</gco:CharacterString>
+            </gmd:title>
+            <gmd:date>
+              <gmd:CI_Date>
+                <gmd:date>
+                  <gco:Date>2014-07-03</gco:Date>
+                </gmd:date>
+                <gmd:dateType>
+                  <gmd:CI_DateTypeCode codeListValue="publication" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/gmxCodelists.xml#CI_DateTypeCode">publication</gmd:CI_DateTypeCode>
+                </gmd:dateType>
+              </gmd:CI_Date>
+            </gmd:date>
+          </gmd:CI_Citation>
+        </gmd:name>
+        <gmd:schemaLanguage>
+          <gco:CharacterString />
+        </gmd:schemaLanguage>
+        <gmd:constraintLanguage>
+          <gco:CharacterString>Plan-de-prevention-des-risques-PPRN-PPRT</gco:CharacterString>
+        </gmd:constraintLanguage>
+        <gmd:softwareDevelopmentFile>
+          <gco:Binary />
+        </gmd:softwareDevelopmentFile>
+      </gmd:MD_ApplicationSchemaInformation>
+    </gmd:applicationSchemaInfo>
+  </gmd:MD_Metadata>
+</csw:GetRecordByIdResponse>
