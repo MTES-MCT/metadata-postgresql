@@ -51,34 +51,14 @@ def genereLabelWithDict(dicParamLabel ) :
     return _label
 
 #==========================         
-def genereButtonsWithDict(dicParamButton ) :
-    for k, v in dicParamButton.items() :
-        if v != "" :
-           if k == "typeWidget"    : _button = v
-           if k == "qSizePolicy"   : _button.setSizePolicy(v, v)
-           if k == "iconWidget"    : _button.setIcon(QIcon(v))
-           if k == "nameWidget"    : _button.setObjectName(v)
-           if k == "toolTipWidget" : _button.setToolTip(v)
-           if k == "actionWidget"  : _button.clicked.connect(v)
-           if k == "autoRaise"     : _button.setAutoRaise(v)
-           if k == "checkable"     : _button.setCheckable(v)
-           if k == "checked"       : _button.setChecked(v)
-           #-- combobox
-           if k == "listItems"     : _button.addItems(v)
-           if k == "currentText"   : _button.setCurrentText(v)
-           #-- Text
-           if k == "textWidget"    : _button.setText(v)
-           #-- StyleSheet
-           if k == "styleSheet"    : _button.setStyleSheet(v)
-           #-- Raccourci
-           if k == "shorCutWidget" : _button.setShortcut(QKeySequence(v))
-    return _button
-
-#==========================         
 class GenereButtonsWithDictWithEvent( ) :
-    def __init__(self, _selfCreateTemplate, dicParamButton) :
-        self._selfCreateTemplate = _selfCreateTemplate
-        self.dicParamButton = dicParamButton
+    def __init__(self, _selfCreateTemplate, dicParamButton, _mapping, _groupBoxdisplayHelpFocus, _zoneDisplayHelpFocus) :
+        self._selfCreateTemplate       = _selfCreateTemplate
+        self.dicParamButton            = dicParamButton
+        self._mapping                  = _mapping
+        self._groupBoxdisplayHelpFocus = _groupBoxdisplayHelpFocus
+        self._zoneDisplayHelpFocus     = _zoneDisplayHelpFocus
+        
         self.setupUi()
 
     def setupUi(self) :
@@ -108,10 +88,11 @@ class GenereButtonsWithDictWithEvent( ) :
         
     def displayHelpWithFocus(self, event) :
         if event.type() == QEvent.FocusIn:
-           self._selfCreateTemplate.groupBoxdisplayHelpFocus.setVisible(True)
-           #           
-           mText = "je suis sur le focus de la zone " + str(self._button.objectName() )
-           self._selfCreateTemplate.zoneDisplayHelpFocus.setText(mText)
+           self._groupBoxdisplayHelpFocus.setVisible(True)
+           #  
+           if self._button.objectName()[5:] in self._mapping : 
+              mText = self._mapping[ self._button.objectName()[5:] ][ "help" ]
+              self._zoneDisplayHelpFocus.setText(mText)
        
 #==========================
 def ifActivateRightsToManageModels(_self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
@@ -676,7 +657,9 @@ class MyExploBrowserAsgardMenu(QTreeWidget):
                         itemLayerTooltip = self.proxy_model.setData(index, mTableHtml, Qt.ToolTipRole)
                   else :
                      itemLayerTooltip = self.proxy_model.setData(index, itemLayerTooltip, Qt.ToolTipRole)
-               return True
+                  return True
+               else:
+                  return False
             else:
                return False
         else :
@@ -700,70 +683,70 @@ class MyExploBrowser(QTreeWidget):
    def eventFilter(self, source, event):
         if event.type() == QtCore.QEvent.MouseMove:                   
             if event.buttons() == QtCore.Qt.NoButton:
-                self.proxy_model = self.parent.model()
-                self.model       = iface.browserModel()
-                #
-                index = self.parent.indexAt(event.pos())
-                #
-                if index != -1 and self.proxy_model != None :
-                   self.itemLayer = self.model.dataItem(self.proxy_model.mapToSource(index))
+               self.proxy_model = self.parent.model()
+               self.model       = iface.browserModel()
+               #
+               index = self.parent.indexAt(event.pos())
+               #
+               if index != -1 and self.proxy_model != None :
+                  self.itemLayer = self.model.dataItem(self.proxy_model.mapToSource(index))
                    
-                   if self.itemLayer != None :
-                      #Gestion id for _dicTooltipExiste  
-                      if isinstance(self.itemLayer, QgsLayerItem) :
-                         if self.itemLayer.providerKey() == 'postgres' :
-                            itemLayer_id = QgsVectorLayer(self.itemLayer.uri(), self.itemLayer.name(), 'postgres').id()
-                         else : # Non vector postgresql
-                            return False  
-                      else :  # Non type layer     
-                         return False  
-                      #Gestion id for _dicTooltipExiste  
+                  # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
+                  if index in self._dicTooltipExiste :
+                     itemLayerTooltip = self._dicTooltipExiste[index]
+                  else :
+                     itemLayerTooltip = self.proxy_model.data(index, Qt.ToolTipRole)
+                     self._dicTooltipExiste[index] = itemLayerTooltip 
+                  # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
+                  itemLayerTooltipNew, mFindMetadata_OR_itemLayerTooltipNew = truncate_metadata(itemLayerTooltip, self._activeTooltipWithtitle, self._langList)
+                  itemLayerTooltipNew = itemLayerTooltipNew.replace("\n","<br>")
 
-                      self.itemLayer.setObjectName("itemLayer")
-
-                      # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
-                      if self.itemLayer in self._dicTooltipExiste :
-                         itemLayerTooltip = self._dicTooltipExiste[self.itemLayer]
-                      else :
-                         itemLayerTooltip = self.itemLayer.toolTip()
-                         self._dicTooltipExiste[self.itemLayer] = itemLayerTooltip 
-                      # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
-
-                      itemLayerTooltipNew, mFindMetadata_OR_itemLayerTooltipNew = truncate_metadata(itemLayerTooltip, self._activeTooltipWithtitle, self._langList)
-                      itemLayerTooltipNew = itemLayerTooltipNew.replace("\n","<br>")
-                      if self._activeTooltip : # For disable modif tooltip 
-                         if mFindMetadata_OR_itemLayerTooltipNew :
-                            _border     = "style='border: 1px solid black;'"
-                            _icon       = "<img width='30' src='" + self._iconSource + "'/>" 
-                            mTableHtml  = "<table style='border=0' width=100%>"
-                            mTableHtml += "<tr><td>" + itemLayerTooltipNew
-                            mTableHtml += "</td></tr>"
-                            #
-                            if self._activeTooltipColor : 
-                               if self._activeTooltipCadre :
-                                  mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'" + _border + ">"
-                               else :   
-                                  mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'>"
-                            else :   
-                               if self._activeTooltipCadre :
-                                  mTableHtml += "<tr><td " + _border + ">"
-                               else :
-                                  mTableHtml += "<tr><td>"
-                            #
-                            if self._activeTooltipLogo : mTableHtml += _icon + "<br>"
-                            #
-                            mTableHtml += mFindMetadata_OR_itemLayerTooltipNew     
-                            mTableHtml += "</td></tr>"
-                            mTableHtml += "</table>"
-                            self.itemLayer.setToolTip(mTableHtml)
-                      else :
-                         self.itemLayer.setToolTip(itemLayerTooltip)
-                   return True
-                else:
-                   return False
-        else :
+                  if self._activeTooltip : # For disable modif tooltip   
+                     if mFindMetadata_OR_itemLayerTooltipNew :
+                        _border     = "style='border: 1px solid black;'"
+                        _icon       = "<img width='30' src='" + self._iconSource + "'/>" 
+                        mTableHtml  = "<table style='border=0' width=100%>"
+                        mTableHtml += "<tr><td>" + itemLayerTooltipNew
+                        mTableHtml += "</td></tr>"
+                        #
+                        if self._activeTooltipColor : 
+                           if self._activeTooltipCadre :
+                              mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'" + _border + ">"
+                           else :   
+                              mTableHtml += "<tr><td style='color:" + self._activeTooltipColorText + ";' style='background-color:" + self._activeTooltipColorBackground + ";'>"
+                        else :   
+                           if self._activeTooltipCadre :
+                              mTableHtml += "<tr><td " + _border + ">"
+                           else :
+                              mTableHtml += "<tr><td>"
+                        #
+                        if self._activeTooltipLogo : mTableHtml += _icon + "<br>"
+                        #
+                        mTableHtml += mFindMetadata_OR_itemLayerTooltipNew     
+                        mTableHtml += "</td></tr>"
+                        mTableHtml += "</table>"
+                        self.changeToolTip(mTableHtml)
+                  else :
+                     self.changeToolTip(itemLayerTooltip)
+                  return True
+               else:
+                  return False
+            else:
+               return False
+        elif event.type() == QtCore.QEvent.MouseButtonPress or event.type() == QtCore.QEvent.MouseButtonDblClick :   
             return False
+        else : # autre que le survol de la souris    
+            return False
+
         return super(MyExploBrowser, self).eventFilter(source, event)
+
+   def changeToolTip(self, _newToolTip):
+       if self.itemLayer != None :
+          if isinstance(self.itemLayer, QgsLayerItem) :
+             if self.itemLayer.providerKey() == 'postgres' :
+                self.itemLayer.setToolTip(_newToolTip)
+       return
+
 #==================================================
 #==================================================
 
@@ -1068,12 +1051,14 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutreColor["QLabelBackGround"]            = "#e3e3fd"
        mDicAutreColor["geomColor"]                   = "#a38e63"
        mDicAutreColor["opacity"]                     = "#ddddbe"
+       mDicAutreColor["opacityCatOut"]               = "#e6e6e6"
        mDicAutreColor["colorTemplateInVersOut"]      = "#ddddbe"
        mDicAutreColor["colorTemplateOutVersIn"]      = "#ddddbe"
        mDicAutreColor["sepLeftTemplate"]             = "("
        mDicAutreColor["sepRightTemplate"]            = ")"
        mDicAutreColor["fontCategorieInVersOut"]      = 2
        mDicAutreColor["opacityValue"]                = 1.0
+       mDicAutreColor["opacityValueCatOut"]          = 0.8
        mDicAutreColor["geomEpaisseur"]               = "2"
        mDicAutreColor["geomPoint"]                   = "ICON_X"
        mDicAutreColor["geomPointEpaisseur"]          = "8"
