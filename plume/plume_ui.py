@@ -53,7 +53,7 @@ class Ui_Dialog_plume(object):
         self.iface = qgis.utils.iface                                                          
         self.firstOpen = True                                 
         self.firstOpenConnect = True
-        
+    
     @contextmanager
     def safe_pg_connection(self) :
         if not getattr(self, 'mConnectEnCours', False) or self.mConnectEnCours.closed:
@@ -91,6 +91,7 @@ class Ui_Dialog_plume(object):
         
         finally:
            if getattr(self, 'mConnectEnCours', False) : self.mConnectEnCours.close()
+ 
                 
     def setupUi(self, Dialog, _dicTooltipExiste):
         self.Dialog = Dialog
@@ -460,7 +461,7 @@ class Ui_Dialog_plume(object):
               self.template = None
            else : 
               #-
-              if self.instalMetadata :
+              if self.instalMetadata and self.ifNotEmptyTemplates :
                  # Choix du modèle
                  generationTemplateAndTabs(self, mItemTemplates)
               else : 
@@ -688,7 +689,7 @@ class Ui_Dialog_plume(object):
                 #-
                 self.displayToolBar(*self.listIconToolBar)
                 #-
-                if self.instalMetadata :
+                if self.instalMetadata and self.ifNotEmptyTemplates :
                    #-
                    tpl_labelDefaut      = returnObjetTpl_label(self, None)
                    if tpl_labelDefaut :
@@ -756,7 +757,7 @@ class Ui_Dialog_plume(object):
                     #-
                     self.displayToolBar(*self.listIconToolBar)
                     #-
-                    if self.instalMetadata :
+                    if self.instalMetadata and self.ifNotEmptyTemplates :
                        #-
                        tpl_labelDefaut      = returnObjetTpl_label(self, None)
                        if tpl_labelDefaut :
@@ -964,10 +965,6 @@ class Ui_Dialog_plume(object):
         self.plumeChoiceLang.setEnabled(False)
         self.plumeVerrou.setEnabled(False)
         self.plumeVerrou.setChecked(False)
-        #Permet d'afficher si ifActivateRightsToManageModels = True
-        self.mIfActivateRightsToManageModels = ifActivateRightsToManageModels(self)
-        self.paramColor.setVisible(False if self.mIfActivateRightsToManageModels else True)
-        self.paramColorModele.setVisible(True if self.mIfActivateRightsToManageModels else False)
 
         #====================
         #====================
@@ -978,7 +975,8 @@ class Ui_Dialog_plume(object):
            mKeySql = queries.query_plume_pg_check()
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
            result = r[0]
-           self.instalMetadata = False
+           self.instalMetadata = False        # Installation de l'extension
+           self.ifNotEmptyTemplates = False   # Y a t-il des modèles dans la table z_plume.meta_template
            #Information si not installe
            if not result[0]:
               if not result[3]:
@@ -1000,6 +998,14 @@ class Ui_Dialog_plume(object):
                       ' (version base cible : PlumePg {}).'.format(result[1][0],
                       result[1][1], result[2])
            if r[0][0] :
+              # Requête pour obtenir les templates, et gestion d'une nouvelle variable si ne renvoie rien ou pas
+              _schema, _table = "z_plume", "meta_template"
+              mKeySql = queries.query_list_templates(_schema, _table)
+              self.templatesEmptyOrPlain, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+
+              self.ifNotEmptyTemplates = True if len(self.templatesEmptyOrPlain) > 0 else False
+              #Charger les modèles locaux si l'extension est installée et si la table z_plume.meta_template est vide
+              if not self.ifNotEmptyTemplates : self.templates_collection = LocalTemplatesCollection() 
               self.instalMetadata = True
               self.plumeTemplate.setEnabled(True)
               #MenuQToolButton                        
@@ -1075,6 +1081,13 @@ class Ui_Dialog_plume(object):
            self.messWindowTitleVerrou = ""
         self.Dialog.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
         if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
+
+        #Permet d'afficher si ifActivateRightsToManageModels = True
+        # Test avant sur l'existence de l'extension avant de chercher les drotis
+        self.mIfActivateRightsToManageModels = False if not self.instalMetadata  else ifActivateRightsToManageModels(self) 
+        self.paramColor.setVisible(False if self.mIfActivateRightsToManageModels else True)
+        self.paramColorModele.setVisible(True if self.mIfActivateRightsToManageModels else False)
+
         return
 
     #==========================

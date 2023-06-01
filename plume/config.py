@@ -4,10 +4,10 @@
 
 # à actualiser à chaque nouvelle version, d'autant que de besoin :
 
-PLUME_VERSION = 'v0.7.0 bêta'
+PLUME_VERSION = 'v1.0.0'
 """Version courante de Plume, sous forme litérale."""
 
-PLUME_VERSION_TPL = (0, 7, 0)
+PLUME_VERSION_TPL = (1, 0, 0)
 """Version courante de Plume, sous forme de tuple (version majeure, version mineure, correctif)."""
 
 PLUME_PG_MIN_VERSION = '0.2.0'

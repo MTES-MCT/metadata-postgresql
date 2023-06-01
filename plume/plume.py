@@ -116,7 +116,7 @@ class MainPlugin(object):
       #
       #==========================
       #Active Tooltip   
-      self.activeTooltip          = True if mDic_LH["activeTooltip"]      == "true" else False
+      self.activeTooltip          = True if mDic_LH["activeTooltip"]          == "true" else False
       self.activeTooltipWithtitle = True if mDic_LH["activeTooltipWithtitle"] == "true" else False
       self.activeTooltipLogo      = True if mDic_LH["activeTooltipLogo"]      == "true" else False
       self.activeTooltipCadre     = True if mDic_LH["activeTooltipCadre"]     == "true" else False
