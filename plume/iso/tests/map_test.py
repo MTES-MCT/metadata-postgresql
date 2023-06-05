@@ -9,11 +9,11 @@ from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
     IsoToDcat, normalize_language, find_values, normalize_decimal,
     date_or_datetime_to_literal, to_spatial_resolution_in_meters,
-    list_objects, list_subjects
+    list_objects, list_subjects, remove_objects
 )
 from plume.rdf.namespaces import (
     DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL, DQV,
-    GEODCAT, RDFS
+    GEODCAT, RDFS, RDF
 )
 from plume.rdf.rdflib import Literal, URIRef, BNode
 from plume.rdf.metagraph import metagraph_from_iso
@@ -163,6 +163,44 @@ class IsoMapTestCase(unittest.TestCase):
             [
                 (dataset_id, DCT.language, Literal('fre'))
             ]
+        )
+
+    def test_find_literal_with_spaces(self):
+        """Nettoyage des espaces et retours à la ligne lors de la récupération d'une valeur littérale."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gco:CharacterString>
+              L124-4-I-1 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.a)
+            </gco:CharacterString>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        iso_xml = parse_xml(raw_xml)
+        triples = find_literal(
+            iso_xml,
+            './gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString',
+            None,
+            RDFS.label,
+            language='fr'
+        )
+        self.assertTrue(
+            Literal('L124-4-I-1 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.a)', lang='fr')
+            in list_objects(triples)
         )
 
     def test_find_iri(self):
@@ -581,6 +619,54 @@ class IsoMapTestCase(unittest.TestCase):
         self.assertListEqual(
             list_objects(triples),
             [Literal('bla'), Literal('bla bla'), Literal('bla bla bla')]
+        )
+    
+    def test_remove_objects(self):
+        """Suppression d'objets d'une liste de triplets."""
+        a, b, c, d, e, f = BNode(), BNode(), BNode(), BNode(), BNode(), BNode()
+        triples = [
+            (a, RDFS.label, Literal('bla')),
+            (b, RDFS.label, Literal('bla bla')),
+            (c, RDFS.label, Literal('bla')),
+            (d, RDFS.label, Literal('bla bla bla')),
+            (e, RDFS.label, Literal('bla')),
+            (f, RDFS.label, Literal('bla bla bla bla'))
+        ]
+        remove_objects(triples, Literal('bla'))
+        self.assertListEqual(
+            triples,
+            [
+                (b, RDFS.label, Literal('bla bla')),
+                (d, RDFS.label, Literal('bla bla bla')),
+                (f, RDFS.label, Literal('bla bla bla bla'))
+            ]
+        )
+        remove_objects(triples, [Literal('bla bla'), Literal('bla bla bla bla')])
+        self.assertListEqual(
+            triples,
+            [
+                (d, RDFS.label, Literal('bla bla bla'))
+            ]
+        )
+        remove_objects(triples, None)
+        self.assertListEqual(
+            triples,
+            [
+                (d, RDFS.label, Literal('bla bla bla'))
+            ]
+        )
+        remove_objects(triples, [])
+        self.assertListEqual(
+            triples,
+            [
+                (d, RDFS.label, Literal('bla bla bla'))
+            ]
+        )
+        triples = []
+        remove_objects(triples, Literal('bla bla bla'))
+        self.assertListEqual(
+            triples,
+            []
         )
 
 class IsoToDcatTestCase(unittest.TestCase):
@@ -1066,6 +1152,33 @@ class IsoToDcatTestCase(unittest.TestCase):
                     )
                 )
 
+    def test_map_keyword_priority_dataset(self):
+        """Récupération de l'information relative à un jeu de données prioritaire."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:descriptiveKeywords>
+        <gmd:MD_Keywords>
+          <gmd:keyword>
+            <gmx:Anchor
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-dir-2002-49">
+              Agglomérations (Directive Bruit)
+            </gmx:Anchor>
+          </gmd:keyword>
+        </gmd:MD_Keywords>
+      </gmd:descriptiveKeywords>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        themes = list(metagraph.objects(dataset_id, DCAT.theme))
+        self.assertEqual(themes, [URIRef('http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-dir-2002-49')])
+
     def test_map_spatial_resolution_as_scale(self):
         """Récupération de la résolution spatiale dans le cas d'une échelle équivalente."""
         samples = {
@@ -1103,6 +1216,56 @@ class IsoToDcatTestCase(unittest.TestCase):
             Literal(250.0, datatype=XSD.decimal)
         ]
         self.assertListEqual(resolution_values, expected)
+
+    def test_map_status(self):
+        """Récupération de l'état du jeu de données."""
+        # IGN
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        status_values = list(metagraph.objects(dataset_id, ADMS.status))
+        self.assertEqual(len(status_values), 1)
+        self.assertEqual(
+            status_values[0],
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/onGoing')
+        )
+        # GéoIDE
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_CUCS_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        status_values = list(metagraph.objects(dataset_id, ADMS.status))
+        self.assertEqual(len(status_values), 1)
+        self.assertEqual(
+            status_values[0],
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ProgressCode/historicalArchive')
+        )
+
+    def test_map_accrual_periodicity(self):
+        """Récupération des informations sur la fréquence d'actualisation des données."""
+        # GéoIDE
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        status_values = list(metagraph.objects(dataset_id, DCT.accrualPeriodicity))
+        self.assertEqual(len(status_values), 1)
+        self.assertEqual(
+            status_values[0],
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/asNeeded')
+        )
+        # IGN
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        status_values = list(metagraph.objects(dataset_id, DCT.accrualPeriodicity))
+        self.assertEqual(len(status_values), 1)
+        self.assertEqual(
+            status_values[0],
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency/irregular')
+        )
 
     def test_map_provenance_one_value(self):
         """Récupération de la généalogie.
@@ -1223,6 +1386,784 @@ class IsoToDcatTestCase(unittest.TestCase):
             ):
                 ctrl = True
         self.assertTrue(ctrl)
+
+    def test_submap_rights_access_iri(self):
+        """Récupération des informations sur les conditions d'accès (IRI)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gmx:Anchor
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a">
+              L124-4-I-1 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.a)
+            </gmx:Anchor>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertTrue(
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a')
+            in access_rights
+        )
+
+    def test_submap_rights_access_constraint_text(self):
+        """Récupération des informations sur les conditions d'accès (valeur textuelle)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gco:CharacterString>
+              L124-4-I-1 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.a)
+            </gco:CharacterString>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertTrue(isinstance(access_rights[0], BNode))
+        labels = list(metagraph.objects(access_rights[0], RDFS.label))
+        self.assertEqual(len(labels), 1)
+        self.assertTrue(
+            Literal(
+                'L124-4-I-1 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.a)',
+                lang='fr'
+            )
+            in labels
+        )
+
+    def test_submap_rights_access_constraint_iri_and_text(self):
+        """Récupération des informations sur les conditions d'accès (IRI + valeur textuelle)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gmx:Anchor
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations">
+              Pas de restriction d’accès public
+            </gmx:Anchor>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gmx:Anchor
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/ConditionsApplyingToAccessAndUse/noConditionsApply">
+              aucune condition d’accès ne s’applique.
+            </gmx:Anchor>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        # NB: il y a deux URI, mais la seconde appartient à un vocabulaire que
+        # Plume ne reconnaît pas pour le moment, seule la valeur textuelle est
+        # exploitée
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 2)
+        self.assertEqual(
+            access_rights[0],
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations')
+        )
+        self.assertTrue(isinstance(access_rights[1], BNode))
+        labels = list(metagraph.objects(access_rights[1], RDFS.label))
+        self.assertEqual(len(labels), 1)
+        self.assertTrue(
+            Literal(
+                'aucune condition d’accès ne s’applique.',
+                lang='fr'
+            )
+            in labels
+        )
+
+    def test_submap_rights_access_and_use_constraints(self):
+        """Récupération des informations sur les conditions d'accès (IRI) et d'usage (valeur textuelle)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gmx:Anchor
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations">
+              Pas de restriction d’accès public
+            </gmx:Anchor>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:useConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:useConstraints>
+          <gmd:otherConstraints>
+            <gco:CharacterString>
+              Licence ODbL mai 2013 (basée sur ODbL 1.0) https://data.rennesmetropole.fr/pages/licence/
+            </gco:CharacterString>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        # NB: la restriction d'usage est une licence, mais elle ne peut pas être reconnue
+        # comme telle en l'état
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertEqual(
+            access_rights[0],
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations')
+        )
+        rights = list(metagraph.objects(
+            metagraph.value(dataset_id, DCAT.distribution), 
+            DCT.rights)
+        )
+        self.assertEqual(len(rights), 1)
+        self.assertTrue(isinstance(rights[0], BNode))
+        labels = list(metagraph.objects(rights[0], RDFS.label))
+        self.assertEqual(len(labels), 1)
+        self.assertTrue(
+            Literal(
+                'Licence ODbL mai 2013 (basée sur ODbL 1.0) https://data.rennesmetropole.fr/pages/licence/',
+                lang='fr'
+            )
+            in labels
+        )
+
+    def test_submap_rights_access_and_use_constraints_2(self):
+        """Récupération des informations sur les conditions d'accès (IRI) et d'usage (valeur textuelle et IRI)."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gmx:Anchor 
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1e">
+              L124-5-II-3 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.e)
+            </gmx:Anchor>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:useConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="license">
+              license
+            </gmd:MD_RestrictionCode>
+          </gmd:useConstraints>
+          <gmd:useConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:useConstraints>
+          <gmd:otherConstraints>
+            <gco:CharacterString>
+              L’accès et l’utilisation de la donnée doit respecter les conditions décrites sur le site [...]
+            </gco:CharacterString>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        # NB: la restriction d'usage est une licence, mais elle ne peut pas être reconnue
+        # comme telle en l'état
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertEqual(
+            access_rights[0],
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1e')
+        )
+        rights = list(metagraph.objects(
+            metagraph.value(dataset_id, DCAT.distribution), 
+            DCT.rights)
+        )
+        self.assertEqual(len(rights), 2)
+        self.assertEqual(
+            rights[0],
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/license')
+        )
+        self.assertTrue(isinstance(rights[1], BNode))
+        labels = list(metagraph.objects(rights[1], RDFS.label))
+        self.assertEqual(len(labels), 1)
+        self.assertTrue(
+            Literal(
+                'L’accès et l’utilisation de la donnée doit respecter les conditions décrites sur le site [...]',
+                lang='fr'
+            )
+            in labels
+        )
+
+    def test_submap_rights_use_limitation(self):
+        """Récupération des informations sur les limitations d'usage."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="otherRestrictions">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+          <gmd:otherConstraints>
+            <gmx:Anchor
+              xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a">
+              L124-4-I-1 du code de l’environnement (Directive 2007/2/CE (INSPIRE), Article 13.1.a)
+            </gmx:Anchor>
+          </gmd:otherConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+      <gmd:resourceConstraints>
+        <gmd:MD_Constraints>
+          <gmd:useLimitation>
+            <gco:CharacterString>
+              Limites d'utilisation dues à l'échelle de saisie (1:1000)
+            </gco:CharacterString>
+          </gmd:useLimitation>
+        </gmd:MD_Constraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertTrue(
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/INSPIRE_Directive_Article13_1a')
+            in access_rights
+        )
+
+        rights = list(metagraph.objects(
+            metagraph.value(dataset_id, DCAT.distribution), 
+            DCT.rights)
+        )
+        self.assertEqual(len(rights), 1)
+        self.assertTrue(isinstance(rights[0], BNode))
+        labels = list(metagraph.objects(rights[0], RDFS.label))
+        self.assertEqual(len(labels), 1)
+        self.assertTrue(
+            Literal(
+                "Limites d'utilisation dues à l'échelle de saisie (1:1000)",
+                lang='fr'
+            )
+            in labels
+        )
+
+    def test_submap_rights_access_security_constraint(self):
+        """Récupération des contraintes de sécurité."""
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:identificationInfo>
+    <gmd:MD_DataIdentification>
+      <gmd:resourceConstraints>
+        <gmd:MD_LegalConstraints>
+          <gmd:accessConstraints>
+            <gmd:MD_RestrictionCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+              codeListValue="restricted">
+            </gmd:MD_RestrictionCode>
+          </gmd:accessConstraints>
+        </gmd:MD_LegalConstraints>
+      </gmd:resourceConstraints>
+      <gmd:resourceConstraints>
+        <gmd:MD_SecurityConstraints>
+          <gmd:classification>
+            <gmd:MD_ClassificationCode
+              codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ClassificationCode"
+              codeListValue="confidential">
+            </gmd:MD_ClassificationCode>
+          </gmd:classification>
+          <gmd:userNote>
+            <gco:CharacterString>
+              Some user note.
+            </gco:CharacterString>
+          </gmd:userNote>
+          <gmd:handlingDescription>
+            <gco:CharacterString>
+              Handling description.
+            </gco:CharacterString>
+          </gmd:handlingDescription>
+        </gmd:MD_SecurityConstraints>
+      </gmd:resourceConstraints>
+    </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 4)
+        self.assertTrue(
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/restricted')
+            in access_rights
+        )
+        self.assertTrue(
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/confidential')
+            in access_rights
+        )
+        access_rights_nodes = [node for node in access_rights if isinstance(node, BNode)]
+        self.assertEqual(len(access_rights_nodes), 2)
+
+        labels = (
+            list(metagraph.objects(access_rights_nodes[0], RDFS.label))
+            + list(metagraph.objects(access_rights_nodes[1], RDFS.label))
+        )
+        self.assertEqual(len(labels), 2)
+        self.assertTrue(
+            Literal(
+                'Some user note.',
+                lang='fr'
+            )
+            in labels
+        )
+        self.assertTrue(
+            Literal(
+                'Handling description.',
+                lang='fr'
+            )
+            in labels
+        )
+
+    def test_submap_rights_flawed_metadata(self):
+        """Récupération des informations juridiques dans des métadonnées réelles (et mal structurées)."""
+        # datARA - tout est mélangé dans un seul élément gmd:resourceConstraints,
+        # donc mappé en vrac sur dct:rights.
+        metagraph = metagraph_from_iso(self.CSW_DATARA_FOND_AB)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        rights = list(metagraph.objects(
+            metagraph.value(dataset_id, DCAT.distribution), 
+            DCT.rights)
+        )
+        self.assertEqual(len(rights), 2)
+        labels = (
+            list(metagraph.objects(rights[0], RDFS.label))
+            + list(metagraph.objects(rights[1], RDFS.label))
+        )
+        self.assertEqual(len(labels), 2)
+        self.assertTrue(
+            Literal(
+                'Utilisation libre sous réserve de mentionner la source'
+                ' (a minima le nom du producteur) et la date de sa dernière mise à jour',
+                lang='fr'
+            )
+            in labels
+        )
+        self.assertTrue(
+            Literal(
+                'Pas de restriction d’accès public selon INSPIRE',
+                lang='fr'
+            )
+            in labels
+        )
+
+        # GéoIDE - idem datARA. La license n'est pas reconnue comme telle, par contre la 
+        # (non) restriction d'accès est mappée sur dct:accessRights et identifiée comme
+        # l'étiquette d'un terme de vocabulaire connu.
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_CUCS_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertEqual(
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations'),
+            access_rights[0]
+        )
+        for distribution_node in metagraph.objects(dataset_id, DCAT.distribution):
+            rights = list(metagraph.objects(
+                distribution_node, 
+                DCT.rights)
+            )
+            self.assertEqual(len(rights), 3)
+            self.assertTrue(
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/license')
+                in rights
+            )
+            rights_nodes = [node for node in rights if isinstance(node, BNode)]
+            self.assertEqual(len(rights_nodes), 2)
+            labels = (
+                list(metagraph.objects(rights_nodes[0], RDFS.label))
+                + list(metagraph.objects(rights_nodes[1], RDFS.label))
+            )
+            self.assertEqual(len(labels), 2)
+            self.assertTrue(
+                Literal(
+                    'Licence Ouverte / Open Licence Version 2.0  '
+                    'https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf',
+                    lang='fr'
+                )
+                in labels
+            )
+            self.assertTrue(
+                Literal(
+                    'Aucun des articles de la loi ne peut être invoqué pour justifier '
+                    "d'une restriction d'accès public.",
+                    lang='fr'
+                )
+                in labels
+            )
+        
+        # GéoLittoral
+        metagraph = metagraph_from_iso(self.CSW_GEOLITTORAL_SENTIER)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 1)
+        self.assertEqual(
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/intellectualPropertyRights'),
+            access_rights[0]
+        )
+        for distribution_node in metagraph.objects(dataset_id, DCAT.distribution):
+            rights = list(metagraph.objects(
+                distribution_node, 
+                DCT.rights)
+            )
+            self.assertEqual(len(rights), 3)
+            self.assertTrue(
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/intellectualPropertyRights')
+                in rights
+            )
+            rights_nodes = [node for node in rights if isinstance(node, BNode)]
+            self.assertEqual(len(rights_nodes), 2)
+            labels = (
+                list(metagraph.objects(rights_nodes[0], RDFS.label))
+                + list(metagraph.objects(rights_nodes[1], RDFS.label))
+            )
+            self.assertEqual(len(labels), 2)
+            self.assertTrue(
+                Literal(
+                    'Ressource disponible du 1/3.000.000 au 1/5.000',
+                    lang='fr'
+                )
+                in labels
+            )
+            self.assertTrue(
+                Literal(
+                    '« Licence Ouverte / Open Licence » Version 2.0 (avril 2017) , '
+                    "définie par la mission Etalab placée sous l'autorité du Premier"
+                    ' ministre. Utilisation libre sous réserve de mentionner la source'
+                    ' (« Source : © Typologie et usage - sentier du littoral français '
+                    '(métropole et outre-mer) - Ministère en charge de l’environnement ») '
+                    'et la date de sa dernière mise à jour.',
+                    lang='fr'
+                )
+                in labels
+            )
+        
+        # IGN
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        access_rights = list(metagraph.objects(dataset_id, DCT.accessRights))
+        self.assertEqual(len(access_rights), 3)
+        self.assertTrue(
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/copyright')
+            in access_rights
+        )
+        self.assertTrue(
+            URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/unclassified')
+            in access_rights
+        )
+        self.assertTrue(
+            URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations')
+            in access_rights
+        )
+        for distribution_node in metagraph.objects(dataset_id, DCAT.distribution):
+            rights_nodes = list(metagraph.objects(
+                distribution_node, 
+                DCT.rights)
+            )
+            self.assertEqual(len(rights_nodes), 2)
+            labels = (
+                list(metagraph.objects(rights_nodes[0], RDFS.label))
+                + list(metagraph.objects(rights_nodes[1], RDFS.label))
+            )
+            self.assertEqual(len(labels), 2)
+            self.assertTrue(
+                Literal(
+                    'pas de restriction d’accès public',
+                    lang='fr'
+                )
+                in labels
+            )
+            self.assertTrue(
+                Literal(
+                    'Aucune contrainte',
+                    lang='fr'
+                )
+                in labels
+            )
+        
+    def test_map_distribution_simple(self):
+        """Récupération des informations sur les distributions: exemple de base du guide de saisie du CNIG.
+        
+        """
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:distributionInfo>
+    <gmd:MD_Distribution>
+      <gmd:transferOptions>
+        <gmd:MD_DigitalTransferOptions>
+          <gmd:onLine>
+            <gmd:CI_OnlineResource>
+              <gmd:linkage>
+                <gmd:URL>http://www.geocatalogue.fr/Detail.do?id=1775</gmd:URL>
+              </gmd:linkage>
+            </gmd:CI_OnlineResource>
+          </gmd:onLine>
+        </gmd:MD_DigitalTransferOptions>
+      </gmd:transferOptions>
+    </gmd:MD_Distribution>
+  </gmd:distributionInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        distribution_nodes = list(metagraph.objects(dataset_id, DCAT.distribution))
+        self.assertEqual(len(distribution_nodes), 1)
+        self.assertTrue((distribution_nodes[0], DCAT.accessURL, URIRef('http://www.geocatalogue.fr/Detail.do?id=1775')) in metagraph)
+
+    def test_map_distribution_service(self):
+        """Récupération des informations sur les distributions : exemple de distribution avec service du guide de saisie du CNIG.
+
+        NB: l'URI du protocole ATOM est corrigée par rapport à celle de
+        l'exemple original, qui ne correspond pas au bon standard.
+        """
+        raw_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <gmd:distributionInfo>
+    <gmd:MD_Distribution>
+      <gmd:transferOptions>
+        <gmd:MD_DigitalTransferOptions>
+          <gmd:onLine>
+            <gmd:CI_OnlineResource>
+              <gmd:linkage>
+                <gmd:URL>http://xxx.xxx.xxx/atom.xml</gmd:URL>
+              </gmd:linkage>
+              <gmd:protocol>
+                <gmx:Anchor
+                  xlink:href="http://tools.ietf.org/html/rfc4287">
+                  ATOM Syndication Format
+                </gmx:Anchor>
+              </gmd:protocol>
+              <gmd:applicationProfile>
+                <gmx:Anchor
+                  xlink:href="http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/download">
+                  Download Service
+                </gmx:Anchor>
+              </gmd:applicationProfile>
+              <gmd:description>
+                <gmx:Anchor
+                  xlink:href="http://inspire.ec.europa.eu/metadata-codelist/OnLineDescriptionCode/accessPoint">
+                  Access Point
+                </gmx:Anchor>
+              </gmd:description>
+            </gmd:CI_OnlineResource>
+          </gmd:onLine>
+        </gmd:MD_DigitalTransferOptions>
+      </gmd:transferOptions>
+    </gmd:MD_Distribution>
+  </gmd:distributionInfo>
+</gmd:MD_Metadata>
+        """
+        metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        distribution_nodes = list(metagraph.objects(dataset_id, DCAT.distribution))
+        self.assertEqual(len(distribution_nodes), 1)
+        self.assertTrue((distribution_nodes[0], DCAT.accessURL, URIRef('http://xxx.xxx.xxx/atom.xml')) in metagraph)
+        service_nodes = list(metagraph.objects(distribution_nodes[0], DCAT.accessService))
+        self.assertEqual(len(service_nodes), 1)
+        self.assertTrue((service_nodes[0], DCAT.endpointDescription, URIRef('http://xxx.xxx.xxx/atom.xml')) in metagraph)
+        self.assertTrue((service_nodes[0], DCT.type, URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/download')) in metagraph)
+        self.assertTrue((service_nodes[0], DCT.conformsTo, URIRef('http://tools.ietf.org/html/rfc4287')) in metagraph)
+
+    def test_map_distribution_real_examples(self):
+        """Récupération des distributions sur des cas réels très imparfaits."""
+        # IGN
+        metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        self.assertTrue((dataset_id, FOAF.page, URIRef('http://www.ign.fr/')) in metagraph)
+        self.assertTrue((dataset_id, FOAF.page, URIRef('http://www.geoportail.fr/')) in metagraph)
+        distribution_nodes = list(metagraph.objects(dataset_id, DCAT.distribution))
+        self.assertEqual(len(distribution_nodes), 1)
+        access_urls = list(metagraph.objects(distribution_nodes[0], DCAT.accessURL))
+        self.assertEqual(len(access_urls), 1)
+        self.assertEqual(access_urls[0], URIRef('http://professionnels.ign.fr/sites/default/files/DL_BDALTI_2-0.pdf'))
+        self.assertIsNotNone(metagraph.value(distribution_nodes[0], DCT['format']))
+        self.assertIsNotNone(metagraph.value(distribution_nodes[0], DCT.rights))
+
+        # Géolittoral
+        metagraph = metagraph_from_iso(self.CSW_GEOLITTORAL_SENTIER)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        self.assertTrue(
+            (dataset_id, FOAF.page, URIRef('http://www.geolittoral.developpement-durable.gouv.fr/sentier-du-littoral-francais-metropole-et-outre-r454.html')) 
+            in metagraph
+        )
+        distribution_nodes = list(metagraph.objects(dataset_id, DCAT.distribution))
+        self.assertTrue(distribution_nodes)
+        access_urls = list(metagraph.objects(distribution_nodes[0], DCAT.accessURL))
+        self.assertEqual(len(access_urls), 1)
+        self.assertEqual(access_urls[0], URIRef('http://www.geolittoral.developpement-durable.gouv.fr/telechargement-des-donnees-du-site-geolittoral-a802.html#sommaire_9'))
+        self.assertTrue(
+            (distribution_nodes[0], DCT['format'], URIRef('http://publications.europa.eu/resource/authority/file-type/SHP'))
+            in metagraph
+        )
+        self.assertIsNotNone(metagraph.value(distribution_nodes[0], DCT.rights))
+        self.assertEqual(
+            metagraph.value(distribution_nodes[0], DCT.title),
+            Literal('Accès à la page internet de téléchargement de la donnée SIG (site Géolittoral)', lang='fr')
+        )
+
+        # GéoIDE
+        metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
+        dataset_id = metagraph.datasetid
+        for item_url, item_title in [
+            (
+                URIRef('http://ogc.geo-ide.developpement-durable.gouv.fr/wxs?map=/opt/data/carto/geoide-catalogue/1.4/org_4942761/23811dae-62cc-439c-bcf2-9159fe92cba2.internet.map'),
+                Literal('URL de base des services wms/wfs sur internet', lang='fr')
+            ),
+            (
+                URIRef('http://ogc.geo-ide.application.i2/wxs?map=/opt/data/carto/geoide-catalogue/1.4/org_4942761/23811dae-62cc-439c-bcf2-9159fe92cba2.intranet.map'),
+                Literal('URL de base des services wms/wfs sur intranet', lang='fr')
+            ),
+            (
+                URIRef('http://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?id=23811dae-62cc-439c-bcf2-9159fe92cba2&dataType=dataset'),
+                Literal('Téléchargement simple (Atom) du jeu et des documents associés via internet', lang='fr')
+            ),
+            (
+                URIRef('http://atom.geo-ide.application.i2/atomArchive/GetResource?id=23811dae-62cc-439c-bcf2-9159fe92cba2&dataType=dataset'),
+                Literal('Téléchargement simple (Atom) du jeu et des documents associés via intranet', lang='fr')
+            )
+        ]:
+            subjects = list(metagraph.subjects(DCAT.accessURL, item_url))
+            self.assertEqual(len(subjects), 1, item_title)
+            self.assertTrue((subjects[0], RDF.type, DCAT.Distribution) in metagraph)
+            self.assertTrue((subjects[0], DCT.title, item_title) in metagraph)
+            self.assertIsNotNone(metagraph.value(subjects[0], DCT.rights))
+            format_node = metagraph.value(subjects[0], DCT['format'])
+            self.assertIsNotNone(format_node)
+            self.assertTrue(
+                (format_node, RDFS.label, Literal('ESRI Shapefile (SHP)', lang='fr'))
+                in metagraph
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
