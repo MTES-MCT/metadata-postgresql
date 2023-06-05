@@ -57,9 +57,13 @@ VOCABULARIES = {
     URIRef('http://id.insee.fr/geo/departement'): 'insee_department.ttl',
     URIRef('http://id.insee.fr/geo/region'): 'insee_region.ttl',
     URIRef('http://id.insee.fr/geo/commune'): 'insee_commune.ttl',
-    URIRef('http://registre.data.developpement-durable.gouv.fr/plume/GeoDCATMetric'): 'geodcat_metric.ttl',
+    PLUME.GeoDCATMetric: 'geodcat_metric.ttl',
     URIRef('http://qudt.org/vocab/unit'): 'qudt_unit.ttl',
-    URIRef('http://publications.europa.eu/resource/authority/measurement-unit'): 'eu_measurement_unit.ttl'
+    URIRef('http://publications.europa.eu/resource/authority/measurement-unit'): 'eu_measurement_unit.ttl',
+    PLUME.ISO19139ClassificationCode: 'iso_19139_classification_code.ttl',
+    PLUME.ISO19139RestrictionCode: 'iso_19139_restriction_code.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType'): 'inspire_spatial_data_service_type.ttl',
+    URIRef('http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset'): 'inspire_priority_dataset.ttl'
 }
 """Déclaration des vocabulaires de Plume.
 
