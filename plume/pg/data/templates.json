@@ -169,7 +169,7 @@
             null,
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-19 à 18:32:55."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-05 à 14:49:07."
         ]
     },
     "Classique": {
@@ -424,7 +424,8 @@
                     "http://inspire.ec.europa.eu/theme",
                     "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory",
                     "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres",
-                    "http://inspire.ec.europa.eu/metadata-codelist/SpatialScope"
+                    "http://inspire.ec.europa.eu/metadata-codelist/SpatialScope",
+                    "http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset"
                 ],
                 null,
                 null,
@@ -451,7 +452,9 @@
                 [
                     "http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess",
                     "http://publications.europa.eu/resource/authority/access-right",
-                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode"
                 ],
                 null,
                 null,
@@ -1058,7 +1061,7 @@
             "$1 ~ '^c_'",
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-19 à 18:32:55."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-05 à 14:49:07."
         ]
     },
     "Donnée externe": {
@@ -1261,7 +1264,7 @@
                 null,
                 true,
                 false,
-                true,
+                false,
                 null,
                 null,
                 null,
@@ -1409,7 +1412,8 @@
                     "http://inspire.ec.europa.eu/theme",
                     "http://inspire.ec.europa.eu/metadata-codelist/TopicCategory",
                     "http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres",
-                    "http://inspire.ec.europa.eu/metadata-codelist/SpatialScope"
+                    "http://inspire.ec.europa.eu/metadata-codelist/SpatialScope",
+                    "http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset"
                 ],
                 null,
                 null,
@@ -1436,7 +1440,9 @@
                 [
                     "http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess",
                     "http://publications.europa.eu/resource/authority/access-right",
-                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations"
+                    "http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode",
+                    "http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode"
                 ],
                 null,
                 null,
@@ -1904,7 +1910,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-05-19 à 18:32:55."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-05 à 14:49:07."
         ]
     }
 }
