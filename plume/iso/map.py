@@ -51,6 +51,12 @@ DATE_TYPE_CODE_MAP = {
     'revision': DCT.modified,
     'publication': DCT.issued
 }
+"""Correspondance entre les codes de type de date ISO 19139 (CI_DateTypeCode) et les propriétés DCAT."""
+
+ONLINE_DESCRIPTION_CODE_MAP = {
+    'http://inspire.ec.europa.eu/metadata-codelist/OnLineDescriptionCode/endPoint': DCAT.endpointURL,
+    'http://inspire.ec.europa.eu/metadata-codelist/OnLineDescriptionCode/accessPoint': DCAT.endpointDescription
+}
 
 class IsoToDcat:
     """Transcripteur ISO 19139 / GeoDCAT-AP.
@@ -354,59 +360,46 @@ class IsoToDcat:
         """
         l = []
 
-        vocabularies_ref = {
-            URIRef('http://inspire.ec.europa.eu/theme'): ['INSPIRE themes'],
-            URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'): ['INSPIRE Spatial Scope']
-        }
-
-        for elem in self.isoxml.findall('./gmd:identificationInfo/'
-            'gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords',
-            namespaces=ISO_NS):
-            raw_vocabulary = find_value(
+        for elem in self.isoxml.findall(
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:descriptiveKeywords/gmd:MD_Keywords',
+            namespaces=ISO_NS
+        ):
+            triples = find_iri(
                 elem,
                 [
-                    './gmd:thesaurusName/gmd:CI_Citation/'
-                    'gmd:title/gmx:Anchor@xlink:href',
-                    './gmd:thesaurusName/gmd:CI_Citation/'
-                    'gmd:title/gmx:Anchor',
-                    './gmd:thesaurusName/gmd:CI_Citation/'
-                    'gmd:title/gco:CharacterString'
+                    './gmd:keyword/gmx:Anchor@xlink:href',
+                    './gmd:keyword/gmx:Anchor',
+                    './gmd:keyword/gco:CharacterString'
+                ],
+                self.datasetid,
+                DCAT.theme,
+                thesaurus=[
+                    (URIRef('http://inspire.ec.europa.eu/theme'), (self.language,)),
+                    (URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'), (self.language,)),
+                    (URIRef('http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset'), (self.language,)),
+                    (URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres'), (self.language,)),
+                    (URIRef('http://publications.europa.eu/resource/authority/data-theme'), (self.language,))
+                ],
+                multi=True
+            )
+            if triples:
+                l += triples
+                continue
+            keywords = find_values(
+                elem,
+                [
+                    './gmd:keyword/gco:CharacterString',
+                    './gmd:keyword/gmx:Anchor@xlink:title',
+                    './gmd:keyword/gmx:Anchor'
                 ]
             )
-            thesaurus = None
-            if raw_vocabulary:
-                for vocabulary in vocabularies_ref:
-                    if (
-                        raw_vocabulary == str(vocabulary) 
-                        or any(x in raw_vocabulary for x in vocabularies_ref[vocabulary])
-                    ):
-                        thesaurus = (vocabulary, (self.language,))
-                        break
-
-            for subelem in elem.findall('.gmd:keyword',
-                namespaces=ISO_NS):
-                if thesaurus:
-                    triples = find_iri(
-                        subelem,
-                        [
-                            './gmx:Anchor@xlink:href',
-                            './gmx:Anchor',
-                            './gco:CharacterString'
-                        ],
-                        self.datasetid,
-                        DCAT.theme,
-                        thesaurus=thesaurus
-                    )
-                    if triples:
-                        l += triples
-                        continue
-                keyword = subelem.findtext('./gco:CharacterString',
-                    namespaces=ISO_NS)
+            for keyword in keywords:
                 for k in keyword.split(','):
                     k = k.strip()
-                    if k:
-                        l.append((self.datasetid, DCAT.keyword,
-                            Literal(k, lang=self.language)))
+                    triple = (self.datasetid, DCAT.keyword, Literal(k, lang=self.language))
+                    if k and not triple in l:
+                        l.append(triple)
         return l
 
     @property
@@ -687,7 +680,531 @@ class IsoToDcat:
                     )
         return l
 
+    def submap_rights(self, distribution_nodes=None):
+        """list of tuples: Triples contenant les informations relatives aux restrictions d'accès aux données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+
+        Réf. ISO 19139 : https://standards.iso.org/iso/19139/Schemas/gmd/constraints.xsd
+
+        Parameters
+        ----------
+        distribution_nodes : list(rdflib.term.BNode), optional
+            La liste des noeuds représentant les distributions
+            du jeu de données.
+            Si non fourni, la méthode créera un nouveau noeud
+            anonyme qui servira d'objet pour ses triplets.
+        
+        Returns
+        -------
+        list(tuples)
+        
+        """
+        l = []
+        OTHER_IRI = URIRef('http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/otherRestrictions')
+
+        if distribution_nodes:
+            nodes = distribution_nodes
+            new_distribution = []
+        else:
+            node = BNode()
+            nodes = [node]
+            new_distribution = [
+                (self.datasetid, DCAT.distribution, node),
+                (node, RDF.type, DCAT.Distribution)
+            ]
+
+        # contraintes légales
+        for elem in self.isoxml.findall(
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:resourceConstraints/gmd:MD_LegalConstraints',
+            namespaces=ISO_NS
+        ):
+            access_restrictions = find_iri(
+                elem,
+                [
+                    './gmd:accessConstraints/gmd:MD_RestrictionCode@codeListValue',
+                    './gmd:accessConstraints/gmd:MD_RestrictionCode'
+                ],
+                self.datasetid,
+                DCT.accessRights,
+                thesaurus=[
+                    (PLUME.ISO19139RestrictionCode, (self.language,))
+                ]
+            )
+            other_code_for_access_rigths = OTHER_IRI in list_objects(access_restrictions)
+
+            use_restrictions = []
+            for node in nodes:
+                use_restrictions += find_iri(
+                    elem,
+                    [
+                        './gmd:useConstraints/gmd:MD_RestrictionCode@codeListValue',
+                        './gmd:useConstraints/gmd:MD_RestrictionCode'
+                    ],
+                    node,
+                    DCT.rights,
+                    thesaurus=[
+                        (PLUME.ISO19139RestrictionCode, (self.language,))
+                    ]
+                )
+                if not use_restrictions:
+                    break
+            other_code_for_access_rigths = (
+                other_code_for_access_rigths 
+                and not OTHER_IRI in list_objects(use_restrictions)
+            )
             
+            licenses = []
+            for other_elem in elem.findall(
+                './gmd:otherConstraints',
+                namespaces=ISO_NS
+            ):
+                sub_access_restrictions = find_iri(
+                    other_elem,
+                    [
+                        './gmx:Anchor@xlink:href',
+                        './gmx:Anchor',
+                        './gco:CharacterString'
+                    ],
+                    self.datasetid,
+                    DCT.accessRights,
+                    multi=True,
+                    thesaurus=[
+                        (URIRef('http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess'), (self.language,))
+                    ]
+                )
+                if sub_access_restrictions:
+                    access_restrictions += sub_access_restrictions
+                    remove_objects(access_restrictions, OTHER_IRI)
+                    continue
+
+                for node in nodes:
+                    sub_licenses = find_iri(
+                        other_elem,
+                        [
+                            './gmx:Anchor@xlink:href',
+                            './gmx:Anchor',
+                            './gco:CharacterString'
+                        ],
+                        node,
+                        DCT.license,
+                        multi=True,
+                        thesaurus=[
+                            (PLUME.CrpaAuthorizedLicense, (self.language,)),
+                            (URIRef('http://publications.europa.eu/resource/authority/licence'), (self.language,)),
+                            (PLUME.SpdxLicense, (self.language,))
+                        ]
+                    )
+                    if not sub_licenses:
+                        break
+                    licenses += sub_licenses
+                if licenses:
+                    remove_objects(use_restrictions, OTHER_IRI)
+                
+                restriction_labels = []
+                for node in nodes:
+                    sub_restriction_labels = find_literal(
+                        other_elem,
+                        [
+                            './gco:CharacterString',
+                            './gmx:Anchor@xlink:title',
+                            './gmx:Anchor'
+                        ],
+                        None,
+                        RDFS.label,
+                        multi=True,
+                        language=self.language
+                    )
+                    if not sub_restriction_labels:
+                        break
+                    for label_node in list_subjects(sub_restriction_labels):
+                        use_restrictions.append((node, DCT.rights, label_node))
+                        use_restrictions.append((label_node, RDF.type, DCT.RightsStatement))
+                    restriction_labels += sub_restriction_labels
+                
+                if not restriction_labels:
+                    continue
+
+                if other_code_for_access_rigths:
+                    access_restrictions += restriction_labels
+                    remove_objects(access_restrictions, OTHER_IRI)
+                    for label_node in list_subjects(restriction_labels):
+                        access_restrictions.append((self.datasetid, DCT.accessRights, label_node))
+                        access_restrictions.append((label_node, RDF.type, DCT.RightsStatement))
+                    continue
+                
+                use_restrictions += restriction_labels
+                remove_objects(use_restrictions, OTHER_IRI)
+
+            l += access_restrictions
+            l += use_restrictions
+            l += licenses
+            if licenses or use_restrictions:
+                l += new_distribution
+                new_distribution = []
+
+        # contraintes de sécurité
+        # systématiquement mappées sur dct:accessRights
+        for elem in self.isoxml.findall(
+            './gmd:identificationInfo/gmd:MD_DataIdentification/'
+            'gmd:resourceConstraints/gmd:MD_SecurityConstraints',
+            namespaces=ISO_NS
+        ):
+            l += find_iri(
+                elem,
+                [
+                    './gmd:classification/gmd:MD_ClassificationCode@codeListValue',
+                    './gmd:classification/gmd:MD_ClassificationCode'
+                ],
+                self.datasetid,
+                DCT.accessRights,
+                thesaurus=[
+                    (PLUME.ISO19139ClassificationCode, (self.language,))
+                ]
+            )
+
+            security_labels = find_literal(
+                elem,
+                [
+                    './gmd:userNote/gco:CharacterString',
+                    './gmd:handlingDescription/gco:CharacterString',
+                    './gmd:classificationSystem/gco:CharacterString',
+                    './gmd:classificationSystem/gmx:Anchor@xlink:title',
+                    './gmd:classificationSystem/gmx:Anchor'
+                ],
+                None,
+                RDFS.label,
+                multi=True,
+                language=self.language
+            )
+            if not security_labels:
+                continue
+            
+            l += security_labels
+            for label_node in list_subjects(security_labels):
+                l.append((self.datasetid, DCT.accessRights, label_node))
+                l.append((label_node, RDF.type, DCT.RightsStatement))
+
+        # useLimitation
+        # NB: ce ne sont pas nécessairement des contraintes d'ordre juridique,
+        # il est donc discutable de les représenter par dct:rights. C'est 
+        # toutefois ce qui est fait ici, considérant que ces contraintes 
+        # posent des limites juridiquement opposables non pas à l'usage de 
+        # la donnée lui-même mais au résultat de celui-ci.
+        use_limitations = []
+        for node in nodes:
+            sub_use_limitations = find_literal(
+                self.isoxml,
+                [
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_Constraints/'
+                    'gmd:useLimitation/gco:CharacterString',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_LegalConstraints/'
+                    'gmd:useLimitation/gco:CharacterString',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_SecurityConstraints/'
+                    'gmd:useLimitation/gco:CharacterString',
+                ],
+                None,
+                RDFS.label,
+                multi=True,
+                language=self.language
+            )
+            if sub_use_limitations:
+                for use_limitation_node in list_subjects(sub_use_limitations):
+                    l.append((node, DCT.rights, use_limitation_node))
+                    l.append((use_limitation_node, RDF.type, DCT.RightsStatement))
+                use_limitations += sub_use_limitations
+        
+        if use_limitations:
+            l += new_distribution
+            new_distribution = []
+            l += use_limitations
+        
+        use_limitation_licenses = []
+        for node in nodes:
+            use_limitation_licenses += find_iri(
+                self.isoxml,
+                [
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_Constraints/'
+                    'gmd:useLimitation/gmx:Anchor@xlink:href',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_Constraints/'
+                    'gmd:useLimitation/gmx:Anchor',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_LegalConstraints/'
+                    'gmd:useLimitation/gmx:Anchor@xlink:href',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:resourceConstraints/gmd:MD_LegalConstraints/'
+                    'gmd:useLimitation/gmx:Anchor',
+                ],
+                node,
+                DCT.license,
+                multi=True,
+                thesaurus=[
+                    (PLUME.CrpaAuthorizedLicense, (self.language,)),
+                    (URIRef('http://publications.europa.eu/resource/authority/licence'), (self.language,)),
+                    (PLUME.SpdxLicense, (self.language,))
+                ]
+            )
+        if use_limitation_licenses:
+            l += new_distribution
+            new_distribution = []
+            l += use_limitation_licenses
+
+        return l
+
+    @property
+    def map_distribution(self):
+        """list of tuples: Triples contenant les distributions du jeu de données, ainsi que les informations relatives aux conditions d'accès et d'usage.
+
+        Il s'agit des objets ``dcat:Distribution`` avec leurs propriétés.
+        La liste est en premier lieu alimentée par les valeurs de 
+        ``gmd:distributionInfo``, mais un objet ``dcat:Distribution`` sera
+        également ajouté dans le cas où le XML ne répertorie pas de 
+        distribution mais contient des informations sur les contraintes
+        juridiques en cas de réutilisation, y compris licence. Du point de
+        vue de DCAT, c'est en effet la distribution qui les porte.
+
+        La liste contient également les informations sur les conditions d'accès
+        (``dct:accessRights``), bien qu'elles ne soient pas portées par la 
+        distribution.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si aucune information n'était disponible dans le XML,
+        une liste vide est renvoyée.
+
+        """
+        l = []
+        nodes = []
+
+        for elem in self.isoxml.findall(
+            './gmd:distributionInfo/gmd:MD_Distribution/'
+            'gmd:transferOptions/gmd:MD_DigitalTransferOptions/'
+            'gmd:onLine/gmd:CI_OnlineResource',
+            namespaces=ISO_NS
+        ):
+            elem_function = find_value(
+                elem,
+                [
+                    './gmd:function/gmd:CI_OnLineFunctionCode@codeListValue',
+                    './gmd:function/gmd:CI_OnLineFunctionCode',
+                    './gmd:function/gco:CharacterString'
+                ]
+            )
+            # cf. https://standards.iso.org/iso/19139/Schemas/resources/codelist/gmxCodelists.xml
+            # pour la définition des codes. On considère qu'information relève de la métadonnée
+            # et que search n'est pas franchement une distribution non plus
+            if elem_function in ('search', 'information'):
+                l += find_iri(
+                    elem,
+                    './gmd:linkage/gmd:URL',
+                    self.datasetid,
+                    FOAF.page,
+                    multi=True
+                )
+                continue
+
+            distribution_node = BNode()
+            distribution_title = find_literal(
+                elem,
+                './gmd:name/gco:CharacterString',
+                distribution_node,
+                DCT.title,
+                language=self.language
+            )
+            service_node = BNode()
+            service_conforms_to = find_iri(
+                elem,
+                [
+                    './gmd:protocol/gmx:Anchor@xlink:href',
+                    './gmd:protocol/gmx:Anchor',
+                    './gmd:protocol/gco:CharacterString'
+                ],
+                service_node,
+                DCT.conformsTo,
+                thesaurus=(
+                    URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'),
+                    (self.language,)
+                )
+            )
+            service_type = find_iri(
+                elem,
+                [
+                    './gmd:applicationProfile/gmx:Anchor@xlink:href',
+                    './gmd:applicationProfile/gmx:Anchor',
+                    './gmd:applicationProfile/gco:CharacterString'
+                ],
+                service_node,
+                DCT.type,
+                thesaurus=(
+                    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType'),
+                    (self.language,)
+                )
+            )
+            description_code = find_value(
+                elem,
+                [
+                    './gmd:description/gmx:Anchor@xlink:href',
+                    './gmd:description/gmx:Anchor',
+                    './gmd:description/gco:CharacterString'
+                ]
+            )
+            service_url = []
+            distribution_description = []
+            if description_code and description_code in ONLINE_DESCRIPTION_CODE_MAP:
+                service_url = find_iri(
+                    elem,
+                    './gmd:linkage/gmd:URL',
+                    service_node,
+                    ONLINE_DESCRIPTION_CODE_MAP.get(description_code)
+                )  
+            else:
+                distribution_description = find_literal(
+                    elem,
+                    [
+                        './gmd:description/gco:CharacterString',
+                        './gmd:description/gmx:Anchor@xlink:title',
+                        './gmd:description/gmx:Anchor',
+                    ],
+                    distribution_node,
+                    DCT.description,
+                    language=self.language
+                )
+            # on mappe toutes les URL sur dcat:accessURL, sans tenter d'identifier
+            # les URL de téléchargement direct qui auraient pu être mappées sur
+            # dcat:downloadURL et en dupliquant les URL des services le cas échéant
+            distribution_url = find_iri(
+                elem,
+                './gmd:linkage/gmd:URL',
+                distribution_node,
+                DCAT.accessURL
+            )
+            if service_type or service_conforms_to or service_url:
+                l += service_type + service_conforms_to + service_url
+                l.append((distribution_node, DCAT.accessService, service_node))
+                l.append((service_node, RDF.type, DCAT.DataService))
+            elif (
+                not distribution_title and
+                not distribution_url and
+                not distribution_description
+            ):
+                continue
+            l += distribution_title + distribution_url + distribution_description
+            l.append((self.datasetid, DCAT.distribution, distribution_node))
+            l.append((distribution_node, RDF.type, DCAT.Distribution))
+            nodes.append(distribution_node)
+
+            # format. C'est une information commune à toutes les
+            # distributions, et il peut y en avoir plusieurs, sans qu'on
+            # puisse aisément les répartir sur dct:format, dcat:compressFormat
+            # et dcat:packageFormat, qui admettent chacun une seule valeur.
+            # Pour l'heure, une seule valeur est conservée et mappée sur
+            # dct:format.
+            for format_elem in self.isoxml.findall(
+                './gmd:distributionInfo/gmd:MD_Distribution/'
+                'gmd:distributionFormat/gmd:MD_Format',
+                namespaces=ISO_NS
+            ):
+                format_iris = find_iri(
+                    format_elem,
+                    [
+                        './gmd:name/gco:CharacterString',
+                        './gmd:name/gmx:Anchor@xlink:href',
+                        './gmd:name/gmx:Anchor'
+                    ],
+                    distribution_node,
+                    DCT['format'],
+                    thesaurus=[
+                        (URIRef('http://publications.europa.eu/resource/authority/file-type'), (self.language,)),
+                        (PLUME.IanaMediaType, (self.language,))
+                    ],
+                    comparator=all_words_included
+                )
+                if format_iris:
+                    l += format_iris
+                else:
+                    format_node = BNode()
+                    format_labels = find_literal(
+                        format_elem,
+                        [
+                            './gmd:name/gco:CharacterString',
+                            './gmd:name/gmx:Anchor@xlink:href',
+                            './gmd:name/gmx:Anchor'
+                        ],
+                        format_node,
+                        RDFS.label,
+                        language=self.language
+                    )
+                    # pour l'heure, on ne récupère pas la version
+                    if format_labels:
+                        l += format_labels
+                        l.append((distribution_node, DCT['format'], format_node))
+                        l.append((format_node, RDF.type, DCT.MediaTypeOrExtent))
+                break
+        
+        l += self.submap_rights(nodes)
+        return l
+
+    @property
+    def map_status(self):
+        """list of tuples: Triples contenant l'état du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+        
+        """
+        return find_iri(
+            self.isoxml,
+            [
+                './gmd:identificationInfo/gmd:MD_DataIdentification'
+                '/gmd:status/gmd:MD_ProgressCode@codeListValue',
+                './gmd:identificationInfo/gmd:MD_DataIdentification'
+                '/gmd:status/gmd:MD_ProgressCode',
+                './gmd:identificationInfo/gmd:MD_DataIdentification'
+                '/gmd:status/gco:CharacterString'
+            ],
+            self.datasetid,
+            ADMS.status,
+            thesaurus=(PLUME.ISO19139ProgressCode, (self.language,))
+        )
+
+    @property
+    def map_accrual_periodicity(self):
+        """list of tuples: Triples contenant la fréquence d'actualisation du jeu de données.
+        
+        Cette propriété est recalculée à chaque interrogation à partir
+        du XML. Si l'information n'était pas disponible dans le XML,
+        une liste vide est renvoyée.
+
+        """
+        return find_iri(
+            self.isoxml,
+            [
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/'
+                'gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode@codeListValue',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/'
+                'gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode',
+                './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                'gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/'
+                'gmd:maintenanceAndUpdateFrequency/gco:CharacterString'
+            ],
+            self.datasetid,
+            DCT.accrualPeriodicity,
+            thesaurus=(
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/MaintenanceFrequency'),
+                (self.language,)
+            )
+        )
+
     @property
     def map_version(self):
         """list of tuples: Triples contenant la version du jeu de données.
@@ -889,7 +1406,7 @@ def find_values(
         attr = None
 
     for sub in elem.findall(epath, namespaces=ISO_NS):
-        value = sub.get(attr) if attr else sub.text
+        value = sub.get(wns(attr)) if attr else sub.text
         if not value in (None, ''):
             l.append(value)
         if not multi:
@@ -1006,6 +1523,10 @@ def find_literal(
             value = transform(value)
             if not value:
                 continue
+        if isinstance(value, str):
+            value = value.strip('\n ')
+            if not value:
+                continue
         if language:
             triple = (subject, predicate, Literal(value, lang=language))
             if not triple[2] in list_objects(l):
@@ -1029,7 +1550,7 @@ def find_literal(
     if isinstance(path, list) and len(path) > 1 and (multi or not l):
         triples = find_literal(
             elem, path[1:], subject_ref, predicate, multi=multi,
-            datatype=datatype, language=language
+            datatype=datatype, language=language, transform=transform
         )
         for triple in triples:
             if not triple[2] in list_objects(l):
@@ -1146,7 +1667,7 @@ def find_iri(
                     and not forbidden_char(value)
                 ):
                     value_iri = URIRef(
-                        '{}/{}'.format(str(s_thesaurus[0].rstrip('/')), value)
+                        '{}/{}'.format(str(s_thesaurus[0]).rstrip('/'), value)
                     )
                     value_str = Thesaurus.concept_str(s_thesaurus, value_iri)
                     if value_str:
@@ -1179,7 +1700,7 @@ def find_iri(
     if isinstance(path, list) and len(path) > 1 and (multi or not l):
         triples = find_iri(
             elem, path[1:], subject_ref, predicate, multi=multi,
-            transform=transform, thesaurus=thesaurus
+            transform=transform, thesaurus=thesaurus, comparator=comparator
         )
         for triple in triples:
             if not triple[2] in list_objects(l):
@@ -1505,3 +2026,24 @@ def list_subjects(triples):
 
     """
     return [triple[0] for triple in triples or []]
+
+def remove_objects(triples, object):
+    """Supprime de la liste les triplets dont l'objet est fourni en argument.
+    
+    Parameters
+    ----------
+    triples : list(tuple)
+        Une liste de triplets.
+    object : rdflib.term.Literal or rdflib.term.URIRef or rdflib.term.BNode
+        Un objet RDF, ou une liste d'objets RDF.
+
+    """
+    if not triples or not object:
+        return
+    if isinstance(object, (list, tuple)):
+        for o in object:
+            remove_objects(triples, o)
+    else:
+        for s, p, o in triples.copy():
+            if o == object:
+                triples.remove((s, p, o))
