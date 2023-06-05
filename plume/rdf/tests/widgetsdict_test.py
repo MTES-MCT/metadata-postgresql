@@ -138,7 +138,9 @@ class WidgetsDictTestCase(unittest.TestCase):
                 '< manuel >',
                 "Restriction d'accès public (INSPIRE)",
                 "Droits d'accès (UE)",
-                "Restrictions d'accès en application du Code des relations entre le public et l'administration"
+                "Restrictions d'accès en application du Code des relations entre le public et l'administration",
+                'Restriction de sécurité sur les données (ISO 19115/19139)',
+                "Limitation d'accès ou d'usage des données (ISO 19115/19139)"
                 ],
             'current source': "Restriction d'accès public (INSPIRE)",
             'has minus button': True,
@@ -163,7 +165,9 @@ class WidgetsDictTestCase(unittest.TestCase):
                 '< manuel >',
                 "Restriction d'accès public (INSPIRE)",
                 "Droits d'accès (UE)",
-                "Restrictions d'accès en application du Code des relations entre le public et l'administration"
+                "Restrictions d'accès en application du Code des relations entre le public et l'administration",
+                'Restriction de sécurité sur les données (ISO 19115/19139)',
+                "Limitation d'accès ou d'usage des données (ISO 19115/19139)"
                 ],
             'current source': '< manuel >',
             'hidden': True,
