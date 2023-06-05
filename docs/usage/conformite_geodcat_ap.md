@@ -131,6 +131,7 @@ Les propriétés suivantes ne sont pas prises en charge par Plume :
 | --- | --- | --- |
 | *media type* | `dcat:mediaType` | La différence avec le format (`dct:format`) est difficile à rendre intelligible dans le contexte de Plume. Pour les données mises à disposition via des services (incluant les flux Atom, etc.), on exprimera plutôt ces informations via les propriétés du service, lui-même introduit par `dcat:accessService`. Si cette propriété est présente dans des métadonnées importées, elle est mappée vers `dct:format`. |
 | *checksum* | `spdx:checksum` | Pourrait être ajouté ultérieurement si finalement utile. |
+| *encoding* | `cnt:characterEncoding` | |
 | *has policy* | `odrl:hasPolicy` | |
 | *spatial resolution as text* | `rdfs:comment` | La résolution est gérée uniquement avec `dcat:spatialResolutionInMeters` et `dqv:hasQualityMeasurement`. |
 
@@ -138,9 +139,9 @@ Les propriétés suivantes sont modifiées par Plume :
 
 | Propriété | IRI | Nature de la modification | Commentaire |
 | --- | --- | --- | --- |
+| *access URL* | `dcat:accessURL` | Non obligatoire. | |
 | *access rights* | `dct:accessRights` | Ajout d'une source de vocabulaire contrôlé et changement de cardinalité. Avant : `0..1`. Après : `0..n`. | Nécessité de pouvoir exprimer les limitations d'accès en référence à plusieurs réglementations différentes (INSPIRE, code des relations entre le public et l'administration...). Outre le [thésaurus INSPIRE](http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess) et celui du [registre EU](https://op.europa.eu/s/vR3k), Plume propose un thésaurus maison [`CrpaAccessLimitations`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations) qui référence les limitations d'accès prévues par le code des relations entre le public et l'administration. |
 | *compression format* | `dcat:compressFormat` | Changement de source de vocabulaire contrôlé. | Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). | 
-| *encoding* | `cnt:characterEncoding` | Changement de cardinalité. Avant : `0..n`. Après : `0..1`. | |
 | *license* | `dct:license` | Ajout de deux sources de vocabulaire contrôlé. | Pour la version IRI de la propriété, Plume propose le thésaurus du [registre EU](https://op.europa.eu/s/vM9L) et un thésaurus maison [`CrpaAuthorizedLicense`](http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense) contenant les URI SPDX des licences autorisées pour la publication des données des administrations françaises. |
 | *packaging format* | `dcat:packageFormat` | Changement de source de vocabulaire contrôlé. | Idem *compression format*. Utilisation du même thésaurus du [registre européen](https://op.europa.eu/s/vNbR) que pour la propriété `dct:format` (qui a le mérite d'exister en RDF et d'avoir des libellés plus intelligibles que le registre IANA). |
 | *reference system* | `dct:conformsTo` | Simplification d'une source de vocabulaire contrôlé. | Le thésaurus `<http://www.opengis.net/def/crs/EPSG/0>` est limité aux projections officielles française + projection web Pseudo-Mercator (EPSG 3857). Pour les autres référentiels, il faudra passer par de la saisie manuelle. |
