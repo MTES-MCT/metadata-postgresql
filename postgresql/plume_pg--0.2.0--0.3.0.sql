@@ -72,7 +72,8 @@
 UPDATE z_plume.meta_shared_categorie
     SET sources = sources || ARRAY[
         'http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres',
-        'http://inspire.ec.europa.eu/metadata-codelist/SpatialScope'
+        'http://inspire.ec.europa.eu/metadata-codelist/SpatialScope',
+        'http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset'
     ]
     WHERE sources IS NOT NULL AND path = 'dcat:theme' ;
 
@@ -105,6 +106,26 @@ UPDATE z_plume.meta_shared_categorie
         'dcat:distribution / dcat:accessService / dct:conformsTo',
         'dcat:distribution / dct:conformsTo'
     ) ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = sources
+        || ARRAY[
+            'http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode',
+            'http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode'
+        ]
+    WHERE sources IS NOT NULL AND path IN (
+        'dct:accessRights',
+        'dcat:distribution / dcat:accessService / dct:accessRights',
+        'dcat:distribution / dct:accessRights'
+    ) ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET template_order = 30
+    WHERE template_order = 32 AND path = 'dcat:distribution / dct:accessRights' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET template_order = 32
+    WHERE template_order = 30 AND path = 'dcat:distribution / dct:rights' ;
 
 UPDATE z_plume.meta_shared_categorie
     SET sources = sources
@@ -144,6 +165,28 @@ UPDATE z_plume.meta_shared_categorie
         'dcat:distribution / dcat:spatialResolutionInMeters',
         'dcat:distribution / dcat:accessService / dcat:spatialResolutionInMeters'
     ) ;
+
+DELETE FROM z_plume.meta_shared_categorie
+    WHERE path = 'dcat:distribution / cnt:characterEncoding' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET sources = sources || ARRAY[
+        'http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType'
+    ]
+    WHERE sources IS NOT NULL AND path = 'dcat:distribution / dcat:accessService / dct:type' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET is_mandatory = False
+    WHERE path = 'dcat:distribution / dcat:accessURL' ;
+
+UPDATE z_plume.meta_shared_categorie
+    SET is_multiple = True,
+        label = 'Contraintes légales',
+        description = 'Autre contrainte d''ordre juridique applicable à la distribution (propriété intellectuelle, etc.).',
+        special = 'url',
+        is_node = False,
+        sources = ARRAY['http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode']
+    WHERE path = 'dcat:distribution / dct:rights' ;
 
 INSERT INTO z_plume.meta_shared_categorie (
         path, origin, label, description, special,
