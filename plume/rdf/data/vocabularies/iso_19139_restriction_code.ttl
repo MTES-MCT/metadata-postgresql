@@ -1,0 +1,56 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/copyright> a skos:Concept ;
+    skos:definition "exclusive right to the publication, production, or sale of the rights to a literary, dramatic, musical, or artistic work, or to the use of a commercial print or label, granted by law for a specified period of time to an author, composer, artist, distributor"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "copyright"@en,
+        "copyright"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/patent> a skos:Concept ;
+    skos:definition "government has granted exclusive right to make, sell, use or license an invention or discovery"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "patent"@en,
+        "brevet"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/patentPending> a skos:Concept ;
+    skos:definition "produced or sold information awaiting a patent"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "patent pending"@en,
+        "brevet en cours d'attribution"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/trademark> a skos:Concept ;
+    skos:definition "a name, symbol, or other device identifying a product, officially registered and legally restricted to the use of the owner or manufacturer"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "trademark"@en,
+        "marque déposée"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/license> a skos:Concept ;
+    skos:definition "formal permission to do something"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "license"@en,
+        "licence"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/intellectualPropertyRights> a skos:Concept ;
+    skos:definition "rights to financial benefit from and control of distribution of non-tangible property that is a result of creativity"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "intellectual property rights"@en,
+        "droits de propriété intellectuelle"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/restricted> a skos:Concept ;
+    skos:definition "withheld from general circulation or disclosure"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "restricted"@en,
+        "restreint"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode/otherRestrictions> a skos:Concept ;
+    skos:definition "limitation not listed"@en ;
+    skos:inScheme plume:ISO19139RestrictionCode ;
+    skos:prefLabel "other restrictions"@en,
+        "autre restriction"@fr .
+
+plume:ISO19139RestrictionCode a skos:ConceptScheme ;
+    skos:prefLabel "Limitation(s) placed upon the access or use of the data (ISO 19115/19139)"@en,
+        "Limitation d'accès ou d'usage des données (ISO 19115/19139)"@fr ;
+    foaf:page <https://standards.iso.org/iso/19139/resources/gmxCodelists.xml> .
