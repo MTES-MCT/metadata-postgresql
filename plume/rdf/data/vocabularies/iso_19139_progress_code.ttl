@@ -45,7 +45,7 @@
         "en production"@fr .
 
 plume:ISO19139ProgressCode a skos:ConceptScheme ;
-    skos:prefLabel "Status of the dataset (ISO 19139)"@en,
-        "État du jeu de données (ISO 19139)"@fr ;
+    skos:prefLabel "Status of the dataset (ISO 19115/19139)"@en,
+        "État du jeu de données (ISO 19115/19139)"@fr ;
     foaf:page <https://standards.iso.org/iso/19139/resources/gmxCodelists.xml> .
 
