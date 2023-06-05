@@ -1,0 +1,35 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/discovery> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
+    skos:prefLabel "Discovery Service"@en,
+        "Service de recherche"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/view> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
+    skos:prefLabel "View Service"@en,
+        "Service de consultation"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/download> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
+    skos:prefLabel "Download Service"@en,
+        "Service de téléchargement"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/transformation> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
+    skos:prefLabel "Transformation Service"@en,
+        "Service de transformation"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/invoke> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
+    skos:prefLabel "Invoke Spatial Data Service"@en,
+        "Service d’appel de services de données géographiques"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/other> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
+    skos:prefLabel "Autre service"@en,
+        "Other Service"@fr .
+
+<http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> a skos:ConceptScheme ;
+    skos:prefLabel "Spatial data service type (INSPIRE)"@en,
+        "Type de service de données géographiques (INSPIRE)"@fr .
