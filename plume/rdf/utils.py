@@ -1386,7 +1386,7 @@ def almost_included(included, including):
     return included.lower() in including.lower()
 
 def all_words_included(included, including):
-    """Détermine si tous les mots d'une chaîne de caractères sont inclus dans un autre.
+    """Détermine si tous les mots d'une chaîne de caractères sont inclus dans une autre.
     
     La fonction renvoie toujours ``'False'`` si l'un
     des arguments est une chaîne de caractères vides
