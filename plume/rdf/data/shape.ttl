@@ -77,7 +77,8 @@ plume:DatasetShape
             <http://inspire.ec.europa.eu/theme>,
             <http://inspire.ec.europa.eu/metadata-codelist/TopicCategory>,
             <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres>,
-            <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope> ;
+            <http://inspire.ec.europa.eu/metadata-codelist/SpatialScope>,
+            <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
         sh:order 4 ;
     ] ;
     sh:property [
@@ -232,7 +233,9 @@ plume:DatasetShape
         sh:order 30 ;
         plume:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
             <http://publications.europa.eu/resource/authority/access-right>,
-            <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
+            <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode> ;
     ] ;
     sh:property [
         sh:path dcat:contactPoint ;
@@ -431,7 +434,6 @@ plume:DistributionShape
         sh:description "URL de la page où est publiée cette distribution des données."@fr ;
         sh:nodeKind sh:IRI ;
         sh:class rdfs:Resource ;
-        sh:minCount 1 ;
         sh:order 1 ;
     ] ;
     sh:property [
@@ -589,16 +591,6 @@ plume:DistributionShape
         plume:disabledOntology <http://www.opengis.net/def/crs/EPSG/0> ;
     ] ;
     sh:property [
-        sh:path cnt:characterEncoding ;
-        sh:name "Encodage"@fr ;
-        sh:description "Encodage de la distribution."@fr ;
-        sh:nodeKind sh:Literal ;
-        sh:datatype xsd:string ;
-        sh:maxCount 1 ;
-        plume:placeholder "ex : UTF-8, ISO-8859-1, US-ASCII..." ;
-        sh:order 20 ;
-    ] ;
-    sh:property [
         sh:path dct:language ;
         sh:name "Langue"@fr ;
         sh:description "Langue·s des données de la distribution."@fr ;
@@ -640,15 +632,19 @@ plume:DistributionShape
         sh:nodeKind sh:BlankNode ;
         sh:class dqv:QualityMeasurement ;
         sh:order 25 ;
-    ] ;
+    ] ;   
     sh:property [
-        sh:path dct:rights ;
-        sh:name "Propriété intellectuelle"@fr ;
-        sh:description "Mention rappelant les droits de propriété intellectuelle sur les données, à faire apparaître en cas de réutilisation de cette distribution des données."@fr ;
-        sh:nodeKind sh:BlankNode ;
+        sh:path dct:accessRights ;
+        sh:name "Conditions d'accès"@fr ;
+        sh:description "Contraintes réglementaires limitant l'accès à la distribution."@fr ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:RightsStatement ;
-        sh:maxCount 1 ;
         sh:order 30 ;
+        plume:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
+            <http://publications.europa.eu/resource/authority/access-right>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode> ;
     ] ;
     sh:property [
         sh:path dct:license ;
@@ -663,15 +659,13 @@ plume:DistributionShape
             <http://registre.data.developpement-durable.gouv.fr/plume/SpdxLicense> ;
     ] ;
     sh:property [
-        sh:path dct:accessRights ;
-        sh:name "Conditions d'accès"@fr ;
-        sh:description "Contraintes réglementaires limitant l'accès à la distribution."@fr ;
+        sh:path dct:rights ;
+        sh:name "Contraintes légales"@fr ;
+        sh:description "Autre contrainte d'ordre juridique applicable à la distribution (propriété intellectuelle, etc.)."@fr ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class dct:RightsStatement ;
         sh:order 32 ;
-        plume:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
-            <http://publications.europa.eu/resource/authority/access-right>,
-            <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
+        plume:ontology <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode> ;
     ] .
 
 plume:RightsStatementShape
@@ -1182,7 +1176,8 @@ plume:DataServiceShape
         sh:class skos:Concept ;
         sh:maxCount 1 ;
         sh:order 6 ;
-        plume:ontology <http://publications.europa.eu/resource/authority/data-service-type> ;
+        plume:ontology <http://publications.europa.eu/resource/authority/data-service-type>,
+            <http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType> ;
     ] ;
     sh:property [
         sh:path dct:accessRights ;
@@ -1193,7 +1188,9 @@ plume:DataServiceShape
         sh:order 20 ;
         plume:ontology <http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess>,
             <http://publications.europa.eu/resource/authority/access-right>,
-            <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations> ;
+            <http://registre.data.developpement-durable.gouv.fr/plume/CrpaAccessLimitations>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode>,
+            <http://registre.data.developpement-durable.gouv.fr/plume/ISO19139RestrictionCode> ;
     ] ;
     sh:property [
         sh:path dct:license ;
@@ -1259,7 +1256,7 @@ plume:DataServiceShape
         sh:class dct:LinguisticSystem ;
         sh:order 80 ;
         plume:ontology <http://publications.europa.eu/resource/authority/language> ;
-    ];
+    ] ;
     sh:property [
         sh:path dct:spatial ;
         sh:name "Couverture géographique"@fr ;
