@@ -1,0 +1,615 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ActualPollutantReleases-reg-2006-166> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Actual pollutant releases (European Pollutant Release and Transfer Register)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-AircraftNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - aircraft noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-AircraftNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - aircraft noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-AircraftNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - aircraft noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-IndustrialNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - industrial noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-IndustrialNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - industrial noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-IndustrialNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations – industrial noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-NoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-NoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-NoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-Population-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - population (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-RailwaysNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - railways noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-RailwaysNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - railways noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-RailwaysNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - railways noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-RoadsNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - roads noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-RoadsNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - roads noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-RoadsNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations - roads noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations (Urban Waste Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Agglomerations-dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agglomerations (Air Quality Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/AgriculturalFacilitiesReceivingSludge-dir-1986-278> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agricultural facilities receiving sludge (Sewage Sludge Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/AgriculturalSitesWhereSludgeIsDeposited-dir-1986-278> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Agricultural sites where sludge is deposited (Sewage Sludge Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/AreasOfPotentialSignificantFloodRisk-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Areas of Potential significant flood risk (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BathingWaterSites-dir-2006-7> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Bathing water sites (Bathing Water Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BathingWaters-RecreationalWaters-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Bathing waters - recreational waters (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BirdSpeciesDistribution-Sensitive-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Bird species distribution - sensitive (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BirdSpeciesDistribution-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Bird species distribution (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BirdSpeciesDistributionAndRange-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Bird species distribution and range (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BirdsRange-Sensitive-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Birds range - sensitive (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BirdsRange-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Birds range (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Boreholes-reco-2014-70> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Boreholes (Recommendation on hydraulic fracturing)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/BoreholesForHydraulicFracturing-reco-2014-70> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Boreholes for hydraulic fracturing (Recommendation on hydraulic fracturing)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/CoastalWaters-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Coastal waters (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/DesignatedWaters-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Designated waters (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/DischargePointsToReceivingWaters-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Discharge points to receiving waters (Urban Waste Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/DrinkingWaterAbstractionPoints-dir-1998-83> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Drinking water abstraction points (Drinking Water Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/DrinkingWaterProtectionAreas-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Drinking water protection areas (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/DrinkingWaterSupplyZones-dir-1998-83> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Drinking water supply zones (Drinking Water Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/EEA-AWP> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "EEA Annual Work Programme"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Emissions-dir-2010-75> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Emissions (Industrial Emissions Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/EnvironmentalNoiseExposure-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Environmental noise exposure (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/EstablishmentsInvolvingDangerousSubstances-dir-2012-18> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Establishments involving dangerous substances (SEVESO III Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ExemptedIslandsAndIsolatedSettlements-dir-1999-31> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Exempted islands and isolated settlements (Landfill of Waste Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FacilitiesForManagingExtractiveWaste-dir-2006-21> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Facilities for managing extractive waste (Extractive Waste Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodHazardAreasHighProbabilityScenario-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood hazard areas high probability scenario (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodHazardAreasLowProbabilityScenario-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood hazard areas low probability scenario (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodHazardAreasMediumProbabilityScenario-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood hazard areas medium probability scenario (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodRiskZones-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood risk zones (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodRiskZonesHighProbabilityScenario-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood risk zones high probability scenario (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodRiskZonesLowProbabilityScenario-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood risk zones low probability scenario (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodRiskZonesMediumProbabilityScenario-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flood risk zones medium probability scenario (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/FloodedAreas-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Flooded areas (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/GroundwaterBodies-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Groundwater bodies (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/HabitatTypesAndSpeciesDistributionAndRange-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Habitat types and species distribution and range (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/HabitatTypesDistribution-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Habitat types distribution (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/HabitatTypesDistributionSensitive-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Habitat types distribution - sensitive (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/HabitatTypesRange-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Habitat types range (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/IndustrialSites-EURegistry-dir-2010-75> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Industrial sites - EU Registry (Industrial Emissions Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/IndustrialSites-EURegistry-reg-2006-166> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Industrial sites - EU Registry (European Pollutant Release and Transfer Register)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Installations-dir-2010-75> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Installations (Industrial Emissions Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/InvasiveAlienSpeciesDistribution-reg-2014-1143> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Invasive alien species distribution (Invasive Alien Species Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Lakes-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Lakes (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/LandfillOfWasteSites-dir-1999-31> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Landfill of waste sites (Landfill of Waste Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/LargeCombustionPlants-dir-2010-75> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Large combustion plants (Industrial Emissions Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/LargeWaterSupplyZones-dir-1998-83> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Large water supply zones (Drinking Water Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/LessSensitiveAreas-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Less sensitive areas (Urban Waste-Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MSFDReportingUnits-dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Marine reporting units (Marine Strategy Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorAirTransport-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major air transport (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorAirportsNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major airports noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorAirportsNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major airports noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorAirportsNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major airports noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRailways-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major railways (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRailwaysNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major railways noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRailwaysNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major railways noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRailwaysNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major railways noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRoads-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major roads (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRoadsNoiseExposureDelineation-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major roads noise exposure delineation (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRoadsNoiseExposureDelineationDEN-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major roads noise exposure delineation day-evening-night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRoadsNoiseExposureDelineationNight-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major roads noise exposure delineation - night (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MajorRoadsRailwaysAndAirTransportNetwork-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Major roads, railways and air transport network (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ManagementUnits-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Management units (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ManagementZones-dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Management zones (Air Quality Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ManagementZonesAndAgglomerations-dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Management zones and agglomerations (Air Quality Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MarineAssessmentUnits-dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Marine assessment units (Marine Strategy Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MarineRegions-dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Marine regions (Marine Strategy Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MarineRegionsAndUnits-dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Marine regions and units (Marine Strategy Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MarineSubRegions-dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Marine sub-regions (Marine Strategy Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MeasurementAndModellingData-dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Measurement and modelling data (Air Quality Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MercuryStorageFacilities-reg-2017-852> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Mercury storage facilities (Mercury Regulation)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ModelAreas-dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Model areas (Air Quality Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MonitoringStations-dir-1991-676> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Monitoring stations (Nitrates Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MonitoringStations-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Monitoring stations (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MonitoringStations-dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Monitoring stations (Air Quality Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/MonitoringStations-dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Monitoring stations (Marine Strategy Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/NationalBiogeographicalRegions> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "National biogeographical regions"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/NationalBiogeographicalRegions-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "National biogeographical regions (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/NationalBiogeographicalRegions-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "National biogeographical regions (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/NationallyDesignatedAreasCDDA> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Nationally designated areas - CDDA"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Natura2000Sites-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Natura 2000 sites (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Natura2000Sites-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Natura 2000 sites (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/NitrateVulnerableZones-NutrientSensitiveAreas-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Nitrate vulnerable zones - nutrient sensitive areas (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/NitratesVulnerableZones-dir-1991-676> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Nitrates vulnerable zones (Nitrates Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/OtherProtectedAreas-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Other protected areas (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Pan-EuropeanBiogeographicalRegions-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Pan-European biogeographical regions (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/PanEuropeanBiogeographicalRegions-dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Pan-European biogeographical regions (Birds Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Population-DenselyPopulatedBuiltUpAreas-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Population - densely populated built-up areas (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Population-dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Population (Noise Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/PreliminaryFloodRiskAssessment-ObservedEvents-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Preliminary flood risk assessment - observed events (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/PreliminaryFloodRiskAssessment-PotentialFutureEvents-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Preliminary flood risk assessment - potential future events (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/PreliminaryFloodRiskAssessment-dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Preliminary flood risk assessment (Floods Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ProtectedAreas-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Protected areas (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ProtectionOfEconomicallySignificantAquaticSpecies-FreshwaterFishDesignatedWaters-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Protection of economically significant aquatic species - freshwater fish designated waters (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/ProtectionOfEconomicallySignificantAquaticSpecies-ShellfishDesignatedWaters-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Protection of economically significant aquatic species - shellfish designated waters (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/RiverBasinDistricts-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "River basin districts (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/RiverBasinDistrictsSubUnits-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "River basin districts sub-units (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/RiverNetwork-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "River network (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/Rivers-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Rivers (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SensitiveAreaCatchments-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Sensitive area catchments (Urban Waste-Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SensitiveAreas-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Sensitive areas (Urban Waste-Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SensitiveAreasLessSensitiveAreasAndCatchments-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Sensitive areas, less sensitive areas and catchments (Urban Waste-Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SitesAndFacilities-reg-2006-166> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Sites and facilities (European Pollutant Release and Transfer Register)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SmallWaterSupplyZones-dir-1998-83> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Small water supply zones (Drinking Water Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SpeciesDistribution-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Species distribution (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SpeciesRange-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Species range (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SpeciesTypesDistributionSensitive-dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Species distribution sensitive (Habitats Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/SurfaceWaterBodies-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Surface water bodies (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/TransitionalWaters-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Transitional waters (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/UrbanWasteWaterSensitiveAreas-NutrientSensitiveAreas-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Urban waste water sensitive areas - nutrient sensitive areas (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/UrbanWasteWaterTreatmentPlants-dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Urban waste-water treatment plants (Urban Waste Water Treatment Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/WaterBodies-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Water bodies (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/WaterDependentNatura2000Sites-dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Water dependent Natura 2000 sites (Water Framework Directive)"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-1986-278> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 86/278/EEC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-1991-271> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 91/271/EEC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-1991-676> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 91/676/EEC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-1992-43> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 92/43/EEC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-1998-83> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 98/83/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-1999-31> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 1999/31/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2000-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2000/60/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2002-49> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2002/49/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2006-21> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2006/21/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2006-7> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2006/7/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2007-60> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2007/60/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2008-50> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2008/50/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2008-56> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2008/56/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2009-147> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2009/147/EC"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2010-75> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2010/75/EU"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/dir-2012-18> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Directive 2012/18/EU"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/national-legislation> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "National legislation"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/reco-2014-70> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Recommendation 2014/70/EU"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/reg-2006-166> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Regulation (EC) 166/2006"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/reg-2014-1143> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Regulation (EU) 1143/2014"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset/reg-2017-852> a skos:Concept ;
+    skos:inScheme <http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> ;
+    skos:prefLabel "Regulation (EU) 2017/852"@en .
+
+<http://inspire.ec.europa.eu/metadata-codelist/PriorityDataset> a skos:ConceptScheme ;
+    skos:definition "List of data sets related to environmental reporting, which should be made available by Member States through the European Spatial Data Infrastructure in a stepwise manner. The list also reflects the data gaps identified during the evaluation of the state-of-implementation and the fitness of the Directive for its intended purpose (a so-called REFIT evaluation)"@en ;
+    skos:prefLabel "Priority data set (INSPIRE)"@en,
+        "Jeu de données prioritaire (INSPIRE)"@fr .
+
