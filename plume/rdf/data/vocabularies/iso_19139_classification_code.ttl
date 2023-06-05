@@ -1,0 +1,38 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/unclassified> a skos:Concept ;
+    skos:definition "available for general disclosure"@en ;
+    skos:inScheme plume:ISO19139ClassificationCode ;
+    skos:prefLabel "unclassified"@en,
+        "non classifié"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/restricted> a skos:Concept ;
+    skos:definition "not for general disclosure"@en ;
+    skos:inScheme plume:ISO19139ClassificationCode ;
+    skos:prefLabel "restricted"@en,
+        "restreint"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/confidential> a skos:Concept ;
+    skos:definition "available for someone who can be entrusted with information"@en ;
+    skos:inScheme plume:ISO19139ClassificationCode ;
+    skos:prefLabel "confidential"@en,
+        "confidentiel"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/secret> a skos:Concept ;
+    skos:definition "kept or meant to be kept private, unknown, or hidden from all but a select group of people"@en ;
+    skos:inScheme plume:ISO19139ClassificationCode ;
+    skos:prefLabel "secret"@en,
+        "secret"@fr .
+
+<http://registre.data.developpement-durable.gouv.fr/plume/ISO19139ClassificationCode/topSecret> a skos:Concept ;
+    skos:definition "of the highest secrecy"@en ;
+    skos:inScheme plume:ISO19139ClassificationCode ;
+    skos:prefLabel "top secret"@en,
+        "top secret"@fr .
+
+plume:ISO19139ClassificationCode a skos:ConceptScheme ;
+    skos:prefLabel "Security restrictions on the dataset (ISO 19115/19139)"@en,
+        "Restriction de sécurité sur les données (ISO 19115/19139)"@fr ;
+    foaf:page <https://standards.iso.org/iso/19139/resources/gmxCodelists.xml> .
