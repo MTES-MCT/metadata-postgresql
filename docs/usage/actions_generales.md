@@ -421,53 +421,53 @@ Une fois son paramétrage réalisé, l'utilise clique sur un bouton `Import`, ce
 
 1. Création de la requête, avec `plume.iso.csw.getrecordbyid_request`.
 
-```python
+    ```python
 
-from plume.iso.csw import getrecordbyid_request
+    from plume.iso.csw import getrecordbyid_request
 
-request = getrecordbyid_request(url_csw, file_identifier)
+    request = getrecordbyid_request(url_csw, file_identifier)
 
-```
+    ```
 
 2. Envoi de la requête au CSW, par exemple avec `qgis.core.QgsNetworkContentFetcher`.
 
 3. Génération du nouveau graphe de métadonnées.
 
-```python
+    ```python
 
-from plume.rdf.metagraph import metagraph_from_iso
+    from plume.rdf.metagraph import metagraph_from_iso
 
-metagraph = metagraph_from_iso(raw_xml, old_metagraph=old_metagraph, preserve=preserve)
+    metagraph = metagraph_from_iso(raw_xml, old_metagraph=old_metagraph, preserve=preserve)
 
-```
+    ```
 
-*`old_metagraph` est l'ancien graphe de métadonnées de la table, c'est-à-dire le `metagraph` courant au moment de l'ouverture de la fenêtre d'import.`raw_xml` est la réponse du CSW, sous forme de chaîne de caractères.*
+    *`old_metagraph` est l'ancien graphe de métadonnées de la table, c'est-à-dire le `metagraph` courant au moment de l'ouverture de la fenêtre d'import.`raw_xml` est la réponse du CSW, sous forme de chaîne de caractères.*
 
-Les métadonnées ISO 19115/19139 importées sont restructurées selon les catégories de métadonnées communes de Plume. Pour l'heure, ce n'est pas exhaustif. Seules les informations suivantes sont récupérées :
-- libellé ;
-- description ;
-- référentiel(s) de coordonnées ;
-- date de création ;
-- date de dernière modification ;
-- date de publication ;
-- mots clés libres ;
-- thème INSPIRE ;
-- catégorie thématique ISO 19115 ;
-- généalogie ;
-- organisations responsables, avec leur rôle, leur nom, leur numéro de téléphone, leur adresse mél, leur site internet.
+    Les métadonnées ISO 19115/19139 importées sont restructurées selon les catégories de métadonnées communes de Plume. Ce n'est pas exhaustif, néanmoins la plupart des métadonnées prévues par INSPIRE sont prises en charge. La capacité de Plume a exploiter une information extraite du XML dépend fortement de la manière dont celui-ci a été construit. D'une manière générale, un XML conforme au standard ISO 19139 et qui respecte les [préconisations du CNIG sur la saisie des métadonnées INSPIRE](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf) a considérablement plus de chances de voir son contenu préservé et intelligemment repositionné dans les métadonnées de Plume. L'usage d'URI issues des [vocabulaires du registre INSPIRE](https://inspire.ec.europa.eu/metadata-codelist) et/ou de [codes ISO](https://standards.iso.org/iso/19139/Schemas/resources/codelist/gmxCodelists.xml) plutôt que de valeurs litérales est, lorsqu'il est possible, particulièrement favorable.
 
-Il est également possible que, même pour les catégories susmentionnées, une partie des métadonnées de certains catalogues ne soient pas reconnues. Tous les catalogues n'ont pas interprété les standard ISO de la même façon et la même information peut avoir un emplacement différent selon les cas. À ce stade, les tests réalisés ont porté sur des fiches de métadonnées issues de GéoIDE, d'un catalogue Prodige et d'un catalogue Géosource.
+    Eléments de métadonnées INSPIRE non pris en charge ou partiellement :
+    - [*Identificateur de ressource unique*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A56%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C467%2C0%5D). Plume attribue un nouvel identifiant de jeu de données à chaque table ou vue qui fait l'objet d'une fiche de métadonnées. À ce stade, l'identifiant original de la ressource dont on importe les métadonnées n'est pas conservé.
+    - [*Encodage des caractères*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A63%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C403%2C0%5D).
+    - [*Système de référence par identifiant géographique*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A98%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C613%2C0%5D).
+    - [*Système de référence temporel*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A111%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C321%2C0%5D).
+    - [*Cohérence topologique*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A121%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C440%2C0%5D).
+    - [*Conformité*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A127%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C785%2C0%5D). Plume ne contrôle pas le champ (*scope*) de la conformité. L'information est toujours présumée valable pour la table/vue dont les métadonnées sont en cours d'édition. Dans la mesure où peu de jeux de données catalogués ont un résultat de conformité explicite, Plume considère que la mention d'un standard signifie en elle-même que les données respectent ce dernier, sauf s'il y a un résultat de test négatif. Les informations libres sur la conformité ne sont pas restranscrites.
+    - [*Métadonnées concernant les métadonnées*](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#%5B%7B%22num%22%3A186%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C68%2C785%2C0%5D). Ces informations ne sont pas récupérées pour l'heure, car Plume ne propose aujourd'hui aucune métadonnées sur les métadonnées à l'exception de la date de dernière mise à jour de la fiche (qui est mise à jour automatiquement à chaque enregistrement). Cf. [issue 9](https://github.com/MTES-MCT/metadata-postgresql/issues/9).
 
-4. Mémorisation éventuelle de la configuration d'import
+    Les "élements de qualité complémentaires" non exigés par INSPIRE mais évoqués en [page 51](https://cnig.gouv.fr/IMG/pdf/guide-de-saisie-des-elements-de-metadonnees-inspire-v2.0-1.pdf#page=51) du guide de saisie du CNIG ne sont pas pris en charge.
 
-Si l'utilisateur n'a pas décoché la case à cocher `save_configuration`, on utilise la propriété `linked_record` pour mémoriser `url_csw` et `file_identifier` dans le nouveau graphe de métadonnées.
+    Quelques métadonnées prévues par ISO 19115/19139 sans être exigées par INSPIRE sont reconnues par Plume, par exemple l'état du jeu de données (obsolète, archivé, etc.) ou la fréquence d'actualisation.
 
-```python
+4. Mémorisation éventuelle de la configuration d'import.
 
-if save_configuration:
-    metagraph.linked_record = url_csw, file_identifier
+    Si l'utilisateur n'a pas décoché la case à cocher `save_configuration`, on utilise la propriété `linked_record` pour mémoriser `url_csw` et `file_identifier` dans le nouveau graphe de métadonnées.
 
-```
+    ```python
+
+    if save_configuration:
+        metagraph.linked_record = url_csw, file_identifier
+
+    ```
 
 5. Comme toujours, il faudra ensuite [regénérer le dictionnaire de widgets](./generation_dictionnaire_widgets.md) avec le nouveau graphe de métadonnées ainsi obtenu comme valeur pour le paramètre [`metagraph`](./generation_dictionnaire_widgets.md#metagraph--le-graphe-des-métadonnées-pré-existantes) du constructeur de `plume.rdf.widgetsdict.WidgetsDict`. Le formulaire de saisie/consultation peut ensuite être [recréé à partir du nouveau dictionnaire](./creation_widgets.md).
 
