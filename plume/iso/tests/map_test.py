@@ -11,6 +11,7 @@ from plume.iso.map import (
     date_or_datetime_to_literal, to_spatial_resolution_in_meters,
     list_objects, list_subjects, remove_objects
 )
+from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.namespaces import (
     DCT, FOAF, DCAT, PLUME, ADMS, SKOS, XSD, OWL, DQV,
     GEODCAT, RDFS, RDF
@@ -695,150 +696,154 @@ class IsoToDcatTestCase(unittest.TestCase):
 
     def test_map_epsg(self):
         """Récupération des référentiels de coordonnées dans les fichiers de test."""
-        dataset_id = DatasetId()
-
         samples = {
             self.CSW_GEOIDE_ZAC_75: [
-                (dataset_id, DCT.conformsTo, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+                URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')
             ],
             self.IGN_BDALTI: [
                 # les référentiels non référencés dans les vocabulaires sont mis en commentaire
-                (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGF93LAMB93.IGN69')),
-                (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGF93LAMB93.IGN78C')),
-                (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGFG95UTM22.GUYA77')),
-                (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGM04UTM38S.MAYO53')),
-                (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGR92G.REUN89')),
-                (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGSPM06U21.STPM50')),
-                # (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88')),
-                # (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88MG')),
-                # (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88SB')),
-                # (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88SM')),
-                # (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD92LD')),
-                # (dataset_id, DCT.conformsTo, URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.MART87'))
+                URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGF93LAMB93.IGN69'),
+                URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGF93LAMB93.IGN78C'),
+                URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGFG95UTM22.GUYA77'),
+                URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGM04UTM38S.MAYO53'),
+                URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGR92G.REUN89'),
+                URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/RGSPM06U21.STPM50'),
+                # URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88'),
+                # URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88MG'),
+                # URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88SB'),
+                # URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD88SM'),
+                # URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.GUAD92LD'),
+                # URIRef('https://registre.ign.fr/ign/IGNF/crs/IGNF/WGS84UTM20.MART87')
             ],
             self.CSW_DATARA_FOND_AB: [
-                (dataset_id, DCT.conformsTo, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'))
+                URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')
             ],
             self.CSW_GEOLITTORAL_SENTIER: [
-                (dataset_id, DCT.conformsTo, URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')),
-                (dataset_id, DCT.conformsTo, URIRef('http://www.opengis.net/def/crs/EPSG/0/5490')),
-                (dataset_id, DCT.conformsTo, URIRef('http://www.opengis.net/def/crs/EPSG/0/4467')),
-                (dataset_id, DCT.conformsTo, URIRef('http://www.opengis.net/def/crs/EPSG/0/2972'))
+                URIRef('http://www.opengis.net/def/crs/EPSG/0/2154'),
+                URIRef('http://www.opengis.net/def/crs/EPSG/0/5490'),
+                URIRef('http://www.opengis.net/def/crs/EPSG/0/4467'),
+                URIRef('http://www.opengis.net/def/crs/EPSG/0/2972')
             ]
         }
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                self.assertListEqual(
-                    sorted(itd.map_crs),
-                    sorted(samples[sample])
-                )
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                conforms_to_values = list(metagraph.objects(dataset_id, DCT.conformsTo))
+                for crs in samples[sample]:
+                    self.assertTrue(crs in conforms_to_values)
 
     def test_map_language(self):
         """Récupération des langues des données dans les fichiers de test."""
-        dataset_id = DatasetId()
-
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                self.assertListEqual(
-                    itd.map_language,
-                    [
-                        (
-                            dataset_id,
-                            DCT.language,
-                            URIRef('http://publications.europa.eu/resource/authority/language/FRA')
-                        )
-                    ]
-                )
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                language_values = list(metagraph.objects(dataset_id, DCT.language))
+                self.assertListEqual(language_values, [URIRef('http://publications.europa.eu/resource/authority/language/FRA')])
 
     def test_map_representation_type(self):
         """Récupération du type de représentation dans les fichiers de test."""
-        dataset_id = DatasetId()
-
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                if sample is self.IGN_BDALTI:
-                    value = URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/grid')
-                else:
-                    value = URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector')
-                self.assertListEqual(
-                    itd.map_representation_type,
-                    [
-                        (
-                            dataset_id,
-                            ADMS.representationTechnique,
-                            value
-                        )
-                    ]
-                )
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                distribution_nodes = list(metagraph.objects(dataset_id, DCAT.distribution))
+                self.assertTrue(distribution_nodes)
+                for node in distribution_nodes:
+                    repr_type_values = list(metagraph.objects(node, ADMS.representationTechnique))
+                    if sample is self.IGN_BDALTI:
+                        value = URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/grid')
+                    else:
+                        value = URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector')
+                    self.assertListEqual(repr_type_values, [value])
 
     def test_map_categories(self):
-        """Récupération de la catégorie ISO dans les fichiers de test."""
-        dataset_id = DatasetId()
+        """Récupération de la catégorie ISO (et du thème INSPIRE) dans les fichiers de test.
+        
+        Le test contrôle à la fois la propriété :py:attr:`plume.iso.map.IsoToDcat.map_categories`
+        et :py:attr:`plume.iso.map.IsoToDcat.map_keywords`, pour ce qui concerne la récupération
+        des thèmes INSPIRE.
 
+        """
         values = {
             self.IGN_BDALTI: [
                 URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/elevation'),
                 URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/environment'),
                 URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/geoscientificInformation'),
-                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/intelligenceMilitary')
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/intelligenceMilitary'),
+                URIRef('http://inspire.ec.europa.eu/theme/el')
             ],
             self.CSW_DATARA_FOND_AB: [
-                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/climatologyMeteorologyAtmosphere')
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/climatologyMeteorologyAtmosphere'),
+                URIRef('http://inspire.ec.europa.eu/theme/hh')
             ],
             self.CSW_GEOIDE_ZAC_75 : [
-                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/planningCadastre')
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/planningCadastre'),
+                URIRef('http://inspire.ec.europa.eu/theme/lu')
             ],
             self.CSW_GEOLITTORAL_SENTIER: [
-                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/transportation')
+                URIRef('http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/transportation'),
+                URIRef('http://inspire.ec.europa.eu/theme/tn')
             ]
         }
-
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                
-                self.assertListEqual(
-                    sorted(itd.map_categories),
-                    [(dataset_id, DCAT.theme, value) for value in sorted(values[sample])]
-                )
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                theme_values = list(metagraph.objects(dataset_id, DCAT.theme))
+                self.assertListEqual(sorted(theme_values), sorted(values[sample]))
 
     def test_map_title(self):
         """Récupération du libellé du jeu de données dans les fichiers de test."""
-        dataset_id = DatasetId()
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                self.assertTrue(itd.map_title)
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                self.assertTrue(metagraph.value(dataset_id, DCT.title))
 
     def test_map_description(self):
         """Récupération du descriptif du jeu de données dans les fichiers de test."""
-        dataset_id = DatasetId()
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                self.assertTrue(itd.map_description)
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                self.assertTrue(metagraph.value(dataset_id, DCT.description))
 
     def test_map_location_basic(self):
         """Récupération du rectangle d'emprise du jeu de données dans les fichiers de test."""
-        dataset_id = DatasetId()
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-                self.assertTrue(itd.map_location)
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                self.assertTrue(metagraph.value(dataset_id, DCT.spatial))
     
     def test_map_location_ign(self):
         """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test IGN."""
         metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_nodes), 13)
@@ -860,6 +865,8 @@ class IsoToDcatTestCase(unittest.TestCase):
     def test_map_location_geoide(self):
         """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test GéoIDE."""
         metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_objects), 1)
@@ -868,6 +875,8 @@ class IsoToDcatTestCase(unittest.TestCase):
     def test_map_location_geoide_commune(self):
         """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test GéoIDE (cas d'un code de commune)."""
         metagraph = metagraph_from_iso(self.CSW_GEOIDE_LOT_PPR_MONTARDON)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_objects), 1)
@@ -876,6 +885,8 @@ class IsoToDcatTestCase(unittest.TestCase):
     def test_map_location_datara(self):
         """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test datARA."""
         metagraph = metagraph_from_iso(self.CSW_DATARA_FOND_AB)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_nodes), 1)
@@ -885,6 +896,8 @@ class IsoToDcatTestCase(unittest.TestCase):
     def test_map_location_geolittoral(self):
         """Contrôle des valeurs obtenues lors de la récupération des informations de localisation dans le fichier de test Géolittoral."""
         metagraph = metagraph_from_iso(self.CSW_GEOLITTORAL_SENTIER)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_nodes), 5)
@@ -940,6 +953,8 @@ class IsoToDcatTestCase(unittest.TestCase):
 </gmd:MD_Metadata>
         """
         metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_nodes = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_nodes), 3)
@@ -1004,6 +1019,8 @@ class IsoToDcatTestCase(unittest.TestCase):
 </gmd:MD_Metadata>
         """
         metagraph = metagraph_from_iso(raw_xml)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         spatial_objects = list(metagraph.objects(dataset_id, DCT.spatial))
         self.assertEqual(len(spatial_objects), 3)
@@ -1030,11 +1047,15 @@ class IsoToDcatTestCase(unittest.TestCase):
     def test_map_version(self):
         """Récupération du nom/numéro de version."""
         metagraph = metagraph_from_iso(self.CSW_GEOIDE_CUCS_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         versions = list(metagraph.objects(dataset_id, OWL.versionInfo))
         self.assertListEqual(versions, [Literal('1')])
 
         metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         versions = list(metagraph.objects(dataset_id, OWL.versionInfo))
         self.assertListEqual(versions, [Literal('Version 2.0')])
@@ -1042,11 +1063,15 @@ class IsoToDcatTestCase(unittest.TestCase):
     def test_map_dates(self):
         """Récupération des dates de référence."""
         metagraph = metagraph_from_iso(self.IGN_BDALTI)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         dates = list(metagraph.objects(dataset_id, DCT.issued))
         self.assertListEqual(dates, [Literal('2015-02-03', datatype=XSD.date)])
 
         metagraph = metagraph_from_iso(self.CSW_GEOIDE_ZAC_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         dates = list(metagraph.objects(dataset_id, DCT.issued))
         self.assertListEqual(dates, [Literal('2017-01-11', datatype=XSD.date)])
@@ -1056,6 +1081,8 @@ class IsoToDcatTestCase(unittest.TestCase):
         self.assertListEqual(dates, [Literal('2020-01-21', datatype=XSD.date)])
 
         metagraph = metagraph_from_iso(self.CSW_GEOLITTORAL_SENTIER)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         dates = list(metagraph.objects(dataset_id, DCT.issued))
         self.assertListEqual(dates, [Literal('2016-08-29', datatype=XSD.date)])
@@ -1065,6 +1092,8 @@ class IsoToDcatTestCase(unittest.TestCase):
         self.assertListEqual(dates, [Literal('2020-04-09', datatype=XSD.date)])
 
         metagraph = metagraph_from_iso(self.CSW_DATARA_FOND_AB)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         dates = list(metagraph.objects(dataset_id, DCT.issued))
         self.assertListEqual(dates, [Literal('2020-04-16', datatype=XSD.date)])
@@ -1079,6 +1108,8 @@ class IsoToDcatTestCase(unittest.TestCase):
 
         """
         metagraph = metagraph_from_iso(self.CSW_GEOIDE_CUCS_75)
+        widgetsdict = WidgetsDict(metagraph=metagraph)
+        metagraph = widgetsdict.build_metagraph()
         dataset_id = metagraph.datasetid
         temporal = list(metagraph.objects(dataset_id, DCT.temporal))
         self.assertEqual(len(temporal), 1)
@@ -1086,9 +1117,12 @@ class IsoToDcatTestCase(unittest.TestCase):
         self.assertEqual(metagraph.value(temporal[0], DCAT.endDate), Literal('2014-12-31', datatype=XSD.date))
     
     def test_map_keywords(self):
-        """Récupération des thèmes INSPIRE et mots clés libres dans les fichiers de test."""
-        dataset_id = DatasetId()
+        """Récupération des mots clés libres dans les fichiers de test.
+        
+        Cf. test :py:meth:`IsoToDcatTestCase.test_map_categories` pour les
+        thèmes INSPIRE.
 
+        """
         keywords = {
             self.IGN_BDALTI: [
                 'altitude',
@@ -1117,39 +1151,17 @@ class IsoToDcatTestCase(unittest.TestCase):
                 '/Outre-mer/St-Pierre-et-Miquelon'
             ]
         }
-
-        inspire_themes = {
-            self.IGN_BDALTI: [
-                URIRef('http://inspire.ec.europa.eu/theme/el')
-            ],
-            self.CSW_DATARA_FOND_AB: [
-                URIRef('http://inspire.ec.europa.eu/theme/hh')
-            ],
-            self.CSW_GEOIDE_ZAC_75 : [
-                URIRef('http://inspire.ec.europa.eu/theme/lu')
-            ],
-            self.CSW_GEOLITTORAL_SENTIER: [
-                URIRef('http://inspire.ec.europa.eu/theme/tn')
-            ]
-        }
-
         for sample_name in self.ALL:
             with self.subTest(sample=sample_name):
                 sample = self.ALL[sample_name]
-                itd = IsoToDcat(sample, datasetid=dataset_id)
-
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph)
+                metagraph = widgetsdict.build_metagraph()
+                dataset_id = metagraph.datasetid
+                keywords_values = list(metagraph.objects(dataset_id, DCAT.keyword))
                 self.assertListEqual(
-                    sorted(itd.map_keywords),
-                    sorted(
-                        [
-                            (dataset_id, DCAT.theme, value)
-                            for value in inspire_themes[sample]
-                        ] +
-                        [
-                            (dataset_id, DCAT.keyword, Literal(value, lang='fr'))
-                            for value in sorted(keywords[sample])
-                        ]
-                    )
+                    sorted(Literal(word, lang='fr') for word in keywords[sample]), 
+                    sorted(keywords_values)
                 )
 
     def test_map_keyword_priority_dataset(self):
@@ -2164,7 +2176,17 @@ class IsoToDcatTestCase(unittest.TestCase):
                 in metagraph
             )
 
-
+    def test_inspire_template(self):
+        """Vérifie que le modèle pré-configuré INSPIRE ne masque pas les informations récupérées sur les catalogues INSPIRE."""
+        templates_collection = LocalTemplatesCollection()
+        for sample_name in self.ALL:
+            with self.subTest(sample=sample_name):
+                sample = self.ALL[sample_name]
+                metagraph = metagraph_from_iso(sample)
+                widgetsdict = WidgetsDict(metagraph=metagraph, template=templates_collection['INSPIRE'])
+                for key in widgetsdict:
+                    self.assertFalse(key.is_ghost, key.path)
+                
 if __name__ == '__main__':
     unittest.main()
 
