@@ -152,7 +152,7 @@ class TemplateTestCase(unittest.TestCase):
             )
         self.assertEqual(
             search_template(templates_c, pg_description_2.metagraph),
-            'Classique'
+            'Basique'
             )
 
     def test_templatedict_sample_templates(self):
@@ -180,7 +180,7 @@ class TemplateTestCase(unittest.TestCase):
                 cur.execute('DELETE FROM z_plume.meta_template')
         conn.close()
         template = TemplateDict(categories, tabs)
-        self.assertEqual(len(template.shared), 37)
+        self.assertEqual(len(template.shared), 41)
         self.assertEqual(template.local, {})
         d = {k: False for k in template.shared['dct:title'].keys()}
         # on vérifie que chaque caractéristique prend une valeur
@@ -263,7 +263,7 @@ class TemplateTestCase(unittest.TestCase):
         
         """
         templates_collection = LocalTemplatesCollection()
-        self.assertEqual(len(templates_collection.labels), 3)
+        self.assertEqual(len(templates_collection.labels), 4)
         self.assertTrue('Basique' in templates_collection.labels)
         pg_description_1 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_1.txt')))
         pg_description_2 = PgDescription(data_from_file(abspath('pg/tests/samples/pg_description_2.txt')))
@@ -298,7 +298,7 @@ class TemplateTestCase(unittest.TestCase):
             )
         self.assertEqual(
             search_template(templates_c, pg_description_2.metagraph),
-            'Classique'
+            'Basique'
             )
 
     def test_local_template_sources(self):

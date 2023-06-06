@@ -513,19 +513,19 @@ BEGIN
 	-- import d'un modèle
 	SELECT *
         INTO res
-        FROM z_plume.meta_import_sample_template('Basique') ;
+        FROM z_plume.meta_import_sample_template('Classique') ;
         
-    ASSERT res.label = 'Basique' AND res.summary = 'created',
+    ASSERT res.label = 'Classique' AND res.summary = 'created',
         'échec assertion #0' ;
 	
 	ASSERT (
 		SELECT count(*)
 			FROM z_plume.meta_template_categories_full
-			WHERE tpl_label = 'Basique'
+			WHERE tpl_label = 'Classique'
 		) > 0, 'échec assertion #1' ;
 		
 	DELETE FROM z_plume.meta_template
-		WHERE tpl_label = 'Basique' ;
+		WHERE tpl_label = 'Classique' ;
 		
 	-- import de tous les modèles
 	PERFORM z_plume.meta_import_sample_template() ;
@@ -533,7 +533,7 @@ BEGIN
 	ASSERT (
 		SELECT count(*)
 			FROM z_plume.meta_template_categories_full
-			WHERE tpl_label = 'Basique'
+			WHERE tpl_label = 'Classique'
 		) > 0, 'échec assertion #2' ;
 		
 	ASSERT (
@@ -544,19 +544,19 @@ BEGIN
 	-- réinitialisation
 	UPDATE z_plume.meta_template
 	    SET sql_filter = 'True'
-		WHERE tpl_label = 'Basique' ;
+		WHERE tpl_label = 'Classique' ;
 		
 	SELECT *
         INTO res
-        FROM z_plume.meta_import_sample_template('Basique') ;
+        FROM z_plume.meta_import_sample_template('Classique') ;
         
-    ASSERT res.label = 'Basique' AND res.summary = 'updated',
+    ASSERT res.label = 'Classique' AND res.summary = 'updated',
         'échec assertion #4' ;
 	
 	ASSERT (
 		SELECT sql_filter IS NULL
 			FROM z_plume.meta_template
-			WHERE tpl_label = 'Basique'
+			WHERE tpl_label = 'Classique'
 		), 'échec assertion #5' ;
 		
 	DROP EXTENSION plume_pg ;
@@ -1472,7 +1472,7 @@ DECLARE
     e_mssg text ;
     e_detl text ;
     cat_list_ref text[] ;
-    mod_list_ref text[] ;
+    mod_list_ref text ;
     all_cat_info_ref text ;
 BEGIN
 
@@ -1493,8 +1493,9 @@ BEGIN
 
     PERFORM z_plume.meta_import_sample_template() ;
 
-    SELECT
-        array_agg(shrcat_path ORDER BY tplcat_id)
+    SELECT jsonb_pretty(
+        jsonb_agg(row_to_json(row(shrcat_path, sources)) ORDER BY tplcat_id)
+    )
         INTO mod_list_ref
         FROM z_plume.meta_template_categories ;
 
@@ -1519,8 +1520,12 @@ BEGIN
     ), 'échec assertion #2 (propriétés des catégories)' ;
 
     -- modèles pré-configurés correctement mis à jour ?
+    -- (après mise à jour manuelle)
+    PERFORM z_plume.meta_import_sample_template() ;
     ASSERT mod_list_ref = (
-        SELECT array_agg(shrcat_path ORDER BY tplcat_id)
+        SELECT jsonb_pretty(
+            jsonb_agg(row_to_json(row(shrcat_path, sources)) ORDER BY tplcat_id)
+        )
         FROM z_plume.meta_template_categories
     ), 'échec assertion #3 (modèles préconfigurés)' ;
 

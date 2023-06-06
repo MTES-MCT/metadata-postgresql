@@ -1326,7 +1326,14 @@ class WidgetsDictTestCase(unittest.TestCase):
                     INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path) (
                         SELECT tpl_id, 'dct:conformsTo' FROM z_plume.meta_template
                             WHERE tpl_label = 'Basique'
-                    )
+                    ) ;
+                    DELETE FROM z_plume.meta_template_categories
+                        WHERE tpl_id = (
+                                SELECT meta_template.tpl_id FROM z_plume.meta_template
+                                    WHERE tpl_label = 'Basique'
+                            ) AND shrcat_path IN (
+                                'dct:accessRights', 'dct:accessRights / rdfs:label'
+                            ) ;
                     ''')
                 cur.execute(
                     *query_get_categories('Basique')
@@ -2579,6 +2586,7 @@ class WidgetsDictTestCase(unittest.TestCase):
         metadata = """
             @prefix dcat: <http://www.w3.org/ns/dcat#> .
             @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix uuid: <urn:uuid:> .
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -2586,6 +2594,8 @@ class WidgetsDictTestCase(unittest.TestCase):
             uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
                 dct:accessRights [ a dct:RightsStatement ;
                     rdfs:label "Aucune restriction d'accès ou d'usage."@fr ] ;
+                dct:creator [ a foaf:Agent ;
+                    foaf:name "IGN"@fr ] ;
                 dct:title "ADMIN EXPRESS - Départements de métropole"@fr,
                     "ADMIN EXPRESS - Metropolitan Departments"@en;
                 dcat:keyword "admin express"@fr,

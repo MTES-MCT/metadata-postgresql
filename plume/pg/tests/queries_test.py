@@ -303,7 +303,7 @@ class QueriesTestCase(unittest.TestCase):
                 cur.execute('DELETE FROM z_plume.meta_template')
                 # suppression des modèles pré-configurés
         conn.close()
-        self.assertEqual(len(templates), 3)
+        self.assertEqual(len(templates), 4)
 
     def test_query_evaluate_local_templates(self):
         """Requête qui exécute côté serveur les conditions d'application des modèles locaux.
@@ -323,7 +323,7 @@ class QueriesTestCase(unittest.TestCase):
                 templates = cur.fetchall()
                 cur.execute('CREATE EXTENSION plume_pg')
         conn.close()
-        self.assertEqual(len(templates), 3)
+        self.assertEqual(len(templates), 4)
 
     def test_query_get_categories(self):
         """Requête de récupération des informations associées à un modèle.

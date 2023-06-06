@@ -186,7 +186,7 @@ Aux champs de paramétrage qui apparaissaient déjà dans `meta_categorie`, la t
 
 ### Modèles pré-configurés
 
-L'extension propose des modèles pré-configurés - trois à ce stade - qui peuvent être importés via la commande suivante :
+L'extension propose des modèles pré-configurés - quatre à ce stade - qui peuvent être importés via la commande suivante :
 
 ```sql
 
@@ -211,6 +211,7 @@ Modèles pré-configurés disponibles :
 | `'Basique'` | Modèle limité à quelques catégories de métadonnées essentielles. |
 | `'Donnée externe'` | Modèle assez complet adapté à des données externes. |
 | `'Classique'` | Modèle comportant les principales catégories de métadonnées intéressantes pour des données produites par le service. |
+| `'INSPIRE'` | Ce modèle inclut toutes les catégories de métadonnées utilisées pour retranscrire les fiches de métadonnées fournies par les catalogues INSPIRE. À noter que certaines de ces catégories ne correspondent pas à des informations obligatoires du point de vue d'INSPIRE, mais à des éléments de métadonnées prévus par le standard ISO 19139 et souvent disponibles sur les catalogues, tels que la fréquence d'actualisation des données (`dct:accrualPeriodicity`) ou l'état du jeu de données (`adms:status`). Il est normal d'observer un délai de quelques secondes lors de la première utilisation de ce modèle, car il fait appel à des vocabulaires comprenant plusieurs dizaines de milliers de termes. |
 
 
 ## Import des modèles par Plume
