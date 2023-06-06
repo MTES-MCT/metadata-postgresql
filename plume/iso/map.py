@@ -215,34 +215,6 @@ class IsoToDcat:
         )
     
     @property
-    def map_representation_type(self):
-        """list of tuples: Triples contenant le mode de représentation géographique.
-        
-        Cette propriété est recalculée à chaque interrogation à partir
-        du XML. Si l'information n'était pas disponible dans le XML,
-        une liste vide est renvoyée.
-        
-        """
-        return find_iri(
-            self.isoxml,
-            [
-                './gmd:identificationInfo/gmd:MD_DataIdentification/'
-                'gmd:spatialRepresentationType/'
-                'gmd:MD_SpatialRepresentationTypeCode@codeListValue',
-                './gmd:identificationInfo/gmd:MD_DataIdentification/'
-                'gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode',
-                './gmd:identificationInfo/gmd:MD_DataIdentification/'
-                'gmd:spatialRepresentationType/gco:CharacterString'
-            ],
-            self.datasetid,
-            ADMS.representationTechnique,
-            thesaurus= (
-                URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType'),
-                (self.language,)
-            )
-        )
-
-    @property
     def map_crs(self):
         """list of tuples: Triples contenant le ou les référentiels de coordonnées du jeu de données.
         
@@ -1147,6 +1119,27 @@ class IsoToDcat:
                         l.append((distribution_node, DCT['format'], format_node))
                         l.append((format_node, RDF.type, DCT.MediaTypeOrExtent))
                 break
+
+            # mode de représentation géographique. Autre information commune
+            # à toutes les distributions.
+            l += find_iri(
+                self.isoxml,
+                [
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:spatialRepresentationType/'
+                    'gmd:MD_SpatialRepresentationTypeCode@codeListValue',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode',
+                    './gmd:identificationInfo/gmd:MD_DataIdentification/'
+                    'gmd:spatialRepresentationType/gco:CharacterString'
+                ],
+                distribution_node,
+                ADMS.representationTechnique,
+                thesaurus= (
+                    URIRef('http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType'),
+                    (self.language,)
+                )
+            )
         
         l += self.submap_rights(nodes)
         return l
