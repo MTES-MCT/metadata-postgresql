@@ -303,7 +303,8 @@ def read_shape_property(shape_node):
     sources = p.get('ontology')
     if sources:
         sources = sources.copy()
-        if disabled_sources := p.get('disabled_ontology'):
+        disabled_sources = p.get('disabled_ontology')
+        if disabled_sources:
             for disabled_source in disabled_sources:
                 if disabled_source in sources:
                     sources.remove(disabled_source)

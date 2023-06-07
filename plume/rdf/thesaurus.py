@@ -389,7 +389,8 @@ class Thesaurus(metaclass=MetaCollection):
         """
         for iri in scheme_iris:
             vocabulary = VocabularyGraph[iri]
-            if source := vocabulary.value(concept_iri, SKOS.inScheme):
+            source = vocabulary.value(concept_iri, SKOS.inScheme)
+            if source:
                 return source
     
     @classmethod
