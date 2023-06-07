@@ -247,7 +247,7 @@
             "$1 ~ '^c_'",
             null,
             0,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-06 à 15:05:37. Appliqué automatiquement à toutes les tables et vues préfixées de 'c_' (consultation)."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-07 à 19:09:21. Appliqué automatiquement à toutes les tables et vues préfixées de 'c_' (consultation)."
         ]
     },
     "Classique": {
@@ -1236,7 +1236,7 @@
             null,
             null,
             5,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-06 à 15:05:37."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-07 à 19:09:21."
         ]
     },
     "Donnée externe": {
@@ -2159,7 +2159,7 @@
                 }
             ],
             10,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-06 à 15:05:37. Appliqué automatiquement à toutes les tables et vues préfixées de 'r_' ou 'e_' (référentiels et données externes)."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-07 à 19:09:21. Appliqué automatiquement à toutes les tables et vues préfixées de 'r_' ou 'e_' (référentiels et données externes)."
         ]
     },
     "INSPIRE": {
@@ -2187,7 +2187,7 @@
                 null,
                 15,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -2210,7 +2210,7 @@
                 null,
                 40,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -2348,7 +2348,7 @@
                 null,
                 59,
                 null,
-                null,
+                "Distributions",
                 null
             ],
             [
@@ -2735,7 +2735,7 @@
                 null,
                 6,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -2758,7 +2758,7 @@
                 null,
                 24,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -2788,7 +2788,7 @@
                 null,
                 4,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -2817,7 +2817,7 @@
                 null,
                 30,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -2866,7 +2866,7 @@
                 null,
                 14,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -2895,7 +2895,7 @@
                 ],
                 22,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3033,7 +3033,7 @@
                 null,
                 11,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3056,7 +3056,7 @@
                 null,
                 42,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -3171,7 +3171,7 @@
                 null,
                 2,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3194,7 +3194,7 @@
                 null,
                 83,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3217,7 +3217,7 @@
                 null,
                 13,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3242,7 +3242,7 @@
                 null,
                 80,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3265,7 +3265,7 @@
                 null,
                 12,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3288,7 +3288,7 @@
                 null,
                 20,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3334,7 +3334,7 @@
                 null,
                 41,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -3449,7 +3449,7 @@
                 null,
                 43,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -3571,7 +3571,7 @@
                 null,
                 9,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3693,7 +3693,7 @@
                 null,
                 10,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3762,7 +3762,7 @@
                 null,
                 0,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3785,7 +3785,7 @@
                 null,
                 25,
                 null,
-                null,
+                "Général",
                 null
             ],
             [
@@ -3879,7 +3879,7 @@
                 null,
                 44,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -3994,7 +3994,7 @@
                 null,
                 45,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -4109,7 +4109,7 @@
                 null,
                 46,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -4224,7 +4224,7 @@
                 null,
                 47,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -4339,7 +4339,7 @@
                 null,
                 48,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -4454,7 +4454,7 @@
                 null,
                 49,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -4569,7 +4569,7 @@
                 null,
                 50,
                 null,
-                null,
+                "Responsables",
                 null
             ],
             [
@@ -4684,17 +4684,27 @@
                 null,
                 1,
                 null,
-                null,
+                "Général",
                 null
             ]
         ],
-        "tabs": [],
+        "tabs": [
+            [
+                "Général"
+            ],
+            [
+                "Distributions"
+            ],
+            [
+                "Responsables"
+            ]
+        ],
         "conditions": [
             "INSPIRE",
             null,
             null,
             4,
-            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-06 à 15:05:37. Métadonnées obligatoires INSPIRE prises en charge par Plume."
+            "Modèle pré-configuré importé via z_plume.meta_import_sample_template() le 2023-06-07 à 19:09:21. Métadonnées obligatoires INSPIRE prises en charge par Plume."
         ]
     }
 }
