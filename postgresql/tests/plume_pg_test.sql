@@ -1474,6 +1474,7 @@ DECLARE
     cat_list_ref text[] ;
     mod_list_ref text ;
     all_cat_info_ref text ;
+    tab_info_ref text ;
 BEGIN
 
     -- installation directe
@@ -1494,10 +1495,21 @@ BEGIN
     PERFORM z_plume.meta_import_sample_template() ;
 
     SELECT jsonb_pretty(
-        jsonb_agg(row_to_json(row(shrcat_path, sources)) ORDER BY tplcat_id)
+        jsonb_agg(
+                row_to_json(row(tpl_label, shrcat_path, sources, tab_label))
+                ORDER BY tpl_label, shrcat_path
+            )
     )
         INTO mod_list_ref
-        FROM z_plume.meta_template_categories ;
+        FROM z_plume.meta_template_categories
+            LEFT JOIN z_plume.meta_tab ON meta_tab.tab_id = meta_template_categories.tab_id
+            LEFT JOIN z_plume.meta_template ON meta_template.tpl_id = meta_template_categories.tpl_id ;
+    
+    SELECT jsonb_pretty(
+        jsonb_agg(row_to_json(row(tab_label, tab_num)) ORDER BY tab_label)
+    )
+        INTO tab_info_ref
+        FROM z_plume.meta_tab ;
 
     -- installation par montée de version
     DROP EXTENSION plume_pg ;
@@ -1524,10 +1536,22 @@ BEGIN
     PERFORM z_plume.meta_import_sample_template() ;
     ASSERT mod_list_ref = (
         SELECT jsonb_pretty(
-            jsonb_agg(row_to_json(row(shrcat_path, sources)) ORDER BY tplcat_id)
+            jsonb_agg(
+                row_to_json(row(tpl_label, shrcat_path, sources, tab_label))
+                ORDER BY tpl_label, shrcat_path
+            )
         )
         FROM z_plume.meta_template_categories
+            LEFT JOIN z_plume.meta_tab ON meta_tab.tab_id = meta_template_categories.tab_id
+            LEFT JOIN z_plume.meta_template ON meta_template.tpl_id = meta_template_categories.tpl_id
     ), 'échec assertion #3 (modèles préconfigurés)' ;
+
+    ASSERT tab_info_ref = (
+        SELECT jsonb_pretty(
+            jsonb_agg(row_to_json(row(tab_label, tab_num)) ORDER BY tab_label)
+        )
+            FROM z_plume.meta_tab
+     ), 'échec assertion #4 (onglets des modèles)' ;
 
     RETURN True ;
     
@@ -1829,3 +1853,177 @@ END
 $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t022() IS 'PlumePg (recette). TEST : Création massive des déclencheurs pour le suivi de la mise à jour des données.' ;
+
+-- Function: z_plume_recette.t023()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t023()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    tabs_ref text ;
+    tabs_res text ;
+    tplcat_ref text ;
+    tplcat_res text ;
+    res record ;
+BEGIN
+
+	SELECT *
+        INTO res
+        FROM z_plume.meta_import_sample_template('INSPIRE') ;
+        
+    ASSERT res.label = 'INSPIRE' AND res.summary = 'created',
+        'échec assertion #0-a' ;
+
+    ASSERT (SELECT count(*) FROM z_plume.meta_template_categories) > 3,
+        'échec assertion #0-b' ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(shrcat_path, sources, tab_label))
+            ORDER BY tplcat_id, shrcat_path
+        )
+    )
+        INTO tplcat_ref
+        FROM z_plume.meta_template_categories
+            LEFT JOIN z_plume.meta_tab
+            ON meta_tab.tab_id = meta_template_categories.tab_id ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(tab_label, tab_num))
+            ORDER BY tab_label
+        )
+    )
+        INTO tabs_ref
+        FROM z_plume.meta_tab ;
+    
+    -- simple ré-exécution
+    SELECT *
+        INTO res
+        FROM z_plume.meta_import_sample_template('INSPIRE') ;
+        
+    ASSERT res.label = 'INSPIRE' AND res.summary = 'updated',
+        'échec assertion #1-a' ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(shrcat_path, sources, tab_label))
+            ORDER BY tplcat_id, shrcat_path
+        )
+    )
+        INTO tplcat_res
+        FROM z_plume.meta_template_categories
+            LEFT JOIN z_plume.meta_tab
+            ON meta_tab.tab_id = meta_template_categories.tab_id ;
+
+    ASSERT tplcat_res = tplcat_ref, 'échec assertion #1-b' ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(tab_label, tab_num))
+            ORDER BY tab_label
+        )
+    )
+        INTO tabs_res
+        FROM z_plume.meta_tab ;
+    
+    ASSERT tabs_res = tabs_ref, 'échec assertion #1-c' ;
+
+    -- ré-exécution après changements
+    UPDATE z_plume.meta_tab
+        SET tab_label = 'Description'
+        WHERE tab_label = 'Général' ;
+
+    ASSERT EXISTS (
+        SELECT * FROM z_plume.meta_tab
+            WHERE tab_label = 'Description'
+    ), 'échec assertion #2-a' ;
+
+    UPDATE z_plume.meta_template_categories
+        SET tab_id = NULL
+        WHERE shrcat_path = 'dct:title' ;
+    
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(shrcat_path, sources, tab_label))
+            ORDER BY tplcat_id, shrcat_path
+        )
+    )
+        INTO tplcat_res
+        FROM z_plume.meta_template_categories
+            LEFT JOIN z_plume.meta_tab
+            ON meta_tab.tab_id = meta_template_categories.tab_id ;
+
+    ASSERT tplcat_res != tplcat_ref, 'échec assertion #2-b' ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(tab_label, tab_num))
+            ORDER BY tab_label
+        )
+    )
+        INTO tabs_res
+        FROM z_plume.meta_tab ;
+    
+    ASSERT tabs_res != tabs_ref, 'échec assertion #2-c' ;
+
+    SELECT *
+        INTO res
+        FROM z_plume.meta_import_sample_template('INSPIRE') ;
+        
+    ASSERT res.label = 'INSPIRE' AND res.summary = 'updated',
+        'échec assertion #2-d' ;
+    
+    ASSERT EXISTS (
+        SELECT * FROM z_plume.meta_tab
+            WHERE tab_label = 'Description'
+    ), 'échec assertion #2-e' ;
+
+    DELETE FROM z_plume.meta_tab
+        WHERE tab_label = 'Description' ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(shrcat_path, sources, tab_label))
+            ORDER BY tplcat_id, shrcat_path
+        )
+    )
+        INTO tplcat_res
+        FROM z_plume.meta_template_categories
+            LEFT JOIN z_plume.meta_tab
+            ON meta_tab.tab_id = meta_template_categories.tab_id ;
+
+    ASSERT tplcat_res = tplcat_ref, 'échec assertion #2-f' ;
+
+    SELECT jsonb_pretty(
+        jsonb_agg(
+            row_to_json(row(tab_label, tab_num))
+            ORDER BY tab_label
+        )
+    )
+        INTO tabs_res
+        FROM z_plume.meta_tab ;
+    
+    ASSERT tabs_res = tabs_ref, 'échec assertion #2-g' ;
+
+    DROP EXTENSION plume_pg ;
+    CREATE EXTENSION plume_pg ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t023() IS 'PlumePg (recette). TEST : Modèle pré-configuré avec onglets.' ;
+
